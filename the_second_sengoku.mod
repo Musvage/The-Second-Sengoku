@@ -1,10 +1,11 @@
 ﻿name="The Second Sengoku"
-path="mod/the_second_sengoku/"
+path="mod/The-Second-Sengoku/"
 replace_path="history/states"
+replace_path="map/strategicregions"
 replace_path="common/ai_strategy"
 replace_path="common/ai_strategy_plans"
-replace_path="map/strategicregions"
 replace_path="map/supplyareas"
+replace_path="common/decisions"
 tags={
 	"Graphics"
 }
