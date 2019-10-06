@@ -9,6 +9,7 @@ replace_path="events"
 replace_path="common/on_actions"
 replace_path="common/decisions"
 replace_path="common/decisions/categories"
+replace_path="localisation/victory_points_l_english.yml"
 tags={
 	"Graphics"
 }
