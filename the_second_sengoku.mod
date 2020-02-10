@@ -13,4 +13,4 @@ replace_path="localisation/victory_points_l_english.yml"
 tags={
 	"Graphics"
 }
-supported_version="1.7.1"
+supported_version="1.8.*"
