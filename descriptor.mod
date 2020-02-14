@@ -1,0 +1,16 @@
+﻿name="The Second Sengoku dev"
+path="C:/Users/Nobutora/Documents/Paradox Interactive/Hearts of Iron IV/mod/the_second_sengoku"
+replace_path="history/states"
+replace_path="common/ai_strategy"
+replace_path="common/ai_strategy_plans"
+replace_path="map/strategicregions"
+replace_path="map/supplyareas"
+replace_path="events"
+replace_path="common/on_actions"
+replace_path="common/decisions"
+replace_path="common/decisions/categories"
+replace_path="localisation/victory_points_l_english.yml"
+tags={
+	"Graphics"
+}
+supported_version="1.8.*"
