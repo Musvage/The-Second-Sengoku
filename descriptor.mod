@@ -1,5 +1,5 @@
 ﻿name="The Second Sengoku dev"
-path="C:/Users/Nobutora/Documents/Paradox Interactive/Hearts of Iron IV/mod/the_second_sengoku"
+path="mod/The-Second-Sengoku/"
 replace_path="history/states"
 replace_path="common/ai_strategy"
 replace_path="common/ai_strategy_plans"
