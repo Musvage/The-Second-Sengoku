@@ -1,5 +1,5 @@
 ﻿name="The Second Sengoku dev"
-path="mod/The-Second-Sengoku:
+path="mod/The-Second-Sengoku/"
 replace_path="history/states"
 replace_path="common/ai_strategy"
 replace_path="common/ai_strategy_plans"
