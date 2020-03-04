@@ -16,4 +16,4 @@ replace_path="gfx/loadingscreens"
 tags={
 	"Graphics"
 }
-supported_version="1.8.*"
+supported_version="1.9.*"
