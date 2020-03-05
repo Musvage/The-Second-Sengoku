@@ -1,4 +1,4 @@
-﻿name="The Second Sengoku dev"
+name="The Second Sengoku dev"
 path="mod/The-Second-Sengoku/"
 replace_path="history/states"
 replace_path="history/countries"
@@ -11,7 +11,6 @@ replace_path="common/on_actions"
 replace_path="common/decisions"
 replace_path="common/national_focus"
 replace_path="common/decisions/categories"
-replace_path="localisation/victory_points_l_english.yml"
 replace_path="gfx/loadingscreens"
 tags={
 	"Graphics"
