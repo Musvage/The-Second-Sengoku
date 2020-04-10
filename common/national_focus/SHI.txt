@@ -10,8 +10,8 @@ focus_tree = {
 
 	focus = {
 		id = SHI_naval_subdivision
-		icon = GFX_goal_generic_occupy_states_coastal
-		x = 5
+		icon = GFX_goal_generic_build_navy
+		x = 2
 		y = 0
 		cost = 10
 		available = {
@@ -21,13 +21,844 @@ focus_tree = {
 		}	
 		completion_reward = {
 		add_ideas = SHI_naval_subdivision
+		navy_experience = 25
+		random_owned_controlled_state = {
+					limit = {
+						is_coastal = yes
+						free_building_slots = {
+							building = dockyard
+							size > 2
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = dockyard
+						level = 2
+						instant_build = yes
+					}
+				}
 		}
 	}
 	
 	focus = {
+		id = SHI_naval_cooperation
+		icon = GFX_focus_CHU_focus_south
+		x = -1
+		y = 1
+		cost = 10
+		relative_position_id = SHI_naval_subdivision
+		prerequisite = { focus = SHI_naval_subdivision }
+		available = {
+		is_in_faction_with = KYU
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_tech_bonus = {
+				name = capital_ships_bonus
+				bonus = 1.0
+				ahead_reduction = 2
+				uses = 1
+				category = bc_tech
+				category = bb_tech
+				category = cv_tech
+			}
+	
+				random_owned_controlled_state = {
+					limit = {
+						is_coastal = yes
+						free_building_slots = {
+							building = dockyard
+							size > 2
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = dockyard
+						level = 1
+						instant_build = yes
+					}
+				}
+				
+		}
+	}
+	
+	focus = {
+		id = SHI_superbattleship
+		icon = GFX_goal_generic_navy_battleship
+		x = -1
+		y = 1
+		cost = 10
+		relative_position_id = SHI_naval_cooperation
+		prerequisite = { focus = SHI_naval_cooperation }
+		available = {
+		is_in_faction_with = KYU
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		if = {
+				limit = {
+					not = { has_dlc = "Man the Guns" }
+				}
+				add_tech_bonus = {
+					name = JAP_the_ultimate_battleship
+					bonus = 3.0
+					uses = 1
+					category = shbb_tech	
+				}
+			}
+			else = {
+				if = {
+					limit = {
+						not = { has_tech = ship_hull_super_heavy }
+					}
+					set_technology = {
+						ship_hull_super_heavy = 1
+					}
+				}
+				create_equipment_variant = {
+					name = "Yamato Class"
+					type = ship_hull_super_heavy_1
+					name_group = JAP_BB_HISTORICAL
+					parent_version = 0
+					modules = {
+						fixed_ship_battery_slot = ship_super_heavy_battery_1
+						fixed_ship_anti_air_slot = ship_anti_air_2
+						fixed_ship_fire_control_system_slot = ship_fire_control_system_1
+						fixed_ship_radar_slot = empty
+						fixed_ship_engine_slot = heavy_ship_engine_2
+						fixed_ship_secondaries_slot = ship_secondaries_2
+						fixed_ship_armor_slot = ship_armor_shbb
+						front_1_custom_slot = ship_anti_air_1
+						front_2_custom_slot = empty
+						mid_1_custom_slot = empty
+						mid_2_custom_slot = ship_secondaries_2
+						mid_3_custom_slot = ship_secondaries_2
+						rear_1_custom_slot = ship_super_heavy_battery_1
+						rear_2_custom_slot = ship_airplane_launcher_1
+					}
+				}
+				custom_effect_tooltip = JAP_yamato_tt
+				hidden_effect = {
+					add_equipment_production = {
+						equipment = {
+							type = ship_hull_super_heavy_1
+							creator = "JAP" 
+							version_name = "Yamato Class"
+						}
+						name = "Yamato" 
+						requested_factories = 1
+						progress = 0.75
+						amount = 1
+					}
+					add_equipment_production = {
+						equipment = {
+							type = ship_hull_super_heavy_1
+							creator = "JAP" 
+							version_name = "Yamato Class"
+						}
+						name = "Musashi" 
+						requested_factories = 1
+						progress = 0.5
+						amount = 1
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = SHI_new_tactics
+		icon = GFX_focus_KYU_naval_academy
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = SHI_superbattleship
+		prerequisite = { focus = SHI_superbattleship }
+		available = {
+		is_in_faction_with = KYU
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_tech_bonus = {
+				name =  air_doc_bonus
+				bonus = 1.0
+				uses = 1
+				category = naval_doctrine
+			}
+		add_tech_bonus = {
+				name = fleet_in_being_bonus
+				bonus = 1.0
+				uses = 1
+				category = fleet_in_being_tree
+			}
+		}
+	}
+	
+	focus = {
+		id = SHI_dockyards
+		icon = GFX_goal_generic_construct_naval_dockyard
+		x = 0
+		y = 2
+		cost = 10
+		relative_position_id = SHI_naval_subdivision
+		prerequisite = { focus = SHI_naval_subdivision }
+		available = {
+		
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		
+	
+				random_owned_controlled_state = {
+					limit = {
+						is_coastal = yes
+						free_building_slots = {
+							building = dockyard
+							size > 2
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = dockyard
+						level = 2
+						instant_build = yes
+					}
+				}
+				
+		}
+	}
+	
+	focus = {
+		id = SHI_doctrines
+		icon = GFX_goal_generic_navy_doctrines_tactics
+		prerequisite = { focus = SHI_dockyards }
+		x = 0
+		y = 1
+		relative_position_id = SHI_dockyards
+		cost = 10
+
+		search_filters = {  FOCUS_FILTER_RESEARCH }
+		
+		available_if_capitulated = yes
+
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				all_owned_state = {
+					OR = {
+						is_coastal = no
+						dockyard < 1
+					}
+				}
+			}
+		}
+
+		completion_reward = {
+			add_tech_bonus = {
+				name =  air_doc_bonus
+				bonus = 1.0
+				uses = 2
+				category = naval_doctrine
+			}
+		}
+	}
+	
+	focus = {
+		id = SHI_light_ships
+		icon = GFX_goal_generic_wolf_pack
+		prerequisite = { focus = SHI_naval_subdivision }
+		x = 1
+		y = 1
+		relative_position_id = SHI_naval_subdivision
+		cost = 10
+
+		search_filters = {  FOCUS_FILTER_RESEARCH }
+		
+		available_if_capitulated = yes
+
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				all_owned_state = {
+					OR = {
+						is_coastal = no
+						dockyard < 1
+					}
+				}
+			}
+		}
+
+		completion_reward = {
+			add_tech_bonus = {
+				name = dd_bonus
+				bonus = 1.0
+				ahead_reduction = 2
+				uses = 1
+				category = dd_tech
+			}
+			add_tech_bonus = {
+				name = ss_bonus
+				bonus = 1.0
+				ahead_reduction = 2
+				uses = 1
+				category = ss_tech
+			}
+		}
+	}
+	
+	focus = {
+		id = SHI_cruisers
+		icon = GFX_goal_generic_navy_cruiser
+		prerequisite = { focus = SHI_light_ships }
+		x = 1
+		y = 1
+		relative_position_id = SHI_light_ships
+		cost = 10
+
+		search_filters = {  FOCUS_FILTER_RESEARCH }
+		
+		available_if_capitulated = yes
+
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				all_owned_state = {
+					OR = {
+						is_coastal = no
+						dockyard < 1
+					}
+				}
+			}
+		}
+
+		completion_reward = {
+			add_tech_bonus = {
+				name = cr_bonus
+				bonus = 1.0
+				ahead_reduction = 2
+				uses = 1
+				category = cl_tech
+				category = ca_tech
+			}
+		}
+	}
+	
+	focus = {
+		id = SHI_heavy_ships
+		icon = GFX_goal_generic_occupy_states_coastal
+		prerequisite = { focus = SHI_cruisers }
+		x = 0
+		y = 1
+		relative_position_id = SHI_cruisers
+		cost = 10
+
+		search_filters = {  FOCUS_FILTER_RESEARCH }
+		
+		available_if_capitulated = yes
+
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				all_owned_state = {
+					OR = {
+						is_coastal = no
+						dockyard < 1
+					}
+				}
+			}
+		}
+
+		completion_reward = {
+			add_tech_bonus = {
+				name = capital_ships_bonus
+				bonus = 1.0
+				ahead_reduction = 2
+				uses = 1
+				category = bc_tech
+				category = bb_tech
+				category = cv_tech
+			}
+		}
+	}
+	
+	focus = {
+		id = SHI_air_focus
+		icon = GFX_goal_generic_build_airforce
+		x = 4
+		y = 0
+		cost = 10
+		relative_position_id = SHI_naval_subdivision
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+				air_experience = 25
+
+			if = {
+				limit = {
+					capital_scope = {
+						NOT = {
+							free_building_slots = {
+								building = air_base
+								size > 1
+							}
+						}
+					}
+				}
+				random_owned_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = air_base
+							size > 1
+						}
+					}
+					add_building_construction = {
+						type = air_base
+						level = 2
+						instant_build = yes
+					}
+					ROOT = { set_country_flag = aviation_effort_AB }
+				}
+			}
+			if = {
+				limit = {
+					capital_scope = {
+						free_building_slots = {
+							building = air_base
+							size > 1
+						}
+					}
+				}
+				capital_scope = {
+					add_building_construction = {
+						type = air_base
+						level = 2
+						instant_build = yes
+					}
+					ROOT = { set_country_flag = aviation_effort_AB }
+				}
+			}
+			add_tech_bonus = {
+				name = air_doc_bonus
+				bonus = 1.0
+				uses = 2
+				category = air_doctrine
+			}
+		}
+	}
+	
+	focus = {
+		id = SHI_naval_bombing
+		icon = GFX_goal_generic_air_naval_bomber
+		x = -1
+		y = 1
+		cost = 10
+		relative_position_id = SHI_air_focus
+		prerequisite = { focus = SHI_air_focus }
+		prerequisite = { focus = SHI_naval_subdivision}
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_tech_bonus = {
+				name = nav_bomber_bonus
+				bonus = 1.0
+				ahead_reduction = 2
+				uses = 1
+				category = naval_bomber
+			}	
+		}
+	}
+	
+	focus = {
+		id = SHI_CAS
+		icon = GFX_goal_generic_CAS
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = SHI_air_focus
+		prerequisite = { focus = SHI_air_focus }
+		prerequisite = { focus = SHI_army_effort}
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_tech_bonus = {
+				name = CAS_bonus
+				bonus = 1.0
+				ahead_reduction = 2
+				uses = 1
+				category = cas_bomber
+			}
+		}
+	}
+	
+	focus = {
+		id = SHI_air_tactics
+		icon = GFX_goal_generic_air_doctrine
+		x = 0
+		y = 3
+		cost = 10
+		relative_position_id = SHI_air_focus
+		prerequisite = { focus = SHI_air_focus }
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+				air_experience = 25
+
+			if = {
+				limit = {
+					capital_scope = {
+						NOT = {
+							free_building_slots = {
+								building = air_base
+								size > 1
+							}
+						}
+					}
+				}
+				random_owned_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = air_base
+							size > 1
+						}
+					}
+					add_building_construction = {
+						type = air_base
+						level = 2
+						instant_build = yes
+					}
+					ROOT = { set_country_flag = aviation_effort_AB }
+				}
+			}
+			if = {
+				limit = {
+					capital_scope = {
+						free_building_slots = {
+							building = air_base
+							size > 1
+						}
+					}
+				}
+				capital_scope = {
+					add_building_construction = {
+						type = air_base
+						level = 2
+						instant_build = yes
+					}
+					ROOT = { set_country_flag = aviation_effort_AB }
+				}
+			}
+			add_tech_bonus = {
+				name = air_doc_bonus
+				bonus = 1.0
+				uses = 2
+				category = air_doctrine
+			}
+		}
+	}
+	
+	focus = {
+		id = SHI_fighters
+		icon = GFX_focus_generic_air_defense
+		x = -1
+		y = 1
+		cost = 10
+		relative_position_id = SHI_air_tactics
+		prerequisite = { focus = SHI_air_tactics }
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			add_tech_bonus = {
+				name = fighter_bonus
+				bonus = 1.0
+				uses = 2
+				technology = early_fighter
+				technology = fighter1
+				technology = fighter2
+				technology = fighter3
+				technology = heavy_fighter1
+				technology = heavy_fighter2
+				technology = heavy_fighter3
+			}	
+		}
+	}
+	
+	focus = {
+		id = SHI_bombers
+		icon = GFX_goal_generic_air_bomber
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = SHI_air_tactics
+		prerequisite = { focus = SHI_air_tactics }
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			add_tech_bonus = {
+				name = bomber_bonus
+				bonus = 1.0
+				uses = 2
+				technology = strategic_bomber1
+				technology = strategic_bomber2
+				technology = strategic_bomber3
+				category = tactical_bomber
+			}
+		}
+	}
+	
+	focus = {
+		id = SHI_army_effort
+		icon = GFX_goal_generic_axis_build_infantry
+		x = 4
+		y = 0
+		cost = 10
+		relative_position_id = SHI_air_focus
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		army_experience = 15
+			add_tech_bonus = {
+				name = land_doc_bonus
+				bonus = 1.0
+				uses = 1
+				category = land_doctrine
+			}
+			add_tech_bonus = {
+				name = infantry_artillery_bonus
+				ahead_reduction = 1
+				uses = 1
+				category = infantry_weapons
+				category = artillery
+			}
+		}
+	}
+	
+	focus = {
+		id = SHI_equipment
+		icon = GFX_goal_generic_small_arms
+		x = -1
+		y = 1
+		cost = 10
+		relative_position_id = SHI_army_effort
+		prerequisite = {focus = SHI_army_effort}
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_tech_bonus = {
+				name = infantry_artillery_bonus
+				bonus = 1.0
+				uses = 2
+				category = infantry_weapons
+			}
+		}
+	}
+	
+	focus = {
+		id = SHI_equipment_build
+		icon = GFX_focus_generic_army_expansion_3
+		x = -1
+		y = 1
+		cost = 10
+		relative_position_id = SHI_equipment
+		prerequisite = {focus = SHI_equipment}
+		available = {
+		has_war_support > 0.45
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		army_experience = 5
+			add_ideas = FRA_infantry_focus
+		}
+	}
+	
+	focus = {
+		id = SHI_artillery
+		icon = GFX_goal_generic_army_artillery2
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = SHI_army_effort
+		prerequisite = {focus = SHI_army_effort}
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_tech_bonus = {
+				name = infantry_artillery_bonus
+				bonus = 1.0
+				uses = 2
+				category = artillery
+			}
+		}
+	}
+	
+	focus = {
+		id = SHI_army_doctrines
+		icon = GFX_goal_generic_army_doctrines
+		x = 0
+		y = 2
+		cost = 10
+		relative_position_id = SHI_army_effort
+		prerequisite = {focus = SHI_equipment focus = SHI_artillery}
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		army_experience = 5
+			add_tech_bonus = {
+				name = land_doc_bonus
+				bonus = 1.0
+				uses = 1
+				category = land_doctrine
+			}
+			add_tech_bonus = {
+				name = infantry_artillery_bonus
+				ahead_reduction = 1
+				uses = 1
+				category = infantry_weapons
+				category = artillery
+			}
+		}
+	}
+	
+	focus = {
+		id = SHI_a_mobile_army
+		icon = GFX_goal_generic_army_motorized
+		x = -1
+		y = 1
+		cost = 5
+		relative_position_id = SHI_army_doctrines
+		prerequisite = {focus = SHI_army_doctrines}
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		set_technology = { bicycle_infantry = 1 }
+		add_tech_bonus = {
+				name = motorized_bonus
+				ahead_reduction = 2
+				uses = 1
+				category = motorized_equipment
+			}
+		}
+	}
+	
+	focus = {
+		id = SHI_army_tanks
+		icon = GFX_focus_PRO_heavy_tank_program
+		x = 0
+		y = 1
+		cost = 5
+		relative_position_id = SHI_a_mobile_army
+		prerequisite = {focus = SHI_a_mobile_army}
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		set_technology = { bicycle_infantry = 1 }
+		add_tech_bonus = {
+				name = motorized_bonus
+				ahead_reduction = 2
+				uses = 1
+				category = motorized_equipment
+			}
+		}
+	}
+	
+	focus = {
+		id = SHI_special_forces
+		icon = GFX_goal_generic_special_forces
+		x = 1
+		y = 1
+		cost = 5
+		relative_position_id = SHI_army_doctrines
+		prerequisite = {focus = SHI_army_doctrines}
+		prerequisite = {focus = SHI_propaganda_efforts}
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_ideas = special_forces
+			add_tech_bonus = {
+				name = special_forces_bonus
+				bonus = 1.0
+				uses = 1
+				technology = paratroopers
+				technology = paratroopers2
+				technology = marines
+				technology = marines2
+				technology = tech_mountaineers
+				technology = tech_mountaineers2
+			}
+			army_experience = 5
+			add_tech_bonus = {
+				name = land_doc_bonus
+				bonus = 1.0
+				uses = 1
+				category = land_doctrine
+			}
+		}
+	}
+	
+	
+	focus = {
 		id = SHI_fascist_militias
 		icon = GFX_focus_KYU_the_black_dragon
-		x = 10
+		x = 13
 		y = 0
 		cost = 10
 		available = {
@@ -61,6 +892,7 @@ focus_tree = {
 				remove_idea = SHI_the_black_dragon2
 				add_idea = SHI_the_black_dragon3
 			}
+			add_war_support = 0.05
 		}
 	}
 	
@@ -134,19 +966,49 @@ focus_tree = {
 			factor = 10
 		}	
 		completion_reward = {
+		add_political_power = -50
 		add_tech_bonus = {
 				name = industrial_bonus
 				bonus = 1.0
 				uses = 1
 				category = industry
 			}
-		add_political_power = -50
+		random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = industrial_complex
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
 	focus = {
 		id = SHI_nationalize_zaibatsus
-		icon = GFX_focus_SHO_zaibatsu_movements
+		icon = GFX_focus_jap_zaibatsu
 		x = -1
 		y = 1
 		cost = 10
@@ -158,13 +1020,37 @@ focus_tree = {
 			factor = 10
 		}	
 		completion_reward = {
-		add_tech_bonus = {
-				name = industrial_bonus
-				bonus = 1.0
-				uses = 1
-				category = industry
-			}
 		add_political_power = -50
+		random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = industrial_complex
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -184,12 +1070,66 @@ focus_tree = {
 		completion_reward = {
 		
 		add_political_power = -50
+		random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = infrastructure
+						size > 0
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = infrastructure
+										size > 0
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_building_construction = {
+					type = infrastructure
+					level = 2
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = infrastructure
+						size > 1
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = infrastructure
+										size > 1
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_building_construction = {
+					type = infrastructure
+					level = 2
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
 	focus = {
 		id = SHI_modern_infrastructure
-		icon = GFX_goal_generic_construction
+		icon = GFX_focus_PRO_raise_infrastructure_standarts
 		x = 0
 		y = 1
 		cost = 10
@@ -203,12 +1143,115 @@ focus_tree = {
 		completion_reward = {
 		
 		add_political_power = -50
+		random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = infrastructure
+						size > 0
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = infrastructure
+										size > 0
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_building_construction = {
+					type = infrastructure
+					level = 2
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = infrastructure
+						size > 1
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = infrastructure
+										size > 1
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_building_construction = {
+					type = infrastructure
+					level = 2
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
 	focus = {
 		id = SHI_factory_retooling
 		icon = GFX_goal_generic_construct_mil_factory
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = SHI_war_industry
+		prerequisite = { focus = SHI_war_industry }
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_ideas = SHI_factory_retooling
+		add_political_power = -50
+		random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = arms_factory
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = arms_factory
+					level = 2
+					instant_build = yes
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = SHI_war_industry
+		icon = GFX_goal_generic_build_tank
 		x = 1
 		y = 1
 		cost = 10
@@ -222,33 +1265,44 @@ focus_tree = {
 		completion_reward = {
 		
 		add_political_power = -50
-		}
-	}
-	
-	focus = {
-		id = SHI_war_industry
-		icon = GFX_goal_generic_build_tank
-		x = 0
-		y = 1
-		cost = 10
-		relative_position_id = SHI_factory_retooling
-		prerequisite = { focus = SHI_factory_retooling }
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
-		completion_reward = {
-		
-		add_political_power = -50
+		random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = arms_factory
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = arms_factory
+					level = 2
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
 	focus = {
 		id = SHI_matsuyama_university
-		icon = GFX_focus_research
-		x = -2
-		y = 1
+		icon = GFX_goal_generic_scientific_exchange
+		x = -1
+		y = 2
 		cost = 10
 		relative_position_id = SHI_fascist_education
 		prerequisite = { focus = SHI_fascist_education }
@@ -309,6 +1363,38 @@ focus_tree = {
 				name = nuclear_bonus
 				ahead_reduction = 2
 				category = nuclear
+			}
+		
+		}
+	}
+	
+	focus = {
+		id = SHI_refinery
+		icon = GFX_focus_PRO_synthetic_refinery_production
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = SHI_modern_infrastructure
+		prerequisite = { focus = SHI_modern_infrastructure }
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = synthetic_refinery
+					level = 1
+					instant_build = yes
+				}
+			}
+			add_tech_bonus = {
+				name = JAP_coal_liquification
+				bonus = 1.0
+				uses = 1
+				category = synth_resources	
 			}
 		
 		}
