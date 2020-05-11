@@ -40,7 +40,7 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			add_stability = 0.1
 		}
 	}
 	
@@ -68,7 +68,7 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			add_political_power = 90
 		}
 	}
 
@@ -115,7 +115,35 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			if = {
+				limit = {
+					has_idea = TOH_communist_infighting
+				}
+				swap_ideas = { 
+					remove_idea = TOH_communist_infighting
+					add_idea = TOH_communist_infighting2 
+				}
+			}
+			
+			if = {
+				limit = {
+					has_idea = TOH_communist_infighting2
+				}
+				swap_ideas = { 
+					remove_idea = TOH_communist_infighting2
+					add_idea = TOH_communist_infighting3
+				}
+			}
+			
+			if = {
+				limit = {
+					has_idea = TOH_communist_infighting3
+				}
+				swap_ideas = { 
+					remove_idea = TOH_communist_infighting3
+					add_idea = TOH_communist_infighting4
+				}
+			}
 		}
 	}
 	
@@ -123,7 +151,7 @@
 		id = TOH_new_farming_equipment
 		icon = GFX_goal_generic_production2
 		prerequisite = { focus = TOH_farmers }
-		
+		bypass = { has_tech = motorised_infantry }
 		relative_position_id = TOH_farmers
 		
 		available = {
@@ -144,7 +172,11 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			add_tech_bonus = {
+				name = motorized_bonus
+				bonus = 1.5
+				technology = motorised_infantry
+			}
 		}
 	}
 	
@@ -174,7 +206,11 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			add_tech_bonus = {
+				name = motorized_bonus
+				bonus = 2
+				category = motorized_equipment
+			}
 		}
 	}
 	
@@ -203,7 +239,9 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 2
+			}
 		}
 	}
 	
@@ -232,7 +270,9 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 2
+			}
 		}
 	}
 	
@@ -262,7 +302,12 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 2
+			}
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 2
+			}
 		}
 	}
 	
@@ -292,7 +337,7 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			add_ideas = TOH_low_taxes
 		}
 	}
 	
@@ -322,7 +367,10 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			swap_ideas = {
+				add_idea = TOH_taxes_abolished
+				remove_idea = TOH_low_taxes
+			}
 		}
 	}
 	
@@ -351,8 +399,74 @@
 			factor = 2.5
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
+			complete_tooltip = {
+			add_building_construction = {
+				type = infrastructure
+				level = 1
+				instant_build = yes
+			}
+			add_building_construction = {
+				type = infrastructure
+				level = 1
+				instant_build = yes
+			}
+		}
+
 		completion_reward = {
-			add_political_power = 100
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = infrastructure
+						size > 0
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = infrastructure
+										size > 0
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_building_construction = {
+					type = infrastructure
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = infrastructure
+						size > 1
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = infrastructure
+										size > 1
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_building_construction = {
+					type = infrastructure
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -379,9 +493,47 @@
 		ai_will_do = {
 			factor = 2.5
 		}	
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_INDUSTRY  }
+		complete_tooltip = {
+			add_extra_state_shared_building_slots = 1
+			add_building_construction = {
+				type = industrial_complex
+				level = 1
+				instant_build = yes
+			}
+		}		
+
 		completion_reward = {
-			add_political_power = 100
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = industrial_complex
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -410,7 +562,7 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			add_political_power = 120
 		}
 	}
 	
@@ -437,9 +589,47 @@
 		ai_will_do = {
 			factor = 2.5
 		}	
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_INDUSTRY  }
+		complete_tooltip = {
+			add_extra_state_shared_building_slots = 1
+			add_building_construction = {
+				type = industrial_complex
+				level = 1
+				instant_build = yes
+			}
+		}		
+
 		completion_reward = {
-			add_political_power = 100
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = industrial_complex
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -466,9 +656,47 @@
 		ai_will_do = {
 			factor = 2.5
 		}	
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_INDUSTRY  }
+		complete_tooltip = {
+			add_extra_state_shared_building_slots = 1
+			add_building_construction = {
+				type = industrial_complex
+				level = 1
+				instant_build = yes
+			}
+		}		
+
 		completion_reward = {
-			add_political_power = 100
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = industrial_complex
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -513,7 +741,35 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			if = {
+				limit = {
+					has_idea = TOH_communist_infighting
+				}
+				swap_ideas = { 
+					remove_idea = TOH_communist_infighting
+					add_idea = TOH_communist_infighting2 
+				}
+			}
+			
+			if = {
+				limit = {
+					has_idea = TOH_communist_infighting2
+				}
+				swap_ideas = { 
+					remove_idea = TOH_communist_infighting2
+					add_idea = TOH_communist_infighting3
+				}
+			}
+			
+			if = {
+				limit = {
+					has_idea = TOH_communist_infighting3
+				}
+				swap_ideas = { 
+					remove_idea = TOH_communist_infighting3
+					add_idea = TOH_communist_infighting4
+				}
+			}
 		}
 	}
 	
@@ -542,7 +798,10 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			add_timed_idea = {
+				idea = TOH_commintern
+				days = 100
+			}
 		}
 	}
 	
@@ -571,7 +830,10 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			add_timed_idea = {
+				idea = TOH_officers_purged
+				days = 140
+			}
 		}
 	}
 	
@@ -601,7 +863,10 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			swap_ideas = { 
+					remove_idea = TOH_officers_purged
+					add_idea = TOH_officers_purged2
+				}
 		}
 	}
 	
@@ -628,10 +893,50 @@
 		ai_will_do = {
 			factor = 2.5
 		}	
-		search_filters = { FOCUS_FILTER_POLITICAL }
-		completion_reward = {
-			add_political_power = 100
+		search_filters = { FOCUS_FILTER_INDUSTRY  }
+
+			complete_tooltip = {
+			add_extra_state_shared_building_slots = 1
+			add_building_construction = {
+				type = industrial_complex
+				level = 1
+				instant_build = yes
+			}			
 		}
+
+		completion_reward = {
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = industrial_complex
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+		
 	}
 	
 	focus = {
@@ -658,9 +963,47 @@
 		ai_will_do = {
 			factor = 2.5
 		}	
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_INDUSTRY  }
+		complete_tooltip = {
+			add_extra_state_shared_building_slots = 2
+			add_building_construction = {
+				type = industrial_complex
+				level = 2
+				instant_build = yes
+			}			
+		}
+
 		completion_reward = {
-			add_political_power = 100
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = industrial_complex
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
@@ -688,9 +1031,14 @@
 		ai_will_do = {
 			factor = 2.5
 		}	
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_RESEARCH }
 		completion_reward = {
-			add_political_power = 100
+			add_tech_bonus = {
+				name = industrial_bonus
+				bonus = 1.0
+				uses = 1
+				category = industry
+			}
 		}
 	}
 	
@@ -721,7 +1069,7 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			add_ideas = TOH_soviet_industrial_aid
 		}
 	}
 	
@@ -782,7 +1130,7 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			add_ideas = TOH_soviet_advisors_bonus
 		}
 	}
 	
@@ -813,7 +1161,7 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			add_ideas = TOH_soviet_planning_bonus
 		}
 	}
 	
@@ -861,7 +1209,35 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			if = {
+				limit = {
+					has_idea = TOH_communist_infighting
+				}
+				swap_ideas = { 
+					remove_idea = TOH_communist_infighting
+					add_idea = TOH_communist_infighting2 
+				}
+			}
+			
+			if = {
+				limit = {
+					has_idea = TOH_communist_infighting2
+				}
+				swap_ideas = { 
+					remove_idea = TOH_communist_infighting2
+					add_idea = TOH_communist_infighting3
+				}
+			}
+			
+			if = {
+				limit = {
+					has_idea = TOH_communist_infighting3
+				}
+				swap_ideas = { 
+					remove_idea = TOH_communist_infighting3
+					add_idea = TOH_communist_infighting4
+				}
+			}
 		}
 	}
 	
@@ -890,7 +1266,13 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			army_experience = 10
+			add_tech_bonus = {
+				name = land_doc_bonus
+				bonus = 1.0
+				uses = 1
+				category = land_doctrine
+			}
 		}
 	}
 	
@@ -919,7 +1301,8 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			custom_effect_tooltip = available_political_advisor
+			show_ideas_tooltip = TOH_generic_advisor_spy
 		}
 	}
 	
@@ -978,7 +1361,7 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			add_ideas = TOH_reafirm_global_rev
 		}
 	}
 	
@@ -1008,7 +1391,8 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			set_rule = { can_create_factions = yes }
+			create_faction = "Fourth International"
 		}
 	}
 	
@@ -1038,7 +1422,8 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			custom_effect_tooltip = available_political_advisor
+			show_ideas_tooltip = TOH_trotsky_advisor
 		}
 	}
 	
@@ -1069,7 +1454,19 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			hidden_effect = {
+				kill_country_leader = yes
+			}
+			create_country_leader = {
+					name = "Leon Trotsky"
+					desc = "POLITICS_LEON_TROTSKY_DESC"
+					picture = "gfx/leaders/SOV/Portrait_Leon_Trotsky.dds"
+					expire = "1965.1.1"
+					ideology = leninism
+					traits = {
+						exiled_revolutionary
+					}
+				}
 		}
 	}
 	
@@ -1100,10 +1497,12 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			add_ideas = TOH_soviet_backing
+			custom_effect_tooltip = remove_political_advisor
+			show_ideas_tooltip = TOH_trotsky_advisor
 		}
 	}
-	
+
 	focus = {
 		id = TOH_spread_communism
 		icon = GFX_goal_support_communism
@@ -1130,7 +1529,11 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+		
+		every_other_country = {
+				limit = { NOT = { tag = TOH } }
+				add_timed_idea = { idea = communist_influence days = 150 }
+			}
 		}
 	}
 	
@@ -1160,7 +1563,13 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			army_experience = 10
+			add_tech_bonus = {
+				name = land_doc_bonus
+				bonus = 1.0
+				uses = 1
+				category = land_doctrine
+			}
 		}
 	}
 	
@@ -1234,7 +1643,48 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			if = {
+				limit = {
+					has_completed_focus = TOH_trotskyists
+				}
+				hidden_effect = {
+					kill_country_leader = yes
+				}
+				create_country_leader = {
+					name = "Kuroda Kan'ichi"
+					desc = ""
+					picture = "gfx/leaders/Asia/Portrait_Asia_Generic_warlord1.dds"
+					expire = "1965.1.1"
+					ideology = leninism
+					traits = {
+						#
+					}
+				}
+			}
+			
+			if = {
+				limit = {
+					has_completed_focus = TOH_farmers
+				}
+				hidden_effect = {
+					kill_country_leader = yes
+				}
+				create_country_leader = {
+					name = "Inejiro Asanuma"
+					desc = ""
+					picture = "gfx/leaders/Asia/Portrait_Asia_Generic_warlord1.dds"
+					expire = "1965.1.1"
+					ideology = soviet_union
+					traits = {
+						#
+					}
+				}
+			}
+			
+			swap_ideas = { 
+				remove_idea = TOH_communist_infighting3
+				add_idea = TOH_communist_crushed
+			}
 		}
 	}	
 	
@@ -1266,7 +1716,10 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			swap_ideas = { 
+				remove_idea = TOH_communist_infighting3
+				add_idea = TOH_communist_issue_resolved
+			}
 		}
 	}
 	
@@ -1289,13 +1742,13 @@
 		x = 4
 		y = 9
 
-		cost = 10
+		cost = 1
 		ai_will_do = {
 			factor = 2.5
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			add_political_power = 45
 		}
 	}
 	
@@ -1990,7 +2443,24 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+		
+				add_popularity = {
+					ideology = democratic_socialism
+					popularity = 0.15
+				}
+				set_politics = { ruling_party = democratic_socialism elections_allowed = no }
+					
+				create_country_leader = {
+					name = "Inejiro Asanuma"
+					desc = ""
+					picture = "gfx/leaders/Asia/Portrait_Asia_Generic_warlord1.dds"
+					expire = "1965.1.1"
+					ideology = dssubtype
+					traits = {
+						#
+					}
+				}
+
 		}
 	}
 	
@@ -3224,7 +3694,11 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			swap_ideas = {
+				add_idea = TOH_reafirm_global_rev2
+				remove_idea = TOH_reafirm_global_rev
+			}
+			
 		}
 	}
 	
