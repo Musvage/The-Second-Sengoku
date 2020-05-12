@@ -830,6 +830,7 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
+			#set_country_flag = TOH_small_purges_flag
 			add_timed_idea = {
 				idea = TOH_officers_purged
 				days = 140
@@ -1113,6 +1114,11 @@
 		
 		available = {
 			has_completed_focus = TOH_one_party_rule
+
+		OR = {
+			has_country_flag = TOH_trotsky_back
+			has_completed_focus = TOH_small_purges
+			}
 		}
 		
 		bypass = {
@@ -1131,6 +1137,8 @@
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
 			add_ideas = TOH_soviet_advisors_bonus
+			
+			
 		}
 	}
 	
@@ -1497,6 +1505,7 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
+			set_country_flag = TOH_trotsky_back
 			add_ideas = TOH_soviet_backing
 			custom_effect_tooltip = remove_political_advisor
 			show_ideas_tooltip = TOH_trotsky_advisor
@@ -1784,9 +1793,9 @@
 		ai_will_do = {
 			factor = 2.5
 		}	
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_RESEARCH }
 		completion_reward = {
-			add_political_power = 100
+			add_ideas = TOH_research_institution
 		}
 	}
 	
@@ -1813,9 +1822,9 @@
 		ai_will_do = {
 			factor = 2.5
 		}	
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_RESEARCH }
 		completion_reward = {
-			add_political_power = 100
+			add_research_slot = 1
 		}
 	}
 	
@@ -1842,9 +1851,14 @@
 		ai_will_do = {
 			factor = 2.5
 		}	
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_RESEARCH }
 		completion_reward = {
-			add_political_power = 100
+			add_tech_bonus = {
+				name = secret_bonus
+				bonus = 0.7
+				uses = 2
+				category = electronics
+			}
 		}
 	}
 	
@@ -1871,9 +1885,26 @@
 		ai_will_do = {
 			factor = 2.5
 		}	
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_RESEARCH }
 		completion_reward = {
-			add_political_power = 100
+			if = {
+				limit = {
+					NOT = { has_dlc = "La Resistance" }
+				}
+				add_tech_bonus = {
+					name = codebreaking_bonus
+					bonus = 1.0
+					uses = 2
+					category = decryption_tech
+					category = computing_tech
+				}
+			}
+			else = {
+				hidden_effect = {
+					set_technology = { lar_decryption_bonus_tech = 1 }
+				}
+				custom_effect_tooltip = lar_decryption_bonus_tt
+			}
 		}
 	}
 	
@@ -1883,6 +1914,12 @@
 		icon = GFX_focus_research
 		prerequisite = { focus = TOH_tohoku_computing_works }
 		prerequisite = { focus = TOH_tohoku_cryptology_department }
+		
+		available = {
+			num_of_factories > 50
+		}
+		cancel_if_invalid = no
+		continue_if_invalid = yes
 		
 		relative_position_id = TOH_problems_within_tohoku
 		
@@ -1902,9 +1939,9 @@
 		ai_will_do = {
 			factor = 2.5
 		}	
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_RESEARCH }
 		completion_reward = {
-			add_political_power = 100
+			add_research_slot = 1
 		}
 	}
 	
@@ -1977,7 +2014,10 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			swap_ideas = {
+				add_idea = TOH_clans2
+				remove_idea = TOH_clans
+			}
 		}
 	}
 	
@@ -2008,7 +2048,55 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			remove_ideas = TOH_clans
+					
+			release = NAN
+			release = MOG
+			release = DAT
+			release = ASH
+			
+		if = {
+			limit = {
+				country_exists = NAN
+			}
+			declare_war_on = {
+				target = NAN
+				type = annex_everything
+			}
+		}
+		
+		if = {
+			limit = {
+				country_exists = MOG
+			}
+			declare_war_on = {
+				target = MOG
+				type = annex_everything
+			}
+		}
+		
+		if = {
+			limit = {
+				country_exists = DAT
+			}
+			declare_war_on = {
+				target = DAT
+				type = annex_everything
+			}
+		}
+		
+		if = {
+			limit = {
+				country_exists = ASH
+			}
+			declare_war_on = {
+				target = ASH
+				type = annex_everything
+			}
+		}
+		
+
+		
 		}
 	}
 	
@@ -2037,7 +2125,46 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			division_template = {
+						name = "Clansmen"
+						priority = 2
+						is_locked = yes
+						#division_names_group = ROM_INF_01
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+				
+		    	   		 	infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+						}
+						support = {
+
+						}
+					}
+
+				
+				random_owned_controlled_state = {
+					limit = { ROOT = { has_full_control_of_state = PREV } }
+					prioritize = { 113 }
+					create_unit = {
+						division = "name = \"1st Mogami Brigade\" division_template = \"Clansmen\" start_experience_factor = 0.5" 
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"2nd Date Brigade\" division_template = \"Clansmen\" start_experience_factor = 0.5" 
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"3rd Ashina Brigade\" division_template = \"Clansmen\" start_experience_factor = 0.5" 
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"1st Nanbu Brigade\" division_template = \"Clansmen\" start_experience_factor = 0.5" 
+						owner = ROOT
+					}
+				}
 		}
 	}
 	
@@ -2051,6 +2178,8 @@
 		relative_position_id = TOH_address_clans
 		
 		available = {
+			is_subject = no 
+			has_war = no
 		}
 		
 		bypass = {
@@ -2068,7 +2197,66 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			swap_ideas = {
+				add_idea = TOH_expansion_economy
+				remove_idea = civilian_economy 
+			}
+			
+			release = NAN
+			release = MOG
+			release = DAT
+			release = ASH
+			
+			is_subject = no
+			
+			if = {
+					limit = {
+						NAN = { is_subject = no }
+					}
+					TOH = {
+						set_autonomy = {
+							target = NAN
+							autonomous_state = autonomy_integrated_puppet
+							freedom_level = 0.2
+						}
+					}
+				}
+			if = {
+					limit = {
+						MOG = { is_subject = no }
+					}
+					TOH = {
+						set_autonomy = {
+							target = MOG
+							autonomous_state = autonomy_integrated_puppet
+							freedom_level = 0.2
+						}
+					}
+				}
+			if = {
+					limit = {
+						DAT = { is_subject = no }
+					}
+					TOH = {
+						set_autonomy = {
+							target = DAT
+							autonomous_state = autonomy_integrated_puppet
+							freedom_level = 0.2
+						}
+					}
+				}
+			if = {
+					limit = {
+						ASH = { is_subject = no }
+					}
+					TOH = {
+						set_autonomy = {
+							target = ASH
+							autonomous_state = autonomy_integrated_puppet
+							freedom_level = 0.2
+						}
+					}
+				}
 		}
 	}
 	
@@ -2097,7 +2285,52 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+				
+				if = {
+					limit = {
+						NAN = { is_puppet_of = TOH }
+					}
+					TOH = {
+						set_autonomy = {
+							target = NAN
+							autonomous_state = autonomy_free
+							freedom_level = 0.2
+						}
+					}
+				}
+				
+				if = {
+					limit = {
+						MOG = { is_puppet_of = TOH }
+					}
+					set_autonomy = {
+						target = MOG
+						autonomous_state = autonomy_free
+						freedom_level = 0.2
+					}
+				}
+				
+				if = {
+					limit = {
+						DAT = { is_puppet_of = TOH }
+					}
+					set_autonomy = {
+						target = DAT
+						autonomous_state = autonomy_free
+						freedom_level = 0.2
+					}
+				}
+				
+				if = {
+					limit = {
+						ASH = { is_puppet_of = TOH }
+					}
+					set_autonomy = {
+						target = ASH
+						autonomous_state = autonomy_free
+						freedom_level = 0.2
+					}
+				}
 		}
 	}
 	
@@ -2109,6 +2342,7 @@
 		relative_position_id = TOH_address_clans
 		
 		available = {
+			NOT = { has_war = yes }
 		}
 		
 		bypass = {
@@ -2126,7 +2360,100 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			76 = {
+				if = {
+					limit = {
+						is_controlled_by = TOH
+					}
+					TOH = {
+						add_state_core = 76
+					}
+					NAN = {
+						remove_state_core = 76
+					}
+				}
+			}
+			78 = {
+				if = {
+					limit = {
+						is_controlled_by = ROOT 
+					}
+					TOH = {
+						add_state_core = 78
+					}
+					NAN = {
+						remove_state_core = 78
+					}
+				}
+			}
+			7 = {
+				if = {
+					limit = {
+						is_controlled_by = ROOT 
+					}
+					TOH = {
+						add_state_core = 7
+					}
+					NAN = {
+						remove_state_core = 7
+					}
+				}
+			}
+			
+			104 = {
+				if = {
+					limit = {
+						is_controlled_by = ROOT 
+					}
+					TOH = {
+						add_state_core = 104
+					}
+					MOG = {
+						remove_state_core = 104
+					}
+				}
+			}
+			
+			113 = {
+				if = {
+					limit = {
+						is_controlled_by = ROOT 
+					}
+					TOH = {
+						add_state_core = 113
+					}
+					DAT = {
+						remove_state_core = 113
+					}
+				}
+			}
+			
+			130 = {
+				if = {
+					limit = {
+						is_controlled_by = ROOT 
+					}
+					TOH = {
+						add_state_core = 130
+					}
+					ASH = {
+						remove_state_core = 130
+					}
+				}
+			}
+			131 = {
+				if = {
+					limit = {
+						is_controlled_by = ROOT 
+					}
+					TOH = {
+						add_state_core = 131
+					}
+					ASH = {
+						remove_state_core = 131
+					}
+				}
+			}
 		}
 	}
 	
@@ -2179,7 +2506,7 @@
 		
 		available = {
 		}
-		
+	
 		bypass = {
 		}
 		
@@ -2195,7 +2522,54 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+		
+		if = {	
+			limit = {
+				has_idea = civilian_economy
+			}
+			swap_ideas = {
+				add_idea = TOH_planned_economy
+				remove_idea = civilian_economy 
+			}
+		}
+		if = {	
+			limit = {
+				has_idea = low_economic_mobilisation
+			}
+			swap_ideas = {
+				add_idea = TOH_planned_economy
+				remove_idea = low_economic_mobilisation
+			}
+		}
+		if = {	
+			limit = {
+				has_idea = partial_economic_mobilisation
+			}
+			swap_ideas = {
+				add_idea = TOH_planned_economy
+				remove_idea = partial_economic_mobilisation
+			}
+		}
+		if = {	
+			limit = {
+				has_idea = war_economy
+			}
+			swap_ideas = {
+				add_idea = TOH_planned_economy
+				remove_idea = war_economy
+			}
+		}
+		if = {	
+			limit = {
+				has_idea = tot_economic_mobilisation
+			}
+			swap_ideas = {
+				add_idea = TOH_planned_economy
+				remove_idea = tot_economic_mobilisation
+			}
+		}
+		
+		
 		}
 	}
 	
@@ -2224,7 +2598,10 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			swap_ideas = {
+				add_idea = TOH_soviet_industrial_aid2
+				remove_idea = TOH_soviet_industrial_aid
+			}
 		}
 	}
 	
@@ -2251,9 +2628,20 @@
 		ai_will_do = {
 			factor = 2.5
 		}	
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_RESEARCH }
 		completion_reward = {
-			add_political_power = 100
+			if = {
+				limit = { 
+					NOT = { has_tech = basic_medium_tank } 
+				}
+				set_technology = { basic_medium_tank = 1 }
+			}
+			add_tech_bonus = {
+				name = industrial_bonus
+				bonus = 1.0
+				uses = 1
+				category = industry
+			}
 		}
 	}
 	
@@ -2282,7 +2670,21 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			remove_ideas = TOH_generic_advisor_spy
+			remove_ideas = TOH_fukumoto_kazuo
+			remove_ideas = TOH_hajime_oyama
+			remove_ideas = TOH_generic_advisor1
+			remove_ideas = TOH_generic_advisor2
+			remove_ideas = generic_democratic_reformer
+			remove_ideas = generic_communist_revolutionary
+			remove_ideas = generic_fascist_demagogue
+		
+		
+		
+		
+			add_ideas = TOH_soviet_advisor_gov
+			add_ideas = TOH_soviet_advisor_gov2
+			add_ideas = TOH_soviet_advisor_gov3
 		}
 	}
 	
@@ -2311,7 +2713,10 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			add_ideas = TOH_soviet_sat
+			set_rule = { 
+				can_only_justify_war_on_threat_country = yes 
+			}
 		}
 	}
 	
@@ -2341,7 +2746,101 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			121 = {
+				#custom_effect_tooltip = SOV_defense_of_moscow_forts
+				#hidden_effect = {
+					add_building_construction = {
+						type = bunker
+						level = 2
+						province = 280
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = bunker
+						level = 2
+						province = 3427
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = bunker
+						level = 2
+						province = 374
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = bunker
+						level = 2
+						province = 3364
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = bunker
+						level = 2
+						province = 515
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = bunker
+						level = 2
+						province = 295
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = bunker
+						level = 2
+						province = 3225
+						instant_build = yes
+					}
+				#}
+			}
+			
+			130 = {
+				#custom_effect_tooltip = SOV_defense_of_moscow_forts
+				#hidden_effect = {
+					add_building_construction = {
+						type = bunker
+						level = 2
+						province = 671
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = bunker
+						level = 2
+						province = 3126
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = bunker
+						level = 2
+						province = 130
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = bunker
+						level = 2
+						province = 99
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = bunker
+						level = 2
+						province = 641
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = bunker
+						level = 2
+						province = 1181
+						instant_build = yes
+					}
+					add_building_construction = {
+						type = bunker
+						level = 2
+						province = 2860
+						instant_build = yes
+					}
+				#}
+			}
 		}
 	}
 	
@@ -2357,6 +2856,7 @@
 		}
 		
 		bypass = {
+			has_war_with = PRO
 		}
 		
 		cancel = {
@@ -2371,7 +2871,15 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+		if = {
+			limit = {
+				country_exists = PRO
+			}
+			create_wargoal = {
+				type = annex_everything
+				target = PRO
+			}
+		}
 		}
 	}
 	
@@ -2400,7 +2908,92 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+		
+		every_other_country = {
+			limit = {
+				NOT = { tag = TOH }
+			}
+			declare_war_on = {
+				target = ROOT
+				type = annex_everything
+			}
+		}
+		
+		
+			division_template = {
+						name = "Soviet Expeditionary"
+						priority = 2
+						is_locked = yes
+						#division_names_group = ROM_INF_01
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 0 y = 3 }
+							infantry = { x = 0 y = 4 }
+				
+		    	   		 	infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+							infantry = { x = 1 y = 3 }
+							infantry = { x = 1 y = 4 }
+							
+							#infantry = { x = 3 y = 0 }
+							#infantry = { x = 3 y = 1 }
+							#infantry = { x = 3 y = 2 }
+							#infantry = { x = 3 y = 3 }
+						}
+						support = {
+
+						}
+					}
+
+				
+				random_owned_controlled_state = {
+					limit = { ROOT = { has_full_control_of_state = PREV } }
+					prioritize = { 113 }
+					create_unit = {
+						division = "name = \"1st Soviet Expedition\" division_template = \"Soviet Expeditionary\" start_experience_factor = 0.5" 
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"2nd Soviet Expedition\" division_template = \"Soviet Expeditionary\" start_experience_factor = 0.5" 
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"3rd Soviet Expedition\" division_template = \"Soviet Expeditionary\" start_experience_factor = 0.5" 
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"4th Soviet Expedition\" division_template = \"Soviet Expeditionary\" start_experience_factor = 0.5" 
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"5th Soviet Expedition\" division_template = \"Soviet Expeditionary\" start_experience_factor = 0.5" 
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"6th Soviet Expedition\" division_template = \"Soviet Expeditionary\" start_experience_factor = 0.5" 
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"7th Soviet Expedition\" division_template = \"Soviet Expeditionary\" start_experience_factor = 0.5" 
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"8th Soviet Expedition\" division_template = \"Soviet Expeditionary\" start_experience_factor = 0.5" 
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"9th Soviet Expedition\" division_template = \"Soviet Expeditionary\" start_experience_factor = 0.5" 
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"10th Soviet Expedition\" division_template = \"Soviet Expeditionary\" start_experience_factor = 0.5" 
+						owner = ROOT
+					}
+				}
+			
 		}
 	}
 	
@@ -2823,7 +3416,7 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			add_ideas = TOH_national_army
 		}
 	}
 	
@@ -2853,7 +3446,7 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			add_ideas = TOH_militia
 		}
 	}
 	
@@ -2883,7 +3476,13 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			army_experience = 5
+			add_tech_bonus = {
+				name = armor_bonus
+				bonus = 1.5
+				uses = 1
+				category = armor
+			}
 		}
 	}
 	
@@ -2913,7 +3512,13 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			army_experience = 5
+			add_tech_bonus = {
+				name = infantry_artillery_bonus
+				bonus = 1.5
+				uses = 1
+				category = infantry_weapons
+			}
 		}
 	}
 	
@@ -2943,7 +3548,13 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			army_experience = 5
+			add_tech_bonus = {
+				name = land_doc_bonus
+				bonus = 1.5
+				uses = 1
+				category = land_doctrine
+			}
 		}
 	}
 	
@@ -2974,7 +3585,13 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			army_experience = 5
+			add_tech_bonus = {
+				name = infantry_artillery_bonus
+				bonus = 1.5
+				uses = 1
+				category = artillery
+			}
 		}
 	}
 	
@@ -3005,7 +3622,13 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			army_experience = 5
+			add_tech_bonus = {
+				name = armor_bonus
+				ahead_reduction = 2
+				uses = 1
+				category = armor
+			}
 		}
 	}
 	
@@ -3036,7 +3659,13 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			army_experience = 5
+			add_tech_bonus = {
+				name = land_doc_bonus
+				bonus = 1.5
+				uses = 2
+				category = land_doctrine
+			}
 		}
 	}
 	
@@ -3066,7 +3695,13 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			air_experience = 25
+			add_tech_bonus = {
+				name =  air_doc_bonus
+				bonus = 1.0
+				uses = 2
+				category = air_doctrine
+			}
 		}
 	}
 	
@@ -3097,7 +3732,12 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			add_tech_bonus = {
+				name = fighter_bonus
+				bonus = 1.5
+				uses = 1
+				category = light_fighter
+			}
 		}
 	}
 	
@@ -3128,7 +3768,13 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			add_tech_bonus = {
+				name = bomber_bonus
+				bonus = 1.5
+				uses = 1
+				category = tactical_bomber
+				category = cas_bomber
+			}
 		}
 	}
 	
@@ -3158,7 +3804,7 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			add_ideas = TOH_fighter_production
 		}
 	}
 	
@@ -3196,9 +3842,15 @@
 		ai_will_do = {
 			factor = 2.5
 		}	
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_RESEARCH }
 		completion_reward = {
-			add_political_power = 100
+		navy_experience = 25
+			add_tech_bonus = {
+				name = fleet_in_being_bonus
+				bonus = 1.0
+				uses = 2
+				category = naval_doctrine
+			}
 		}
 	}
 	
@@ -3225,11 +3877,18 @@
 		cost = 10
 		ai_will_do = {
 			factor = 2.5
-		}	
-		search_filters = { FOCUS_FILTER_POLITICAL }
-		completion_reward = {
-			add_political_power = 100
 		}
+
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		completion_reward = {
+		navy_experience = 25
+			add_tech_bonus = {
+				name = fleet_in_being_bonus
+				bonus = 1.0
+				uses = 2
+				category = naval_doctrine
+			}
+		}		
 	}
 	
 	focus = {
@@ -3256,9 +3915,14 @@
 		ai_will_do = {
 			factor = 2.5
 		}	
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_RESEARCH }
 		completion_reward = {
-			add_political_power = 100
+			add_tech_bonus = {
+				name = dd_tech
+				bonus = 1.5
+				uses = 1
+				category = dd_tech
+			}
 		}
 	}
 	
@@ -3286,9 +3950,14 @@
 		ai_will_do = {
 			factor = 2.5
 		}	
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_RESEARCH }
 		completion_reward = {
-			add_political_power = 100
+			add_tech_bonus = {
+				name = ss_tech
+				bonus = 1.5
+				uses = 1
+				category = ss_tech
+			}
 		}
 	}
 	
@@ -3317,13 +3986,19 @@
 		ai_will_do = {
 			factor = 2.5
 		}	
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_RESEARCH }
 		completion_reward = {
-			add_political_power = 100
+			add_tech_bonus = {
+				name = capital_ships_bonus
+				bonus = 1.5
+				uses = 1
+				category = bc_tech
+				category = bb_tech
+			}
 		}
 	}
 	
-		focus = {
+	focus = {
 		id = TOH_dockyard_effort
 		icon = GFX_goal_generic_construct_naval_dockyard
 		prerequisite = { focus = TOH_old_habbits_die_hard }
@@ -3347,9 +4022,103 @@
 		ai_will_do = {
 			factor = 2.5
 		}	
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_INDUSTRY }
 		completion_reward = {
-			add_political_power = 100
+			navy_experience = 25
+			if = {
+				limit = {
+					NOT = {
+						any_owned_state = {
+							dockyard > 0
+							free_building_slots = {
+								building = dockyard
+								size > 2
+								include_locked = yes
+							}
+						}
+					}
+					any_owned_state = {
+						is_coastal = yes
+					}
+				}
+				random_owned_controlled_state = {
+					limit = {
+						is_coastal = yes
+						free_building_slots = {
+							building = dockyard
+							size > 2
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = dockyard
+						level = 2
+						instant_build = yes
+					}
+				}
+				set_country_flag = naval_effort_built
+			}
+			if = {
+				limit = {
+					NOT = { has_country_flag = naval_effort_built }
+					any_owned_state = {
+						dockyard > 0
+						free_building_slots = {
+							building = dockyard
+							size > 2
+							include_locked = yes
+						}
+					}
+				}
+				random_owned_controlled_state = {
+					limit = {
+						dockyard > 0
+						free_building_slots = {
+							building = dockyard
+							size > 2
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = dockyard
+						level = 2
+						instant_build = yes
+					}
+				}
+				set_country_flag = naval_effort_built
+			}
+			if = {
+				limit = {
+					NOT = { has_country_flag = naval_effort_built }
+					NOT = {
+						any_owned_state = {
+							free_building_slots = {
+								building = dockyard
+								size > 2
+								include_locked = yes
+							}
+						}
+					}
+				}
+				random_state = {
+					limit = {
+						controller = { tag = ROOT }
+						free_building_slots = {
+							building = dockyard
+							size > 2
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = dockyard
+						level = 2
+						instant_build = yes
+					}
+				}
+			}	
 		}
 	}
 	
@@ -3378,9 +4147,103 @@
 		ai_will_do = {
 			factor = 2.5
 		}	
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_INDUSTRY }
 		completion_reward = {
-			add_political_power = 100
+			navy_experience = 25
+			if = {
+				limit = {
+					NOT = {
+						any_owned_state = {
+							dockyard > 0
+							free_building_slots = {
+								building = dockyard
+								size > 2
+								include_locked = yes
+							}
+						}
+					}
+					any_owned_state = {
+						is_coastal = yes
+					}
+				}
+				random_owned_controlled_state = {
+					limit = {
+						is_coastal = yes
+						free_building_slots = {
+							building = dockyard
+							size > 2
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = dockyard
+						level = 2
+						instant_build = yes
+					}
+				}
+				set_country_flag = naval_effort_built
+			}
+			if = {
+				limit = {
+					NOT = { has_country_flag = naval_effort_built }
+					any_owned_state = {
+						dockyard > 0
+						free_building_slots = {
+							building = dockyard
+							size > 2
+							include_locked = yes
+						}
+					}
+				}
+				random_owned_controlled_state = {
+					limit = {
+						dockyard > 0
+						free_building_slots = {
+							building = dockyard
+							size > 2
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = dockyard
+						level = 2
+						instant_build = yes
+					}
+				}
+				set_country_flag = naval_effort_built
+			}
+			if = {
+				limit = {
+					NOT = { has_country_flag = naval_effort_built }
+					NOT = {
+						any_owned_state = {
+							free_building_slots = {
+								building = dockyard
+								size > 2
+								include_locked = yes
+							}
+						}
+					}
+				}
+				random_state = {
+					limit = {
+						controller = { tag = ROOT }
+						free_building_slots = {
+							building = dockyard
+							size > 2
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = dockyard
+						level = 2
+						instant_build = yes
+					}
+				}
+			}	
 		}
 	}
 	
@@ -3409,9 +4272,14 @@
 		ai_will_do = {
 			factor = 2.5
 		}	
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_RESEARCH }
 		completion_reward = {
-			add_political_power = 100
+			add_tech_bonus = {
+				name = capital_ships_bonus
+				bonus = 1.5
+				uses = 1
+				category = cv_tech
+			}
 		}
 	}
 	
@@ -3445,17 +4313,64 @@
 
 		x = 7
 		y = 1
-
+		
 		cost = 10
 		ai_will_do = {
 			factor = 2.5
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+		
+		if = {	
+			limit = {
+				has_idea = civilian_economy
+			}
+			swap_ideas = {
+				add_idea = TOH_expansion_economy
+				remove_idea = civilian_economy 
+			}
+		}
+		if = {	
+			limit = {
+				has_idea = low_economic_mobilisation
+			}
+			swap_ideas = {
+				add_idea = TOH_expansion_economy
+				remove_idea = low_economic_mobilisation
+			}
+		}
+		if = {	
+			limit = {
+				has_idea = partial_economic_mobilisation
+			}
+			swap_ideas = {
+				add_idea = TOH_expansion_economy
+				remove_idea = partial_economic_mobilisation
+			}
+		}
+		if = {	
+			limit = {
+				has_idea = war_economy
+			}
+			swap_ideas = {
+				add_idea = TOH_expansion_economy
+				remove_idea = war_economy
+			}
+		}
+		if = {	
+			limit = {
+				has_idea = tot_economic_mobilisation
+			}
+			swap_ideas = {
+				add_idea = TOH_expansion_economy
+				remove_idea = tot_economic_mobilisation
+			}
+		}
+		
+		
 		}
 	}
-		
+	
 	focus = {
 		id = TOH_pan_japanese_inf_project
 		icon = GFX_goal_generic_construct_infrastructure
@@ -3482,7 +4397,8 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			unlock_decision_category_tooltip = TOH_expansion_economy_decisions
+			unlock_decision_tooltip = TOH_infra_dev
 		}
 	}
 	
@@ -3513,7 +4429,7 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			unlock_decision_tooltip = TOH_civ_dev
 		}
 	}
 	
@@ -3543,7 +4459,7 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			unlock_decision_tooltip = TOH_mil_dev
 		}
 	}
 	
@@ -3573,7 +4489,7 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			add_ideas = TOH_trotsky_army
 		}
 	}
 	
@@ -3603,7 +4519,10 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			swap_ideas = {
+				add_idea = TOH_trotsky_army2
+				remove_idea = TOH_trotsky_army
+			}
 		}
 	}
 	
@@ -3633,7 +4552,18 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			add_tech_bonus = {
+					name = infantry_artillery_bonus
+					bonus = 2
+					uses = 1
+					category = artillery
+				}
+			add_tech_bonus = {
+					name = infantry_artillery_bonus
+					bonus = 1.5
+					uses = 2
+					category = infantry_weapons
+				}	
 		}
 	}
 	
@@ -3664,7 +4594,17 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			swap_ideas = {
+				add_idea = TOH_trotsky_army3
+				remove_idea = TOH_trotsky_army2
+			}
+
+			add_tech_bonus = {
+				name = land_doc_bonus
+				bonus = 1.0
+				uses = 1
+				category = land_doctrine
+			}
 		}
 	}
 	
@@ -3728,7 +4668,33 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+		if = {
+			limit = {
+				country_exists = PRO
+			}
+			create_wargoal = {
+				type = annex_everything
+				target = PRO
+			}
+		}
+		if = {
+			limit = {
+				country_exists = SHO
+			}
+			create_wargoal = {
+				type = annex_everything
+				target = SHO
+			}
+		}
+		if = {
+			limit = {
+				country_exists = KAN
+			}
+			create_wargoal = {
+				type = annex_everything
+				target = KAN
+			}
+		}
 		}
 	}
 	
