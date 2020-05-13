@@ -7,21 +7,510 @@ focus_tree = {
 			tag = KOB
 		}
 	}
-	#MAIN
+	
+	continuous_focus_position = { x = 20 y = 1700 }
+	
+###############################################################
+# COUNCIL OF OFFICERS
+###############################################################
+
 	focus = {
-		id = KOB_temporary
-		icon = GFX_focus_KOB_temporary
-		x = 20
+		id = KOB_council_of_officers
+		icon = GFX_focus_RAJ_lions_of_the_great_war
+		x = 7
 		y = 0
-		cost = 8
+		cost = 5
 		available = {
 		}
 		ai_will_do = {
 			factor = 10
 		}	
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus KOB_temporary"
+		army_experience = 5
+			add_tech_bonus = {
+				name = land_doc_bonus
+				bonus = 1.0
+				uses = 1
+				category = land_doctrine
+			}
 		}
 	}
+	
+	focus = {
+		id = KOB_reinforce_the_legion_etrangere
+		icon = GFX_focus_sho_french_military
+		prerequisite = { focus = KOB_council_of_officers }
+		relative_position_id = KOB_council_of_officers
+		x = -2
+		y = 1
+		cost = 10
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_equipment_to_stockpile = {
+			type = infantry_equipment
+			amount = 750
+			producer = FRA 
+		}
+		set_rule = { can_send_volunteers = yes }
+		}
+	}
+	
+	focus = {
+		id = KOB_our_defences
+		icon = GFX_goal_generic_army_artillery
+		prerequisite = { focus = KOB_reinforce_the_legion_etrangere }
+		relative_position_id = KOB_reinforce_the_legion_etrangere
+		x = -1
+		y = 1
+		cost = 10
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_tech_bonus = {
+				name = infantry_artillery_bonus
+				ahead_reduction = 2
+				uses = 1
+				category = infantry_weapons
+				category = artillery
+			}
+			add_tech_bonus = {
+				bonus = 1.0
+				uses = 1
+				category = infantry_weapons
+			}
+		}
+	}
+	
+		focus = {
+		id = KOB_national_movement
+		icon = GFX_goal_generic_national_unity
+		prerequisite = { focus = KOB_reinforce_the_legion_etrangere }
+		relative_position_id = KOB_reinforce_the_legion_etrangere
+		x = 0
+		y = 2
+		cost = 10
+		available = {
+		has_war_support > 0.6
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_ideas = extensive_conscription
+		}
+	}
+	
+	focus = {
+		id = KOB_division_aerinne
+		icon = GFX_goal_generic_air_doctrine
+		prerequisite = { focus = KOB_reinforce_the_legion_etrangere }
+		relative_position_id = KOB_reinforce_the_legion_etrangere
+		x = 1
+		y = 1
+		cost = 10
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_equipment_to_stockpile = {
+			type = CAS_equipment
+			amount = 50
+			producer = FRA 
+		}
+		add_equipment_to_stockpile = {
+			type = fighter_equipment
+			amount = 100
+			producer = FRA 
+		}
+		}
+	}
+	
+	focus = {
+		id = KOB_prepared_for_battle
+		icon = GFX_focus_attack_france
+		prerequisite = { focus = KOB_national_movement }
+		relative_position_id = KOB_national_movement
+		x = 0
+		y = 3
+		cost = 10
+		available = {
+		has_war_support > 0.75
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_ideas = war_economy
+		}
+	}
+	
+	focus = {
+		id = KOB_protect_our_shores
+		icon = GFX_goal_generic_navy_cruiser
+		prerequisite = { focus = KOB_reinforce_the_legion_etrangere }
+		relative_position_id = KOB_reinforce_the_legion_etrangere
+		x = -2
+		y = 2
+		cost = 10
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_tech_bonus = {
+				name = FRA_improved_screen_ships
+				bonus = 2.0
+				uses = 1
+				category = cl_tech
+			}
+			add_tech_bonus = {
+				name = FRA_surface_combat
+				bonus = 2.0
+				uses = 1
+				category = dd_tech
+			}
+		}
+		
+	}
+	
+	focus = {
+		id = KOB_academie_navale
+		icon = GFX_goal_generic_navy_doctrines_tactics
+		prerequisite = { focus = KOB_protect_our_shores }
+		relative_position_id = KOB_protect_our_shores
+		x = -1
+		y = 1
+		cost = 10
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_ideas = FRA_the_young_school
+		add_tech_bonus = {
+				name = POL_the_twin_threats
+				bonus = 1.0
+				uses = 1
+				category = naval_doctrine
+			}
+		}
+		
+	}
+	
+	focus = {
+		id = KOB_the_hyogo_port
+		icon = GFX_goal_generic_construct_naval_dockyard
+		prerequisite = { focus = KOB_protect_our_shores }
+		relative_position_id = KOB_protect_our_shores
+		x = 1
+		y = 1
+		cost = 10
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		navy_experience = 25
+		random_owned_controlled_state = {
+					limit = {
+						is_coastal = yes
+						free_building_slots = {
+							building = dockyard
+							size > 2
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = dockyard
+						level = 2
+						instant_build = yes
+					}
+				}	
+		}
+		
+	}
+	
+	focus = {
+		id = KOB_invite_nishimura
+		icon = GFX_goal_generic_improve_relations
+		prerequisite = { focus = KOB_council_of_officers }
+		relative_position_id = KOB_council_of_officers
+		x = 2
+		y = 1
+		cost = 10
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+	add_tech_bonus = {
+				name = industrial_bonus
+				bonus = 1.0
+				uses = 1
+				category = industry
+			}
+		}
+	}
+	
+	focus = {
+		id = KOB_new_liberalism
+		icon = GFX_goal_generic_consumer_goods
+		prerequisite = { focus = KOB_invite_nishimura }
+		relative_position_id = KOB_invite_nishimura
+		x = 0
+		y = 1
+		cost = 10
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+	add_political_power = 100
+	add_ideas = liberty_ethos_focus
+		}
+	}
+	
+	focus = {
+		id = KOB_fortress_kobe
+		icon = GFX_goal_generic_fortify_city
+		prerequisite = { focus = KOB_new_liberalism }
+		relative_position_id = KOB_new_liberalism
+		x = 1
+		y = 1
+		cost = 10
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+	27 = {
+				if = {
+					limit = { is_controlled_by = ROOT }
+					add_building_construction = {
+						type = bunker
+						level = 5
+						province = 580
+						instant_build = yes
+					}
+				}
+		    }
+		}
+	}
+	
+	focus = {
+		id = KOB_construction_advances
+		icon = GFX_focus_generic_industry_3
+		prerequisite = { focus = KOB_new_liberalism }
+		relative_position_id = KOB_new_liberalism
+		x = -1
+		y = 1
+		cost = 10
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+	add_ideas = KOB_construction_advances
+		}
+	}
+	
+	focus = {
+		id = KOB_kobe_arsenal
+		icon = GFX_goal_generic_construct_mil_factory
+		prerequisite = { focus = KOB_division_aerinne }
+		relative_position_id = KOB_construction_advances
+		x = -2
+		y = 1
+		cost = 10
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+	random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = arms_factory
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = arms_factory
+					level = 2
+					instant_build = yes
+				}
+			}	
+		}
+	}
+	
+	focus = {
+		id = KOB_connected_kobe
+		icon = GFX_goal_generic_construct_infrastructure
+		prerequisite = { focus = KOB_construction_advances }
+		relative_position_id = KOB_construction_advances
+		x = 0
+		y = 1
+		cost = 10
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = infrastructure
+						size > 0
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = infrastructure
+										size > 0
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_building_construction = {
+					type = infrastructure
+					level = 2
+					instant_build = yes
+				}
+			}
+		add_ideas = CHI_public_works
+		}
+	}
+	
+	focus = {
+		id = KOB_model_city
+		icon = GFX_goal_generic_trade
+		prerequisite = { focus = KOB_connected_kobe }
+        prerequisite = { focus = KOB_kobe_arsenal }
+		relative_position_id = KOB_construction_advances
+		x = -1
+		y = 2
+		cost = 10
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_tech_bonus = {
+				name = secret_bonus
+				bonus = 1.0
+				uses = 4
+				category = electronics
+				category = nuclear
+				category = rocketry
+			}
+		}
+	}
+	
+	focus = {
+		id = KOB_bunka_kaguin_school
+		icon = GFX_focus_research
+		prerequisite = { focus = KOB_model_city }
+		relative_position_id = KOB_connected_kobe
+		x = -1
+		y = 2
+		cost = 10
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_research_slot = 1
+		}
+	}
+
+###############################################################
+# VICHY OR FREE FRANCE
+###############################################################
+
+focus = {
+		id = KOB_marechal_nous_voila
+		icon = GFX_goal_generic_propaganda
+		prerequisite = { focus = KOB_prepared_for_battle }
+		relative_position_id = KOB_prepared_for_battle
+		x = -2
+		y = 1
+		cost = 10
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_political_power = 100
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	shared_focus = SS_colonial_board
 }
