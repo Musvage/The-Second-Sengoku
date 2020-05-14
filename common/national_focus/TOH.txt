@@ -4982,7 +4982,7 @@
 	
 	focus = {
 		id = TOH_conscription_for_expansion
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_goal_tfv_can_forced_quebec_conscription
 		prerequisite = { focus = TOH_glory_to_tokoku }
 
 		
@@ -5006,14 +5006,14 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			add_ideas = TOH_conscrip_for_expansion
 		}
 	}
 	
 	#attack ezo
 	focus = {
 		id = TOH_operation_indifferent
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_goal_generic_position_armies
 		prerequisite = { focus = TOH_glory_to_tokoku }
 		mutually_exclusive = { focus = TOH_protect_ezo }
 
@@ -5024,6 +5024,7 @@
 		}
 		
 		bypass = {
+			NOT = { country_exists = EZO }
 		}
 		
 		cancel = {
@@ -5038,14 +5039,22 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			if = {
+			limit = {
+				country_exists = EZO
+			}
+			create_wargoal = {
+				type = annex_everything
+				target = EZO
+			}
+		}
 		}
 	}
 	
 	##offer puppet
 	focus = {
 		id = TOH_protect_ezo
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_goal_generic_propaganda
 		prerequisite = { focus = TOH_glory_to_tokoku }
 		mutually_exclusive = { focus = TOH_operation_indifferent }
 
@@ -5053,9 +5062,11 @@
 		relative_position_id = TOH_glory_to_tokoku
 		
 		available = {
+			country_exists = EZO 
 		}
 		
 		bypass = {
+			NOT = { country_exists = EZO }
 		}
 		
 		cancel = {
@@ -5070,7 +5081,7 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			TOH = { country_event = { id = tohoku.11 days = 2 } }
 		}
 	}
 	
@@ -5078,7 +5089,7 @@
 	#faction
 	focus = {
 		id = TOH_japanese_protection_front
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_goal_anschluss
 		prerequisite = { focus = TOH_glory_to_tokoku }
 		#mutually_exclusive = { focus = TOH_monarchy_is_greater_threat }
 
@@ -5103,14 +5114,15 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			set_rule = { can_create_factions = yes }
+			create_faction = "Japanese Protection Front"
 		}
 	}
 	
 	#ally naval junta
 	focus = {
 		id = TOH_monarchy_is_greater_threat
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_rom_abdicate
 		prerequisite = { focus = TOH_japanese_protection_front }
 		prerequisite = { focus = TOH_operation_indifferent focus = TOH_protect_ezo }
 		#mutually_exclusive = { focus = TOH_sado_accords }
@@ -5136,14 +5148,17 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			add_opinion_modifier = { target = SHO modifier = large_decrease }
+			add_opinion_modifier = { target = KAN modifier = large_decrease }
+			SHO = { add_opinion_modifier = { target = TOH modifier = large_decrease } }
+			KAN = { add_opinion_modifier = { target = TOH modifier = large_decrease } }
 		}
 	}
 	
 	#take from shogunate
 	focus = {
 		id = TOH_sado_accords
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_goal_generic_territory_or_war
 		prerequisite = { focus = TOH_monarchy_is_greater_threat }
 		#mutually_exclusive = { focus = TOH_monarchy_is_greater_threat }
 
@@ -5168,14 +5183,14 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			
 		}
 	}
 	
 	#befriend government
 	focus = {
 		id = TOH_befriend_prov
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_goal_generic_major_alliance
 		prerequisite = { focus = TOH_monarchy_is_greater_threat }
 		mutually_exclusive = { focus = TOH_befriend_mil_junta }
 
@@ -5200,14 +5215,15 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			add_opinion_modifier = { target = PRO modifier = huge_increase }
+			PRO = { add_opinion_modifier = { target = TOH modifier = huge_increase } }
 		}
 	}
 	
 	#ally government
 	focus = {
 		id = TOH_ally_prov
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_goal_molotov_ribbentrop_pact
 		prerequisite = { focus = TOH_befriend_prov }
 		mutually_exclusive = { focus = TOH_rightful_gov }
 
@@ -5239,7 +5255,7 @@
 	#claim mantle
 	focus = {
 		id = TOH_rightful_gov
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_goal_tfv_saf_anti_colonialist_crusade
 		prerequisite = { focus = TOH_sado_accords }
 		mutually_exclusive = { focus = TOH_ally_prov }
 
@@ -5271,7 +5287,7 @@
 	#propose dismantle shogun with prov
 	focus = {
 		id = TOH_dismantle_shogun
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_goal_generic_occupy_states_ongoing_war
 		prerequisite = { focus = TOH_sado_accords }
 		prerequisite = { focus = TOH_befriend_prov }
 		#mutually_exclusive = { focus = TOH_sado_accords }
@@ -5305,7 +5321,7 @@
 	#integrate ezo
 	focus = {
 		id = TOH_integrate_ezo
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_goal_generic_propaganda
 		prerequisite = { focus = TOH_operation_indifferent focus = TOH_protect_ezo }
 		#mutually_exclusive = { focus = TOH_sado_accords }
 
@@ -5330,14 +5346,33 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			TOH = {
+					add_state_core = 58
+					add_state_core = 4
+					add_state_core = 51
+					add_state_core = 49
+					add_state_core = 57
+					add_state_core = 72
+					add_state_core = 71
+					add_state_core = 73
+					add_state_core = 77
+					add_state_core = 59
+					add_state_core = 50
+					add_state_core = 9
+					add_state_core = 48
+					add_state_core = 3
+					add_state_core = 54
+					add_state_core = 8
+					add_state_core = 6
+					add_state_core = 5
+				}
 		}
 	}
 	
 	#integrate ezo
 	focus = {
 		id = TOH_european_expulsion
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_generic_support_the_left_right
 		prerequisite = { focus = TOH_integrate_ezo }
 		mutually_exclusive = { focus = TOH_european_cooperation }
 
@@ -5361,14 +5396,68 @@
 			factor = 2.5
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
-		completion_reward = {
-			add_political_power = 100
+		completion_reward = {	
+			
+		if = {
+			limit = {
+				country_exists = AMC
+			}
+			create_wargoal = {
+				type = annex_everything
+				target = AMC
+				}
+			}
+		if = {
+			limit = {
+				country_exists = OSA
+			}
+			create_wargoal = {
+				type = annex_everything
+				target = OSA
+				}
+			}
+		if = {
+			limit = {
+				country_exists = KOB
+			}
+			create_wargoal = {
+				type = annex_everything
+				target = KOB
+				}
+			}
+		if = {
+			limit = {
+				country_exists = HIR
+			}
+			create_wargoal = {
+				type = annex_everything
+				target = HIR
+				}
+			}
+		if = {
+			limit = {
+				country_exists = REI
+			}
+			create_wargoal = {
+				type = annex_everything
+				target = REI
+				}
+			}
+		if = {
+			limit = {
+				country_exists = PRT
+			}
+			create_wargoal = {
+				type = annex_everything
+				target = PRT
+				}
+			}
 		}
 	}
 	
 	focus = {
 		id = TOH_european_cooperation
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_generic_self_management
 		prerequisite = { focus = TOH_integrate_ezo }
 		mutually_exclusive = { focus = TOH_european_expulsion }
 
@@ -5393,13 +5482,48 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+		if = {
+			limit = {
+				country_exists = AMC
+			}
+			AMC = { country_event = { id = tohoku.7 days = 2 } }
+			}
+		if = {
+			limit = {
+				country_exists = OSA
+			}
+			OSA = { country_event = { id = tohoku.7 days = 2 } }
+			}
+		if = {
+			limit = {
+				country_exists = KOB
+			}
+			KOB = { country_event = { id = tohoku.7 days = 2 } }
+			}
+		if = {
+			limit = {
+				country_exists = HIR
+			}
+			HIR = { country_event = { id = tohoku.7 days = 2 } }
+			}
+		if = {
+			limit = {
+				country_exists = REI
+			}
+			REI = { country_event = { id = tohoku.7 days = 2 } }
+			}
+		if = {
+			limit = {
+				country_exists = PRT
+			}
+			PRT = { country_event = { id = tohoku.7 days = 2 } }
+			}
 		}
 	}
 	
 	focus = {
 		id = TOH_mobilise_colonial_units
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_chi_army_reform
 		prerequisite = { focus = TOH_european_cooperation focus = TOH_european_expulsion }
 		#mutually_exclusive = { focus = TOH_european_expulsion }
 
@@ -5424,14 +5548,57 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			division_template = {
+						name = "European Trained Militias"
+						priority = 2
+						is_locked = yes
+						#division_names_group = ROM_INF_01
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+							infantry = { x = 0 y = 3 }
+							infantry = { x = 0 y = 4 }
+				
+		    	   		 	infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+							infantry = { x = 1 y = 3 }
+							infantry = { x = 1 y = 4 }
+						}
+						support = {
+
+						}
+					}
+
+				
+				random_owned_controlled_state = {
+					limit = { ROOT = { has_full_control_of_state = PREV } }
+					prioritize = { 113 }
+					create_unit = {
+						division = "name = \"1st Conscript Division\" division_template = \"European Trained Militias\" start_experience_factor = 1" 
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"2nd Conscript Division\" division_template = \"European Trained Militias\" start_experience_factor = 1" 
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"3rd Conscript Division\" division_template = \"European Trained Militias\" start_experience_factor = 1" 
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"1st Conscript Division\" division_template = \"European Trained Militias\" start_experience_factor = 1" 
+						owner = ROOT
+					}
+				}
 		}
 	}
 	
 	#propose 3 ways
 	focus = {
 		id = TOH_split_japan_three_ways
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_goal_generic_dangerous_deal
 		prerequisite = { focus = TOH_ally_prov }
 		#mutually_exclusive = { focus = TOH_sado_accords }
 
@@ -5463,7 +5630,7 @@
 	#propose 2 ways
 	focus = {
 		id = TOH_split_japan_two_ways
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_goal_generic_military_deal
 		prerequisite = { focus = TOH_rightful_gov }
 		#mutually_exclusive = { focus = TOH_sado_accords }
 
@@ -5498,7 +5665,7 @@
 	#befriend mil junta
 	focus = {
 		id = TOH_befriend_mil_junta
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_goal_generic_major_alliance
 		prerequisite = { focus = TOH_monarchy_is_greater_threat }
 		mutually_exclusive = { focus = TOH_befriend_prov }
 
@@ -5523,14 +5690,15 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_political_power = 100
+			add_opinion_modifier = { target = CHU modifier = huge_increase }
+			CHU = { add_opinion_modifier = { target = TOH modifier = huge_increase } }
 		}
 	}
 	
 	#befriend mil junta
 	focus = {
 		id = TOH_two_front_war_on_monarchy
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_goal_generic_major_war
 		prerequisite = { focus = TOH_befriend_mil_junta }
 		#mutually_exclusive = { focus = TOH_befriend_prov }
 
@@ -5562,7 +5730,7 @@
 	#army reform
 	focus = {
 		id = TOH_army_reform
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_goal_generic_allies_build_infantry
 		prerequisite = { focus = TOH_befriend_mil_junta }
 		#mutually_exclusive = { focus = TOH_befriend_prov }
 
@@ -5594,7 +5762,7 @@
 	#divide japan
 	focus = {
 		id = TOH_divide_japan
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_goal_generic_military_deal
 		prerequisite = { focus = TOH_army_reform }
 		prerequisite = { focus = TOH_two_front_war_on_monarchy }
 		#mutually_exclusive = { focus = TOH_befriend_prov }
@@ -5626,7 +5794,7 @@
 	
 	focus = {
 		id = TOH_stab_in_the_back
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_AST_war_japan
 		prerequisite = { focus = TOH_split_japan_three_ways focus = TOH_split_japan_two_ways focus = TOH_divide_japan }
 		#mutually_exclusive = { focus = TOH_befriend_prov }
 
@@ -5657,7 +5825,7 @@
 	
 	focus = {
 		id = TOH_faction_research
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_goal_generic_scientific_exchange
 		prerequisite = { focus = TOH_japanese_protection_front }
 		#mutually_exclusive = { focus = TOH_befriend_prov }
 
@@ -5688,7 +5856,7 @@
 	
 	focus = {
 		id = TOH_faction_planning
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_goal_generic_position_armies
 		prerequisite = { focus = TOH_japanese_protection_front }
 		#mutually_exclusive = { focus = TOH_befriend_prov }
 
