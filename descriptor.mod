@@ -16,3 +16,4 @@ tags={
 	"Graphics"
 }
 supported_version="1.9.*"
+picture="SS.png"
