@@ -1,0 +1,892 @@
+focus_tree = {
+	id = OSA
+	country = {
+		factor = 0
+		modifier = {
+			add = 10
+			tag = OSA
+		}
+	}
+	
+	continuous_focus_position = { x = 20 y = 1100 }
+	#MAIN
+	focus = {
+		id = OSA_our_path
+		icon = GFX_goal_generic_demand_territory
+		x = 5
+		y = 0
+		cost = 5
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_stability = 0.05
+        add_war_support = 0.05
+		}
+	}
+	
+	focus = {
+		id = OSA_a_deal_with_britain
+		icon = GFX_focus_chi_british_cooperation
+		x = 0
+		y = 1
+		cost = 10
+		prerequisite = { focus = OSA_our_path }
+		relative_position_id = OSA_our_path
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_ideas = OSA_a_deal_with_britain		
+		}
+	}
+	
+	focus = {
+		id = OSA_nanko_port
+		icon = GFX_goal_generic_construct_naval_dockyard
+		x = 0
+		y = 1
+		cost = 10
+		prerequisite = { focus = OSA_a_deal_with_britain }
+		relative_position_id = OSA_a_deal_with_britain
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		navy_experience = 25
+		random_owned_controlled_state = {
+					limit = {
+						is_coastal = yes
+						free_building_slots = {
+							building = dockyard
+							size > 2
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = dockyard
+						level = 2
+						instant_build = yes
+					}
+				}	
+		}
+	}
+	
+	focus = {
+		id = OSA_lessons_from_the_royal_navy
+		icon = GFX_goal_generic_navy_battleship
+		x = 1
+		y = 1
+		cost = 10
+		prerequisite = { focus = OSA_nanko_port }
+		relative_position_id = OSA_nanko_port
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_ideas = OSA_lessons_from_the_royal_navy		
+		}
+	}
+	
+	focus = {
+		id = OSA_coastal_defense_vessels
+		icon = GFX_goal_generic_navy_cruiser
+		x = -1
+		y = 1
+		cost = 10
+		prerequisite = { focus = OSA_nanko_port }
+		relative_position_id = OSA_nanko_port
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_tech_bonus = {
+				name = FRA_improved_screen_ships
+				bonus = 2.0
+				uses = 1
+				category = cl_tech
+			}
+			add_tech_bonus = {
+				name = FRA_surface_combat
+				bonus = 2.0
+				uses = 1
+				category = dd_tech
+			}	
+		}
+	}
+	
+	focus = {
+		id = OSA_foreign_policy
+		icon = GFX_goal_generic_improve_relations
+		x = -3
+		y = 2
+		cost = 10
+		prerequisite = { focus = OSA_a_deal_with_britain }
+		relative_position_id = OSA_a_deal_with_britain
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_ideas = liberty_ethos_focus
+        custom_effect_tooltip = available_political_advisor
+	    show_ideas_tooltip = OSA_sir_robert_clive		
+		}
+	}
+	
+	focus = {
+		id = OSA_look_to_japan
+		icon = GFX_focus_PRO_heart_of_japan 
+		x = 3
+		y = 1
+		cost = 5
+		prerequisite = { focus = OSA_foreign_policy }
+		relative_position_id = OSA_foreign_policy
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_political_power = 50	
+		}
+	}
+	
+	focus = {
+		id = OSA_secure_kansai
+		icon = GFX_goal_generic_major_war 
+		x = 0
+		y = 1
+		cost = 5
+		prerequisite = { focus = OSA_look_to_japan }
+		relative_position_id = OSA_look_to_japan
+		mutually_exclusive = { focus = OSA_kansai_in_the_allies focus = OSA_influence_kansai }
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		create_wargoal = {
+				type = puppet_wargoal_focus
+				target = KAN
+			}
+		}
+	}
+	
+	focus = {
+		id = OSA_the_tokugawa_question
+		icon = GFX_focus_shogunate
+		x = 0
+		y = 2
+		cost = 5
+		prerequisite = { focus = OSA_secure_kansai focus = OSA_kansai_in_the_allies focus = OSA_influence_kansai }
+		relative_position_id = OSA_secure_kansai
+		available = {
+		any_home_area_neighbor_country = {tag = SHO }
+		NOT = { has_war_with = SHO }
+		NOT = { is_in_faction_with = SHO } 
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		create_wargoal = {
+				type = puppet_wargoal_focus
+				target = SHO
+			}
+		}
+	}
+	
+	focus = {
+		id = OSA_kansai_in_the_allies
+		icon = GFX_goal_generic_military_deal 
+		x = 2
+		y = 1
+		cost = 5
+		prerequisite = { focus = OSA_look_to_japan }
+		relative_position_id = OSA_look_to_japan
+		mutually_exclusive = { focus = OSA_secure_kansai focus = OSA_influence_kansai }
+		available = {
+		NOT = { has_war_with = KAN }
+        KAN = { is_in_faction = no }
+		is_faction_leader = yes
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		KAN = { country_event = cities.16 }
+		}
+	}
+	focus = {
+		id = OSA_influence_kansai
+		icon = GFX_goal_generic_propaganda 
+		x = -2
+		y = 1
+		cost = 5
+		prerequisite = { focus = OSA_look_to_japan }
+		relative_position_id = OSA_look_to_japan
+		mutually_exclusive = { focus = OSA_kansai_in_the_allies focus = OSA_secure_kansai }
+		available = {
+		NOT = { has_war_with = KAN }
+        KAN = { is_in_faction = no }
+		is_faction_leader = yes
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		KAN = { country_event = cities.10 }
+		}
+	}
+	
+	focus = {
+		id = OSA_deliver_democracy_to_kansai
+		icon = GFX_goal_generic_territory_or_war 
+		x = 0
+		y = 1
+		cost = 5
+		prerequisite = { focus = OSA_influence_kansai }
+		relative_position_id = OSA_influence_kansai
+		available = {
+		NOT = { is_in_faction_with = KAN } 
+		KAN = { democratic > 0.5 }
+		
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		KAN = { country_event = cities.13 }
+		}
+	}
+	
+	focus = {
+		id = OSA_commonwealth_cooperations
+		icon = GFX_goal_tfv_strengthen_commonwealth_ties
+		x = -1
+		y = 1
+		cost = 10
+		prerequisite = { focus = OSA_commonwealth_reinforcements }
+		relative_position_id = OSA_commonwealth_reinforcements
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_tech_bonus = {
+				name = industrial_bonus
+				bonus = 1.0
+				uses = 2
+				category = industry
+			}		
+		}
+	}
+	
+	focus = {
+		id = OSA_defensive_board
+		icon = GFX_goal_generic_military_sphere
+		x = 1
+		y = 1
+		cost = 10
+		prerequisite = { focus = OSA_commonwealth_reinforcements }
+		relative_position_id = OSA_commonwealth_reinforcements
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_tech_bonus = {
+				name = land_doc_bonus
+				bonus = 1.0
+				uses = 2
+				category = land_doctrine
+			}		
+		}
+	}
+	
+	focus = {
+		id = OSA_commonwealth_reinforcements
+		icon = GFX_goal_generic_build_tank
+		x = -2
+		y = 1
+		cost = 10
+		prerequisite = { focus = OSA_foreign_policy }
+		prerequisite = { focus = OSA_expand_the_army}
+		relative_position_id = OSA_foreign_policy
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_ideas = OSA_commonwealth_reinforcements		
+		}
+	}
+	
+	focus = {
+		id = OSA_invite_more_officers
+		icon = GFX_focus_generic_military_mission
+		x = 1
+		y = 1
+		cost = 10
+		prerequisite = { focus = OSA_commonwealth_cooperations focus = OSA_defensive_board }
+		relative_position_id = OSA_commonwealth_cooperations
+		available = {
+		has_war = yes	
+        threat > 0.5
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		custom_effect_tooltip = available_political_advisor
+	    show_ideas_tooltip = OSA_william_slim
+		create_corps_commander = {
+	    name = "Archibald Wavell" 
+	    picture = "Portrait_OSA_Archibald_Wavell.dds"
+	    traits = { career_officer }
+	    skill = 4
+	    attack_skill = 4
+	    defense_skill = 2
+	    planning_skill = 3
+	    logistics_skill = 4
+}
+		}
+	}
+	
+	focus = {
+		id = OSA_joint_research_team
+		icon = GFX_goal_tfv_generic_tech_sharing
+		x = 0
+		y = 1
+		cost = 10
+		prerequisite = { focus = OSA_invite_more_officers }
+		relative_position_id = OSA_invite_more_officers
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_research_slot = 1
+		}
+	}
+	
+	focus = {
+		id = OSA_internal_politics
+		icon = GFX_goal_generic_intelligence_exchange
+		x = 3
+		y = 2
+		cost = 10
+		prerequisite = { focus = OSA_a_deal_with_britain }
+		relative_position_id = OSA_a_deal_with_britain
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_political_power = 100		
+		}
+	}
+	
+	focus = {
+		id = OSA_responsible_government
+		icon = GFX_goal_support_democracy
+		x = 3
+		y = 2
+		cost = 5
+		prerequisite = { focus = OSA_internal_politics }
+		relative_position_id = OSA_internal_politics
+		available = {
+		has_stability > 0.5
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+        add_stability = 0.05
+        add_war_support = 0.05
+		}
+	}
+	
+	focus = {
+		id = OSA_administration_renewal
+		icon = GFX_goal_anschluss
+		x = 1
+		y = 1
+		cost = 5
+		prerequisite = { focus = OSA_responsible_government }
+		relative_position_id = OSA_responsible_government
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+       custom_effect_tooltip = available_political_advisor
+	   show_ideas_tooltip = OSA_oliver_stanlley
+		}
+	}
+	
+	focus = {
+		id = OSA_osaka_university
+		icon = GFX_focus_generic_military_academy
+		x = -1
+		y = 1
+		cost = 10
+		prerequisite = { focus = OSA_responsible_government }
+		relative_position_id = OSA_responsible_government
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+       add_research_slot = 1
+		}
+	}
+	
+	focus = {
+		id = OSA_mobilize_the_people
+		icon = GFX_goal_generic_national_unity
+		x = 0
+		y = 1
+		cost = 10
+		prerequisite = { focus = OSA_internal_politics }
+		relative_position_id = OSA_internal_politics
+		available = {
+		has_war_support > 0.6
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+        add_ideas = extensive_conscription		
+		}
+	}
+	
+	focus = {
+		id = OSA_defensive_militias
+		icon = GFX_goal_generic_small_arms
+		x = 0
+		y = 2
+		cost = 10
+		prerequisite = { focus = OSA_mobilize_the_people }
+		relative_position_id = OSA_mobilize_the_people
+		available = {
+		has_war_support > 0.65
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_manpower = 1500	
+		add_stability = 0.05
+		}
+	}
+	
+	focus = {
+		id = OSA_defend_our_homeland
+		icon = GFX_goal_generic_fortify_city
+		x = 0
+		y = 1
+		cost = 10
+		prerequisite = { focus = OSA_defensive_militias }
+		relative_position_id = OSA_defensive_militias
+		available = {
+		
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		99 = {
+				if = {
+					limit = { is_controlled_by = ROOT }
+					add_building_construction = {
+						type = bunker
+						level = 5
+						province = 580
+						instant_build = yes
+					}
+				}
+		    }
+		}
+	}
+	
+	focus = {
+		id = OSA_grand_mobilization
+		icon = GFX_goal_generic_political_pressure
+		x = 1
+		y = 1
+		cost = 10
+		prerequisite = { focus = OSA_mobilize_the_people }
+		relative_position_id = OSA_mobilize_the_people
+		available = {
+		has_war_support > 0.75
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_ideas = war_economy
+		set_rule = { can_create_factions = yes }
+		add_stability = 0.05
+		add_manpower = 1000
+		}
+	}
+	
+	##################################
+	#COLONIAL INCENTIVES             #
+	##################################
+
+focus = {
+		id = OSA_colonial_incentives
+		icon = GFX_focus_mex_privatisation
+		x = -3
+		y = 0
+		cost = 5
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_stability = 0.05
+        add_war_support = 0.05
+		}
+	}
+	
+	focus = { 
+	    id = OSA_military_factory_incentive
+		icon = GFX_goal_generic_construct_mil_factory
+		prerequisite = { focus = OSA_railroad_incentive }
+		relative_position_id = OSA_railroad_incentive
+		x = -1
+		y = 1
+		cost = 10
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_political_power = -50
+		random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = arms_factory
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 3
+				add_building_construction = {
+					type = arms_factory
+					level = 3
+					instant_build = yes
+				}
+			}
+		}
+	}
+	
+	focus = { 
+	    id = OSA_railroad_incentive
+		icon = GFX_goal_generic_construct_infrastructure
+		prerequisite = { focus = OSA_colonial_incentives }
+		relative_position_id = OSA_colonial_incentives
+		x = -2
+		y = 1
+		cost = 10
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_political_power = -50
+		random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = infrastructure
+						size > 0
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = infrastructure
+										size > 0
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = infrastructure
+					level = 2
+					instant_build = yes
+				}
+			}
+		}
+	}
+	
+	focus = { 
+	    id = OSA_civilian_factory_incentive
+		icon = GFX_goal_generic_construct_civ_factory
+		prerequisite = { focus = OSA_railroad_incentive }
+		relative_position_id = OSA_railroad_incentive
+		x = 1
+		y = 1
+		cost = 10
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_political_power = -50
+		random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = industrial_complex
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 3
+				add_building_construction = {
+					type = industrial_complex
+					level = 3
+					instant_build = yes
+				}
+			}
+		}
+	}
+	
+	focus = { 
+	    id = OSA_expand_the_army
+		icon = GFX_focus_generic_commonwealth_build_infantry
+		prerequisite = { focus = OSA_colonial_incentives }
+		relative_position_id = OSA_colonial_incentives
+		x = 0
+		y = 3
+		cost = 10
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_tech_bonus = {
+				name = infantry_artillery_bonus
+				ahead_reduction = 2
+				uses = 1
+				category = infantry_weapons
+			}
+			add_tech_bonus = {
+				bonus = 1.0
+				uses = 1
+				category = infantry_weapons
+			}
+		set_rule = { can_send_volunteers = yes }
+		}
+	}
+	
+	focus = { 
+	    id = OSA_ABDA_command
+		icon = GFX_focus_SHO_neutral_coalition
+		prerequisite = { focus = OSA_expand_the_army }
+		relative_position_id = OSA_expand_the_army
+		x = -1
+		y = 2
+		cost = 5
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_tech_bonus = {
+				name = land_doc_bonus
+				bonus = 1.0
+				uses = 1
+				category = land_doctrine
+			}
+		}
+	}
+	
+	focus = { 
+	    id = OSA_RAF_representative
+		icon = GFX_focus_eng_special_air_service
+		prerequisite = { focus = OSA_expand_the_army }
+		relative_position_id = OSA_expand_the_army
+		x = 0
+		y = 1
+		cost = 10
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		air_experience = 25
+		add_tech_bonus = {
+				name = air_doc_bonus
+				bonus = 1.0
+				uses = 1
+				category = air_doctrine
+			}
+		add_tech_bonus = {
+				name = FRA_fighter_focus
+				bonus = 0.5
+				uses = 1
+				category = light_fighter
+			}
+	add_tech_bonus = {
+				name = FRA_air_doctrine
+				bonus = 0.5
+				uses = 1
+				category = air_doctrine
+			}
+		}
+	}
+	
+	focus = { 
+	    id = OSA_american_artillery
+		icon = GFX_goal_generic_army_artillery2
+		prerequisite = { focus = OSA_ABDA_command }
+		relative_position_id = OSA_ABDA_command
+		x = 2
+		y = 1
+		cost = 5
+		available = {
+		NOT = { has_war_with = AMC }
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_tech_bonus = {
+				name = infantry_artillery_bonus
+				ahead_reduction = 2
+				uses = 1
+				category = infantry_weapons
+				category = artillery
+			}
+			add_tech_bonus = {
+				bonus = 1.0
+				uses = 1
+				category = infantry_weapons
+			}
+		}
+	}
+	
+	focus = { 
+	    id = OSA_french_drill
+		icon = GFX_focus_sho_french_military
+		prerequisite = { focus = OSA_ABDA_command }
+		relative_position_id = OSA_ABDA_command
+		x = 0
+		y = 1
+		cost = 5
+		available = {
+		NOT = { has_war_with = KOB }
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		every_army_leader = {
+			add_defense = 1
+		}
+		add_ideas = CHI_french_drill
+		}
+	}
+	
+	focus = { 
+	    id = OSA_dutch_naval_help
+		icon = GFX_goal_generic_amphibious_assault
+		prerequisite = { focus = OSA_ABDA_command }
+		relative_position_id = OSA_ABDA_command
+		x = -2
+		y = 1
+		cost = 5
+		available = {
+		NOT = { has_war_with = HIR }
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_ideas = CZE_naval_focus
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	shared_focus = SS_colonial_board
+}
