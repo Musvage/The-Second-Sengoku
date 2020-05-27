@@ -9,18 +9,905 @@ focus_tree = {
 	}
 	#MAIN
 	focus = {
-		id = AMC_temporary
-		icon = GFX_focus_AMC_temporary
-		x = 20
+		id = AMC_a_different_way
+		icon = GFX_goal_generic_demand_territory
+		mutually_exclusive = { focus = AMC_maintain_support_for_the_provisional_government }
+		x = 2
 		y = 0
-		cost = 8
+		cost = 10
 		available = {
 		}
 		ai_will_do = {
 			factor = 10
 		}	
 		completion_reward = {
-			log = "[GetDateText]: [Root.GetName]: Focus AMC_temporary"	
+		add_stability = -0.05
+        add_political_power = 100
 		}
 	}
+	
+	focus = {
+		id = AMC_tokugawa_iesato_connections
+		icon = GFX_focus_budo
+		prerequisite = { focus = AMC_a_different_way }
+		relative_position_id = AMC_a_different_way
+		x = 0
+		y = 1
+		cost = 10
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		SHO = { add_opinion_modifier =  { target = AMC modifier = monroe_doctrine_trade } }
+		add_ideas = neutrality_influence 
+		create_faction = AMC_chiba_entente
+		create_country_leader = {
+	name = "Joseph Grew"
+	desc = ""
+	picture = "GFX_animated_grew"
+	expire = "1965.1.1"
+	ideology = Despotism
+	traits = { appeaser }
+}
+hidden_effect = {
+create_country_leader = {
+	name = "John Smith"
+	desc = ""
+	picture = "gfx/leaders/Europe/Portrait_Europe_Generic_land_2.dds"
+	expire = "1965.1.1"
+	ideology = Socialism
+	traits = { }
+}
+}
+add_popularity = {
+				popularity = 0.5
+				ideology = neutrality
+			}
+	set_politics = {
+					ruling_party = neutrality
+					elections_allowed = yes
+				}
+		}
+	}
+	
+	focus = {
+		id = AMC_invite_tokugawa
+		icon = GFX_focus_shogunate
+		prerequisite = { focus = AMC_tokugawa_iesato_connections }
+		relative_position_id = AMC_tokugawa_iesato_connections
+		x = 0
+		y = 1
+		cost = 5
+		available = {
+		NOT = { has_war_with = SHO }
+		NOT = { is_in_faction_with = SHO } 
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		SHO = {country_event = cities.17}
+		}
+	}
+	
+	focus = {
+		id = AMC_split_japan
+		icon = GFX_goal_generic_territory_or_war
+		prerequisite = { focus = AMC_invite_tokugawa }
+		relative_position_id = AMC_invite_tokugawa
+		x = 0
+		y = 1
+		cost = 5
+		available = {
+	is_in_faction_with = SHO
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_war_support = 0.1
+		add_stability = 0.1
+		add_political_power = 150
+		SHO = { add_ai_strategy = {
+				type = conquer
+				id = "PRO"
+				value = 200
+			}
+			}
+		create_wargoal = {
+				type = annex_everything
+				target = PRO
+			}
+		SHO = { create_wargoal = {
+				type = annex_everything
+				target = PRO
+			} }
+		}
+	}
+	
+	focus = {
+		id = AMC_shogunate_war_economy
+		icon = GFX_goal_generic_construct_mil_factory
+		prerequisite = { focus = AMC_split_japan }
+		relative_position_id = AMC_split_japan
+		x = -1
+		y = 1
+		cost = 10
+		available = {
+	is_in_faction_with = SHO
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = arms_factory
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 3
+				add_building_construction = {
+					type = arms_factory
+					level = 3
+					instant_build = yes
+				}
+			}
+		add_tech_bonus = {
+				name = industrial_bonus
+				bonus = 1.0
+				uses = 2
+				category = industry
+			}	
+		}
+	}
+	
+	focus = {
+		id = AMC_shogunate_army_lessons
+		icon = GFX_focus_SHO_ashigaru_batallions
+		prerequisite = { focus = AMC_split_japan }
+		relative_position_id = AMC_split_japan
+		x = 1
+		y = 1
+		cost = 10
+		available = {
+	is_in_faction_with = SHO
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_tech_bonus = {
+				name = land_doc_bonus
+				bonus = 1.0
+				uses = 2
+				category = land_doctrine
+			}
+		}
+	}
+	
+	focus = {
+		id = AMC_shogunate_technological_pact
+		icon = GFX_goal_generic_scientific_exchange
+		prerequisite = { focus = AMC_shogunate_army_lessons }
+		prerequisite = { focus = AMC_shogunate_war_economy }
+		relative_position_id = AMC_shogunate_war_economy
+		x = 1
+		y = 1
+		cost = 10
+		available = {
+	is_in_faction_with = SHO
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_research_slot = 1
+		add_tech_bonus = {
+				name = secret_bonus
+				bonus = 1.0
+				uses = 3
+				category = electronics
+				category = nuclear
+				category = rocketry
+			}
+		}
+	}
+	
+		focus = {
+		id = AMC_maintain_support_for_the_provisional_government
+		icon = GFX_goal_generic_improve_relations
+		mutually_exclusive = { focus = AMC_a_different_way }
+		x = 8
+		y = 0
+		cost = 10
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_stability = 0.15	
+		}
+	}
+	
+	focus = {
+		id = AMC_plan_b
+		icon = GFX_goal_generic_intelligence_exchange
+		relative_position_id = AMC_maintain_support_for_the_provisional_government
+		x = 3
+		y = 0
+		cost = 5
+		available = {
+		has_idea = AMC_proposal_rejected
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		remove_from_faction = AMC
+		}
+	}
+	
+	focus = {
+		id = AMC_join_the_allies
+		icon = GFX_focus_chi_british_cooperation
+		prerequisite = { focus = AMC_maintain_support_for_the_provisional_government}
+		relative_position_id = AMC_maintain_support_for_the_provisional_government
+		mutually_exclusive = { focus = AMC_anti_communist_pact }
+		x = 0
+		y = 1
+		cost = 10
+		available = {
+		NOT = { has_war_with = OSA }
+		NOT = { is_in_faction_with = OSA } 
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_tech_bonus = {
+				name = POL_the_twin_threats
+				bonus = 1.0
+				uses = 2
+				category = naval_doctrine
+			}
+		OSA = {
+				country_event = { id = generic.2 }
+				add_ai_strategy = {
+					type = befriend
+					id = "AMC"			
+					value = 1000
+				}
+				add_ai_strategy = {
+					type = alliance
+					id = "AMC"			
+					value = 200
+				}	
+			}
+		}
+	}
+	
+	focus = {
+		id = AMC_provisional_in_allies
+		icon = GFX_goal_support_democracy
+		prerequisite = { focus = AMC_join_the_allies  }
+		relative_position_id = AMC_join_the_allies
+		x = 0
+		y = 1
+		cost = 10
+		available = {
+		NOT = { has_war_with = PRO }
+		NOT = { is_in_faction_with = PRO } 
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		PRO = {
+				country_event = { id = cities.3 }
+				add_ai_strategy = {
+					type = befriend
+					id = "OSA"			
+					value = 1000
+				}
+				add_ai_strategy = {
+					type = alliance
+					id = "OSA"			
+					value = 200
+				}	
+			}
+		}
+	}
+	
+	focus = {
+		id = AMC_anti_communist_pact
+		icon = GFX_goal_anti_comintern_pact
+		prerequisite = { focus = AMC_maintain_support_for_the_provisional_government focus = AMC_plan_b }
+		relative_position_id = AMC_maintain_support_for_the_provisional_government
+		mutually_exclusive = { focus = AMC_join_the_allies }
+		x = 2
+		y = 1
+		cost = 10
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		create_faction = AMC_anti_commie_pact
+		add_war_support = 0.1
+		}
+	}
+	
+	focus = {
+		id = AMC_invite_provisional
+		icon = GFX_focus_jap_pacific_guardian
+		prerequisite = { focus = AMC_anti_communist_pact}
+		relative_position_id = AMC_anti_communist_pact
+		x = 0
+		y = 1
+		cost = 10
+		available = {
+		NOT = { has_war_with = PRO }
+		NOT = { is_in_faction_with = PRO } 
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		if = { limit = { has_idea = AMC_proposal_rejected }
+		PRO = {country_event = cities.20}
+		}
+		if = { limit = { NOT = { has_idea = AMC_proposal_rejected } }
+		PRO = {country_event = cities.23}
+		}
+	}
+}
+
+focus = {
+		id = AMC_anti_communist_crusade
+		icon = GFX_focus_generic_attack_tohoku
+		prerequisite = {  focus = AMC_invite_provisional focus = AMC_provisional_in_allies}
+		relative_position_id = AMC_invite_provisional
+		x = -2
+		y = 1
+		cost = 10
+		available = {
+		NOT = { is_in_faction_with = TOH } 
+		NOT = { OR = { has_government = communism 
+                       has_government = democratic_socialism}
+		}
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_war_support = 0.1
+		add_stability = 0.1
+		add_political_power = 150
+		if = { limit = { is_in_faction_with = PRO }
+		PRO = {
+declare_war_on = {
+				target = TOH
+				type = topple_government
+			}			
+		}
+		}
+		if = { limit = {is_in_faction_with = OSA }
+		OSA = {
+declare_war_on = {
+				target = TOH
+				type = topple_government
+			}			
+		}
+		}
+	create_wargoal = {
+				type = topple_government
+				target = TOH
+			}
+	}
+}
+
+focus = {
+		id = AMC_economic_cooperation
+		icon = GFX_goal_generic_construct_civ_factory
+		prerequisite = {  focus = AMC_anti_communist_crusade}
+		relative_position_id = AMC_anti_communist_crusade
+		x = -1
+		y = 1
+		cost = 10
+		available = {
+		is_in_faction = yes
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = industrial_complex
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 3
+				add_building_construction = {
+					type = industrial_complex
+					level = 3
+					instant_build = yes
+				}
+			}
+	add_tech_bonus = {
+				name = industrial_bonus
+				bonus = 1.0
+				uses = 2
+				category = industry
+			}	
+	}
+}
+focus = {
+		id = AMC_arms_development
+		icon = GFX_goal_generic_occupy_states_ongoing_war
+		prerequisite = {  focus = AMC_anti_communist_crusade}
+		relative_position_id = AMC_anti_communist_crusade
+		x = 1
+		y = 1
+		cost = 10
+		available = {
+		is_in_faction = yes
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_tech_bonus = {
+				name = infantry_artillery_bonus
+				ahead_reduction = 2
+				uses = 2
+				category = infantry_weapons
+				category = artillery
+			}
+			add_tech_bonus = {
+				bonus = 1.0
+				uses = 2
+				category = infantry_weapons
+			}
+	}
+}
+
+focus = {
+		id = AMC_research_cooperation
+		icon = GFX_goal_generic_scientific_exchange
+		prerequisite = {  focus = AMC_arms_development focus = AMC_economic_cooperation}
+		relative_position_id = AMC_arms_development
+		x = -1
+		y = 1
+		cost = 10
+		available = {
+		is_in_faction = yes
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_research_slot = 1
+	}
+}
+focus = {
+		id = AMC_finish_the_job
+		icon = GFX_focus_generic_attack_ezo
+		prerequisite = {  focus = AMC_arms_development}
+		relative_position_id = AMC_arms_development
+		x = 1
+		y = 1
+		cost = 10
+		available = {
+		NOT = { is_in_faction_with = EZO } 
+		EZO = { OR = { has_government = communism 
+                       has_government = democratic_socialism}
+		}
+	}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		if = { limit = { is_in_faction_with = PRO }
+		PRO = {
+declare_war_on = {
+				target = EZO
+				type = topple_government
+			}			
+		}
+		}
+		if = { limit = {is_in_faction_with = OSA }
+		OSA = {
+declare_war_on = {
+				target = EZO
+				type = topple_government
+			}			
+		}
+		}
+	create_wargoal = {
+				type = topple_government
+				target = EZO
+			}
+	}
+}
+	
+	focus = {
+		id = AMC_american_interventionism
+		icon = GFX_goal_generic_build_tank
+		x = -3
+		y = 1
+		cost = 10
+		prerequisite = { focus = AMC_maintain_support_for_the_provisional_government focus = AMC_a_different_way }
+		relative_position_id = AMC_maintain_support_for_the_provisional_government
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_ideas = AMC_american_interventionism
+        set_rule = { can_send_volunteers = yes }	
+        add_manpower = 2000			
+		}
+	}
+	
+	
+	
+	focus = {
+		id = AMC_offense_focus
+		icon = GFX_goal_generic_major_war
+		x = -2
+		y = 2
+		cost = 10
+		prerequisite = { focus = AMC_maintain_support_for_the_provisional_government }
+		prerequisite = { focus = AMC_american_interventionism }
+		relative_position_id = AMC_maintain_support_for_the_provisional_government
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_ideas = AMC_offense_focus		
+		}
+	}
+	
+
+	
+	focus = {
+		id = AMC_defense_focus
+		icon = GFX_goal_generic_defence
+		x = 2
+		y = 2
+		cost = 10
+		prerequisite = { focus = AMC_a_different_way }
+		prerequisite = { focus = AMC_american_interventionism }
+		relative_position_id = AMC_a_different_way
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_ideas = AMC_defense_focus		
+		21 = {
+				if = {
+					limit = { is_controlled_by = ROOT }
+					add_building_construction = {
+						type = bunker
+						level = 5
+						province = 580
+						instant_build = yes
+					}
+				}
+		    }
+		}
+	}
+	
+	focus = {
+		id = AMC_tactical_innovations
+		icon = GFX_goal_generic_army_doctrines
+		x = 0
+		y = 1
+		cost = 10
+		prerequisite = { focus = AMC_defense_focus focus = AMC_offense_focus }
+		relative_position_id = AMC_defense_focus
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_tech_bonus = {
+				name = land_doc_bonus
+				bonus = 1.0
+				uses = 1
+				category = land_doctrine
+			}		
+		}
+	}
+	
+	focus = {
+		id = AMC_conquer_the_skies
+		icon = GFX_goal_generic_air_doctrine
+		x = 0
+		y = 1
+		cost = 10
+		prerequisite = { focus = AMC_defense_focus focus = AMC_offense_focus }
+		relative_position_id = AMC_offense_focus
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_tech_bonus = {
+				name = FRA_fighter_focus
+				bonus = 0.5
+				uses = 1
+				category = light_fighter
+			}
+	add_tech_bonus = {
+				name = FRA_air_doctrine
+				bonus = 0.5
+				uses = 1
+				category = air_doctrine
+			}		
+		}
+	}
+	
+	focus = {
+		id = AMC_american_patriotism
+		icon = GFX_focus_chi_mission_to_the_us
+		x = -1
+		y = 2
+		cost = 10
+		prerequisite = { focus = AMC_defense_focus focus = AMC_offense_focus }
+		relative_position_id = AMC_offense_focus
+		available = {
+		has_war_support > 0.6
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_ideas = AMC_american_patriotism	
+		add_manpower = 5000	
+		set_rule = { can_create_factions = yes }
+		}
+	}
+	focus = {
+		id = AMC_a_nation_in_arms
+		icon = GFX_goal_generic_political_pressure
+		x = -1
+		y = 1
+		cost = 10
+		prerequisite = {focus = AMC_american_patriotism }
+		relative_position_id = AMC_american_patriotism
+		available = {
+		has_war_support > 0.65
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_ideas = war_economy
+		add_war_support = 0.1
+		add_stability = 0.05
+		add_manpower = 1500
+		}
+	}
+	
+	focus = {
+		id = AMC_increase_conscription
+		icon = GFX_focus_generic_military_mission
+		x = 1
+		y = 1
+		cost = 10
+		prerequisite = {focus = AMC_american_patriotism }
+		relative_position_id = AMC_american_patriotism
+		available = {
+		has_war_support > 0.65
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_ideas = extensive_conscription	
+		add_manpower = 5000	
+		}
+	}
+	
+	focus = {
+		id = AMC_extra_research_slot
+		icon = GFX_focus_research
+		x = 0
+		y = 1
+		cost = 10
+		prerequisite = { focus = AMC_increase_conscription focus = AMC_a_nation_in_arms}
+		relative_position_id = AMC_increase_conscription
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_research_slot = 1	
+		}
+	}
+	
+	focus = {
+		id = AMC_conquer_the_seas
+		icon = GFX_goal_generic_navy_doctrines_tactics
+		x = 0
+		y = 1
+		cost = 10
+		prerequisite = { focus = AMC_increase_conscription focus = AMC_a_nation_in_arms}
+		relative_position_id = AMC_a_nation_in_arms
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		navy_experience = 25
+			if = {
+				limit = {
+					NOT = {
+						any_owned_state = {
+							dockyard > 0
+							free_building_slots = {
+								building = dockyard
+								size > 2
+								include_locked = yes
+							}
+						}
+					}
+					any_owned_state = {
+						is_coastal = yes
+					}
+				}
+				random_owned_controlled_state = {
+					limit = {
+						is_coastal = yes
+						free_building_slots = {
+							building = dockyard
+							size > 2
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 3
+					add_building_construction = {
+						type = dockyard
+						level = 3
+						instant_build = yes
+					}
+				}
+				set_country_flag = naval_effort_built
+			}
+			if = {
+				limit = {
+					NOT = { has_country_flag = naval_effort_built }
+					any_owned_state = {
+						dockyard > 0
+						free_building_slots = {
+							building = dockyard
+							size > 2
+							include_locked = yes
+						}
+					}
+				}
+				random_owned_controlled_state = {
+					limit = {
+						dockyard > 0
+						free_building_slots = {
+							building = dockyard
+							size > 2
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 3
+					add_building_construction = {
+						type = dockyard
+						level = 3
+						instant_build = yes
+					}
+				}
+				set_country_flag = naval_effort_built
+			}
+			if = {
+				limit = {
+					NOT = { has_country_flag = naval_effort_built }
+					NOT = {
+						any_owned_state = {
+							free_building_slots = {
+								building = dockyard
+								size > 2
+								include_locked = yes
+							}
+						}
+					}
+				}
+				random_state = {
+					limit = {
+						controller = { tag = ROOT }
+						free_building_slots = {
+							building = dockyard
+							size > 2
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 3
+					add_building_construction = {
+						type = dockyard
+						level = 3
+						instant_build = yes
+					}
+				}
+			}	
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+shared_focus = SS_colonial_board
 }
