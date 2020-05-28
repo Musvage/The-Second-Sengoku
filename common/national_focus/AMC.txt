@@ -7,12 +7,14 @@ focus_tree = {
 			tag = AMC
 		}
 	}
+	
+	continuous_focus_position = { x = 20 y = 1200 }
 	#MAIN
 	focus = {
 		id = AMC_a_different_way
 		icon = GFX_goal_generic_demand_territory
 		mutually_exclusive = { focus = AMC_maintain_support_for_the_provisional_government }
-		x = 2
+		x = 1
 		y = 0
 		cost = 10
 		available = {
@@ -102,6 +104,7 @@ add_popularity = {
 		cost = 5
 		available = {
 	is_in_faction_with = SHO
+    NOT = { has_idea = AMC_great_depression_1 has_idea = AMC_great_depression_2}
 		}
 		ai_will_do = {
 			factor = 10
@@ -225,7 +228,7 @@ add_popularity = {
 		add_tech_bonus = {
 				name = secret_bonus
 				bonus = 1.0
-				uses = 3
+				uses = 1
 				category = electronics
 				category = nuclear
 				category = rocketry
@@ -237,7 +240,7 @@ add_popularity = {
 		id = AMC_maintain_support_for_the_provisional_government
 		icon = GFX_goal_generic_improve_relations
 		mutually_exclusive = { focus = AMC_a_different_way }
-		x = 8
+		x = 7
 		y = 0
 		cost = 10
 		available = {
@@ -254,7 +257,7 @@ add_popularity = {
 		id = AMC_plan_b
 		icon = GFX_goal_generic_intelligence_exchange
 		relative_position_id = AMC_maintain_support_for_the_provisional_government
-		x = 3
+		x = 4
 		y = 0
 		cost = 5
 		available = {
@@ -312,6 +315,7 @@ add_popularity = {
 		icon = GFX_goal_support_democracy
 		prerequisite = { focus = AMC_join_the_allies  }
 		relative_position_id = AMC_join_the_allies
+		mutually_exclusive = { focus = AMC_a_backstab }
 		x = 0
 		y = 1
 		cost = 10
@@ -340,12 +344,46 @@ add_popularity = {
 	}
 	
 	focus = {
+		id = AMC_a_backstab
+		icon = GFX_focus_generic_strike_at_democracy3
+		prerequisite = { focus = AMC_join_the_allies  }
+		relative_position_id = AMC_join_the_allies
+		mutually_exclusive = { focus = AMC_provisional_in_allies }
+		x = 2
+		y = 1
+		cost = 10
+		available = {
+		NOT = { is_in_faction_with = PRO } 
+		PRO = { NOT = { has_government = democratic }
+		has_war_support > 0.6
+		}
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		if = { limit = {is_in_faction_with = OSA }
+		OSA = {
+create_wargoal = {
+				type = topple_government
+				target = PRO
+			}			
+		}
+		}
+	create_wargoal = {
+				type = topple_government
+				target = PRO
+			}
+		}
+	}
+	
+	focus = {
 		id = AMC_anti_communist_pact
 		icon = GFX_goal_anti_comintern_pact
 		prerequisite = { focus = AMC_maintain_support_for_the_provisional_government focus = AMC_plan_b }
 		relative_position_id = AMC_maintain_support_for_the_provisional_government
 		mutually_exclusive = { focus = AMC_join_the_allies }
-		x = 2
+		x = 3
 		y = 1
 		cost = 10
 		available = {
@@ -365,7 +403,7 @@ add_popularity = {
 		prerequisite = { focus = AMC_anti_communist_pact}
 		relative_position_id = AMC_anti_communist_pact
 		x = 0
-		y = 1
+		y = 2
 		cost = 10
 		available = {
 		NOT = { has_war_with = PRO }
@@ -387,7 +425,7 @@ add_popularity = {
 focus = {
 		id = AMC_anti_communist_crusade
 		icon = GFX_focus_generic_attack_tohoku
-		prerequisite = {  focus = AMC_invite_provisional focus = AMC_provisional_in_allies}
+		prerequisite = {  focus = AMC_invite_provisional focus = AMC_provisional_in_allies focus = AMC_a_backstab}
 		relative_position_id = AMC_invite_provisional
 		x = -2
 		y = 1
@@ -397,6 +435,7 @@ focus = {
 		NOT = { OR = { has_government = communism 
                        has_government = democratic_socialism}
 		}
+		NOT = { has_idea = AMC_great_depression_1 has_idea = AMC_great_depression_2}
 		}
 		ai_will_do = {
 			factor = 10
@@ -551,7 +590,7 @@ focus = {
 		PRO = {
 create_wargoal = {
 				type = topple_government
-				target = TOH
+				target = EZO
 			}			
 		}
 		}
@@ -559,7 +598,7 @@ create_wargoal = {
 		OSA = {
 create_wargoal = {
 				type = topple_government
-				target = TOH
+				target = EZO
 			}			
 		}
 		}
@@ -579,6 +618,7 @@ create_wargoal = {
 		prerequisite = { focus = AMC_maintain_support_for_the_provisional_government focus = AMC_a_different_way }
 		relative_position_id = AMC_maintain_support_for_the_provisional_government
 		available = {
+		  NOT = { has_idea = AMC_great_depression_1}
 		}
 		ai_will_do = {
 			factor = 10
@@ -758,12 +798,14 @@ create_wargoal = {
 	}
 	
 	focus = {
-		id = AMC_extra_research_slot
-		icon = GFX_focus_research
-		x = 0
+		id = AMC_reborn_chiba
+		icon = GFX_focus_PRO_lease_chiba
+		x = -1
 		y = 1
 		cost = 10
-		prerequisite = { focus = AMC_increase_conscription focus = AMC_a_nation_in_arms}
+		prerequisite = { focus = AMC_increase_conscription }
+        prerequisite = { focus = AMC_a_nation_in_arms}
+		prerequisite = { focus = AMC_wartime_intervention }
 		relative_position_id = AMC_increase_conscription
 		available = {
 		}
@@ -778,11 +820,11 @@ create_wargoal = {
 	focus = {
 		id = AMC_conquer_the_seas
 		icon = GFX_goal_generic_navy_doctrines_tactics
-		x = 0
+		x = 1
 		y = 1
 		cost = 10
-		prerequisite = { focus = AMC_increase_conscription focus = AMC_a_nation_in_arms}
-		relative_position_id = AMC_a_nation_in_arms
+		prerequisite = { focus = AMC_conquer_the_skies}
+		relative_position_id = AMC_conquer_the_skies
 		available = {
 		}
 		ai_will_do = {
@@ -886,6 +928,187 @@ create_wargoal = {
 			}	
 		}
 	}
+	
+	focus = {
+		id = AMC_adress_the_great_depression
+		icon = GFX_focus_usa_reestablish_the_gold_standard
+		x = -2
+		y = 0
+		cost = 5
+		available = {
+		has_stability > 0.5
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+        add_political_power = 100
+		add_tech_bonus = {
+				name = industrial_bonus
+				bonus = 1.0
+				uses = 1
+				category = industry
+			}
+		}
+	}
+	
+	focus = {
+		id = AMC_housing_regulations
+		icon = GFX_goal_generic_construction
+		x = 0
+		y = 2
+		cost = 5
+		prerequisite = { focus = AMC_adress_the_great_depression}
+		relative_position_id = AMC_adress_the_great_depression
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		swap_ideas = {
+				remove_idea = AMC_great_depression_1
+				add_idea = AMC_great_depression_2
+			}
+		}
+	}
+	
+	focus = {
+		id = AMC_deals_with_industrialists
+		icon = GFX_focus_generic_concessions
+		x = -1
+		y = 1
+		cost = 10
+		prerequisite = { focus = AMC_housing_regulations}
+		relative_position_id = AMC_housing_regulations
+		available = {
+		has_stability > 0.6
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+        add_political_power = 200
+		}
+	}
+	
+		focus = {
+		id = AMC_state_corporations
+		icon = GFX_focus_generic_industry_3
+		x = 1
+		y = 1
+		cost = 10
+		prerequisite = { focus = AMC_housing_regulations}
+		relative_position_id = AMC_housing_regulations
+		available = {
+		has_stability > 0.6
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+        random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = industrial_complex
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+		swap_ideas = {
+				remove_idea = AMC_great_depression_2
+				add_idea = AMC_great_depression_3
+			}
+		}
+	}
+	
+	focus = {
+		id = AMC_give_refuge_to_scientists
+		icon = GFX_goal_tfv_generic_tech_sharing
+		x = -1
+		y = 1
+		cost = 10
+		prerequisite = { focus = AMC_deals_with_industrialists}
+		relative_position_id = AMC_deals_with_industrialists
+		available = {
+		
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+       add_tech_bonus = {
+				name = secret_bonus
+				bonus = 1.0
+				uses = 2
+				category = electronics
+				category = nuclear
+				category = rocketry
+			}
+		}
+	}
+	
+	focus = {
+		id = AMC_wartime_intervention 
+		icon = GFX_goal_generic_fortify_city
+		x = 1
+		y = 2
+		cost = 10
+		prerequisite = { focus = AMC_deals_with_industrialists }
+		prerequisite = { focus = AMC_state_corporations}
+		relative_position_id = AMC_deals_with_industrialists
+		available = {
+		has_war = yes
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+       remove_ideas = AMC_great_depression_3
+		}
+	}
+	
+	focus = {
+		id = AMC_price_controls
+		icon = GFX_goal_generic_consumer_goods
+		x = 0
+		y = 1
+		cost = 10
+		prerequisite = { focus = AMC_wartime_intervention }
+		relative_position_id = AMC_wartime_intervention
+		available = {
+		has_war = yes
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+       add_ideas = CAN_wartime_prices_and_trade_board
+		}
+	}
+
 
 
 
