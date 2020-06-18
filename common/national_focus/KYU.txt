@@ -756,7 +756,7 @@ prerequisite = { focus = KYU_research_slot }
 		relative_position_id = KYU_join_provisional
 		prerequisite = { focus = KYU_personality_cult focus = KYU_join_provisional focus = KYU_imperial_alliance focus = KYU_the_unthinkable_option2 }
 		available = {
-		has_stability > 0.60
+		has_stability > 0.50
 		has_war_support > 0.50
                 threat > 0.5
 		}
@@ -1350,6 +1350,7 @@ prerequisite = { focus = KYU_research_slot }
 				add_idea = KYU_naval_junta2
 				remove_idea = KYU_naval_junta
 			}
+		 KYU = { country_event = kyushu.10 }
 		}
 	}
 	
@@ -1392,12 +1393,32 @@ available = {
 		available = {
 		has_idea = KYU_begin_political_unification 
 		neutrality > 0.50
+		NOT = { has_war_with = CHU }
+		CHU = {
+				is_in_faction = no
+				is_subject = no
+			}
+			is_in_faction = no 
+		OR = {
+		NOT  {
+                    has_war_with = OTO
+                }
+		OTO = {
+	    surrender_progress > 0.9
 		}
+	   }
+      }
 		
 		completion_reward = {
-		add_to_faction = CHU
 		add_political_power = 50
 		add_stability = 0.05
+		set_rule = { can_create_factions = yes }
+		KYU= {create_faction = KYU_defence_force}
+		add_to_faction = CHU
+			every_state = {
+			limit = { is_owned_by = CHU }
+			add_core_of = KYU
+		}
 		}
 	}
 	
@@ -1419,13 +1440,7 @@ available = {
 		}
 		
 		completion_reward = {
-		country_event = kyushu.10
-		annex_country = { target = CHU transfer_troops = yes } 
-		add_stability = 0.1
-                remove_ideas = KYU_begin_navy_unification 
-                remove_ideas = KYU_begin_army_unification 
-                remove_ideas = KYU_begin_political_unification 
-		hidden_effect = { set_cosmetic_tag = KYU_united_juntas }
+		country_event = kyushu.12
 		}
 	}
 	
@@ -1441,13 +1456,18 @@ available = {
 			factor = 0
 		}	
 		
-		available = { neutrality > 0.45}
+		available = { neutrality > 0.45
+		NOT = { has_war_with = CHU }
+		CHU = {
+				is_in_faction = no
+				is_subject = no
+			}
+			is_in_faction = no } 
 		
 		completion_reward = {
 		custom_effect_tooltip = KYU_unification_tt
-		KYU= {create_faction = KYU_defence_force}
-		
 		add_stability = 0.05
+       add_political_power = 50
 		}
 	}
 	
