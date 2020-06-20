@@ -1,0 +1,2738 @@
+focus_tree = {
+	id = clan_focus
+	
+	country = {
+		factor = 0
+		modifier = {
+			add = 10
+			OR = {
+				tag = SMZ
+				tag = RYU
+				tag = HOJ
+				tag = OTO
+				tag = MRI
+				tag = AMA
+				tag = CHO
+				tag = MIY
+				tag = AZA
+				tag = ASA
+				tag = ODA
+				tag = TAK
+				tag = UES
+				tag = SAT
+				tag = ASH
+				tag = DAT
+				tag = MOG
+				tag = NAN
+			}
+		}
+	}
+	
+	default = no
+	reset_on_civilwar = no
+
+	focus = {
+		id = clan_build_administration	# Restablish Public Administration
+		icon = GFX_focus_generic_political_power
+		
+		x = 0
+		y = 0
+		cost = 5
+		
+		ai_will_do = {
+			factor = 200
+		}
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_political_power = 150
+		}
+	}
+
+	focus = {
+		id = clan_subsidize_food	# Subsidize Food
+		icon = GFX_focus_generic_help_the_poor
+		prerequisite = { focus = clan_build_administration }
+		mutually_exclusive = { focus = clan_war_propaganda }
+		
+		x = -1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+		}
+		
+		relative_position_id = clan_build_administration
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_stability = 0.2
+		}
+	}
+	
+	focus = {
+		id = clan_war_propaganda	# Official Press
+		icon = GFX_focus_generic_propaganda
+		prerequisite = { focus = clan_build_administration }
+		mutually_exclusive = { focus = clan_subsidize_food }
+		
+		x = 1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+			modifier = {
+				factor = 2
+				has_war = yes
+			}
+		}
+		
+		relative_position_id = clan_build_administration
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_war_support = 0.2
+		}
+	}
+	
+	focus = {
+		id = clan_secure_loans	# Secure Loans
+		icon = GFX_focus_generic_money
+		prerequisite = { focus = clan_subsidize_food focus = clan_war_propaganda }
+		
+		x = -1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+		}
+		
+		relative_position_id = clan_subsidize_food
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_stability = 0.2
+		}
+	}
+	
+	focus = {
+		id = clan_reorganize_production	# Reorganize Production
+		icon = GFX_focus_generic_industry
+		prerequisite = { focus = clan_subsidize_food focus = clan_war_propaganda }
+		
+		x = 1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+		}
+		
+		relative_position_id = clan_subsidize_food
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_tech_bonus = {
+				name = industrial_bonus
+				bonus = 2
+				uses = 1
+				category = industry
+			}
+		}
+	}
+	
+	focus = {
+		id = clan_economic_mobilization	# Economic Mobilization
+		icon = GFX_focus_generic_industrial_complex
+		prerequisite = { focus = clan_subsidize_food focus = clan_war_propaganda }
+		
+		x = 3
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+			modifier = {
+				factor = 2
+				has_war = yes
+			}
+		}
+		
+		relative_position_id = clan_subsidize_food
+
+		available_if_capitulated = yes
+		
+		available = {
+			OR = {
+				has_idea = civilian_economy
+				has_idea = low_economic_mobilisation
+				has_idea = partial_economic_mobilisation 
+				has_idea = war_economy
+			}
+		}
+
+		completion_reward = {
+			if = {
+				limit = { has_idea = war_economy }
+				add_ideas = tot_economic_mobilisation
+			}
+			if = {
+				limit = { has_idea = partial_economic_mobilisation }
+				add_ideas = war_economy
+			}
+			if = {
+				limit = {
+					OR = {
+						has_idea = civilian_economy
+						has_idea = low_economic_mobilisation
+					}
+				}
+				add_ideas = partial_economic_mobilisation
+			}
+		}
+	}
+	
+	focus = {
+		id = clan_restore_honour	# Daimyo's Honour
+		icon = GFX_focus_generic_appoint_daimyos
+		prerequisite = { focus = clan_secure_loans focus = clan_reorganize_production focus = clan_economic_mobilization }
+		
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+		}
+		
+		relative_position_id = clan_reorganize_production
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_stability = 0.10
+			add_war_support = 0.10
+			add_political_power = 100
+		}
+	}
+	
+	focus = {
+		id = clan_extra_tech_slot	# National University
+		icon = GFX_focus_generic_research_slot
+		prerequisite = { focus = clan_restore_honour }
+		x = -2
+		y = 1
+		
+		relative_position_id = clan_restore_honour
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+		}
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_research_slot = 1
+		}
+	}
+	
+	focus = {
+		id = clan_challenge_foreign_powers	# Challenge the Western Nations
+		icon = GFX_focus_generic_western_enemies
+		prerequisite = { focus = clan_restore_honour }
+		
+		x = -1
+		y = 2
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+			modifier = {
+				factor = 0.5
+				has_war = yes
+			}
+		}
+		
+		relative_position_id = clan_restore_honour
+
+		available_if_capitulated = yes
+		
+		available = {
+			has_war_support > 0.5
+			any_neighbor_country = {
+				OR = {
+					tag = AMC
+					tag = KOB
+					tag = OSA
+					tag = HIR
+					tag = REI
+					tag = PRT
+					tag = OKI
+				}
+			}
+		}
+
+		completion_reward = {
+			every_neighbor_country = {
+				if = {
+					limit = {
+						OR = {
+							tag = AMC
+							tag = KOB
+							tag = OSA
+							tag = HIR
+							tag = REI
+							tag = PRT
+							tag = OKI
+						}
+					}
+					ROOT = {
+						create_wargoal = {
+							type = annex_everything
+							target = PREV
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = clan_challenge_other_clans	# Challenge the Other Daimyos
+		icon = GFX_focus_generic_defeat_daimyos
+		prerequisite = { focus = clan_restore_honour }
+		
+		x = 1
+		y = 2
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+			modifier = {
+				factor = 0.5
+				has_war = yes
+			}
+		}
+		
+		relative_position_id = clan_restore_honour
+
+		available_if_capitulated = yes
+		
+		available = {
+			has_war_support > 0.5
+			any_neighbor_country = {
+				OR = {
+					tag = SMZ
+					tag = RYU
+					tag = HOJ
+					tag = OTO
+					tag = MRI
+					tag = AMA
+					tag = CHO
+					tag = MIY
+					tag = AZA
+					tag = ASA
+					tag = ODA
+					tag = TAK
+					tag = UES
+					tag = SAT
+					tag = ASH
+					tag = DAT
+					tag = MOG
+					tag = NAN
+				}
+			}
+		}
+
+		completion_reward = {
+			if = {
+				limit = {
+					is_neighbor_of = SMZ
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = SMZ
+				}
+			}
+			if = {
+				limit = {
+					is_neighbor_of = RYU
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = RYU
+				}
+			}
+			if = {
+				limit = {
+					is_neighbor_of = HOJ
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = HOJ
+				}
+			}
+			if = {
+				limit = {
+					is_neighbor_of = OTO
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = OTO
+				}
+			}
+			if = {
+				limit = {
+					is_neighbor_of = MRI
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = MRI
+				}
+			}
+			if = {
+				limit = {
+					is_neighbor_of = AMA
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = AMA
+				}
+			}
+			if = {
+				limit = {
+					is_neighbor_of = CHO
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = CHO
+				}
+			}
+			if = {
+				limit = {
+					is_neighbor_of = MIY
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = MIY
+				}
+			}
+			if = {
+				limit = {
+					is_neighbor_of = AZA
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = AZA
+				}
+			}
+			if = {
+				limit = {
+					is_neighbor_of = ASA
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = ASA
+				}
+			}
+			if = {
+				limit = {
+					is_neighbor_of = ODA
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = ODA
+				}
+			}
+			if = {
+				limit = {
+					is_neighbor_of = TAK
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = TAK
+				}
+			}
+			if = {
+				limit = {
+					is_neighbor_of = UES
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = UES
+				}
+			}
+			if = {
+				limit = {
+					is_neighbor_of = SAT
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = SAT
+				}
+			}
+			if = {
+				limit = {
+					is_neighbor_of = ASH
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = ASH
+				}
+			}
+			if = {
+				limit = {
+					is_neighbor_of = DAT
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = DAT
+				}
+			}
+			if = {
+				limit = {
+					is_neighbor_of = MOG
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = MOG
+				}
+			}
+			if = {
+				limit = {
+					is_neighbor_of = NAN
+				}
+				create_wargoal = {
+					type = puppet_wargoal_focus
+					target = NAN
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = clan_secret_police		# Secret Police
+		icon = GFX_focus_generic_expand_police_forces
+		prerequisite = { focus = clan_restore_honour }
+		
+		x = 2
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+		}
+		
+		relative_position_id = clan_restore_honour
+
+		available_if_capitulated = yes
+		
+		available = {
+		
+		}
+
+		completion_reward = {
+			if = {
+				limit = {
+					has_dlc = "La Resistance"
+				}
+				add_ideas = clan_spirit_secret_police_lar
+			} else = {
+				add_ideas = clan_spirit_secret_police
+			}
+		}
+	}
+	
+	focus = {
+		id = clan_shimazu	# Long Live Shimazu
+		icon = GFX_focus_clan_SMZ
+		prerequisite = { focus = clan_restore_honour }
+		
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 200
+		}
+		
+		relative_position_id = clan_restore_honour
+
+		available_if_capitulated = yes
+		
+		allow_branch = {
+			tag = SMZ
+		}
+		
+		available = {
+			has_stability > 0.6
+			has_war_support > 0.6
+			is_puppet = no
+		}
+
+		completion_reward = {
+			set_rule = { can_create_factions = yes }	hidden_effect = { set_rule = { can_use_kamikaze_pilots = yes }}	custom_effect_tooltip = kamikaze_focus_tooltip
+		}
+	}
+	
+	focus = {
+		id = clan_ryuzoji	# Long Live Ryuzoji
+		icon = GFX_focus_clan_RYU
+		prerequisite = { focus = clan_restore_honour }
+		
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 200
+		}
+		
+		relative_position_id = clan_restore_honour
+
+		available_if_capitulated = yes
+		
+		allow_branch = {
+			tag = RYU
+		}
+		
+		available = {
+			has_stability > 0.6
+			has_war_support > 0.6
+			is_puppet = no
+		}
+
+		completion_reward = {
+			set_rule = { can_create_factions = yes }	hidden_effect = { set_rule = { can_use_kamikaze_pilots = yes }}	custom_effect_tooltip = kamikaze_focus_tooltip
+		}
+	}
+	
+	focus = {
+		id = clan_hojo	# Long Live Hojo
+		icon = GFX_focus_clan_HOJ
+		prerequisite = { focus = clan_restore_honour }
+		
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 200
+		}
+		
+		relative_position_id = clan_restore_honour
+
+		available_if_capitulated = yes
+		
+		allow_branch = {
+			tag = HOJ
+		}
+		
+		available = {
+			has_stability > 0.6
+			has_war_support > 0.6
+			is_puppet = no
+		}
+
+		completion_reward = {
+			set_rule = { can_create_factions = yes }	hidden_effect = { set_rule = { can_use_kamikaze_pilots = yes }}	custom_effect_tooltip = kamikaze_focus_tooltip
+		}
+	}
+	
+	focus = {
+		id = clan_otomo	# Long Live Otomo
+		icon = GFX_focus_clan_OTO
+		prerequisite = { focus = clan_restore_honour }
+		
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 200
+		}
+		
+		relative_position_id = clan_restore_honour
+
+		available_if_capitulated = yes
+		
+		allow_branch = {
+			tag = OTO
+		}
+		
+		available = {
+			has_stability > 0.6
+			has_war_support > 0.6
+			is_puppet = no
+		}
+
+		completion_reward = {
+			set_rule = { can_create_factions = yes }	hidden_effect = { set_rule = { can_use_kamikaze_pilots = yes }}	custom_effect_tooltip = kamikaze_focus_tooltip
+		}
+	}
+	
+	focus = {
+		id = clan_mori	# Long Live Mori
+		icon = GFX_focus_clan_MRI
+		prerequisite = { focus = clan_restore_honour }
+		
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 200
+		}
+		
+		relative_position_id = clan_restore_honour
+
+		available_if_capitulated = yes
+		
+		allow_branch = {
+			tag = MRI
+		}
+		
+		available = {
+			has_stability > 0.6
+			has_war_support > 0.6
+			is_puppet = no
+		}
+
+		completion_reward = {
+			set_rule = { can_create_factions = yes }	hidden_effect = { set_rule = { can_use_kamikaze_pilots = yes }}	custom_effect_tooltip = kamikaze_focus_tooltip
+		}
+	}
+	
+	focus = {
+		id = clan_amago	# Long Live Amago
+		icon = GFX_focus_clan_AMA
+		prerequisite = { focus = clan_restore_honour }
+		
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 200
+		}
+		
+		relative_position_id = clan_restore_honour
+
+		available_if_capitulated = yes
+		
+		allow_branch = {
+			tag = AMA
+		}
+		
+		available = {
+			has_stability > 0.6
+			has_war_support > 0.6
+			is_puppet = no
+		}
+
+		completion_reward = {
+			set_rule = { can_create_factions = yes }	hidden_effect = { set_rule = { can_use_kamikaze_pilots = yes }}	custom_effect_tooltip = kamikaze_focus_tooltip
+		}
+	}
+	
+	focus = {
+		id = clan_chosokame	# Long Live Chosokame
+		icon = GFX_focus_clan_CHO
+		prerequisite = { focus = clan_restore_honour }
+		
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 200
+		}
+		
+		relative_position_id = clan_restore_honour
+
+		available_if_capitulated = yes
+		
+		allow_branch = {
+			tag = CHO
+		}
+		
+		available = {
+			has_stability > 0.6
+			has_war_support > 0.6
+			is_puppet = no
+		}
+
+		completion_reward = {
+			set_rule = { can_create_factions = yes }	hidden_effect = { set_rule = { can_use_kamikaze_pilots = yes }}	custom_effect_tooltip = kamikaze_focus_tooltip
+		}
+	}
+	
+	focus = {
+		id = clan_miyoshi	# Long Live Miyoshi
+		icon = GFX_focus_clan_MIY
+		prerequisite = { focus = clan_restore_honour }
+		
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 200
+		}
+		
+		relative_position_id = clan_restore_honour
+
+		available_if_capitulated = yes
+		
+		allow_branch = {
+			tag = MIY
+		}
+		
+		available = {
+			has_stability > 0.6
+			has_war_support > 0.6
+			is_puppet = no
+		}
+
+		completion_reward = {
+			set_rule = { can_create_factions = yes }	hidden_effect = { set_rule = { can_use_kamikaze_pilots = yes }}	custom_effect_tooltip = kamikaze_focus_tooltip
+		}
+	}
+	
+	focus = {
+		id = clan_azai	# Long Live Azai
+		icon = GFX_AZA
+		prerequisite = { focus = clan_restore_honour }
+		
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 200
+		}
+		
+		relative_position_id = clan_restore_honour
+
+		available_if_capitulated = yes
+		
+		allow_branch = {
+			tag = AZA
+		}
+		
+		available = {
+			has_stability > 0.6
+			has_war_support > 0.6
+			is_puppet = no
+		}
+
+		completion_reward = {
+			set_rule = { can_create_factions = yes }	hidden_effect = { set_rule = { can_use_kamikaze_pilots = yes }}	custom_effect_tooltip = kamikaze_focus_tooltip
+		}
+	}
+	
+	focus = {
+		id = clan_asakura	# Long Live Asakura
+		icon = GFX_focus_clan_ASA
+		prerequisite = { focus = clan_restore_honour }
+		
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 200
+		}
+		
+		relative_position_id = clan_restore_honour
+
+		available_if_capitulated = yes
+		
+		allow_branch = {
+			tag = ASA
+		}
+		
+		available = {
+			has_stability > 0.6
+			has_war_support > 0.6
+			is_puppet = no
+		}
+
+		completion_reward = {
+			set_rule = { can_create_factions = yes }	hidden_effect = { set_rule = { can_use_kamikaze_pilots = yes }}	custom_effect_tooltip = kamikaze_focus_tooltip
+		}
+	}
+	
+	focus = {
+		id = clan_oda	# Long Live Oda
+		icon = GFX_focus_clan_ODA
+		prerequisite = { focus = clan_restore_honour }
+		
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 200
+		}
+		
+		relative_position_id = clan_restore_honour
+
+		available_if_capitulated = yes
+		
+		allow_branch = {
+			tag = ODA
+		}
+		
+		available = {
+			has_stability > 0.6
+			has_war_support > 0.6
+			is_puppet = no
+		}
+
+		completion_reward = {
+			set_rule = { can_create_factions = yes }	hidden_effect = { set_rule = { can_use_kamikaze_pilots = yes }}	custom_effect_tooltip = kamikaze_focus_tooltip
+		}
+	}
+	
+	focus = {
+		id = clan_takeda	# Long Live Takeda
+		icon = GFX_focus_clan_TAK
+		prerequisite = { focus = clan_restore_honour }
+		
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 200
+		}
+		
+		relative_position_id = clan_restore_honour
+
+		available_if_capitulated = yes
+		
+		allow_branch = {
+			tag = TAK
+		}
+		
+		available = {
+			has_stability > 0.6
+			has_war_support > 0.6
+			is_puppet = no
+		}
+
+		completion_reward = {
+			set_rule = { can_create_factions = yes }	hidden_effect = { set_rule = { can_use_kamikaze_pilots = yes }}	custom_effect_tooltip = kamikaze_focus_tooltip
+		}
+		
+
+	}
+	
+	focus = {
+		id = clan_uesugi	# Long Live Uesugi
+		icon = GFX_focus_clan_UES
+		prerequisite = { focus = clan_restore_honour }
+		
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 200
+		}
+		
+		relative_position_id = clan_restore_honour
+
+		available_if_capitulated = yes
+		
+		allow_branch = {
+			tag = UES
+		}
+		
+		available = {
+			has_stability > 0.6
+			has_war_support > 0.6
+			is_puppet = no
+		}
+
+		completion_reward = {
+			set_rule = { can_create_factions = yes }	hidden_effect = { set_rule = { can_use_kamikaze_pilots = yes }}	custom_effect_tooltip = kamikaze_focus_tooltip
+		}
+	}
+	focus = {
+		id = clan_satake	# Long Live Satake
+		icon = GFX_focus_clan_SAT
+		prerequisite = { focus = clan_restore_honour }
+		
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 200
+		}
+		
+		relative_position_id = clan_restore_honour
+
+		available_if_capitulated = yes
+		
+		allow_branch = {
+			tag = SAT
+		}
+		
+		available = {
+			has_stability > 0.6
+			has_war_support > 0.6
+			is_puppet = no
+		}
+
+		completion_reward = {
+			set_rule = { can_create_factions = yes }	hidden_effect = { set_rule = { can_use_kamikaze_pilots = yes }}	custom_effect_tooltip = kamikaze_focus_tooltip
+		}
+	}
+	
+	focus = {
+		id = clan_ashina	# Long Live Ashina
+		icon = GFX_focus_clan_ASH
+		prerequisite = { focus = clan_restore_honour }
+		
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 200
+		}
+		
+		relative_position_id = clan_restore_honour
+
+		available_if_capitulated = yes
+		
+		allow_branch = {
+			tag = ASH
+		}
+		
+		available = {
+			has_stability > 0.6
+			has_war_support > 0.6
+			is_puppet = no
+		}
+
+		completion_reward = {
+			set_rule = { can_create_factions = yes }	hidden_effect = { set_rule = { can_use_kamikaze_pilots = yes }}	custom_effect_tooltip = kamikaze_focus_tooltip
+		}
+	}
+	
+	focus = {
+		id = clan_date	# Long Live Date
+		icon = GFX_focus_clan_DAT
+		prerequisite = { focus = clan_restore_honour }
+		
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 200
+		}
+		
+		relative_position_id = clan_restore_honour
+
+		available_if_capitulated = yes
+		
+		allow_branch = {
+			tag = DAT
+		}
+		
+		available = {
+			has_stability > 0.6
+			has_war_support > 0.6
+			is_puppet = no
+		}
+
+		completion_reward = {
+			set_rule = { can_create_factions = yes }	hidden_effect = { set_rule = { can_use_kamikaze_pilots = yes }}	custom_effect_tooltip = kamikaze_focus_tooltip
+		}
+	}
+	
+	focus = {
+		id = clan_mogami	# Long Live Mogami
+		icon = GFX_focus_clan_MOG
+		prerequisite = { focus = clan_restore_honour }
+		
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 200
+		}
+		
+		relative_position_id = clan_restore_honour
+
+		available_if_capitulated = yes
+		
+		allow_branch = {
+			tag = MOG
+		}
+		
+		available = {
+			has_stability > 0.6
+			has_war_support > 0.6
+			is_puppet = no
+		}
+
+		completion_reward = {
+			set_rule = { can_create_factions = yes }	hidden_effect = { set_rule = { can_use_kamikaze_pilots = yes }}	custom_effect_tooltip = kamikaze_focus_tooltip
+		}
+	}
+	
+	focus = {
+		id = clan_nanbu	# Long Live Nanbu
+		icon = GFX_focus_clan_NAN
+		prerequisite = { focus = clan_restore_honour }
+		
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 200
+		}
+		
+		relative_position_id = clan_restore_honour
+
+		available_if_capitulated = yes
+		
+		allow_branch = {
+			tag = NAN
+		}
+		
+		available = {
+			has_stability > 0.6
+			has_war_support > 0.6
+			is_puppet = no
+		}
+
+		completion_reward = {
+			set_rule = { can_create_factions = yes }	hidden_effect = { set_rule = { can_use_kamikaze_pilots = yes }}	custom_effect_tooltip = kamikaze_focus_tooltip
+		}
+	}
+	
+	focus = {
+		id = clan_reassert_authority
+		icon = GFX_focus_generic_martial_law
+		prerequisite = { focus = clan_challenge_foreign_powers focus = clan_challenge_other_clans }
+		
+		x = 1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+		}
+		
+		relative_position_id = clan_challenge_foreign_powers
+
+		available_if_capitulated = yes
+		
+		available = {
+			any_controlled_state = {
+				NOT = { is_core_of = ROOT }
+			}
+		}
+
+		completion_reward = {
+			every_controlled_state = {
+				if = {
+					limit = {
+						NOT = { is_core_of = ROOT }
+					}
+					add_core_of = ROOT
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = clan_create_navy
+		icon = GFX_focus_generic_navy
+		
+		x = 4
+		y = 0
+		cost = 5
+		
+		ai_will_do = {
+			factor = 100
+		}
+		
+		relative_position_id = clan_build_administration
+
+		available_if_capitulated = yes
+		
+		available = {
+			any_state = {
+				is_coastal = yes
+				is_controlled_by = ROOT
+			}
+		}
+
+		completion_reward = {
+			hidden_effect = {
+				if = {
+					limit = {
+						has_dlc = "Man the Guns"
+					}
+					create_equipment_variant = {
+						name = "Ashigaru Class"
+						type = ship_hull_light_1
+						name_group = JAP_DD_HISTORICAL
+						parent_version = 0
+						modules = {
+							fixed_ship_battery_slot = ship_light_battery_1
+							fixed_ship_anti_air_slot = empty
+							fixed_ship_fire_control_system_slot = ship_fire_control_system_0
+							fixed_ship_radar_slot = empty
+							fixed_ship_engine_slot = light_ship_engine_1
+							fixed_ship_torpedo_slot = ship_torpedo_1
+						}
+						obsolete = yes
+					}
+					add_equipment_production = {
+						equipment = {
+							type = ship_hull_light_1
+							creator = "ROOT"
+							version_name = "Ashigaru Class"
+						}
+						requested_factories = 1
+						progress = 1
+						amount = 1
+					}
+					if = {
+						limit = {
+							num_of_factories > 15
+						}
+						add_equipment_production = {				
+							equipment = {
+								type = ship_hull_light_1
+								creator = "ROOT"
+								version_name = "Ashigaru Class"
+							}
+							requested_factories = 1
+							progress = 1
+							amount = 1
+						}
+					}
+					if = {
+						limit = {
+							num_of_factories > 30
+						}
+						add_equipment_production = {				
+							equipment = {
+								type = ship_hull_light_1
+								creator = "ROOT"
+								version_name = "Ashigaru Class"
+							}
+							requested_factories = 1
+							progress = 1
+							amount = 1
+						}
+					}
+				} else {
+					add_equipment_production = {
+						equipment = {
+							type = destroyer_1
+							creator = "ROOT" 
+						}
+						requested_factories = 1
+						progress = 1
+						amount = 1
+					}
+					if = {
+						limit = {
+							num_of_factories > 15
+						}
+						add_equipment_production = {
+							equipment = {
+								type = destroyer_1
+								creator = "ROOT" 
+							}
+							requested_factories = 1
+							progress = 1
+							amount = 1
+						}
+					}
+					if = {
+						limit = {
+							num_of_factories > 30
+						}
+						add_equipment_production = {
+							equipment = {
+								type = destroyer_1
+								creator = "ROOT" 
+							}
+							requested_factories = 1
+							progress = 1
+							amount = 1
+						}
+					}
+				}
+			}
+			if = {
+				limit = {
+					num_of_factories < 16
+				}
+				custom_effect_tooltip = clan_spawn_1_destroyer
+			}
+			if = {
+				limit = {
+					num_of_factories > 15
+					num_of_factories < 31
+				}
+				custom_effect_tooltip = clan_spawn_2_destroyers
+			}
+			if = {
+				limit = {
+					num_of_factories > 30
+				}
+				custom_effect_tooltip = clan_spawn_3_destroyers
+			}
+		}
+	}
+	
+	focus = {
+		id = clan_refit_merchant_ships
+		icon = GFX_focus_generic_cruiser_effort
+		prerequisite = { focus = clan_create_navy }
+		
+		x = -1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+			modifier = {
+				factor = 2
+				has_war = yes
+			}
+		}
+		
+		relative_position_id = clan_create_navy
+
+		available_if_capitulated = yes
+		
+		available = {
+			any_state = {
+				is_coastal = yes
+				is_controlled_by = ROOT
+			}
+		}
+
+		completion_reward = {
+			hidden_effect = {
+				if = {
+					limit = {
+						has_dlc = "Man the Guns"
+					}
+					create_equipment_variant = {
+						name = "Armed Merchant Cruiser"
+						type = ship_hull_cruiser_1
+						name_group = JAP_CA_HISTORICAL
+						parent_version = 0
+						modules = {
+							fixed_ship_battery_slot = ship_medium_battery_1
+							fixed_ship_anti_air_slot = empty
+							fixed_ship_fire_control_system_slot = ship_fire_control_system_0
+							fixed_ship_radar_slot = empty
+							fixed_ship_engine_slot = cruiser_ship_engine_1
+							fixed_ship_armor_slot = ship_armor_cruiser_1
+							fixed_ship_secondaries_slot = ship_secondaries_1
+							mid_1_custom_slot = empty
+							mid_2_custom_slot = empty
+							rear_1_custom_slot = empty
+						}
+						obsolete = yes
+					}
+					add_equipment_production = {
+						equipment = {
+							type = ship_hull_cruiser_1
+							creator = "ROOT"
+							version_name = "Armed Merchant Cruiser"
+						}
+						requested_factories = 1
+						progress = 1
+						amount = 1
+					}
+					if = {
+						limit = {
+							num_of_factories > 20
+						}
+						add_equipment_production = {				
+							equipment = {
+								type = ship_hull_cruiser_1
+								creator = "ROOT"
+								version_name = "Armed Merchant Cruiser"
+							}
+							requested_factories = 1
+							progress = 1
+							amount = 1
+						}
+					}
+				} else {
+					add_equipment_production = {
+						equipment = {
+							type = light_cruiser_1
+							creator = "ROOT" 
+						}
+						requested_factories = 1
+						progress = 1
+						amount = 1
+					}
+					if = {
+						limit = {
+							num_of_factories > 20
+						}
+						add_equipment_production = {
+							equipment = {
+								type = light_cruiser_1
+								creator = "ROOT" 
+							}
+							requested_factories = 1
+							progress = 1
+							amount = 1
+						}
+					}
+				}
+			}
+			if = {
+				limit = {
+					num_of_factories < 21
+				}
+				custom_effect_tooltip = clan_spawn_1_light_cruiser
+			} else = {
+				custom_effect_tooltip = clan_spawn_2_light_cruisers
+			}
+		}
+	}
+	
+	focus = {
+		id = clan_navy_officers
+		icon = GFX_focus_generic_navy_doctrine
+		prerequisite = { focus = clan_create_navy }
+		
+		x = 1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+		}
+		
+		relative_position_id = clan_create_navy
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_tech_bonus = {
+				name = naval_doc_bonus
+				bonus = 2
+				uses = 1
+				category = naval_doctrine
+			}
+		}
+	}
+	
+	focus = {
+		id = clan_procurement_ships
+		icon = GFX_focus_generic_battleship
+		prerequisite = { focus = clan_refit_merchant_ships focus = clan_navy_officers }
+		
+		x = 1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+			modifier = {
+				factor = 2
+				has_war = yes
+			}
+		}
+		
+		relative_position_id = clan_refit_merchant_ships
+
+		available_if_capitulated = yes
+		
+		available = {
+			any_state = {
+				is_coastal = yes
+				is_controlled_by = ROOT
+			}
+		}
+
+		completion_reward = {
+			hidden_effect = {
+				if = {
+					limit = {
+						has_dlc = "Man the Guns"
+					}
+					create_equipment_variant = {
+						name = "Daimyo Class"
+						name_group = JAP_BB_HISTORICAL
+						type = ship_hull_heavy_1
+						parent_version = 0
+						modules = {
+							fixed_ship_battery_slot = ship_heavy_battery_1
+							fixed_ship_anti_air_slot = ship_anti_air_1
+							fixed_ship_fire_control_system_slot = ship_fire_control_system_0
+							fixed_ship_radar_slot = empty
+							fixed_ship_engine_slot = heavy_ship_engine_1
+							fixed_ship_secondaries_slot = ship_secondaries_1
+							fixed_ship_armor_slot = ship_armor_bb_1
+							front_1_custom_slot = empty
+							mid_1_custom_slot = empty
+							mid_2_custom_slot = empty
+							rear_1_custom_slot = ship_heavy_battery_1
+						}
+						obsolete = yes
+					}
+					add_equipment_production = {
+						equipment = {
+							type = ship_hull_heavy_1
+							creator = "ROOT"
+							version_name = "Daimyo Class"
+						}
+						requested_factories = 1
+						progress = 1
+						amount = 1
+					}
+					if = {
+						limit = {
+							num_of_factories > 20
+						}
+						create_equipment_variant = {
+							name = "Hatamoto Class"
+							type = ship_hull_cruiser_2
+							name_group = JAP_CA_HISTORICAL
+							parent_version = 0
+							modules = {
+								fixed_ship_battery_slot = ship_medium_battery_1
+								fixed_ship_anti_air_slot = empty
+								fixed_ship_fire_control_system_slot = ship_fire_control_system_0
+								fixed_ship_radar_slot = empty
+								fixed_ship_engine_slot = cruiser_ship_engine_1
+								fixed_ship_armor_slot = ship_armor_cruiser_2
+								fixed_ship_secondaries_slot = ship_secondaries_1
+								front_1_custom_slot = ship_medium_battery_1
+								mid_1_custom_slot = ship_torpedo_1
+								mid_2_custom_slot = empty
+								rear_1_custom_slot = empty
+							}
+							obsolete = yes
+						}
+						add_equipment_production = {				
+							equipment = {
+								type = ship_hull_cruiser_2
+								creator = "ROOT"
+								version_name = "Hatamoto Class"
+							}
+							requested_factories = 1
+							progress = 1
+							amount = 1
+						}
+					}
+				} else {
+					add_equipment_production = {
+						equipment = {
+							type = battleship_1
+							creator = "ROOT" 
+						}
+						requested_factories = 1
+						progress = 1
+						amount = 1
+					}
+					if = {
+						limit = {
+							num_of_factories > 20
+						}
+						add_equipment_production = {
+							equipment = {
+								type = heavy_cruiser_1
+								creator = "ROOT" 
+							}
+							requested_factories = 1
+							progress = 1
+							amount = 1
+						}
+					}
+				}
+			}
+			if = {
+				limit = {
+					num_of_factories < 21
+				}
+				custom_effect_tooltip = clan_spawn_1_battleship
+			} else = {
+				custom_effect_tooltip = clan_spawn_1_battleship_1_heavy_cruiser
+			}
+		}
+	}
+	
+	focus = {
+		id = clan_dockyards
+		icon = GFX_focus_generic_dockyards	
+		prerequisite = { focus = clan_procurement_ships }
+		
+		ai_will_do = {
+			factor = 50
+		}	
+		
+		x = 0
+		y = 1
+		relative_position_id = clan_procurement_ships
+		cost = 10
+		
+		available_if_capitulated = yes
+		
+		available = {
+			any_owned_state = {
+				is_coastal = yes
+				free_building_slots = {
+					building = dockyard
+					size > 0
+					include_locked = yes
+				}
+			}
+		}
+		
+
+		completion_reward = {
+			random_owned_controlled_state = {
+				limit = {
+					is_coastal = yes
+					free_building_slots = {
+						building = dockyard
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_building_construction = {
+					type = dockyard
+					level = 1
+					instant_build = yes
+				}
+				add_extra_state_shared_building_slots = 1
+			}
+			random_owned_controlled_state = {
+				limit = {
+					is_coastal = yes
+					free_building_slots = {
+						building = dockyard
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_building_construction = {
+					type = dockyard
+					level = 1
+					instant_build = yes
+				}
+				add_extra_state_shared_building_slots = 1
+			}
+		}
+	}
+	
+	focus = {
+		id = clan_restructure_army	# Restructure Army
+		icon = GFX_focus_generic_army
+		
+		x = 8
+		y = 0
+		cost = 5
+		
+		ai_will_do = {
+			factor = 200
+		}
+		
+		relative_position_id = clan_build_administration
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			army_experience = 25
+			custom_effect_tooltip = clan_spawn_2_inf_divisions
+			hidden_effect = {
+				division_template = {
+					name = "Hohei Ryodan"
+					is_locked = yes
+					division_names_group = CLAN_INF_02
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 0 y = 2 }
+					}
+				}
+				if = {
+					limit = {
+						capital_scope = {
+							is_fully_controlled_by = ROOT
+						}
+					}
+					capital_scope = {
+						create_unit = {
+								division = "name = \"Hohei Ryodan\" division_template = \"Hohei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 1"
+								owner = ROOT
+						}
+						create_unit = {
+								division = "name = \"Hohei Ryodan\" division_template = \"Hohei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 1"
+								owner = ROOT
+						}
+					}
+				} else {
+					random_controlled_state = {
+						create_unit = {
+								division = "name = \"Hohei Ryodan\" division_template = \"Hohei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 1"
+								owner = ROOT
+						}
+						create_unit = {
+								division = "name = \"Hohei Ryodan\" division_template = \"Hohei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 1"
+								owner = ROOT
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = clan_quick_conscription	# Form Ad Hoc Battalions
+		icon = GFX_focus_generic_army_quantity
+		prerequisite = { focus = clan_restructure_army }
+		mutually_exclusive = { focus = clan_train_army }
+		
+		x = -1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+			modifier = {
+				factor = 2
+				has_war = yes
+			}
+		}
+		
+		relative_position_id = clan_restructure_army
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			custom_effect_tooltip = clan_spawn_3_divisions
+			hidden_effect = {
+				if = {
+					limit = {
+						capital_scope = {
+							is_fully_controlled_by = ROOT
+						}
+					}
+					capital_scope = {
+						create_unit = {
+								division = "name = \"Hohei Ryodan\" division_template = \"Hohei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 1"
+								owner = ROOT
+						}
+						create_unit = {
+								division = "name = \"Hohei Ryodan\" division_template = \"Hohei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 1"
+								owner = ROOT
+						}
+						create_unit = {
+								division = "name = \"Hohei Ryodan\" division_template = \"Hohei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 1"
+								owner = ROOT
+						}
+					}
+				} else {
+					random_controlled_state = {
+						create_unit = {
+								division = "name = \"Hohei Ryodan\" division_template = \"Hohei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 1"
+								owner = ROOT
+						}
+						create_unit = {
+								division = "name = \"Hohei Ryodan\" division_template = \"Hohei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 1"
+								owner = ROOT
+						}
+						create_unit = {
+								division = "name = \"Hohei Ryodan\" division_template = \"Hohei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 1"
+								owner = ROOT
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = clan_train_army	# Train a Professional Army
+		icon = GFX_focus_generic_army_quality
+		prerequisite = { focus = clan_restructure_army }
+		mutually_exclusive = { focus = clan_quick_conscription }
+		
+		x = 1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+		}
+		
+		relative_position_id = clan_restructure_army
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_ideas = clan_spirit_professional_army
+		}
+	}
+	
+	focus = {
+		id = clan_raise_the_banners	# Raise the Banners
+		icon = GFX_focus_generic_nobles
+		prerequisite = { focus = clan_quick_conscription focus = clan_train_army }
+		mutually_exclusive = { focus = clan_regular_soldiers}
+		
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+		}
+		
+		relative_position_id = clan_quick_conscription
+
+		available_if_capitulated = yes
+		
+		available = {
+			NOT = {
+				has_government = communism
+			}
+		}
+
+		completion_reward = {
+			custom_effect_tooltip = clan_spawn_2_samurai_divisions
+			hidden_effect = {
+				division_template = {
+					name = "Konoe Dai-ichi Shidan" 	
+					division_names_group = CLAN_INF_01
+					is_locked = yes
+					regiments = {
+						teppo_samurai  = { x = 0 y = 0 }
+						teppo_samurai  = { x = 0 y = 1 }
+						teppo_samurai  = { x = 0 y = 2 }
+						teppo_samurai  = { x = 1 y = 0 }
+						teppo_samurai  = { x = 1 y = 1 }
+					}
+					support = {
+						engineer = { x = 0 y = 0 }
+						recon = { x = 0 y = 1 }
+					}
+				}
+				if = {
+					limit = {
+						capital_scope = {
+							is_fully_controlled_by = ROOT
+						}
+					}
+					capital_scope = {
+						create_unit = {
+								division = "name = \"Konoe Dai-ichi Shidan\" division_template = \"Konoe Dai-ichi Shidan\" start_experience_factor = 0.9 start_equipment_factor = 1"
+								owner = ROOT
+						}
+						create_unit = {
+								division = "name = \"Konoe Dai-ichi Shidan\" division_template = \"Konoe Dai-ichi Shidan\" start_experience_factor = 0.9 start_equipment_factor = 1"
+								owner = ROOT
+						}
+					}
+				} else {
+					random_controlled_state = {
+						create_unit = {
+								division = "name = \"Konoe Dai-ichi Shidan\" division_template = \"Konoe Dai-ichi Shidan\" start_experience_factor = 0.9 start_equipment_factor = 1"
+								owner = ROOT
+						}
+						create_unit = {
+								division = "name = \"Konoe Dai-ichi Shidan\" division_template = \"Konoe Dai-ichi Shidan\" start_experience_factor = 0.9 start_equipment_factor = 1"
+								owner = ROOT
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = clan_regular_soldiers	# Expand Land Army
+		icon = GFX_focus_generic_infantry
+		prerequisite = { focus = clan_quick_conscription focus = clan_train_army }
+		mutually_exclusive = { focus = clan_raise_the_banners }
+		
+		x = 2
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+		}
+		
+		relative_position_id = clan_quick_conscription
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			custom_effect_tooltip = clan_spawn_2_inf_2_cav_divisions
+			hidden_effect = {
+				division_template = {
+					name = "Kihei Ryodan"
+					is_locked = yes
+					division_names_group = CLAN_CAV_01
+					regiments = {
+						cavalry = { x = 0 y = 0 }
+						cavalry = { x = 0 y = 1 }
+						cavalry = { x = 0 y = 2 }
+					}
+				}
+				if = {
+					limit = {
+						capital_scope = {
+							is_fully_controlled_by = ROOT
+						}
+					}
+					capital_scope = {
+						create_unit = {
+								division = "name = \"1 Hohei Ryodan\" division_template = \"Hohei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 1"
+								owner = ROOT
+						}
+						create_unit = {
+								division = "name = \"2 Hohei Ryodan\" division_template = \"Hohei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 1"
+								owner = ROOT
+						}
+						create_unit = {
+								division = "name = \"1 Kihei Ryodan\" division_template = \"Kihei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 1"
+								owner = ROOT
+						}
+						create_unit = {
+								division = "name = \"2 Kihei Ryodan\" division_template = \"Kihei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 1"
+								owner = ROOT
+						}
+					}
+				} else {
+					random_controlled_state = {
+						create_unit = {
+								division = "name = \"1 Hohei Ryodan\" division_template = \"Hohei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 1"
+								owner = ROOT
+						}
+						create_unit = {
+								division = "name = \"2 Hohei Ryodan\" division_template = \"Hohei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 1"
+								owner = ROOT
+						}
+						create_unit = {
+								division = "name = \"1 Kihei Ryodan\" division_template = \"Kihei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 1"
+								owner = ROOT
+						}
+						create_unit = {
+								division = "name = \"2 Kihei Ryodan\" division_template = \"Kihei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 1"
+								owner = ROOT
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = clan_hire_mercenaries
+		icon = GFX_focus_generic_army_expansion
+		prerequisite = { focus = clan_regular_soldiers focus = clan_raise_the_banners }
+		mutually_exclusive = { focus = clan_hire_officers }
+		
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+			modifier = {
+				factor = 2
+				has_war = yes
+			}
+		}
+		
+		relative_position_id = clan_raise_the_banners
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_manpower = 5000
+			if = {
+				limit = {
+					num_of_factories > 10
+				}
+				add_manpower = 5000
+			}
+			if = {
+				limit = {
+					num_of_factories > 20
+				}
+				add_manpower = 5000
+			}
+		}
+	}
+	
+	focus = {
+		id = clan_hire_officers	# Hire Foreign Officers
+		icon = GFX_focus_generic_officers
+		prerequisite = { focus = clan_regular_soldiers focus = clan_raise_the_banners }
+		mutually_exclusive = { focus = clan_hire_mercenaries }
+		
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+		}
+		
+		relative_position_id = clan_regular_soldiers
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_tech_bonus = {
+				name = land_doc_bonus
+				bonus = 2
+				uses = 1
+				category = land_doctrine
+			}
+		}
+	}
+	
+	focus = {
+		id = clan_technology	# Modernization Effort
+		icon = GFX_focus_generic_idea
+		prerequisite = { focus = clan_hire_mercenaries focus = clan_hire_officers }
+		mutually_exclusive = { focus = clan_bushido }
+		
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+		}
+		
+		relative_position_id = clan_hire_mercenaries
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_research_slot = 1
+		}
+	}
+	
+	focus = {
+		id = clan_bushido	# Reclaim Military Tradition
+		icon = GFX_focus_generic_strength
+		prerequisite = { focus = clan_hire_mercenaries focus = clan_hire_officers }
+		mutually_exclusive = { focus = clan_technology }
+		
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+			modifier = {
+				factor = 2
+				has_war = yes
+			}
+		}
+		
+		relative_position_id = clan_hire_officers
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_ideas = clan_spirit_bushido
+		}
+	}
+	
+	focus = {
+		id = clan_research_weapons	# Develop New Weapons
+		icon = GFX_focus_generic_advanced_weapons
+		prerequisite = { focus = clan_technology focus = clan_bushido }
+		mutually_exclusive = { focus = clan_procurements_rifles focus = clan_improvised_workshops }
+		
+		x = -1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+		}
+		
+		relative_position_id = clan_technology
+
+		available_if_capitulated = yes
+		
+		available = {
+		
+		}
+
+		completion_reward = {
+			if = {
+				limit = {
+					num_of_factories < 15
+				}
+				add_tech_bonus = {
+					name = infantry_artillery_bonus
+					bonus = 1.0
+					uses = 1
+					category = infantry_weapons
+					category = artillery
+				}
+			}
+			if = {
+				limit = {
+					num_of_factories > 15
+				}
+				add_tech_bonus = {
+					name = infantry_artillery_bonus
+					bonus = 1.0
+					uses = 2
+					category = infantry_weapons
+					category = artillery
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = clan_improvised_workshops	# Improvised Workshops
+		icon = GFX_focus_generic_arms_factory
+		prerequisite = { focus = clan_technology focus = clan_bushido }
+		mutually_exclusive = { focus = clan_research_weapons focus = clan_procurements_rifles }
+		
+		x = 1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+		}
+		
+		relative_position_id = clan_technology
+
+		available_if_capitulated = yes
+
+		available = {
+			any_controlled_state = {
+				free_building_slots = {
+					building = arms_factory
+					size > 0
+					include_locked = yes
+				}
+			}
+		}
+		
+		completion_reward = {
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+				add_extra_state_shared_building_slots = 1
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+				add_extra_state_shared_building_slots = 1
+			}
+		}
+	}
+	
+	focus = {
+		id = clan_procurements_rifles	# Import Weapons
+		icon = GFX_focus_generic_army_expansion_3
+		prerequisite = { focus = clan_technology focus = clan_bushido }
+		mutually_exclusive = { focus = clan_research_weapons focus = clan_improvised_workshops }
+		
+		x = 1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+			modifier = {
+				factor = 2
+				has_war = yes
+			}
+		}
+		
+		relative_position_id = clan_bushido
+
+		available_if_capitulated = yes
+		
+		available = {
+			any_controlled_state = {
+				naval_base > 0
+			}
+		}
+
+		completion_reward = {
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = 800
+			}
+			if = {
+				limit = {
+					num_of_factories > 10
+				}
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 800
+				}
+			}
+			if = {
+				limit = {
+					num_of_factories > 20
+				}
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 800
+				}
+			}
+			if = {
+				limit = {
+					any_controlled_state = {
+						naval_base > 5
+					}
+				}
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 800
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = clan_research_tanks	# Resarch Tanks
+		icon = GFX_focus_generic_tank_2
+		prerequisite = { focus = clan_research_weapons focus = clan_improvised_workshops focus = clan_procurements_rifles }
+		mutually_exclusive = { focus = clan_procurements_tanks }
+		
+		x = 1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+		}
+		
+		relative_position_id = clan_research_weapons
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			if = {
+				limit = {
+					num_of_factories < 15
+				}
+				add_tech_bonus = {
+					name = armor_bonus
+					bonus = 1.0
+					uses = 1
+					category = armor
+				}
+			}
+			if = {
+				limit = {
+					num_of_factories > 15
+				}
+				add_tech_bonus = {
+					name = armor_bonus
+					bonus = 1.0
+					uses = 2
+					category = armor
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = clan_procurements_tanks	# Import Tanks
+		icon = GFX_focus_generic_tank
+		prerequisite = { focus = clan_research_weapons focus = clan_improvised_workshops focus = clan_procurements_rifles }
+		mutually_exclusive = { focus = clan_research_tanks }
+		
+		x = 3
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+			modifier = {
+				factor = 2
+				has_war = yes
+			}
+		}
+		
+		relative_position_id = clan_research_weapons
+
+		available_if_capitulated = yes
+		
+		available = {
+			any_controlled_state = {
+				naval_base > 0
+			}
+		}
+
+		completion_reward = {
+			if = {
+				limit = {
+					NOT = { has_tech = gwtank  }
+				}
+				set_technology = {
+					gwtank = 1
+				}
+				add_equipment_to_stockpile = {
+					type = gw_tank_equipment
+					amount = 8
+				}
+				if = {
+					limit = {
+						num_of_factories > 10
+					}
+					add_equipment_to_stockpile = {
+						type = gw_tank_equipment
+						amount = 8
+					}
+				}
+				if = {
+					limit = {
+						num_of_factories > 20
+					}
+					add_equipment_to_stockpile = {
+						type = gw_tank_equipment
+						amount = 8
+					}
+				}
+				if = {
+					limit = {
+						any_controlled_state = {
+							naval_base > 5
+						}
+					}
+					add_equipment_to_stockpile = {
+						type = gw_tank_equipment
+						amount = 8
+					}
+				}
+			}
+			if = {
+				limit = {
+					has_tech = gwtank
+					NOT = { has_tech = basic_light_tank  }
+				}
+				add_equipment_to_stockpile = {
+					type = gw_tank_equipment
+					amount = 16
+				}
+				if = {
+					limit = {
+						num_of_factories > 10
+					}
+					add_equipment_to_stockpile = {
+						type = gw_tank_equipment
+						amount = 16
+					}
+				}
+				if = {
+					limit = {
+						num_of_factories > 20
+					}
+					add_equipment_to_stockpile = {
+						type = gw_tank_equipment
+						amount = 16
+					}
+				}
+				if = {
+					limit = {
+						any_controlled_state = {
+							naval_base > 5
+						}
+					}
+					add_equipment_to_stockpile = {
+						type = gw_tank_equipment
+						amount = 16
+					}
+				}
+			}
+			if = {
+				limit = {
+					has_tech = basic_light_tank
+				}
+				add_equipment_to_stockpile = {
+					type = light_tank_equipment
+					amount = 16
+				}
+				if = {
+					limit = {
+						num_of_factories > 10
+					}
+					add_equipment_to_stockpile = {
+						type = light_tank_equipment
+						amount = 16
+					}
+				}
+				if = {
+					limit = {
+						num_of_factories > 20
+					}
+					add_equipment_to_stockpile = {
+						type = light_tank_equipment
+						amount = 16
+					}
+				}
+				if = {
+					limit = {
+						any_controlled_state = {
+							naval_base > 5
+						}
+					}
+					add_equipment_to_stockpile = {
+						type = light_tank_equipment
+						amount = 16
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = clan_create_airforce	# Create Fighter Squadrons
+		icon = GFX_focus_generic_airforce
+		
+		x = 4
+		y = 0
+		cost = 5
+		
+		ai_will_do = {
+			factor = 100
+		}
+		
+		relative_position_id = clan_restructure_army
+
+		available_if_capitulated = yes
+
+
+		completion_reward = {
+			if = {
+				limit = {
+					NOT = { has_tech = early_fighter }
+				}
+				set_technology = { early_fighter = 1 }
+				add_equipment_to_stockpile = {
+					type = fighter_equipment
+					amount = 8
+				}
+				if = {
+					limit = {
+						num_of_factories > 10
+					}
+					add_equipment_to_stockpile = {
+						type = fighter_equipment
+						amount = 8
+					}
+				}
+				if = {
+					limit = {
+						num_of_factories > 20
+					}
+					add_equipment_to_stockpile = {
+						type = fighter_equipment
+						amount = 8
+					}
+				}
+			} else = {
+				add_equipment_to_stockpile = {
+					type = fighter_equipment
+					amount = 12
+				}
+				if = {
+					limit = {
+						num_of_factories > 10
+					}
+					add_equipment_to_stockpile = {
+						type = fighter_equipment
+						amount = 12
+					}
+				}
+				if = {
+					limit = {
+						num_of_factories > 20
+					}
+					add_equipment_to_stockpile = {
+						type = fighter_equipment
+						amount = 12
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = clan_pilot_school	# Pilot School
+		icon = GFX_focus_generic_airport
+		prerequisite = { focus = clan_create_airforce }
+		mutually_exclusive = { focus = clan_procurement_bombers }
+		
+		x = -1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+		}
+		
+		relative_position_id = clan_create_airforce
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			air_experience = 50
+			if = {
+				limit = {
+					capital_scope = {
+						NOT = {
+							free_building_slots = {
+								building = air_base
+								size > 1
+							}
+						}
+					}
+				}
+				random_owned_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = air_base
+							size > 1
+						}
+					}
+					add_building_construction = {
+						type = air_base
+						level = 2
+						instant_build = yes
+					}
+				}
+			}
+			if = {
+				limit = {
+					capital_scope = {
+						free_building_slots = {
+							building = air_base
+							size > 1
+						}
+					}
+				}
+				capital_scope = {
+					add_building_construction = {
+						type = air_base
+						level = 2
+						instant_build = yes
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = clan_procurement_bombers	# Airforce Procurements
+		icon = GFX_focus_generic_bomber
+		prerequisite = { focus = clan_create_airforce }
+		mutually_exclusive = { focus = clan_pilot_school }
+		
+		x = 1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+			modifier = {
+				factor = 2
+				has_war = yes
+			}
+		}
+		
+		relative_position_id = clan_create_airforce
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			if = {
+				limit = {
+					NOT = { has_tech = early_bomber }
+				}
+				set_technology = { early_bomber = 1 }
+				add_equipment_to_stockpile = {
+					type = tac_bomber_equipment_0
+					amount = 8
+				}
+				if = {
+					limit = {
+						num_of_factories > 10
+					}
+					add_equipment_to_stockpile = {
+						type = tac_bomber_equipment_0
+						amount = 8
+					}
+				}
+				if = {
+					limit = {
+						num_of_factories > 20
+					}
+					add_equipment_to_stockpile = {
+						type = tac_bomber_equipment_0
+						amount = 8
+					}
+				}
+				if = {
+					limit = {
+						num_of_factories > 30
+					}
+					add_equipment_to_stockpile = {
+						type = tac_bomber_equipment_0
+						amount = 8
+					}
+				}
+			} else = {
+				add_equipment_to_stockpile = {
+					type = tac_bomber_equipment_0
+					amount = 12
+				}
+				if = {
+					limit = {
+						num_of_factories > 10
+					}
+					add_equipment_to_stockpile = {
+						type = tac_bomber_equipment_0
+						amount = 12
+					}
+				}
+				if = {
+					limit = {
+						num_of_factories > 20
+					}
+					add_equipment_to_stockpile = {
+						type = tac_bomber_equipment_0
+						amount = 12
+					}
+				}
+				if = {
+					limit = {
+						num_of_factories > 30
+					}
+					add_equipment_to_stockpile = {
+						type = tac_bomber_equipment_0
+						amount = 12
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = clan_air_tech	# Specialized Designs
+		icon = GFX_focus_generic_airplanes
+		prerequisite = { focus = clan_procurement_bombers focus = clan_pilot_school }
+		
+		x = 1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+		}
+		
+		relative_position_id = clan_pilot_school
+
+		available_if_capitulated = yes
+	
+		completion_reward = {
+			add_tech_bonus = {
+				name = CAS_bonus
+				bonus = 1.5
+				uses = 1
+				category = cas_bomber
+			}
+			add_tech_bonus = {
+				name = nav_bomber_bonus
+				bonus = 1.5
+				uses = 1
+				category = naval_bomber
+			}
+		}
+	}
+	
+	focus = {
+		id = clan_air_doctrine	# Independent Airforce
+		icon = GFX_focus_generic_air_doctrine
+		prerequisite = { focus = clan_air_tech }
+		
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 50
+		}
+		
+		relative_position_id = clan_air_tech
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_tech_bonus = {
+				name = air_doc_bonus
+				bonus = 2.0
+				uses = 1
+				category = air_doctrine
+			}
+		}
+	}
+}
