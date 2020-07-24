@@ -63,7 +63,7 @@
 			factor = 1
 		}
 		completion_reward = {
-		#add_stability = 0.10
+		add_ideas = PRO_prepared_for_the_next_war
 		add_war_support = 0.10
 		set_rule = { can_create_factions = yes }
 		}
@@ -617,8 +617,14 @@
 		}
 		completion_reward = {
 			air_experience = 5
-			army_experience = 5
 			navy_experience = 5
+			army_experience = 10
+			add_tech_bonus = {
+				name = land_doc_bonus
+				bonus = 1.0
+				uses = 2
+				category = land_doctrine
+			}
 		}
 	}
 
@@ -865,12 +871,14 @@
 		prerequisite = { 
 			focus = PRO_conference_of_the_two_capitals 
 			focus = PRO_japanese_entente 
+			focus = PRO_boycott_tohokese_products
 		}
 		ai_will_do = {
 			factor = 1
 		}
 		completion_reward = {
 			add_war_support = 0.05
+			add_ideas = PRO_war_cabinet
 		}
 	}
 
@@ -1029,11 +1037,14 @@
 	focus = {
 		id = PRO_conference_of_the_two_capitals
 		icon = GFX_focus_PRO_conference_of_the_two_capitals
-		x = 17
+		x = 15
 		y = 7
 		cost = 10
 		available_if_capitulated = yes
 		prerequisite = { focus = PRO_prince_chichibu_arrives }
+		available = {
+		 NOT = { has_war_with = KAN }
+		 }
 		ai_will_do = {
 			factor = 1
 		}
@@ -1045,7 +1056,7 @@
 	#Focus for Assassination of the Prime Minister
 	focus = {
 		id = PRO_assassination_of_the_prime_minister
-		icon = GFX_focus_PRO_assasinate_pm
+		icon = GFX_focus_PRO_assassination_of_pm
 		x = 23
 		y = 0
 		cost = 10
@@ -1114,13 +1125,20 @@
 		ai_will_do = {
 			factor = 1
 		}
+		available = {
+        NOT = { has_war_with = AMC }
+      }
+		
+		completion_reward = {
+        add_ideas = PRO_deal_with_america
+		}
 	}
 
 	#Focus for Deal with the British
 	focus = {
 		id = PRO_deal_with_the_british
 		icon = GFX_focus_PRO_deal_with_the_british
-		x = 13
+		x = 11
 		y = 7
 		cost = 10
 		available_if_capitulated = yes
@@ -1128,10 +1146,17 @@
 			focus = PRO_deal_with_america 
 		}
 		prerequisite = { 
-			focus = PRO_prince_chichibu_arrives 
+			focus = PRO_recover_from_the_braindrain
 		}
 		ai_will_do = {
 			factor = 1
+		}
+		available = {
+        NOT = { has_war_with = OSA }
+      }
+		
+		completion_reward = {
+        add_ideas = PRO_deal_with_the_british
 		}
 	}
 
@@ -1148,13 +1173,7 @@
 			factor = 1
 		}
 		completion_reward = {
-			army_experience = 10
-			add_tech_bonus = {
-				name = land_doc_bonus
-				bonus = 1.0
-				uses = 2
-				category = land_doctrine
-			}
+		add_ideas = PRO_kanto_militia
 		}
 	}
 
@@ -1162,14 +1181,18 @@
 	focus = {
 		id = PRO_contact_the_emperor
 		icon = GFX_focus_PRO_contact_the_emperor
-		x = 17
+		x = 15
 		y = 4
 		cost = 10
 		available_if_capitulated = yes
 		prerequisite = { focus = PRO_heart_of_japan }
+		mutually_exclusive = { focus = PRO_contact_the_zaibatsus }
 		ai_will_do = {
 			factor = 1
 		}
+		available = {
+		 NOT = { has_war_with = KAN }
+		 }
 		completion_reward = {
 		add_opinion_modifier = { target = KAN modifier = large_increase }
 			KAN = {
@@ -1184,11 +1207,14 @@
 	focus = {
 		id = PRO_prince_chichibu_arrives
 		icon = GFX_focus_PRO_prince_chichibu_arrives
-		x = 17
+		x = 15
 		y = 6
 		cost = 10
 		available_if_capitulated = yes
 		prerequisite = { focus = PRO_imperial_deal }
+		available = {
+		 NOT = { has_war_with = KAN }
+		 }
 		ai_will_do = {
 			factor = 1
 		}
@@ -1221,6 +1247,85 @@
 						emperor_showa
 					}
 				}
+		}
+		}
+	}
+	
+		focus = {
+		id = PRO_contact_the_zaibatsus
+		icon = GFX_focus_jap_zaibatsu 
+		x = 18
+		y = 4
+		cost = 10
+		available_if_capitulated = yes
+		prerequisite = { focus = PRO_heart_of_japan focus = PRO_colaborate_with_fascists }
+		mutually_exclusive = { focus = PRO_contact_the_emperor }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+		add_political_power = 100
+		}
+	}
+	
+	focus = {
+		id = PRO_stop_zaibatsus_influence
+		icon = GFX_goal_generic_forceful_treaty 
+		x = 1
+		y = 1
+		cost = 10
+		available_if_capitulated = yes
+		relative_position_id = PRO_contact_the_zaibatsus
+		prerequisite = { focus = PRO_contact_the_zaibatsus }
+		prerequisite = { focus = PRO_colaborate_with_fascists }
+		mutually_exclusive = { focus = PRO_guide_the_zaibatsus }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+		add_stability = -0.05
+		remove_ideas = JAP_zaibatsus
+		}
+	}
+	
+	focus = {
+		id = PRO_guide_the_zaibatsus
+		icon = GFX_focus_mex_privatisation 
+		x = -1
+		y = 1
+		cost = 10
+		available_if_capitulated = yes
+		relative_position_id = PRO_contact_the_zaibatsus
+		prerequisite = { focus = PRO_contact_the_zaibatsus }
+		mutually_exclusive = { focus = PRO_stop_zaibatsus_influence }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+		swap_ideas = {
+				remove_idea = JAP_zaibatsus
+				add_idea = JAP_guide_the_zaibatsus
+			}
+		}
+	}
+	
+		focus = {
+		id = PRO_boycott_tohokese_products
+		icon = GFX_focus_SHI_tackle_communism  
+		x = 1
+		y = 2
+		cost = 10
+		available_if_capitulated = yes
+		relative_position_id = PRO_guide_the_zaibatsus
+		prerequisite = { focus = PRO_guide_the_zaibatsus focus = PRO_stop_zaibatsus_influence }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+		add_political_power = 50
+		TOH = {
+		add_opinion_modifier = { target = PRO modifier = embargo }
+		add_opinion_modifier = { target = PRO modifier = sanctions_relations } 
 		}
 		}
 	}
@@ -1619,16 +1724,39 @@
 	focus = {
 		id = PRO_heart_of_japan
 		icon = GFX_focus_PRO_heart_of_japan
-		x = 15
-		y = 3
+		x = 1
+		y = 1
 		cost = 10
 		available_if_capitulated = yes
 		prerequisite = { focus = PRO_the_sun_rises }
+		relative_position_id = PRO_the_sun_rises
+		mutually_exclusive = { focus = PRO_colaborate_with_fascists }
 		ai_will_do = {
 			factor = 1
 		}
 		completion_reward = {
 			remove_ideas = PRO_political_struggle
+		}
+	}
+	
+		focus = {
+		id = PRO_colaborate_with_fascists
+		icon = GFX_focus_KYU_the_black_dragon
+		x = 4
+		y = 1
+		cost = 10
+		available_if_capitulated = yes
+		prerequisite = { focus = PRO_the_sun_rises }
+		relative_position_id = PRO_the_sun_rises
+		mutually_exclusive = { focus = PRO_heart_of_japan }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+		swap_ideas = {
+				remove_idea = PRO_political_struggle
+				add_idea = PRO_political_struggle2
+			}
 		}
 	}
 
@@ -1641,10 +1769,19 @@
 		cost = 10
 		available_if_capitulated = yes
 		prerequisite = { focus = PRO_open_talks_with_ezo }
+		available = { NOT = { has_war_with = EZO } }
 		ai_will_do = {
 			factor = 1
 		}
+		completion_reward = { every_state = {
+			limit = { is_owned_by = EZO }
+			add_core_of = PRO
+		} 
+		EZO = {
+			country_event = { id = pro.12 days = 7 } 
+		}
 	}
+}
 
 	#Focus for Social Democratic Majority
 	focus = {
@@ -1718,6 +1855,26 @@
 			add_ideas = PRO_sun_settles_idea
 		}
 	}
+	
+	focus = {
+		id = PRO_nationalize_the_zaibatsus
+		icon = GFX_focus_jap_zaibatsu
+		x = 6
+		y = 3
+		cost = 20
+		available_if_capitulated = yes
+		prerequisite = { focus = PRO_the_sun_settels }
+		prerequisite = { focus = PRO_deal_with_the_zaibatsus }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			swap_ideas = {
+				remove_idea = JAP_zaibatsus
+				add_idea = JAP_nationalize_the_zaibatsus				
+			}
+		}
+	}
 
 	#Focus for The Sun Rises
 	focus = {
@@ -1770,9 +1927,11 @@
 		cost = 10
 		available_if_capitulated = yes
 		prerequisite = { focus = PRO_inward_perfection }
+		available = { NOT = { has_war_with = EZO } }
 		ai_will_do = {
 			factor = 1
 		}
+	completion_reward = {	diplomatic_relation = { country = EZO relation = non_aggression_pact } }
 	}
 
 	#Focus for Pacts of non-aggression
@@ -1784,11 +1943,140 @@
 		cost = 10
 		available_if_capitulated = yes
 		prerequisite = { focus = PRO_inward_perfection }
+		mutually_exclusive = {focus = PRO_eliminate_radicalism}
 		ai_will_do = {
 			factor = 1
 		}
 		completion_reward = {
 			add_country_leader_trait = PRO_peace_resolve
+		}
+	}
+	
+	focus = {
+		id = PRO_eliminate_radicalism
+		icon = GFX_goal_support_democracy
+		x = 4
+		y = 5
+		cost = 10
+		available_if_capitulated = yes
+		prerequisite = { focus = PRO_inward_perfection }
+		mutually_exclusive = {focus = PRO_pacts_of_nonaggression}
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+				if = {
+					limit = { 
+					SHI = {
+						OR = { has_government = communism 
+						       has_government = fascism } 
+					    }
+						country_exists = SHI
+					}
+			PRO = { create_wargoal = {
+			target = SHI
+								type = annex_everything
+							}	
+						}
+			}
+			if = {
+					limit = { 
+					KYU = {
+						OR = { has_government = communism 
+						       has_government = fascism } 
+					    }
+						country_exists = KYU
+					}
+			PRO = { create_wargoal = {
+			target = KYU
+								type = annex_everything
+							}	
+						}
+			}
+			if = {
+					limit = { 
+					CHU = {
+						OR = { has_government = communism 
+						       has_government = fascism } 
+					    }
+						country_exists = CHU
+					}
+			PRO = { create_wargoal = {
+			target = CHU
+								type = annex_everything
+							}	
+						}
+			}
+			if = {
+					limit = { 
+					KAN = {
+						OR = { has_government = communism 
+						       has_government = fascism } 
+					    }
+						country_exists = KAN
+					}
+			PRO = { create_wargoal = {
+			target = KAN
+								type = annex_everything
+							}	
+						}
+			}
+				if = {
+					limit = { 
+					SHO = {
+						OR = { has_government = communism 
+						       has_government = fascism } 
+					    }
+						country_exists = SHO
+					}
+			PRO = { create_wargoal = {
+			target = SHO
+								type = annex_everything
+							}	
+						}
+			}
+				if = {
+					limit = { 
+					TOH = {
+						OR = { has_government = communism 
+						       has_government = fascism } 
+					    }
+					country_exists = TOH	
+					}
+			PRO = { create_wargoal = {
+			target = TOH
+								type = annex_everything
+							}	
+						}
+			}
+				if = {
+					limit = { 
+					EZO = {
+						OR = { has_government = communism 
+						       has_government = fascism } 
+					    }
+						country_exists = EZO
+					}
+			PRO = { create_wargoal = {
+			target = EZO
+								type = annex_everything
+							}	
+						}
+			}
+			if = {
+					limit = { 
+					REI = {
+						OR = { has_government = communism 
+						       has_government = fascism } 
+					    }
+						country_exists = REI
+					}
+			PRO = { create_wargoal = {
+			target = REI
+								type = annex_everything
+							}	
+						}
+			}
 		}
 	}
 	
@@ -1814,11 +2102,11 @@
 	focus = {
 		id = PRO_recover_from_the_braindrain
 		icon = GFX_focus_PRO_recover_from_the_braindrain
-		x = 15
-		y = 4
+		x = 13
+		y = 6
 		cost = 10
 		available_if_capitulated = yes
-		prerequisite = { focus = PRO_heart_of_japan }
+		prerequisite = { focus = PRO_heart_of_japan focus = PRO_urbanise_tokyo_bay}
 		ai_will_do = {
 			factor = 1
 		}
@@ -1831,7 +2119,7 @@
 	focus = {
 		id = PRO_imperial_deal
 		icon = GFX_focus_PRO_imperial_deal
-		x = 17
+		x = 15
 		y = 5
 		cost = 10
 		available_if_capitulated = yes
@@ -1839,6 +2127,9 @@
 		ai_will_do = {
 			factor = 1
 		}
+		available = {
+		 NOT = { has_war_with = KAN }
+		 }
 		completion_reward = {
 		add_popularity = {
 					ideology = autocracy
