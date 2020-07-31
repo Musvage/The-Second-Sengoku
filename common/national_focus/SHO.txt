@@ -66,7 +66,7 @@
 		icon = GFX_goal_generic_construct_civ_factory
 		cost = 10.00
 		relative_position_id = SHO_first_japanese_congress
-		x = 7
+		x = 6
 		y = 0
 			available_if_capitulated = yes
 			ai_will_do = {
@@ -108,8 +108,9 @@
 		mutually_exclusive = {
 			focus = SHO_neutralcoalition
 			focus = SHO_isolation
+			focus = SHO_western_leanings
 		}
-		x = 6
+		x = 8
 		y = 4
 			available = {
 					is_in_faction = no
@@ -119,7 +120,7 @@
 					factor = 1
 				}
 			completion_reward = {
-					create_faction = "Tokugawa shogunate"
+					create_faction = "Tokugawa Alliance"
 					add_ideas = SHO_aggresive
 					add_opinion_modifier = {
 							target = SHR
@@ -160,13 +161,62 @@
 		prerequisite = {
 			focus = SHO_aggresiveapproach
 		}
-		x = 2
-		y = 5
+		relative_position_id = SHO_aggresiveapproach
+		x = -2
+		y = 1
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
 				}
 			completion_reward = {
+			if = {
+					limit = {
+						#NAN = { is_subject = no }
+						NOT = { country_exists = UES }
+					}
+					hidden_effect = { release = UES }
+					SHO = {
+						set_autonomy = {
+							target = UES
+							autonomous_state = autonomy_integrated_puppet
+							freedom_level = 0.2
+						}
+					}
+
+				}
+			if = {
+					limit = {
+						#MOG = { is_subject = no }
+						NOT = { country_exists = ASA }
+					}
+					hidden_effect = { release = ASA }
+					SHO = {
+						set_autonomy = {
+							target = ASA
+							autonomous_state = autonomy_integrated_puppet
+							freedom_level = 0.2
+						}
+					}
+				}
+			if = {
+					limit = {
+						#DAT = { is_subject = no }
+						NOT = { country_exists = TAK }
+					}
+			hidden_effect = {		TAK = {
+			transfer_state = 83
+			transfer_state = 80
+			transfer_state = 107 } }
+					SHO = {
+						set_autonomy = {
+							target = TAK
+							autonomous_state = autonomy_integrated_puppet
+							freedom_level = 0.2
+						}
+					}
+
+				}
+
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_pathtoliberation"
 				}
 
@@ -178,8 +228,9 @@
 		prerequisite = {
 			focus = SHO_pathtoliberation
 		}
-		x = 2
-		y = 6
+		relative_position_id = SHO_pathtoliberation
+		x = 0
+		y = 1
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
@@ -197,33 +248,50 @@
 		icon = GFX_goal_generic_build_tank
 		cost = 10.00
 		prerequisite = {
-			focus = SHO_aggresiveapproach
+			focus = SHO_zaibatsumovements
 		}
-		x = 6
-		y = 5
+		relative_position_id = SHO_zaibatsumovements
+		x = -1
+		y = 1
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
 				}
 			completion_reward = {
+			add_political_power = -50
+					random_owned_controlled_state = {
+							limit = {
+									free_building_slots = {
+											building = arms_factory
+											size > 1
+											include_locked = yes
+										}
+								}
+							add_extra_state_shared_building_slots = 2
+							add_building_construction = {
+									type = arms_factory
+									level = 2
+									instant_build = yes
+								}
+						}
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_nationalizewarindustry"
-				}
-
+        }
 	}
 	focus = {
 		id = SHO_shogunateguardians
 		icon = GFX_focus_secret_rearmament
 		cost = 10.00
 		prerequisite = {
-			focus = SHO_nationalizewarindustry
+			focus = SHO_aggresiveapproach
 		}
-		x = 6
+		x = 8
 		y = 6
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
 				}
 			completion_reward = {
+			add_ideas = SHO_shogunateguardians
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_shogunateguardians"
 				}
 
@@ -235,13 +303,15 @@
 		prerequisite = {
 			focus = SHO_shogunateguardians
 		}
-		x = 8
-		y = 7
+		relative_position_id = SHO_shogunateguardians
+		x = 0
+		y = 1
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
 				}
 			completion_reward = {
+			add_ideas = SHO_conditionaltsujigiri
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_conditionaltsujigiri"
 				}
 
@@ -253,31 +323,40 @@
 		prerequisite = {
 			focus = SHO_conditionaltsujigiri
 		}
-		x = 7
-		y = 8
+		relative_position_id = SHO_conditionaltsujigiri
+		x = -1
+		y = 1
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
 				}
 			completion_reward = {
+			swap_ideas = {
+				remove_idea = SHO_conditionaltsujigiri
+				add_idea = SHO_allowseppuku
+			}
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_allowseppuku"
 				}
 
 	}
 	focus = {
 		id = SHO_internalattacks
-		icon = GFX_goal_unknown
+		icon = GFX_goal_generic_propaganda
 		cost = 10.00
 		prerequisite = {
 			focus = SHO_conditionaltsujigiri
 		}
-		x = 9
-		y = 8
+		relative_position_id = SHO_conditionaltsujigiri
+		x = 1
+		y = 1
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
 				}
 			completion_reward = {
+			add_stability = -0.05
+			add_war_support = 0.1
+			add_ideas = SHO_internalattacks
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_internalattacks"
 				}
 
@@ -395,8 +474,9 @@
 		prerequisite = {
 			focus = SHO_aggresiveapproach
 		}
-		x = 11
-		y = 5
+		relative_position_id = SHO_aggresiveapproach
+		x = 3
+		y = 1
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
@@ -406,56 +486,36 @@
 							ideology = autocracy
 							popularity = 0.1
 						}
-					add_war_support = -0.03
-					add_extra_state_shared_building_slots = 2
-					add_building_construction = {
-							type = arms_factory
-							level = 2
-							instant_build = yes
-						}
+					add_war_support = -0.1
+					add_stability = 0.05
 					random_owned_controlled_state = {
 							limit = {
 									free_building_slots = {
-											building = arms_factory
+											building = industrial_complex
 											size > 1
 											include_locked = yes
 										}
 								}
 							add_extra_state_shared_building_slots = 2
 							add_building_construction = {
-									type = arms_factory
+									type = industrial_complex
 									level = 2
 									instant_build = yes
 								}
 						}
-					random_owned_controlled_state = {
-							limit = {
-									free_building_slots = {
-											building = arms_factory
-											size > 1
-											include_locked = yes
-										}
-								}
-							add_extra_state_shared_building_slots = 2
-							add_building_construction = {
-									type = arms_factory
-									level = 2
-									instant_build = yes
-								}
 							log = "[GetDatetext]: [Root.GetName]: Focus SHO_zaibatsumovements"
-						}
 				}
-
 	}
 	focus = {
 		id = SHO_ashigarubatallions
 		icon = GFX_focus_SHO_ashigaru_batallions
 		cost = 10.00
 		prerequisite = {
-			focus = SHO_zaibatsumovements
+			focus = SHO_shogunateguardians
 		}
-		x = 11
-		y = 6
+		relative_position_id = SHO_zaibatsumovements
+		x = -1
+		y = 2
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
@@ -475,32 +535,42 @@
 		icon = GFX_goal_poland_goal
 		cost = 10.00
 		prerequisite = {
-			focus = SHO_shogunateguardians
-			focus = SHO_ashigarubatallions
 			focus = SHO_budospirit
 		}
-		x = 2
-		y = 7
+		prerequisite = {
+			focus = SHO_allowseppuku
+		}
+		relative_position_id = SHO_budospirit
+		x = 0
+		y = 3
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
 				}
 			completion_reward = {
+			custom_effect_tooltip = JAP_strengthen_the_divine_wind_effect
+			hidden_effect = { set_technology = { suicide_craft = 1 } }
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_armyofthedivinewind"
-				}
-
+			hidden_effect = {
+				set_rule = { can_use_kamikaze_pilots = yes }
+			}
+			custom_effect_tooltip = kamikaze_focus_tooltip
+			swap_ideas = {
+				remove_idea = SHO_allowseppuku
+				add_idea = SHO_armyofthedivinewind
+			}
+        }
 	}
 	focus = {
 		id = SHO_ultimatumtoneighbours
 		icon = GFX_focus_SHO_ultimatum_to_neighbours
 		cost = 10.00
 		prerequisite = {
-			focus = SHO_shogunateguardians
-			focus = SHO_ashigarubatallions
-			focus = SHO_budospirit
+			focus = SHO_thethkai
 		}
-		x = 5
-		y = 7
+		relative_position_id = SHO_thethkai
+		x = 0
+		y = 1
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
@@ -514,18 +584,23 @@
 		id = SHO_nationaldefenseindustry
 		icon = GFX_goal_generic_army_artillery2
 		cost = 10.00
-		prerequisite = {
-			focus = SHO_shogunateguardians
-			focus = SHO_ashigarubatallions
-			focus = SHO_budospirit
+			prerequisite = {
+			focus = SHO_zaibatsumovements
 		}
-		x = 11
-		y = 8
+		relative_position_id = SHO_zaibatsumovements
+		x = 1
+		y = 1
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
 				}
 			completion_reward = {
+			add_tech_bonus = {
+				name = industrial_bonus
+				bonus = 1.5
+				uses = 1
+				category = industry
+			}
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_nationaldefenseindustry"
 				}
 
@@ -540,6 +615,7 @@
 		mutually_exclusive = {
 			focus = SHO_aggresiveapproach
 			focus = SHO_isolation
+			focus = SHO_western_leanings
 		}
 		x = 18
 		y = 4
@@ -873,7 +949,7 @@
 		mutually_exclusive = {
 			focus = SHO_tokugawashogunaterestoration
 		}
-		x = 32
+		x = 33
 		y = 0
 			available = {
 					
@@ -894,7 +970,7 @@
 		prerequisite = {
 			focus = SHO_first_japanese_congress
 		}
-		x = 32
+		x = 33
 		y = 1
 			available_if_capitulated = yes
 			ai_will_do = {
@@ -1014,7 +1090,7 @@
 		mutually_exclusive = {
 			focus = SHO_government_union
 		}
-		x = 31
+		x = 32
 		y = 2
 			available_if_capitulated = yes
 			ai_will_do = {
@@ -1038,7 +1114,7 @@
 		mutually_exclusive = {
 			focus = SHO_democracy_revival
 		}
-		x = 33
+		x = 34
 		y = 2
 			available = {
 
@@ -1124,23 +1200,16 @@
 		icon = GFX_focus_generic_support_the_left_right
 		cost = 10.00
 		prerequisite = {
-			focus = SHO_strengthengovernment
-			focus = SHO_thethkai
-			focus = SHO_secretvolunteers
+			focus = SHO_internalattacks
 		}
-		x = 15
-		y = 8
+		relative_position_id = SHO_internalattacks
+		x = -1
+		y = 1
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
 				}
 			completion_reward = {
-					SHO = {
-							create_wargoal = {
-									type = puppet_wargoal_focus
-									target = PRO
-								}
-						}
 					SHO = {
 							create_wargoal = {
 									type = puppet_wargoal_focus
@@ -1156,12 +1225,11 @@
 		icon = GFX_focus_SHO_western_focus
 		cost = 10.00
 		prerequisite = {
-			focus = SHO_strengthengovernment
-			focus = SHO_thethkai
-			focus = SHO_secretvolunteers
+			focus = SHO_tradeagreements
 		}
-		x = 18
-		y = 8
+		relative_position_id = SHO_tradeagreements
+		x = 0
+		y = 1
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
@@ -1176,12 +1244,11 @@
 		icon = GFX_goal_continuous_suppression
 		cost = 10.00
 		prerequisite = {
-			focus = SHO_strengthengovernment
-			focus = SHO_thethkai
-			focus = SHO_secretvolunteers
+			focus = SHO_internalattacks
 		}
-		x = 21
-		y = 8
+		relative_position_id = SHO_internalattacks
+		x = 1
+		y = 1
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
@@ -1190,27 +1257,10 @@
 					SHO = {
 							create_wargoal = {
 									type = puppet_wargoal_focus
-									target = SHR
+									target = KAN
 								}
 						}
-					SHO = {
-							create_wargoal = {
-									type = puppet_wargoal_focus
-									target = CHU
-								}
-						}
-					SHO = {
-							create_wargoal = {
-									type = puppet_wargoal_focus
-									target = SHI
-								}
-						}
-					SHO = {
-							create_wargoal = {
-									type = puppet_wargoal_focus
-									target = KYU
-								}
-						}
+
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_securingwest"
 				}
 
@@ -1289,8 +1339,9 @@
 		mutually_exclusive = {
 			focus = SHO_aggresiveapproach
 			focus = SHO_neutralcoalition
+			focus = SHO_western_leanings
 		}
-		x = 30
+		x = 31
 		y = 4
 			available_if_capitulated = yes
 			ai_will_do = {
@@ -1303,12 +1354,37 @@
 				}
 
 	}
+	
+	focus = {
+		id = SHO_western_leanings
+		icon = GFX_focus_PRO_contact_the_emperor
+		cost = 10.00
+		prerequisite = {
+			focus = SHO_tokugawashogunaterestoration
+		}
+		mutually_exclusive = {
+			focus = SHO_aggresiveapproach
+			focus = SHO_neutralcoalition
+			focus = SHO_isolation
+		}
+		x = 29
+		y = 4
+			available_if_capitulated = yes
+			ai_will_do = {
+					factor = 1
+				}
+			completion_reward = {
+					add_stability = 0.05
+					log = "[GetDatetext]: [Root.GetName]: Focus SHO_isolation"
+				}
+
+	}
 	focus = {
 		id = SHO_diplomaticmissions
 		icon = GFX_focus_generic_diplomatic_treaty
 		cost = 10.00
 		prerequisite = {
-			focus = SHO_isolation
+			focus = SHO_western_leanings
 		}
 		x = 27
 		y = 5
@@ -1407,7 +1483,7 @@
 			focus = SHO_frenchmilitaryaid
 		}
 		x = 28
-		y = 8
+		y = 9
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
@@ -1422,7 +1498,7 @@
 		icon = GFX_goal_generic_small_arms
 		cost = 10.00
 		prerequisite = {
-			focus = SHO_isolation
+			focus = SHO_isolation focus = SHO_western_leanings
 		}
 		x = 30
 		y = 5
@@ -1440,7 +1516,7 @@
 		icon = GFX_goal_generic_intelligence_exchange
 		cost = 10.00
 		prerequisite = {
-			focus = SHO_diplomaticmissions
+			focus = SHO_volunteerbrigades
 		}
 		x = 30
 		y = 6
@@ -1462,6 +1538,48 @@
 		}
 		x = 30
 		y = 7
+			available_if_capitulated = yes
+			ai_will_do = {
+					factor = 1
+				}
+			completion_reward = {
+					log = "[GetDatetext]: [Root.GetName]: Focus SHO_shogunateallies"
+				}
+
+	}
+	
+		focus = {
+		id = SHO_invitepro
+		icon = GFX_goal_generic_dangerous_deal
+		cost = 10.00
+		prerequisite = {
+			focus = SHO_shogunateallies
+		}
+		relative_position_id = SHO_shogunateallies
+		mutually_exclusive = { focus = SHO_invitekansai }
+		x = -1
+		y = 1
+			available_if_capitulated = yes
+			ai_will_do = {
+					factor = 1
+				}
+			completion_reward = {
+					log = "[GetDatetext]: [Root.GetName]: Focus SHO_shogunateallies"
+				}
+
+	}
+	
+		focus = {
+		id = SHO_invitekansai
+		icon = GFX_goal_generic_dangerous_deal
+		cost = 10.00
+		prerequisite = {
+			focus = SHO_shogunateallies
+		}
+		mutually_exclusive = { focus = SHO_invitepro }
+		relative_position_id = SHO_shogunateallies
+		x = 1
+		y = 1
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
@@ -1515,7 +1633,7 @@
 			focus = SHO_shogunateinfrastructure
 		}
 		x = 32
-		y = 8
+		y = 7
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
@@ -1978,22 +2096,22 @@
 			completion_reward = {
 					add_equipment_to_stockpile = {
 							type = infantry_equipment_1
-							amount = 3000
-							producer = KOB
-						}
-					add_equipment_to_stockpile = {
-							type = support_equipment_1
 							amount = 500
 							producer = KOB
 						}
 					add_equipment_to_stockpile = {
+							type = support_equipment_1
+							amount = 100
+							producer = KOB
+						}
+					add_equipment_to_stockpile = {
 							type = artillery_equipment_1
-							amount = 200
+							amount = 100
 							producer = KOB
 						}
 					add_equipment_to_stockpile = {
 							type = light_tank_equipment_1
-							amount = 200
+							amount = 10
 							producer = KOB
 						}
 				}
@@ -2019,7 +2137,7 @@
 			completion_reward = {
 					add_equipment_to_stockpile = {
 							type = tac_bomber_equipment_1
-							amount = 500
+							amount = 100
 							producer = KOB
 						}
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_mediumbomberslicense"
@@ -2045,7 +2163,7 @@
 			completion_reward = {
 					add_equipment_to_stockpile = {
 							type = fighter_equipment_0
-							amount = 500
+							amount = 100
 							producer = KOB
 						}
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_frenchfighters"
@@ -2204,7 +2322,7 @@
 		prerequisite = {
 			focus = SHO_frenchmilitaryaid
 		}
-		x = 26
+		x = 27
 		y = 8
 			available_if_capitulated = yes
 			ai_will_do = {
