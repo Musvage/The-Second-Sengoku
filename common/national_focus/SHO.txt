@@ -13,7 +13,7 @@
 		id = SHO_armyrenewal
 		icon = GFX_goal_generic_small_arms
 		cost = 10.00
-		x = 47
+		x = 46
 		y = 0
 			available_if_capitulated = yes
 			ai_will_do = {
@@ -21,8 +21,6 @@
 				}
 			completion_reward = {
 					army_experience = 15
-					navy_experience = 15
-					air_experience = 15
 					add_tech_bonus = {
 							bonus = 1
 							uses = 1
@@ -112,7 +110,7 @@
 			completion_reward = {
 			        set_rule = { can_create_factions = yes }
 					create_faction = "Tokugawa Alliance"
-					add_ideas = SHO_aggresive
+					add_ideas = SHO_aggresiveapproach
 					add_opinion_modifier = {
 							target = KAN
 							modifier = condemn_aggression
@@ -147,7 +145,7 @@
 	}
 	focus = {
 		id = SHO_pathtoliberation
-		icon = GFX_goal_molotov_ribbentrop_pact
+		icon = GFX_focus_generic_nobles
 		cost = 10.00
 		prerequisite = {
 			focus = SHO_aggresiveapproach
@@ -443,6 +441,7 @@
 					factor = 1
 				}
 			completion_reward = {
+			add_ideas = FRA_infantry_focus
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_massproduction"
 				}
 
@@ -856,11 +855,7 @@
 					factor = 1
 				}
 			completion_reward = {
-					add_state_modifier = {
-							modifier = {
-									production_speed_industrial_complex_factor = 0.1
-								}
-						}
+					add_ideas = SHO_subside_civilian_development
 				}
 
 	}
@@ -1169,6 +1164,7 @@
 			ai_will_do = {
 					factor = 1
 				}
+			will_lead_to_war_with = TOH
 			completion_reward = {
 					SHO = {
 							create_wargoal = {
@@ -1213,6 +1209,7 @@
 			ai_will_do = {
 					factor = 1
 				}
+			will_lead_to_war_with = KAN
 			completion_reward = {
 					SHO = {
 							create_wargoal = {
@@ -1243,11 +1240,7 @@
 					factor = 1
 				}
 			completion_reward = {
-					add_state_modifier = {
-							modifier = {
-									production_speed_arms_factory_factor = 0.1
-								}
-						}
+					add_ideas = SHO_subside_military_development
 				}
 
 	}
@@ -1628,13 +1621,20 @@
 		prerequisite = {
 			focus = SHO_armyrenewal
 		}
-		x = 47
+		x = 46
 		y = 4
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
 				}
 			completion_reward = {
+			navy_experience = 15
+			add_tech_bonus = {
+				name = POL_the_twin_threats
+				bonus = 1.0
+				uses = 1
+				category = naval_doctrine
+			}
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_kaikokunipponinvestmens"
 				}
 
@@ -1653,6 +1653,13 @@
 					factor = 1
 				}
 			completion_reward = {
+			add_tech_bonus = {
+				name = cr_bonus
+				bonus = 1.0
+				ahead_reduction = 2
+				uses = 2
+				category = cl_tech
+			}
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_lightcruiserprojects"
 				}
 
@@ -1752,6 +1759,100 @@
 					factor = 1
 				}
 			completion_reward = {
+			if = {
+				limit = {
+					NOT = {
+						any_owned_state = {
+							dockyard > 0
+							free_building_slots = {
+								building = dockyard
+								size > 2
+								include_locked = yes
+							}
+						}
+					}
+					any_owned_state = {
+						is_coastal = yes
+					}
+				}
+				random_owned_controlled_state = {
+					limit = {
+						is_coastal = yes
+						free_building_slots = {
+							building = dockyard
+							size > 2
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 3
+					add_building_construction = {
+						type = dockyard
+						level = 3
+						instant_build = yes
+					}
+				}
+				set_country_flag = naval_effort_built
+			}
+			if = {
+				limit = {
+					NOT = { has_country_flag = naval_effort_built }
+					any_owned_state = {
+						dockyard > 0
+						free_building_slots = {
+							building = dockyard
+							size > 2
+							include_locked = yes
+						}
+					}
+				}
+				random_owned_controlled_state = {
+					limit = {
+						dockyard > 0
+						free_building_slots = {
+							building = dockyard
+							size > 2
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 3
+					add_building_construction = {
+						type = dockyard
+						level = 3
+						instant_build = yes
+					}
+				}
+				set_country_flag = naval_effort_built
+			}
+			if = {
+				limit = {
+					NOT = { has_country_flag = naval_effort_built }
+					NOT = {
+						any_owned_state = {
+							free_building_slots = {
+								building = dockyard
+								size > 2
+								include_locked = yes
+							}
+						}
+					}
+				}
+				random_state = {
+					limit = {
+						controller = { tag = ROOT }
+						free_building_slots = {
+							building = dockyard
+							size > 2
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 3
+					add_building_construction = {
+						type = dockyard
+						level = 3
+						instant_build = yes
+					}
+				}
+			}	
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_increasenavalproduction"
 				}
 
@@ -1763,13 +1864,20 @@
 		prerequisite = {
 			focus = SHO_kaikokunipponinvestmens
 		}
-		x = 47
+		x = 46
 		y = 6
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
 				}
 			completion_reward = {
+			add_tech_bonus = {
+				name = dd_bonus
+				bonus = 1.0
+				ahead_reduction = 2
+				uses = 1
+				category = dd_tech
+			}
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_destroyers"
 				}
 
@@ -1863,13 +1971,20 @@
 		prerequisite = {
 			focus = SHO_kaikokunipponinvestmens
 		}
-		x = 49
+		x = 47
 		y = 5
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
 				}
 			completion_reward = {
+			add_tech_bonus = {
+				name = dd_bonus
+				bonus = 1.0
+				ahead_reduction = 2
+				uses = 1
+				category = cv_tech
+			}
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_carrierdevelopment"
 				}
 
@@ -1881,13 +1996,20 @@
 		prerequisite = {
 			focus = SHO_kaikokunipponinvestmens
 		}
-		x = 52
+		x = 49
 		y = 5
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
 				}
 			completion_reward = {
+			add_tech_bonus = {
+				name = dd_bonus
+				bonus = 1.0
+				ahead_reduction = 2
+				uses = 1
+				category = ss_tech
+			}
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_deadlysubmarines"
 				}
 
@@ -2140,7 +2262,7 @@
 	}
 	focus = {
 		id = SHO_liberalisingclans
-		icon = GFX_goal_generic_dangerous_deal
+		icon = GFX_focus_generic_navy_doctrine
 		cost = 10.00
 		prerequisite = {
 			focus = SHO_samuraimodernization
@@ -2154,6 +2276,7 @@
 					factor = 1
 				}
 			completion_reward = {
+			add_political_power = 75
 			swap_ideas = {
 				remove_idea = SHO_matsudaira_clan
 				add_idea = SHO_matsudaira_clan3
@@ -2217,14 +2340,14 @@
 		prerequisite = {
 			focus = SHO_armyrenewal
 		}
-		x = 59
+		x = 54
 		y = 4
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
 				}
 			completion_reward = {
-					air_experience = 25
+					air_experience = 15
 					add_tech_bonus = {
 							name = SHO_air_force
 							bonus = 1
@@ -2245,8 +2368,9 @@
 		mutually_exclusive = {
 			focus = SHO_localdevelopment
 		}
-		x = 56
-		y = 5
+		relative_position_id = SHO_rikugunkkbutaiexpansion
+		x = -2
+		y = 1
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
@@ -2271,8 +2395,9 @@
 		prerequisite = {
 			focus = SHO_acquirefrenchlicenses
 		}
-		x = 56
-		y = 6
+		relative_position_id = SHO_acquirefrenchlicenses
+		x = 0
+		y = 1
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
@@ -2312,8 +2437,9 @@
 		mutually_exclusive = {
 			focus = SHO_frenchfighters
 		}
-		x = 54
-		y = 7
+		relative_position_id = SHO_licenseproduction
+		x = -1
+		y = 1
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
@@ -2338,8 +2464,9 @@
 		mutually_exclusive = {
 			focus = SHO_mediumbomberslicense
 		}
-		x = 58
-		y = 7
+		relative_position_id = SHO_licenseproduction
+		x = 1
+		y = 1
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
@@ -2364,8 +2491,9 @@
 		mutually_exclusive = {
 			focus = SHO_acquirefrenchlicenses
 		}
-		x = 62
-		y = 5
+		relative_position_id = SHO_rikugunkkbutaiexpansion
+		x = 3
+		y = 1
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
@@ -2416,8 +2544,9 @@
 		mutually_exclusive = {
 			focus = SHO_tacticalbomberproduction
 		}
-		x = 59
-		y = 6
+		relative_position_id = SHO_localdevelopment
+		x = -3
+		y = 1
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
@@ -2449,8 +2578,9 @@
 		mutually_exclusive = {
 			focus = SHO_casproduction
 		}
-		x = 62
-		y = 6
+		relative_position_id = SHO_localdevelopment
+		x = -1
+		y = 1
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
@@ -2482,8 +2612,9 @@
 		mutually_exclusive = {
 			focus = SHO_localheavyfighterhayate
 		}
-		x = 64
-		y = 6
+		relative_position_id = SHO_localdevelopment
+		x = 1
+		y = 1
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
@@ -2532,11 +2663,7 @@
 					factor = 1
 				}
 			completion_reward = {
-					add_state_modifier = {
-							modifier = {
-									production_speed_infrastructure_factor = 0.1
-								}
-						}
+			add_ideas = SHO_infraestructuredevelopment
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_infraestructuredevelopment"
 				}
 
@@ -2548,13 +2675,20 @@
 		prerequisite = {
 			focus = SHO_kaikokunipponinvestmens
 		}
-		x = 50
+		x = 48
 		y = 6
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
 				}
 			completion_reward = {
+			add_tech_bonus = {
+				name = cr_bonus
+				bonus = 1.0
+				ahead_reduction = 2
+				uses = 2
+				category = ca_tech
+			}
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_heavycruisers"
 				}
 
@@ -2569,8 +2703,9 @@
 		mutually_exclusive = {
 			focus = SHO_localfighterproductionhayabusa
 		}
-		x = 67
-		y = 6
+		relative_position_id = SHO_localdevelopment
+		x = 3
+		y = 1
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
@@ -2578,7 +2713,7 @@
 			completion_reward = {
 					add_tech_bonus = {
 							name = SHO_air_support
-							bonus = 1
+							bonus = 2
 							uses = 1
 							category = cat_heavy_fighter
 						}
@@ -2619,7 +2754,15 @@
 			ai_will_do = {
 					factor = 1
 				}
-
+completion_reward = { if = {
+				limit = {
+					has_full_control_of_state = 24
+				}
+				24 = {
+					add_extra_state_shared_building_slots = 3
+				}
+			}
+		}
 	}
 	focus = {
 		id = SHO_railways
@@ -2670,7 +2813,7 @@
 			ai_will_do = {
 					factor = 1
 				}
-
+    completion_reward = { add_ideas = YUG_idea_expanded_mining_industry }
 	}
 	focus = {
 		id = SHO_secure_economy
@@ -2686,6 +2829,5 @@
 			ai_will_do = {
 					factor = 1
 				}
-
-	}
+ completion_reward = { add_ideas = HUN_interventionism }
 }
