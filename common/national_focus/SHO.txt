@@ -1436,11 +1436,28 @@ create_country_leader = {
 		relative_position_id = SHO_tradeagreements
 		x = 0
 		y = 1
+		mutually_exclusive = { focus = SHO_shogunateallies }
+		available = { NOT = {has_war_with = OSA }
+                      NOT = { is_in_faction_with = OSA }
+                      OSA = { is_faction_leader = yes }	}
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
 				}
 			completion_reward = {
+			OSA = {
+				country_event = { id = generic.2 }
+				add_ai_strategy = {
+					type = befriend
+					id = "SHO"			
+					value = 1000
+				}
+				add_ai_strategy = {
+					type = alliance
+					id = "SHO"			
+					value = 200
+				}	
+			}
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_westernnegotiations"
 				}
 
@@ -1550,7 +1567,7 @@ create_country_leader = {
 		y = 1
 			available_if_capitulated = yes
 			ai_will_do = {
-					factor = 0
+					factor = 50
 				}
 			completion_reward = {
 					add_ideas = SHO_isolation
@@ -1572,14 +1589,14 @@ create_country_leader = {
 			focus = SHO_neutralcoalition
 			focus = SHO_isolation
 		}
-		x = 25
+		x = 26
 		y = 1
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 0
 				}
 			completion_reward = {
-					add_stability = 0.05
+					add_ideas = SHO_western_leanings
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_isolation"
 				}
 
@@ -1592,7 +1609,7 @@ create_country_leader = {
 			focus = SHO_western_leanings
 		}
 		relative_position_id = SHO_western_leanings
-		x = -1
+		x = -2
 		y = 1
 			available_if_capitulated = yes
 			ai_will_do = {
@@ -1604,7 +1621,7 @@ create_country_leader = {
 							modifier = neutrality_leanings_good
 						}
 					add_opinion_modifier = {
-							target = SHR
+							target = KAN
 							modifier = neutrality_leanings_good
 						}
 					add_opinion_modifier = {
@@ -1635,13 +1652,33 @@ create_country_leader = {
 			focus = SHO_diplomaticmissions
 		}
 		relative_position_id = SHO_diplomaticmissions
-		x = -1
+		x = 1
 		y = 1
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
 				}
 			completion_reward = {
+			if = { 
+			limit = { NOT = {has_war_with = OSA } 
+			country_exists = OSA      
+		}
+			OSA = { country_event = shogunate.20 } 
+			}
+			
+			if = { 
+			limit = { NOT = {has_war_with = REI } 
+			country_exists = REI      
+		}
+			REI = { country_event = shogunate.21 } 
+			}
+			
+			if = { 
+			limit = { NOT = {has_war_with = AMC } 
+			country_exists = AMC      
+		}
+			AMC = { country_event = shogunate.22 } 
+			}
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_tradeagreements"
 				}
 
@@ -1654,13 +1691,20 @@ create_country_leader = {
 			focus = SHO_diplomaticmissions
 		}
 		relative_position_id = SHO_diplomaticmissions
-		x = 1
+		x = -1
 		y = 1
-			available_if_capitulated = yes
+		available = { NOT = {has_war_with = KOB } }
+		available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
 				}
 			completion_reward = {
+			if = { 
+			limit = { NOT = {has_war_with = KOB } 
+			country_exists = KOB      
+		}
+			KOB = { country_event = shogunate.23 } 
+			}
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_frenchcooperation"
 				}
 
@@ -1675,11 +1719,26 @@ create_country_leader = {
 		relative_position_id = SHO_frenchcooperation
 		x = 0
 		y = 1
+		available = { NOT = {has_war_with = KOB } }
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
 				}
 			completion_reward = {
+			add_ideas = CHI_modern_logistics
+		add_tech_bonus = {
+			name = CHI_modern_logistics
+			bonus = 0.5
+			uses = 1
+			technology = tech_field_hospital
+			technology = tech_field_hospital2
+			technology = tech_field_hospital3
+			technology = tech_field_hospital4
+			technology = tech_logistics_company
+			technology = tech_logistics_company2
+			technology = tech_logistics_company3
+			technology = tech_logistics_company4
+		}
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_frenchmilitaryaid"
 				}
 
@@ -1691,14 +1750,22 @@ create_country_leader = {
 		prerequisite = {
 			focus = SHO_frenchmilitaryaid
 		}
+		prerequisite = {
+		focus = SHO_lgiontrangre
+		}
 		relative_position_id = SHO_frenchmilitaryaid
-		x = 0
+		x = 1
 		y = 2
+		available = { NOT = {has_war_with = KOB } }
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
 				}
 			completion_reward = {
+			every_army_leader = {
+			add_defense = 1
+		}
+			add_ideas = CHI_french_drill
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_frenchdrills"
 				}
 
@@ -1718,6 +1785,10 @@ create_country_leader = {
 					factor = 1
 				}
 			completion_reward = {
+			set_rule = { can_send_volunteers = yes }
+			add_ideas = SHO_volunteerbrigades
+			add_ideas = volunteer_corps_focus
+			add_ideas = foreign_expeditions_focus
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_volunteerbrigades"
 				}
 
@@ -1737,6 +1808,13 @@ create_country_leader = {
 					factor = 1
 				}
 			completion_reward = {
+			set_rule = { can_create_factions = yes }
+			PRO = {
+				country_event = { id = pro.11 days = 10 } 
+			}
+			KAN = {
+				country_event = { id = pro.11 days = 10 } 
+			}
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_nonaggressionpacts"
 				}
 
@@ -1749,13 +1827,24 @@ create_country_leader = {
 			focus = SHO_nonaggressionpacts
 		}
 		relative_position_id = SHO_nonaggressionpacts
+		mutually_exclusive = { focus = SHO_westernnegotiations }
 		x = 0
 		y = 1
-			available_if_capitulated = yes
-			ai_will_do = {
-					factor = 1
+		ai_will_do = {
+					factor = 0
+					modifier = {
+				factor = 10
+				threat > 0.30
 				}
+			}
+			available_if_capitulated = yes
 			completion_reward = {
+				if = {
+					limit = {
+						is_in_faction = no
+					}
+					create_faction = "Tokugawa Alliance"
+					}
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_shogunateallies"
 				}
 
@@ -1772,11 +1861,27 @@ create_country_leader = {
 		mutually_exclusive = { focus = SHO_invitekansai }
 		x = -1
 		y = 1
+		available = { NOT = {has_war_with = PRO }
+                      NOT = { is_in_faction_with = PRO }
+                      is_faction_leader = yes }
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
 				}
 			completion_reward = {
+			PRO = {
+				country_event = { id = generic.5 }
+				add_ai_strategy = {
+					type = befriend
+					id = "SHO"			
+					value = 1000
+				}
+				add_ai_strategy = {
+					type = alliance
+					id = "SHO"			
+					value = 200
+				}	
+			}
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_shogunateallies"
 				}
 
@@ -1793,11 +1898,27 @@ create_country_leader = {
 		relative_position_id = SHO_shogunateallies
 		x = 1
 		y = 1
+		available = { NOT = {has_war_with = KAN }
+                      NOT = { is_in_faction_with = KAN }
+                      is_faction_leader = yes }
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
 				}
 			completion_reward = {
+			KAN = {
+				country_event = { id = generic.5 }
+				add_ai_strategy = {
+					type = befriend
+					id = "SHO"			
+					value = 1000
+				}
+				add_ai_strategy = {
+					type = alliance
+					id = "SHO"			
+					value = 200
+				}	
+			}
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_shogunateallies"
 				}
 
@@ -1817,6 +1938,7 @@ create_country_leader = {
 					factor = 1
 				}
 			completion_reward = {
+			add_ideas = deterrence
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_defensiveprograms"
 				}
 
@@ -1836,6 +1958,37 @@ create_country_leader = {
 					factor = 1
 				}
 			completion_reward = {
+			random_owned_controlled_state = {
+			prioritize = { 44 }
+							add_building_construction = {
+									type = infrastructure
+									level = 2
+									instant_build = yes
+								}
+						}
+					random_owned_controlled_state = {
+					prioritize = { 114 }
+							add_building_construction = {
+									type = infrastructure
+									level = 1
+									instant_build = yes
+								}
+						}
+						random_owned_controlled_state = {
+						prioritize = { 67 }
+							add_building_construction = {
+									type = infrastructure
+									level = 2
+									instant_build = yes
+								}
+						}
+					random_owned_controlled_state = {
+							add_building_construction = {
+									type = infrastructure
+									level = 1
+									instant_build = yes
+								}
+						}
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_shogunateinfrastructure"
 				}
 
@@ -1855,6 +2008,9 @@ create_country_leader = {
 					factor = 1
 				}
 			completion_reward = {
+			add_ideas = ROM_agrarian_reform
+			add_stability = 0.05
+			add_war_support = 0.05
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_landreform"
 				}
 
@@ -1874,6 +2030,7 @@ create_country_leader = {
 					factor = 1
 				}
 			completion_reward = {
+			add_ideas = SHO_tradeport
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_tradeport"
 				}
 
@@ -2905,14 +3062,17 @@ create_country_leader = {
 		prerequisite = {
 			focus = SHO_frenchmilitaryaid
 		}
+		available = { NOT = { has_war_with = KOB } }
 		relative_position_id = SHO_frenchmilitaryaid
-		x = -1
+		x = 0
 		y = 1
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
 				}
 			completion_reward = {
+			add_war_support = 0.05
+			add_manpower = 5000
 					log = "[GetDatetext]: [Root.GetName]: Focus SHO_lgiontrangre"
 				}
 
