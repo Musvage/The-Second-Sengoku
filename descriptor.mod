@@ -15,7 +15,6 @@ replace_path="gfx/loadingscreens"
 replace_path="common/scripted_localisation"
 replace_path="common/units/names_divisions"
 replace_path="common/units/names_ships"
-replace_path="common/ideas"
 tags={
 	"Graphics"
 }
