@@ -1,26 +1,1258 @@
 focus_tree = {
-	id = SHR
+	id = KAN
 	country = {
 		factor = 0
 		modifier = {
 			add = 10
-			tag = SHR
+			tag = KAN
 		}
 	}
+	continuous_focus_position = { x = 0 y = 1900}
 	#MAIN
+	
 	focus = {
-		id = SHR_temporary
-		icon = GFX_focus_SHR_temporary
-		x = 20
+		id = KAN_alliance_with_the_clans
+		icon = GFX_focus_generic_nobles
+		x = 7
 		y = 0
-		cost = 8
+		cost = 10
+		mutually_exclusive = { focus = KAN_clan_crackdown}
+		available = {
+		NOT = { country_exists = ODA }
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_stability = -0.05
+		add_manpower = 10000
+		
+create_field_marshal = {
+	name = "Oda Kensaku"
+	picture = "Portrait_KAN_Oda_Kensaku.dds"
+	attack_skill = 2
+	defense_skill = 3
+	planning_skill = 2
+	logistics_skill = 2
+	skill = 2
+	traits = { JAP_samurai_lineage }
+}
+		}
+	}
+	
+		focus = {
+		id = KAN_clan_crackdown
+		icon = GFX_goal_generic_attack_allies
+		x = 9
+		y = 0
+		cost = 5
+		mutually_exclusive = { focus = KAN_alliance_with_the_clans }
+
+	available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_political_power = 250
+		}
+	}
+	focus = {
+		id = KAN_break_with_the_west
+		icon = GFX_goal_generic_more_territorial_claims
+		x = 0
+		y = 1
+		cost = 10
+		mutually_exclusive = { focus = KAN_maintain_western_ties }
+		relative_position_id = KAN_clan_crackdown
+		prerequisite = {focus = KAN_clan_crackdown focus = KAN_alliance_with_the_clans }
 		available = {
 		}
 		ai_will_do = {
 			factor = 10
 		}	
 		completion_reward = {
+		OSA = {	add_opinion_modifier = {
+				target = ROOT
+			modifier = condemn_aggression
+						}
+					}
+		KOB = {	add_opinion_modifier = {
+				target = ROOT
+			modifier = condemn_aggression
+						}
+					}
+		ROOT = {	add_opinion_modifier = {
+				target = KOB
+			modifier = condemn_aggression
+						}
+					}
+		ROOT = {	add_opinion_modifier = {
+				target = OSA
+			modifier = condemn_aggression
+						}
+					}
+		}
+	}
+	
+	focus = {
+		id = KAN_maintain_western_ties
+		icon = GFX_goal_generic_major_alliance
+		x = 0
+		y = 1
+		cost = 5
+		relative_position_id = KAN_alliance_with_the_clans
+		prerequisite = {focus = KAN_clan_crackdown focus = KAN_alliance_with_the_clans }
+		mutually_exclusive = { focus = KAN_break_with_the_west }
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_opinion_modifier = { target = OSA modifier = large_increase }
+		add_opinion_modifier = { target = KOB modifier = large_increase }
+		OSA = { add_opinion_modifier = { target = ROOT modifier = large_increase } }
+		KOB = { add_opinion_modifier = { target = ROOT modifier = large_increase } }
+		}
+	}
+	
+		focus = {
+		id = KAN_absolutism_no_more
+		icon = GFX_goal_support_democracy
+		x = -6
+		y = 1
+		cost = 10
+		mutually_exclusive = { focus = KAN_preserve_the_imperial_way focus = KAN_the_right_triumphant }
+		relative_position_id = KAN_maintain_western_ties
+		prerequisite = {focus = KAN_maintain_western_ties }
+		available = {
+		}
+		ai_will_do = {
+			factor = 0
+		}	
+		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus SHI_temporary"
 		}
 	}
-}
+	
+	focus = {
+		id = KAN_preserve_the_imperial_way
+		icon = GFX_goal_generic_neutrality_focus
+		x = 1
+		y = 1
+		cost = 10
+		mutually_exclusive = { focus = KAN_the_right_triumphant focus = KAN_absolutism_no_more }
+		relative_position_id = KAN_maintain_western_ties
+		prerequisite = { focus = KAN_break_with_the_west focus = KAN_maintain_western_ties }
+		available = {
+		}
+		ai_will_do = {
+			factor = 0
+		}	
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus SHI_temporary"
+		}
+	}
+	
+		focus = {
+		id = KAN_the_right_triumphant
+		icon = GFX_goal_support_fascism 
+		x = 6
+		y = 1
+		cost = 10
+		mutually_exclusive = { focus = KAN_absolutism_no_more focus = KAN_preserve_the_imperial_way }
+		relative_position_id = KAN_break_with_the_west
+		prerequisite = { focus = KAN_break_with_the_west }
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_ideas = KAN_western_veto
+		add_ideas = KAN_the_right_triumphant
+				add_popularity = {
+					ideology = fascism
+					popularity = 0.05
+				}
+		}
+	}
+	
+	focus = {
+		id = KAN_form_the_nationalist_front
+		icon = GFX_goal_generic_political_pressure 
+		x = 2
+		y = 3
+		cost = 10
+		relative_position_id = KAN_the_right_triumphant
+		prerequisite = { focus = KAN_the_right_triumphant }
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+        		add_popularity = {
+					ideology = fascism
+					popularity = 0.20
+				}
+		news_event = { days = 2 id = SSnews.19 }
+		}
+	}
+	
+	focus = {
+		id = KAN_showa_statism
+		icon = GFX_goal_generic_demand_territory 
+		x = -1
+		y = 1
+		cost = 10
+		relative_position_id = KAN_form_the_nationalist_front
+		prerequisite = { focus = KAN_form_the_nationalist_front }
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_ideas = KAN_showa_statism
+					random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 1
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = industrial_complex
+										size > 1
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = KAN_protect_the_small
+		icon = GFX_focus_generic_self_management 
+		x = -2
+		y = 1
+		cost = 10
+		relative_position_id = KAN_showa_statism
+		prerequisite = { focus = KAN_showa_statism }
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+				swap_ideas = {
+				add_idea = KAN_showa_statism2
+				remove_idea = KAN_showa_statism
+				}
+				random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = infrastructure
+						size > 0
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = infrastructure
+										size > 0
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_building_construction = {
+					type = infrastructure
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = infrastructure
+						size > 1
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = infrastructure
+										size > 1
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_building_construction = {
+					type = infrastructure
+					level = 2
+					instant_build = yes
+				}
+			}
+							random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 1
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = industrial_complex
+										size > 1
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = KAN_rightist_philosophy
+		icon = GFX_focus_research 
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = KAN_protect_the_small
+		prerequisite = { focus = KAN_protect_the_small }
+		prerequisite = { focus = KAN_fascist_putsch }
+		search_filters = {  FOCUS_FILTER_RESEARCH }
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_research_slot = 1
+		}
+	}
+	
+		focus = {
+		id = KAN_state_monopoly 
+		icon = GFX_goal_tfv_saf_anti_colonialist_crusade 
+		x = -1
+		y = 1
+		cost = 10
+		relative_position_id = KAN_protect_the_small
+		prerequisite = { focus = KAN_protect_the_small }
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+				swap_ideas = {
+				add_idea = KAN_showa_statism3
+				remove_idea = KAN_showa_statism2
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = infrastructure
+						size > 0
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = infrastructure
+										size > 0
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_building_construction = {
+					type = infrastructure
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = infrastructure
+						size > 1
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = infrastructure
+										size > 1
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_building_construction = {
+					type = infrastructure
+					level = 2
+					instant_build = yes
+				}
+			}
+						random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 1
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = industrial_complex
+										size > 1
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = KAN_protect_against_the_left
+		icon = GFX_focus_ger_bulwark_against_bolshevism 
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = KAN_form_the_nationalist_front
+		prerequisite = { focus = KAN_form_the_nationalist_front }
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_ideas = KAN_protect_against_the_left
+		}
+	}
+	
+		focus = {
+		id = KAN_army_primacy
+		icon = GFX_goal_generic_small_arms 
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = KAN_protect_against_the_left
+		prerequisite = { focus = KAN_protect_against_the_left }
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		army_experience = 5
+			add_tech_bonus = {
+				name = land_doc_bonus
+				bonus = 1.0
+				uses = 1
+				category = land_doctrine
+			}
+		add_ideas = KAN_army_primacy
+		}
+	}
+	
+		focus = {
+		id = KAN_improve_the_IJN
+		icon = GFX_goal_generic_navy_doctrines_tactics 
+		x = 2
+		y = 1
+		cost = 10
+		relative_position_id = KAN_catch_up_with_the_west
+		prerequisite = { focus = KAN_catch_up_with_the_west }
+		search_filters = {  FOCUS_FILTER_INDUSTRY }
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		navy_experience = 25
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 3
+				add_building_construction = {
+					type = dockyard
+					level = 3
+					instant_build = yes
+				}
+			}
+		}
+	}
+	
+	
+	focus = {
+		id = KAN_catch_up_with_the_west
+		icon = GFX_focus_ger_break_anglo_french_colonial_hegemony 
+		cost = 10.00
+        x = -1
+		y = 1
+		cost = 10
+		relative_position_id = KAN_the_right_triumphant
+		prerequisite = { focus = KAN_the_right_triumphant focus = KAN_preserve_the_imperial_way }
+		search_filters = {  FOCUS_FILTER_RESEARCH }
+			available_if_capitulated = yes
+			ai_will_do = {
+					factor = 1
+				}
+			completion_reward = {
+			add_tech_bonus = {
+				name = POL_the_twin_threats
+				bonus = 1.0
+				uses = 3
+				category = naval_doctrine
+			}
+					log = "[GetDatetext]: [Root.GetName]: Focus SHO_kaikokunipponinvestmens"
+				}
+
+	}
+	
+		focus = {
+		id = KAN_liaison_conference
+		icon =  GFX_goal_generic_intelligence_exchange
+		cost = 10.00
+		prerequisite = {
+			focus = KAN_national_research_policy
+		}
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = KAN_national_research_policy
+			available_if_capitulated = yes
+			ai_will_do = {
+					factor = 1
+				}
+			completion_reward = {
+			add_ideas = JAP_liaison_conference 
+						every_army_leader = {
+				add_planning = 1
+			}
+				}
+
+	}
+	focus = {
+		id = KAN_fascist_putsch
+		icon = GFX_goal_generic_more_territorial_claims 
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = KAN_showa_statism
+		prerequisite = { focus = KAN_showa_statism }
+		prerequisite = { focus = KAN_protect_against_the_left }
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		set_politics = { ruling_party = fascism elections_allowed = yes }
+					
+				create_country_leader = {
+					name = "Shumei Okawa"
+					desc = "POLITICS_OKAWA_DESC"
+					picture = "Portrait_KAN_Shumei_Okawa.dds"
+					expire = "1965.1.1"
+					ideology = fascism_ideology
+					traits = {
+						fascist_demagogue
+                        propaganda_expert						
+					}
+				}
+			clear_variable = dual_leader_id
+			clear_variable = dual_leader_second_title
+			set_variable = { dual_leader_first_title = 7 }
+			remove_ideas = Nagako
+			add_ideas = KAN_hirohitofascist
+		}
+	}
+	
+	focus = {
+		id = KAN_league_of_blood
+		icon = GFX_goal_generic_axis_build_infantry 
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = KAN_fascist_putsch
+		prerequisite = { focus = KAN_fascist_putsch }
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		swap_ideas = {
+				add_idea = KAN_league_of_blood
+				remove_idea = KAN_protect_against_the_left
+			}
+		set_rule = { can_create_factions = yes }
+		}
+	}
+	
+	focus = {
+		id = KAN_kyoto_incident
+		icon = GFX_goal_generic_territory_or_war 
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = KAN_rightist_philosophy
+		prerequisite = { focus = KAN_league_of_blood }
+		prerequisite = { focus = KAN_state_monopoly }
+		available = {
+        has_idea = KAN_western_veto
+		fascism > 0.74
+		}
+		bypass = {
+		NOT = { has_idea = KAN_western_veto }
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		will_lead_to_war_with = KOB
+		will_lead_to_war_with = OSA
+		completion_reward = {
+		country_event = { id = kansai.1 }
+		add_political_power = 250
+		add_stability = 0.1
+		add_war_support = 0.1
+		remove_ideas = KAN_western_veto
+				if = {
+			limit = {
+				country_exists = OSA
+				NOT = { is_in_faction_with = OSA }
+			}
+			declare_war_on = {
+				target = OSA
+				type = annex_everything
+			}
+		}
+		if = {
+			limit = {
+				country_exists = KOB
+				NOT = { is_in_faction_with = KOB }
+				KOB = { has_government = democratic }
+			}
+			declare_war_on = {
+				target = KOB
+				type = annex_everything
+			}
+		}
+		start_civil_war = {
+			ideology = democratic
+			size = 0.2
+			states = { 91 2 38 }
+		}
+		}
+	}
+	
+		focus = {
+		id = KAN_no_chains_attached
+		icon = GFX_focus_research 
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = KAN_kyoto_incident
+		search_filters = {  FOCUS_FILTER_RESEARCH }
+		prerequisite = { focus = KAN_kyoto_incident }
+		available = {
+		num_of_factories > 50
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		add_research_slot = 1
+		}
+	}
+
+focus = {
+		id = KAN_national_mobilization_law
+		icon = GFX_goal_generic_axis_build_infantry
+		prerequisite = { focus = KAN_the_right_triumphant focus = KAN_preserve_the_imperial_way }
+		x = -3
+		y = 1
+		relative_position_id = KAN_the_right_triumphant
+
+		cost = 10
+
+		ai_will_do = {
+			factor = 2
+		}
+
+		available = {
+
+		}
+
+		bypass = {
+
+		}
+
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = no
+
+
+		completion_reward = {
+			if = {
+				limit = {	
+					has_war_support < 0.5
+				}
+				add_war_support = 0.1
+			}
+			else_if = {
+				limit = {
+					has_idea = war_economy
+				}
+				add_political_power = 150
+			}
+			else = {
+				add_ideas = war_economy
+			}
+		}
+	}
+	
+	focus = {
+		id = KAN_national_research_policy
+		icon = GFX_focus_research
+		prerequisite = { focus = KAN_national_mobilization_law  }
+		x = 2
+		y = 1
+		relative_position_id = KAN_national_mobilization_law
+        search_filters = {  FOCUS_FILTER_RESEARCH }
+		cost = 10
+
+		ai_will_do = {
+			factor = 4
+		}
+
+		available = {
+
+		}
+
+		bypass = {
+
+		}
+
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = no
+
+		completion_reward = {
+			add_research_slot = 1
+		}
+	}
+	
+	focus = {
+		id = KAN_imperial_arsenals
+		icon = GFX_goal_generic_construct_mil_factory
+		prerequisite = { focus = KAN_national_mobilization_law }
+		x = 0
+		y = 1
+		relative_position_id = KAN_national_mobilization_law
+
+		cost = 10
+
+		ai_will_do = {
+			factor = 3
+		}
+
+		available = {
+
+		}
+
+		bypass = {
+
+		}
+
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = no
+
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		complete_tooltip = {
+			random_state = {
+				limit = {
+					has_state_flag = JAP_imperial_arsenals1
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = arms_factory
+					level = 2
+					instant_build = yes
+				}
+			}
+			random_state = {
+				limit = {
+					has_state_flag = JAP_imperial_arsenals2
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = arms_factory
+					level = 2
+					instant_build = yes
+				}
+			}
+		}
+
+		completion_reward = {
+			random_owned_controlled_state = {
+				limit = {
+					is_fully_controlled_by = PREV
+					is_core_of = ROOT	
+				
+					free_building_slots = {
+						building = arms_factory
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = arms_factory
+					level = 2
+					instant_build = yes
+				}
+				set_state_flag = JAP_imperial_arsenals1
+			}
+			random_owned_controlled_state = {
+				limit = {
+					is_fully_controlled_by = PREV
+					is_core_of = ROOT	
+			
+					free_building_slots = {
+						building = arms_factory
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = arms_factory
+					level = 2
+					instant_build = yes
+				}
+				set_state_flag = JAP_imperial_arsenals2
+			}
+		}
+	}
+	
+	focus = {
+		id = KAN_national_defense_state
+		icon = GFX_goal_generic_political_pressure
+		prerequisite = { focus = KAN_imperial_arsenals  }
+		x = -1
+		y = 4
+		relative_position_id = KAN_imperial_arsenals
+
+		cost = 10
+
+		ai_will_do = {
+			factor = 1
+		}
+
+		available = {
+
+		}
+
+		bypass = {
+
+		}
+
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = no
+
+		completion_reward = {
+			if = {
+				limit = {
+					has_war_support < 0.8
+				}
+				add_war_support = 0.1
+			}
+			else_if = {
+				limit = {
+					has_idea = tot_economic_mobilisation
+				}
+				add_political_power = 150
+			}
+			else = {
+				add_ideas = tot_economic_mobilisation
+			}
+		}
+	}
+	
+	focus = {
+		id = KAN_align_with_germany
+		icon = GFX_focus_chi_mission_to_germany
+		prerequisite = { focus = KAN_revenge_for_the_boshin_war focus = KAN_punish_the_rebellious_army}
+		x = 1
+		y = 1
+		relative_position_id = KAN_punish_the_rebellious_army
+
+		cost = 10
+
+		ai_will_do = {
+			factor = 1
+		}
+
+		available = {
+        NOT = { has_war_with = REI }
+		country_exists = REI
+		}
+
+		bypass = {
+
+		}
+
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = no
+
+		completion_reward = {
+		add_timed_idea = { idea = fascist_influence days = 300 }
+		REI = { add_opinion_modifier = {
+							target = KAN
+							modifier = neutrality_leanings_good
+						}
+					}
+		KAN = {				add_opinion_modifier = {
+							target = REI
+							modifier = neutrality_leanings_good
+						}
+					}
+		}
+	}
+	
+	focus = {
+		id = KAN_spiritual_mobilization
+		icon = GFX_focus_jap_spiritual_mobilization
+		prerequisite = { focus = KAN_imperial_arsenals }
+		x = 1
+		y = 1
+		relative_position_id = KAN_imperial_arsenals
+
+		cost = 10
+
+		ai_will_do = {
+			factor = 4
+		}
+
+		available = {
+
+		}
+
+		bypass = {
+
+		}
+
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = no
+
+		completion_reward = {
+			add_ideas = spiritual_mobilization_idea
+		}
+	}
+	
+	focus = {
+		id = KAN_inperial_japanese_army_air_academy
+		icon = GFX_goal_generic_air_doctrine
+		prerequisite = { focus = KAN_national_defense_state }
+		x = 0
+		y = 1
+		relative_position_id = KAN_national_defense_state
+        search_filters = {  FOCUS_FILTER_RESEARCH }
+		cost = 10
+
+		ai_will_do = {
+			factor = 4
+		}
+
+		available = {
+
+		}
+
+		bypass = {
+
+		}
+
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = no
+
+		completion_reward = {
+							air_experience = 15
+					add_tech_bonus = {
+							name = SHO_air_force
+							bonus = 1
+							uses = 1
+							category = air_doctrine
+						}
+					random_owned_controlled_state = {
+							limit = {
+									free_building_slots = {
+											building = air_base
+											size > 1
+											include_locked = yes
+										}
+								}
+							add_extra_state_shared_building_slots = 2
+							add_building_construction = {
+									type = air_base
+									level = 2
+									instant_build = yes
+								}
+						}
+		}
+	}
+	
+	focus = {
+		id = KAN_cabinet_information_comitee
+		icon = GFX_focus_KYU_supress_dissidents
+		prerequisite = { focus = KAN_spiritual_mobilization }
+		x = 1
+		y = 1
+		relative_position_id = KAN_spiritual_mobilization
+        search_filters = {  FOCUS_FILTER_RESEARCH }
+		cost = 10
+
+		ai_will_do = {
+			factor = 4
+		}
+
+		available = {
+
+		}
+
+		bypass = {
+
+		}
+
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = no
+
+		completion_reward = {
+		add_tech_bonus = {
+				name = secret_bonus
+				bonus = 1.0
+				uses = 2
+				category = electronics
+				category = nuclear
+				category = rocketry
+			}
+		}
+	}
+	
+	focus = {
+		id = KAN_student_volunteer_corps_service_for_the_nation
+		icon = GFX_focus_generic_military_academy
+		prerequisite = { focus = KAN_spiritual_mobilization }
+		x = -1
+		y = 1
+		relative_position_id = KAN_spiritual_mobilization
+
+		cost = 10
+
+		ai_will_do = {
+			factor = 4
+		}
+
+		available = {
+
+		}
+
+		bypass = {
+
+		}
+
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = no
+
+		completion_reward = {
+		add_ideas = military_youth_focus
+		}
+	}
+	
+	focus = {
+		id = KAN_boosting_production_for_the_nation
+		icon = GFX_goal_generic_production
+		prerequisite = { focus = KAN_student_volunteer_corps_service_for_the_nation }
+		x = 0
+		y = 1
+		relative_position_id = KAN_student_volunteer_corps_service_for_the_nation
+
+		cost = 10
+
+		ai_will_do = {
+			factor = 4
+		}
+        search_filters = {  FOCUS_FILTER_RESEARCH }
+		available = {
+
+		}
+
+		bypass = {
+
+		}
+        search_filters = { FOCUS_FILTER_INDUSTRY }
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = no
+
+		completion_reward = {
+		add_tech_bonus = {
+				name = industrial_bonus
+				bonus = 1.0
+				uses = 1
+				category = industry
+			}
+		}
+	}
+	
+		focus = {
+		id = KAN_revenge_for_the_boshin_war
+		icon = GFX_focus_generic_japanese_imperial_glory
+		prerequisite = { focus = KAN_national_defense_state}
+		x = 1
+		y = 2
+		relative_position_id = KAN_national_defense_state
+		mutually_exclusive = { focus = KAN_punish_the_rebellious_army }
+
+		cost = 10
+
+		ai_will_do = {
+			factor = 4
+		}
+
+		available = {
+
+		}
+
+		bypass = {
+
+		}
+
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = no
+        will_lead_to_war_with = SHO
+		completion_reward = {
+		KAN = {
+				create_wargoal = {
+				type = puppet_wargoal_focus
+				target = SHO
+					}
+				}
+		}
+	}
+	
+	focus = {
+		id = KAN_punish_the_rebellious_army
+		icon = GFX_goal_generic_secret_weapon
+		prerequisite = { focus = KAN_national_defense_state}
+		x = -1
+		y = 2
+		relative_position_id = KAN_national_defense_state
+		mutually_exclusive = { focus = KAN_revenge_for_the_boshin_war }
+
+		cost = 10
+
+		ai_will_do = {
+			factor = 4
+		}
+
+		available = {
+
+		}
+
+		bypass = {
+
+		}
+
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = no
+        will_lead_to_war_with = CHU
+		completion_reward = {
+		KAN = {
+				create_wargoal = {
+				type = puppet_wargoal_focus
+				target = CHU
+					}
+				}
+		}
+	}
+
