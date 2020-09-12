@@ -18,6 +18,9 @@ on_actions = {
 			KYU = {
 				country_event = { id = startup_flavour.2 }
 			}
+			FER = {
+				country_event = { id = startup_flavour.3 }
+			}
 
                         every_country = {
 				country_event = { id = options.1 }
@@ -249,5 +252,201 @@ on_actions = {
 		}
 		
 	}
+	
+	# Ace pilots
+	# country, FROM = ace
+	on_ace_promoted = {
+		random_events = {
+			100 = ace_promoted.1
+			5 = ace_promoted.2
+		}
+	}
+
+	# country, FROM = ace, PREV = enemy ace 
+	# This event fires twice, once for each ace.
+	on_aces_killed_each_other = {
+		random_events = {
+			100 = aces_killed_each_other.1
+		}
+	}
+	
+	# country, FROM = our ace, 
+	# PREV = enemy ace, has killed FROM
+	on_ace_killed_by_ace = {
+		random_events = {
+			100 = ace_killed_by_ace.1
+		}
+	}
+
+	# country, FROM = our ace, 
+	# PREV = enemy ace, killed by FROM
+	on_ace_killed_other_ace = {
+		random_events = {
+			100 = ace_killed_other_ace.1
+		}
+	}
+
+	# our ace is killed by no name
+	# country, FROM = ace
+	on_ace_killed = {
+		random_events = {
+			100 = ace_died.1
+		}
+	}
+	
+	# our ace died in accident
+	# country, FROM = ace
+	on_ace_killed_on_accident = {
+	
+	}
+	
+	# enemy ace is killed by our non name
+	# country, FROM = enemy ace
+	on_non_ace_killed_other_ace = {
+	
+	}
+
+	# During justifying wargoals
+	# triggered daily, so make sure there is a sink somewhere not firing events
+	# country, FROM = target nation
+	on_justifying_wargoal_pulse = {
+
+		random_events = {
+			100 = war_justification.1
+			100 = war_justification.2
+			100 = war_justification.3
+			100 = war_justification.4
+			100 = war_justification.5
+			100 = war_justification.6
+			100 = war_justification.7
+			100 = war_justification.8
+			100 = war_justification.9
+			100 = war_justification.10
+			100 = war_justification.11
+			100 = war_justification.12
+			100 = war_justification.13
+			100 = war_justification.14
+			100 = war_justification.15
+			100 = war_justification.16
+			100 = war_justification.17
+			100 = war_justification.18
+			100 = war_justification.19
+			17000 = 0
+			#Soviet demands
+			1000 = soviet.30
+			1000 = soviet.31
+			1000 = soviet.32
+			1000 = soviet.33
+			1000 = soviet.34
+		}
+	}
+
+	on_wargoal_expire = {
+		random_events = {
+			100 = war_justification.301
+		}
+	}
+	
+	# When a new faction is formed
+	on_faction_formed = {
+		effect = {
+			news_event = { id = news.159 }
+		}
+	}
+	
+	# ROOT is capitulated country, FROM is winner
+	on_capitulation = {
+		effect = {
+			if = {
+				limit = {
+					NOT = { original_tag = GER }
+					NOT = { has_government = fascism }
+					NOT = { has_civil_war = yes }
+					NOT = {
+						AND = {
+							FROM = {
+								original_tag = SPR
+							}
+							original_tag = SPR
+						}
+					}
+				}
+				news_event = { id = country_capitulated.0 days = 0 }
+			}
+		}
+	}
+	
+	on_army_leader_daily = {
+		effect = {
+			if = {
+				limit = {
+					check_variable = { random < 0.02 }
+					NOT = { has_trait = sick }
+					set_temp_variable = { temp = sum_unit_terrain_modifier@sickness_chance }
+					divide_temp_variable = { temp = num_units }
+					check_variable = { temp > 0.75 }
+					NOT = { has_unit_leader_flag = recently_sick }
+				}
+				add_timed_unit_leader_trait = {
+					trait = sick
+					days = 30
+				}
+				unit_leader_event = { id = generic.17 }
+			}
+		}
+	}
+	
+		# From is owner country
+	on_army_leader_won_combat = {
+		effect = {
+			if = {
+				limit = {
+					set_temp_variable = { chance = 0.001 }
+					set_temp_variable = { factor = 1.0 }
+					add_to_temp_variable = { factor = leader_modifier@wounded_chance_factor } 
+					multiply_temp_variable = { chance = factor }
+					check_variable = { random < chance }
+					NOT = { has_trait = wounded }
+				}
+				add_timed_unit_leader_trait = {
+					trait = wounded
+					days = 90
+				}
+				unit_leader_event = { id = generic.18 }
+			}
+		}
+	}
+	
+	# From is owner country
+	on_army_leader_lost_combat = {
+		effect = {
+			if = {
+				limit = {
+					set_temp_variable = { chance = 0.005 }
+					set_temp_variable = { factor = 1.0 }
+					add_to_temp_variable = { factor = leader_modifier@wounded_chance_factor } 
+					multiply_temp_variable = { chance = factor }
+					check_variable = { random < chance }
+					NOT = { has_trait = wounded }
+				}
+				add_timed_unit_leader_trait = {
+					trait = wounded
+					days = 90
+				}
+				unit_leader_event = { id = generic.18 }
+			}
+		}
+	}
+	
+	on_army_leader_promoted = {
+		effect = {
+			add_timed_unit_leader_trait = {
+				trait = recently_promoted
+				days = 100
+			}
+		}
+	}
+
+
 	
 }
