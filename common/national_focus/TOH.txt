@@ -1441,7 +1441,7 @@
 		relative_position_id = TOH_trotskyists
 		
 		available = {
-			#has_completed_focus = TOH_one_party_rule
+			NOT = { is_in_faction_with = FER }
 		}
 		
 		bypass = {
@@ -1459,6 +1459,10 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
+		declare_war_on = {
+				target = FER
+				type = annex_everything
+			}
 			custom_effect_tooltip = available_political_advisor
 			show_ideas_tooltip = TOH_leon_trotsky
 			hidden_effect = {
@@ -1486,7 +1490,7 @@
 		relative_position_id = TOH_trotskyists
 		
 		available = {
-		#	has_completed_focus = TOH_one_party_rule
+		NOT = { is_in_faction_with = FER }
 		}
 		
 		bypass = {
@@ -1504,6 +1508,10 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
+		declare_war_on = {
+				target = FER
+				type = annex_everything
+			}
 			set_country_flag = TOH_trotsky_back
 			add_ideas = TOH_soviet_backing
 		}
@@ -2809,6 +2817,7 @@
 		relative_position_id = TOH_planned_economy_focus
 		
 		available = {
+		not = { has_war_with = FER }
 		}
 		
 		bypass = {
@@ -2826,9 +2835,29 @@
 		}	
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		completion_reward = {
-			add_ideas = TOH_soviet_sat
+			add_ideas = YUG_idea_economic_aid 
 			set_rule = { 
 				can_only_justify_war_on_threat_country = yes 
+			}
+			if = {
+				limit = {
+				has_dlc = "Death or Dishonor" 
+				}
+				FER = { set_autonomy = { target = ROOT autonomy_state = autonomy_satellite } }
+				}
+		if = {
+				limit = { 
+				has_dlc = "Together for Victory"
+				NOT = { has_dlc = "Death or Dishonor" } 
+				}
+				FER = { set_autonomy = { target = ROOT autonomy_state = autonomy_dominion } }
+				}
+		if = {
+				limit = { 
+				NOT = { has_dlc = "Together for Victory" }
+				NOT = { has_dlc = "Death or Dishonor" }
+				}
+				FER = { puppet = ROOT }
 			}
 		}
 	}
@@ -2984,7 +3013,6 @@
 		}	
 		will_lead_to_war_with = PRO
 		search_filters = { FOCUS_FILTER_POLITICAL }
-		will_lead_to_war_with = PRO
 		completion_reward = {
 		if = {
 			limit = {
@@ -3027,6 +3055,7 @@
 		every_other_country = {
 			limit = {
 				NOT = { tag = TOH }
+				has_government = fascism
 			}
 			declare_war_on = {
 				target = ROOT
