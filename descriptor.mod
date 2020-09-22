@@ -27,6 +27,7 @@ replace_path="common/technology_sharing"
 replace_path="common/operations"
 replace_path="common/autonomous_states"
 replace_path="common/units/names"
+replace_path="common/units/names_divisions"
 replace_path="common/ideas"
 replace_path="common/country_leader"
 tags={
