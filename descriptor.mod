@@ -34,5 +34,5 @@ tags={
 	"Graphics"
 }
 picture="SS.png"
-supported_version="1.9.*"
+supported_version="1.10.*"
 path="C:/Users/koen.hehr/Documents/Paradox Interactive/Hearts of Iron IV/mod/The-Second-Sengoku"
