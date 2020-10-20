@@ -1,0 +1,95 @@
+get_random_food_everywhere = {
+	every_owned_state = {
+		random_list = {
+			75 = {
+				add_resource = {
+					type = food
+					amount = 5
+				}
+			}
+			25 = {
+				add_resource = {
+					type = food
+					amount = 10
+				}
+			}
+		}
+		if = {
+			limit = {
+				is_coastal = yes
+			}
+			add_resource = {
+				type = food
+				amount = 5
+			}
+		}
+		if = {
+			limit = {
+				is_capital = yes
+			}
+			add_resource = {
+				type = food
+				amount = 5
+			}
+		}
+	}
+}
+
+get_food_supply = {
+
+	### available food (production + import - exports)
+	set_variable = { food_total = resource_produced@food }
+	add_to_variable = { food_total = resource_imported@food }
+	subtract_from_variable = { food_total = resource_exported@food }
+	#multiply_variable = { food_total = 20 }	# TEST, REMOVE THIS LINE LATER # TEST, REMOVE THIS LINE LATER # TEST, REMOVE THIS LINE LATER
+}
+
+get_army_consumption = {
+	### food consumed by army
+	set_variable = { food_consumption = max_available_manpower_k }	# available - land army - training queue
+	subtract_from_variable = { food_consumption = manpower_k }	# available
+}
+
+check_food_suply = {
+	if = {
+		limit = {
+			check_variable = { food_total > food_consumption }
+		}
+		if = {
+			limit = {
+				has_idea = food_insufficient_spirit
+			}
+			remove_ideas = food_insufficient_spirit
+		}
+	} else = {
+		if = {
+			limit = {
+				NOT = { has_idea = food_insufficient_spirit }
+			}
+			add_ideas = food_insufficient_spirit
+		}
+	}
+	
+	set_temp_variable = { food_total_civilian = food_total }
+	multiply_temp_variable = { food_total_civilian = 10 }
+	
+	if = {
+		limit = {
+			check_variable = { food_total_civilian > max_manpower_k }	# max_manpower_k = all civilian
+		}
+		if = {
+			limit = {
+				NOT = { has_idea = food_surplus_spirit }
+			}
+			add_ideas = food_surplus_spirit
+		}
+	} else = {
+		if = {
+			limit = {
+				has_idea = food_surplus_spirit
+			}
+			remove_ideas = food_surplus_spirit
+		}
+	}
+}
+
