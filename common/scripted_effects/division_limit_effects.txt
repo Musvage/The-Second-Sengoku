@@ -1,0 +1,97 @@
+set_up_global_division_limit_sytem = {
+	set_variable = { global.division_limit_base = 14 }
+	# manpower laws
+	set_variable = { global.division_limit_disarmed_nation = 0 }
+	set_variable = { global.division_limit_volunteer_only = 0 }
+	set_variable = { global.division_limit_limited_conscription = 0 }
+	set_variable = { global.division_limit_extensive_conscription = 2 }
+	set_variable = { global.division_limit_service_by_requirement = 4 }
+	set_variable = { global.division_limit_all_adults_serve = 6 }
+	set_variable = { global.division_limit_scraping_the_barrel = 8 }
+	# training level
+	set_variable = { global.division_limit_soldier_baptism = 8 }
+	set_variable = { global.division_limit_soldier_basic = 4 }
+	set_variable = { global.division_limit_soldier_full = 0 }
+	set_variable = { global.division_limit_soldier_extended = -4 }
+	#other variables
+	set_variable = { global.division_limit_food_surplus = 2 }
+}
+
+set_up_division_limit_sytem = {
+	set_country_flag = has_division_limit_system
+	set_variable = { division_limit = global.division_limit_base }
+	if = {
+		limit = { has_idea = disarmed_nation }
+		set_variable = { division_limit_manpower_law = global.division_limit_disarmed_nation }
+	}
+	if = {
+		limit = { has_idea = volunteer_only }
+		set_variable = { division_limit_manpower_law = global.division_limit_dvolunteer_only }
+	}
+	if = {
+		limit = { has_idea = limited_conscription }
+		set_variable = { division_limit_manpower_law = global.division_limit_dlimited_conscription }
+	}
+	if = {
+		limit = { has_idea = extensive_conscription }
+		set_variable = { division_limit_manpower_law = global.division_limit_dextensive_conscription }
+	}
+	if = {
+		limit = { has_idea = service_by_requirement }
+		set_variable = { division_limit_manpower_law = global.division_limit_dservice_by_requirement }
+	}
+	if = {
+		limit = { has_idea = all_adults_serve }
+		set_variable = { division_limit_manpower_law = global.division_limit_all_adults_serve }
+	}
+	if = {
+		limit = { has_idea = scraping_the_barrel }
+		set_variable = { division_limit_manpower_law = global.division_limit_scraping_the_barrel }
+	}
+	if = {
+		limit = { has_idea = soldier_baptism }
+		set_variable = { division_limit_training_law = global.division_limit_soldier_baptism }
+	}
+	if = {
+		limit = { has_idea = soldier_basic }
+		set_variable = { division_limit_training_law = global.division_limit_soldier_basic }
+	}
+	if = {
+		limit = { has_idea = soldier_full }
+		set_variable = { division_limit_training_law = global.division_limit_soldier_full }
+	}
+	if = {
+		limit = { has_idea = soldier_extended }
+		set_variable = { division_limit_training_law = global.division_limit_soldier_extended }
+	}
+	add_to_variable = { division_limit = division_limit_manpower_law }
+	add_to_variable = { division_limit = division_limit_training_law }
+	every_controlled_state = {
+		limit = { has_state_flag = state_has_food_surplus }
+		add_to_variable = { division_limit = global.division_limit_food_surplus }
+	}
+}
+
+check_division_limit = {
+	set_variable = { division_limit = global.division_limit_base }
+	add_to_variable = { division_limit = division_limit_manpower_law }
+	add_to_variable = { division_limit = division_limit_training_law }
+	if = {
+		limit = {
+			num_divisions > division_limit
+		}
+		if = {
+			limit = {
+				NOT = { has_idea = SS_division_limit_spirit }
+			}
+			add_ideas = SS_division_limit_spirit
+		}
+	} else = {
+		if = {
+			limit = {
+				has_idea = SS_division_limit_spirit
+			}
+			remove_ideas = SS_division_limit_spirit
+		}
+	}
+}
