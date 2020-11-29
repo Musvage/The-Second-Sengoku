@@ -1162,6 +1162,70 @@ create_religion_pie_chart = {
 	}
 }
 
+add_religion_popularity = {
+	set_temp_variable = { temp = religion_popularity_array^pop_type_added }
+	add_to_temp_variable = { temp = pop_value_added }
+
+	if = {
+		limit = {
+			check_variable = { temp > 100 }
+		}
+		subtract_from_temp_variable = { temp = 100 }
+		subtract_from_temp_variable = { pop_value_added = temp }
+	}
+
+	for_each_loop = {
+		array = electoral_pie_chart_number_array
+
+		add_to_array = { percentage_popularity = electoral_pie_chart_number_array^i }
+	}
+
+	add_percentage_popularity = yes
+
+	for_each_loop = {
+		array = percentage_popularity
+
+		set_variable = { electoral_pie_chart_number_array^i = percentage_popularity^i }
+	}
+
+	clear_array = percentage_popularity
+
+	religion_sort = yes
+	create_religion_pie_chart = yes
+}
+
+subtract_religion_popularity = {
+	set_temp_variable = { temp =  religion_popularity_array^pop_type_subtracted }
+	subtract_from_temp_variable = { temp = pop_value_subtracted }
+
+	if = {
+		limit = {
+			check_variable = { temp < 0 }
+		}
+		multiply_temp_variable = { temp = -1 }
+		subtract_from_temp_variable = { pop_value_subtracted = temp }
+	}
+
+	for_each_loop = {
+		array = electoral_pie_chart_number_array
+
+		add_to_array = { percentage_popularity = electoral_pie_chart_number_array^i }
+	}
+
+	subtract_percentage_popularity = yes
+
+	for_each_loop = {
+		array = percentage_popularity
+
+		set_variable = { electoral_pie_chart_number_array^i = percentage_popularity^i }
+	}
+
+	clear_array = percentage_popularity
+
+	religion_sort = yes
+	create_religion_pie_chart = yes
+}
+
 religion_sort = {
 	clear_array = temp_id_array
 
@@ -1224,5 +1288,65 @@ naive_sorting = {
 			clear_variable = max_index
 		}
 		ARRAY = "[ROOT.GetSortArray]"
+	}
+}
+
+add_percentage_popularity = {
+	for_loop_effect = {
+		start = 0
+		end = percentage_popularity^num
+
+		add_to_temp_array = { temp_percentage_popularity_array = v }
+	}
+
+	remove_from_temp_array = { array = temp_percentage_popularity_array value = pop_type_added }
+	add_to_variable = { percentage_popularity^pop_type_added = pop_value_added }
+
+	while_loop_effect = {
+		limit = { check_variable = { pop_value_added > 0 } }
+
+		for_loop_effect = {
+			start = 0
+			end = temp_percentage_popularity_array^num
+
+			if = {
+				limit = {
+					check_variable = { percentage_popularity^temp_percentage_popularity_array^v > 0 }
+					check_variable = { pop_value_added > 0 }
+				}
+				subtract_from_variable = { percentage_popularity^temp_percentage_popularity_array^v = 1 }
+				subtract_from_temp_variable = { pop_value_added = 1 }
+			}
+		}
+	}
+}
+
+subtract_percentage_popularity = {
+	for_loop_effect = {
+		start = 0
+		end = percentage_popularity^num
+
+		add_to_temp_array = { temp_percentage_popularity_array = v }
+	}
+
+	remove_from_temp_array = { array = temp_percentage_popularity_array value = pop_type_subtracted }
+	subtract_from_variable = { percentage_popularity^pop_type_subtracted = pop_value_subtracted }
+
+	while_loop_effect = {
+		limit = { check_variable = { pop_value_subtracted > 0 } }
+
+		for_loop_effect = {
+			start = 0
+			end = temp_percentage_popularity_array^num
+
+			if = {
+				limit = {
+					check_variable = { percentage_popularity^temp_percentage_popularity_array^v < 100 }
+					check_variable = { pop_value_subtracted > 0 }
+				}
+				add_to_variable = { percentage_popularity^temp_percentage_popularity_array^v = 1 }
+				subtract_from_temp_variable = { pop_value_subtracted = 1 }
+			}
+		}
 	}
 }
