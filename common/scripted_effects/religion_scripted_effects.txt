@@ -1255,23 +1255,12 @@ religion_clear_all = {
 create_religion_pie_chart = {
 	clear_array = religion_pie_chart
 	clear_array = temp_pie
+	set_temp_variable = { temp_total = 0 }
 
 	for_each_loop = {
 		array = religion_popularity_array
 
 		add_to_array = { temp_pie = religion_popularity_array^i }
-	}
-
-	set_temp_variable = { temp = 0 }
-	set_temp_variable = { temp_index = 1 }
-
-	while_loop_effect = {
-		limit = {
-			check_variable = { temp < temp_pie^num }
-		}
-		add_to_variable = { temp_pie^temp_index = temp_pie^temp }
-		add_to_temp_variable = { temp = 1 }
-		add_to_temp_variable = { temp_index = 1 }
 	}
 
 	for_each_loop = {
@@ -1300,6 +1289,18 @@ create_religion_pie_chart = {
 	}
 
 	set_temp_variable = { temp = 0 }
+	set_temp_variable = { temp_index = 1 }
+
+	while_loop_effect = {
+		limit = {
+			check_variable = { temp < temp_pie^num }
+		}
+		add_to_variable = { temp_pie^temp_index = temp_pie^temp }
+		add_to_temp_variable = { temp = 1 }
+		add_to_temp_variable = { temp_index = 1 }
+	}
+
+	set_temp_variable = { temp = 0 }
 
 	while_loop_effect = {
 		limit = {
@@ -1308,8 +1309,6 @@ create_religion_pie_chart = {
 		resize_array = { array = religion_pie_chart value = religion_id_array^temp size = temp_pie^temp }
 		add_to_temp_variable = { temp = 1 }
 	}
-
-	clear_variable = temp_total
 }
 
 add_religion_popularity = {
@@ -1639,13 +1638,34 @@ update_religion_modifiers = {
 		limit = {
 			check_variable = { religion_id_array^0 = 1 }
 		}
-		remove_dynamic_modifier = { modifier = religion_buddhist }
-		remove_dynamic_modifier = { modifier = religion_catholicism }
-		remove_dynamic_modifier = { modifier = religion_orthodoxy }
-		remove_dynamic_modifier = { modifier = religion_protestantism }
-		remove_dynamic_modifier = { modifier = religion_shinto }
-
-		add_dynamic_modifier = { modifier = religion_buddhist }
+		if = {
+			limit = {
+				has_dynamic_modifier = { modifier = religion_catholicism }
+			}
+			remove_dynamic_modifier = { modifier = religion_catholicism }
+			add_dynamic_modifier = { modifier = religion_buddhist }
+		}
+		else_if = {
+			limit = {
+				has_dynamic_modifier = { modifier = religion_orthodoxy }
+			}
+			remove_dynamic_modifier = { modifier = religion_orthodoxy }
+			add_dynamic_modifier = { modifier = religion_buddhist }
+		}
+		else_if = {
+			limit = {
+				has_dynamic_modifier = { modifier = religion_protestantism }
+			}
+			remove_dynamic_modifier = { modifier = religion_protestantism }
+			add_dynamic_modifier = { modifier = religion_buddhist }
+		}
+		else_if = {
+			limit = {
+				has_dynamic_modifier = { modifier = religion_shinto }
+			}
+			remove_dynamic_modifier = { modifier = religion_shinto }
+			add_dynamic_modifier = { modifier = religion_buddhist }
+		}
 
 		set_variable = { buddhist_modifier_var = 15 }
 		multiply_variable = { buddhist_modifier_var = religion_popularity_array^0 }
@@ -1657,13 +1677,34 @@ update_religion_modifiers = {
 		limit = {
 			check_variable = { religion_id_array^0 = 2 }
 		}
-		remove_dynamic_modifier = { modifier = religion_buddhist }
-		remove_dynamic_modifier = { modifier = religion_catholicism }
-		remove_dynamic_modifier = { modifier = religion_orthodoxy }
-		remove_dynamic_modifier = { modifier = religion_protestantism }
-		remove_dynamic_modifier = { modifier = religion_shinto }
-
-		add_dynamic_modifier = { modifier = religion_catholicism }
+		if = {
+			limit = {
+				has_dynamic_modifier = { modifier = religion_buddhist }
+			}
+			remove_dynamic_modifier = { modifier = religion_buddhist }
+			add_dynamic_modifier = { modifier = religion_catholicism }
+		}
+		else_if = {
+			limit = {
+				has_dynamic_modifier = { modifier = religion_orthodoxy }
+			}
+			remove_dynamic_modifier = { modifier = religion_orthodoxy }
+			add_dynamic_modifier = { modifier = religion_catholicism }
+		}
+		else_if = {
+			limit = {
+				has_dynamic_modifier = { modifier = religion_protestantism }
+			}
+			remove_dynamic_modifier = { modifier = religion_protestantism }
+			add_dynamic_modifier = { modifier = religion_catholicism }
+		}
+		else_if = {
+			limit = {
+				has_dynamic_modifier = { modifier = religion_shinto }
+			}
+			remove_dynamic_modifier = { modifier = religion_shinto }
+			add_dynamic_modifier = { modifier = religion_catholicism }
+		}
 
 		set_variable = { catholic_modifier_var = 20 }
 		multiply_variable = { catholic_modifier_var = religion_popularity_array^0 }
@@ -1675,13 +1716,34 @@ update_religion_modifiers = {
 		limit = {
 			check_variable = { religion_id_array^0 = 3 }
 		}
-		remove_dynamic_modifier = { modifier = religion_buddhist }
-		remove_dynamic_modifier = { modifier = religion_catholicism }
-		remove_dynamic_modifier = { modifier = religion_orthodoxy }
-		remove_dynamic_modifier = { modifier = religion_protestantism }
-		remove_dynamic_modifier = { modifier = religion_shinto }
-
-		add_dynamic_modifier = { modifier = religion_orthodoxy }
+		if = {
+			limit = {
+				has_dynamic_modifier = { modifier = religion_buddhist }
+			}
+			remove_dynamic_modifier = { modifier = religion_buddhist }
+			add_dynamic_modifier = { modifier = religion_orthodoxy }
+		}
+		else_if = {
+			limit = {
+				has_dynamic_modifier = { modifier = religion_catholicism }
+			}
+			remove_dynamic_modifier = { modifier = religion_catholicism }
+			add_dynamic_modifier = { modifier = religion_orthodoxy }
+		}
+		else_if = {
+			limit = {
+				has_dynamic_modifier = { modifier = religion_protestantism }
+			}
+			remove_dynamic_modifier = { modifier = religion_protestantism }
+			add_dynamic_modifier = { modifier = religion_orthodoxy }
+		}
+		else_if = {
+			limit = {
+				has_dynamic_modifier = { modifier = religion_shinto }
+			}
+			remove_dynamic_modifier = { modifier = religion_shinto }
+			add_dynamic_modifier = { modifier = religion_orthodoxy }
+		}
 
 		set_variable = { orthodox_modifier_var = 25 }
 		multiply_variable = { orthodox_modifier_var = religion_popularity_array^0 }
@@ -1693,13 +1755,34 @@ update_religion_modifiers = {
 		limit = {
 			check_variable = { religion_id_array^0 = 4 }
 		}
-		remove_dynamic_modifier = { modifier = religion_buddhist }
-		remove_dynamic_modifier = { modifier = religion_catholicism }
-		remove_dynamic_modifier = { modifier = religion_orthodoxy }
-		remove_dynamic_modifier = { modifier = religion_protestantism }
-		remove_dynamic_modifier = { modifier = religion_shinto }
-
-		add_dynamic_modifier = { modifier = religion_protestantism }
+		if = {
+			limit = {
+				has_dynamic_modifier = { modifier = religion_buddhist }
+			}
+			remove_dynamic_modifier = { modifier = religion_buddhist }
+			add_dynamic_modifier = { modifier = religion_protestantism }
+		}
+		else_if = {
+			limit = {
+				has_dynamic_modifier = { modifier = religion_catholicism }
+			}
+			remove_dynamic_modifier = { modifier = religion_catholicism }
+			add_dynamic_modifier = { modifier = religion_protestantism }
+		}
+		else_if = {
+			limit = {
+				has_dynamic_modifier = { modifier = religion_orthodoxy }
+			}
+			remove_dynamic_modifier = { modifier = religion_orthodoxy }
+			add_dynamic_modifier = { modifier = religion_protestantism }
+		}
+		else_if = {
+			limit = {
+				has_dynamic_modifier = { modifier = religion_shinto }
+			}
+			remove_dynamic_modifier = { modifier = religion_shinto }
+			add_dynamic_modifier = { modifier = religion_protestantism }
+		}
 
 		set_variable = { protestant_modifier_var = 10 }
 		multiply_variable = { protestant_modifier_var = religion_popularity_array^0 }
@@ -1711,13 +1794,34 @@ update_religion_modifiers = {
 		limit = {
 			check_variable = { religion_id_array^0 = 5 }
 		}
-		remove_dynamic_modifier = { modifier = religion_buddhist }
-		remove_dynamic_modifier = { modifier = religion_catholicism }
-		remove_dynamic_modifier = { modifier = religion_orthodoxy }
-		remove_dynamic_modifier = { modifier = religion_protestantism }
-		remove_dynamic_modifier = { modifier = religion_shinto }
-
-		add_dynamic_modifier = { modifier = religion_shinto }
+		if = {
+			limit = {
+				has_dynamic_modifier = { modifier = religion_buddhist }
+			}
+			remove_dynamic_modifier = { modifier = religion_buddhist }
+			add_dynamic_modifier = { modifier = religion_shinto }
+		}
+		else_if = {
+			limit = {
+				has_dynamic_modifier = { modifier = religion_catholicism }
+			}
+			remove_dynamic_modifier = { modifier = religion_catholicism }
+			add_dynamic_modifier = { modifier = religion_shinto }
+		}
+		else_if = {
+			limit = {
+				has_dynamic_modifier = { modifier = religion_orthodoxy }
+			}
+			remove_dynamic_modifier = { modifier = religion_orthodoxy }
+			add_dynamic_modifier = { modifier = religion_shinto }
+		}
+		else_if = {
+			limit = {
+				has_dynamic_modifier = { modifier = religion_protestantism }
+			}
+			remove_dynamic_modifier = { modifier = religion_protestantism }
+			add_dynamic_modifier = { modifier = religion_shinto }
+		}
 
 		set_variable = { shinto_modifier_var = 15 }
 		multiply_variable = { shinto_modifier_var = religion_popularity_array^0 }
