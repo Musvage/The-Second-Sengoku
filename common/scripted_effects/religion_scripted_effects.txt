@@ -1312,21 +1312,23 @@ create_religion_pie_chart = {
 }
 
 add_religion_popularity = {
-	set_temp_variable = { temp = religion_popularity_array^pop_type_added }
-	add_to_temp_variable = { temp = pop_value_added }
+	set_temp_variable = { temp_hundred = religion_popularity_array^pop_type_added }
+	add_to_temp_variable = { temp_hundred = pop_value_added }
 
 	if = {
 		limit = {
-			check_variable = { temp > 100 }
+			check_variable = { temp_hundred > 100 }
 		}
-		subtract_from_temp_variable = { temp = 100 }
-		subtract_from_temp_variable = { pop_value_added = temp }
+		subtract_from_temp_variable = { temp_hundred = 100 }
+		subtract_from_temp_variable = { pop_value_added = temp_hundred }
 	}
 
-	for_each_loop = {
-		array = electoral_pie_chart_number_array
+	clear_array = percentage_popularity
 
-		add_to_array = { percentage_popularity = electoral_pie_chart_number_array^i }
+	for_each_loop = {
+		array = religion_popularity_array
+
+		add_to_array = { percentage_popularity = religion_popularity_array^i }
 	}
 
 	add_percentage_popularity = yes
@@ -1334,31 +1336,31 @@ add_religion_popularity = {
 	for_each_loop = {
 		array = percentage_popularity
 
-		set_variable = { electoral_pie_chart_number_array^i = percentage_popularity^i }
+		set_variable = { religion_popularity_array^i = percentage_popularity^i }
 	}
-
-	clear_array = percentage_popularity
 
 	religion_sort = yes
 	create_religion_pie_chart = yes
 }
 
 subtract_religion_popularity = {
-	set_temp_variable = { temp =  religion_popularity_array^pop_type_subtracted }
-	subtract_from_temp_variable = { temp = pop_value_subtracted }
+	set_temp_variable = { temp_hundred = religion_popularity_array^pop_type_subtracted }
+	subtract_from_temp_variable = { temp_hundred = pop_value_subtracted }
 
 	if = {
 		limit = {
-			check_variable = { temp < 0 }
+			check_variable = { temp_hundred < 0 }
 		}
-		multiply_temp_variable = { temp = -1 }
-		subtract_from_temp_variable = { pop_value_subtracted = temp }
+		multiply_temp_variable = { temp_hundred = -1 }
+		subtract_from_temp_variable = { pop_value_subtracted = temp_hundred }
 	}
 
-	for_each_loop = {
-		array = electoral_pie_chart_number_array
+	clear_array = percentage_popularity
 
-		add_to_array = { percentage_popularity = electoral_pie_chart_number_array^i }
+	for_each_loop = {
+		array = religion_popularity_array
+
+		add_to_array = { percentage_popularity = religion_popularity_array^i }
 	}
 
 	subtract_percentage_popularity = yes
@@ -1366,10 +1368,8 @@ subtract_religion_popularity = {
 	for_each_loop = {
 		array = percentage_popularity
 
-		set_variable = { electoral_pie_chart_number_array^i = percentage_popularity^i }
+		set_variable = { religion_popularity_array^i = percentage_popularity^i }
 	}
-
-	clear_array = percentage_popularity
 
 	religion_sort = yes
 	create_religion_pie_chart = yes
@@ -1505,10 +1505,10 @@ update_religion_monthly = {
 		limit = {
 			check_variable = { modifier@religion_buddhist_drift > 0 }
 		}
-		set_temp_variable = { temp = modifier@religion_buddhist_drift }
+		set_temp_variable = { global.temp_add = modifier@religion_buddhist_drift }
 
 		every_owned_state = {
-			set_temp_variable = { pop_value_added = PREV.temp }
+			set_temp_variable = { pop_value_added = global.temp_add }
 			set_temp_variable = { pop_type_added = 0 }
 			add_religion_popularity = yes
 			update_religion_modifiers = yes
@@ -1518,10 +1518,10 @@ update_religion_monthly = {
 		limit = {
 			check_variable = { modifier@religion_buddhist_drift < 0 }
 		}
-		set_temp_variable = { temp = modifier@religion_buddhist_drift }
+		set_temp_variable = { global.temp = modifier@religion_buddhist_drift }
 
 		every_owned_state = {
-			set_temp_variable = { pop_value_subtracted = PREV.temp }
+			set_temp_variable = { pop_value_subtracted = global.temp }
 			set_temp_variable = { pop_type_subtracted = 0 }
 			subtract_religion_popularity = yes
 			update_religion_modifiers = yes
@@ -1531,10 +1531,10 @@ update_religion_monthly = {
 		limit = {
 			check_variable = { modifier@religion_catholic_drift > 0 }
 		}
-		set_temp_variable = { temp = modifier@religion_catholic_drift }
+		set_temp_variable = { global.temp = modifier@religion_catholic_drift }
 
 		every_owned_state = {
-			set_temp_variable = { pop_value_added = PREV.temp }
+			set_temp_variable = { pop_value_added = global.temp }
 			set_temp_variable = { pop_type_added = 1 }
 			add_religion_popularity = yes
 			update_religion_modifiers = yes
@@ -1544,10 +1544,10 @@ update_religion_monthly = {
 		limit = {
 			check_variable = { modifier@religion_catholic_drift < 0 }
 		}
-		set_temp_variable = { temp = modifier@religion_catholic_drift }
+		set_temp_variable = { global.temp = modifier@religion_catholic_drift }
 
 		every_owned_state = {
-			set_temp_variable = { pop_value_subtracted = PREV.temp }
+			set_temp_variable = { pop_value_subtracted = global.temp }
 			set_temp_variable = { pop_type_subtracted = 1 }
 			subtract_religion_popularity = yes
 			update_religion_modifiers = yes
@@ -1557,10 +1557,10 @@ update_religion_monthly = {
 		limit = {
 			check_variable = { modifier@religion_orthodox_drift > 0 }
 		}
-		set_temp_variable = { temp = modifier@religion_orthodox_drift }
+		set_temp_variable = { global.temp = modifier@religion_orthodox_drift }
 
 		every_owned_state = {
-			set_temp_variable = { pop_value_added = PREV.temp }
+			set_temp_variable = { pop_value_added = global.temp }
 			set_temp_variable = { pop_type_added = 2 }
 			add_religion_popularity = yes
 			update_religion_modifiers = yes
@@ -1570,10 +1570,10 @@ update_religion_monthly = {
 		limit = {
 			check_variable = { modifier@religion_orthodox_drift < 0 }
 		}
-		set_temp_variable = { temp = modifier@religion_orthodox_drift }
+		set_temp_variable = { global.temp = modifier@religion_orthodox_drift }
 
 		every_owned_state = {
-			set_temp_variable = { pop_value_subtracted = PREV.temp }
+			set_temp_variable = { pop_value_subtracted = global.temp }
 			set_temp_variable = { pop_type_subtracted = 2 }
 			subtract_religion_popularity = yes
 			update_religion_modifiers = yes
@@ -1583,10 +1583,10 @@ update_religion_monthly = {
 		limit = {
 			check_variable = { modifier@religion_protestant_drift > 0 }
 		}
-		set_temp_variable = { temp = modifier@religion_protestant_drift }
+		set_temp_variable = { global.temp = modifier@religion_protestant_drift }
 
 		every_owned_state = {
-			set_temp_variable = { pop_value_added = PREV.temp }
+			set_temp_variable = { pop_value_added = global.temp }
 			set_temp_variable = { pop_type_added = 3 }
 			add_religion_popularity = yes
 			update_religion_modifiers = yes
@@ -1596,10 +1596,10 @@ update_religion_monthly = {
 		limit = {
 			check_variable = { modifier@religion_protestant_drift < 0 }
 		}
-		set_temp_variable = { temp = modifier@religion_protestant_drift }
+		set_temp_variable = { global.temp = modifier@religion_protestant_drift }
 
 		every_owned_state = {
-			set_temp_variable = { pop_value_subtracted = PREV.temp }
+			set_temp_variable = { pop_value_subtracted = global.temp }
 			set_temp_variable = { pop_type_subtracted = 3 }
 			subtract_religion_popularity = yes
 			update_religion_modifiers = yes
@@ -1609,10 +1609,10 @@ update_religion_monthly = {
 		limit = {
 			check_variable = { modifier@religion_shinto_drift > 0 }
 		}
-		set_temp_variable = { temp = modifier@religion_shinto_drift }
+		set_temp_variable = { global.temp = modifier@religion_shinto_drift }
 
 		every_owned_state = {
-			set_temp_variable = { pop_value_added = PREV.temp }
+			set_temp_variable = { pop_value_added = global.temp }
 			set_temp_variable = { pop_type_added = 4 }
 			add_religion_popularity = yes
 			update_religion_modifiers = yes
@@ -1622,10 +1622,10 @@ update_religion_monthly = {
 		limit = {
 			check_variable = { modifier@religion_shinto_drift < 0 }
 		}
-		set_temp_variable = { temp = modifier@religion_shinto_drift }
+		set_temp_variable = { global.temp = modifier@religion_shinto_drift }
 
 		every_owned_state = {
-			set_temp_variable = { pop_value_subtracted = PREV.temp }
+			set_temp_variable = { pop_value_subtracted = global.temp }
 			set_temp_variable = { pop_type_subtracted = 4 }
 			subtract_religion_popularity = yes
 			update_religion_modifiers = yes
