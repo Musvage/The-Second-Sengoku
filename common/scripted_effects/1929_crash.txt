@@ -1,0 +1,169 @@
+1929_crash_system_set_up = {
+
+	custom_effect_tooltip = 1929_crash_system_set_up_tt
+
+	set_global_flag = crash_1929_global_enabled
+	set_variable = { global.1929_crash_level = 20 }	# each level equals "5%"
+	
+	# Specific modifiers for each countries
+	every_country = {
+		1929_crash_country_set_up = yes
+	}
+	
+	
+	if = {
+		limit = { has_global_flag = crash_1929_global_enabled }
+		add_political_power = 9
+	}
+	
+	add_political_power = var:global.1929_crash_level
+	add_political_power = var:global.1929_crash_level
+	
+}
+
+1929_crash_country_set_up = {
+	
+	# Specific modifiers for each countries
+	if = {	# Commies don't deal with the crash
+		limit = {
+			OR = { tag = FER tag = TOH }
+		}
+		set_variable = { 1929_crash_modifier = 0.0 }
+	}
+	if = {	# Less developed countries suffer way less
+		limit = {
+			OR = { tag = IMS tag = JOS tag = SHI }
+		}
+		set_variable = { 1929_crash_modifier = 0.1 }
+	}
+	if = {	# Average Japanese country suffer less
+		limit = {
+			NOT = { tag = AMC tag = FER tag = HIR tag = IMS tag = JOS tag = KOB tag = OKI tag = OSA tag = PRO tag = PRT tag = REI tag = SHI tag = TOH }
+		}
+		set_variable = { 1929_crash_modifier = 0.25 }
+	}
+	if = {	# Trade cities suffer medium
+		limit = {
+			OR = { tag = HIR tag = KOB tag = OSA tag = PRT tag = REI }
+		}
+		set_variable = { 1929_crash_modifier = 0.5 }
+	}
+	if = {	# Nations closely related to the USA suffer badly
+		limit = {
+			OR = { tag = PRO }
+		}
+		set_variable = { 1929_crash_modifier = 0.66 }
+	}
+	if = {	# USA suffer most of all
+		limit = {
+			OR = { tag = AMC tag = OKI }
+		}
+		set_variable = { 1929_crash_modifier = 1 }
+	}
+	if = {
+		limit = {
+			check_variable = { 1929_crash_modifier > 0 }
+		}
+		1929_crash_calculate_effect = yes
+		add_dynamic_modifier = {
+			modifier = 1929_crash_national_spirit
+		}
+	}
+	set_country_flag = 1929_crash_country_enabled
+}
+
+1929_crash_calculate_effect = {
+
+	set_variable = { 1929_crash_efficiency_loss = -0.025 }
+	set_variable = { 1929_crash_construction_loss = -0.025 }
+	set_variable = { 1929_crash_ideology_loss = -0.01 }
+	set_variable = { 1929_crash_conversion_bonus = -0.01 }
+	multiply_variable = { 1929_crash_efficiency_loss = global.1929_crash_level }
+	multiply_variable = { 1929_crash_construction_loss = global.1929_crash_level }
+	multiply_variable = { 1929_crash_ideology_loss = global.1929_crash_level }
+	multiply_variable = { 1929_crash_conversion_bonus = global.1929_crash_level }
+	multiply_variable = { 1929_crash_efficiency_loss = 1929_crash_modifier }
+	multiply_variable = { 1929_crash_construction_loss = 1929_crash_modifier }
+	multiply_variable = { 1929_crash_ideology_loss = 1929_crash_modifier }
+	multiply_variable = { 1929_crash_conversion_bonus = 1929_crash_modifier }
+}
+
+1929_crash_decrease_level = {
+
+	if = {
+		limit = {
+			check_variable = { global.1929_crash_level < 1 }
+		}
+		# fire event for the end of the Great Depression <----------------------------------ADD EVENT! ADD EVENT! ADD EVENT! ADD EVENT! 
+		hidden_effect = { 1929_crash_end = yes }
+	} else = {
+		custom_effect_tooltip = 1929_crash_decrease_level_tt
+		hidden_effect = {
+			subtract_from_variable = { global.1929_crash_level = 1 }
+			clamp_variable = {
+				var = global.1929_crash_level
+				min = 0
+				max = 20
+			}
+			every_country = { 
+				limit = { check_variable = { 1929_crash_modifier > 0 } }
+				1929_crash_calculate_effect = yes
+			}
+			force_update_dynamic_modifier = yes
+		}
+	}
+}
+
+1929_crash_decrease_level_2 = {
+
+	if = {
+		limit = {
+			check_variable = { global.1929_crash_level < 1 }
+		}
+		# fire event for the end of the Great Depression <----------------------------------ADD EVENT! ADD EVENT! ADD EVENT! ADD EVENT! 
+		hidden_effect = { 1929_crash_end = yes }
+	} else = {
+		custom_effect_tooltip = 1929_crash_decrease_level_2_tt
+		hidden_effect = {
+			subtract_from_variable = { global.1929_crash_level = 2 }
+			clamp_variable = {
+				var = global.1929_crash_level
+				min = 0
+				max = 20
+			}
+			every_country = { 
+				limit = { check_variable = { 1929_crash_modifier > 0 } }
+				1929_crash_calculate_effect = yes
+			}
+			force_update_dynamic_modifier = yes
+		}
+	}
+}
+
+1929_crash_increase_level = {
+
+	custom_effect_tooltip = 1929_crash_increase_level_tt
+	add_to_variable = { global.1929_crash_level = 1 }
+	clamp_variable = {
+		var = global.1929_crash_level
+		min = 0
+		max = 20
+	}
+	1929_crash_calculate_effect = yes
+	force_update_dynamic_modifier = yes
+
+}
+
+1929_crash_end = {
+	
+	every_country = {
+		if = {
+			limit = { has_dynamic_modifier = { modifier = 1929_crash_national_spirit } }
+			remove_dynamic_modifier = { modifier = 1929_crash_national_spirit }	
+		}
+		clr_country_flag = 1929_crash_country_enabled
+	}
+	clr_global_flag = crash_1929_global_enabled
+}
+
+
