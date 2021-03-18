@@ -276,16 +276,41 @@ on_actions = {
 					has_global_flag = crash_1929_global_enabled
 				}
 				every_country = {
-					limit = {
-						NOT = { has_country_flag = crash_1929_country_enabled }
+					if = {
+						limit = {
+							NOT = { has_country_flag = crash_1929_country_enabled }
+						}
+						crash_1929_country_set_up = yes
 					}
-					crash_1929_country_set_up = yes
 				}
-				every_country = { 
-					limit = { check_variable = { crash_1929_modifier > 0 } }
-					crash_1929_calculate_effect = yes
+				every_country = {
+					if = {
+						limit = { NOT = { has_government = communism } }	# this is meant for countries that spawn later in the game or change from communism to any other ideology
+						crash_1929_calculate_effect = yes
+						crash_1929_recalc_newspaper_icon_frames = yes
+						if = {
+							limit = {
+								NOT = { has_active_mission = automatic_economic_recovery }
+							}
+							set_country_flag = automatic_economic_recovery_ready # it does not impede "regular" countries from yearly recovery, that start their count on january 1st, but should be reset later
+							activate_mission = automatic_economic_recovery
+							set_country_flag = reset_me_please
+						}
+					}
 				}
-				crash_1929_recalc_newspaper_icon_frames = yes
+				every_country = {
+					if = {
+						limit = {
+							has_government = communism
+							has_dynamic_modifier = { modifier = crash_1929_national_spirit }
+						}
+						remove_dynamic_modifier = { modifier = crash_1929_national_spirit }
+						if = {
+							limit = { has_active_mission = automatic_economic_recovery }
+							remove_mission = automatic_economic_recovery
+						}
+					}
+				}
 			}
 			if = {
 				limit = {
@@ -355,6 +380,27 @@ on_actions = {
 	on_monthly = {
 		effect = {
 			update_religion_monthly = yes
+		}
+	}
+	
+	on_ruling_party_change = {	### SET OR RESET 1929 CRASH
+		effect = {
+			if = {
+				limit = { has_global_flag = crash_1929_global_enabled }
+				if = {
+					limit = { has_government = communism }
+					remove_dynamic_modifier = { modifier = crash_1929_national_spirit }
+					if = {
+						limit = { has_active_mission = automatic_economic_recovery }
+						remove_mission = automatic_economic_recovery
+					}
+				} else = {
+					crash_1929_calculate_effect = yes
+					add_dynamic_modifier = {
+						modifier = crash_1929_national_spirit
+					}
+				}
+			}
 		}
 	}
 }

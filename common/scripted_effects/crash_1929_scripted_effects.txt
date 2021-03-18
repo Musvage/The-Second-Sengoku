@@ -4,6 +4,8 @@ crash_1929_system_set_up = {
 
 	set_global_flag = crash_1929_global_enabled
 	set_variable = { global.crash_1929_level = 20 }	# each level equals "5%"
+	set_variable = { global.crash_1929_level_tt = global.crash_1929_level }
+	multiply_variable = { global.crash_1929_level_tt = 5 }
 	
 	# Specific modifiers for each countries
 	every_country = {
@@ -32,7 +34,7 @@ crash_1929_country_set_up = {
 		limit = {
 			OR = { tag = FER tag = TOH }
 		}
-		set_variable = { crash_1929_modifier = 0.0 }
+		set_variable = { crash_1929_modifier = 0.1 }
 	}
 	if = {	# Less developed countries suffer way less
 		limit = {
@@ -64,16 +66,18 @@ crash_1929_country_set_up = {
 		}
 		set_variable = { crash_1929_modifier = 1 }
 	}
+	set_country_flag = crash_1929_country_enabled
 	if = {
 		limit = {
-			check_variable = { crash_1929_modifier > 0 }
+			NOT = { has_government = communism }
 		}
 		crash_1929_calculate_effect = yes
 		add_dynamic_modifier = {
 			modifier = crash_1929_national_spirit
 		}
+		activate_mission = automatic_economic_recovery
 	}
-	set_country_flag = crash_1929_country_enabled
+	
 }
 
 crash_1929_calculate_effect = {
@@ -109,9 +113,11 @@ crash_1929_decrease_level = {
 				max = 20
 			}
 			every_country = { 
-				limit = { check_variable = { crash_1929_modifier > 0 } }
+				limit = { NOT = { has_government = communism } }
 				crash_1929_calculate_effect = yes
 			}
+			set_variable = { global.crash_1929_level_tt = global.crash_1929_level }
+			multiply_variable = { global.crash_1929_level_tt = 5 }
 			force_update_dynamic_modifier = yes
 		}
 	}
@@ -135,9 +141,11 @@ crash_1929_decrease_level_2 = {
 				max = 20
 			}
 			every_country = { 
-				limit = { check_variable = { crash_1929_modifier > 0 } }
+				limit = { NOT = { has_government = communism } }
 				crash_1929_calculate_effect = yes
 			}
+			set_variable = { global.crash_1929_level_tt = global.crash_1929_level }
+			multiply_variable = { global.crash_1929_level_tt = 5 }
 			force_update_dynamic_modifier = yes
 		}
 	}
@@ -153,6 +161,8 @@ crash_1929_increase_level = {
 		max = 20
 	}
 	crash_1929_calculate_effect = yes
+	set_variable = { global.crash_1929_level_tt = global.crash_1929_level }
+	multiply_variable = { global.crash_1929_level_tt = 5 }
 	force_update_dynamic_modifier = yes
 
 }
@@ -188,7 +198,6 @@ crash_1929_recalc_newspaper_icon_frames = {
 		limit = { check_variable = { global.crash_1929_level > 15 } }
 		set_variable = { global.current_newspaper_icon_frame = 1 }
 	}
-	#set_variable = { prestige_current_tooltip = ??? }
 }
 
 
