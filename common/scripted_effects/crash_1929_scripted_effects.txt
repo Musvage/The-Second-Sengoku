@@ -1,0 +1,203 @@
+crash_1929_system_set_up = {
+
+	custom_effect_tooltip = crash_1929_system_set_up_tt
+
+	set_global_flag = crash_1929_global_enabled
+	set_variable = { global.crash_1929_level = 20 }	# each level equals "5%"
+	set_variable = { global.crash_1929_level_tt = global.crash_1929_level }
+	multiply_variable = { global.crash_1929_level_tt = 5 }
+	
+	# Specific modifiers for each countries
+	every_country = {
+		crash_1929_country_set_up = yes
+	}
+	
+	crash_1929_recalc_newspaper_icon_frames = yes
+	
+	# BELLOW IS FOR DEBUG
+	
+	if = {
+		limit = { has_global_flag = crash_1929_global_enabled }
+		custom_effect_tooltip = "flag enabled: crash_1929_global_enabled"
+	}
+	custom_effect_tooltip = "crises level:"
+	custom_effect_tooltip = [?global.crash_1929_level|%R]
+	
+}
+
+crash_1929_country_set_up = {
+	
+	# Specific modifiers for each countries
+	if = {	# Commies don't deal with the crash
+		limit = {
+			OR = { tag = FER tag = TOH }
+		}
+		set_variable = { crash_1929_modifier = 0.1 }
+	}
+	if = {	# Less developed countries suffer way less
+		limit = {
+			OR = { tag = IMS tag = JOS tag = SHI }
+		}
+		set_variable = { crash_1929_modifier = 0.1 }
+	}
+	if = {	# Average Japanese country suffer less
+		limit = {
+			NOT = { tag = AMC tag = FER tag = HIR tag = IMS tag = JOS tag = KOB tag = OKI tag = OSA tag = PRO tag = PRT tag = REI tag = SHI tag = TOH }
+		}
+		set_variable = { crash_1929_modifier = 0.25 }
+	}
+	if = {	# Trade cities suffer medium
+		limit = {
+			OR = { tag = HIR tag = KOB tag = OSA tag = PRT tag = REI }
+		}
+		set_variable = { crash_1929_modifier = 0.5 }
+	}
+	if = {	# Nations closely related to the USA suffer badly
+		limit = {
+			OR = { tag = PRO }
+		}
+		set_variable = { crash_1929_modifier = 0.66 }
+	}
+	if = {	# USA suffer most of all
+		limit = {
+			OR = { tag = AMC tag = OKI }
+		}
+		set_variable = { crash_1929_modifier = 1 }
+	}
+	set_country_flag = crash_1929_country_enabled
+	if = {
+		limit = {
+			NOT = { has_government = communism }
+		}
+		crash_1929_calculate_effect = yes
+		add_dynamic_modifier = {
+			modifier = crash_1929_national_spirit
+		}
+		activate_mission = automatic_economic_recovery
+	}
+	
+}
+
+crash_1929_calculate_effect = {
+
+	set_variable = { crash_1929_efficiency_loss = -0.025 }
+	set_variable = { crash_1929_construction_loss = -0.025 }
+	set_variable = { crash_1929_ideology_loss = -0.01 }
+	set_variable = { crash_1929_conversion_bonus = -0.01 }
+	multiply_variable = { crash_1929_efficiency_loss = global.crash_1929_level }
+	multiply_variable = { crash_1929_construction_loss = global.crash_1929_level }
+	multiply_variable = { crash_1929_ideology_loss = global.crash_1929_level }
+	multiply_variable = { crash_1929_conversion_bonus = global.crash_1929_level }
+	multiply_variable = { crash_1929_efficiency_loss = crash_1929_modifier }
+	multiply_variable = { crash_1929_construction_loss = crash_1929_modifier }
+	multiply_variable = { crash_1929_ideology_loss = crash_1929_modifier }
+	multiply_variable = { crash_1929_conversion_bonus = crash_1929_modifier }
+}
+
+crash_1929_decrease_level = {
+
+	if = {
+		limit = {
+			check_variable = { global.crash_1929_level < 1 }
+		}
+		hidden_effect = { crash_1929_end = yes }
+	} else = {
+		custom_effect_tooltip = crash_1929_decrease_level_tt
+		hidden_effect = {
+			subtract_from_variable = { global.crash_1929_level = 1 }
+			clamp_variable = {
+				var = global.crash_1929_level
+				min = 0
+				max = 20
+			}
+			every_country = { 
+				limit = { NOT = { has_government = communism } }
+				crash_1929_calculate_effect = yes
+			}
+			set_variable = { global.crash_1929_level_tt = global.crash_1929_level }
+			multiply_variable = { global.crash_1929_level_tt = 5 }
+			force_update_dynamic_modifier = yes
+		}
+	}
+}
+
+crash_1929_decrease_level_2 = {
+
+	if = {
+		limit = {
+			check_variable = { global.crash_1929_level < 1 }
+		}
+		hidden_effect = { crash_1929_end = yes }
+	} else = {
+		custom_effect_tooltip = crash_1929_decrease_level_2_tt
+		hidden_effect = {
+			subtract_from_variable = { global.crash_1929_level = 2 }
+			clamp_variable = {
+				var = global.crash_1929_level
+				min = 0
+				max = 20
+			}
+			every_country = { 
+				limit = { NOT = { has_government = communism } }
+				crash_1929_calculate_effect = yes
+			}
+			set_variable = { global.crash_1929_level_tt = global.crash_1929_level }
+			multiply_variable = { global.crash_1929_level_tt = 5 }
+			force_update_dynamic_modifier = yes
+		}
+	}
+}
+
+crash_1929_increase_level = {
+
+	custom_effect_tooltip = crash_1929_increase_level_tt
+	add_to_variable = { global.crash_1929_level = 1 }
+	clamp_variable = {
+		var = global.crash_1929_level
+		min = 0
+		max = 20
+	}
+	crash_1929_calculate_effect = yes
+	set_variable = { global.crash_1929_level_tt = global.crash_1929_level }
+	multiply_variable = { global.crash_1929_level_tt = 5 }
+	force_update_dynamic_modifier = yes
+
+}
+
+crash_1929_end = {
+	
+	every_country = {
+		if = {
+			limit = { has_dynamic_modifier = { modifier = crash_1929_national_spirit } }
+			remove_dynamic_modifier = { modifier = crash_1929_national_spirit }	
+		}
+		if = {
+			limit = { has_active_mission = automatic_economic_recovery }
+			remove_mission = automatic_economic_recovery
+		}
+		clr_country_flag = crash_1929_country_enabled
+	}
+	if = {
+		limit = { has_global_flag = crash_1929_global_enabled }
+		clr_global_flag = crash_1929_global_enabled
+		news_event = { id = crash1929event.1 hours = 1 random = 5 }
+	}
+}
+
+crash_1929_recalc_newspaper_icon_frames = {
+	set_variable = { global.current_newspaper_icon_frame = 4 }
+	if = {
+		limit = { check_variable = { global.crash_1929_level > 5 } }
+		set_variable = { global.current_newspaper_icon_frame = 3 }
+	}
+	if = {
+		limit = { check_variable = { global.crash_1929_level > 10 } }
+		set_variable = { global.current_newspaper_icon_frame = 2 }
+	}
+	if = {
+		limit = { check_variable = { global.crash_1929_level > 15 } }
+		set_variable = { global.current_newspaper_icon_frame = 1 }
+	}
+}
+
+

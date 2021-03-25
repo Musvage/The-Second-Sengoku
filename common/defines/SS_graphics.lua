@@ -1,0 +1,6 @@
+NDefines_Graphics.NGraphics.COUNTRY_FLAG_TEX_WIDTH = 82
+NDefines_Graphics.NGraphics.COUNTRY_FLAG_TEX_HEIGHT = 82
+NDefines_Graphics.NGraphics.COUNTRY_FLAG_MEDIUM_TEX_WIDTH = 41
+NDefines_Graphics.NGraphics.COUNTRY_FLAG_MEDIUM_TEX_HEIGHT = 41
+NDefines_Graphics.NGraphics.COUNTRY_FLAG_SMALL_TEX_WIDTH = 10
+NDefines_Graphics.NGraphics.COUNTRY_FLAG_SMALL_TEX_HEIGHT = 10

@@ -1,0 +1,73 @@
+crash_1929_category = {
+	
+	automatic_economic_recovery = {
+		icon = generic_political_discourse
+		
+		available = {
+			check_variable = { global.crash_1929_level < 1 }
+		}
+		
+		visible = {
+			has_dynamic_modifier = { modifier = crash_1929_national_spirit }
+			has_global_flag = crash_1929_global_enabled
+		}
+		
+		activation = {
+			has_dynamic_modifier = { modifier = crash_1929_national_spirit }
+		}
+		
+		selectable_mission = no
+		
+		#cost = 0
+		
+		ai_will_do = {
+			factor = 1
+		}
+		
+		days_mission_timeout = 365
+		
+		days_re_enable = 0
+
+		fire_only_once = no
+		
+		is_good = yes
+		
+		timeout_effect = {
+			effect_tooltip = {
+				crash_1929_decrease_level = yes
+			}
+			hidden_effect = {
+				activate_mission = automatic_economic_recovery
+				set_country_flag = automatic_economic_recovery_ready
+				if = {
+					limit = {
+						all_country = {
+							OR = {
+								NOT = { has_dynamic_modifier = { modifier = crash_1929_national_spirit } }
+								OR = {
+									has_country_flag = automatic_economic_recovery_ready
+									has_country_flag = reset_me_please
+								}
+							}
+						}
+					}
+					every_country = {
+						limit = {
+							has_country_flag = automatic_economic_recovery_ready
+						}
+						clr_country_flag = automatic_economic_recovery_ready
+						if = {
+							limit = { has_country_flag = reset_me_please }
+							clr_country_flag = reset_me_please
+							remove_mission = automatic_economic_recovery
+							activate_mission = automatic_economic_recovery
+						}
+					}
+					crash_1929_decrease_level = yes
+				}
+			}
+		}
+		
+		priority = 100
+	}
+}

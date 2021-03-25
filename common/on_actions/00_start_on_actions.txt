@@ -10,20 +10,17 @@ on_actions = {
 				set_up_division_limit_system = yes
 				check_division_limit = yes
 			}
-			# DIVISION LIMIT SYSTEM	# DIVISION LIMIT SYSTEM	# DIVISION LIMIT SYSTEM
-		# events for food supply/consumption checks	# DEPRICATED	# DEPRICATED	# DEPRICATED	# DEPRICATED	# DEPRICATED
-		#	every_country = {
-		#		get_random_food_everywhere = yes	# adds random food for testing
-		#		country_event = food_event.1		# kickstart weekly food checks
-		#	}
+			
+			# 1929 CRASH # 1929 CRASH # 1929 CRASH # 1929 CRASH # 1929 CRASH # 1929 CRASH
+			random_country = {
+				crash_1929_system_set_up = yes
+			}
+
 		
 		# Provisional government election
 			PRO = {
 				activate_decision = PRO_election_timer
 			}
-			
-		# The Great Depression
-			set_global_flag = world_great_depression
 			
 		# flavour game start
 			IMS = {
@@ -74,6 +71,10 @@ on_actions = {
 			JOS = {
 				country_event = { id = joseon.1 days = 365 }
             }
+                        REI = {
+				country_event = { id = ostasien.2 days = 3415 }
+            }
+
 
             random_country = {
 				limit = { is_ai = no }
@@ -81,11 +82,6 @@ on_actions = {
 				country_event = { id = options.1 }
 			}
 		####Religion###
-			# random country dont worry bout it
-			OKI = {
-				religion_initial = yes # set up religion
-			}
-		
 			#XXX = { add_province_modifier = { modifier = shinto|buddhism } }
 			#141 = { add_province_modifier = { modifier = shinto|buddhism } } Okinawa?
 			
@@ -103,7 +99,9 @@ on_actions = {
 			120 = { add_dynamic_modifier = { modifier = religion_shinto } }
 			100 = { add_dynamic_modifier = { modifier = religion_buddhist } }
 			122 = { add_dynamic_modifier = { modifier = religion_buddhist } }
+			140 = { add_dynamic_modifier = { modifier = religion_catholic } }
 			127 = { add_dynamic_modifier = { modifier = religion_buddhist } }
+			17 = { add_dynamic_modifier = { modifier = religion_buddhist } }
 			74 = { add_dynamic_modifier = { modifier = religion_buddhist } }
 			108 = { add_dynamic_modifier = { modifier = religion_buddhist } }
 			20 = { add_dynamic_modifier = { modifier = religion_buddhist } }
@@ -113,7 +111,7 @@ on_actions = {
 			14 = { add_dynamic_modifier = { modifier = religion_buddhist } }
 			11 = { add_dynamic_modifier = { modifier = religion_buddhist } }
 			139 = { add_dynamic_modifier = { modifier = religion_buddhist } }
-                        141 = { add_dynamic_modifier = { modifier = religion_shinto } }
+			141 = { add_dynamic_modifier = { modifier = religion_shinto } }
 			
 			####Shikoku
 			143 = { add_dynamic_modifier = { modifier = religion_shinto } }
@@ -250,7 +248,11 @@ on_actions = {
 			
 			#Kurils and Co.(+Sakhalin)
 			# 8 6 5 144 145 146
-			
+
+			# random country dont worry bout it
+			OKI = {
+				religion_initial = yes # set up religion
+			}
 		}
 	}
 	
@@ -265,6 +267,56 @@ on_actions = {
 			# TRADE CITIES SYTEM # TRADE CITIES SYTEM # TRADE CITIES SYTEM
 			every_country = {
 				check_trade_cities = yes
+			}
+		}
+		effect = {
+			# 1929 1929 1929 1929 1929 1929 1929 1929
+			if = {
+				limit = {
+					has_global_flag = crash_1929_global_enabled
+				}
+				every_country = {
+					if = {
+						limit = {
+							NOT = { has_country_flag = crash_1929_country_enabled }
+						}
+						crash_1929_country_set_up = yes
+					}
+				}
+				every_country = {
+					if = {
+						limit = { NOT = { has_government = communism } }	# this is meant for countries that spawn later in the game or change from communism to any other ideology
+						crash_1929_calculate_effect = yes
+						crash_1929_recalc_newspaper_icon_frames = yes
+						if = {
+							limit = {
+								NOT = { has_active_mission = automatic_economic_recovery }
+							}
+							set_country_flag = automatic_economic_recovery_ready # it does not impede "regular" countries from yearly recovery, that start their count on january 1st, but should be reset later
+							activate_mission = automatic_economic_recovery
+							set_country_flag = reset_me_please
+						}
+					}
+				}
+				every_country = {
+					if = {
+						limit = {
+							has_government = communism
+							has_dynamic_modifier = { modifier = crash_1929_national_spirit }
+						}
+						remove_dynamic_modifier = { modifier = crash_1929_national_spirit }
+						if = {
+							limit = { has_active_mission = automatic_economic_recovery }
+							remove_mission = automatic_economic_recovery
+						}
+					}
+				}
+			}
+			if = {
+				limit = {
+					check_variable = { global.crash_1929_level < 1 }
+				}
+				crash_1929_end = yes
 			}
 		}
 	}
@@ -328,6 +380,27 @@ on_actions = {
 	on_monthly = {
 		effect = {
 			update_religion_monthly = yes
+		}
+	}
+	
+	on_ruling_party_change = {	### SET OR RESET 1929 CRASH
+		effect = {
+			if = {
+				limit = { has_global_flag = crash_1929_global_enabled }
+				if = {
+					limit = { has_government = communism }
+					remove_dynamic_modifier = { modifier = crash_1929_national_spirit }
+					if = {
+						limit = { has_active_mission = automatic_economic_recovery }
+						remove_mission = automatic_economic_recovery
+					}
+				} else = {
+					crash_1929_calculate_effect = yes
+					add_dynamic_modifier = {
+						modifier = crash_1929_national_spirit
+					}
+				}
+			}
 		}
 	}
 }
