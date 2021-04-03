@@ -1,24 +1,24 @@
 set_up_global_division_limit_system = {
-	set_variable = { global.division_limit_base = 250 }
+	set_variable = { global.division_limit_base = 500 }
 	# manpower laws
-	set_variable = { global.division_limit_disarmed_nation = -48 }
-	set_variable = { global.division_limit_volunteer_only = -24 }
+	set_variable = { global.division_limit_disarmed_nation = -75 }
+	set_variable = { global.division_limit_volunteer_only = -50 }
 	set_variable = { global.division_limit_limited_conscription = 0 }
-	set_variable = { global.division_limit_extensive_conscription = 32 }
-	set_variable = { global.division_limit_service_by_requirement = 64 }
-	set_variable = { global.division_limit_all_adults_serve = 96 }
-	set_variable = { global.division_limit_scraping_the_barrel = 128 }
+	set_variable = { global.division_limit_extensive_conscription = 50 }
+	set_variable = { global.division_limit_service_by_requirement = 100 }
+	set_variable = { global.division_limit_all_adults_serve = 150 }
+	set_variable = { global.division_limit_scraping_the_barrel = 250 }
 	# training level
-	set_variable = { global.division_limit_soldier_baptism = 128 }
-	set_variable = { global.division_limit_soldier_basic = 64 }
+	set_variable = { global.division_limit_soldier_baptism = 200 }
+	set_variable = { global.division_limit_soldier_basic = 100 }
 	set_variable = { global.division_limit_soldier_full = 0 }
-	set_variable = { global.division_limit_soldier_extended = -32 }
+	set_variable = { global.division_limit_soldier_extended = -50 }
 	# advisor
 	set_variable = { global.division_limit_advisor_1 = 1.1 }
 	set_variable = { global.division_limit_advisor_2 = 1.15 }
 	set_variable = { global.division_limit_advisor_3 = 1.2 }
 	#other variables
-	set_variable = { global.division_limit_food_surplus = 32 }
+	set_variable = { global.division_limit_food_surplus = 50 }
 	set_global_flag = has_global_division_system
 	
 	every_country = { 
@@ -122,22 +122,37 @@ check_division_limit = {
 		}
 		set_variable = { division_limit_overhead = num_battalions }
 		divide_variable { division_limit_overhead = country_division_limit }
+		
 		if = {
-			limit = { check_variable = { division_limit_overhead > 0.5 } }
+			limit = { check_variable = { division_limit_overhead > 0.5 } }			# HARD CAP ON DEPLOYMENT
 			set_variable = { minimum_training_level_mod = 9.99 }
 		} else = {
 			set_variable = { minimum_training_level_mod = 0 }
 		}
-		set_variable = { command_power_gain_mult_mod = division_limit_overhead }
+		
+		if = {
+			limit = { check_variable = { division_limit_overhead > 1 } }			# EXTREME OVERHEAD PENALTY (ORG/MORALE)
+			set_variable = { army_org_factor_mod = division_limit_overhead }
+			subtract_from_variable = { army_org_factor_mod = 1 }
+			multiply_variable = { army_org_factor_mod = -2 }
+			clamp_variable = { var = army_org_factor_mod	min = -0.99	max = 0 }
+		} else = {
+			set_variable = { minimum_training_level_mod = 0 }
+		}
+		
+		set_variable = { command_power_gain_mult_mod = division_limit_overhead }	# COMAND POWER
 		multiply_variable = { command_power_gain_mult_mod = -1 }
 		clamp_variable = { var = command_power_gain_mult_mod	min = -0.5	max = 0 }
-		set_variable = { supply_consumption_factor_mod = division_limit_overhead }
+		
+		set_variable = { supply_consumption_factor_mod = division_limit_overhead }	# SUPPLY CONSUMPTION
 		multiply_variable = { supply_consumption_factor_mod = -1 }
 		clamp_variable = { var = supply_consumption_factor_mod	min = -0.5	max = 0 }
-		set_variable = { mobilization_speed_mod = division_limit_overhead }
+		
+		set_variable = { mobilization_speed_mod = division_limit_overhead }			# MOBILIZATION SPEED
 		multiply_variable = { mobilization_speed_mod = -1 }
 		clamp_variable = { var = mobilization_speed_mod	min = -0.5	max = 0 }
-		set_variable = { training_time_factor_mod = division_limit_overhead }
+		
+		set_variable = { training_time_factor_mod = division_limit_overhead }		# TRAINING TIME
 		multiply_variable = { training_time_factor_mod = 2 }
 		clamp_variable = { var = training_time_factor_mod	min = 0	max = 1 }
 		if = {
