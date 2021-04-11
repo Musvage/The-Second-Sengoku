@@ -14,9 +14,9 @@ set_up_global_division_limit_system = {
 	set_variable = { global.division_limit_soldier_full = 0 }
 	set_variable = { global.division_limit_soldier_extended = -50 }
 	# advisor
-	set_variable = { global.division_limit_advisor_1 = 1.1 }
-	set_variable = { global.division_limit_advisor_2 = 1.15 }
-	set_variable = { global.division_limit_advisor_3 = 1.2 }
+	set_variable = { global.division_limit_advisor_1 = 0.1 }
+	set_variable = { global.division_limit_advisor_2 = 0.15 }
+	set_variable = { global.division_limit_advisor_3 = 0.2 }
 	#other variables
 	set_variable = { global.division_limit_food_surplus = 50 }
 	set_global_flag = has_global_division_system
@@ -36,6 +36,10 @@ set_up_division_limit_system = {
 	if = {
 		limit = { NOT = { has_variable = division_limit_technology_bonus } }	# does not loose technological advances when resetting system for debug
 		set_variable = { division_limit_technology_bonus = 0 }
+	}
+	if = {
+		limit = { NOT = { has_variable = division_limit_other_bonus } }	# does not loose technological advances when resetting system for debug
+		set_variable = { division_limit_other_bonus = 0 }
 	}
 	calculate_division_limit = yes
 }
@@ -92,15 +96,15 @@ calculate_division_limit = {
 	set_variable = { division_limit_advisor = 1 }
 	if = {
 		limit = { has_idea_with_trait  = army_division_limit_1 }
-		set_variable = { division_limit_advisor = global.division_limit_advisor_1 }
+		add_to_variable = { division_limit_advisor = global.division_limit_advisor_1 }
 	}
 	if = {
 		limit = { has_idea_with_trait  = army_division_limit_2 }
-		set_variable = { division_limit_advisor = global.division_limit_advisor_2 }
+		add_to_variable = { division_limit_advisor = global.division_limit_advisor_2 }
 	}
 	if = {
 		limit = { has_idea_with_trait  = army_division_limit_3 }
-		set_variable = { division_limit_advisor = global.division_limit_advisor_3 }
+		add_to_variable = { division_limit_advisor = global.division_limit_advisor_3 }
 	}
 	#### FOOD
 	set_variable = { division_limit_food = 0 }
@@ -116,6 +120,7 @@ calculate_division_limit = {
 	add_to_variable = { country_division_limit = division_limit_training_law }
 	add_to_variable = { country_division_limit = division_limit_technology_bonus }
 	add_to_variable = { country_division_limit = division_limit_food }
+	add_to_variable = { country_division_limit = division_limit_other_bonus }
 	multiply_variable = { country_division_limit = division_limit_advisor }
 	check_division_limit = yes
 }
