@@ -25,18 +25,20 @@ set_up_global_division_limit_system = {
 	set_variable = { global.division_limit_advisor_1 = 0.1 }
 	set_variable = { global.division_limit_advisor_2 = 0.15 }
 	set_variable = { global.division_limit_advisor_3 = 0.2 }
-	#other variables
+	# infrastructure
+	set_variable = { global.division_limit_infrastructure = 0.05 }
+	# other variables
 	set_variable = { global.division_limit_food_surplus = 50 }
 	set_global_flag = has_global_division_system
-	
-	every_country = { 
-		set_up_division_limit_system = yes
-	}
-	
 	### TECHNOLOGIES BONUS VALUES
 	set_variable = { global.division_limit_doctrine_small = 25 }
 	set_variable = { global.division_limit_doctrine_medium = 50 }
 	set_variable = { global.division_limit_doctrine_big = 100 }
+	
+	
+	every_country = { 
+		set_up_division_limit_system = yes
+	}
 }
 
 set_up_division_limit_system = {
@@ -46,10 +48,33 @@ set_up_division_limit_system = {
 		set_variable = { division_limit_technology_bonus = 0 }
 	}
 	if = {
-		limit = { NOT = { has_variable = division_limit_other_bonus } }	# does not loose technological advances when resetting system for debug
+		limit = { NOT = { has_variable = division_limit_other_bonus } }	# does not loose other bonuses when resetting system for debug
 		set_variable = { division_limit_other_bonus = 0 }
 	}
+	if = {
+		limit = { NOT = { has_variable = division_limit_other_multiplier } }	# does not loose other multipliers when resetting system for debug
+		set_variable = { division_limit_other_multiplier = 0 }
+	}
 	calculate_division_limit = yes
+}
+
+calculate_average_infrastructure_level = {
+	
+	set_temp_variable = { total_infrastructure_weight = 0 }
+
+	every_controlled_state = {
+		add_to_temp_variable = { PREV.total_infrastructure_weight = division_limit_infrastructure_weight }
+	}
+	
+	set_variable = { average_infrastructure_level = 0 }
+	
+	every_controlled_state = {
+		set_temp_variable = { state_infrastructure_level = non_damaged_building_level@infrastructure }
+		multiply_temp_variable = { state_infrastructure_level = division_limit_infrastructure_weight }
+		add_to_variable = { PREV.average_infrastructure_level = state_infrastructure_level }
+	}
+	divide_variable = { average_infrastructure_level = total_infrastructure_weight }
+	set_variable = { debug_weights_total = total_infrastructure_weight }	## DEBUG ## DEBUG ## DEBUG ## DEBUG 
 }
 
 calculate_division_limit = {
@@ -101,6 +126,7 @@ calculate_division_limit = {
 		set_variable = { division_limit_training_law = global.division_limit_soldier_extended }
 	}
 	#### ADVISOR
+	set_variable = { division_limit_advisor = 0 }
 	if = {
 		limit = { has_idea_with_trait  = army_division_limit_1 }
 		set_variable = { division_limit_advisor = global.division_limit_advisor_1 }
@@ -113,9 +139,13 @@ calculate_division_limit = {
 		limit = { has_idea_with_trait  = army_division_limit_3 }
 		set_variable = { division_limit_advisor = global.division_limit_advisor_3 }
 	}
-	set_variable = { division_limit_advisor_B = 1 }
-	add_to_variable = { division_limit_advisor_B = division_limit_advisor }	# The .X is isolated for the tooltips
-	#### FOOD
+
+	#### INFRASTRUCTURE
+	calculate_average_infrastructure_level = yes
+	set_variable = { division_limit_infrastructure = average_infrastructure_level }
+	multiply_variable = { division_limit_infrastructure = global.division_limit_infrastructure }
+	
+	#### FOOD	DEPRICATED
 	set_variable = { division_limit_food = 0 }
 	every_controlled_state = {
 		limit = { has_state_flag = state_has_food_surplus }
@@ -124,18 +154,27 @@ calculate_division_limit = {
 	#### IDEAS
 	# nothing yet, will be added ad-hoc
 	
+	### Add multipliers
+	set_variable = { country_division_limit_multiplier = 1 }
+	add_to_variable = { country_division_limit_multiplier = division_limit_advisor }
+	add_to_variable = { country_division_limit_multiplier = division_limit_infrastructure }
+	add_to_variable = { country_division_limit_multiplier = division_limit_other_multiplier }
+	
 	#### CALCULATE EFFECT
 	add_to_variable = { country_division_limit = division_limit_economy_law }
 	add_to_variable = { country_division_limit = division_limit_training_law }
 	add_to_variable = { country_division_limit = division_limit_technology_bonus }
 	add_to_variable = { country_division_limit = division_limit_food }
 	add_to_variable = { country_division_limit = division_limit_other_bonus }
-	multiply_variable = { country_division_limit = division_limit_advisor_B }
+	multiply_variable = { country_division_limit = country_division_limit_multiplier }
+	
+	round_variable = country_division_limit
 	check_division_limit = yes
 }
 
 check_division_limit = {
 	if = {
+		set_variable = { division_limit_num_battalions = num_battalions }
 		limit = {
 			check_variable = { num_battalions > country_division_limit }
 		}
