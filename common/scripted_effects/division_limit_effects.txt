@@ -21,6 +21,8 @@ set_up_global_division_limit_system = {
 	set_variable = { global.division_limit_soldier_basic = 100 }
 	set_variable = { global.division_limit_soldier_full = 0 }
 	set_variable = { global.division_limit_soldier_extended = -50 }
+	# support company
+	set_variable = { global.division_limit_support_companies_tech_level = 0 }
 	# advisor
 	set_variable = { global.division_limit_advisor_1 = 0.1 }
 	set_variable = { global.division_limit_advisor_2 = 0.15 }
@@ -55,6 +57,10 @@ set_up_division_limit_system = {
 		limit = { NOT = { has_variable = division_limit_other_multiplier } }	# does not loose other multipliers when resetting system for debug
 		set_variable = { division_limit_other_multiplier = 0 }
 	}
+	if = {
+		limit = { NOT = { has_variable = division_limit_support_companies_tech_level } }	# does not loose support tech when resetting system for debug
+		set_variable = { division_limit_support_companies_tech_level = 0 }
+	}
 	calculate_division_limit = yes
 }
 
@@ -75,6 +81,40 @@ calculate_average_infrastructure_level = {
 	}
 	divide_variable = { average_infrastructure_level = total_infrastructure_weight }
 	set_variable = { debug_weights_total = total_infrastructure_weight }	## DEBUG ## DEBUG ## DEBUG ## DEBUG 
+}
+
+calculate_support_companies = {
+
+	set_variable = { num_battalions_support = num_battalions_with_type@engineer }
+	add_to_variable = { num_battalions_support = num_battalions_with_type@recon }
+	add_to_variable = { num_battalions_support = num_battalions_with_type@mot_recon }
+	add_to_variable = { num_battalions_support = num_battalions_with_type@armored_car_recon }
+	add_to_variable = { num_battalions_support = num_battalions_with_type@light_tank_recon }
+	add_to_variable = { num_battalions_support = num_battalions_with_type@military_police }
+	add_to_variable = { num_battalions_support = num_battalions_with_type@maintenance_company }
+	add_to_variable = { num_battalions_support = num_battalions_with_type@field_hospital }
+	add_to_variable = { num_battalions_support = num_battalions_with_type@logistics_company }
+	add_to_variable = { num_battalions_support = num_battalions_with_type@signal_company }
+	
+	set_variable = { division_limit_support_companies_discount = 0 }
+	set_variable = { division_limit_support_companies_bonus = 0 }
+	if = {
+		limit = { check_variable = { division_limit_support_companies_tech_level = 1 } }
+		set_variable = { division_limit_support_companies_discount = num_battalions_support }
+		divide_variable = { division_limit_support_companies_discount = 2 }								### HARDCODED VALUES
+		round_variable = division_limit_support_companies_discount
+	}
+	if = {
+		limit = { check_variable = { division_limit_support_companies_tech_level = 2 } }
+		set_variable = { division_limit_support_companies_discount = num_battalions_support }
+	}
+	if = {
+		limit = { check_variable = { division_limit_support_companies_tech_level = 3 } }
+		set_variable = { division_limit_support_companies_discount = num_battalions_support }
+		set_variable = { division_limit_support_companies_bonus = num_battalions_support }
+		multiply_variable = { division_limit_support_companies_bonus = 0.2 }							### HARDCODED VALUES
+		round_variable = division_limit_support_companies_bonus
+	}
 }
 
 calculate_division_limit = {
@@ -125,6 +165,9 @@ calculate_division_limit = {
 		limit = { has_idea = soldier_extended }
 		set_variable = { division_limit_training_law = global.division_limit_soldier_extended }
 	}
+	#### SUPPORT COMPANIES
+		calculate_support_companies = yes
+		
 	#### ADVISOR
 	set_variable = { division_limit_advisor = 0 }
 	if = {
@@ -165,6 +208,7 @@ calculate_division_limit = {
 	add_to_variable = { country_division_limit = division_limit_training_law }
 	add_to_variable = { country_division_limit = division_limit_technology_bonus }
 	add_to_variable = { country_division_limit = division_limit_food }
+	add_to_variable = { country_division_limit = division_limit_support_companies_bonus }
 	add_to_variable = { country_division_limit = division_limit_other_bonus }
 	multiply_variable = { country_division_limit = country_division_limit_multiplier }
 	
@@ -173,12 +217,13 @@ calculate_division_limit = {
 }
 
 check_division_limit = {
+	set_variable = { division_limit_num_battalions = num_battalions }
+	subtract_from_variable = { division_limit_num_battalions = division_limit_support_companies_discount }
 	if = {
-		set_variable = { division_limit_num_battalions = num_battalions }
 		limit = {
-			check_variable = { num_battalions > country_division_limit }
+			check_variable = { division_limit_num_battalions > country_division_limit }
 		}
-		set_variable = { division_limit_overhead = num_battalions }
+		set_variable = { division_limit_overhead = division_limit_num_battalions }
 		divide_variable { division_limit_overhead = country_division_limit }
 		subtract_from_variable = { division_limit_overhead = 1 }
 		
