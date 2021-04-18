@@ -106,7 +106,7 @@ focus_tree = {
 
 	focus = {
 		id = CHU_Convince_people_to_fight
-		icon = GFX_EZO_riot
+		icon = GFX_focus_TOH_farmers
 		x = 0
 		y = 2
 		cost = 10
@@ -124,7 +124,7 @@ focus_tree = {
 
 	focus = {
 		id = CHU_approach_to_the_emperor
-		icon = GFX_EZO_riot
+		icon = GFX_focus_KAN_imperial_restoration
 		x = -1
 		y = 1
 		cost = 10
@@ -135,14 +135,13 @@ focus_tree = {
 			factor = 1
 		}
 		completion_reward = {
-			add_ideas = CHU_Convince_people_to_fight
-			add_stability = -0.15
+
 		}
 	}
 
 	focus = {
 		id = CHU_get_your_approval
-		icon = GFX_EZO_riot
+		icon = GFX_focus_generic_diplomacy_kansai
 		x = -1
 		y = 1
 		cost = 10
@@ -153,14 +152,13 @@ focus_tree = {
 			factor = 1
 		}
 		completion_reward = {
-			add_ideas = CHU_Convince_people_to_fight
-			add_stability = -0.15
+
 		}
 	}
 
 	focus = {
 		id = CHU_declare_war
-		icon = GFX_EZO_riot
+		icon = GFX_focus_generic_attack_imperial
 		x = 3
 		y = 1
 		cost = 10
@@ -171,8 +169,7 @@ focus_tree = {
 			factor = 1
 		}
 		completion_reward = {
-			add_ideas = CHU_Convince_people_to_fight
-			add_stability = -0.15
+
 		}
 	}
 
@@ -185,7 +182,7 @@ focus_tree = {
 		cost = 10
 		available_if_capitulated = yes
 		relative_position_id = CHU_Convince_people_to_fight
-		prerequisite = { focus = CHU_get_your_approval focus = CHU_declare_war }
+		prerequisite = { focus = CHU_get_your_approval }
 		ai_will_do = {
 			factor = 1
 		}
@@ -258,7 +255,7 @@ focus_tree = {
 
 	focus = {
 		id = CHU_Unite_All_Japan_People
-		icon = GFX_focus_generic_political_power
+		icon = GFX_focus_generic_unite_japan
 		x = 0
 		y = 2
 		cost = 10
@@ -620,7 +617,7 @@ focus_tree = {
 
 	focus = {
 		id = CHU_military_factory3
-		icon = GFX_goal_generic_construct_mil_factory
+		icon = GFX_focus_generic_strong_economy
 		x = 0
 		y = 1
 		cost = 10
@@ -776,10 +773,16 @@ focus_tree = {
 		x = 1
 		y = 1
 		available = {
-			CHU = { is_puppet = no }
+			CHU = { 
+				is_puppet = no 
+				OR = {
+					has_completed_focus = CHU_deal_with_the_other_junta
+					has_completed_focus = CHU_the_path_of_benefits
+				}
+			}
 		}
-		relative_position_id = CHU_deal_with_the_other_junta
-		prerequisite = { focus = CHU_the_path_of_benefits focus = CHU_deal_with_the_other_junta }
+		relative_position_id = CHU_approach_to_the_emperor
+		prerequisite = { focus = CHU_approach_to_the_emperor focus = CHU_deal_with_the_old_shogunate }
 		cost = 2
 		available_if_capitulated = yes
 		ai_will_do = {
@@ -789,83 +792,31 @@ focus_tree = {
 		completion_reward = {
 			add_political_power = 50
 			add_stability = 0.05
-			KYU = {
+			if = {
+				limit = {
+					has_completed_focus = CHU_deal_with_the_other_junta
+				}
+				KYU = {
 				add_political_power = 50
 				add_stability = 0.05
+				}
 			}
-			SHI = {
+			if = {
+				limit = {
+					has_completed_focus = CHU_the_path_of_benefits
+				}
+				SHI = {
 				add_political_power = 50
 				add_stability = 0.05
+				}
 			}
 		}
 	}
 
-	focus = {
-		id = CHU_deal_KYU
-		icon = GFX_focus_CHU_focus_south
-		x = -1
-		y = 1
-		relative_position_id = CHU_relations_of_interest
-		prerequisite = { focus = CHU_relations_of_interest }
-		cost = 2
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
-		}
-		available = {
-			CHU = { 
-				NOT = { has_completed_focus = CHU_fleet_is_our_enemy_of_mine }
-			}
-		}
-
-		bypass = {
-			has_completed_focus = CHU_deal_with_the_other_junta
-		}
-
-		completion_reward = {
-
-		}
-	}
-
-	focus = {
-		id = CHU_ally_in_the_south
-		icon = GFX_
-		x = 0
-		y = 1
-		relative_position_id = CHU_deal_KYU
-		prerequisite = { focus = CHU_deal_KYU }
-		cost = 2
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
-		}
-
-		completion_reward = {
-
-		}
-	}
-
-	focus = {
-		id = CHU_ally_in_the_kyu
-		icon = GFX_
-		x = 1
-		y = 1
-		relative_position_id = CHU_ally_in_the_south
-		prerequisite = { focus = CHU_ally_in_the_south }
-		cost = 2
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
-		}
-
-		completion_reward = {
-
-		}
-	}
 
 	focus = {
 		id = CHU_fleet_is_our_enemy_of_mine
-		icon = GFX_focus_CHU_traditional_army
+		icon = GFX_focus_generic_attack_provisional
 		x = -1
 		y = 1
 		relative_position_id = CHU_aggressive_policy
@@ -876,100 +827,24 @@ focus_tree = {
 			factor = 1
 		}
 		available = {
-			CHU = { 
-				NOT = { has_completed_focus = CHU_deal_KYU }
-			}
+
 		}
 
 		bypass = {
-			has_completed_focus = CHU_war_with_the_other_junta
 		}
 
 		completion_reward = {
-			add_political_power = 50
-			add_stability = -0.10
-			add_war_support = 0.05
-			every_state = {
-			limit = { is_owned_by = KYU }
-			add_core_of = CHU
-			}
-			CHU = {
-				declare_war_on = {
-				target = KYU
+			add_state_claim = 29
+			create_wargoal = {
 				type = take_state_focus
-				generator = { 100 }
-				}
+				target = PRO
 			}
-		}
-	}
-
-	focus = {
-		id = CHU_deal_SHI
-		icon = GFX_
-		x = 1
-		y = 1
-		relative_position_id = CHU_relations_of_interest
-		prerequisite = { focus = CHU_relations_of_interest }
-		cost = 2
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
-		}
-		available = {
-			CHU = { 
-				NOT = { has_completed_focus = CHU_finish_off_the_opponents_job }
-			}
-		}
-
-		bypass = {
-			has_completed_focus = CHU_the_path_of_benefits
-		}
-
-
-		completion_reward = {
-
-		}
-	}
-
-	focus = {
-		id = CHU_ally_in_the_east
-		icon = GFX_
-		x = 0
-		y = 1
-		relative_position_id = CHU_deal_SHI
-		prerequisite = { focus = CHU_deal_SHI }
-		cost = 2
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
-		}
-
-		completion_reward = {
-
-		}
-	}
-
-	focus = {
-		id = CHU_ally_in_the_SHI
-		icon = GFX_
-		x = -1
-		y = 1
-		relative_position_id = CHU_ally_in_the_east
-		prerequisite = { focus = CHU_ally_in_the_south }
-		cost = 2
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
-		}
-
-		completion_reward = {
-
 		}
 	}
 
 	focus = {
 		id = CHU_finish_off_the_opponents_job
-		icon = GFX_focus_CHU_traditional_army
+		icon = GFX_focus_generic_attack_tohoku
 		x = 1
 		y = 1
 		relative_position_id = CHU_aggressive_policy
@@ -980,29 +855,18 @@ focus_tree = {
 			factor = 1
 		}
 		available = {
-			CHU = { 
-				NOT = { has_completed_focus = CHU_deal_SHI }
-			}
+			
 		}
 
 		bypass = {
-			has_completed_focus = CHU_the_path_of_unification
+			
 		}
 
 		completion_reward = {
-			add_political_power = 50
-			add_stability = -0.10
-			add_war_support = 0.05
-			every_state = {
-			limit = { is_owned_by = SHI }
-			add_core_of = CHU
-			}
-			CHU = {
-				declare_war_on = {
-				target = SHI
+			add_state_claim = 113
+			create_wargoal = {
 				type = take_state_focus
-				generator = { 100 }
-				}
+				target = TOH
 			}
 		}
 	}
@@ -1012,8 +876,8 @@ focus_tree = {
 		icon = GFX_focus_CHU_the_south_united
 		x = 0
 		y = 1
-		relative_position_id = CHU_ally_in_the_SHI
-		prerequisite = { focus = CHU_ally_in_the_SHI focus = CHU_ally_in_the_kyu }
+		relative_position_id = CHU_relations_of_interest
+		prerequisite = { focus = CHU_relations_of_interest }
 		cost = 2
 		available_if_capitulated = yes
 		ai_will_do = {
@@ -1021,7 +885,19 @@ focus_tree = {
 		}
 
 		completion_reward = {
-
+			set_rule = { can_create_factions = yes }
+			if = {
+				limit = {
+					has_completed_focus = CHU_deal_with_the_other_junta
+				}
+				create_faction = united_junta_power
+			}
+			if = {
+				limit = {
+					has_completed_focus = CHU_the_path_of_benefits
+				}
+				create_faction = dragon_brotherhood
+			}
 		}
 	}
 
@@ -1039,26 +915,23 @@ focus_tree = {
 		}
 
 		completion_reward = {
-
-		}
-	}
-
-	focus = {
-		id = CHU_a_new_order
-		icon = GFX_
-		x = 0
-		y = 1
-		relative_position_id = CHU_invite_other_neighbor
-		prerequisite = { focus = CHU_invite_other_neighbor }
-		prerequisite = { focus = CHU_invite_other_neighbor focus = CHU_fleet_is_our_enemy_of_mine focus = CHU_finish_off_the_opponents_job }
-		cost = 2
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
-		}
-
-		completion_reward = {
-
+			add_stability = 0.05
+			if = {
+				limit = {
+					has_completed_focus = CHU_deal_with_the_other_junta
+				}
+				KYU = {
+				country_event = { id = generic.5 }
+			}
+			}
+			if = {
+				limit = {
+					has_completed_focus = CHU_the_path_of_benefits
+				}
+				SHI = {
+				country_event = { id = generic.5 }
+			}
+			}
 		}
 	}
 	
@@ -1152,7 +1025,7 @@ focus_tree = {
 	#Focus for Deal With The OTHER Junta
 	focus = {
 		id = CHU_deal_with_the_other_junta
-		icon = GFX_focus_generic_diplomacy_kyushu
+		icon = GFX_focus_generic_allied_juntas
 		x = -1
 		y = 1
 		cost = 10
@@ -1164,8 +1037,12 @@ focus_tree = {
 			factor = 1
 		}
 
+		available = {
+			NOT = { has_completed_focus = CHU_the_path_of_benefits }
+		}
+
 		bypass = {
-			has_completed_focus = GFX_focus_CHU_focus_south
+			
 		}
 
 		completion_reward = {
@@ -1175,10 +1052,79 @@ focus_tree = {
 				modifier = CHU_valued_strategic_partners
 				}
 			}
-			set_rule = { can_create_factions = yes }
-			create_faction = dragon_brotherhood
-			KYU = {
-				country_event = { id = generic.5 }
+		}
+	}
+
+	focus = {
+		id = CHU_take_over_the_west
+		icon = GFX_focus_generic_western_enemies
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = CHU_deal_with_the_other_junta
+		available_if_capitulated = yes
+		prerequisite = { focus = CHU_war_with_the_other_junta focus = CHU_deal_with_the_other_junta }
+		ai_will_do = {
+			factor = 1
+		}
+
+		bypass = {
+			has_completed_focus = GFX_focus_CHU_focus_south
+		}
+
+		completion_reward = {
+			add_war_support = 0.05
+		}
+	}
+
+	focus = {
+		id = CHU_take_over_the_west_korea
+		icon = GFX_focus_generic_western_enemies
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = CHU_take_over_the_west
+		available_if_capitulated = yes
+		prerequisite = { focus = CHU_take_over_the_west }
+		ai_will_do = {
+			factor = 1
+		}
+
+		bypass = {
+			
+		}
+
+		completion_reward = {
+			add_state_claim = 186
+			create_wargoal = {
+				type = take_state_focus
+				target = FER
+			}
+		}
+	}
+
+	focus = {
+		id = CHU_take_over_the_west_eastern_republic
+		icon = GFX_focus_generic_defeat_daimyos
+		x = -1
+		y = 1
+		cost = 10
+		relative_position_id = CHU_take_over_the_west
+		available_if_capitulated = yes
+		prerequisite = { focus = CHU_take_over_the_west }
+		ai_will_do = {
+			factor = 1
+		}
+
+		bypass = {
+
+		}
+
+		completion_reward = {
+			add_state_claim = 178
+			create_wargoal = {
+				type = take_state_focus
+				target = JOS
 			}
 		}
 	}
@@ -1198,7 +1144,7 @@ focus_tree = {
 		}
 
 		bypass = {
-			has_completed_focus = CHU_fleet_is_our_enemy_of_mine
+			
 		}
 
 		completion_reward = {
@@ -1360,74 +1306,16 @@ focus_tree = {
 	focus = {
 		id = CHU_make_the_official_declaration
 		icon = GFX_goal_generic_propaganda
-		x = 8
-		y = 6
-		relative_position_id = CHU_deal_with_those_imperial_scum
+		x = 0
+		y = 1
+		relative_position_id = CHU_invite_other_neighbor
 		cost = 10
 		available_if_capitulated = yes
 		prerequisite = { 
-			focus = CHU_deal_with_those_imperial_scum
-			focus = CHU_deal_with_the_other_junta
+			focus = CHU_invite_other_neighbor
 		}
 		ai_will_do = {
 			factor = 1
-		}
-	}
-
-	#Focus for The Impossible Idea Comes True?
-	focus = {
-		id = CHU_the_impossible_idea_comes_true
-		icon = GFX_goal_tfv_can_compromise_with_quebec
-		x = 0
-		y = 1
-		relative_position_id = CHU_the_south_unified
-		cost = 10
-		available_if_capitulated = yes
-		prerequisite = { 
-			#focus = CHU_ 
-			focus = CHU_the_south_unified 
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			KYU = { country_event = { id = chu_event6 } }
-		}
-	}
-
-	focus = {
-		id = CHU_deal_with_those_fascists
-		icon = GFX_focus_KYU_claim_shikoku
-		x = 0
-		y = 1
-		cost = 10
-		available_if_capitulated = yes
-		relative_position_id = CHU_the_impossible_idea_comes_true
-		prerequisite = { }
-		prerequisite = {  }
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			SHI = { country_event = { id = chu_event4 } }
-		}
-	}
-
-	#Focus for The South Unified?
-	focus = {
-		id = CHU_the_south_unified
-		icon = GFX_focus_generic_diplomatic_treaty
-		x = -6
-		y = 7
-		cost = 10
-		relative_position_id = CHU_increase_civillian_influence
-		available_if_capitulated = yes
-		prerequisite = {  }
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			KYU = { country_event = { id = chu_event5 } }
 		}
 	}
 
@@ -1716,7 +1604,7 @@ focus_tree = {
 
 	focus = {
 		id = CHU_destroy_SHI
-		icon = GFX_focus_generic_strike_shikoku
+		icon = GFX_focus_KYU_claim_shikoku
 		x = 1
 		y = 2
 		relative_position_id = CHU_invite_new_ally
@@ -2051,7 +1939,7 @@ focus_tree = {
 		relative_position_id = CHU_Convince_people_to_fight
 		cost = 10
 		available_if_capitulated = yes
-		prerequisite = { focus = CHU_get_your_approval focus = CHU_declare_war }
+		prerequisite = { focus = CHU_declare_war }
 		ai_will_do = {
 			factor = 1
 		}
@@ -2096,17 +1984,17 @@ focus_tree = {
 		ai_will_do = {
 			factor = 1
 		}
+
+		available = {
+			NOT = { has_completed_focus = CHU_deal_with_the_other_junta }
+		}
+
 		completion_reward = {
 			SHI = { 
 				add_opinion_modifier = {
 				target = CHU
 				modifier = CHU_valued_strategic_partners
 				}
-			}
-			set_rule = { can_create_factions = yes }
-			create_faction = dragon_brotherhood
-			SHI = {
-				country_event = { id = generic.5 }
 			}
 		}
 	}
@@ -2127,7 +2015,7 @@ focus_tree = {
 		}
 
 		bypass = {
-			has_completed_focus = CHU_finish_off_the_opponents_job
+			
 		}
 
 		completion_reward = {
@@ -2142,27 +2030,23 @@ focus_tree = {
 	#Focus for The Path Of Agression?
 	focus = {
 		id = CHU_aggressive_policy
-		icon = GFX_focus_generic_attack_shikoku
+		icon = GFX_focus_CHU_traditional_army
 		x = -1
 		y = 1
 		cost = 10
 		available_if_capitulated = yes
 		relative_position_id = CHU_the_path_of_unification
-		prerequisite = { focus = CHU_the_path_of_unification focus = CHU_war_with_the_other_junta }
+		prerequisite = { focus = CHU_the_path_of_unification focus = CHU_the_path_of_benefits }
 		ai_will_do = {
 			factor = 1
 		}
 
 		bypass = {
-			has_completed_focus = CHU_finish_off_the_opponents_job
+			
 		}
 
 		completion_reward = {
-			add_state_claim = 31
-			create_wargoal = {
-				type = take_state_focus
-				target = SHI
-			}
+			add_war_support = 0.05
 		}
 	}
 
