@@ -28,6 +28,10 @@ focus_tree = {
 				popularity = 0.1
 				ideology = fascism
 			}
+			add_popularity = {
+				popularity = 0.1
+				ideology = communism
+			}
 		}
 	}
 	
@@ -46,11 +50,15 @@ focus_tree = {
 			factor = 1
 		}
 		completion_reward = { 		
-		add_popularity = {
+			add_popularity = {
 				popularity = 0.1
 				ideology = democratic
-				add_stability = 0.05
 			}
+			add_popularity = {
+				popularity = 0.1
+				ideology = autocracy
+			}
+			add_stability = -0.25
 		}
 	}
 	
@@ -332,7 +340,7 @@ focus_tree = {
 	focus = {
 		id = CHU_relations_of_interest
 		icon = GFX_focus_CHU_the_ones_who_will_rule
-		x = 12
+		x = 14
 		y = 1
 		available = {
 			CHU = { 
@@ -341,8 +349,8 @@ focus_tree = {
 					has_completed_focus = CHU_conserve_the_status_quo
 				}
 				OR = { 
-					has_completed_focus = CHU_the_path_of_benefits
-					has_completed_focus = CHU_deal_with_the_other_junta
+					has_completed_focus = CHU_look_to_the_black_dragon
+					has_completed_focus = CHU_hiroshima_university
 				}
 			}
 
@@ -396,6 +404,10 @@ focus_tree = {
 			factor = 1
 		}
 
+		bypass = {
+			has_completed_focus = CHU_deal_with_the_other_junta
+		}
+
 		completion_reward = {
 
 		}
@@ -439,7 +451,7 @@ focus_tree = {
 
 	focus = {
 		id = CHU_fleet_is_our_enemy_of_mine
-		icon = GFX_
+		icon = GFX_focus_CHU_traditional_army
 		x = -4
 		y = 1
 		mutually_exclusive = { focus = CHU_deal_KYU }
@@ -449,6 +461,10 @@ focus_tree = {
 		available_if_capitulated = yes
 		ai_will_do = {
 			factor = 1
+		}
+
+		bypass = {
+			has_completed_focus = CHU_war_with_the_other_junta
 		}
 
 		completion_reward = {
@@ -482,6 +498,11 @@ focus_tree = {
 		ai_will_do = {
 			factor = 1
 		}
+
+		bypass = {
+			has_completed_focus = CHU_the_path_of_benefits
+		}
+
 
 		completion_reward = {
 
@@ -526,7 +547,7 @@ focus_tree = {
 
 	focus = {
 		id = CHU_finish_off_the_opponents_job
-		icon = GFX_
+		icon = GFX_focus_CHU_traditional_army
 		x = 4
 		y = 1
 		mutually_exclusive = { focus = CHU_deal_SHI }
@@ -536,6 +557,10 @@ focus_tree = {
 		available_if_capitulated = yes
 		ai_will_do = {
 			factor = 1
+		}
+
+		bypass = {
+			has_completed_focus = CHU_the_path_of_unification
 		}
 
 		completion_reward = {
@@ -665,7 +690,7 @@ focus_tree = {
 		relative_position_id = CHU_sanyo_fishing_industry
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_sanyo_fishing_industry focus = CHU_look_to_the_black_dragon }
-		prerequisite = { focus = CHU_sanchi_iron_sand focus = CHU_we_are_enough }
+		prerequisite = { focus = CHU_sanchi_iron_sand focus = CHU_we_are_enough focus = CHU_we_are_enough_for_communism }
 		ai_will_do = {
 			factor = 1
 		}
@@ -677,18 +702,51 @@ focus_tree = {
 	#Focus for Deal With The OTHER Junta
 	focus = {
 		id = CHU_deal_with_the_other_junta
-		icon = GFX_focus_generic_attack_kyushu
-		x = 0
+		icon = GFX_focus_generic_diplomacy_kyushu
+		x = 1
 		y = 1
 		cost = 10
+		mutually_exclusive = { focus = CHU_war_with_the_other_junta }
 		relative_position_id = CHU_hiroshima_university
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_hiroshima_university }
 		ai_will_do = {
 			factor = 1
 		}
+
+		bypass = {
+			has_completed_focus = GFX_focus_CHU_focus_south
+		}
+
 		completion_reward = {
 			KYU = { country_event = { id = chu_event3 } }
+		}
+	}
+
+	focus = {
+		id = CHU_war_with_the_other_junta
+		icon = GFX_focus_generic_attack_kyushu
+		x = -1
+		y = 1
+		cost = 10
+		mutually_exclusive = { focus = CHU_deal_with_the_other_junta }
+		relative_position_id = CHU_hiroshima_university
+		available_if_capitulated = yes
+		prerequisite = { focus = CHU_hiroshima_university }
+		ai_will_do = {
+			factor = 1
+		}
+
+		bypass = {
+			has_completed_focus = CHU_fleet_is_our_enemy_of_mine
+		}
+
+		completion_reward = {
+			add_state_claim = 100
+			create_wargoal = {
+				type = take_state_focus
+				target = KYU
+			}
 		}
 	}
 
@@ -843,7 +901,7 @@ focus_tree = {
 		id = CHU_make_the_official_declaration
 		icon = GFX_goal_generic_propaganda
 		x = -8
-		y = 1
+		y = 2
 		relative_position_id = CHU_deal_with_those_imperial_scum
 		cost = 10
 		available_if_capitulated = yes
@@ -882,7 +940,7 @@ focus_tree = {
 		id = CHU_deal_with_those_fascists
 		icon = GFX_focus_KYU_claim_shikoku
 		x = -1
-		y = 3
+		y = 4
 		cost = 10
 		available_if_capitulated = yes
 		relative_position_id = CHU_support_shinzo_hamais_policies
@@ -914,16 +972,97 @@ focus_tree = {
 		}
 	}
 
+	focus = {
+		id = CHU_we_are_enough_for_monarchy
+		icon = GFX_focus_PRO_monarchy_consolidated
+		x = -1
+		y = 1
+		cost = 10
+		available = {
+			autocracy > 0.10
+		}
+		available_if_capitulated = yes
+		mutually_exclusive = { focus = CHU_we_are_enough_for_democracy }
+		relative_position_id = CHU_increase_civillian_influence
+		prerequisite = { focus = CHU_increase_civillian_influence }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			if = {
+					limit = {
+						has_idea = CHU_people_army_dont_like_government
+					}
+					swap_ideas = {
+						remove_idea = CHU_people_army_dont_like_government
+						add_idea = CHU_army_dont_like_government
+					}
+			}
+			add_stability = 0.05
+			add_popularity = {
+				popularity = 0.1
+				ideology = autocracy
+			}
+			add_timed_idea = {
+				idea = CHU_we_are_enough_for_autocracy
+				days = 180
+			}
+			set_politics = {
+				ruling_party = autocracy
+			}
+		}
+	}
+	focus = {
+		id = CHU_we_are_enough_for_democracy
+		icon = GFX_focus_PRO_beacon_of_equality
+		x = -3
+		y = 1
+		cost = 10
+		available = {
+			democratic > 0.10
+		}
+		available_if_capitulated = yes
+		mutually_exclusive = { focus = CHU_we_are_enough_for_monarchy }
+		relative_position_id = CHU_increase_civillian_influence
+		prerequisite = { focus = CHU_increase_civillian_influence }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			if = {
+					limit = {
+						has_idea = CHU_people_army_dont_like_government
+					}
+					swap_ideas = {
+						remove_idea = CHU_people_army_dont_like_government
+						add_idea = CHU_army_dont_like_government
+					}
+			}
+			add_stability = 0.05
+			add_popularity = {
+				popularity = 0.1
+				ideology = democratic
+			}
+			add_timed_idea = {
+				idea = CHU_we_are_enough_for_democratic
+				days = 180
+			}
+			set_politics = {
+				ruling_party = democratic
+			}
+		}
+	}
+
 	#Focus for The Navy Junta Question
 	focus = {
 		id = CHU_the_navy_junta_question
 		icon = GFX_goal_generic_occupy_states_coastal
 		x = -2
-		y = 1
+		y = 2
 		cost = 10
 		available_if_capitulated = yes
 		relative_position_id = CHU_increase_civillian_influence
-		prerequisite = { focus = CHU_increase_civillian_influence }
+		prerequisite = { focus = CHU_we_are_enough_for_democracy focus = CHU_we_are_enough_for_monarchy }
 		ai_will_do = {
 			factor = 1
 		}
@@ -982,7 +1121,7 @@ focus_tree = {
 		available_if_capitulated = yes
 		relative_position_id = CHU_we_are_enough
 		prerequisite = { 
-			focus = CHU_we_are_enough 
+			focus = CHU_we_are_enough focus = CHU_we_are_enough_for_communism
 		}
 		ai_will_do = {
 			factor = 1
@@ -1076,7 +1215,7 @@ focus_tree = {
 		available_if_capitulated = yes
 		relative_position_id = CHU_we_are_enough
 		prerequisite = { 
-			focus = CHU_we_are_enough 
+			focus = CHU_we_are_enough focus = CHU_we_are_enough_for_communism
 		}
 		ai_will_do = {
 			factor = 1
@@ -1107,7 +1246,7 @@ focus_tree = {
 		relative_position_id = CHU_deal_with_those_imperial_scum
 		available_if_capitulated = yes
 		prerequisite = { 
-			focus = CHU_deal_with_those_imperial_scum
+			focus = CHU_deal_with_those_imperial_scum focus = CHU_we_are_enough_for_communism
 		}
 		ai_will_do = {
 			factor = 1
@@ -1127,12 +1266,22 @@ focus_tree = {
 		available = {
 			fascism > 0.25
 		}
+		mutually_exclusive = { focus = CHU_we_are_enough_for_communism }
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_go_alone }
 		ai_will_do = {
 			factor = 1
 		}
 		completion_reward = {
+			if = {
+					limit = {
+						has_idea = CHU_people_army_dont_like_government
+					}
+					swap_ideas = {
+						remove_idea = CHU_people_army_dont_like_government
+						add_idea = CHU_people_dont_like_government
+					}
+			}
 			add_timed_idea = {
 				idea = CHU_we_are_enough
 				days = 180
@@ -1140,6 +1289,79 @@ focus_tree = {
 			set_politics = {
 				ruling_party = fascism
 			}
+		}
+	}
+
+	focus = {
+		id = CHU_we_are_enough_for_communism
+		icon = GFX_focus_TOH_one_party_rule
+		x = 4
+		y = 2
+		relative_position_id = CHU_go_alone
+		cost = 10
+		available = {
+			communism > 0.25
+		}
+		mutually_exclusive = { focus = CHU_we_are_enough }
+		available_if_capitulated = yes
+		prerequisite = { focus = CHU_go_alone }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			if = {
+					limit = {
+						has_idea = CHU_people_army_dont_like_government
+					}
+					swap_ideas = {
+						remove_idea = CHU_people_army_dont_like_government
+						add_idea = CHU_people_dont_like_government
+					}
+			}
+			add_timed_idea = {
+				idea = CHU_we_are_enough_for_communism
+				days = 180
+			}
+			set_politics = {
+				ruling_party = communism
+			}
+			add_stability = -0.25
+		}
+	}
+
+	focus = {
+		id = CHU_we_are_enough_for_democratic_socialism
+		icon = GFX_focus_PRO_social_democratic_majority
+		x = 1
+		y = 1
+		relative_position_id = CHU_we_are_enough_for_communism
+		cost = 10
+		available = {
+			ruling_party = communism
+		}
+		available_if_capitulated = yes
+		prerequisite = { focus = CHU_we_are_enough_for_communism }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			if = {
+					limit = {
+						has_idea = CHU_people_army_dont_like_government
+					}
+					swap_ideas = {
+						remove_idea = CHU_people_army_dont_like_government
+						add_idea = CHU_army_dont_like_government
+					}
+			}
+			add_timed_idea = {
+				idea = CHU_we_are_enough_for_democratic_socialism
+				days = 180
+			}
+			set_politics = {
+				ruling_party = democratic_socialism
+			}
+			add_stability = 0.15
 		}
 	}
 	
@@ -1224,6 +1446,11 @@ focus_tree = {
 		ai_will_do = {
 			factor = 1
 		}
+
+		bypass = {
+			has_completed_focus = CHU_finish_off_the_opponents_job
+		}
+
 		completion_reward = {
 			add_state_claim = 31
 			create_wargoal = {
@@ -1649,7 +1876,7 @@ focus_tree = {
 	focus = {
 		id = CHU_air_doctrin
 		icon = GFX_focus_generic_air_doctrine
-		x = -7
+		x = -8
 		y = 1
 		cost = 10
 		available_if_capitulated = yes
@@ -1852,7 +2079,7 @@ focus_tree = {
 	focus = {
 		id = CHU_land_doctrin
 		icon = GFX_goal_generic_army_doctrines
-		x = -11
+		x = -12
 		y = 1
 		cost = 10
 		available_if_capitulated = yes
