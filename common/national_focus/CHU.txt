@@ -3,10 +3,20 @@
 	country = {
 		factor = 0
 		modifier = {
-			add = 0
+			add = 10
 			tag = CHU
 		}
 	}
+	
+	default = no
+	
+	initial_show_position = {
+		x = 20
+		y = 0
+	}
+	
+	continuous_focus_position = { x = 100 y = 1500 }
+	
 	#Focus for Go Alone
 	focus = {
 		id = CHU_go_alone
@@ -34,6 +44,23 @@
 			}
 		}
 	}
+
+	focus = {
+		id = CHU_army_academy
+		icon = GFX_focus_generic_research_slot
+		x = 3
+		y = 1
+		cost = 5
+		relative_position_id = CHU_go_alone
+		available_if_capitulated = yes
+		prerequisite = { focus = CHU_go_alone }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			add_research_slot = 1	
+		}
+	}
 	
 		focus = {
 		id = CHU_increase_civillian_influence
@@ -59,6 +86,24 @@
 				ideology = autocracy
 			}
 			add_stability = -0.25
+		}
+	}
+
+	focus = {
+		id = CHU_civilian_universty
+		icon = GFX_focus_generic_research_slot
+		x = 3
+		y = 1
+		cost = 5
+		relative_position_id = CHU_increase_civillian_influence
+		available_if_capitulated = yes
+		prerequisite = { focus = CHU_increase_civillian_influence }
+		prerequisite = { focus = CHU_conserve_the_status_quo }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			add_research_slot = 1	
 		}
 	}
 	
@@ -659,7 +704,7 @@
 	focus = {
 		id = CHU_decentralize_the_junta
 		icon = GFX_goal_generic_trade
-		x = -3
+		x = -2
 		y = 1
 		cost = 10
 		bypass = {
@@ -679,7 +724,7 @@
 	focus = {
 		id = CHU_moderate_voice
 		icon = GFX_focus_generic_concessions
-		x = -1
+		x = -2
 		y = 2
 		cost = 10
 		relative_position_id = CHU_decentralize_the_junta
@@ -763,7 +808,7 @@
 		}
 		completion_reward = {
 			unlock_decision_category_tooltip = CHU_assess_our_situation_category_tt
-			add_ideas = CHU_people_army_dont_like_government
+			add_ideas = CHU_We_promised_the_army_and_the_people
 		}
 	}
 
@@ -961,7 +1006,7 @@
 
 	focus = {
 		id = CHU_build_yamato_class
-		icon = GFX_focus_generic_cruiser2
+		icon = GFX_focus_KYU_super_battleship_old
 		x = 0
 		y = 1
 		cost = 10
@@ -972,12 +1017,72 @@
 			factor = 1
 		}
 		completion_reward = {
-			40 = {
-				add_extra_state_shared_building_slots = 2
-				add_building_construction = {
-					type = dockyard
-					level = 2
-					instant_build = yes
+			if = {
+				limit = {
+					not = { has_dlc = "Man the Guns" }
+				}
+				add_tech_bonus = {
+					name = JAP_the_ultimate_battleship
+					bonus = 3.0
+					uses = 1
+					category = shbb_tech	
+				}
+			}
+			else = {
+				if = {
+					limit = {
+						not = { has_tech = ship_hull_super_heavy }
+					}
+					set_technology = {
+						ship_hull_super_heavy = 1
+					}
+				}
+				create_equipment_variant = {
+					name = "Yamato Class"
+					type = ship_hull_super_heavy_1
+					name_group = JAP_BB_HISTORICAL
+					parent_version = 0
+					modules = {
+						fixed_ship_battery_slot = ship_super_heavy_battery_1
+						fixed_ship_anti_air_slot = ship_anti_air_2
+						fixed_ship_fire_control_system_slot = ship_fire_control_system_1
+						fixed_ship_radar_slot = empty
+						fixed_ship_engine_slot = heavy_ship_engine_2
+						fixed_ship_secondaries_slot = ship_secondaries_2
+						fixed_ship_armor_slot = ship_armor_shbb
+						front_1_custom_slot = ship_anti_air_1
+						front_2_custom_slot = empty
+						mid_1_custom_slot = empty
+						mid_2_custom_slot = ship_secondaries_2
+						mid_3_custom_slot = ship_secondaries_2
+						rear_1_custom_slot = ship_super_heavy_battery_1
+						rear_2_custom_slot = ship_airplane_launcher_1
+					}
+				}
+				custom_effect_tooltip = JAP_yamato_tt
+				hidden_effect = {
+					add_equipment_production = {
+						equipment = {
+							type = ship_hull_super_heavy_1
+							creator = "KYU" 
+							version_name = "Yamato Class"
+						}
+						name = "Yamato" 
+						requested_factories = 1
+						progress = 0.75
+						amount = 1
+					}
+					add_equipment_production = {
+						equipment = {
+							type = ship_hull_super_heavy_1
+							creator = "KYU" 
+							version_name = "Yamato Class"
+						}
+						name = "Musashi" 
+						requested_factories = 1
+						progress = 0.5
+						amount = 1
+					}
 				}
 			}
 		}
@@ -1009,7 +1114,7 @@
 		icon = GFX_focus_research
 		x = 1
 		y = 1
-		cost = 10
+		cost = 5
 		relative_position_id = CHU_military_factory3
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_military_factory3 }
@@ -3080,7 +3185,7 @@
 		}
 		x = -4
 		y = 1
-		cost = 10
+		cost = 5
 		relative_position_id = CHU_fishing_vessel_industry
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_fishing_vessel_industry }
