@@ -48,7 +48,7 @@
 	focus = {
 		id = CHU_army_academy
 		icon = GFX_focus_generic_research_slot
-		x = 3
+		x = 2
 		y = 1
 		cost = 5
 		relative_position_id = CHU_go_alone
@@ -97,8 +97,7 @@
 		cost = 5
 		relative_position_id = CHU_increase_civillian_influence
 		available_if_capitulated = yes
-		prerequisite = { focus = CHU_increase_civillian_influence }
-		prerequisite = { focus = CHU_conserve_the_status_quo }
+		prerequisite = { focus = CHU_increase_civillian_influence focus = CHU_conserve_the_status_quo }
 		ai_will_do = {
 			factor = 1
 		}
@@ -285,7 +284,7 @@
 		icon = GFX_focus_research
 		x = -1
 		y = 2
-		cost = 10
+		cost = 5
 		relative_position_id = CHU_support_shinzo_hamais_policies
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_increase_civillian_influence }
@@ -306,6 +305,7 @@
 		cost = 10
 		relative_position_id = CHU_hiroshima_university2
 		available_if_capitulated = no
+		prerequisite = { focus = CHU_recruit_volunteers }
 		prerequisite = { focus = CHU_hiroshima_university2 focus = CHU_moderate_voice }
 		ai_will_do = {
 			factor = 1
@@ -503,11 +503,13 @@
 	focus = {
 		id = CHU_deal_with_those_imperial_scum
 		icon = GFX_goal_generic_secret_weapon
-		x = 0
-		y = 1
+		x = 1
+		y = 2
 		cost = 10
-		relative_position_id = CHU_reinforce_our_northern_borders
+		relative_position_id = CHU_war_with_junta
 		available_if_capitulated = yes
+		prerequisite = { focus = CHU_invite_communist_brothers }
+		prerequisite = { focus = CHU_war_with_junta }
 		prerequisite = { focus = CHU_reinforce_our_northern_borders }
 		ai_will_do = {
 			factor = 1
@@ -517,6 +519,10 @@
 			create_wargoal = {
 				type = take_state_focus
 				target = KAN
+			}
+			add_timed_idea = {
+				idea = CHU_deal_with_those_imperial_scum
+				days = 180
 			}
 		}
 	}
@@ -1604,6 +1610,26 @@
 	}
 
 	focus = {
+		id = CHU_recruit_volunteers
+		icon = GFX_focus_generic_conscription
+		x = 2
+		y = 1
+		cost = 10
+		available = {
+			
+		}
+		available_if_capitulated = yes
+		relative_position_id = CHU_make_a_new_front
+		prerequisite = { focus = CHU_make_a_new_front }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			add_ideas = CHU_recruit_volunteers
+		}
+	}
+
+	focus = {
 		id = CHU_invite_new_ally
 		icon = GFX_focus_generic_treaty
 		x = 0
@@ -1787,7 +1813,7 @@
 		id = CHU_reinforce_our_northern_borders
 		icon = GFX_focus_ger_bulwark_against_bolshevism
 		x = 1
-		y = 1
+		y = 2
 		cost = 10
 		available_if_capitulated = yes
 		relative_position_id = CHU_we_are_enough
@@ -1906,31 +1932,13 @@
 		}
 	}
 
-
-	#Focus for Prepare For The Communists
-	focus = {
-		id = CHU_prepare_for_the_communists
-		icon = GFX_goal_generic_territory_or_war
-		x = 1
-		y = 1
-		cost = 10
-		relative_position_id = CHU_deal_with_those_imperial_scum
-		available_if_capitulated = yes
-		prerequisite = { 
-			focus = CHU_deal_with_those_imperial_scum focus = CHU_we_are_enough_for_communism
-		}
-		ai_will_do = {
-			factor = 1
-		}
-	}
-
 	
 
 	#Focus for We Are Enough
 	focus = {
 		id = CHU_we_are_enough
 		icon = GFX_goal_support_fascism
-		x = 2
+		x = 3
 		y = 2
 		relative_position_id = CHU_go_alone
 		cost = 10
@@ -1964,9 +1972,127 @@
 	}
 
 	focus = {
+		id = CHU_ally_other_facist
+		icon = GFX_focus_generic_strength
+		x = -3
+		y = 1
+		relative_position_id = CHU_we_are_enough
+		cost = 10
+		available = {
+
+		}
+		available_if_capitulated = yes
+		prerequisite = { focus = CHU_we_are_enough }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			SHI = { 
+				add_opinion_modifier = {
+				target = CHU
+				modifier = CHU_valued_strategic_partners
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = CHU_ally_facist_SHI
+		icon = GFX_focus_generic_treaty_shikoku
+		x = 0
+		y = 1
+		relative_position_id = CHU_ally_other_facist
+		cost = 10
+		available = {
+
+		}
+		available_if_capitulated = yes
+		prerequisite = { focus = CHU_ally_other_facist }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			set_rule = { can_create_factions = yes }
+			create_faction = dragon_brotherhood
+		}
+	}
+
+	focus = {
+		id = CHU_take_IMS
+		icon = GFX_focus_IMS_take_our_time
+		x = 0
+		y = 1
+		relative_position_id = CHU_ally_facist_SHI
+		cost = 10
+		available = {
+
+		}
+		available_if_capitulated = yes
+		prerequisite = { focus = CHU_ally_facist_SHI }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			add_state_claim = 26
+			create_wargoal = {
+				type = take_state_focus
+				target = TOH
+			}
+		}
+	}
+
+	focus = {
+		id = CHU_war_with_junta
+		icon = GFX_focus_generic_strike_kyushu
+		x = 0
+		y = 1
+		relative_position_id = CHU_prepare_to_destroy_the_neighbors
+		cost = 10
+		available = {
+
+		}
+		available_if_capitulated = yes
+		prerequisite = { focus = CHU_prepare_to_destroy_the_neighbors }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			add_state_claim = 139
+			create_wargoal = {
+				type = take_state_focus
+				target = KYU
+			}
+		}
+	}
+
+	focus = {
+		id = CHU_prepare_for_the_communists
+		icon = GFX_focus_generic_attack_tohoku
+		x = -1
+		y = 1
+		relative_position_id = CHU_war_with_junta
+		cost = 10
+		available = {
+			NOT = { has_completed_focus = CHU_we_are_enough_for_communism }
+		}
+		available_if_capitulated = yes
+		prerequisite = { focus = CHU_war_with_junta focus = CHU_take_IMS }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			add_state_claim = 113
+			create_wargoal = {
+				type = take_state_focus
+				target = TOH
+			}
+		}
+	}
+
+	focus = {
 		id = CHU_we_are_enough_for_communism
 		icon = GFX_focus_TOH_one_party_rule
-		x = 4
+		x = 5
 		y = 2
 		relative_position_id = CHU_go_alone
 		cost = 10
@@ -2033,6 +2159,67 @@
 				ruling_party = democratic_socialism
 			}
 			add_stability = 0.15
+		}
+	}
+
+	focus = {
+		id = CHU_our_communist_brothers
+		icon = GFX_focus_KYU_stabilize_the_nation
+		x = 0
+		y = 3
+		relative_position_id = CHU_we_are_enough_for_communism
+		cost = 10
+		available = {
+			ruling_party = communism
+		}
+		available_if_capitulated = yes
+		prerequisite = { focus = CHU_we_are_enough_for_communism }
+		prerequisite = { focus = CHU_reinforce_our_southern_borders focus = CHU_reinforce_our_northern_borders }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			set_rule = { can_create_factions = yes }
+			if = {
+				limit = {
+					has_completed_focus = CHU_we_are_enough_for_democratic_socialism
+				}
+				create_faction = Union_of_Socialist_Republics
+			}
+			if = {
+				limit = {
+					has_completed_focus = CHU_we_are_enough_for_communism
+				}
+				create_faction = Comintern_Pact
+			}
+		}
+	}
+
+	focus = {
+		id = CHU_invite_communist_brothers
+		icon = GFX_focus_generic_treaty
+		x = 0
+		y = 1
+		relative_position_id = CHU_our_communist_brothers
+		cost = 10
+		available = {
+
+		}
+		available_if_capitulated = yes
+		prerequisite = { focus = CHU_our_communist_brothers }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			FER = {
+				country_event = { id = generic.5 }
+			}
+			TOH = {
+				country_event = { id = generic.5 }
+			}
+			EZO = {
+				country_event = { id = generic.5 }
+			}
 		}
 	}
 	
