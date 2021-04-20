@@ -142,14 +142,14 @@ country_event = {
 	id = chugoku.7
 	title = chugoku.7.t
 	desc = chugoku.7.desc
-	picture = GFX_report_event_tur_menderes_opposition
+	picture = GFX_report_event_generic_sign_treaty1
 
 	is_triggered_only = yes
 	
 	fire_only_once = yes
 	
 	option = {
-		name = chugoku.7.a #Chugoku has become the very thing it swore to destroy!
+		name = chugoku.7.a #1
 		trigger = {
 			has_completed_focus = CHU_increase_civillian_influence
 		}
@@ -167,7 +167,7 @@ country_event = {
 		}
 	}
 	option = {
-		name = chugoku.7.b #they are traitors to the Revolution!
+		name = chugoku.7.b #2
 		trigger = {
 				has_completed_focus = CHU_go_alone
 			}
@@ -182,6 +182,126 @@ country_event = {
 					ideological_fanaticism
 				}
 			}
+		}
+	}
+}
+
+#Chugoku enemy or ally
+country_event = {
+	id = chugoku.8
+	title = chugoku.8.t
+	desc = chugoku.8.desc
+	picture = GFX_report_event_generic_sign_treaty2
+
+	is_triggered_only = yes
+	
+	option = {
+		name = chugoku.8.a #Chugoku has become enemy!
+		add_opinion_modifier = {
+			target = CHU
+			modifier = CHU_new_enemy
+		}
+		CHU = {
+			add_opinion_modifier = {
+				target = ROOT
+				modifier = CHU_new_enemy
+			}
+		}
+		hidden_effect = {
+			CHU = { country_event = { id = chugoku.9 hours = 6 } }
+			add_ideas = CHU_has_enemy
+		}
+	}
+	option = {
+		name = chugoku.8.b #Chugoku has become friend!
+		diplomatic_relation = {
+			country = CHU
+			relation = non_aggression_pact
+			active = yes
+		}
+		add_opinion_modifier = {
+			target = CHU
+			modifier = CHU_ally
+		}
+		CHU = {
+			add_opinion_modifier = {
+				target = ROOT
+				modifier = CHU_ally
+			}
+		}
+		hidden_effect = {
+			CHU = { country_event = { id = chugoku.10 hours = 6 } }
+			add_ideas = CHU_has_friend
+		}
+	}
+}
+
+news_event = {
+	id = chugoku.9
+	title = news.9.t
+	desc = news.9.d
+	picture = GFX_news_event_001
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = {
+			SHI = { has_idea = CHU_has_enemy }
+		}
+		name = news.9.a
+		add_opinion_modifier = {
+			target = SHI
+			modifier = CHU_new_enemy
+		}
+	}
+	option = {
+		trigger = {
+			SHI = { has_idea = CHU_has_enemy }
+		}
+		name = news.9.b
+		create_wargoal = {
+			type = take_state_focus
+			target = SHI
+		}
+	}
+	option = {
+		trigger = {
+			has_completed_focus = CHU_deal_with_the_old_shogunate
+		}
+		name = news.9.a
+		add_opinion_modifier = {
+			target = SHO
+			modifier = CHU_new_enemy
+		}
+	}
+	option = {
+		trigger = {
+			has_completed_focus = CHU_deal_with_the_old_shogunate
+		}
+		name = news.9.b
+		create_wargoal = {
+			type = take_state_focus
+			target = SHO
+		}
+	}
+}
+
+news_event = {
+	id = chugoku.10
+	title = news.10.t
+	desc = news.10.d
+	picture = GFX_news_event_001
+	
+	is_triggered_only = yes
+	
+	option = {
+		trigger = {
+			SHI = { has_idea = CHU_has_friend }
+		}
+		name = news.10.a
+		add_opinion_modifier = {
+			target = SHI
+			modifier = CHU_ally
 		}
 	}
 }
