@@ -156,7 +156,7 @@
 		id = CHU_Convince_people_to_fight
 		icon = GFX_focus_TOH_farmers
 		x = 0
-		y = 2
+		y = 3
 		cost = 10
 		relative_position_id = CHU_support_teichi_suzukis_policies
 		available_if_capitulated = yes
@@ -175,10 +175,10 @@
 		icon = GFX_focus_KAN_imperial_restoration
 		x = -1
 		y = 1
-		cost = 10
-		relative_position_id = CHU_Convince_people_to_fight
+		cost = 3
+		relative_position_id = CHU_create_new_front
 		available_if_capitulated = yes
-		prerequisite = { focus = CHU_Convince_people_to_fight }
+		prerequisite = { focus = CHU_create_new_front }
 		ai_will_do = {
 			factor = 1
 		}
@@ -189,10 +189,13 @@
 
 	focus = {
 		id = CHU_get_your_approval
-		icon = GFX_focus_generic_diplomacy_kansai
-		x = -1
+		icon = GFX_
+		x = 0
 		y = 1
-		cost = 10
+		cost = 5
+		available = {
+			has_completed_focus = CHU_create_new_front
+		}
 		relative_position_id = CHU_approach_to_the_emperor
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_approach_to_the_emperor }
@@ -200,10 +203,24 @@
 			factor = 1
 		}
 		completion_reward = {
-			KAN = { 
-				add_opinion_modifier = {
-				target = CHU
-				modifier = CHU_trading_partner
+			if = {
+   				limit = {
+        			KAN = { has_opinion_modifier = CHU_ally }
+    			}   
+				KAN = { 
+					add_opinion_modifier = {
+					target = CHU
+					modifier = CHU_trading_partner
+					}
+				}
+			}
+			else_if = {
+    			limit = {
+        			KAN = { has_opinion_modifier = CHU_new_enemy }
+    			}
+				create_wargoal = {
+					type = take_state_focus
+					target = KAN
 				}
 			}
 		}
@@ -211,20 +228,36 @@
 
 	focus = {
 		id = CHU_declare_war
-		icon = GFX_focus_generic_attack_imperial
-		x = 3
+		icon = GFX_
+		x = 0
 		y = 1
-		cost = 10
-		relative_position_id = CHU_approach_to_the_emperor
+		cost = 5
+		relative_position_id = CHU_deal_with_the_old_shogunate
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_deal_with_the_old_shogunate }
 		ai_will_do = {
 			factor = 1
 		}
 		completion_reward = {
-			create_wargoal = {
-				type = take_state_focus
-				target = KAN
+			if = {
+   				limit = {
+        			SHO = { has_opinion_modifier = CHU_ally }
+    			}   
+				SHO = { 
+					add_opinion_modifier = {
+					target = CHU
+					modifier = CHU_trading_partner
+					}
+				}
+			}
+			else_if = {
+    			limit = {
+        			SHO = { has_opinion_modifier = CHU_new_enemy }
+    			}
+				create_wargoal = {
+					type = take_state_focus
+					target = SHO
+				}
 			}
 		}
 	}
@@ -234,16 +267,15 @@
 		id = CHU_the_navy_junta_question
 		icon = GFX_goal_generic_occupy_states_coastal
 		x = -3
-		y = 3
-		cost = 10
+		y = 1
+		cost = 3
 		available_if_capitulated = yes
-		relative_position_id = CHU_Convince_people_to_fight
-		prerequisite = { focus = CHU_get_your_approval }
+		relative_position_id = CHU_create_new_front
+		prerequisite = { focus = CHU_create_new_front }
 		ai_will_do = {
 			factor = 1
 		}
 		completion_reward = {
-			add_war_support = 0.05
 			KYU = { country_event = { id = chugoku.8 } }
 		}
 	}
@@ -314,7 +346,7 @@
 		icon = GFX_focus_generic_unite_japan
 		x = 0
 		y = 2
-		cost = 10
+		cost = 20
 		relative_position_id = CHU_hiroshima_university2
 		available_if_capitulated = no
 		prerequisite = { focus = CHU_recruit_volunteers }
@@ -362,38 +394,33 @@
 		}
 		completion_reward = {
 			CHU = {
-				declare_war_on = {
+				create_wargoal = {
+				type = take_state_focus
 				target = KAN
-				type = take_state_focus
-				generator = { 32 }
-				}
+			}
 			}
 			CHU = {
-				declare_war_on = {
+				create_wargoal = {
+				type = take_state_focus
 				target = SHO
-				type = take_state_focus
-				generator = { 24 }
-				}
+			}
 			}
 			CHU = {
-				declare_war_on = {
+				create_wargoal = {
+				type = take_state_focus
 				target = PRO
-				type = take_state_focus
-				generator = { 29 }
-				}
+			}
 			}
 			CHU = {
-				declare_war_on = {
+				create_wargoal = {
+				type = take_state_focus
 				target = TOH
-				type = take_state_focus
-				generator = { 113 }
-				}
+			}
 			}
 			CHU = {
-				declare_war_on = {
-				target = EZO
+				create_wargoal = {
 				type = take_state_focus
-				generator = { 58 }
+				target = EZO
 				}
 			}
 		}
@@ -404,7 +431,7 @@
 		icon = GFX_focus_generic_one_empire_2
 		x = 2
 		y = 1
-		cost = 10
+		cost = 20
 		relative_position_id = CHU_Create_the_united_japan
 		available_if_capitulated = no
 		prerequisite = { focus = CHU_Create_the_united_japan }
@@ -418,10 +445,9 @@
 			add_core_of = CHU
 			}
 			CHU = {
-				declare_war_on = {
-				target = AMC
+				create_wargoal = {
 				type = take_state_focus
-				generator = { 21 }
+				target = AMC
 				}
 			}
 			every_state = {
@@ -429,10 +455,9 @@
 			add_core_of = CHU
 			}
 			CHU = {
-				declare_war_on = {
-				target = OSA
+				create_wargoal = {
 				type = take_state_focus
-				generator = { 99 }
+				target = OSA
 				}
 			}
 			every_state = {
@@ -440,10 +465,9 @@
 			add_core_of = CHU
 			}
 			CHU = {
-				declare_war_on = {
-				target = KOB
+				create_wargoal = {
 				type = take_state_focus
-				generator = { 27 }
+				target = KOB
 				}
 			}
 			every_state = {
@@ -451,10 +475,9 @@
 			add_core_of = CHU
 			}
 			CHU = {
-				declare_war_on = {
-				target = REI
+				create_wargoal = {
 				type = take_state_focus
-				generator = { 143 }
+				target = REI
 				}
 			}
 			every_state = {
@@ -462,10 +485,9 @@
 			add_core_of = CHU
 			}
 			CHU = {
-				declare_war_on = {
-				target = HIR
+				create_wargoal = {
 				type = take_state_focus
-				generator = { 16 }
+				target = HIR
 				}
 			}
 			every_state = {
@@ -473,10 +495,9 @@
 			add_core_of = CHU
 			}
 			CHU = {
-				declare_war_on = {
-				target = PRT
+				create_wargoal = {
 				type = take_state_focus
-				generator = { 140 }
+				target = PRT
 				}
 			}
 			every_state = {
@@ -484,10 +505,9 @@
 			add_core_of = CHU
 			}
 			CHU = {
-				declare_war_on = {
-				target = FER
+				create_wargoal = {
 				type = take_state_focus
-				generator = { 6 }
+				target = FER
 				}
 			}
 		}
@@ -499,21 +519,15 @@
 		icon = GFX_focus_generic_japanese_imperial_glory
 		x = 1
 		y = 1
-		cost = 10
-		relative_position_id = CHU_Convince_people_to_fight
+		cost = 3
+		relative_position_id = CHU_create_new_front
 		available_if_capitulated = yes
-		prerequisite = { focus = CHU_Convince_people_to_fight}
+		prerequisite = { focus = CHU_create_new_front }
 		ai_will_do = {
 			factor = 1
 		}
 		completion_reward = {
 			SHO = { country_event = { id = chugoku.8 } }
-			SHO = { 
-				add_opinion_modifier = {
-				target = CHU
-				modifier = CHU_trading_partner
-				}
-			}
 		}
 	}
 
@@ -526,8 +540,7 @@
 		cost = 10
 		relative_position_id = CHU_war_with_junta
 		available_if_capitulated = yes
-		prerequisite = { focus = CHU_invite_communist_brothers }
-		prerequisite = { focus = CHU_war_with_junta }
+		prerequisite = { focus = CHU_invite_communist_brothers focus = CHU_war_with_junta }
 		prerequisite = { focus = CHU_reinforce_our_northern_borders }
 		ai_will_do = {
 			factor = 1
@@ -839,20 +852,42 @@
 	focus = {
 		id = CHU_relations_of_interest
 		icon = GFX_focus_CHU_the_ones_who_will_rule
-		x = 1
-		y = 1
+		x = 4
+		y = 2
 		available = {
 			CHU = { 
 				is_puppet = no 
-				OR = {
-					has_completed_focus = CHU_deal_with_the_other_junta
-					has_completed_focus = CHU_the_path_of_benefits
-				}
 			}
 		}
-		relative_position_id = CHU_approach_to_the_emperor
-		prerequisite = { focus = CHU_approach_to_the_emperor focus = CHU_deal_with_the_old_shogunate }
-		cost = 2
+		mutually_exclusive = { focus = CHU_alternative_path }
+		relative_position_id = CHU_Convince_people_to_fight
+		prerequisite = { focus = CHU_Convince_people_to_fight }
+		cost = 5
+		available_if_capitulated = no
+		ai_will_do = {
+			factor = 1
+		}
+
+		completion_reward = {
+			add_political_power = 50
+			add_stability = 0.05
+		}
+	}
+
+	focus = {
+		id = CHU_alternative_path
+		icon = GFX_focus_KAN_rebuild_the_nation
+		x = -3
+		y = 2
+		available = {
+			CHU = { 
+				is_puppet = no 
+			}
+		}
+		mutually_exclusive = { focus = CHU_relations_of_interest }
+		relative_position_id = CHU_Convince_people_to_fight
+		prerequisite = { focus = CHU_Convince_people_to_fight }
+		cost = 10
 		available_if_capitulated = yes
 		ai_will_do = {
 			factor = 1
@@ -861,24 +896,406 @@
 		completion_reward = {
 			add_political_power = 50
 			add_stability = 0.05
-			if = {
-				limit = {
-					has_completed_focus = CHU_deal_with_the_other_junta
-				}
-				KYU = {
-				add_political_power = 50
-				add_stability = 0.05
+		}
+	}
+
+	focus = {
+		id = CHU_search_the_allys
+		icon = GFX_focus_SHI_seek_friends
+		x = 0
+		y = 1
+		available = {
+			CHU = { 
+				is_puppet = no 
+			}
+		}
+		relative_position_id = CHU_alternative_path
+		prerequisite = { focus = CHU_alternative_path }
+		cost = 10
+		available_if_capitulated = no
+		ai_will_do = {
+			factor = 1
+		}
+
+		completion_reward = {
+			REI = { country_event = { id = chugoku.14 } }
+			OSA = { country_event = { id = chugoku.14 } }
+			FER = { country_event = { id = chugoku.14 } }
+			AMC = { country_event = { id = chugoku.14 } }
+			hidden_effect = {
+				SHI = { country_event = { id = chugoku.17 } }
+				KYU = { country_event = { id = chugoku.17 } }
+				KAN = { country_event = { id = chugoku.17 } }
+				SHO = { country_event = { id = chugoku.17 } }
+				PRO = { country_event = { id = chugoku.17 } }
+				TOH = { country_event = { id = chugoku.17 } }
+				EZO = { country_event = { id = chugoku.17 } }
+				JOS = { country_event = { id = chugoku.17 } }
+			}
+		}
+	}
+
+	focus = {
+		id = CHU_join_the_allies
+		icon = GFX_focus_generic_diplomacy_british_osaka
+		x = 2
+		y = 1
+		available = {
+			OR = {
+			OSA = {
+				is_faction_leader = yes
+				NOT = {
+					has_opinion_modifier = CHU_rival
 				}
 			}
-			if = {
-				limit = {
-					has_completed_focus = CHU_the_path_of_benefits
-				}
-				SHI = {
-				add_political_power = 50
-				add_stability = 0.05
+			PRO = {
+				is_faction_leader = yes
+				NOT = {
+					has_opinion_modifier = CHU_rival
 				}
 			}
+			AMC = {
+				is_faction_leader = yes
+				NOT = {
+					has_opinion_modifier = CHU_rival
+				}
+			}
+			}
+			AND = { 
+				NOT = {
+					has_completed_focus = CHU_join_the_monarchist
+					has_completed_focus = CHU_join_the_axis
+					has_completed_focus = CHU_join_the_comitern
+				}
+			}
+		}
+		relative_position_id = CHU_search_the_allys
+		prerequisite = { focus = CHU_search_the_allys }
+		cost = 5
+		available_if_capitulated = no
+		ai_will_do = {
+			factor = 1
+		}
+
+		completion_reward = {
+			if = {
+   				limit = {
+        			OSA = {
+						is_faction_leader = yes
+						NOT = {
+							has_opinion_modifier = CHU_rival
+						}
+					}
+    			}   
+    			OSA = {
+					country_event = { id = generic.2 }
+				}
+			}
+			else_if = {
+    			limit = {
+        			PRO = {
+						is_faction_leader = yes
+						NOT = {
+							has_opinion_modifier = CHU_rival
+						}
+					}
+    			}   
+    			PRO = {
+					country_event = { id = generic.2 }
+				}
+			}
+			else_if = {
+    			limit = {
+        			AMC = {
+						is_faction_leader = yes
+						NOT = {
+							has_opinion_modifier = CHU_rival
+						}
+					}
+    			}   
+    			AMC = {
+					country_event = { id = generic.2 }
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = CHU_join_the_axis
+		icon = GFX_focus_REI_loyal_administration
+		x = -2
+		y = 1
+		available = {
+			OR = {
+			REI = {
+				is_faction_leader = yes
+				NOT = {
+					has_opinion_modifier = CHU_rival
+				}
+			}
+			SHI = {
+				is_faction_leader = yes
+				NOT = {
+					has_opinion_modifier = CHU_rival
+				}
+			}
+			KYU = {
+				is_faction_leader = yes
+				NOT = {
+					has_opinion_modifier = CHU_rival
+				}
+			}
+			}
+			AND = { 
+				NOT = {
+					has_completed_focus = CHU_join_the_monarchist
+					has_completed_focus = CHU_join_the_allies
+					has_completed_focus = CHU_join_the_comitern
+				}
+			}
+		}
+		relative_position_id = CHU_search_the_allys
+		prerequisite = { focus = CHU_search_the_allys }
+		cost = 5
+		available_if_capitulated = no
+		ai_will_do = {
+			factor = 1
+		}
+
+		completion_reward = {
+			if = {
+   				limit = {
+        			REI = {
+						is_faction_leader = yes
+						NOT = {
+							has_opinion_modifier = CHU_rival
+						}
+					}
+    			}   
+    			REI = {
+					country_event = { id = generic.2 }
+				}
+			}
+			else_if = {
+    			limit = {
+        			SHI = {
+						is_faction_leader = yes
+						NOT = {
+							has_opinion_modifier = CHU_rival
+						}
+					}
+    			}   
+    			SHI = {
+					country_event = { id = generic.2 }
+				}
+			}
+			else_if = {
+    			limit = {
+        			KYU = {
+						is_faction_leader = yes
+						NOT = {
+							has_opinion_modifier = CHU_rival
+						}
+					}
+    			}   
+    			KYU = {
+					country_event = { id = generic.2 }
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = CHU_join_the_comitern
+		icon = GFX_FER_third_international
+		x = 1
+		y = 2
+		available = {
+			OR = {
+			FER = {
+				is_faction_leader = yes
+				NOT = {
+					has_opinion_modifier = CHU_rival
+				}
+			}
+			TOH = {
+				is_faction_leader = yes
+				NOT = {
+					has_opinion_modifier = CHU_rival
+				}
+			}
+			EZO = {
+				is_faction_leader = yes
+				NOT = {
+					has_opinion_modifier = CHU_rival
+				}
+			}
+			}
+			AND = { 
+				NOT = {
+					has_completed_focus = CHU_join_the_axis
+					has_completed_focus = CHU_join_the_allies
+					has_completed_focus = CHU_join_the_monarchist
+				}
+			}
+		}
+		relative_position_id = CHU_search_the_allys
+		prerequisite = { focus = CHU_search_the_allys }
+		cost = 5
+		available_if_capitulated = no
+		ai_will_do = {
+			factor = 1
+		}
+
+		completion_reward = {
+			if = {
+   				limit = {
+        			FER = {
+						is_faction_leader = yes
+						NOT = {
+							has_opinion_modifier = CHU_rival
+						}
+					}
+    			}   
+    			FER = {
+					country_event = { id = generic.2 }
+				}
+			}
+			else_if = {
+    			limit = {
+        			TOH = {
+						is_faction_leader = yes
+						NOT = {
+							has_opinion_modifier = CHU_rival
+						}
+					}
+    			}   
+    			TOH = {
+					country_event = { id = generic.2 }
+				}
+			}
+			else_if = {
+    			limit = {
+        			EZO = {
+						is_faction_leader = yes
+						NOT = {
+							has_opinion_modifier = CHU_rival
+						}
+					}
+    			}   
+    			EZO = {
+					country_event = { id = generic.2 }
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = CHU_join_the_monarchist
+		icon = GFX_focus_KAN_preserve_the_imperial_way
+		x = -1
+		y = 2
+		available = {
+			OR = {
+			KAN = {
+				is_faction_leader = yes
+				NOT = {
+					has_opinion_modifier = CHU_rival
+				}
+			}
+			SHO = {
+				is_faction_leader = yes
+				NOT = {
+					has_opinion_modifier = CHU_rival
+				}
+			}
+			JOS = {
+				is_faction_leader = yes
+				NOT = {
+					has_opinion_modifier = CHU_rival
+				}
+			}
+			}
+			AND = { 
+				NOT = {
+					has_completed_focus = CHU_join_the_comitern
+					has_completed_focus = CHU_join_the_axis
+					has_completed_focus = CHU_join_the_allies
+				}
+			}
+		}
+		relative_position_id = CHU_search_the_allys
+		prerequisite = { focus = CHU_search_the_allys }
+		cost = 5
+		available_if_capitulated = no
+		ai_will_do = {
+			factor = 1
+		}
+
+		completion_reward = {
+			if = {
+   				limit = {
+        			KAN = {
+						is_faction_leader = yes
+						NOT = {
+							has_opinion_modifier = CHU_rival
+						}
+					}
+    			}   
+    			KAN = {
+					country_event = { id = generic.2 }
+				}
+			}
+			else_if = {
+    			limit = {
+        			SHO = {
+						is_faction_leader = yes
+						NOT = {
+							has_opinion_modifier = CHU_rival
+						}
+					}
+    			}   
+    			SHO = {
+					country_event = { id = generic.2 }
+				}
+			}
+			else_if = {
+    			limit = {
+        			JOS = {
+						is_faction_leader = yes
+						NOT = {
+							has_opinion_modifier = CHU_rival
+						}
+					}
+    			}   
+    			JOS = {
+					country_event = { id = generic.2 }
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = CHU_go_to_war
+		icon = GFX_focus_generic_infantry
+		x = -1
+		y = 1
+		available = {
+			CHU = { 
+				is_puppet = no 
+			}
+		}
+		relative_position_id = CHU_join_the_comitern
+		prerequisite = { focus = CHU_join_the_monarchist focus = CHU_join_the_allies focus = CHU_join_the_axis focus = CHU_join_the_comitern }
+		cost = 10
+		available_if_capitulated = no
+		ai_will_do = {
+			factor = 1
+		}
+
+		completion_reward = {
+			add_political_power = 150
+			add_war_support = 0.10
 		}
 	}
 
@@ -947,7 +1364,7 @@
 		y = 1
 		relative_position_id = CHU_relations_of_interest
 		prerequisite = { focus = CHU_relations_of_interest }
-		cost = 2
+		cost = 5
 		available_if_capitulated = yes
 		ai_will_do = {
 			factor = 1
@@ -955,51 +1372,64 @@
 
 		completion_reward = {
 			set_rule = { can_create_factions = yes }
-			if = {
-				limit = {
-					has_completed_focus = CHU_deal_with_the_other_junta
-				}
-				create_faction = united_junta_power
-			}
-			if = {
-				limit = {
-					has_completed_focus = CHU_the_path_of_benefits
-				}
-				create_faction = dragon_brotherhood
-			}
+			create_faction = For_Japan
 		}
 	}
 
 	focus = {
 		id = CHU_invite_other_neighbor
-		icon = GFX_
+		icon = GFX_focus_generic_political_power
 		x = 0
-		y = 1
+		y = 3
+		available = {
+			OR = {
+				SHI = { has_opinion_modifier = CHU_ally }
+				SHO = { has_opinion_modifier = CHU_ally }
+				KAN = { has_opinion_modifier = CHU_ally }
+				KYU = { has_opinion_modifier = CHU_ally }
+			}
+		}
 		relative_position_id = CHU_create_new_front
 		prerequisite = { focus = CHU_create_new_front }
-		cost = 2
+		prerequisite = { focus = CHU_get_your_approval focus = CHU_declare_war focus = CHU_the_path_of_unification focus = CHU_deal_with_the_other_junta }
+		cost = 5
 		available_if_capitulated = yes
 		ai_will_do = {
 			factor = 1
 		}
 
 		completion_reward = {
-			add_stability = 0.05
 			if = {
-				limit = {
-					has_completed_focus = CHU_deal_with_the_other_junta
-				}
-				KYU = {
-				country_event = { id = generic.5 }
-			}
-			}
-			if = {
-				limit = {
-					has_completed_focus = CHU_the_path_of_benefits
-				}
+   				limit = {
+        			SHI = { has_opinion_modifier = CHU_ally }
+    			}   
 				SHI = {
-				country_event = { id = generic.5 }
+					country_event = { id = generic.5 }
+				}
 			}
+			else_if = {
+    			limit = {
+        			SHO = { has_opinion_modifier = CHU_ally }
+    			}
+    			SHO = {
+					country_event = { id = generic.5 }
+				}
+			}
+			else_if = {
+    			limit = {
+        			KAN = { has_opinion_modifier = CHU_ally }
+    			}
+    			KAN = {
+					country_event = { id = generic.5 }
+				}
+			}
+			else_if = {
+    			limit = {
+        			KYU = { has_opinion_modifier = CHU_ally }
+    			}
+    			KYU = {
+					country_event = { id = generic.5 }
+				}
 			}
 		}
 	}
@@ -1154,11 +1584,10 @@
 	#Focus for Deal With The OTHER Junta
 	focus = {
 		id = CHU_deal_with_the_other_junta
-		icon = GFX_focus_generic_allied_juntas
-		x = -1
+		icon = GFX_
+		x = 0
 		y = 1
-		cost = 10
-		mutually_exclusive = { focus = CHU_war_with_the_other_junta }
+		cost = 5
 		relative_position_id = CHU_the_navy_junta_question
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_the_navy_junta_question }
@@ -1167,7 +1596,7 @@
 		}
 
 		available = {
-			NOT = { has_completed_focus = CHU_the_path_of_benefits }
+
 		}
 
 		bypass = {
@@ -1175,10 +1604,24 @@
 		}
 
 		completion_reward = {
-			KYU = { 
-				add_opinion_modifier = {
-				target = CHU
-				modifier = CHU_friend
+			if = {
+   				limit = {
+        			KYU = { has_opinion_modifier = CHU_ally }
+    			}   
+				KYU = { 
+					add_opinion_modifier = {
+					target = CHU
+					modifier = CHU_trading_partner
+					}
+				}
+			}
+			else_if = {
+    			limit = {
+        			KYU = { has_opinion_modifier = CHU_new_enemy }
+    			}
+				create_wargoal = {
+					type = take_state_focus
+					target = KYU
 				}
 			}
 		}
@@ -1187,18 +1630,18 @@
 	focus = {
 		id = CHU_take_over_the_west
 		icon = GFX_focus_generic_western_enemies
-		x = 1
+		x = -5
 		y = 1
 		cost = 10
-		relative_position_id = CHU_deal_with_the_other_junta
+		relative_position_id = CHU_invite_other_neighbor
 		available_if_capitulated = yes
-		prerequisite = { focus = CHU_war_with_the_other_junta focus = CHU_deal_with_the_other_junta }
+		prerequisite = { focus = CHU_go_to_war focus = CHU_invite_other_neighbor }
 		ai_will_do = {
 			factor = 1
 		}
 
 		bypass = {
-			has_completed_focus = GFX_focus_CHU_focus_south
+			
 		}
 
 		completion_reward = {
@@ -1257,35 +1700,6 @@
 			}
 		}
 	}
-
-	focus = {
-		id = CHU_war_with_the_other_junta
-		icon = GFX_focus_generic_attack_kyushu
-		x = 1
-		y = 1
-		cost = 10
-		mutually_exclusive = { focus = CHU_deal_with_the_other_junta }
-		relative_position_id = CHU_the_navy_junta_question
-		available_if_capitulated = yes
-		prerequisite = { focus = CHU_the_navy_junta_question }
-		ai_will_do = {
-			factor = 1
-		}
-
-		bypass = {
-			
-		}
-
-		completion_reward = {
-			add_state_claim = 100
-			create_wargoal = {
-				type = take_state_focus
-				target = KYU
-			}
-		}
-	}
-
-
 
 	#Focus for Appease To The Civilians
 	focus = {
@@ -1430,98 +1844,51 @@
 		}
 	}
 
-
-	#Focus for Make The Official Declaration
-	focus = {
-		id = CHU_make_the_official_declaration
-		icon = GFX_goal_generic_propaganda
-		x = 0
-		y = 1
-		relative_position_id = CHU_invite_other_neighbor
-		cost = 10
-		available_if_capitulated = yes
-		prerequisite = { 
-			focus = CHU_invite_other_neighbor
-		}
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			every_state = {
-			limit = { is_owned_by = KAN }
-			add_core_of = CHU
-			}
-			every_state = {
-			limit = { is_owned_by = SHO }
-			add_core_of = CHU
-			}
-			every_state = {
-			limit = { is_owned_by = PRO }
-			add_core_of = CHU
-			}
-			every_state = {
-			limit = { is_owned_by = TOH }
-			add_core_of = CHU
-			}
-			every_state = {
-			limit = { is_owned_by = EZO }
-			add_core_of = CHU
-			}
-		}
-	}
-
 	focus = {
 		id = CHU_united_japan
 		icon = GFX_focus_generic_one_empire_2
-		x = 3
-		y = 3
-		relative_position_id = CHU_make_the_official_declaration
+		x = 1
+		y = 1
+		relative_position_id = CHU_take_over_the_west_korea
 		cost = 10
 		available_if_capitulated = yes
 		prerequisite = { 
-			focus = CHU_make_the_official_declaration
-			focus = CHU_fleet_is_our_enemy_of_mine
-			focus = CHU_finish_off_the_opponents_job
-			focus = CHU_deal_with_those_imperial_scum
+			focus = CHU_take_over_the_west
+			focus = CHU_aggressive_policy
 		}
 		ai_will_do = {
 			factor = 1
 		}
 		completion_reward = {
 			CHU = {
-				declare_war_on = {
+				create_wargoal = {
+				type = take_state_focus
 				target = KAN
-				type = take_state_focus
-				generator = { 32 }
-				}
+			}
 			}
 			CHU = {
-				declare_war_on = {
+				create_wargoal = {
+				type = take_state_focus
 				target = SHO
-				type = take_state_focus
-				generator = { 24 }
-				}
+			}
 			}
 			CHU = {
-				declare_war_on = {
+				create_wargoal = {
+				type = take_state_focus
 				target = PRO
-				type = take_state_focus
-				generator = { 29 }
-				}
+			}
 			}
 			CHU = {
-				declare_war_on = {
+				create_wargoal = {
+				type = take_state_focus
 				target = TOH
-				type = take_state_focus
-				generator = { 113 }
-				}
+			}
 			}
 			CHU = {
-				declare_war_on = {
-				target = EZO
+				create_wargoal = {
 				type = take_state_focus
-				generator = { 58 }
-				}
+				target = EZO
+			}
 			}
 		}
 	}
@@ -1552,7 +1919,7 @@
 						add_idea = CHU_army_dont_like_government
 					}
 			}
-			add_stability = 0.05
+			add_stability = -0.25
 			add_popularity = {
 				popularity = 0.1
 				ideology = autocracy
@@ -1586,18 +1953,6 @@
 			SHO = { country_event = { id = chugoku.8 } }
 			KAN = { country_event = { id = chugoku.8 } }
 			add_stability = 0.05
-			SHO = { 
-				add_opinion_modifier = {
-				target = CHU
-				modifier = CHU_trading_partner
-				}
-			}
-			KAN = { 
-				add_opinion_modifier = {
-				target = CHU
-				modifier = CHU_trading_partner
-				}
-			}
 		}
 	}
 
@@ -1627,7 +1982,7 @@
 						add_idea = CHU_army_dont_like_government
 					}
 			}
-			add_stability = 0.05
+			add_stability = -0.25
 			add_popularity = {
 				popularity = 0.1
 				ideology = democratic
@@ -1661,18 +2016,6 @@
 			PRO = { country_event = { id = chugoku.8 } }
 			AMC = { country_event = { id = chugoku.8 } }
 			add_stability = 0.05
-			PRO = { 
-				add_opinion_modifier = {
-				target = CHU
-				modifier = CHU_trading_partner
-				}
-			}
-			AMC = { 
-				add_opinion_modifier = {
-				target = CHU
-				modifier = CHU_trading_partner
-				}
-			}
 		}
 	}
 
@@ -1745,16 +2088,49 @@
 			factor = 1
 		}
 		completion_reward = {
-			add_stability = 0.05
 			if = {
 				limit = {
 					has_completed_focus = CHU_we_are_enough_for_monarchy
 				}
-				KAN = {
-				country_event = { id = generic.5 }
+				else_if = {
+    				limit = {
+        				KAN = { has_opinion_modifier = CHU_ally }
+    				}
+    				KAN = {
+						country_event = { id = generic.5 }
+					}
+					KAN = { 
+						add_opinion_modifier = {
+						target = CHU
+						modifier = CHU_trading_partner
+						}
+					}
 				}
-				SHO = {
-				country_event = { id = generic.5 }
+				else_if = {
+    				limit = {
+        				KAN = { has_opinion_modifier = CHU_new_enemy }
+    				}
+    				add_war_support = 0.05
+				}
+				else_if = {
+    				limit = {
+        				SHO = { has_opinion_modifier = CHU_ally }
+    				}
+					SHO = { 
+						add_opinion_modifier = {
+						target = CHU
+						modifier = CHU_trading_partner
+						}
+					}
+    				SHO = {
+						country_event = { id = generic.5 }
+					}
+				}
+				else_if = {
+    				limit = {
+        				SHO = { has_opinion_modifier = CHU_new_enemy }
+    				}
+    				add_war_support = 0.05
 				}
 			}
 
@@ -1762,12 +2138,49 @@
 				limit = {
 					has_completed_focus = CHU_we_are_enough_for_democracy
 				}
-				AMC = {
-				country_event = { id = generic.5 }
+				else_if = {
+    				limit = {
+        				AMC = { has_opinion_modifier = CHU_ally }
+    				}
+					AMC = { 
+						add_opinion_modifier = {
+						target = CHU
+						modifier = CHU_trading_partner
+						}
+					}
+    				AMC = {
+						country_event = { id = generic.5 }
+					}
 				}
-				PRO = {
-				country_event = { id = generic.5 }
+				else_if = {
+    				limit = {
+        				AMC = { has_opinion_modifier = CHU_new_enemy }
+    				}
+    				add_war_support = 0.05
 				}
+				else_if = {
+    				limit = {
+        				PRO = { has_opinion_modifier = CHU_ally }
+    				}
+					PRO = { 
+						add_opinion_modifier = {
+						target = CHU
+						modifier = CHU_trading_partner
+						}
+					}
+    				PRO = {
+						country_event = { id = generic.5 }
+					}
+				}
+				else_if = {
+    				limit = {
+        				PRO = { has_opinion_modifier = CHU_new_enemy }
+    				}
+    				add_war_support = 0.05
+				}
+			}
+			else = {
+    			add_stability = 0.05
 			}
 		}
 	}
@@ -1786,7 +2199,7 @@
 		}
 
 		bypass = {
-			has_completed_focus = CHU_fleet_is_our_enemy_of_mine
+			IMS = { has_capitulated = yes }
 		}
 
 		completion_reward = {
@@ -1805,7 +2218,7 @@
 		y = 2
 		relative_position_id = CHU_invite_new_ally
 		prerequisite = { focus = CHU_take_seto_island }
-		cost = 2
+		cost = 10
 		available_if_capitulated = yes
 		ai_will_do = {
 			factor = 1
@@ -1840,7 +2253,7 @@
 		y = 2
 		relative_position_id = CHU_invite_new_ally
 		prerequisite = { focus = CHU_take_seto_island }
-		cost = 2
+		cost = 10
 		available_if_capitulated = yes
 		ai_will_do = {
 			factor = 1
@@ -2038,7 +2451,7 @@
 	focus = {
 		id = CHU_we_are_enough
 		icon = GFX_goal_support_fascism
-		x = 2
+		x = 4
 		y = 2
 		relative_position_id = CHU_go_alone
 		cost = 10
@@ -2068,6 +2481,7 @@
 			set_politics = {
 				ruling_party = fascism
 			}
+			add_stability = -0.25
 		}
 	}
 
@@ -2150,6 +2564,11 @@
 		ai_will_do = {
 			factor = 1
 		}
+
+		bypass = {
+			IMS = { has_capitulated = yes }
+		}
+
 		completion_reward = {
 			add_state_claim = 26
 			create_wargoal = {
@@ -2210,7 +2629,7 @@
 	focus = {
 		id = CHU_we_are_enough_for_communism
 		icon = GFX_focus_TOH_one_party_rule
-		x = 4
+		x = 6
 		y = 2
 		relative_position_id = CHU_go_alone
 		cost = 10
@@ -2345,16 +2764,15 @@
 		id = CHU_look_to_the_black_dragon
 		icon = GFX_focus_KYU_supreme_power
 		x = 3
-		y = 3
-		relative_position_id = CHU_Convince_people_to_fight
-		cost = 10
+		y = 1
+		relative_position_id = CHU_create_new_front
+		cost = 3
 		available_if_capitulated = yes
-		prerequisite = { focus = CHU_declare_war }
+		prerequisite = { focus = CHU_create_new_front }
 		ai_will_do = {
 			factor = 1
 		}
 		completion_reward = {
-			add_war_support = 0.05
 			SHI = { country_event = { id = chugoku.8 } }
 		}
 	}
@@ -2380,46 +2798,16 @@
 		}
 	}
 
-	#Focus for The Path Of Benefits?
-	focus = {
-		id = CHU_the_path_of_benefits
-		icon = GFX_goal_generic_military_deal
-		x = -1
-		y = 1
-		cost = 10
-		available_if_capitulated = yes
-		relative_position_id = CHU_look_to_the_black_dragon
-		prerequisite = { focus = CHU_look_to_the_black_dragon }
-		mutually_exclusive = { focus = CHU_the_path_of_unification }
-		ai_will_do = {
-			factor = 1
-		}
-
-		available = {
-			NOT = { has_completed_focus = CHU_deal_with_the_other_junta }
-		}
-
-		completion_reward = {
-			SHI = { 
-				add_opinion_modifier = {
-				target = CHU
-				modifier = CHU_friend
-				}
-			}
-		}
-	}
-
 	#Focus for The Path Of Agression?
 	focus = {
 		id = CHU_the_path_of_unification
-		icon = GFX_focus_generic_attack_shikoku
-		x = 1
+		icon = GFX_
+		x = 0
 		y = 1
-		cost = 10
+		cost = 5
 		available_if_capitulated = yes
 		relative_position_id = CHU_look_to_the_black_dragon
 		prerequisite = { focus = CHU_look_to_the_black_dragon }
-		mutually_exclusive = { focus = CHU_the_path_of_benefits }
 		ai_will_do = {
 			factor = 1
 		}
@@ -2429,10 +2817,25 @@
 		}
 
 		completion_reward = {
-			add_state_claim = 31
-			create_wargoal = {
-				type = take_state_focus
-				target = SHI
+			if = {
+   				limit = {
+        			SHI = { has_opinion_modifier = CHU_ally }
+    			}   
+				SHI = { 
+					add_opinion_modifier = {
+					target = CHU
+					modifier = CHU_trading_partner
+					}
+				}
+			}
+			else_if = {
+    			limit = {
+        			SHI = { has_opinion_modifier = CHU_new_enemy }
+    			}
+				create_wargoal = {
+					type = take_state_focus
+					target = SHI
+				}
 			}
 		}
 	}
@@ -2445,8 +2848,8 @@
 		y = 1
 		cost = 10
 		available_if_capitulated = yes
-		relative_position_id = CHU_the_path_of_unification
-		prerequisite = { focus = CHU_the_path_of_unification focus = CHU_the_path_of_benefits }
+		relative_position_id = CHU_invite_other_neighbor
+		prerequisite = { focus = CHU_go_to_war focus = CHU_invite_other_neighbor }
 		ai_will_do = {
 			factor = 1
 		}
@@ -3438,7 +3841,7 @@
 					}
 			}
 			add_manpower = 100000
-			add_stability = 0.1
+			add_war_support = 0.1
 		}	
 	}
 
