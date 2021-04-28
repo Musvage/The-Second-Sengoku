@@ -38,6 +38,7 @@ set_up_global_division_limit_system = {
 	set_variable = { global.division_limit_doctrine_big = 80 }
 
 	every_country = { 
+		set_variable = { desire_to_go_overhead = 0 }	# Matters only for AI
 		set_up_division_limit_system = yes
 	}
 }
@@ -165,7 +166,7 @@ calculate_division_limit = {
 		set_variable = { division_limit_training_law = global.division_limit_soldier_extended }
 	}
 	#### SUPPORT COMPANIES
-		calculate_support_companies = yes
+	calculate_support_companies = yes
 		
 	#### ADVISOR
 	set_variable = { division_limit_advisor = 0 }
@@ -211,6 +212,11 @@ calculate_division_limit = {
 	add_to_variable = { country_division_limit = division_limit_other_bonus }
 	multiply_variable = { country_division_limit = country_division_limit_multiplier }
 	
+	### AI ONLY
+	if = {
+		limit = { OR = { is_ai = yes is_debug = yes } }
+		division_limit_get_ai_limit = yes
+	}
 	round_variable = country_division_limit
 	check_division_limit = yes
 }
@@ -227,11 +233,21 @@ check_division_limit = {
 		subtract_from_variable = { division_limit_overhead = 1 }
 		
 		if = {
-			limit = { check_variable = { division_limit_overhead > 0.25 } }			# HARD CAP ON DEPLOYMENT
+			limit = {												# HARD CAP ON DEPLOYMENT
+				OR = {
+					check_variable = { division_limit_overhead > 0.25 }
+					AND = {
+						is_ai = yes
+						check_variable = { division_limit_overhead > desire_to_go_overhead }
+						check_variable = { desire_to_go_overhead > 0 }
+					}
+				}
+			}
 			set_variable = { minimum_training_level_mod = 9.99 }
 		} else = {
 			set_variable = { minimum_training_level_mod = 0 }
 		}
+		
 		
 		if = {
 			limit = { check_variable = { division_limit_overhead > 0.5 } }			# EXTREME OVERHEAD PENALTY (ORG/MORALE)
@@ -307,4 +323,77 @@ division_limit_add_big_doctrine_bonus = {
 		add_to_variable = { division_limit_technology_bonus = global.division_limit_doctrine_big }
 		force_update_dynamic_modifier = yes
 	}
+}
+
+division_limit_get_ai_limit = {	# DOES NOT AFFECT HUMAN PLAYERS
+	set_variable = { desire_to_go_overhead = 0 }
+	if = {
+		limit = {
+			OR = {
+				has_war = yes
+				any_other_country = { has_wargoal_against = ROOT }
+				threat > 0.5
+			}
+		}
+		#	chuckles_i'm_in_danger = yes
+		if = {
+			limit = { alliance_strength_ratio < 1 }
+			add_to_variable = { desire_to_go_overhead = 0.05 }
+		}
+		if = {
+			limit = {
+				any_enemy_country = {
+					strength_ratio = {
+						tag = ROOT
+						ratio > 1
+					}
+				}
+			}
+			add_to_variable = { desire_to_go_overhead = 0.05 }
+		}
+		if = {
+			limit = {
+				OR = { has_idea = tot_economic_mobilisation  has_idea = war_economy  }
+			}
+			add_to_variable = { desire_to_go_overhead = 0.05 }
+		}
+		if = {
+			limit = {
+				any_enemy_country = {
+					is_major = yes
+				}
+			}
+			add_to_variable = { desire_to_go_overhead = 0.05 }
+		}
+		if = {
+			limit = { arms_factory > 50 }
+			add_to_variable = { desire_to_go_overhead = 0.05 }
+		}
+		if = {
+			limit = { is_major = no }
+			add_to_variable = { desire_to_go_overhead = 0.1 }
+		}
+		if = {
+			limit = { has_tech = mass_assault }	### ROLE PLAYING: ORCS ORCS ORCS
+			add_to_variable = { desire_to_go_overhead = -0.05 }
+		}
+		
+		if = {
+			limit = { has_tech = superior_firepower }	### ROLE PLAYING: MACHINE GUN GOES BRRRRRRR
+			add_to_variable = { desire_to_go_overhead = -0.05 }
+		}
+		if = {
+			limit = { arms_factory < 25 }
+			add_to_variable = { desire_to_go_overhead = -0.05 }
+		}
+		if = {
+			limit = { check_variable = { crash_1929_efficiency_loss < 0.25 } }
+			add_to_variable = { desire_to_go_overhead = -0.05 }
+		}
+		if = {
+			limit = { check_variable = { crash_1929_efficiency_loss < 0.12 } }
+			add_to_variable = { desire_to_go_overhead = -0.05 }
+		}
+	}
+	#clamp_variable = { var = desire_to_go_overhead min = 0 max = 0.25 }
 }
