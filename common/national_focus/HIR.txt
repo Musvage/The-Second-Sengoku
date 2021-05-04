@@ -10,7 +10,7 @@ focus_tree = {
 
 	default = no
 
-	continuous_focus_position = { x = 3000 y = 2000 }
+	continuous_focus_position = { x = 100 y = 1000 }
 
 	initial_show_position = {
 		x = 20
@@ -18,10 +18,11 @@ focus_tree = {
 	}
 
 	#MAIN
+
 	focus = {
-		id = HIR_industry
+		id = HIR_colony_state_recovery
 		icon = GFX_focus_SHO_industrial_network
-		x = 20
+		x = -5
 		y = 0
 		cost = 10
 		available = {
@@ -30,14 +31,28 @@ focus_tree = {
 			factor = 10
 		}	
 		completion_reward = {
-			is_core_of = HIR
-			random_owned_controlled_state = {
-				add_extra_state_shared_building_slots = 2
-				add_building_construction = {
-					type = industrial_complex
-					level = 2
-					instant_build = yes
-				}
+			add_ideas = HIR_volinteer
+		}
+	}
+
+	focus = {
+		id = HIR_industry
+		icon = GFX_focus_SHO_industrial_network
+		x = 13
+		y = 1
+		relative_position_id = HIR_colony_state_recovery
+		prerequisite = { focus = HIR_colony_state_recovery }
+		cost = 10
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			add_tech_bonus= {
+ 			bonus = 1.5 
+			uses = 2 
+			category = industry 
 			}
 		}
 	}
@@ -122,21 +137,12 @@ focus_tree = {
 			factor = 10
 		}	
 		completion_reward = {
-			random_owned_controlled_state = {
-				limit = {
-					free_building_slots = {
-						building = arms_factory
-						size > 2
-						include_locked = yes
-					}
-				}
 				add_extra_state_shared_building_slots = 2
 				add_building_construction = {
 					type = arms_factory
 					level = 2
 					instant_build = yes
 				}
-			}
 		}
 	}
 
@@ -155,32 +161,23 @@ focus_tree = {
 			factor = 10
 		}	
 		completion_reward = {
-			random_owned_controlled_state = {
-				limit = {
-					free_building_slots = {
-						building = arms_factory
-						size > 2
-						include_locked = yes
-					}
-				}
 				add_extra_state_shared_building_slots = 2
 				add_building_construction = {
 					type = arms_factory
 					level = 2
 					instant_build = yes
 				}
-			}
 		}
 	}
 
 	focus = {
 		id = HIR_land_army
 		icon = GFX_focus_generic_commonwealth_build_infantry
-		x = -2
-		y = 2
-		relative_position_id = HIR_military_factory
+		x = -3
+		y = 0
+		relative_position_id = HIR_naval
 		available_if_capitulated = yes
-		prerequisite = { focus = HIR_military_factory }
+		prerequisite = { focus = HIR_army }
 		cost = 10
 		available = {
 		}
@@ -188,7 +185,19 @@ focus_tree = {
 			factor = 10
 		}	
 		completion_reward = {
-			army_experience = 25
+			add_tech_bonus = {
+				name = land_doc_bonus
+				bonus = 1.0
+				uses = 1
+				category = land_doctrine
+			}
+			add_tech_bonus = {
+				name = infantry_artillery_bonus
+				ahead_reduction = 1
+				uses = 1
+				category = infantry_weapons
+				category = artillery
+			}
 		}
 	}
 
@@ -208,6 +217,11 @@ focus_tree = {
 		}	
 		completion_reward = {
 			add_ideas = HIR_product_infantry_eq
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = 2000
+				producer = HIR
+			}
 		}
 	}
 
@@ -250,14 +264,6 @@ focus_tree = {
 			factor = 10
 		}	
 		completion_reward = {
-			limit = {
-				is_core_of = CHU
-				free_building_slots = {
-				building = industrial_complex
-				size > 2
-				include_locked = yes
-				}
-			}
 			add_extra_state_shared_building_slots = 2
 				add_building_construction = {
 				type = industrial_complex
@@ -282,14 +288,6 @@ focus_tree = {
 			factor = 10
 		}	
 		completion_reward = {
-			limit = {
-				is_core_of = CHU
-				free_building_slots = {
-				building = industrial_complex
-				size > 2
-				include_locked = yes
-				}
-			}
 			add_extra_state_shared_building_slots = 2
 				add_building_construction = {
 				type = industrial_complex
@@ -300,13 +298,13 @@ focus_tree = {
 	}
 
 	focus = {
-		id = HIR_naval
-		icon = GFX_goal_generic_amphibious_assault
-		x = -2
-		y = 2
-		relative_position_id = HIR_civilian_factory
+		id = HIR_army
+		icon = GFX_
+		x = -10
+		y = 1
 		available_if_capitulated = yes
-		prerequisite = { focus = HIR_research_new_technologies focus = HIR_military_factory focus = HIR_civilian_factory }
+		relative_position_id = HIR_colony_state_recovery
+		prerequisite = { focus = HIR_colony_state_recovery }
 		cost = 10
 		available = {
 		}
@@ -315,6 +313,32 @@ focus_tree = {
 		}	
 		completion_reward = {
 			navy_experience = 25
+			army_experience = 25
+			air_experience = 25
+		}
+	}
+
+	focus = {
+		id = HIR_naval
+		icon = GFX_goal_generic_amphibious_assault
+		x = 0
+		y = 1
+		prerequisite = { focus = HIR_army }
+		available_if_capitulated = yes
+		relative_position_id = HIR_army
+		cost = 10
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			add_tech_bonus = {
+				name =  air_doc_bonus
+				bonus = 1.0
+				uses = 2
+				category = naval_doctrine
+			}
 		}
 	}
 
@@ -382,7 +406,7 @@ focus_tree = {
 		}	
 		completion_reward = {
 			add_tech_bonus = {
-				name = CHU_to_new2
+				name = HIR_naval_doctrine
 				bonus = 1.00
 				uses = 2
 				category = ss_tech
@@ -406,7 +430,7 @@ focus_tree = {
 		}	
 		completion_reward = {
 			add_tech_bonus = {
-				name = CHU_to_new2
+				name = HIR_naval_modernized
 				bonus = 1.00
 				uses = 2
 				category = trade_interdiction_tree
@@ -417,11 +441,11 @@ focus_tree = {
 	focus = {
 		id = HIR_air_force
 		icon = GFX_goal_generic_build_airforce
-		x = 3
-		y = 2
-		relative_position_id = HIR_civilian_factory
+		x = 4
+		y = 0
+		relative_position_id = HIR_naval
 		available_if_capitulated = yes
-		prerequisite = { focus = HIR_civilian_factory }
+		prerequisite = { focus = HIR_army }
 		cost = 10
 		available = {
 		}
@@ -429,7 +453,17 @@ focus_tree = {
 			factor = 10
 		}	
 		completion_reward = {
-			air_experience = 25
+			add_tech_bonus = {
+				name = air_doc_bonus
+				bonus = 1.0
+				uses = 2
+				category = air_doctrine
+			}
+			add_equipment_to_stockpile = {
+				type = light_fighter
+				amount = 2000
+				producer = HIR
+			}
 		}
 	}
 
@@ -521,11 +555,11 @@ focus_tree = {
 	focus = {
 		id = HIR_new_state
 		icon = GFX_focus_TOH_army_primacy
-		x = -1
+		x = 2
 		y = 1
-		relative_position_id = HIR_naval_modernized
 		available_if_capitulated = yes
-		prerequisite = { focus = HIR_air_force_new_planes focus = HIR_land_army_modernized focus = HIR_create_naval_force focus = HIR_naval_modernized }
+		prerequisite = { focus = HIR_colony_state_recovery }
+		relative_position_id = HIR_colony_state_recovery
 		cost = 10
 		available = {
 		}
@@ -533,7 +567,6 @@ focus_tree = {
 			factor = 10
 		}	
 		completion_reward = {
-			add_ideas = HIR_volinteer
 			add_ideas = free_trade
 		}
 	}
@@ -616,7 +649,11 @@ focus_tree = {
 			factor = 10
 		}	
 		completion_reward = {
-			add_equipment_to_stockpile = { type = infantry_eq amount = 2500 }
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = 5000
+				producer = HIR
+			}
 		}
 	}
 
@@ -929,22 +966,22 @@ focus_tree = {
 			OSA = {
 				is_faction_leader = yes
 				NOT = {
-					has_opinion_modifier = CHU_rival
-					has_war_with = CHU
+					
+					has_war_with = HIR
 				}
 			}
 			PRO = {
 				is_faction_leader = yes
 				NOT = {
-					has_opinion_modifier = CHU_rival
-					has_war_with = CHU
+					
+					has_war_with = HIR
 				}
 			}
 			AMC = {
 				is_faction_leader = yes
 				NOT = {
-					has_opinion_modifier = CHU_rival
-					has_war_with = CHU
+					
+					has_war_with = HIR
 				}
 			}
 			}
@@ -957,22 +994,22 @@ focus_tree = {
 			KAN = {
 				is_faction_leader = yes
 				NOT = {
-					has_opinion_modifier = CHU_rival
-					has_war_with = CHU
+					
+					has_war_with = HIR
 				}
 			}
 			SHO = {
 				is_faction_leader = yes
 				NOT = {
-					has_opinion_modifier = CHU_rival
-					has_war_with = CHU
+					
+					has_war_with = HIR
 				}
 			}
 			JOS = {
 				is_faction_leader = yes
 				NOT = {
-					has_opinion_modifier = CHU_rival
-					has_war_with = CHU
+					
+					has_war_with = HIR
 				}
 			}
 			}
@@ -1452,4 +1489,9 @@ focus_tree = {
 		}
 	}
 
+
+
+
+
+shared_focus = SS_colonial_board
 }
