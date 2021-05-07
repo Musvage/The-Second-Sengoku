@@ -675,6 +675,10 @@ focus_tree = {
 		prerequisite = { focus = HIR_new_ideology_path focus = HIR_ally_junta }
 		cost = 10
 		available = {
+			OR = {
+				has_completed_focus = HIR_axis_path
+				has_completed_focus = HIR_ally_junta
+			}
 		}
 		ai_will_do = {
 			factor = 10
@@ -1377,6 +1381,9 @@ focus_tree = {
 		y = 1
 		cost = 10
 		available = {
+			NOT = {
+				has_completed_focus = HIR_ally_junta
+			}
 		}
 		relative_position_id = HIR_join_new_ally
 		available_if_capitulated = yes
@@ -1468,6 +1475,7 @@ focus_tree = {
 		y = 1
 		cost = 10
 		available = {
+			
 		}
 		relative_position_id = HIR_take_goto_and_koshikijima_island
 		available_if_capitulated = yes
@@ -1488,6 +1496,115 @@ focus_tree = {
     			}
     			add_stability = 0.10
 				add_war_support = 0.10
+			}
+		}
+	}
+
+	focus = {
+		id = HIR_unite_all_junta
+		icon = GFX_focus_PRO_embrace_stability
+		x = 2
+		y = 1
+		relative_position_id = HIR_join_new_ally
+		available_if_capitulated = yes
+		prerequisite = { focus = HIR_join_new_ally focus = HIR_ruling_party_junta }
+		cost = 10
+		available = {
+			has_completed_focus = HIR_ally_junta
+			OR = {
+			HIR = { 
+						NOT = {
+							is_in_faction_with = KYU 
+							is_in_faction_with = CHU
+							AND = {
+								KYU = { 
+									NOT = {
+										is_faction_leader = yes
+									}
+								}
+								CHU = {
+									NOT = {
+										is_faction_leader = yes
+									}
+								}
+							} 
+						}
+					}
+			HIR = { 
+						is_in_faction_with = KYU 
+						is_in_faction_with = CHU
+					}
+			OR = {
+						KYU = { 
+							is_faction_leader = yes
+						}
+						CHU = {
+							is_faction_leader = yes
+						}
+					}
+			}
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			if = {
+   				limit = {
+        			HIR = { 
+						is_in_faction_with = KYU 
+						is_in_faction_with = CHU
+					}
+    			}   
+				add_stability = 0.10
+				add_war_support = 0.10
+			}
+			else_if = {
+    			limit = {
+        			HIR = { 
+						NOT = {
+							is_in_faction_with = KYU 
+							is_in_faction_with = CHU
+							AND = {
+								KYU = { 
+									NOT = {
+										is_faction_leader = yes
+									}
+								}
+								CHU = {
+									NOT = {
+										is_faction_leader = yes
+									}
+								}
+							} 
+						}
+					}
+    			}
+				set_rule = { can_create_factions = yes }
+				create_faction = united_juntas
+    			KYU = {
+					country_event = { id = generic.5 }
+				}
+				CHU = {
+					country_event = { id = generic.5 }
+				}
+			}
+			else_if = {
+    			limit = {
+					OR = {
+						KYU = { 
+							is_faction_leader = yes
+						}
+						CHU = {
+							is_faction_leader = yes
+						}
+					}
+    			}
+    			KYU = {
+					country_event = { id = generic.2 }
+				}
+				CHU = {
+					country_event = { id = generic.2 }
+				}
 			}
 		}
 	}
