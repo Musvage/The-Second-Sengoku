@@ -1,41 +1,41 @@
 set_up_global_division_limit_system = {
-	set_variable = { global.division_limit_base = 400 }
+	set_variable = { global.division_limit_base = 300 }
 	# economic laws
-	set_variable = { global.division_limit_undisturbed_isolation = -120 }
-	set_variable = { global.division_limit_isolation = -60 }
+	set_variable = { global.division_limit_undisturbed_isolation = -90 }
+	set_variable = { global.division_limit_isolation = -40 }
 	set_variable = { global.division_limit_civilian_economy = 0 }
-	set_variable = { global.division_limit_low_economic_mobilisation = 40 }
-	set_variable = { global.division_limit_partial_economic_mobilisation = 80 }
-	set_variable = { global.division_limit_war_economy = 120 }
-	set_variable = { global.division_limit_tot_economic_mobilisation = 160 }
+	set_variable = { global.division_limit_low_economic_mobilisation = 20 }
+	set_variable = { global.division_limit_partial_economic_mobilisation = 60 }
+	set_variable = { global.division_limit_war_economy = 90 }
+	set_variable = { global.division_limit_tot_economic_mobilisation = 120 }
 	# manpower laws CURRENTLY DEPRICATED
-	set_variable = { global.division_limit_disarmed_nation = -80 }
-	set_variable = { global.division_limit_volunteer_only = -40 }
+	set_variable = { global.division_limit_disarmed_nation = -60 }
+	set_variable = { global.division_limit_volunteer_only = -20 }
 	set_variable = { global.division_limit_limited_conscription = 0 }
-	set_variable = { global.division_limit_extensive_conscription = 40 }
-	set_variable = { global.division_limit_service_by_requirement = 80 }
-	set_variable = { global.division_limit_all_adults_serve = 120 }
-	set_variable = { global.division_limit_scraping_the_barrel = 160 }
+	set_variable = { global.division_limit_extensive_conscription = 20 }
+	set_variable = { global.division_limit_service_by_requirement = 60 }
+	set_variable = { global.division_limit_all_adults_serve = 90 }
+	set_variable = { global.division_limit_scraping_the_barrel = 120 }
 	# training level
-	set_variable = { global.division_limit_soldier_baptism = 160 }
-	set_variable = { global.division_limit_soldier_basic = 80 }
+	set_variable = { global.division_limit_soldier_baptism = 120 }
+	set_variable = { global.division_limit_soldier_basic = 60 }
 	set_variable = { global.division_limit_soldier_full = 0 }
-	set_variable = { global.division_limit_soldier_extended = -40 }
+	set_variable = { global.division_limit_soldier_extended = -20 }
 	# support company
 	set_variable = { global.division_limit_support_companies_tech_level = 0 }
 	# advisor
-	set_variable = { global.division_limit_advisor_1 = 0.1 }
-	set_variable = { global.division_limit_advisor_2 = 0.15 }
-	set_variable = { global.division_limit_advisor_3 = 0.2 }
+	set_variable = { global.division_limit_advisor_1 = 0.05 }
+	set_variable = { global.division_limit_advisor_2 = 0.1 }
+	set_variable = { global.division_limit_advisor_3 = 0.15 }
 	# infrastructure
 	set_variable = { global.division_limit_infrastructure = 0.05 }
 	# other variables
-	set_variable = { global.division_limit_food_surplus = 40 }
+	set_variable = { global.division_limit_food_surplus = 20 }
 	set_global_flag = has_global_division_system
 	### TECHNOLOGIES BONUS VALUES
-	set_variable = { global.division_limit_doctrine_small = 20 }
-	set_variable = { global.division_limit_doctrine_medium = 40 }
-	set_variable = { global.division_limit_doctrine_big = 80 }
+	set_variable = { global.division_limit_doctrine_small = 15 }
+	set_variable = { global.division_limit_doctrine_medium = 30 }
+	set_variable = { global.division_limit_doctrine_big = 60 }
 
 	every_country = { 
 		set_variable = { desire_to_go_overhead = 0 }	# Matters only for AI
@@ -46,19 +46,38 @@ set_up_global_division_limit_system = {
 set_up_division_limit_system = {
 	set_country_flag = has_division_limit_system
 	if = {
-		limit = { NOT = { has_variable = division_limit_technology_bonus } }	# does not loose technological advances when resetting system for debug
+		limit = { NOT = { check_variable = { division_limit_technology_bonus = 0 } } }	# does not loose technological advances from starting techs or when resetting system for debug
 		set_variable = { division_limit_technology_bonus = 0 }
 	}
 	if = {
-		limit = { NOT = { has_variable = division_limit_other_bonus } }	# does not loose other bonuses when resetting system for debug
+		limit = { NOT = { check_variable = { division_limit_other_bonus = 0 } } }	# does not loose other bonuses from starting bonuses or when resetting system for debug
 		set_variable = { division_limit_other_bonus = 0 }
+	} else = {
+		if = {
+			limit = {
+				OR = { has_tech = superior_firepower has_tech = mobile_warfare }
+			}
+			division_limit_add_small_doctrine_bonus = yes
+		}
+		if = {
+			limit = {
+				has_tech = trench_warfare
+			}
+			division_limit_add_medium_doctrine_bonus = yes
+		}
+		if = {
+			limit = {
+				has_tech = mass_assault
+			}
+			division_limit_add_big_doctrine_bonus = yes
+		}
 	}
 	if = {
-		limit = { NOT = { has_variable = division_limit_other_multiplier } }	# does not loose other multipliers when resetting system for debug
+		limit = { NOT = { check_variable = { division_limit_other_multiplier = 0 } } }	# does not loose other multipliers from starting bonuses or when resetting system for debug
 		set_variable = { division_limit_other_multiplier = 0 }
 	}
 	if = {
-		limit = { NOT = { has_variable = division_limit_support_companies_tech_level } }	# does not loose support tech when resetting system for debug
+		limit = { NOT = { check_variable = { division_limit_support_companies_tech_level = 0 } } }	# does not loose support tech when starting the game or resetting system for debug
 		set_variable = { division_limit_support_companies_tech_level = 0 }
 	}
 	calculate_division_limit = yes
