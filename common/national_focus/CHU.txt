@@ -840,7 +840,7 @@
 
 	focus = {
 		id = CHU_reate_autonomous_governments
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_generic_treaty
 		x = 25
 		y = 1
 		available = {
@@ -1592,7 +1592,7 @@
 
 	focus = {
 		id = CHU_clan_management_0
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_PRO_japanese_entente
 		x = 1
 		y = 1
 		relative_position_id = CHU_clan_ABE
@@ -1663,7 +1663,7 @@
 
 	focus = {
 		id = CHU_select_ideology
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_generic_propaganda
 		x = -2
 		y = 1
 		relative_position_id = CHU_clan_management_0
@@ -1693,7 +1693,7 @@
 
 	focus = {
 		id = CHU_select_democrat
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_PRO_beacon_of_equality
 		x = -2
 		y = 1
 		relative_position_id = CHU_select_ideology
@@ -1759,7 +1759,7 @@
 
 	focus = {
 		id = CHU_select_fascist
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_KYU_invite_shikoku
 		x = 0
 		y = 1
 		relative_position_id = CHU_select_ideology
@@ -1825,7 +1825,7 @@
 
 	focus = {
 		id = CHU_select_comunist
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_SHO_soviet_comissars
 		x = 2
 		y = 1
 		relative_position_id = CHU_select_ideology
@@ -1891,7 +1891,7 @@
 
 	focus = {
 		id = CHU_spread_ideology_to_clans
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_goal_generic_propaganda
 		x = 0
 		y = 1
 		relative_position_id = CHU_select_fascist
@@ -1903,6 +1903,27 @@
 		}
 
 		completion_reward = {
+			for_each_scope_loop = {
+				array = subjects_nations
+				if = {
+					limit = {
+						NOT = { tag = ROOT }
+						OR = {
+							original_tag = OIK
+							original_tag = TMA
+							original_tag = IKE
+							original_tag = MAT
+							original_tag = AMA
+							original_tag = ABE
+							original_tag = ASO
+						}
+					}
+					add_timed_idea = {
+						idea = TUR_three_year_plan_balkans
+						days = 1095
+					}
+				}
+			}
 			hidden_effect = {
 			OIK = {
 				add_stability = -0.20
@@ -1959,9 +1980,12 @@
 
 	focus = {
 		id = CHU_create_democrat_faction
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_generic_political_power
 		x = -2
 		y = 1
+		available = {
+			has_completed_focus = CHU_select_democrat
+		}
 		relative_position_id = CHU_spread_ideology_to_clans
 		prerequisite = { focus = CHU_spread_ideology_to_clans }
 		cost = 10
@@ -1976,8 +2000,28 @@
 	}
 
 	focus = {
+		id = CHU_invite_democrats
+		icon = GFX_focus_generic_diplomacy_provisional_goverment
+		x = -2
+		y = 1
+		relative_position_id = CHU_create_democrat_faction
+		prerequisite = { focus = CHU_create_democrat_faction }
+		cost = 10
+		available_if_capitulated = no
+		ai_will_do = {
+			factor = 1
+		}
+
+		completion_reward = {
+			PRO = {
+					country_event = { id = generic.5 }
+				}
+		}
+	}
+
+	focus = {
 		id = CHU_liberate_puppets
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_generic_non_aggression
 		x = 0
 		y = 1
 		relative_position_id = CHU_create_democrat_faction
@@ -1989,13 +2033,19 @@
 		}
 
 		completion_reward = {
-			
+			set_autonomy = { target = ASO autonomy_state = autonomy_free }
+			set_autonomy = { target = ABE autonomy_state = autonomy_free }
+			set_autonomy = { target = AMA autonomy_state = autonomy_free }
+			set_autonomy = { target = MAT autonomy_state = autonomy_free }
+			set_autonomy = { target = IKE autonomy_state = autonomy_free }
+			set_autonomy = { target = TMA autonomy_state = autonomy_free }
+			set_autonomy = { target = OIK autonomy_state = autonomy_free }
 		}
 	}
 
 	focus = {
 		id = CHU_war_preparation
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_SHO_ultimatum_to_neighbours
 		x = 0
 		y = 1
 		relative_position_id = CHU_liberate_puppets
@@ -2007,13 +2057,13 @@
 		}
 
 		completion_reward = {
-			
+			add_war_support = 0.10
 		}
 	}
 
 	focus = {
 		id = CHU_war_with_fascists
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_generic_attack_shikoku
 		x = 1
 		y = 1
 		relative_position_id = CHU_war_preparation
@@ -2025,13 +2075,16 @@
 		}
 
 		completion_reward = {
-			
+			create_wargoal = {
+				type = take_state_focus
+				target = SHI
+			}
 		}
 	}
 
 	focus = {
 		id = CHU_war_with_communists
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_generic_attack_tohoku
 		x = -1
 		y = 1
 		relative_position_id = CHU_war_preparation
@@ -2043,13 +2096,16 @@
 		}
 
 		completion_reward = {
-			
+			create_wargoal = {
+				type = take_state_focus
+				target = TOH
+			}
 		}
 	}
 
 	focus = {
 		id = CHU_war_with_juntas
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_generic_attack_kyushu
 		x = 3
 		y = 1
 		relative_position_id = CHU_war_preparation
@@ -2061,15 +2117,24 @@
 		}
 
 		completion_reward = {
-			
+			create_wargoal = {
+				type = take_state_focus
+				target = KYU
+			}
 		}
 	}
 
 	focus = {
 		id = CHU_intagrate_puppets
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_generic_strength
 		x = 2
 		y = 1
+		available = {
+			OR = {
+				has_completed_focus = CHU_select_comunist
+				has_completed_focus = CHU_select_fascist
+			}
+		}
 		relative_position_id = CHU_spread_ideology_to_clans
 		prerequisite = { focus = CHU_spread_ideology_to_clans }
 		cost = 10
@@ -2079,15 +2144,30 @@
 		}
 
 		completion_reward = {
-			
+			set_autonomy = { target = ASO autonomy_state = autonomy_integrated_puppet }
+			set_autonomy = { target = ABE autonomy_state = autonomy_integrated_puppet }
+			set_autonomy = { target = AMA autonomy_state = autonomy_integrated_puppet }
+			set_autonomy = { target = MAT autonomy_state = autonomy_integrated_puppet }
+			set_autonomy = { target = IKE autonomy_state = autonomy_integrated_puppet }
+			set_autonomy = { target = TMA autonomy_state = autonomy_integrated_puppet }
+			set_autonomy = { target = OIK autonomy_state = autonomy_integrated_puppet }
 		}
 	}
 
 	focus = {
 		id = CHU_join_the_fascist
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_generic_diplomacy_shikoku
 		x = 1
 		y = 1
+		available = {
+			has_completed_focus = CHU_select_fascist
+			SHI = {
+				is_faction_leader = yes
+				NOT = {
+					has_opinion_modifier = CHU_rival
+				}
+			}
+		}
 		relative_position_id = CHU_intagrate_puppets
 		prerequisite = { focus = CHU_intagrate_puppets }
 		cost = 10
@@ -2097,15 +2177,36 @@
 		}
 
 		completion_reward = {
-			
+			if = {
+    			limit = {
+        			SHI = {
+						is_faction_leader = yes
+						NOT = {
+							has_opinion_modifier = CHU_rival
+						}
+					}
+    			}   
+    			SHI = {
+					country_event = { id = generic.2 }
+				}
+			}
 		}
 	}
 
 	focus = {
 		id = CHU_join_the_comunists
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_generic_diplomacy_tohoku
 		x = -1
 		y = 1
+		available = {
+			has_completed_focus = CHU_select_comunist
+			TOH = {
+				is_faction_leader = yes
+			}
+			FER = {
+				is_faction_leader = yes
+			}
+		}
 		relative_position_id = CHU_intagrate_puppets
 		prerequisite = { focus = CHU_intagrate_puppets }
 		cost = 10
@@ -2115,17 +2216,36 @@
 		}
 
 		completion_reward = {
-			
+			if = {
+    			limit = {
+        			TOH = {
+						is_faction_leader = yes
+					}
+    			}   
+    			TOH = {
+					country_event = { id = generic.2 }
+				}
+			}
+			if = {
+    			limit = {
+        			FER = {
+						is_faction_leader = yes
+					}
+    			}   
+    			FER = {
+					country_event = { id = generic.2 }
+				}
+			}
 		}
 	}
 
 	focus = {
 		id = CHU_war_preparation_2
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_SHO_ultimatum_to_neighbours
 		x = 1
 		y = 1
 		relative_position_id = CHU_join_the_comunists
-		prerequisite = { focus = CHU_join_the_fascist focus = CHU_join_the_comunists }
+		prerequisite = { focus = CHU_join_the_fascist focus = CHU_join_the_comunists focus = CHU_intagrate_puppets }
 		cost = 10
 		available_if_capitulated = no
 		ai_will_do = {
@@ -2133,13 +2253,13 @@
 		}
 
 		completion_reward = {
-			
+			add_war_support = 0.10
 		}
 	}
 
 	focus = {
 		id = CHU_war_with_monarchists
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_generic_attack_imperial
 		x = 1
 		y = 1
 		relative_position_id = CHU_war_preparation_2
@@ -2151,13 +2271,20 @@
 		}
 
 		completion_reward = {
-			
+			create_wargoal = {
+				type = take_state_focus
+				target = KAN
+			}
+			create_wargoal = {
+				type = take_state_focus
+				target = SHO
+			}
 		}
 	}
 
 	focus = {
 		id = CHU_war_with_democrats
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_generic_attack_provisional
 		x = 3
 		y = 1
 		relative_position_id = CHU_war_preparation_2
@@ -2169,13 +2296,16 @@
 		}
 
 		completion_reward = {
-			
+			create_wargoal = {
+				type = take_state_focus
+				target = PRO
+			}
 		}
 	}
 
 	focus = {
 		id = CHU_continue_with_junta
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_PRO_neutrality_act
 		x = 3
 		y = 1
 		relative_position_id = CHU_clan_management_0
@@ -2241,7 +2371,7 @@
 
 	focus = {
 		id = CHU_puppets_get_closer
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_generic_martial_law
 		x = 0
 		y = 1
 		relative_position_id = CHU_continue_with_junta
@@ -2265,7 +2395,7 @@
 
 	focus = {
 		id = CHU_create_new_faction
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_SHO_neutral_coalition
 		x = -1
 		y = 1
 		relative_position_id = CHU_puppets_get_closer
@@ -2285,7 +2415,7 @@
 
 	focus = {
 		id = CHU_invite_junta
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_generic_allied_juntas
 		x = 0
 		y = 1
 		relative_position_id = CHU_create_new_faction
@@ -2305,7 +2435,7 @@
 
 	focus = {
 		id = CHU_war_preparation_3
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_SHO_ultimatum_to_neighbours
 		x = 1
 		y = 2
 		relative_position_id = CHU_invite_junta
@@ -2317,13 +2447,13 @@
 		}
 
 		completion_reward = {
-			
+			add_war_support = 0.10
 		}
 	}
 
 	focus = {
 		id = CHU_make_a_new_country
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_AMC_defence_focus
 		x = 3
 		y = 1
 		relative_position_id = CHU_invite_junta
@@ -2346,7 +2476,7 @@
 
 	focus = {
 		id = CHU_change_in_party
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_PRO_1936_election
 		x = 0
 		y = 1
 		relative_position_id = CHU_make_a_new_country
@@ -2365,13 +2495,13 @@
 			}
 			retire_ideology_leader = neutrality
 			create_country_leader = {
-				name = "Shinzo Hamai"
-				desc = "POLITICS_HAMAI_DESC"
-				picture = "Portrait_CHU_Shinzo_Hamai.dds"
+				name = "Shunroku Hat"
+				desc = "POLITICS_HATA_DESC"
+				picture = "Portrait_CHU_Shunroku_Hata.dds"
 				expire = "1965.1.1"
 				ideology = oligarchism
 				traits = {
-					#
+					first_government
 				}
 			}
 			set_politics = {
@@ -2388,7 +2518,7 @@
 
 	focus = {
 		id = CHU_Chugoku_federal_government
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_generic_one_empire_2
 		x = 0
 		y = 1
 		relative_position_id = CHU_change_in_party
@@ -2430,7 +2560,7 @@
 
 	focus = {
 		id = CHU_expand_federal_government
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_KAN_showa_constitution
 		x = 0
 		y = 1
 		available = {
@@ -2473,7 +2603,7 @@
 
 	focus = {
 		id = CHU_join_other_junta
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_generic_allied_juntas
 		x = 1
 		y = 1
 		available = {
@@ -2512,7 +2642,7 @@
 
 	focus = {
 		id = CHU_clans_developt
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_REI_german_engineering
 		x = 8
 		y = 1
 		relative_position_id = CHU_clan_management_0
@@ -2681,7 +2811,7 @@
 
 	focus = {
 		id = CHU_clans_developt_civilian
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_generic_strong_economy
 		x = 2
 		y = 1
 		relative_position_id = CHU_clans_developt
@@ -2882,7 +3012,7 @@
 
 	focus = {
 		id = CHU_clans_developt_civilian_2
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_generic_strong_economy
 		x = 0
 		y = 1
 		relative_position_id = CHU_clans_developt_civilian
@@ -3083,7 +3213,7 @@
 
 	focus = {
 		id = CHU_clans_developt_infrustracture
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_CHU_economy_3
 		x = 0
 		y = 1
 		relative_position_id = CHU_clans_developt
@@ -3276,7 +3406,7 @@
 
 	focus = {
 		id = CHU_clans_developt_infrustracture_2
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_CHU_economy_3
 		x = 0
 		y = 1
 		relative_position_id = CHU_clans_developt_infrustracture
@@ -3461,7 +3591,7 @@
 
 	focus = {
 		id = CHU_clans_technology_sharing_program
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_goal_tfv_generic_tech_sharing
 		x = 0
 		y = 1
 		relative_position_id = CHU_clans_developt_infrustracture_2
@@ -3598,7 +3728,7 @@
 
 	focus = {
 		id = CHU_clans_research_program
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_KAN_western_science
 		x = 0
 		y = 1
 		relative_position_id = CHU_clans_technology_sharing_program
@@ -3735,7 +3865,7 @@
 
 	focus = {
 		id = CHU_clans_developt_military
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_jap_zaibatsu
 		x = -2
 		y = 1
 		relative_position_id = CHU_clans_developt
@@ -3936,7 +4066,7 @@
 
 	focus = {
 		id = CHU_clans_developt_military_2
-		icon = GFX_focus_jap_manchurian_project
+		icon = GFX_focus_SHO_zaibatsu_movements
 		x = 0
 		y = 1
 		relative_position_id = CHU_clans_developt_military
