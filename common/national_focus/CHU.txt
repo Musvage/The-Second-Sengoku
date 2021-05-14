@@ -592,7 +592,7 @@
 		icon = GFX_focus_chi_legislative_yuan
 		x = -11
 		y = 0
-		cost = 2
+		cost = 3
 		bypass = {
 			OR = {
 			has_completed_focus = CHU_decentralize_the_junta
@@ -856,6 +856,7 @@
 		}
 
 		completion_reward = {
+			add_ideas = tot_economic_mobilisation
 			add_political_power = 100
 			add_stability = -0.05
 			if = {
@@ -1694,7 +1695,7 @@
 	focus = {
 		id = CHU_select_democrat
 		icon = GFX_focus_PRO_beacon_of_equality
-		x = -2
+		x = 2
 		y = 1
 		relative_position_id = CHU_select_ideology
 		prerequisite = { focus = CHU_select_ideology }
@@ -1828,7 +1829,7 @@
 	focus = {
 		id = CHU_select_comunist
 		icon = GFX_focus_SHO_soviet_comissars
-		x = 2
+		x = -2
 		y = 1
 		relative_position_id = CHU_select_ideology
 		prerequisite = { focus = CHU_select_ideology }
@@ -2328,7 +2329,7 @@
 	focus = {
 		id = CHU_create_democrat_faction
 		icon = GFX_focus_generic_political_power
-		x = -2
+		x = 2
 		y = 1
 		available = {
 			has_government = democratic
@@ -2351,7 +2352,7 @@
 	focus = {
 		id = CHU_invite_democrats
 		icon = GFX_focus_generic_diplomacy_provisional_goverment
-		x = -2
+		x = -1
 		y = 1
 		relative_position_id = CHU_create_democrat_faction
 		prerequisite = { focus = CHU_create_democrat_faction }
@@ -2371,8 +2372,11 @@
 	focus = {
 		id = CHU_liberate_puppets
 		icon = GFX_focus_generic_non_aggression
-		x = 0
+		x = 1
 		y = 1
+		available = {
+			has_completed_focus = CHU_clans_technology_sharing_program
+		}
 		relative_position_id = CHU_create_democrat_faction
 		prerequisite = { focus = CHU_create_democrat_faction }
 		cost = 10
@@ -2416,10 +2420,10 @@
 	focus = {
 		id = CHU_war_with_fascists
 		icon = GFX_focus_generic_attack_shikoku
-		x = 1
+		x = 0
 		y = 1
 		relative_position_id = CHU_war_preparation
-		prerequisite = { focus = CHU_war_preparation }
+		prerequisite = { focus = CHU_war_preparation focus = CHU_war_preparation_3 }
 		cost = 10
 		available_if_capitulated = no
 		ai_will_do = {
@@ -2437,10 +2441,10 @@
 	focus = {
 		id = CHU_war_with_communists
 		icon = GFX_focus_generic_attack_tohoku
-		x = -1
+		x = 2
 		y = 1
 		relative_position_id = CHU_war_preparation
-		prerequisite = { focus = CHU_war_preparation }
+		prerequisite = { focus = CHU_war_preparation focus = CHU_war_preparation_3 }
 		cost = 10
 		available_if_capitulated = no
 		ai_will_do = {
@@ -2458,7 +2462,7 @@
 	focus = {
 		id = CHU_war_with_juntas
 		icon = GFX_focus_generic_attack_kyushu
-		x = 3
+		x = -2
 		y = 1
 		relative_position_id = CHU_war_preparation
 		prerequisite = { focus = CHU_war_preparation focus = CHU_war_preparation_2 }
@@ -2479,7 +2483,7 @@
 	focus = {
 		id = CHU_intagrate_puppets
 		icon = GFX_focus_generic_strength
-		x = 2
+		x = -2
 		y = 1
 		available = {
 			OR = {
@@ -2644,10 +2648,10 @@
 	focus = {
 		id = CHU_war_with_democrats
 		icon = GFX_focus_generic_attack_provisional
-		x = 3
+		x = -1
 		y = 1
 		relative_position_id = CHU_war_preparation_2
-		prerequisite = { focus = CHU_war_preparation_2 focus = CHU_war_preparation_3 }
+		prerequisite = { focus = CHU_war_preparation_2 }
 		cost = 10
 		available_if_capitulated = no
 		ai_will_do = {
@@ -2818,9 +2822,9 @@
 		id = CHU_make_a_new_country
 		icon = GFX_focus_AMC_defence_focus
 		x = 3
-		y = 1
+		y = 2
 		relative_position_id = CHU_invite_junta
-		prerequisite = { focus = CHU_invite_junta focus = CHU_join_other_junta }
+		prerequisite = { focus = CHU_liberate_puppets focus = CHU_invite_junta focus = CHU_join_other_junta }
 		cost = 10
 		available_if_capitulated = no
 		ai_will_do = {
@@ -2828,11 +2832,25 @@
 		}
 
 		completion_reward = {
-			add_stability = 0.20
-			add_popularity = {
+			if = {
+    			limit = {
+        			has_completed_focus = CHU_select_democrat
+    			}   
+    			add_popularity = {
+				ideology = democratic
+				popularity = 0.10
+				}
+			}
+			if = {
+    			limit = {
+        			has_completed_focus = CHU_continue_with_junta
+    			}   
+    			add_popularity = {
 				ideology = neutrality
 				popularity = 0.10
+				}
 			}
+			add_stability = 0.20
 			country_event = { id = chugoku.7 }
 		}
 	}
@@ -2851,31 +2869,72 @@
 		}
 
 		completion_reward = {
-			set_party_name = { 
-				ideology = neutrality
-				long_name = Chugoku_Federal_Republic 
-				name = Chugoku_CFR
-			}
-			retire_ideology_leader = neutrality
-			create_country_leader = {
-				name = "Shunroku Hat"
-				desc = "POLITICS_HATA_DESC"
-				picture = "Portrait_CHU_Shunroku_Hata.dds"
-				expire = "1965.1.1"
-				ideology = oligarchism
-				traits = {
-					first_government
+			if = {
+    			limit = {
+        			has_completed_focus = CHU_select_democrat
+    			}   
+    			set_party_name = { 
+					ideology = democratic
+					long_name = Chugoku_Federal_Republic 
+					name = Chugoku_CFR
 				}
+				set_politics = {
+					ruling_party = democratic
+					elections_allowed = yes
+					election_frequency = 96
+				}
+				add_popularity = {
+					ideology = democratic
+					popularity = 0.10
+				}
+				retire_ideology_leader = neutrality
+				retire_ideology_leader = democratic
+				create_country_leader = {
+					name = "Shinzo Hamai"
+					desc = "POLITICS_HAMAI_DESC"
+					picture = "Portrait_CHU_Shinzo_Hamai.dds"
+					expire = "1965.1.1"
+					ideology = Liberalism
+					traits = {
+						first_government
+					}
+				}
+				custom_effect_tooltip = Shunroku_Hata_becomes_president_of_the_Senate
+				set_variable = { dual_leader_id = 51 }
 			}
-			set_politics = {
-				ruling_party = neutrality
-				elections_allowed = yes
-				election_frequency = 96
+			if = {
+    			limit = {
+        			has_completed_focus = CHU_continue_with_junta
+    			}   
+    			set_party_name = { 
+					ideology = neutrality
+					long_name = Chugoku_Federal_Republic 
+					name = Chugoku_CFR
+				}
+				retire_ideology_leader = neutrality
+				create_country_leader = {
+					name = "Shunroku Hata"
+					desc = "POLITICS_HATA_DESC"
+					picture = "Portrait_CHU_Shunroku_Hata_Civil.dds"
+					expire = "1965.1.1"
+					ideology = oligarchism
+					traits = {
+						first_government
+					}
+				}
+				set_politics = {
+					ruling_party = neutrality
+					elections_allowed = yes
+					election_frequency = 96
+				}
+				add_popularity = {
+					ideology = neutrality
+					popularity = 0.10
+				}
+				set_variable = { dual_leader_id = 50 }
 			}
-			add_popularity = {
-				ideology = neutrality
-				popularity = 0.10
-			}
+			set_variable = { dual_leader_first_title = 13 }
+			set_variable = { dual_leader_second_title = 19 }
 		}
 	}
 
@@ -2884,6 +2943,9 @@
 		icon = GFX_focus_generic_one_empire_2
 		x = 0
 		y = 1
+		available = {
+			has_completed_focus = CHU_clans_technology_sharing_program
+		}
 		relative_position_id = CHU_change_in_party
 		prerequisite = { focus = CHU_change_in_party }
 		cost = 10
@@ -2893,34 +2955,71 @@
 		}
 
 		completion_reward = {
-			custom_effect_tooltip = all_puppets_annex
-			hidden_effect = {
-			add_popularity = {
+			if = {
+    			limit = {
+        			has_completed_focus = CHU_select_democrat
+    			}   
+    			add_popularity = {
+				ideology = democratic
+				popularity = 0.10
+				}
+
+				custom_effect_tooltip = Offer_to_join_us_our_allies
+
+				for_each_scope_loop = {
+				array = faction_members
+				if = {
+					limit = {
+						NOT = { tag = ROOT }
+						OR = {
+							original_tag = ASO
+							original_tag = ABE
+							original_tag = AMA
+							original_tag = MAT
+							original_tag = IKE
+							original_tag = OIK
+							original_tag = TMA
+							original_tag = PRO
+						}
+					}
+					country_event = { id = chugoku.23 }
+				}
+			}
+			}
+			if = {
+    			limit = {
+        			has_completed_focus = CHU_continue_with_junta
+    			}   
+    			add_popularity = {
 				ideology = neutrality
 				popularity = 0.10
+				}
+				custom_effect_tooltip = all_puppets_annex
+				hidden_effect = {
+				annex_country = { target = ASO transfer_troops = yes }
+				annex_country = { target = ABE transfer_troops = yes }
+				annex_country = { target = AMA transfer_troops = yes }
+				annex_country = { target = MAT transfer_troops = yes }
+				annex_country = { target = IKE transfer_troops = yes }
+				annex_country = { target = OIK transfer_troops = yes }
+				annex_country = { target = TMA transfer_troops = yes }
+				}
+			}
+			hidden_effect = {
+				add_state_core = 115
+				add_state_core = 112
+				add_state_core = 125
+				add_state_core = 110
+				add_state_core = 98
+				add_state_core = 103
+				add_state_core = 197
+				add_state_core = 123
+				add_state_core = 116
+				add_state_core = 111
+				add_state_core = 117
+				add_state_core = 101
 			}
 			set_cosmetic_tag = Chugoku_Federal_Republic_cosmetic 
-
-			annex_country = { target = ASO transfer_troops = yes }
-			annex_country = { target = ABE transfer_troops = yes }
-			annex_country = { target = AMA transfer_troops = yes }
-			annex_country = { target = MAT transfer_troops = yes }
-			annex_country = { target = IKE transfer_troops = yes }
-			annex_country = { target = OIK transfer_troops = yes }
-			annex_country = { target = TMA transfer_troops = yes }
-			add_state_core = 115
-			add_state_core = 112
-			add_state_core = 125
-			add_state_core = 110
-			add_state_core = 98
-			add_state_core = 103
-			add_state_core = 197
-			add_state_core = 123
-			add_state_core = 116
-			add_state_core = 111
-			add_state_core = 117
-			add_state_core = 101
-			}
 		}
 	}
 
@@ -2930,6 +3029,9 @@
 		x = 0
 		y = 1
 		available = {
+			OR = {
+				has_government = neutrality
+			}
 			OR = {
 				KYU = {
 					is_in_faction_with = CHU
@@ -2952,10 +3054,10 @@
     			limit = {
 					OR = {
 						KYU = {
-						is_in_faction_with = CHU
+							is_in_faction_with = CHU
 						}
 						CHU = {
-						is_in_faction_with = KYU
+							is_in_faction_with = KYU
 						}
 					}
     			}  
@@ -3981,7 +4083,9 @@
 		x = 0
 		y = 1
 		relative_position_id = CHU_clans_developt_infrustracture_2
-		prerequisite = { focus = CHU_clans_developt_civilian_2 focus = CHU_clans_developt_infrustracture_2 focus = CHU_clans_developt_military_2 }
+		prerequisite = { focus = CHU_clans_developt_civilian_2 }
+		prerequisite = { focus = CHU_clans_developt_infrustracture_2 }
+		prerequisite = { focus = CHU_clans_developt_military_2 }
 		cost = 10
 		available_if_capitulated = no
 		ai_will_do = {
@@ -7327,6 +7431,8 @@
 			factor = 1
 		}
 		completion_reward = {
+			add_ideas = CHU_kotaro_nakamura
+			add_ideas = generic_army_administrarion_japan_3
 			army_experience = 25
 		}	
 	}
