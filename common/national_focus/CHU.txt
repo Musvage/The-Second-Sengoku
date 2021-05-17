@@ -172,7 +172,7 @@
 
 	focus = {
 		id = CHU_improve_relations_with_neighbors
-		icon = GFX_
+		icon = GFX_focus_SHO_ultimatum_to_neighbours
 		x = 0
 		y = 1
 		cost = 10
@@ -192,7 +192,7 @@
 
 	focus = {
 		id = CHU_fight_enemies
-		icon = GFX_
+		icon = GFX_focus_SHO_conditional_tsujigiri
 		x = -1
 		y = 1
 		cost = 10
@@ -257,7 +257,7 @@
 
 	focus = {
 		id = CHU_trade_deal_with_friends
-		icon = GFX_
+		icon = GFX_focus_PRO_open_economy
 		x = 1
 		y = 1
 		cost = 10
@@ -1592,13 +1592,115 @@
 	}
 
 	focus = {
-		id = CHU_clan_management_0
-		icon = GFX_focus_PRO_japanese_entente
+		id = CHU_clan_UCC
+		icon = GFX_focus_jap_manchurian_project
 		x = 1
 		y = 1
 		relative_position_id = CHU_clan_ABE
 		prerequisite = { focus = CHU_clan_ABE }
 		prerequisite = { focus = CHU_clan_ASO }
+		cost = 10
+		available_if_capitulated = no
+		ai_will_do = {
+			factor = 1
+		}
+
+		completion_reward = {
+			#Clan Custom Effect tooltip
+			effect_tooltip ={
+				release = UCC
+				UCC = {
+					custom_effect_tooltip = clan_spawn_5_inf_divisions
+				}
+			}
+			hidden_effect = {
+			if = {
+					limit = { UCC = { exists = no } }
+					release = UCC
+					set_autonomy = { target = UCC autonomy_state = free }
+					UCC = { save_event_target_as = released_nation_target }
+				}
+			else = {
+					create_dynamic_country = {
+						original_tag = UCC
+						
+						save_event_target_as = released_nation_target
+						PREV = {
+							every_owned_state = {
+								limit = { is_core_of = UCC }
+								PREV.PREV = { transfer_state = PREV }
+							}
+						}
+					}
+				}
+			
+				event_target:released_nation_target = {
+					set_cosmetic_tag = UCC_without
+					division_template = {
+						name = "UCC Division"
+						priority = 1
+						division_names_group = UCC_INF_01
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+				
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+						}
+						support = {
+							engineer = { x = 0 y = 0 }
+						}
+					}
+					random_owned_controlled_state = {
+						limit = { PREV = { has_full_control_of_state = PREV } }
+						create_unit = {
+							division = "name = \"UCC Division\" division_template = \"UCC Division\" start_experience_factor = 0.9" 
+							owner = PREV
+						}
+					}
+					random_owned_controlled_state = {
+						limit = { PREV = { has_full_control_of_state = PREV } }
+						create_unit = {
+							division = "name = \"UCC Division\" division_template = \"UCC Division\" start_experience_factor = 0.9" 
+							owner = PREV
+						}
+					}
+					random_owned_controlled_state = {
+						limit = { PREV = { has_full_control_of_state = PREV } }
+						create_unit = {
+							division = "name = \"UCC Division\" division_template = \"UCC Division\" start_experience_factor = 0.9" 
+							owner = PREV
+						}
+					}
+					random_owned_controlled_state = {
+						limit = { PREV = { has_full_control_of_state = PREV } }
+						create_unit = {
+							division = "name = \"UCC Division\" division_template = \"UCC Division\" start_experience_factor = 0.9" 
+							owner = PREV
+						}
+					}
+					random_owned_controlled_state = {
+						limit = { PREV = { has_full_control_of_state = PREV } }
+						create_unit = {
+							division = "name = \"UCC Division\" division_template = \"UCC Division\" start_experience_factor = 0.9" 
+							owner = PREV
+						}
+					}
+				}
+			}
+			puppet = UCC
+		}
+	}
+
+	focus = {
+		id = CHU_clan_management_0
+		icon = GFX_focus_PRO_japanese_entente
+		x = 0
+		y = 1
+		relative_position_id = CHU_clan_UCC
+		prerequisite = { focus = CHU_clan_UCC }
 		cost = 10
 		available_if_capitulated = no
 		ai_will_do = {
@@ -1712,6 +1814,12 @@
 				ideology = democratic
 			}
 			hidden_effect = {
+				UCC = {
+				add_popularity = {
+				popularity = 0.10
+				ideology = democratic
+			}
+			}
 			OIK = {
 				add_popularity = {
 				popularity = 0.10
@@ -1779,6 +1887,12 @@
 				ideology = fascism
 			}
 			hidden_effect = {
+				UCC = {
+				add_popularity = {
+				popularity = 0.10
+				ideology = fascism
+			}
+			}
 			OIK = {
 				add_popularity = {
 				popularity = 0.10
@@ -1846,6 +1960,12 @@
 				ideology = communism
 			}
 			hidden_effect = {
+				UCC = {
+				add_popularity = {
+				popularity = 0.10
+				ideology = communism
+			}
+			}
 			OIK = {
 				add_popularity = {
 				popularity = 0.10
@@ -1916,6 +2036,12 @@
 					days = 365
 				}
 				hidden_effect = {
+					UCC = {
+				add_timed_idea = {
+					idea = CHU_we_are_enough
+					days = 365
+				}
+			}
 			OIK = {
 				add_timed_idea = {
 					idea = CHU_we_are_enough
@@ -2105,6 +2231,15 @@
 					ruling_party = fascism
 				}
 				hidden_effect = {
+					UCC = {
+				add_popularity = {
+					ideology = fascism
+					popularity = 0.30
+				}
+				set_politics = {
+					ruling_party = fascism
+				}
+			}
 			OIK = {
 				add_popularity = {
 					ideology = fascism
@@ -2390,13 +2525,14 @@
 		completion_reward = {
 			custom_effect_tooltip = all_puppets_free
 			hidden_effect = {
-			set_autonomy = { target = ASO autonomy_state = autonomy_free }
-			set_autonomy = { target = ABE autonomy_state = autonomy_free }
-			set_autonomy = { target = AMA autonomy_state = autonomy_free }
-			set_autonomy = { target = MAT autonomy_state = autonomy_free }
-			set_autonomy = { target = IKE autonomy_state = autonomy_free }
-			set_autonomy = { target = TMA autonomy_state = autonomy_free }
-			set_autonomy = { target = OIK autonomy_state = autonomy_free }
+			set_autonomy = { target = ASO autonomy_state = autonomy_colony }
+			set_autonomy = { target = ABE autonomy_state = autonomy_colony }
+			set_autonomy = { target = AMA autonomy_state = autonomy_colony }
+			set_autonomy = { target = MAT autonomy_state = autonomy_colony }
+			set_autonomy = { target = IKE autonomy_state = autonomy_colony }
+			set_autonomy = { target = TMA autonomy_state = autonomy_colony }
+			set_autonomy = { target = OIK autonomy_state = autonomy_colony }
+			set_autonomy = { target = UCC autonomy_state = autonomy_colony }
 			}
 		}
 	}
@@ -2515,6 +2651,7 @@
 			set_autonomy = { target = IKE autonomy_state = autonomy_integrated_puppet }
 			set_autonomy = { target = TMA autonomy_state = autonomy_integrated_puppet }
 			set_autonomy = { target = OIK autonomy_state = autonomy_integrated_puppet }
+			set_autonomy = { target = UCC autonomy_state = autonomy_integrated_puppet }
 			}
 		}
 	}
@@ -2688,6 +2825,12 @@
 				days = 365
 			}
 			hidden_effect = {
+				UCC = {
+				add_timed_idea = {
+				idea = CHU_continue_with_junta
+				days = 365
+			}
+			}
 			OIK = {
 				add_timed_idea = {
 				idea = CHU_continue_with_junta
@@ -2758,6 +2901,7 @@
 			set_autonomy = { target = IKE autonomy_state = autonomy_integrated_puppet }
 			set_autonomy = { target = TMA autonomy_state = autonomy_integrated_puppet }
 			set_autonomy = { target = OIK autonomy_state = autonomy_integrated_puppet }
+			set_autonomy = { target = UCC autonomy_state = autonomy_integrated_puppet }
 			}
 		}
 	}
@@ -2982,6 +3126,7 @@
 							original_tag = OIK
 							original_tag = TMA
 							original_tag = PRO
+							original_tag = UCC
 						}
 					}
 					country_event = { id = chugoku.23 }
@@ -3006,6 +3151,7 @@
 				annex_country = { target = IKE transfer_troops = yes }
 				annex_country = { target = OIK transfer_troops = yes }
 				annex_country = { target = TMA transfer_troops = yes }
+				annex_country = { target = UCC transfer_troops = yes }
 				}
 				set_cosmetic_tag = Chugoku_Federal_Republic_cosmetic_junta
 			}
@@ -3139,6 +3285,26 @@
 				}
 			}
 			hidden_effect = {
+			#UCC
+			if = {
+				limit = {
+					UCC = {
+						OR = {
+							NOT = { has_war_with = ROOT }
+							is_in_faction_with = ROOT
+							is_puppet_of = ROOT
+							is_in_faction_with = ROOT
+						}
+					}
+				}
+				UCC = {
+					add_tech_bonus= {
+ 					bonus = 1.5 
+					uses = 3 
+					category = industry 
+				}
+				}
+			}
 			#OIK
 			if = {
 				limit = {
@@ -3323,6 +3489,29 @@
 				}
 			}
 			hidden_effect = {
+				#UCC
+			if = {
+				limit = {
+					UCC = {
+						OR = {
+							NOT = { has_war_with = ROOT }
+							is_in_faction_with = ROOT
+							is_puppet_of = ROOT
+							is_in_faction_with = ROOT
+						}
+					}
+				}
+				UCC = {
+					random_owned_controlled_state = {
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = industrial_complex
+						level = 2
+						instant_build = yes
+					}
+					}
+				}
+			}
 			#OIK
 			if = {
 				limit = {
@@ -3528,6 +3717,29 @@
 				}
 			}
 			hidden_effect = {
+				#UCC
+			if = {
+				limit = {
+					UCC = {
+						OR = {
+							NOT = { has_war_with = ROOT }
+							is_in_faction_with = ROOT
+							is_puppet_of = ROOT
+							is_in_faction_with = ROOT
+						}
+					}
+				}
+				UCC = {
+					random_owned_controlled_state = {
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = industrial_complex
+						level = 2
+						instant_build = yes
+					}
+					}
+				}
+			}
 			#OIK
 			if = {
 				limit = {
@@ -3725,6 +3937,29 @@
 				}
 			}
 			hidden_effect = {
+				#UCC
+			if = {
+				limit = {
+					UCC = {
+						OR = {
+							NOT = { has_war_with = ROOT }
+							is_in_faction_with = ROOT
+							is_puppet_of = ROOT
+							is_in_faction_with = ROOT
+						}
+					}
+				}
+				UCC = {
+					random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = infrastructure
+						level = 2
+						instant_build = yes
+					}
+				}
+				}
+			}
 			#OIK
 			if = {
 				limit = {
@@ -3921,6 +4156,28 @@
 				}
 			}
 			hidden_effect = {
+				#UCC
+			if = {
+				limit = {
+					UCC = {
+						OR = {
+							NOT = { has_war_with = ROOT }
+							is_in_faction_with = ROOT
+							is_puppet_of = ROOT
+							is_in_faction_with = ROOT
+						}
+					}
+				}
+				UCC = {
+					random_owned_controlled_state = {
+					add_building_construction = {
+						type = infrastructure
+						level = 1
+						instant_build = yes
+					}
+					}
+				}
+			}
 			#OIK
 			if = {
 				limit = {
@@ -4106,6 +4363,22 @@
 				add_research_slot = 1
 			}
 			hidden_effect = {
+				#UCC
+			if = {
+				limit = {
+					UCC = {
+						OR = {
+							NOT = { has_war_with = ROOT }
+							is_in_faction_with = ROOT
+							is_puppet_of = ROOT
+							is_in_faction_with = ROOT
+						}
+					}
+				}
+				UCC = {
+					add_research_slot = 1
+				}
+			}
 			#OIK
 			if = {
 				limit = {
@@ -4247,6 +4520,22 @@
 				add_research_slot = 1
 			}
 			hidden_effect = {
+				#UCC
+			if = {
+				limit = {
+					UCC = {
+						OR = {
+							NOT = { has_war_with = ROOT }
+							is_in_faction_with = ROOT
+							is_puppet_of = ROOT
+							is_in_faction_with = ROOT
+						}
+					}
+				}
+				UCC = {
+					add_research_slot = 1
+				}
+			}
 			#OIK
 			if = {
 				limit = {
@@ -4403,6 +4692,29 @@
 				}
 			}
 			hidden_effect = {
+				#UCC
+			if = {
+				limit = {
+					UCC = {
+						OR = {
+							NOT = { has_war_with = ROOT }
+							is_in_faction_with = ROOT
+							is_puppet_of = ROOT
+							is_in_faction_with = ROOT
+						}
+					}
+				}
+				UCC = {
+					random_owned_controlled_state = {
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = arms_factory
+						level = 2
+						instant_build = yes
+					}
+					}
+				}
+			}
 			#OIK
 			if = {
 				limit = {
@@ -4608,6 +4920,29 @@
 				}
 			}
 			hidden_effect = {
+				#UCC
+			if = {
+				limit = {
+					UCC = {
+						OR = {
+							NOT = { has_war_with = ROOT }
+							is_in_faction_with = ROOT
+							is_puppet_of = ROOT
+							is_in_faction_with = ROOT
+						}
+					}
+				}
+				UCC = {
+					random_owned_controlled_state = {
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = arms_factory
+						level = 2
+						instant_build = yes
+					}
+					}
+				}
+			}
 			#OIK
 			if = {
 				limit = {
@@ -7394,15 +7729,15 @@
 				category = light_fighter
 			}
 			hidden_effect = {
-    		if = {
-				limit = {
-					NOT = {
-						has_tech = fighter1
+				if = {
+					limit = {
+						NOT = {
+							has_tech = fighter1
+						}
 					}
+					set_technology = { fighter1 = 1 }
 				}
-				set_technology = { fighter1 = 1 }
-			}
-			add_equipment_to_stockpile = { type = fighter1 amount = 25 }
+				add_equipment_to_stockpile = { type = fighter_equipment_1 amount = 25 }
 			}
 			custom_effect_tooltip = unlock_fighter_1
 		}	

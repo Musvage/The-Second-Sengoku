@@ -13,259 +13,616 @@ focus_tree = {
 	shared_focus = SHO_armyrenewal_shared
 
 	
+
 	focus = {
-		id = SHO_democracy_rises
-		icon = GFX_goal_unknown
-		cost = 10.00
-		x = 26
+		id = SHO_dem_mobilize_population
+		icon = GFX_goal_generic_propaganda
+		cost = 5
+		x = 15
+
+		available = {
+			has_country_flag = civil_war_SHO
+		}
+		completion_reward = {
+			add_war_support = 0.25
+			add_ideas = war_economy
+		}
+	}
+
+	focus = {
+		id = SHO_dem_increase_weapons_production
+		icon = GFX_goal_generic_small_arms
+		cost = 5
+		prerequisite = { 
+			focus = SHO_dem_mobilize_population
+		}
+		relative_position_id = SHO_dem_mobilize_population
 		y = 1
+		available = {
+			has_country_flag = civil_war_SHO
+		}
+
+		completion_reward = {
+			add_timed_idea = {
+				days = 100
+				idea = SHO_industry_buff
+			}
+		}
+	}
+
+	focus = {
+		id = SHO_dem_promise_elections
+		icon = GFX_focus_generic_concessions
+		cost = 5
+		prerequisite = { 
+			focus = SHO_dem_increase_weapons_production
+		}
+		relative_position_id = SHO_dem_increase_weapons_production
+		y = 1
+		available = {
+			has_country_flag = civil_war_SHO
+		}
+
+		completion_reward = {
+			swap_ideas = {
+				remove_idea = SHO_illegitimate_ruler
+				add_idea = SHO_unpopular_ruler
+			}
+			activate_mission = hold_elections
+		}
+	}
+
+	focus = {
+		id = SHO_dem_reach_out_to_socdem
+		icon = GFX_focus_eng_concessions_to_the_trade_unions
+		cost = 5
+		prerequisite = {
+			focus = SHO_dem_promise_elections
+		}
+		relative_position_id = SHO_dem_promise_elections
+		y=1
+		x=-1
+		available = {
+			has_country_flag = civil_war_SHO
+			OR = {
+				has_country_flag = sho_cdp_ca
+				has_country_flag = sho_cdp
+				has_country_flag = sho_ca
+			}
+		}
+		mutually_exclusive = { focus = SHO_dem_no_compromises }
+
+		completion_reward = {
+			set_popularities = {
+				democratic = 40
+				neutrality = 5
+				fascism = 5
+				communism = 10
+				democratic_socialism = 40
+			}
+			add_ideas = SHO_national_collaboration_government
+			hidden_effect = {
+				set_country_flag = collab_socdem
+			}
+		}
+	}
+
+	focus = {
+		id = SHO_dem_no_compromises
+		icon = GFX_focus_renounce_the_treaty_of_trianon
+		cost = 5
+		prerequisite = {
+			focus = SHO_dem_promise_elections
+		}
+		relative_position_id = SHO_dem_promise_elections
+		y=1
+		x=1
+		available = {
+			has_country_flag = civil_war_SHO
+			OR = {
+				has_country_flag = sho_cdp
+				has_country_flag = sho_cdp_dos
+			}
+		}
+		mutually_exclusive = { focus = SHO_dem_reach_out_to_socdem }
+
+		completion_reward = {
+			set_popularities = {
+				democratic = 55
+				neutrality = 5
+				fascism = 15
+				communism = 10
+				democratic_socialism = 15
+			}
+			add_ideas = SHO_slim_majority
+		}
+	}
+
+	focus = {
+		id = SHO_dem_buy_foreign_equipment
+		icon = GFX_focus_focus_fra_maquis
+		cost = 5
+		available = {
+			has_country_flag = civil_war_SHO
+		}
+		prerequisite = {
+			focus = SHO_dem_no_compromises
+			focus = SHO_dem_reach_out_to_socdem
+		}
+		relative_position_id = SHO_dem_promise_elections
+		y = 2
+		completion_reward = {
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = 1000
+				producer = OSA
+			}
+			add_timed_idea = {
+				days = 90
+				idea = SHO_payment_for_weapons
+			}
+		}
+	}
+
+	focus = {
+		id = SHO_dem_allow_communism
+		icon = GFX_focus_generic_soviet_politics
+		cost = 5
+		available = {
+			has_country_flag = civil_war_SHO
+		}
+		prerequisite = {
+			focus = SHO_dem_reach_out_to_socdem
+		}
+		relative_position_id = SHO_dem_buy_foreign_equipment
+		x = -2
+
+		completion_reward = {
+			add_popularity = {
+				ideology = communism
+				popularity = 0.1
+			}
+			add_stability = 0.1
+		}
+	}
+
+	focus = {
+		id = SHO_dem_crack_down_on_commies
+		icon = GFX_focus_ger_bulwark_against_bolshevism
+		cost = 5
+		available = {
+			has_country_flag = civil_war_SHO
+		}
+		prerequisite = {
+			focus = SHO_dem_no_compromises
+		}
+		relative_position_id = SHO_dem_buy_foreign_equipment
+		x = 2
+
+		completion_reward = {
+			add_popularity = {
+				ideology = communism
+				popularity = -1
+			}
+			add_stability = -0.05
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+    			amount = 250
+    			producer = SHO
+			}
+			add_manpower = -250
+		}
+	}
+
+	focus = {
+		id = SHO_dem_one_last_push
+		icon = GFX_focus_AST_war_japan
+		cost = 5
+		available = {
+			has_country_flag = civil_war_SHO
+		}
+		prerequisite = {
+			focus = SHO_dem_crack_down_on_commies
+			focus = SHO_dem_allow_communism
+		}
+		prerequisite = {
+			focus = SHO_dem_buy_foreign_equipment
+		}
+		relative_position_id = SHO_dem_buy_foreign_equipment
+		y = 1
+		
+		completion_reward = {
+			add_ideas = SHO_one_last_push
+		}
+	}
+	
+	focus = {
+		id = SHO_dem_prepare_elections
+		icon = GFX_focus_generic_the_giant_wakes
+		cost = 5
+		relative_position_id = SHO_dem_mobilize_population
+		x = 10
+		available = {
+			NOT = { has_country_flag = civil_war_SHO }
+		}
 			available_if_capitulated = yes
 			ai_will_do = {
 					factor = 1
 				}
+		completion_reward = {
+			add_stability = 0.35
+			add_political_power = 150
+			hidden_effect = {
+				remove_ideas = {
+					SHO_struggle
+					SHO_industry_buff
+					SHO_one_last_push
+					SHO_slim_majority
+					SHO_national_collaboration_government
+				}
+				add_ideas = partial_economic_mobilisation
+			}
+		}	
+	}
+
+	focus = { 
+		id = SHO_dem_spread_democratic_propaganda
+		icon = GFX_focus_generic_diplomatic_treaty
+		cost = 5
+		relative_position_id = SHO_dem_prepare_elections
+		y = 1
+		prerequisite = { focus = SHO_dem_prepare_elections }
+		available_if_capitulated = yes
+			ai_will_do = {
+					factor = 1
+				}
+		
+		completion_reward = {
+			add_timed_idea = {
+				days = 140
+				idea = SHO_free_thinking
+			}
+		}
+	}
+
+	focus = {
+		id = SHO_dem_our_first_elections
+		icon = GFX_focus_spr_torchbearers_of_tomorrow
+		cost = 20
+		relative_position_id = SHO_dem_spread_democratic_propaganda
+		y = 1
+		prerequisite = { focus = SHO_dem_spread_democratic_propaganda }
+		available_if_capitulated = yes
+		ai_will_do = {
+				factor = 1
+			}
+		
+		completion_reward = {
+			remove_mission = hold_elections
+			country_event = shogunate.34
+			hidden_effect = {
+				remove_ideas = {
+				SHO_illegitimate_ruler
+				SHO_unpopular_ruler
+			}
+			}
+		}
+	}
+
+	focus = {
+		id = SHO_dem_socdem_victory
+		icon = GFX_focus_focus_fra_liberte_egalite_solidarite
+		cost = 10
+		relative_position_id = SHO_dem_our_first_elections
+		y = 1
+		x = -6
+		prerequisite = { focus = SHO_dem_our_first_elections }
+		available_if_capitulated = yes
+		mutually_exclusive = {
+			focus = SHO_dem_conservative_victory
+			focus = SHO_dem_coup_succeeds
+			focus = SHO_dem_liberal_victory
+		}
+		ai_will_do = {
+				factor = 1
+			}
+
+			available = {
+				always = no
+			}
+		
+		completion_reward = {
+			set_politics = {
+				ruling_party = democratic_socialism
+				elections_allowed = yes
+				last_election = "[Root.GetDateText]"
+				election_frequency = 48
+			}
+		}
+	}
+
+	focus = {
+		id = SHO_dem_liberal_victory
+		icon = GFX_goal_generic_national_unity
+		cost = 10
+		relative_position_id = SHO_dem_our_first_elections
+		y = 1
+		x = -2
+		prerequisite = { focus = SHO_dem_our_first_elections }
+		ai_will_do = {
+			factor = 1
+		}
+		mutually_exclusive = {
+			focus = SHO_dem_conservative_victory
+			focus = SHO_dem_coup_succeeds
+			focus = SHO_dem_socdem_victory
+		}
+
+		available = {
+			always = no
+		}
+	
+		completion_reward = {
+			set_party_name = { 
+				ideology = liberalism
+				long_name = "Liberal Party"
+				name = "Kenseitō"
+			}
+			create_country_leader = {
+				name = "Yukio Ozaki"
+				desc = ""
+				picture = "Portrait_SHO_Yukio_Ozaki.dds"
+				expire = "1965.1.1"
+				ideology = liberalism
+				traits = {
+					the_gentleman_president
+				}
+			}
+			set_politics = {
+				ruling_party = democratic
+				elections_allowed = yes
+				last_election = "[Root.GetDateText]"
+				election_frequency = 48
+			}
+		}
+	}
+
+	focus = {
+		id = SHO_dem_conservative_victory
+		icon = GFX_goal_generic_defence
+		cost = 10
+		relative_position_id = SHO_dem_our_first_elections
+		y = 1
+		x = 2
+		prerequisite = { focus = SHO_dem_our_first_elections }
+		ai_will_do = {
+			factor = 1
+		}
+		mutually_exclusive = {
+			focus = SHO_dem_socdem_victory
+			focus = SHO_dem_coup_succeeds
+			focus = SHO_dem_liberal_victory
+		}
+
+		available = {
+			always = no
+		}
+		
+		completion_reward = {
+			set_politics = {
+				ruling_party = democratic
+				elections_allowed = yes
+				last_election = "[Root.GetDateText]"
+				election_frequency = 48
+			}
+		}
+	}
+
+	focus = {
+		id = SHO_dem_coup_succeeds
+		icon = GFX_goal_unknown #FIXME
+		cost = 10
+		relative_position_id = SHO_dem_our_first_elections 
+		y = 1
+		x = 6
+		prerequisite = { focus = SHO_dem_our_first_elections }
+		ai_will_do = {
+			factor = 1
+		}
+		mutually_exclusive = {
+			focus = SHO_dem_conservative_victory
+			focus = SHO_dem_socdem_victory
+			focus = SHO_dem_liberal_victory
+		}
+
+		available = {
+			always = no
+		}
+		
+		completion_reward = {
+			set_politics = {
+				ruling_party = fascism
+				elections_allowed = no
+				last_election = "[Root.GetDateText]"
+				election_frequency = 48
+			}
+			set_cosmetic_tag = SHO_dos
+			remove_ideas = SHO_free_thinking
+		}
+	}
+
+	# CONSERVATIVE PATH
+	focus = {
+		id = SHO_dem_stamp_out_guerrillas
+		icon = GFX_focus_spr_crush_the_revolution
+		cost = 10
+		relative_position_id = SHO_dem_conservative_victory
+		y = 1
+		x = 2
+		prerequisite = {
+			focus = SHO_dem_conservative_victory
+			focus = SHO_dem_coup_succeeds
+		}
+
+		completion_reward = {
+			custom_effect_tooltip = SHO_dem_gain_cores
+			add_manpower = -1000
+			add_stability = -0.15
+			hidden_effect = {
+				add_state_core = 44
+			add_state_core = 63
+			add_state_core = 24
+			add_state_core = 90
+			add_state_core = 79
+			add_state_core = 83
+			add_state_core = 80
+			add_state_core = 107
+			add_state_core = 46
+			add_state_core = 119
+			add_state_core = 37
+			add_state_core = 13
+			add_state_core = 128
+			add_state_core = 114
+			add_state_core = 102
+			add_state_core = 114
+			add_state_core = 106
+			add_state_core = 67
+			add_state_core = 97
+			add_state_core = 129
+			add_state_core = 56
+
+			IF = {
+				limit = {
+					owns_state = 118
+				}
+				add_state_core = 118
+			}
+			ELSE = {
+				add_state_claim = 118
+			}
+
+			IF = {
+				limit = {
+					owns_state = 15
+				}
+				add_state_core = 15
+			}
+			ELSE = {
+				add_state_claim = 15
+			}
+			}
+		}
 
 	}
-	focus = {
-		id = SHO_judicial_reforms
-		icon = GFX_goal_unknown
-		cost = 10.00
-		prerequisite = {
-			focus = SHO_democracy_rises
-		}
-		x = 26
-		y = 3
-			available_if_capitulated = yes
-			ai_will_do = {
-					factor = 1
-				}
 
+	focus = {
+		id = SHO_dem_draft_constitution
+		icon = GFX_focus_EZO_constitution_focus
+		cost = 10
+		relative_position_id = SHO_dem_conservative_victory
+		y = 1
+		x = -2
+		prerequisite = {
+			focus = SHO_dem_conservative_victory
+			focus = SHO_dem_liberal_victory
+		}
+
+		completion_reward = {
+			add_timed_idea = {
+				days = 140
+				idea = SHO_drafting_constitution
+			}
+		}
 	}
-	focus = {
-		id = SHO_empower_the_national_assembly
-		icon = GFX_goal_unknown
-		cost = 10.00
-		prerequisite = {
-			focus = SHO_democracy_rises
-		}
-		x = 31
-		y = 3
-			available_if_capitulated = yes
-			ai_will_do = {
-					factor = 1
-				}
-			completion_reward = {
-					custom_effect_tooltip = SHO_assembly_tt
-					hidden_effect = {
-							set_variable = {
-									var = councillors_support
-									value = 83
-								}
-							set_variable = {
-									var = councillors_total
-									value = 245
-								}
-							set_variable = {
-									var = deputies_support
-									value = 154
-								}
-							set_variable = {
-									var = deputies_total
-									value = 465
-								}
-							SHO_recalc_assembly_icon_frames = yes
-						}
-				}
 
+	focus = {
+		id = SHO_dem_promulgate_the_constitution
+		icon = GFX_focus_generic_self_management
+		cost = 10
+		relative_position_id = SHO_dem_draft_constitution
+		y = 1
+		prerequisite = { focus = SHO_dem_draft_constitution }
+		available = {
+			NOT = {
+				has_idea = SHO_drafting_constitution
+			}
+		}
+		completion_reward = {
+			custom_effect_tooltip = SHO_dem_constituion_tooltip
+			hidden_effect = {
+				IF = {
+					limit = {
+						has_completed_focus = SHO_dem_conservative_victory
+					}
+					add_ideas = SHO_conservative_constitution
+					set_rule = { can_declare_war_on_same_ideology = yes }
+					set_rule = { can_only_justify_war_on_threat_country = no }
+				}
+				ELSE_IF = {
+					limit = {
+						has_completed_focus = SHO_dem_liberal_victory
+					}
+					add_ideas = SHO_liberal_constitution
+					set_rule = { can_puppet = yes }
+				}
+			}
+		}
 	}
-	focus = {
-		id = SHO_free_people
-		icon = GFX_goal_unknown
-		cost = 10.00
-		prerequisite = {
-			focus = SHO_democracy_rises
-		}
-		x = 21
-		y = 3
-			available_if_capitulated = yes
-			ai_will_do = {
-					factor = 1
-				}
 
+	focus = {
+		id = SHO_dem_end_the_left
+		icon = GFX_focus_usa_voter_registration_act
+		cost = 10
+		relative_position_id = SHO_dem_conservative_victory
+		y = 1
+		prerequisite = { focus = SHO_dem_conservative_victory }
+
+		completion_reward = {
+			create_intelligence_agency = yes
+			retire_ideology_leader = democratic_socialism
+			add_popularity = {
+				ideology = democratic_socialism
+				popularity = -0.15
+			}
+		}
 	}
-	focus = {
-		id = SHO_free_trade_policies
-		icon = GFX_goal_unknown
-		cost = 10.00
-		prerequisite = {
-			focus = SHO_judicial_reforms
-			focus = SHO_empower_the_national_assembly
-			focus = SHO_free_people
-		}
-		x = 18
-		y = 4
-			available_if_capitulated = yes
-			ai_will_do = {
-					factor = 1
-				}
 
+	focus = {
+		id = SHO_dem_rebuild_nation
+		icon = GFX_goal_generic_construct_civilian
+		cost = 10
+		relative_position_id = SHO_dem_end_the_left
+		y = 1
+		prerequisite = { focus = SHO_dem_end_the_left }
+		prerequisite = { focus = SHO_dem_stamp_out_guerrillas }
+
+		completion_reward = {
+			add_timed_idea = {
+				days = 70
+				idea = SHO_rebuild_nation
+			}
+		}
 	}
-	focus = {
-		id = SHO_public_projects
-		icon = GFX_goal_unknown
-		cost = 10.00
-		prerequisite = {
-			focus = SHO_free_trade_policies
-		}
-		x = 19
-		y = 5
-			available_if_capitulated = yes
-			ai_will_do = {
-					factor = 1
-				}
 
-	}
 	focus = {
-		id = SHO_expand_the_rikken_minseit
-		icon = GFX_focus_generic_treaty
-		cost = 10.00
-		prerequisite = {
-			focus = SHO_public_projects
-		}
-		x = 21
-		y = 6
-			available_if_capitulated = yes
-			ai_will_do = {
-					factor = 1
-				}
+		id = SHO_dem_national_defense_act
+		icon = GFX_focus_generic_combined_arms
+		cost = 10
+		relative_position_id = SHO_dem_rebuild_nation
+		y = 1
+		prerequisite = { focus = SHO_dem_rebuild_nation }
+		prerequisite = { focus = SHO_dem_promulgate_the_constitution }
 
-	}
-	focus = {
-		id = SHO_military_reforms
-		icon = GFX_goal_unknown
-		cost = 10.00
-		prerequisite = {
-			focus = SHO_judicial_reforms
-			focus = SHO_empower_the_national_assembly
-			focus = SHO_free_people
+		completion_reward = {
+			add_war_support = 0.1
+			army_experience = 15
+			navy_experience = 15
+			air_experience = 15
+			add_resource = {
+				type = steel
+				amount = 10
+				state = 24
+			}
 		}
-		x = 24
-		y = 4
-			available_if_capitulated = yes
-			ai_will_do = {
-					factor = 1
-				}
-
-	}
-	focus = {
-		id = SHO_national_efforts
-		icon = GFX_goal_unknown
-		cost = 10.00
-		prerequisite = {
-			focus = SHO_military_reforms
-		}
-		x = 23
-		y = 5
-			available_if_capitulated = yes
-			ai_will_do = {
-					factor = 1
-				}
-
-	}
-	focus = {
-		id = SHO_the_peoples_debate
-		icon = GFX_goal_unknown
-		cost = 10.00
-		prerequisite = {
-			focus = SHO_judicial_reforms
-			focus = SHO_empower_the_national_assembly
-			focus = SHO_free_people
-		}
-		x = 28
-		y = 4
-			available_if_capitulated = yes
-			ai_will_do = {
-					factor = 1
-				}
-
-	}
-	focus = {
-		id = SHO_agrarian_reforms
-		icon = GFX_goal_unknown
-		cost = 10.00
-		prerequisite = {
-			focus = SHO_the_peoples_debate
-		}
-		x = 29
-		y = 5
-			available_if_capitulated = yes
-			ai_will_do = {
-					factor = 1
-				}
-
-	}
-	focus = {
-		id = SHO_democratic_stability
-		icon = GFX_goal_unknown
-		cost = 10.00
-		prerequisite = {
-			focus = SHO_judicial_reforms
-			focus = SHO_empower_the_national_assembly
-			focus = SHO_free_people
-		}
-		x = 34
-		y = 4
-			available_if_capitulated = yes
-			ai_will_do = {
-					factor = 1
-				}
-
-	}
-	focus = {
-		id = SHO_protect_civil_laws
-		icon = GFX_goal_unknown
-		cost = 10.00
-		prerequisite = {
-			focus = SHO_democratic_stability
-		}
-		x = 33
-		y = 5
-			available_if_capitulated = yes
-			ai_will_do = {
-					factor = 1
-				}
-
-	}
-	focus = {
-		id = SHO_economic_growth
-		icon = GFX_goal_unknown
-		cost = 10.00
-		prerequisite = {
-			focus = SHO_protect_civil_laws
-		}
-		x = 31
-		y = 6
-			available_if_capitulated = yes
-			ai_will_do = {
-					factor = 1
-				}
-
-	}
-	focus = {
-		id = SHO_home_of_the_free
-		icon = GFX_goal_unknown
-		cost = 10.00
-		prerequisite = {
-			focus = SHO_national_efforts
-			focus = SHO_agrarian_reforms
-			focus = SHO_expand_the_rikken_minseit
-			focus = SHO_economic_growth
-		}
-		x = 26
-		y = 7
-			available_if_capitulated = yes
-			ai_will_do = {
-					factor = 1
-				}
-
 	}
 }
