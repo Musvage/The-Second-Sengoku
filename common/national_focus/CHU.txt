@@ -16,15 +16,86 @@
 	}
 	
 	continuous_focus_position = { x = 500 y = 1000 }
-	
-	#Focus for Go Alone
+
+	#Focus for Assess Our Situation
+	focus = {
+		id = CHU_assess_our_situation
+		icon = GFX_focus_jap_pacific_guardian
+		x = 30
+		y = 0
+		cost = 5
+		available_if_capitulated = yes
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			add_ideas = CHU_We_promised_the_army_and_the_people
+		}
+	}
+
+	focus = {
+		id = CHU_reate_autonomous_governments
+		icon = GFX_focus_generic_treaty
+		x = 25
+		y = 1
+		available = {
+			date < 1938.1.1
+		}
+		relative_position_id = CHU_assess_our_situation
+		prerequisite = { focus = CHU_assess_our_situation }
+		cost = 10
+		available_if_capitulated = yes
+		mutually_exclusive = { focus = CHU_open_political_sphere }
+		ai_will_do = {
+			factor = 1
+		}
+
+		completion_reward = {
+			add_ideas = tot_economic_mobilisation
+			add_political_power = 100
+			add_stability = -0.05
+			if = {
+				limit = {
+					has_idea = CHU_We_promised_the_army_and_the_people
+				}
+				swap_ideas = {
+					remove_idea = CHU_We_promised_the_army_and_the_people
+					add_idea = CHU_deal_clans
+				}
+			}
+			custom_effect_tooltip = warning_clans_can_rebel_if_mismanaged
+		}
+	}
+
+	#Focus for Open Political Sphere
+	focus = {
+		id = CHU_open_political_sphere
+		icon = GFX_focus_jap_manchurian_project
+		x = 5
+		y = 1
+		relative_position_id = CHU_assess_our_situation
+		prerequisite = { focus = CHU_assess_our_situation }
+		cost = 10
+		available_if_capitulated = yes
+		mutually_exclusive = { focus = CHU_reate_autonomous_governments }
+		ai_will_do = {
+			factor = 1
+		}
+
+		completion_reward = {
+			add_political_power = 100
+			add_stability = -0.05
+		}
+	}
+
+			#Focus for Go Alone
 	focus = {
 		id = CHU_go_alone
 		icon = GFX_focus_AST_war_japan
 		x = 6
 		y = 1
 		cost = 5
-		#relative_position_id = CHU_open_political_sphere
+		relative_position_id = CHU_open_political_sphere
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_open_political_sphere }
 		mutually_exclusive = { focus = CHU_increase_civillian_influence }
@@ -47,30 +118,37 @@
 		}
 	}
 
-	focus = {
-		id = CHU_army_academy
-		icon = GFX_focus_generic_research_slot
+		focus = {
+		id = CHU_conserve_the_status_quo
+		icon = GFX_goal_generic_neutrality_focus
 		x = 0
 		y = 1
 		cost = 5
-		##relative_position_id = CHU_go_alone
+		relative_position_id = CHU_open_political_sphere
 		available_if_capitulated = yes
-		prerequisite = { focus = CHU_go_alone }
+		prerequisite = { focus = CHU_open_political_sphere }
+		mutually_exclusive = { focus = CHU_go_alone }
+		mutually_exclusive = { focus = CHU_increase_civillian_influence }
 		ai_will_do = {
 			factor = 1
 		}
-		completion_reward = {
-			add_research_slot = 1	
+		completion_reward = { 
+			add_country_leader_trait = army_junta
+			add_popularity = {
+				popularity = 0.2
+				ideology = neutrality
+			}
+			add_stability = -0.10
 		}
 	}
 	
-		focus = {
+	focus = {
 		id = CHU_increase_civillian_influence
 		icon = GFX_goal_generic_positive_trade_relations
 		x = -7
 		y = 1
 		cost = 5
-		#relative_position_id = CHU_open_political_sphere
+		relative_position_id = CHU_open_political_sphere
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_open_political_sphere }
 		mutually_exclusive = { focus = CHU_go_alone }
@@ -92,47 +170,6 @@
 			custom_effect_tooltip = warning_civil_war
 		}
 	}
-
-	focus = {
-		id = CHU_civilian_universty
-		icon = GFX_focus_generic_research_slot
-		x = 3
-		y = 1
-		cost = 5
-		#relative_position_id = CHU_increase_civillian_influence
-		available_if_capitulated = yes
-		prerequisite = { focus = CHU_increase_civillian_influence focus = CHU_conserve_the_status_quo }
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			add_research_slot = 1	
-		}
-	}
-	
-	focus = {
-		id = CHU_conserve_the_status_quo
-		icon = GFX_goal_generic_neutrality_focus
-		x = 0
-		y = 1
-		cost = 5
-		#relative_position_id = CHU_open_political_sphere
-		available_if_capitulated = yes
-		prerequisite = { focus = CHU_open_political_sphere }
-		mutually_exclusive = { focus = CHU_go_alone }
-		mutually_exclusive = { focus = CHU_increase_civillian_influence }
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = { 
-			add_country_leader_trait = army_junta
-			add_popularity = {
-				popularity = 0.2
-				ideology = neutrality
-			}
-			add_stability = -0.10
-		}
-	}
 	
 	focus = {
 		id = CHU_support_teichi_suzukis_policies
@@ -140,7 +177,7 @@
 		x = 0
 		y = 1
 		cost = 10
-		#relative_position_id = CHU_conserve_the_status_quo
+		relative_position_id = CHU_conserve_the_status_quo
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_conserve_the_status_quo }
 		ai_will_do = {
@@ -158,7 +195,7 @@
 		x = 0
 		y = 3
 		cost = 10
-		#relative_position_id = CHU_support_teichi_suzukis_policies
+		relative_position_id = CHU_support_teichi_suzukis_policies
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_support_teichi_suzukis_policies }
 		ai_will_do = {
@@ -169,162 +206,6 @@
 			add_stability = -0.15
 		}
 	}
-
-	focus = {
-		id = CHU_improve_relations_with_neighbors
-		icon = GFX_focus_SHO_ultimatum_to_neighbours
-		x = 0
-		y = 1
-		cost = 10
-		#relative_position_id = CHU_create_new_front
-		available_if_capitulated = yes
-		prerequisite = { focus = CHU_create_new_front }
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			KAN = { country_event = { id = chugoku.8 } }
-			KYU = { country_event = { id = chugoku.8 } }
-			SHO = { country_event = { id = chugoku.8 } }
-			SHI = { country_event = { id = chugoku.8 } }
-		}
-	}
-
-	focus = {
-		id = CHU_fight_enemies
-		icon = GFX_focus_SHO_conditional_tsujigiri
-		x = -1
-		y = 1
-		cost = 10
-		available = {
-			
-		}
-		#relative_position_id = CHU_improve_relations_with_neighbors
-		available_if_capitulated = yes
-		prerequisite = { focus = CHU_improve_relations_with_neighbors }
-		ai_will_do = {
-			factor = 1
-		}
-
-		bypass = {
-			AND = {
-				SHI = { has_opinion_modifier = CHU_ally }
-				SHO = { has_opinion_modifier = CHU_ally }
-				KAN = { has_opinion_modifier = CHU_ally }
-				KYU = { has_opinion_modifier = CHU_ally }
-			}
-		}
-
-		completion_reward = {
-			if = {
-    			limit = {
-        			SHI = { has_opinion_modifier = CHU_new_enemy }
-    			}
-				create_wargoal = {
-					type = take_state_focus
-					target = SHI
-				}
-			}
-			if = {
-    			limit = {
-        			KAN = { has_opinion_modifier = CHU_new_enemy }
-    			}
-				create_wargoal = {
-					type = take_state_focus
-					target = KAN
-				}
-			}
-			if = {
-    			limit = {
-        			SHO = { has_opinion_modifier = CHU_new_enemy }
-    			}
-				create_wargoal = {
-					type = take_state_focus
-					target = SHO
-				}
-			}
-			if = {
-    			limit = {
-        			KYU = { has_opinion_modifier = CHU_new_enemy }
-    			}
-				create_wargoal = {
-					type = take_state_focus
-					target = KYU
-				}
-			}
-		}
-	}
-
-	focus = {
-		id = CHU_trade_deal_with_friends
-		icon = GFX_focus_PRO_open_economy
-		x = 1
-		y = 1
-		cost = 10
-		#relative_position_id = CHU_improve_relations_with_neighbors
-		available_if_capitulated = yes
-		prerequisite = { focus = CHU_improve_relations_with_neighbors }
-		ai_will_do = {
-			factor = 1
-		}
-
-		bypass = {
-			AND = {
-				SHI = { has_opinion_modifier = CHU_new_enemy }
-				SHO = { has_opinion_modifier = CHU_new_enemy }
-				KAN = { has_opinion_modifier = CHU_new_enemy }
-				KYU = { has_opinion_modifier = CHU_new_enemy }
-			}
-		}
-
-		completion_reward = {
-			if = {
-   				limit = {
-        			SHI = { has_opinion_modifier = CHU_ally }
-    			}   
-				SHI = { 
-					add_opinion_modifier = {
-					target = CHU
-					modifier = CHU_trading_partner
-					}
-				}
-			}
-			if = {
-   				limit = {
-        			KYU = { has_opinion_modifier = CHU_ally }
-    			}   
-				KYU = { 
-					add_opinion_modifier = {
-					target = CHU
-					modifier = CHU_trading_partner
-					}
-				}
-			}
-			if = {
-   				limit = {
-        			KAN = { has_opinion_modifier = CHU_ally }
-    			}   
-				KAN = { 
-					add_opinion_modifier = {
-					target = CHU
-					modifier = CHU_trading_partner
-					}
-				}
-			}
-			if = {
-   				limit = {
-        			SHO = { has_opinion_modifier = CHU_ally }
-    			}   
-				SHO = { 
-					add_opinion_modifier = {
-					target = CHU
-					modifier = CHU_trading_partner
-					}
-				}
-			}
-			
-		}
-	}
 	
 	focus = {
 		id = CHU_support_shinzo_hamais_policies
@@ -332,7 +213,7 @@
 		x = 1
 		y = 1
 		cost = 10
-		#relative_position_id = CHU_increase_civillian_influence
+		relative_position_id = CHU_increase_civillian_influence
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_increase_civillian_influence }
 		ai_will_do = {
@@ -354,7 +235,7 @@
 		x = 0
 		y = 1
 		cost = 10
-		#relative_position_id = CHU_support_shinzo_hamais_policies
+		relative_position_id = CHU_support_shinzo_hamais_policies
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_support_shinzo_hamais_policies }
 		ai_will_do = {
@@ -375,7 +256,7 @@
 		x = 0
 		y = 2
 		cost = 5
-		#relative_position_id = CHU_support_shinzo_hamais_policies
+		relative_position_id = CHU_support_shinzo_hamais_policies
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_increase_civillian_influence }
 		prerequisite = { focus = CHU_sanchi_iron_sand1 }
@@ -393,7 +274,7 @@
 		x = 0
 		y = 2
 		cost = 20
-		#relative_position_id = CHU_hiroshima_university2
+		relative_position_id = CHU_hiroshima_university2
 		available_if_capitulated = no
 		prerequisite = { focus = CHU_recruit_volunteers }
 		prerequisite = { focus = CHU_hiroshima_university2 focus = CHU_moderate_voice }
@@ -430,7 +311,7 @@
 		x = -3
 		y = 3
 		cost = 10
-		#relative_position_id = CHU_Unite_All_Japan_People
+		relative_position_id = CHU_Unite_All_Japan_People
 		available_if_capitulated = no
 		prerequisite = { focus = CHU_destroy_fleet }
 		prerequisite = { focus = CHU_destroy_SHI }
@@ -478,7 +359,7 @@
 		x = 2
 		y = 1
 		cost = 20
-		#relative_position_id = CHU_Create_the_united_japan
+		relative_position_id = CHU_Create_the_united_japan
 		available_if_capitulated = no
 		prerequisite = { focus = CHU_Create_the_united_japan }
 		prerequisite = { focus = CHU_Unite_All_Japan_People }
@@ -559,57 +440,6 @@
 		}
 	}
 
-	#Focus for Deal With Those Imperial Scum
-	focus = {
-		id = CHU_deal_with_those_imperial_scum
-		icon = GFX_goal_generic_secret_weapon
-		x = 1
-		y = 2
-		cost = 10
-		#relative_position_id = CHU_war_with_junta
-		available_if_capitulated = yes
-		prerequisite = { focus = CHU_destroy_facism focus = CHU_invite_communist_brothers focus = CHU_war_with_junta }
-		prerequisite = { focus = CHU_reinforce_our_northern_borders }
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			add_state_claim = 52
-			create_wargoal = {
-				type = take_state_focus
-				target = KAN
-			}
-			add_timed_idea = {
-				idea = CHU_deal_with_those_imperial_scum
-				days = 180
-			}
-		}
-	}
-
-	#Focus for Work On Our Economy
-	focus = {
-		id = CHU_work_on_our_economy
-		icon = GFX_focus_chi_legislative_yuan
-		x = -11
-		y = 0
-		cost = 3
-		bypass = {
-			OR = {
-			has_completed_focus = CHU_decentralize_the_junta
-			has_completed_focus = CHU_support_shinzo_hamais_policies
-			}
-		}
-		#relative_position_id = CHU_land_doctrin
-		available_if_capitulated = yes
-		prerequisite = { focus = CHU_assess_our_situation }
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			add_ideas = free_trade
-		}
-	}
-
 	#Focus for Shape Our Army
 	focus = {
 		id = CHU_boost_morale_to_the_army
@@ -617,7 +447,7 @@
 		x = 2
 		y = 1
 		cost = 10
-		#relative_position_id = CHU_conserve_the_status_quo
+		relative_position_id = CHU_conserve_the_status_quo
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_conserve_the_status_quo }
 		ai_will_do = {
@@ -635,7 +465,7 @@
 		x = -2
 		y = 1
 		cost = 10
-		#relative_position_id = CHU_go_alone
+		relative_position_id = CHU_go_alone
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_go_alone }
 		ai_will_do = {
@@ -654,7 +484,7 @@
 		y = 1
 		cost = 10
 		available_if_capitulated = yes
-		#relative_position_id = CHU_boost_morale_to_the_army
+		relative_position_id = CHU_boost_morale_to_the_army
 		prerequisite = { focus = CHU_boost_morale_to_the_army focus = CHU_ideological_army_design }
 		ai_will_do = {
 			factor = 1
@@ -693,47 +523,8 @@
 		y = 1
 		cost = 10
 		available_if_capitulated = yes
-		#relative_position_id = CHU_military_factory1
+		relative_position_id = CHU_military_factory1
 		prerequisite = { focus = CHU_military_factory1 }
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			random_owned_controlled_state = {
-				limit = {
-					free_building_slots = {
-						building = arms_factory
-						size > 0
-						include_locked = yes
-					}
-				}
-				add_extra_state_shared_building_slots = 1
-				add_building_construction = {
-					type = arms_factory
-					level = 1
-					instant_build = yes
-				}
-			}
-			random_owned_controlled_state = {
-				add_extra_state_shared_building_slots = 1
-				add_building_construction = {
-					type = arms_factory
-					level = 1
-					instant_build = yes
-				}
-			}
-		}
-	}
-
-	focus = {
-		id = CHU_military_factory3
-		icon = GFX_focus_generic_strong_economy
-		x = 0
-		y = 1
-		cost = 10
-		available_if_capitulated = yes
-		#relative_position_id = CHU_sanchi_iron_sand
-		prerequisite = { focus = CHU_sanchi_iron_sand }
 		ai_will_do = {
 			factor = 1
 		}
@@ -775,7 +566,7 @@
 		bypass = {
 			has_completed_focus = CHU_work_on_our_economy
 		}
-		#relative_position_id = CHU_conserve_the_status_quo
+		relative_position_id = CHU_conserve_the_status_quo
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_conserve_the_status_quo }
 		ai_will_do = {
@@ -792,7 +583,7 @@
 		x = -2
 		y = 2
 		cost = 10
-		#relative_position_id = CHU_decentralize_the_junta
+		relative_position_id = CHU_decentralize_the_junta
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_decentralize_the_junta focus = CHU_support_shinzo_hamais_policies }
 		ai_will_do = {
@@ -823,7 +614,7 @@
 				NOT = { has_completed_focus = CHU_increase_civillian_influence }
 			}
 		}
-		#relative_position_id = CHU_moderate_voice
+		relative_position_id = CHU_moderate_voice
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_moderate_voice }
 		ai_will_do = {
@@ -839,45 +630,11 @@
 	}
 
 	focus = {
-		id = CHU_reate_autonomous_governments
-		icon = GFX_focus_generic_treaty
-		x = 25
-		y = 1
-		available = {
-			date < 1938.1.1
-		}
-		#relative_position_id = CHU_assess_our_situation
-		prerequisite = { focus = CHU_assess_our_situation }
-		cost = 10
-		available_if_capitulated = yes
-		mutually_exclusive = { focus = CHU_open_political_sphere }
-		ai_will_do = {
-			factor = 1
-		}
-
-		completion_reward = {
-			add_ideas = tot_economic_mobilisation
-			add_political_power = 100
-			add_stability = -0.05
-			if = {
-				limit = {
-					has_idea = CHU_We_promised_the_army_and_the_people
-				}
-				swap_ideas = {
-					remove_idea = CHU_We_promised_the_army_and_the_people
-					add_idea = CHU_deal_clans
-				}
-			}
-			custom_effect_tooltip = warning_clans_can_rebel_if_mismanaged
-		}
-	}
-
-	focus = {
 		id = CHU_clan_OIK
 		icon = GFX_focus_jap_manchurian_project
 		x = -4
 		y = 1
-		#relative_position_id = CHU_reate_autonomous_governments
+		relative_position_id = CHU_reate_autonomous_governments
 		prerequisite = { focus = CHU_reate_autonomous_governments }
 		cost = 10
 		available_if_capitulated = no
@@ -897,7 +654,7 @@
 			if = {
 					limit = { OIK = { exists = no } }
 					release = OIK 
-					set_autonomy = { target = OIK autonomy_state = autonomy_free }
+					set_autonomy = { target = OIK autonomy_state = free }
 					OIK = { save_event_target_as = released_nation_target }
 				}
 			else = {
@@ -919,7 +676,7 @@
 					division_template = {
 						name = "Ikeda Division"
 						priority = 1
-						#division_names_group = OIK_INF_01
+						division_names_group = JAP_INF_01
 						regiments = {
 							infantry = { x = 0 y = 0 }
 							infantry = { x = 0 y = 1 }
@@ -979,7 +736,7 @@
 		icon = GFX_focus_jap_manchurian_project
 		x = -2
 		y = 1
-		#relative_position_id = CHU_reate_autonomous_governments
+		relative_position_id = CHU_reate_autonomous_governments
 		prerequisite = { focus = CHU_reate_autonomous_governments }
 		cost = 10
 		available_if_capitulated = no
@@ -999,7 +756,7 @@
 			if = {
 					limit = { TMA = { exists = no } }
 					release = TMA
-					set_autonomy = { target = TMA autonomy_state = autonomy_free }
+					set_autonomy = { target = TMA autonomy_state = free }
 					TMA = { save_event_target_as = released_nation_target }
 				}
 			else = {
@@ -1021,7 +778,7 @@
 					division_template = {
 						name = "Matsudaira Division"
 						priority = 1
-						#division_names_group = TMA_INF_01
+						division_names_group = JAP_INF_01
 						regiments = {
 							infantry = { x = 0 y = 0 }
 							infantry = { x = 0 y = 1 }
@@ -1081,7 +838,7 @@
 		icon = GFX_focus_jap_manchurian_project
 		x = 0
 		y = 1
-		#relative_position_id = CHU_reate_autonomous_governments
+		relative_position_id = CHU_reate_autonomous_governments
 		prerequisite = { focus = CHU_reate_autonomous_governments }
 		cost = 10
 		available_if_capitulated = no
@@ -1101,7 +858,7 @@
 			if = {
 					limit = { IKE = { exists = no } }
 					release = IKE
-					set_autonomy = { target = IKE autonomy_state = autonomy_free }
+					set_autonomy = { target = IKE autonomy_state = free }
 					IKE = { save_event_target_as = released_nation_target }
 				}
 			else = {
@@ -1123,7 +880,7 @@
 					division_template = {
 						name = "Ikeda Division"
 						priority = 1
-						#division_names_group = IKE_INF_01
+						division_names_group = JAP_INF_01
 						regiments = {
 							infantry = { x = 0 y = 0 }
 							infantry = { x = 0 y = 1 }
@@ -1183,7 +940,7 @@
 		icon = GFX_focus_jap_manchurian_project
 		x = 2
 		y = 1
-		#relative_position_id = CHU_reate_autonomous_governments
+		relative_position_id = CHU_reate_autonomous_governments
 		prerequisite = { focus = CHU_reate_autonomous_governments }
 		cost = 10
 		available_if_capitulated = no
@@ -1203,7 +960,7 @@
 			if = {
 					limit = { MAT = { exists = no } }
 					release = MAT
-					set_autonomy = { target = MAT autonomy_state = autonomy_free }
+					set_autonomy = { target = MAT autonomy_state = free }
 					MAT = { save_event_target_as = released_nation_target }
 				}
 			else = {
@@ -1225,7 +982,7 @@
 					division_template = {
 						name = "Matsudaira Division"
 						priority = 1
-						#division_names_group = MAT_INF_01
+						division_names_group = JAP_INF_01
 						regiments = {
 							infantry = { x = 0 y = 0 }
 							infantry = { x = 0 y = 1 }
@@ -1286,7 +1043,7 @@
 		icon = GFX_focus_jap_manchurian_project
 		x = 4
 		y = 1
-		#relative_position_id = CHU_reate_autonomous_governments
+		relative_position_id = CHU_reate_autonomous_governments
 		prerequisite = { focus = CHU_reate_autonomous_governments }
 		cost = 10
 		available_if_capitulated = no
@@ -1306,7 +1063,7 @@
 			if = {
 					limit = { AMA = { exists = no } }
 					release = AMA
-					set_autonomy = { target = AMA autonomy_state = autonomy_free }
+					set_autonomy = { target = AMA autonomy_state = free }
 					AMA = { save_event_target_as = released_nation_target }
 				}
 			else = {
@@ -1328,7 +1085,7 @@
 					division_template = {
 						name = "Amago Division"
 						priority = 1
-						#division_names_group = AMA_INF_01
+						division_names_group = JAP_INF_01
 						regiments = {
 							infantry = { x = 0 y = 0 }
 							infantry = { x = 0 y = 1 }
@@ -1388,7 +1145,7 @@
 		icon = GFX_focus_jap_manchurian_project
 		x = 1
 		y = 2
-		#relative_position_id = CHU_reate_autonomous_governments
+		relative_position_id = CHU_reate_autonomous_governments
 		prerequisite = { focus = CHU_clan_MAT }
 		prerequisite = { focus = CHU_clan_AMA }
 		prerequisite = { focus = CHU_clan_IKE }
@@ -1410,7 +1167,7 @@
 			if = {
 					limit = { ASO = { exists = no } }
 					release = ASO
-					set_autonomy = { target = ASO autonomy_state = autonomy_free }
+					set_autonomy = { target = ASO autonomy_state = free }
 					ASO = { save_event_target_as = released_nation_target }
 				}
 			else = {
@@ -1432,7 +1189,7 @@
 					division_template = {
 						name = "Asano Division"
 						priority = 1
-						#division_names_group = ASO_INF_01
+						division_names_group = JAP_INF_01
 						regiments = {
 							infantry = { x = 0 y = 0 }
 							infantry = { x = 0 y = 1 }
@@ -1492,7 +1249,7 @@
 		icon = GFX_focus_jap_manchurian_project
 		x = -1
 		y = 2
-		#relative_position_id = CHU_reate_autonomous_governments
+		relative_position_id = CHU_reate_autonomous_governments
 		prerequisite = { focus = CHU_clan_OIK }
 		prerequisite = { focus = CHU_clan_TMA }
 		prerequisite = { focus = CHU_clan_IKE }
@@ -1514,7 +1271,7 @@
 			if = {
 					limit = { ABE = { exists = no } }
 					release = ABE
-					set_autonomy = { target = ABE autonomy_state = autonomy_free }
+					set_autonomy = { target = ABE autonomy_state = free }
 					ABE = { save_event_target_as = released_nation_target }
 				}
 			else = {
@@ -1536,7 +1293,7 @@
 					division_template = {
 						name = "Abe Division"
 						priority = 1
-						#division_names_group = ABE_INF_01
+						division_names_group = JAP_INF_01
 						regiments = {
 							infantry = { x = 0 y = 0 }
 							infantry = { x = 0 y = 1 }
@@ -1596,7 +1353,7 @@
 		icon = GFX_focus_jap_manchurian_project
 		x = 1
 		y = 1
-		#relative_position_id = CHU_clan_ABE
+		relative_position_id = CHU_clan_ABE
 		prerequisite = { focus = CHU_clan_ABE }
 		prerequisite = { focus = CHU_clan_ASO }
 		cost = 10
@@ -1617,7 +1374,7 @@
 			if = {
 					limit = { UCC = { exists = no } }
 					release = UCC
-					set_autonomy = { target = UCC autonomy_state = autonomy_free }
+					set_autonomy = { target = UCC autonomy_state = free }
 					UCC = { save_event_target_as = released_nation_target }
 				}
 			else = {
@@ -1639,7 +1396,7 @@
 					division_template = {
 						name = "UCC Division"
 						priority = 1
-						#division_names_group = UCC_INF_01
+						division_names_group = JAP_INF_01
 						regiments = {
 							infantry = { x = 0 y = 0 }
 							infantry = { x = 0 y = 1 }
@@ -1699,7 +1456,7 @@
 		icon = GFX_focus_PRO_japanese_entente
 		x = 0
 		y = 1
-		#relative_position_id = CHU_clan_UCC
+		relative_position_id = CHU_clan_UCC
 		prerequisite = { focus = CHU_clan_UCC }
 		cost = 10
 		available_if_capitulated = no
@@ -1769,7 +1526,7 @@
 		icon = GFX_focus_generic_propaganda
 		x = -2
 		y = 1
-		#relative_position_id = CHU_clan_management_0
+		relative_position_id = CHU_clan_management_0
 		prerequisite = { focus = CHU_clan_management_0 }
 		mutually_exclusive = { focus = CHU_continue_with_junta }
 		cost = 10
@@ -1799,7 +1556,7 @@
 		icon = GFX_focus_PRO_beacon_of_equality
 		x = 2
 		y = 1
-		#relative_position_id = CHU_select_ideology
+		relative_position_id = CHU_select_ideology
 		prerequisite = { focus = CHU_select_ideology }
 		mutually_exclusive = { focus = CHU_select_fascist focus = CHU_select_comunist }
 		cost = 10
@@ -1872,7 +1629,7 @@
 		icon = GFX_focus_KYU_invite_shikoku
 		x = 0
 		y = 1
-		#relative_position_id = CHU_select_ideology
+		relative_position_id = CHU_select_ideology
 		prerequisite = { focus = CHU_select_ideology }
 		mutually_exclusive = { focus = CHU_select_democrat focus = CHU_select_comunist }
 		cost = 10
@@ -1945,7 +1702,7 @@
 		icon = GFX_focus_SHO_soviet_comissars
 		x = -2
 		y = 1
-		#relative_position_id = CHU_select_ideology
+		relative_position_id = CHU_select_ideology
 		prerequisite = { focus = CHU_select_ideology }
 		mutually_exclusive = { focus = CHU_select_democrat focus = CHU_select_fascist }
 		cost = 10
@@ -2018,7 +1775,7 @@
 		icon = GFX_goal_generic_propaganda
 		x = 0
 		y = 1
-		#relative_position_id = CHU_select_fascist
+		relative_position_id = CHU_select_fascist
 		prerequisite = { focus = CHU_select_fascist focus = CHU_select_democrat focus = CHU_select_comunist }
 		cost = 10
 		available_if_capitulated = no
@@ -2209,7 +1966,7 @@
 				democratic > 0.20
 			}
 		}
-		#relative_position_id = CHU_spread_ideology_to_clans
+		relative_position_id = CHU_spread_ideology_to_clans
 		prerequisite = { focus = CHU_spread_ideology_to_clans }
 		cost = 10
 		available_if_capitulated = no
@@ -2472,7 +2229,7 @@
 			has_government = democratic
 			has_completed_focus = CHU_select_democrat
 		}
-		#relative_position_id = CHU_spread_ideology_to_clans
+		relative_position_id = CHU_spread_ideology_to_clans
 		prerequisite = { focus = CHU_spread_ideology_to_clans }
 		cost = 10
 		available_if_capitulated = no
@@ -2491,7 +2248,7 @@
 		icon = GFX_focus_generic_diplomacy_provisional_goverment
 		x = -1
 		y = 1
-		#relative_position_id = CHU_create_democrat_faction
+		relative_position_id = CHU_create_democrat_faction
 		prerequisite = { focus = CHU_create_democrat_faction }
 		cost = 10
 		available_if_capitulated = no
@@ -2514,7 +2271,7 @@
 		available = {
 			has_completed_focus = CHU_clans_technology_sharing_program
 		}
-		#relative_position_id = CHU_create_democrat_faction
+		relative_position_id = CHU_create_democrat_faction
 		prerequisite = { focus = CHU_create_democrat_faction }
 		cost = 10
 		available_if_capitulated = no
@@ -2542,7 +2299,7 @@
 		icon = GFX_focus_SHO_ultimatum_to_neighbours
 		x = 0
 		y = 1
-		#relative_position_id = CHU_liberate_puppets
+		relative_position_id = CHU_liberate_puppets
 		prerequisite = { focus = CHU_liberate_puppets }
 		cost = 10
 		available_if_capitulated = no
@@ -2560,7 +2317,7 @@
 		icon = GFX_focus_generic_attack_shikoku
 		x = 0
 		y = 1
-		#relative_position_id = CHU_war_preparation
+		relative_position_id = CHU_war_preparation
 		prerequisite = { focus = CHU_war_preparation focus = CHU_war_preparation_3 }
 		cost = 10
 		available_if_capitulated = no
@@ -2581,7 +2338,7 @@
 		icon = GFX_focus_generic_attack_tohoku
 		x = 2
 		y = 1
-		#relative_position_id = CHU_war_preparation
+		relative_position_id = CHU_war_preparation
 		prerequisite = { focus = CHU_war_preparation focus = CHU_war_preparation_3 }
 		cost = 10
 		available_if_capitulated = no
@@ -2602,7 +2359,7 @@
 		icon = GFX_focus_generic_attack_kyushu
 		x = -2
 		y = 1
-		#relative_position_id = CHU_war_preparation
+		relative_position_id = CHU_war_preparation
 		prerequisite = { focus = CHU_war_preparation focus = CHU_war_preparation_2 }
 		cost = 10
 		available_if_capitulated = no
@@ -2633,7 +2390,7 @@
 				has_completed_focus = CHU_select_fascist
 			}
 		}
-		#relative_position_id = CHU_spread_ideology_to_clans
+		relative_position_id = CHU_spread_ideology_to_clans
 		prerequisite = { focus = CHU_spread_ideology_to_clans }
 		cost = 10
 		available_if_capitulated = no
@@ -2670,7 +2427,7 @@
 				}
 			}
 		}
-		#relative_position_id = CHU_intagrate_puppets
+		relative_position_id = CHU_intagrate_puppets
 		prerequisite = { focus = CHU_intagrate_puppets }
 		cost = 10
 		available_if_capitulated = no
@@ -2709,7 +2466,7 @@
 				is_faction_leader = yes
 			}
 		}
-		#relative_position_id = CHU_intagrate_puppets
+		relative_position_id = CHU_intagrate_puppets
 		prerequisite = { focus = CHU_intagrate_puppets }
 		cost = 10
 		available_if_capitulated = no
@@ -2746,7 +2503,7 @@
 		icon = GFX_focus_SHO_ultimatum_to_neighbours
 		x = 1
 		y = 1
-		#relative_position_id = CHU_join_the_comunists
+		relative_position_id = CHU_join_the_comunists
 		prerequisite = { focus = CHU_join_the_fascist focus = CHU_join_the_comunists focus = CHU_intagrate_puppets }
 		cost = 10
 		available_if_capitulated = no
@@ -2764,7 +2521,7 @@
 		icon = GFX_focus_generic_attack_imperial
 		x = 1
 		y = 1
-		#relative_position_id = CHU_war_preparation_2
+		relative_position_id = CHU_war_preparation_2
 		prerequisite = { focus = CHU_war_preparation_2 focus = CHU_war_preparation_3 }
 		cost = 10
 		available_if_capitulated = no
@@ -2789,7 +2546,7 @@
 		icon = GFX_focus_generic_attack_provisional
 		x = -1
 		y = 1
-		#relative_position_id = CHU_war_preparation_2
+		relative_position_id = CHU_war_preparation_2
 		prerequisite = { focus = CHU_war_preparation_2 }
 		cost = 10
 		available_if_capitulated = no
@@ -2810,7 +2567,7 @@
 		icon = GFX_focus_PRO_neutrality_act
 		x = 3
 		y = 1
-		#relative_position_id = CHU_clan_management_0
+		relative_position_id = CHU_clan_management_0
 		prerequisite = { focus = CHU_clan_management_0 }
 		mutually_exclusive = { focus = CHU_select_ideology }
 		cost = 10
@@ -2883,7 +2640,7 @@
 		icon = GFX_focus_generic_martial_law
 		x = 0
 		y = 1
-		#relative_position_id = CHU_continue_with_junta
+		relative_position_id = CHU_continue_with_junta
 		prerequisite = { focus = CHU_continue_with_junta }
 		cost = 10
 		available_if_capitulated = no
@@ -2911,7 +2668,7 @@
 		icon = GFX_focus_SHO_neutral_coalition
 		x = -1
 		y = 1
-		#relative_position_id = CHU_puppets_get_closer
+		relative_position_id = CHU_puppets_get_closer
 		prerequisite = { focus = CHU_puppets_get_closer }
 		mutually_exclusive = { focus = CHU_join_other_junta }
 		cost = 10
@@ -2931,7 +2688,7 @@
 		icon = GFX_focus_generic_allied_juntas
 		x = 0
 		y = 1
-		#relative_position_id = CHU_create_new_faction
+		relative_position_id = CHU_create_new_faction
 		prerequisite = { focus = CHU_create_new_faction }
 		cost = 10
 		available_if_capitulated = no
@@ -2951,7 +2708,7 @@
 		icon = GFX_focus_SHO_ultimatum_to_neighbours
 		x = 1
 		y = 2
-		#relative_position_id = CHU_invite_junta
+		relative_position_id = CHU_invite_junta
 		prerequisite = { focus = CHU_invite_junta focus = CHU_join_other_junta }
 		cost = 10
 		available_if_capitulated = no
@@ -2969,7 +2726,7 @@
 		icon = GFX_focus_AMC_defence_focus
 		x = 3
 		y = 2
-		#relative_position_id = CHU_invite_junta
+		relative_position_id = CHU_invite_junta
 		prerequisite = { focus = CHU_liberate_puppets focus = CHU_invite_junta focus = CHU_join_other_junta }
 		cost = 10
 		available_if_capitulated = no
@@ -3006,7 +2763,7 @@
 		icon = GFX_focus_PRO_1936_election
 		x = 0
 		y = 1
-		#relative_position_id = CHU_make_a_new_country
+		relative_position_id = CHU_make_a_new_country
 		prerequisite = { focus = CHU_make_a_new_country }
 		cost = 10
 		available_if_capitulated = no
@@ -3092,7 +2849,7 @@
 		available = {
 			has_completed_focus = CHU_clans_technology_sharing_program
 		}
-		#relative_position_id = CHU_change_in_party
+		relative_position_id = CHU_change_in_party
 		prerequisite = { focus = CHU_change_in_party }
 		cost = 10
 		available_if_capitulated = no
@@ -3190,7 +2947,7 @@
 				}
 			}
 		}
-		#relative_position_id = CHU_Chugoku_federal_government
+		relative_position_id = CHU_Chugoku_federal_government
 		prerequisite = { focus = CHU_Chugoku_federal_government }
 		cost = 10
 		available_if_capitulated = no
@@ -3231,7 +2988,7 @@
 				}
 			}
 		}
-		#relative_position_id = CHU_puppets_get_closer
+		relative_position_id = CHU_puppets_get_closer
 		prerequisite = { focus = CHU_puppets_get_closer }
 		mutually_exclusive = { focus = CHU_create_new_faction }
 		cost = 10
@@ -3262,7 +3019,7 @@
 		icon = GFX_focus_REI_german_engineering
 		x = 8
 		y = 1
-		#relative_position_id = CHU_clan_management_0
+		relative_position_id = CHU_clan_management_0
 		prerequisite = { focus = CHU_clan_management_0 }
 		cost = 10
 		available_if_capitulated = no
@@ -3455,7 +3212,7 @@
 		icon = GFX_focus_generic_strong_economy
 		x = 2
 		y = 1
-		#relative_position_id = CHU_clans_developt
+		relative_position_id = CHU_clans_developt
 		prerequisite = { focus = CHU_clans_developt }
 		cost = 10
 		available_if_capitulated = no
@@ -3683,7 +3440,7 @@
 		icon = GFX_focus_generic_strong_economy
 		x = 0
 		y = 1
-		#relative_position_id = CHU_clans_developt_civilian
+		relative_position_id = CHU_clans_developt_civilian
 		prerequisite = { focus = CHU_clans_developt_civilian }
 		cost = 10
 		available_if_capitulated = no
@@ -3911,7 +3668,7 @@
 		icon = GFX_focus_CHU_economy_3
 		x = 0
 		y = 1
-		#relative_position_id = CHU_clans_developt
+		relative_position_id = CHU_clans_developt
 		prerequisite = { focus = CHU_clans_developt }
 		cost = 10
 		available_if_capitulated = no
@@ -4131,7 +3888,7 @@
 		icon = GFX_focus_CHU_economy_3
 		x = 0
 		y = 1
-		#relative_position_id = CHU_clans_developt_infrustracture
+		relative_position_id = CHU_clans_developt_infrustracture
 		prerequisite = { focus = CHU_clans_developt_infrustracture }
 		cost = 10
 		available_if_capitulated = no
@@ -4342,7 +4099,7 @@
 		icon = GFX_goal_tfv_generic_tech_sharing
 		x = 0
 		y = 1
-		#relative_position_id = CHU_clans_developt_infrustracture_2
+		relative_position_id = CHU_clans_developt_infrustracture_2
 		prerequisite = { focus = CHU_clans_developt_civilian_2 }
 		prerequisite = { focus = CHU_clans_developt_infrustracture_2 }
 		prerequisite = { focus = CHU_clans_developt_military_2 }
@@ -4501,7 +4258,7 @@
 		icon = GFX_focus_KAN_western_science
 		x = 0
 		y = 1
-		#relative_position_id = CHU_clans_technology_sharing_program
+		relative_position_id = CHU_clans_technology_sharing_program
 		prerequisite = { focus = CHU_clans_technology_sharing_program }
 		cost = 10
 		available_if_capitulated = no
@@ -4658,7 +4415,7 @@
 		icon = GFX_focus_jap_zaibatsu
 		x = -2
 		y = 1
-		#relative_position_id = CHU_clans_developt
+		relative_position_id = CHU_clans_developt
 		prerequisite = { focus = CHU_clans_developt }
 		cost = 10
 		available_if_capitulated = no
@@ -4886,7 +4643,7 @@
 		icon = GFX_focus_SHO_zaibatsu_movements
 		x = 0
 		y = 1
-		#relative_position_id = CHU_clans_developt_military
+		relative_position_id = CHU_clans_developt_military
 		prerequisite = { focus = CHU_clans_developt_military }
 		cost = 10
 		available_if_capitulated = no
@@ -5109,42 +4866,37 @@
 		}
 	}
 
-	#Focus for Open Political Sphere
 	focus = {
-		id = CHU_open_political_sphere
-		icon = GFX_focus_jap_manchurian_project
-		x = 5
+		id = CHU_army_academy
+		icon = GFX_focus_generic_research_slot
+		x = 0
 		y = 1
-		#relative_position_id = CHU_assess_our_situation
-		prerequisite = { focus = CHU_assess_our_situation }
-		cost = 10
+		cost = 5
+		relative_position_id = CHU_go_alone
 		available_if_capitulated = yes
-		mutually_exclusive = { focus = CHU_reate_autonomous_governments }
+		prerequisite = { focus = CHU_go_alone }
 		ai_will_do = {
 			factor = 1
 		}
-
 		completion_reward = {
-			unlock_decision_category_tooltip = CHU_open_political_sphere_category_tt
-			add_political_power = 100
-			add_stability = -0.05
+			add_research_slot = 1	
 		}
 	}
 
-	#Focus for Assess Our Situation
-	focus = {
-		id = CHU_assess_our_situation
-		icon = GFX_focus_jap_pacific_guardian
-		x = 30
-		y = 0
+		focus = {
+		id = CHU_civilian_universty
+		icon = GFX_focus_generic_research_slot
+		x = 3
+		y = 1
 		cost = 5
+		relative_position_id = CHU_increase_civillian_influence
 		available_if_capitulated = yes
+		prerequisite = { focus = CHU_increase_civillian_influence focus = CHU_conserve_the_status_quo }
 		ai_will_do = {
 			factor = 1
 		}
 		completion_reward = {
-			unlock_decision_category_tooltip = CHU_assess_our_situation_category_tt
-			add_ideas = CHU_We_promised_the_army_and_the_people
+			add_research_slot = 1	
 		}
 	}
 
@@ -5159,7 +4911,7 @@
 			}
 		}
 		mutually_exclusive = { focus = CHU_alternative_path }
-		#relative_position_id = CHU_Convince_people_to_fight
+		relative_position_id = CHU_Convince_people_to_fight
 		prerequisite = { focus = CHU_Convince_people_to_fight }
 		cost = 10
 		available_if_capitulated = no
@@ -5184,7 +4936,7 @@
 			}
 		}
 		mutually_exclusive = { focus = CHU_relations_of_interest }
-		#relative_position_id = CHU_Convince_people_to_fight
+		relative_position_id = CHU_Convince_people_to_fight
 		prerequisite = { focus = CHU_Convince_people_to_fight }
 		cost = 10
 		available_if_capitulated = no
@@ -5208,7 +4960,7 @@
 				is_puppet = no 
 			}
 		}
-		#relative_position_id = CHU_alternative_path
+		relative_position_id = CHU_alternative_path
 		prerequisite = { focus = CHU_alternative_path }
 		cost = 10
 		available_if_capitulated = no
@@ -5272,7 +5024,7 @@
 				}
 			}
 		}
-		#relative_position_id = CHU_search_the_allys
+		relative_position_id = CHU_search_the_allys
 		prerequisite = { focus = CHU_search_the_allys }
 		cost = 10
 		available_if_capitulated = no
@@ -5360,7 +5112,7 @@
 				}
 			}
 		}
-		#relative_position_id = CHU_search_the_allys
+		relative_position_id = CHU_search_the_allys
 		prerequisite = { focus = CHU_search_the_allys }
 		cost = 10
 		available_if_capitulated = no
@@ -5448,7 +5200,7 @@
 				}
 			}
 		}
-		#relative_position_id = CHU_search_the_allys
+		relative_position_id = CHU_search_the_allys
 		prerequisite = { focus = CHU_search_the_allys }
 		cost = 10
 		available_if_capitulated = no
@@ -5536,7 +5288,7 @@
 				}
 			}
 		}
-		#relative_position_id = CHU_search_the_allys
+		relative_position_id = CHU_search_the_allys
 		prerequisite = { focus = CHU_search_the_allys }
 		cost = 10
 		available_if_capitulated = no
@@ -5597,7 +5349,7 @@
 				is_puppet = no 
 			}
 		}
-		#relative_position_id = CHU_join_the_comitern
+		relative_position_id = CHU_join_the_comitern
 		prerequisite = { focus = CHU_join_the_monarchist focus = CHU_join_the_allies focus = CHU_join_the_axis focus = CHU_join_the_comitern }
 		cost = 10
 		available_if_capitulated = no
@@ -5611,70 +5363,12 @@
 		}
 	}
 
-
-	focus = {
-		id = CHU_fleet_is_our_enemy_of_mine
-		icon = GFX_focus_generic_attack_provisional
-		x = -1
-		y = 1
-		#relative_position_id = CHU_aggressive_policy
-		prerequisite = { focus = CHU_aggressive_policy }
-		cost = 10
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
-		}
-		available = {
-
-		}
-
-		bypass = {
-		}
-
-		completion_reward = {
-			add_state_claim = 29
-			create_wargoal = {
-				type = take_state_focus
-				target = PRO
-			}
-		}
-	}
-
-	focus = {
-		id = CHU_finish_off_the_opponents_job
-		icon = GFX_focus_generic_attack_tohoku
-		x = 1
-		y = 1
-		#relative_position_id = CHU_aggressive_policy
-		prerequisite = { focus = CHU_aggressive_policy }
-		cost = 10
-		available_if_capitulated = yes
-		ai_will_do = {
-			factor = 1
-		}
-		available = {
-			
-		}
-
-		bypass = {
-			
-		}
-
-		completion_reward = {
-			add_state_claim = 113
-			create_wargoal = {
-				type = take_state_focus
-				target = TOH
-			}
-		}
-	}
-
 	focus = {
 		id = CHU_create_new_front
 		icon = GFX_focus_CHU_the_south_united
 		x = 0
 		y = 1
-		#relative_position_id = CHU_relations_of_interest
+		relative_position_id = CHU_relations_of_interest
 		prerequisite = { focus = CHU_relations_of_interest }
 		cost = 5
 		available_if_capitulated = yes
@@ -5685,6 +5379,162 @@
 		completion_reward = {
 			set_rule = { can_create_factions = yes }
 			create_faction = For_Japan
+		}
+	}
+
+		focus = {
+		id = CHU_improve_relations_with_neighbors
+		icon = GFX_focus_SHO_ultimatum_to_neighbours
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = CHU_create_new_front
+		available_if_capitulated = yes
+		prerequisite = { focus = CHU_create_new_front }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			KAN = { country_event = { id = chugoku.8 } }
+			KYU = { country_event = { id = chugoku.8 } }
+			SHO = { country_event = { id = chugoku.8 } }
+			SHI = { country_event = { id = chugoku.8 } }
+		}
+	}
+
+	focus = {
+		id = CHU_trade_deal_with_friends
+		icon = GFX_focus_PRO_open_economy
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = CHU_improve_relations_with_neighbors
+		available_if_capitulated = yes
+		prerequisite = { focus = CHU_improve_relations_with_neighbors }
+		ai_will_do = {
+			factor = 1
+		}
+
+		bypass = {
+			AND = {
+				SHI = { has_opinion_modifier = CHU_new_enemy }
+				SHO = { has_opinion_modifier = CHU_new_enemy }
+				KAN = { has_opinion_modifier = CHU_new_enemy }
+				KYU = { has_opinion_modifier = CHU_new_enemy }
+			}
+		}
+
+		completion_reward = {
+			if = {
+   				limit = {
+        			SHI = { has_opinion_modifier = CHU_ally }
+    			}   
+				SHI = { 
+					add_opinion_modifier = {
+					target = CHU
+					modifier = CHU_trading_partner
+					}
+				}
+			}
+			if = {
+   				limit = {
+        			KYU = { has_opinion_modifier = CHU_ally }
+    			}   
+				KYU = { 
+					add_opinion_modifier = {
+					target = CHU
+					modifier = CHU_trading_partner
+					}
+				}
+			}
+			if = {
+   				limit = {
+        			KAN = { has_opinion_modifier = CHU_ally }
+    			}   
+				KAN = { 
+					add_opinion_modifier = {
+					target = CHU
+					modifier = CHU_trading_partner
+					}
+				}
+			}
+			if = {
+   				limit = {
+        			SHO = { has_opinion_modifier = CHU_ally }
+    			}   
+				SHO = { 
+					add_opinion_modifier = {
+					target = CHU
+					modifier = CHU_trading_partner
+					}
+				}
+			}
+			
+		}
+	}
+
+	focus = {
+		id = CHU_fight_enemies
+		icon = GFX_focus_SHO_conditional_tsujigiri
+		x = -1
+		y = 1
+		cost = 10
+		available = {
+			
+		}
+		relative_position_id = CHU_improve_relations_with_neighbors
+		available_if_capitulated = yes
+		prerequisite = { focus = CHU_improve_relations_with_neighbors }
+		ai_will_do = {
+			factor = 1
+		}
+
+		bypass = {
+			AND = {
+				SHI = { has_opinion_modifier = CHU_ally }
+				SHO = { has_opinion_modifier = CHU_ally }
+				KAN = { has_opinion_modifier = CHU_ally }
+				KYU = { has_opinion_modifier = CHU_ally }
+			}
+		}
+
+		completion_reward = {
+			if = {
+    			limit = {
+        			SHI = { has_opinion_modifier = CHU_new_enemy }
+    			}
+				create_wargoal = {
+					type = take_state_focus
+					target = SHI
+				}
+			}
+			if = {
+    			limit = {
+        			KAN = { has_opinion_modifier = CHU_new_enemy }
+    			}
+				create_wargoal = {
+					type = take_state_focus
+					target = KAN
+				}
+			}
+			if = {
+    			limit = {
+        			SHO = { has_opinion_modifier = CHU_new_enemy }
+    			}
+				create_wargoal = {
+					type = take_state_focus
+					target = SHO
+				}
+			}
+			if = {
+    			limit = {
+        			KYU = { has_opinion_modifier = CHU_new_enemy }
+    			}
+				create_wargoal = {
+					type = take_state_focus
+					target = KYU
+				}
+			}
 		}
 	}
 
@@ -5701,7 +5551,7 @@
 				KYU = { has_opinion_modifier = CHU_ally }
 			}
 		}
-		#relative_position_id = CHU_create_new_front
+		relative_position_id = CHU_create_new_front
 		prerequisite = { focus = CHU_fight_enemies focus = CHU_trade_deal_with_friends }
 		cost = 10
 		available_if_capitulated = yes
@@ -5760,7 +5610,7 @@
 		x = -2
 		y = 1
 		cost = 10
-		#relative_position_id = CHU_support_teichi_suzukis_policies
+		relative_position_id = CHU_support_teichi_suzukis_policies
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_support_teichi_suzukis_policies }
 		ai_will_do = {
@@ -5784,7 +5634,7 @@
 		x = 0
 		y = 1
 		cost = 10
-		#relative_position_id = CHU_sanyo_fishing_industry
+		relative_position_id = CHU_sanyo_fishing_industry
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_sanyo_fishing_industry }
 		ai_will_do = {
@@ -5880,7 +5730,7 @@
 		x = 2
 		y = 1
 		cost = 10
-		#relative_position_id = CHU_support_teichi_suzukis_policies
+		relative_position_id = CHU_support_teichi_suzukis_policies
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_support_teichi_suzukis_policies focus = CHU_ideological_army_design }
 		ai_will_do = {
@@ -5894,6 +5744,46 @@
 			}
 		}
 	}
+
+	
+	focus = {
+		id = CHU_military_factory3
+		icon = GFX_focus_generic_strong_economy
+		x = 0
+		y = 1
+		cost = 10
+		available_if_capitulated = yes
+		relative_position_id = CHU_sanchi_iron_sand
+		prerequisite = { focus = CHU_sanchi_iron_sand }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+	}
 	
 	focus = {
 		id = CHU_hiroshima_university
@@ -5901,7 +5791,7 @@
 		x = 1
 		y = 1
 		cost = 5
-		#relative_position_id = CHU_military_factory3
+		relative_position_id = CHU_military_factory3
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_military_factory3 }
 		prerequisite = { focus = CHU_military_factory2 }
@@ -5919,7 +5809,7 @@
 		x = -4
 		y = 1
 		cost = 10
-		#relative_position_id = CHU_invite_other_neighbor
+		relative_position_id = CHU_invite_other_neighbor
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_go_to_war focus = CHU_invite_other_neighbor }
 		ai_will_do = {
@@ -5941,7 +5831,7 @@
 		x = 1
 		y = 1
 		cost = 10
-		#relative_position_id = CHU_take_over_the_west
+		relative_position_id = CHU_take_over_the_west
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_take_over_the_west }
 		ai_will_do = {
@@ -5967,7 +5857,7 @@
 		x = -1
 		y = 1
 		cost = 10
-		#relative_position_id = CHU_take_over_the_west
+		relative_position_id = CHU_take_over_the_west
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_take_over_the_west }
 		ai_will_do = {
@@ -5987,155 +5877,12 @@
 		}
 	}
 
-	#Focus for Appease To The Civilians
-	focus = {
-		id = CHU_appease_to_the_civilians
-		icon = GFX_focus_generic_industry
-		x = -1
-		y = 1
-		cost = 5
-		#relative_position_id = CHU_to_build_an_industry
-		available_if_capitulated = yes
-		prerequisite = { focus = CHU_to_build_an_industry }
-		mutually_exclusive = { focus = CHU_appease_to_the_military }
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			if = {
-					limit = {
-						has_idea = CHU_people_army_dont_like_government
-					}
-					swap_ideas = {
-						remove_idea = CHU_people_army_dont_like_government
-						add_idea = CHU_army_dont_like_government
-					}
-			}
-			random_owned_controlled_state = {
-				limit = {
-					is_core_of = CHU
-					free_building_slots = {
-					building = industrial_complex
-					size > 0
-					include_locked = yes
-					}
-				}
-				add_extra_state_shared_building_slots = 1
-					add_building_construction = {
-					type = industrial_complex
-					level = 1
-					instant_build = yes
-				}
-			}
-		}
-	}
-
-	#Focus for Appease To The Civilians
-	focus = {
-		id = CHU_appease_to_the_civilians_1
-		icon = GFX_focus_generic_industry_2
-		x = 1
-		y = 1
-		cost = 10
-		available_if_capitulated = yes
-		#relative_position_id = CHU_appease_to_the_civilians
-		prerequisite = { focus = CHU_appease_to_the_civilians}
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			random_owned_controlled_state = {
-				limit = {
-					is_core_of = CHU
-					free_building_slots = {
-					building = industrial_complex
-					size > 0
-					include_locked = yes
-				}
-			}
-				add_extra_state_shared_building_slots = 1
-				add_building_construction = {
-				type = industrial_complex
-				level = 1
-				instant_build = yes
-				}
-			}
-		}
-	}
-
-	#Focus for Appease To The Civilians
-	focus = {
-		id = CHU_appease_to_the_civilians_2
-		icon = GFX_focus_generic_industry_2
-		x = -1
-		y = 1
-		cost = 10
-		available_if_capitulated = yes
-		#relative_position_id = CHU_appease_to_the_civilians
-		prerequisite = { focus = CHU_appease_to_the_civilians}
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			random_owned_controlled_state = {
-				limit = {
-					is_core_of = CHU
-					free_building_slots = {
-					building = industrial_complex
-					size > 0
-					include_locked = yes
-				}
-			}
-				add_extra_state_shared_building_slots = 1
-				add_building_construction = {
-				type = industrial_complex
-				level = 1
-				instant_build = yes
-				}
-			}
-		}
-	}
-
-	#Focus for Appease To The Civilians
-	focus = {
-		id = CHU_appease_to_the_civilians_3
-		icon = GFX_focus_generic_industry_2
-		x = 0
-		y = 2
-		cost = 10
-		available_if_capitulated = yes
-		#relative_position_id = CHU_appease_to_the_civilians
-		prerequisite = { focus = CHU_appease_to_the_civilians_1}
-		prerequisite = { focus = CHU_appease_to_the_civilians_2}
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			random_owned_controlled_state = {
-				limit = {
-					is_core_of = CHU
-					free_building_slots = {
-					building = industrial_complex
-					size > 0
-					include_locked = yes
-				}
-			}
-				add_extra_state_shared_building_slots = 1
-				add_building_construction = {
-				type = industrial_complex
-				level = 1
-				instant_build = yes
-				}
-			}
-		}
-	}
-
 	focus = {
 		id = CHU_united_japan
 		icon = GFX_focus_generic_one_empire_2
 		x = 1
 		y = 1
-		#relative_position_id = CHU_take_over_the_west_korea
+		relative_position_id = CHU_take_over_the_west_korea
 		cost = 10
 		available_if_capitulated = yes
 		prerequisite = { 
@@ -6190,7 +5937,7 @@
 		}
 		available_if_capitulated = yes
 		mutually_exclusive = { focus = CHU_we_are_enough_for_democracy }
-		#relative_position_id = CHU_increase_civillian_influence
+		relative_position_id = CHU_increase_civillian_influence
 		prerequisite = { focus = CHU_increase_civillian_influence }
 		ai_will_do = {
 			factor = 1
@@ -6231,7 +5978,7 @@
 			has_government = autocracy
 		}
 		available_if_capitulated = no
-		#relative_position_id = CHU_we_are_enough_for_monarchy
+		relative_position_id = CHU_we_are_enough_for_monarchy
 		prerequisite = { focus = CHU_we_are_enough_for_monarchy }
 		ai_will_do = {
 			factor = 1
@@ -6254,7 +6001,7 @@
 		}
 		available_if_capitulated = yes
 		mutually_exclusive = { focus = CHU_we_are_enough_for_monarchy }
-		#relative_position_id = CHU_increase_civillian_influence
+		relative_position_id = CHU_increase_civillian_influence
 		prerequisite = { focus = CHU_increase_civillian_influence }
 		ai_will_do = {
 			factor = 1
@@ -6295,7 +6042,7 @@
 			has_government = democratic
 		}
 		available_if_capitulated = no
-		#relative_position_id = CHU_we_are_enough_for_democracy
+		relative_position_id = CHU_we_are_enough_for_democracy
 		prerequisite = { focus = CHU_we_are_enough_for_democracy }
 		ai_will_do = {
 			factor = 1
@@ -6317,7 +6064,7 @@
 			
 		}
 		available_if_capitulated = no
-		#relative_position_id = CHU_ally_PRO
+		relative_position_id = CHU_ally_PRO
 		prerequisite = { focus = CHU_ally_PRO focus = CHU_ally_SHO }
 		ai_will_do = {
 			factor = 1
@@ -6350,7 +6097,7 @@
 			
 		}
 		available_if_capitulated = yes
-		#relative_position_id = CHU_make_a_new_front
+		relative_position_id = CHU_make_a_new_front
 		prerequisite = { focus = CHU_make_a_new_front }
 		ai_will_do = {
 			factor = 1
@@ -6370,7 +6117,7 @@
 			
 		}
 		available_if_capitulated = yes
-		#relative_position_id = CHU_make_a_new_front
+		relative_position_id = CHU_make_a_new_front
 		prerequisite = { focus = CHU_make_a_new_front }
 		ai_will_do = {
 			factor = 1
@@ -6479,7 +6226,7 @@
 		x = 0
 		y = 1
 		cost = 10
-		#relative_position_id = CHU_invite_new_ally
+		relative_position_id = CHU_invite_new_ally
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_invite_new_ally }
 		ai_will_do = {
@@ -6504,7 +6251,7 @@
 		icon = GFX_focus_generic_attack_kyushu
 		x = -1
 		y = 2
-		#relative_position_id = CHU_invite_new_ally
+		relative_position_id = CHU_invite_new_ally
 		prerequisite = { focus = CHU_take_seto_island }
 		cost = 10
 		available_if_capitulated = yes
@@ -6513,7 +6260,6 @@
 		}
 
 		bypass = {
-			#has_completed_focus = CHU_war_with_the_other_junta
 		}
 
 		completion_reward = {
@@ -6539,7 +6285,7 @@
 		icon = GFX_focus_KYU_claim_shikoku
 		x = 1
 		y = 2
-		#relative_position_id = CHU_invite_new_ally
+		relative_position_id = CHU_invite_new_ally
 		prerequisite = { focus = CHU_take_seto_island }
 		cost = 10
 		available_if_capitulated = yes
@@ -6548,7 +6294,6 @@
 		}
 
 		bypass = {
-			#has_completed_focus = CHU_the_path_of_unification
 		}
 
 		completion_reward = {
@@ -6575,7 +6320,7 @@
 		icon = GFX_focus_generic_manpower
 		x = 2
 		y = 1
-		#relative_position_id = CHU_go_alone
+		relative_position_id = CHU_go_alone
 		cost = 10
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_go_alone }
@@ -6596,7 +6341,7 @@
 		icon = GFX_goal_generic_build_tank
 		x = -2
 		y = 1
-		#relative_position_id = CHU_gather_any_volunteers
+		relative_position_id = CHU_gather_any_volunteers
 		cost = 10
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_gather_any_volunteers focus = CHU_army_academy }
@@ -6609,6 +6354,45 @@
 		}
 	}
 
+		#Focus for We Are Enough
+	focus = {
+		id = CHU_we_are_enough
+		icon = GFX_goal_support_fascism
+		x = 3
+		y = 2
+		relative_position_id = CHU_go_alone
+		cost = 10
+		available = {
+			fascism > 0.25
+		}
+		mutually_exclusive = { focus = CHU_we_are_enough_for_communism }
+		available_if_capitulated = yes
+		prerequisite = { focus = CHU_go_alone }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			if = {
+					limit = {
+						has_idea = CHU_people_army_dont_like_government
+					}
+					swap_ideas = {
+						remove_idea = CHU_people_army_dont_like_government
+						add_idea = CHU_people_dont_like_government
+					}
+			}
+			add_timed_idea = {
+				idea = CHU_we_are_enough
+				days = 180
+			}
+			set_politics = {
+				ruling_party = fascism
+			}
+			add_stability = -0.25
+			set_cosmetic_tag = CHU_fascism
+		}
+	}
+
 	#Focus for Reinforce our Northern Borders
 	focus = {
 		id = CHU_reinforce_our_northern_borders
@@ -6617,7 +6401,7 @@
 		y = 1
 		cost = 10
 		available_if_capitulated = yes
-		#relative_position_id = CHU_we_are_enough
+		relative_position_id = CHU_we_are_enough
 		prerequisite = { 
 			focus = CHU_we_are_enough focus = CHU_we_are_enough_for_communism
 		}
@@ -6703,7 +6487,7 @@
 		}
 	}
 
-	#Focus for Reinforce our Southern Borders
+		#Focus for Reinforce our Southern Borders
 	focus = {
 		id = CHU_reinforce_our_southern_borders
 		icon = GFX_focus_ger_bulwark_against_bolshevism
@@ -6711,7 +6495,7 @@
 		y = 1
 		cost = 10
 		available_if_capitulated = yes
-		#relative_position_id = CHU_we_are_enough
+		relative_position_id = CHU_we_are_enough
 		prerequisite = { 
 			focus = CHU_we_are_enough focus = CHU_we_are_enough_for_communism
 		}
@@ -6733,53 +6517,12 @@
 		}
 	}
 
-	
-
-	#Focus for We Are Enough
-	focus = {
-		id = CHU_we_are_enough
-		icon = GFX_goal_support_fascism
-		x = 3
-		y = 2
-		#relative_position_id = CHU_go_alone
-		cost = 10
-		available = {
-			fascism > 0.25
-		}
-		mutually_exclusive = { focus = CHU_we_are_enough_for_communism }
-		available_if_capitulated = yes
-		prerequisite = { focus = CHU_go_alone }
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			if = {
-					limit = {
-						has_idea = CHU_people_army_dont_like_government
-					}
-					swap_ideas = {
-						remove_idea = CHU_people_army_dont_like_government
-						add_idea = CHU_people_dont_like_government
-					}
-			}
-			add_timed_idea = {
-				idea = CHU_we_are_enough
-				days = 180
-			}
-			set_politics = {
-				ruling_party = fascism
-			}
-			add_stability = -0.25
-			set_cosmetic_tag = CHU_fascism
-		}
-	}
-
 	focus = {
 		id = CHU_ally_other_facist
 		icon = GFX_focus_generic_strength
 		x = -3
 		y = 2
-		#relative_position_id = CHU_we_are_enough
+		relative_position_id = CHU_we_are_enough
 		cost = 10
 		available = {
 
@@ -6799,7 +6542,7 @@
 		icon = GFX_focus_generic_treaty_shikoku
 		x = 0
 		y = 1
-		#relative_position_id = CHU_ally_other_facist
+		relative_position_id = CHU_ally_other_facist
 		cost = 10
 		available = {
 
@@ -6843,7 +6586,7 @@
 		icon = GFX_focus_IMS_take_our_time
 		x = 0
 		y = 1
-		#relative_position_id = CHU_ally_facist_SHI
+		relative_position_id = CHU_ally_facist_SHI
 		cost = 10
 		available = {
 
@@ -6868,59 +6611,11 @@
 	}
 
 	focus = {
-		id = CHU_war_with_junta
-		icon = GFX_focus_generic_attack_kyushu
-		x = 0
-		y = 2
-		#relative_position_id = CHU_prepare_to_destroy_the_neighbors
-		cost = 10
-		available = {
-
-		}
-		available_if_capitulated = no
-		prerequisite = { focus = CHU_prepare_to_destroy_the_neighbors }
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			add_state_claim = 139
-			create_wargoal = {
-				type = take_state_focus
-				target = KYU
-			}
-		}
-	}
-
-	focus = {
-		id = CHU_prepare_for_the_communists
-		icon = GFX_focus_generic_attack_tohoku
-		x = -1
-		y = 1
-		#relative_position_id = CHU_war_with_junta
-		cost = 10
-		available = {
-			NOT = { has_completed_focus = CHU_we_are_enough_for_communism }
-		}
-		available_if_capitulated = yes
-		prerequisite = { focus = CHU_war_with_junta focus = CHU_take_IMS }
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			add_state_claim = 113
-			create_wargoal = {
-				type = take_state_focus
-				target = TOH
-			}
-		}
-	}
-
-	focus = {
 		id = CHU_we_are_enough_for_communism
 		icon = GFX_focus_TOH_one_party_rule
 		x = 5
 		y = 2
-		#relative_position_id = CHU_go_alone
+		relative_position_id = CHU_go_alone
 		cost = 10
 		available = {
 			communism > 0.25
@@ -6958,7 +6653,7 @@
 		icon = GFX_focus_PRO_social_democratic_majority
 		x = 2
 		y = 1
-		#relative_position_id = CHU_we_are_enough_for_communism
+		relative_position_id = CHU_we_are_enough_for_communism
 		cost = 10
 		available = {
 			has_government = communism
@@ -6994,7 +6689,7 @@
 		icon = GFX_focus_KYU_stabilize_the_nation
 		x = 1
 		y = 3
-		#relative_position_id = CHU_we_are_enough_for_communism
+		relative_position_id = CHU_we_are_enough_for_communism
 		cost = 10
 		available = {
 			has_government = communism
@@ -7028,7 +6723,7 @@
 		icon = GFX_focus_generic_treaty
 		x = 0
 		y = 1
-		#relative_position_id = CHU_our_communist_brothers
+		relative_position_id = CHU_our_communist_brothers
 		cost = 10
 		available = {
 
@@ -7057,7 +6752,7 @@
 		x = 0
 		y = 1
 		icon = GFX_goal_generic_occupy_states_ongoing_war
-				#relative_position_id = CHU_reinforce_our_southern_borders
+				relative_position_id = CHU_reinforce_our_southern_borders
 		prerequisite = { 
 			focus = CHU_reinforce_our_southern_borders
 		}
@@ -7077,7 +6772,7 @@
 		x = 2
 		y = 1
 		icon = GFX_focus_KYU_claim_shikoku
-		#relative_position_id = CHU_prepare_to_destroy_the_neighbors
+		relative_position_id = CHU_prepare_to_destroy_the_neighbors
 		prerequisite = { 
 			focus = CHU_prepare_to_destroy_the_neighbors
 		}
@@ -7094,6 +6789,57 @@
 		}
 	}
 
+	focus = {
+		id = CHU_war_with_junta
+		icon = GFX_focus_generic_attack_kyushu
+		x = 0
+		y = 2
+		relative_position_id = CHU_prepare_to_destroy_the_neighbors
+		cost = 10
+		available = {
+
+		}
+		available_if_capitulated = no
+		prerequisite = { focus = CHU_prepare_to_destroy_the_neighbors }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			add_state_claim = 139
+			create_wargoal = {
+				type = take_state_focus
+				target = KYU
+			}
+		}
+	}
+
+			#Focus for Deal With Those Imperial Scum
+	focus = {
+		id = CHU_deal_with_those_imperial_scum
+		icon = GFX_goal_generic_secret_weapon
+		x = 1
+		y = 2
+		cost = 10
+		relative_position_id = CHU_war_with_junta
+		available_if_capitulated = yes
+		prerequisite = { focus = CHU_destroy_facism focus = CHU_invite_communist_brothers focus = CHU_war_with_junta }
+		prerequisite = { focus = CHU_reinforce_our_northern_borders }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			add_state_claim = 52
+			create_wargoal = {
+				type = take_state_focus
+				target = KAN
+			}
+			add_timed_idea = {
+				idea = CHU_deal_with_those_imperial_scum
+				days = 180
+			}
+		}
+	}
+
 	#Focus for The Path Of Agression?
 	focus = {
 		id = CHU_aggressive_policy
@@ -7102,7 +6848,7 @@
 		y = 1
 		cost = 10
 		available_if_capitulated = yes
-		#relative_position_id = CHU_invite_other_neighbor
+		relative_position_id = CHU_invite_other_neighbor
 		prerequisite = { focus = CHU_go_to_war focus = CHU_invite_other_neighbor }
 		ai_will_do = {
 			factor = 1
@@ -7117,6 +6863,111 @@
 		}
 	}
 
+	focus = {
+		id = CHU_fleet_is_our_enemy_of_mine
+		icon = GFX_focus_generic_attack_provisional
+		x = -1
+		y = 1
+		relative_position_id = CHU_aggressive_policy
+		prerequisite = { focus = CHU_aggressive_policy }
+		cost = 10
+		available_if_capitulated = yes
+		ai_will_do = {
+			factor = 1
+		}
+		available = {
+
+		}
+
+		bypass = {
+		}
+
+		completion_reward = {
+			add_state_claim = 29
+			create_wargoal = {
+				type = take_state_focus
+				target = PRO
+			}
+		}
+	}
+
+	focus = {
+		id = CHU_finish_off_the_opponents_job
+		icon = GFX_focus_generic_attack_tohoku
+		x = 1
+		y = 1
+		relative_position_id = CHU_aggressive_policy
+		prerequisite = { focus = CHU_aggressive_policy }
+		cost = 10
+		available_if_capitulated = yes
+		ai_will_do = {
+			factor = 1
+		}
+		available = {
+			
+		}
+
+		bypass = {
+			
+		}
+
+		completion_reward = {
+			add_state_claim = 113
+			create_wargoal = {
+				type = take_state_focus
+				target = TOH
+			}
+		}
+	}
+
+		focus = {
+		id = CHU_prepare_for_the_communists
+		icon = GFX_focus_generic_attack_tohoku
+		x = -1
+		y = 1
+		relative_position_id = CHU_war_with_junta
+		cost = 10
+		available = {
+			NOT = { has_completed_focus = CHU_we_are_enough_for_communism }
+		}
+		available_if_capitulated = yes
+		prerequisite = { focus = CHU_war_with_junta focus = CHU_take_IMS }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			add_state_claim = 113
+			create_wargoal = {
+				type = take_state_focus
+				target = TOH
+			}
+		}
+	}
+
+		#Focus for Work On Our Economy
+	focus = {
+		id = CHU_work_on_our_economy
+		icon = GFX_focus_chi_legislative_yuan
+		x = -23
+		y = 0
+		cost = 3
+		bypass = {
+			OR = {
+			has_completed_focus = CHU_decentralize_the_junta
+			has_completed_focus = CHU_support_shinzo_hamais_policies
+			}
+		}
+		relative_position_id = CHU_assess_our_situation
+		available_if_capitulated = yes
+		prerequisite = { focus = CHU_assess_our_situation }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			add_ideas = free_trade
+		}
+	}
+
 	#Focus for To Build Infrastructure
 	focus = {
 		id = CHU_to_build_infrastructure
@@ -7124,7 +6975,7 @@
 		x = 7
 		y = 1
 		cost = 5
-		#relative_position_id = CHU_work_on_our_economy
+		relative_position_id = CHU_work_on_our_economy
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_work_on_our_economy }
 		ai_will_do = {
@@ -7148,7 +6999,7 @@
 		y = 1
 		cost = 10
 		available_if_capitulated = yes
-		#relative_position_id = CHU_to_build_infrastructure
+		relative_position_id = CHU_to_build_infrastructure
 		prerequisite = { focus = CHU_to_build_infrastructure}
 		ai_will_do = {
 			factor = 1
@@ -7192,7 +7043,7 @@
 		y = 2
 		cost = 10
 		available_if_capitulated = yes
-		#relative_position_id = CHU_to_build_infrastructure
+		relative_position_id = CHU_to_build_infrastructure
 		prerequisite = { focus = CHU_to_build_infrastructure_west }
 		prerequisite = { focus = CHU_to_build_infrastructure_east }
 		ai_will_do = {
@@ -7237,7 +7088,7 @@
 		y = 1
 		cost = 10
 		available_if_capitulated = yes
-		#relative_position_id = CHU_to_build_infrastructure
+		relative_position_id = CHU_to_build_infrastructure
 		prerequisite = { focus = CHU_to_build_infrastructure}
 		ai_will_do = {
 			factor = 1
@@ -7281,7 +7132,7 @@
 		y = 1
 		cost = 10
 		available_if_capitulated = yes
-		#relative_position_id = CHU_to_build_infrastructure_west
+		relative_position_id = CHU_to_build_infrastructure_west
 		prerequisite = { focus = CHU_to_build_infrastructure_west }
 		ai_will_do = {
 			factor = 1
@@ -7318,6 +7169,36 @@
 		}
 	}
 
+	#Focus for To Build An Industry
+	focus = {
+		id = CHU_to_build_an_industry
+		icon = GFX_focus_CHU_economy_1
+		x = -3
+		y = 1
+		cost = 5
+		relative_position_id = CHU_work_on_our_economy
+		available_if_capitulated = yes
+		prerequisite = { focus = CHU_work_on_our_economy }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			116 = {
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+				type = industrial_complex
+				level = 2
+				instant_build = yes
+				}
+			}
+			add_tech_bonus= {
+				bonus = 0.5 
+				uses = 2 
+				category = industry 
+			}
+		}
+	}
+
 	#Focus for Appease To The Military
 	focus = {
 		id = CHU_appease_to_the_military
@@ -7325,7 +7206,7 @@
 		x = 1
 		y = 1
 		cost = 5
-		#relative_position_id = CHU_to_build_an_industry
+		relative_position_id = CHU_to_build_an_industry
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_to_build_an_industry }
 		mutually_exclusive = { focus = CHU_appease_to_the_civilians }
@@ -7376,7 +7257,7 @@
 		}
 	}
 
-	#Focus for Appease To The Military
+		#Focus for Appease To The Military
 	focus = {
 		id = CHU_appease_to_the_military_1
 		icon = GFX_goal_generic_construct_mil_factory
@@ -7384,7 +7265,7 @@
 		y = 1
 		cost = 10
 		available_if_capitulated = yes
-		#relative_position_id = CHU_appease_to_the_military
+		relative_position_id = CHU_appease_to_the_military
 		prerequisite = { focus = CHU_appease_to_the_military }
 		ai_will_do = {
 			factor = 1
@@ -7416,35 +7297,149 @@
 		}
 	}
 
-	#Focus for To Build An Industry
+	#Focus for Appease To The Civilians
 	focus = {
-		id = CHU_to_build_an_industry
-		icon = GFX_focus_CHU_economy_1
-		x = -3
+		id = CHU_appease_to_the_civilians
+		icon = GFX_focus_generic_industry
+		x = -1
 		y = 1
 		cost = 5
-		#relative_position_id = CHU_work_on_our_economy
+		relative_position_id = CHU_to_build_an_industry
 		available_if_capitulated = yes
-		prerequisite = { focus = CHU_work_on_our_economy }
+		prerequisite = { focus = CHU_to_build_an_industry }
+		mutually_exclusive = { focus = CHU_appease_to_the_military }
 		ai_will_do = {
 			factor = 1
 		}
 		completion_reward = {
-			116 = {
-				add_extra_state_shared_building_slots = 2
-				add_building_construction = {
-				type = industrial_complex
-				level = 2
-				instant_build = yes
-				}
+			if = {
+					limit = {
+						has_idea = CHU_people_army_dont_like_government
+					}
+					swap_ideas = {
+						remove_idea = CHU_people_army_dont_like_government
+						add_idea = CHU_army_dont_like_government
+					}
 			}
-			add_tech_bonus= {
-				bonus = 0.5 
-				uses = 2 
-				category = industry 
+			random_owned_controlled_state = {
+				limit = {
+					is_core_of = CHU
+					free_building_slots = {
+					building = industrial_complex
+					size > 0
+					include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
 			}
 		}
 	}
+
+	#Focus for Appease To The Civilians
+	focus = {
+		id = CHU_appease_to_the_civilians_2
+		icon = GFX_focus_generic_industry_2
+		x = -1
+		y = 1
+		cost = 10
+		available_if_capitulated = yes
+		relative_position_id = CHU_appease_to_the_civilians
+		prerequisite = { focus = CHU_appease_to_the_civilians}
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			random_owned_controlled_state = {
+				limit = {
+					is_core_of = CHU
+					free_building_slots = {
+					building = industrial_complex
+					size > 0
+					include_locked = yes
+				}
+			}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+				type = industrial_complex
+				level = 1
+				instant_build = yes
+				}
+			}
+		}
+	}
+
+	#Focus for Appease To The Civilians
+	focus = {
+		id = CHU_appease_to_the_civilians_1
+		icon = GFX_focus_generic_industry_2
+		x = 1
+		y = 1
+		cost = 10
+		available_if_capitulated = yes
+		relative_position_id = CHU_appease_to_the_civilians
+		prerequisite = { focus = CHU_appease_to_the_civilians}
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			random_owned_controlled_state = {
+				limit = {
+					is_core_of = CHU
+					free_building_slots = {
+					building = industrial_complex
+					size > 0
+					include_locked = yes
+				}
+			}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+				type = industrial_complex
+				level = 1
+				instant_build = yes
+				}
+			}
+		}
+	}
+
+	#Focus for Appease To The Civilians
+	focus = {
+		id = CHU_appease_to_the_civilians_3
+		icon = GFX_focus_generic_industry_2
+		x = 0
+		y = 2
+		cost = 10
+		available_if_capitulated = yes
+		relative_position_id = CHU_appease_to_the_civilians
+		prerequisite = { focus = CHU_appease_to_the_civilians_1}
+		prerequisite = { focus = CHU_appease_to_the_civilians_2}
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			random_owned_controlled_state = {
+				limit = {
+					is_core_of = CHU
+					free_building_slots = {
+					building = industrial_complex
+					size > 0
+					include_locked = yes
+				}
+			}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+				type = industrial_complex
+				level = 1
+				instant_build = yes
+				}
+			}
+		}
+	}
+
 
 	#Focus for To Build A Navy
 	focus = {
@@ -7453,7 +7448,7 @@
 		x = 2
 		y = 1
 		cost = 5
-		#relative_position_id = CHU_work_on_our_economy
+		relative_position_id = CHU_work_on_our_economy
 		available_if_capitulated = yes
 		prerequisite = { focus = CHU_work_on_our_economy }
 		ai_will_do = {
@@ -7480,7 +7475,7 @@
 		cost = 5
 		available_if_capitulated = yes
 		mutually_exclusive = { focus = CHU_to_new2 }
-		#relative_position_id = CHU_to_build_a_navy
+		relative_position_id = CHU_to_build_a_navy
 		prerequisite = { focus = CHU_to_build_a_navy }
 		ai_will_do = {
 			factor = 1
@@ -7509,7 +7504,7 @@
 		cost = 5
 		available_if_capitulated = yes
 		mutually_exclusive = { focus = CHU_to_new }
-		#relative_position_id = CHU_to_build_a_navy
+		relative_position_id = CHU_to_build_a_navy
 		prerequisite = { focus = CHU_to_build_a_navy }
 		ai_will_do = {
 			factor = 1
@@ -7537,7 +7532,7 @@
 		y = 2
 		cost = 10
 		available_if_capitulated = yes
-		#relative_position_id = CHU_to_build_a_navy
+		relative_position_id = CHU_to_build_a_navy
 		prerequisite = { focus = CHU_to_new2 focus = CHU_to_new }
 		ai_will_do = {
 			factor = 1
@@ -7561,7 +7556,7 @@
 		y = 1
 		cost = 5
 		available_if_capitulated = yes
-		#relative_position_id = CHU_assess_our_situation
+		relative_position_id = CHU_assess_our_situation
 		prerequisite = { focus = CHU_assess_our_situation }
 		ai_will_do = {
 			factor = 1
@@ -7610,7 +7605,7 @@
 		y = 1
 		cost = 10
 		available_if_capitulated = yes
-		#relative_position_id = CHU_air_doctrin
+		relative_position_id = CHU_air_doctrin
 		prerequisite = { focus = CHU_air_doctrin }
 		ai_will_do = {
 			factor = 1
@@ -7659,7 +7654,7 @@
 		cost = 5
 		available_if_capitulated = yes
 		mutually_exclusive = { focus = CHU_build_Kugun3 }
-		#relative_position_id = CHU_build_Kugun
+		relative_position_id = CHU_build_Kugun
 		prerequisite = { focus = CHU_build_Kugun }
 		ai_will_do = {
 			factor = 1
@@ -7688,7 +7683,7 @@
 		cost = 5
 		available_if_capitulated = yes
 		mutually_exclusive = { focus = CHU_build_Kugun2 }
-		#relative_position_id = CHU_build_Kugun
+		relative_position_id = CHU_build_Kugun
 		prerequisite = { focus = CHU_build_Kugun }
 		ai_will_do = {
 			factor = 1
@@ -7716,7 +7711,7 @@
 		y = 2
 		cost = 10
 		available_if_capitulated = yes
-		#relative_position_id = CHU_build_Kugun
+		relative_position_id = CHU_build_Kugun
 		prerequisite = { focus = CHU_build_Kugun2 focus = CHU_build_Kugun3 }
 		ai_will_do = {
 			factor = 1
@@ -7750,7 +7745,7 @@
 		y = 3
 		cost = 10
 		available_if_capitulated = yes
-		#relative_position_id = CHU_build_Kugun
+		relative_position_id = CHU_build_Kugun
 		prerequisite = { focus = CHU_build_Kugun2 focus = CHU_build_Kugun3 }
 		ai_will_do = {
 			factor = 1
@@ -7767,7 +7762,7 @@
 		y = 1
 		cost = 5
 		available_if_capitulated = yes
-		#relative_position_id = CHU_assess_our_situation
+		relative_position_id = CHU_assess_our_situation
 		prerequisite = { focus = CHU_assess_our_situation }
 		ai_will_do = {
 			factor = 1
@@ -7786,7 +7781,7 @@
 		y = 1
 		cost = 7
 		available_if_capitulated = yes
-		#relative_position_id = CHU_land_doctrin
+		relative_position_id = CHU_land_doctrin
 		prerequisite = { focus = CHU_land_doctrin }
 		ai_will_do = {
 			factor = 1
@@ -7877,7 +7872,7 @@
 		y = 1
 		cost = 7
 		available_if_capitulated = yes
-		#relative_position_id = CHU_land_doctrin
+		relative_position_id = CHU_land_doctrin
 		prerequisite = { focus = CHU_land_doctrin }
 		ai_will_do = {
 			factor = 1
@@ -7904,7 +7899,7 @@
 		y = 2
 		cost = 10
 		available_if_capitulated = yes
-		#relative_position_id = CHU_land_doctrin
+		relative_position_id = CHU_land_doctrin
 		prerequisite = { focus = CHU_reinforce_northern_border }
 		prerequisite = { focus = CHU_reinforce_southern_border }
 		ai_will_do = {
@@ -7935,7 +7930,7 @@
 		cost = 5
 		mutually_exclusive = { focus = CHU_land_doctrin6 }
 		available_if_capitulated = yes
-		#relative_position_id = CHU_land_doctrin
+		relative_position_id = CHU_land_doctrin
 		prerequisite = { focus = CHU_reinforce_southern_border }
 		ai_will_do = {
 			factor = 1
@@ -7957,7 +7952,7 @@
 		y = 1
 		cost = 5
 		available_if_capitulated = yes
-		#relative_position_id = CHU_land_doctrin5
+		relative_position_id = CHU_land_doctrin5
 		prerequisite = { focus = CHU_land_doctrin5 }
 		ai_will_do = {
 			factor = 1
@@ -7983,7 +7978,7 @@
 		cost = 5
 		mutually_exclusive = { focus = CHU_land_doctrin5 }
 		available_if_capitulated = yes
-		#relative_position_id = CHU_land_doctrin
+		relative_position_id = CHU_land_doctrin
 		prerequisite = { focus = CHU_reinforce_northern_border }
 		ai_will_do = {
 			factor = 1
@@ -8011,7 +8006,7 @@
 		y = 1
 		cost = 5
 		available_if_capitulated = yes
-		#relative_position_id = CHU_land_doctrin6
+		relative_position_id = CHU_land_doctrin6
 		prerequisite = { focus = CHU_land_doctrin6 }
 		ai_will_do = {
 			factor = 1
@@ -8036,7 +8031,7 @@
 		y = 4
 		cost = 10
 		available_if_capitulated = yes
-		#relative_position_id = CHU_land_doctrin
+		relative_position_id = CHU_land_doctrin
 		prerequisite = { focus = CHU_land_doctrin6 focus = CHU_land_doctrin5 }
 		ai_will_do = {
 			factor = 1
@@ -8048,7 +8043,7 @@
 					}
 				create_corps_commander = {
 					name = "Walter Krüger"
-					gfx = "gfx\leaders\GER\Portrait_Germany_Walter_Kruger.dds"
+					gfx = "Portrait_Germany_Walter_Kruger.dds"
 					traits = { career_officer armor_officer brilliant_strategist trickster }
 					skill = 3
 
@@ -8074,7 +8069,7 @@
 		y = 1
 		cost = 10
 		available_if_capitulated = yes
-		#relative_position_id = CHU_land_doctrin7
+		relative_position_id = CHU_land_doctrin7
 		prerequisite = { focus = CHU_land_doctrin7 }
 		prerequisite = { focus = CHU_build_Kugun6 }
 		prerequisite = { focus = CHU_build_Kugun4 }
@@ -8083,24 +8078,6 @@
 			factor = 1
 		}
 		completion_reward = {
-			if = {
-					limit = {
-						has_idea = CHU_people_army_dont_like_government
-					}
-					swap_ideas = {
-						remove_idea = CHU_people_army_dont_like_government
-						add_idea = CHU_army_like_government
-					}
-			}
-			if = {
-					limit = {
-						has_idea = CHU_army_dont_like_government
-					}
-					swap_ideas = {
-						remove_idea = CHU_army_dont_like_government
-						add_idea = CHU_army_like_government
-					}
-			}
 			add_manpower = 100000
 			add_war_support = 0.1
 		}	
@@ -8113,7 +8090,7 @@
 		y = 1
 		cost = 10
 		available_if_capitulated = yes
-		#relative_position_id = CHU_appease_to_the_military_1
+		relative_position_id = CHU_appease_to_the_military_1
 		prerequisite = { focus = CHU_appease_to_the_military_1 focus = CHU_to_build_a_navy_docyard }
 		ai_will_do = {
 			factor = 1
@@ -8146,34 +8123,13 @@
 	}
 
 	focus = {
-		id = CHU_army_arge_research
-		icon = GFX_focus_generic_research_slot_2
-		available = {
-			num_of_factories > 60
-		}
-		x = -4
-		y = 1
-		cost = 5
-		#relative_position_id = CHU_fishing_vessel_industry
-		available_if_capitulated = yes
-		prerequisite = { focus = CHU_fishing_vessel_industry }
-		prerequisite = { focus = CHU_build_Kugun4 focus = CHU_appease_to_the_civilians_3 }
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-		add_research_slot = 1	
-		}
-	}
-
-	focus = {
 		id = CHU_shipbuilding_on_the_islands
 		icon = GFX_focus_generic_dockyards
 		x = 1
 		y = 2
 		cost = 10
 		available_if_capitulated = yes
-		#relative_position_id = CHU_to_build_a_navy
+		relative_position_id = CHU_to_build_a_navy
 		prerequisite = { focus = CHU_to_new2 focus = CHU_to_new }
 		ai_will_do = {
 			factor = 1
@@ -8197,7 +8153,7 @@
 		y = 1
 		cost = 10
 		available_if_capitulated = yes
-		#relative_position_id = CHU_shipbuilding_on_the_islands
+		relative_position_id = CHU_shipbuilding_on_the_islands
 		prerequisite = { focus = CHU_shipbuilding_on_the_islands }
 		prerequisite = { focus = CHU_to_build_infrastructure_islan }
 		ai_will_do = {
@@ -8262,5 +8218,26 @@
 		}
 	}
 
+		focus = {
+		id = CHU_army_arge_research
+		icon = GFX_focus_generic_research_slot_2
+		available = {
+			num_of_factories > 60
+		}
+		x = -4
+		y = 1
+		cost = 5
+		relative_position_id = CHU_fishing_vessel_industry
+		available_if_capitulated = yes
+		prerequisite = { focus = CHU_fishing_vessel_industry }
+		prerequisite = { focus = CHU_build_Kugun4 focus = CHU_appease_to_the_civilians_3 }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+		add_research_slot = 1	
+		}
+	}
+
 #End of focuses 
-}
+ }
