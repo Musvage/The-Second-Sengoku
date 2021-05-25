@@ -45,6 +45,7 @@ focus_tree = {
 			}
 		}
 	}
+
 	focus = {
 		id = IMS_establish_state
 		icon = GFX_goal_generic_national_unity
@@ -61,6 +62,449 @@ focus_tree = {
 		y = 1
 		completion_reward = {
 			add_stability = 0.10
+		}
+	}
+
+	focus = {
+		id = IMS_neutrality
+		icon = GFX_focus_JOS_tangpyeongchaek
+		cost = 10.00
+		prerequisite = {
+			focus = IMS_establish_state
+		}
+		relative_position_id = IMS_establish_state
+		mutually_exclusive = {
+			focus = IMS_communal_state
+			focus = IMS_peoples_state
+			focus = IMS_monarchist
+			focus = IMS_strong_state
+		}
+		x = 8
+		y = 1
+		completion_reward = {
+			add_stability = 0.10
+			KAN = {
+				set_autonomy = { target = IMS autonomy_state = autonomy_free }
+			}
+			add_popularity = {
+				popularity = 0.3
+				ideology = neutrality
+			}
+			set_politics = {
+				ruling_party = neutrality
+			}
+		}
+	}
+
+	focus = {
+		id = IMS_guarantee_KAN
+		icon = GFX_focus_generic_diplomacy_kansai
+		cost = 10.00
+		prerequisite = {
+			focus = IMS_neutrality
+		}
+		relative_position_id = IMS_neutrality
+		mutually_exclusive = {
+		}
+		x = 0
+		y = 1
+		completion_reward = {
+			KAN = {
+				diplomatic_relation = {
+					country = IMS
+					relation = guarantee
+					active = yes
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = IMS_chugoku_volunteers
+		icon = GFX_focus_TOH_independent_militias
+		cost = 10.00
+		prerequisite = {
+			focus = IMS_guarantee_KAN
+		}
+		relative_position_id = IMS_guarantee_KAN
+		mutually_exclusive = {
+		}
+		x = 0
+		y = 1
+		completion_reward = {
+			add_timed_idea = {
+				idea = CHU_gather_any_volunteers
+				days = 365
+			}
+		}
+	}
+
+	focus = {
+		id = IMS_monarchist
+		icon = GFX_focus_KAN_preserve_the_imperial_way
+		cost = 10.00
+		prerequisite = {
+			focus = IMS_establish_state
+		}
+		relative_position_id = IMS_establish_state
+		mutually_exclusive = {
+			focus = IMS_communal_state
+			focus = IMS_peoples_state
+			focus = IMS_neutrality
+			focus = IMS_strong_state
+		}
+		x = 12
+		y = 1
+		completion_reward = {
+			add_stability = 0.10
+		}
+	}
+
+	focus = {
+		id = IMS_monarchist_autonomy
+		icon = GFX_focus_KYU_stabilize_the_nation
+		cost = 10.00
+		prerequisite = {
+			focus = IMS_monarchist
+		}
+		relative_position_id = IMS_monarchist
+		mutually_exclusive = {
+		}
+		x = 0
+		y = 1
+		completion_reward = {
+			add_stability = 0.05
+			KAN = {
+				set_autonomy = { target = IMS autonomy_state = autonomy_colony }
+			}
+		}
+	}
+
+	focus = {
+		id = IMS_invite_Prince_Mikasa
+		icon = GFX_
+		cost = 10.00
+		prerequisite = {
+			focus = IMS_monarchist_autonomy
+		}
+		relative_position_id = IMS_monarchist_autonomy
+		mutually_exclusive = {
+		}
+		x = 0
+		y = 1
+		completion_reward = {
+			retire_ideology_leader = autocracy
+				create_country_leader = {
+					name = "Takahito Mikasa"
+					desc = ""
+					picture = ""
+					expire = "1965.1.1"
+					ideology = autocracy_subtype
+					traits = {
+						#
+					}
+				}
+			set_variable = { dual_leader_first_title = 14 }
+		}
+	}
+
+	focus = {
+		id = IMS_kan_help_industry
+		icon = GFX_focus_PRO_tax_breaks
+		cost = 10.00
+		prerequisite = {
+			focus = IMS_invite_Prince_Mikasa
+			focus = IMS_chugoku_volunteers
+		}
+		relative_position_id = IMS_invite_Prince_Mikasa
+		mutually_exclusive = {
+		}
+		x = -2
+		y = 1
+		completion_reward = {
+			if = {
+				limit = {
+					is_puppet_of = KAN
+				}
+				KAN = {
+					random_owned_controlled_state = {
+						add_extra_state_shared_building_slots = 2
+						add_building_construction = {
+						type = industrial_complex
+						level = 2
+						instant_build = yes
+						}
+					}
+				}
+				add_autonomy_ratio = {
+					value = 0.06
+				}
+			}
+
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+				type = industrial_complex
+				level = 2
+				instant_build = yes
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = IMS_kan_help_military_industry
+		icon = GFX_focus_PRO_subsidize_loans
+		cost = 10.00
+		prerequisite = {
+			focus = IMS_kan_help_industry
+		}
+		relative_position_id = IMS_kan_help_industry
+		mutually_exclusive = {
+		}
+		x = 0
+		y = 1
+		completion_reward = {
+			if = {
+				limit = {
+					is_puppet_of = KAN
+				}
+				KAN = {
+					random_owned_controlled_state = {
+						add_extra_state_shared_building_slots = 2
+						add_building_construction = {
+						type = arms_factory
+						level = 2
+						instant_build = yes
+						}
+					}
+				}
+				add_autonomy_ratio = {
+					value = 0.06
+				}
+			}
+
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+				type = arms_factory
+				level = 2
+				instant_build = yes
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = IMS_monarchist_guardian
+		icon = GFX_focus_TOH_national_army
+		cost = 10.00
+		prerequisite = {
+			focus = IMS_kan_help_military_industry
+		}
+		relative_position_id = IMS_kan_help_military_industry
+		mutually_exclusive = {
+		}
+		x = 0
+		y = 1
+		completion_reward = {
+			if = {
+				limit = {
+					is_puppet_of = KAN
+				}
+				KAN = {
+					custom_effect_tooltip = clan_spawn_5_inf_divisions
+					division_template = {
+						name = "Kan Guard Division"
+						priority = 1
+						#division_names_group = KAN_INF_01
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+				
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+						}
+						support = {
+							engineer = { x = 0 y = 0 }
+						}
+					}
+					random_owned_controlled_state = {
+						limit = { PREV = { has_full_control_of_state = PREV } }
+						create_unit = {
+							division = "name = \"Kan Guard Division\" division_template = \"Kan Guard Division\" start_experience_factor = 0.9" 
+							owner = PREV
+						}
+					}
+					random_owned_controlled_state = {
+						limit = { PREV = { has_full_control_of_state = PREV } }
+						create_unit = {
+							division = "name = \"Kan Guard Division\" division_template = \"Kan Guard Division\" start_experience_factor = 0.9" 
+							owner = PREV
+						}
+					}
+					random_owned_controlled_state = {
+						limit = { PREV = { has_full_control_of_state = PREV } }
+						create_unit = {
+							division = "name = \"Kan Guard Division\" division_template = \"Kan Guard Division\" start_experience_factor = 0.9" 
+							owner = PREV
+						}
+					}
+					random_owned_controlled_state = {
+						limit = { PREV = { has_full_control_of_state = PREV } }
+						create_unit = {
+							division = "name = \"Kan Guard Division\" division_template = \"Kan Guard Division\" start_experience_factor = 0.9" 
+							owner = PREV
+						}
+					}
+					random_owned_controlled_state = {
+						limit = { PREV = { has_full_control_of_state = PREV } }
+						create_unit = {
+							division = "name = \"Kan Guard Division\" division_template = \"Kan Guard Division\" start_experience_factor = 0.9" 
+							owner = PREV
+						}
+					}
+				}
+				add_autonomy_ratio = {
+					value = 0.06
+				}
+			}
+
+			add_manpower = 10000
+			custom_effect_tooltip = clan_spawn_5_inf_divisions
+			division_template = {
+						name = "Seto Division"
+						priority = 1
+						#division_names_group = IMS_INF_01
+						regiments = {
+							infantry = { x = 0 y = 0 }
+							infantry = { x = 0 y = 1 }
+							infantry = { x = 0 y = 2 }
+				
+							infantry = { x = 1 y = 0 }
+							infantry = { x = 1 y = 1 }
+							infantry = { x = 1 y = 2 }
+						}
+						support = {
+							engineer = { x = 0 y = 0 }
+						}
+					}
+					random_owned_controlled_state = {
+						limit = { PREV = { has_full_control_of_state = PREV } }
+						create_unit = {
+							division = "name = \"Seto Division\" division_template = \"Seto Division\" start_experience_factor = 0.9" 
+							owner = PREV
+						}
+					}
+					random_owned_controlled_state = {
+						limit = { PREV = { has_full_control_of_state = PREV } }
+						create_unit = {
+							division = "name = \"Seto Division\" division_template = \"Seto Division\" start_experience_factor = 0.9" 
+							owner = PREV
+						}
+					}
+					random_owned_controlled_state = {
+						limit = { PREV = { has_full_control_of_state = PREV } }
+						create_unit = {
+							division = "name = \"Seto Division\" division_template = \"Seto Division\" start_experience_factor = 0.9" 
+							owner = PREV
+						}
+					}
+					random_owned_controlled_state = {
+						limit = { PREV = { has_full_control_of_state = PREV } }
+						create_unit = {
+							division = "name = \"Seto Division\" division_template = \"Seto Division\" start_experience_factor = 0.9" 
+							owner = PREV
+						}
+					}
+					random_owned_controlled_state = {
+						limit = { PREV = { has_full_control_of_state = PREV } }
+						create_unit = {
+							division = "name = \"Seto Division\" division_template = \"Seto Division\" start_experience_factor = 0.9" 
+							owner = PREV
+						}
+					}
+		}
+	}
+
+	focus = {
+		id = IMS_buy_islands
+		icon = GFX_focus_generic_treaty
+		cost = 10.00
+		available = {
+			has_guaranteed = KAN
+			NOT = { has_completed_focus = IMS_neutrality }
+		}
+		prerequisite = {
+			focus = IMS_monarchist_guardian
+		}
+		relative_position_id = IMS_monarchist_guardian
+		mutually_exclusive = {
+			focus = IMS_take_islands
+		}
+		x = 1
+		y = 1
+		completion_reward = {
+			add_offsite_building = {
+				type = industrial_complex
+				level = -4
+			}
+			if = {
+				limit = {
+					is_puppet_of = KAN
+				}
+				KAN = {
+					add_offsite_building = {
+						type = industrial_complex
+						level = 4
+					}
+				}
+			}
+			transfer_state = 34
+			add_state_core = 34
+		}
+	}
+
+	focus = {
+		id = IMS_take_islands
+		icon = GFX_focus_SHO_ultimatum_to_neighbours
+		cost = 10.00
+		available = {
+			NOT = { has_completed_focus = IMS_monarchist }
+		}
+		prerequisite = {
+			focus = IMS_monarchist_guardian
+		}
+		relative_position_id = IMS_monarchist_guardian
+		mutually_exclusive = {
+			focus = IMS_buy_islands
+		}
+		x = -1
+		y = 1
+		completion_reward = {
+			add_offsite_building = {
+				type = industrial_complex
+				level = -4
+			}
+			if = {
+				limit = {
+					CHU = {
+						has_capitulated = no
+					}
+				}
+				CHU = {
+					add_offsite_building = {
+						type = industrial_complex
+						level = 4
+					}
+				}
+			}
+			transfer_state = 23
+			add_state_core = 23
+			transfer_state = 25
+			add_state_core = 25
 		}
 	}
 
@@ -114,15 +558,7 @@ focus_tree = {
 					level = 1
 					instant_build = yes
 				}
-				}
-				random_owned_controlled_state = {
-				add_extra_state_shared_building_slots = 1
-				add_building_construction = {
-					type = arms_factory
-					level = 1
-					instant_build = yes
-				}
-				}
+			}
 		}
 	}
 
@@ -144,14 +580,6 @@ focus_tree = {
 		y = 1
 		completion_reward = {
 			random_owned_controlled_state = {
-				add_extra_state_shared_building_slots = 1
-				add_building_construction = {
-					type = arms_factory
-					level = 1
-					instant_build = yes
-				}
-			}
-				random_owned_controlled_state = {
 				add_extra_state_shared_building_slots = 1
 				add_building_construction = {
 					type = arms_factory
@@ -254,6 +682,8 @@ focus_tree = {
 		mutually_exclusive = {
 			focus = IMS_communal_state
 			focus = IMS_peoples_state
+			focus = IMS_neutrality
+			focus = IMS_monarchist
 		}
 		x = -4
 		y = 1
@@ -317,6 +747,8 @@ focus_tree = {
 		mutually_exclusive = {
 			focus = IMS_strong_state
 			focus = IMS_peoples_state
+			focus = IMS_neutrality
+			focus = IMS_monarchist
 		}
 		x = 0
 		y = 1
@@ -700,6 +1132,8 @@ focus_tree = {
 		mutually_exclusive = {
 			focus = IMS_communal_state
 			focus = IMS_strong_state
+			focus = IMS_neutrality
+			focus = IMS_monarchist
 		}
 		x = 4
 		y = 1
@@ -776,15 +1210,17 @@ focus_tree = {
 		relative_position_id = IMS_bow_to_none
 		prerequisite = {
 			focus = IMS_bow_to_none
+			focus = IMS_chugoku_volunteers
+			focus = IMS_invite_Prince_Mikasa
 		}
 		x = 1
 		y = 1
 		completion_reward = {
 			random_owned_controlled_state = {
-						add_extra_state_shared_building_slots = 2
+						add_extra_state_shared_building_slots = 1
 						add_building_construction = {
 						type = industrial_complex
-						level = 2
+						level = 1
 						instant_build = yes
 						}
 					}
@@ -803,10 +1239,32 @@ focus_tree = {
 		y = 1
 		completion_reward = {
 			random_owned_controlled_state = {
-						add_extra_state_shared_building_slots = 2
+						add_extra_state_shared_building_slots = 1
 						add_building_construction = {
 						type = industrial_complex
-						level = 2
+						level = 1
+						instant_build = yes
+						}
+					}
+		}
+	}
+
+	focus = {
+		id = IMS_developt_island_0
+		icon = GFX_goal_generic_construct_civ_factory
+		cost = 10.00
+		relative_position_id = IMS_developt_island
+		prerequisite = {
+			focus = IMS_developt_island
+		}
+		x = 0
+		y = 1
+		completion_reward = {
+			random_owned_controlled_state = {
+						add_extra_state_shared_building_slots = 1
+						add_building_construction = {
+						type = industrial_complex
+						level = 1
 						instant_build = yes
 						}
 					}
@@ -932,11 +1390,13 @@ focus_tree = {
 		cost = 10.00
 		relative_position_id = IMS_last_stand
 		prerequisite = {
-			focus = IMS_last_stand
+				focus = IMS_last_stand
+				focus = IMS_developt_island_0
 			focus = IMS_spawn_divisions
+			focus = IMS_monarchist_guardian
 		}
-		x = -3
-		y = 1
+		x = -1
+		y = 3
 		completion_reward = {
 			army_experience = 50
 		}
@@ -1000,11 +1460,13 @@ focus_tree = {
 		cost = 10.00
 		relative_position_id = IMS_last_stand
 		prerequisite = {
-			focus = IMS_last_stand
+				focus = IMS_last_stand
+				focus = IMS_developt_island_0
 			focus = IMS_spawn_divisions
+			focus = IMS_monarchist_guardian
 		}
-		x = -1
-		y = 1
+		x = 1
+		y = 3
 		completion_reward = {
 			air_experience = 50
 		}
@@ -1068,11 +1530,13 @@ focus_tree = {
 		cost = 10.00
 		relative_position_id = IMS_last_stand
 		prerequisite = {
-			focus = IMS_last_stand
+				focus = IMS_last_stand
+				focus = IMS_developt_island_0
 			focus = IMS_spawn_divisions
+			focus = IMS_monarchist_guardian
 		}
-		x = -5
-		y = 1
+		x = -3
+		y = 3
 		completion_reward = {
 			navy_experience = 90
 		}
