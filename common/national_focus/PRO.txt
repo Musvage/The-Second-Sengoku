@@ -142,6 +142,7 @@
 	focus = {
 		id = PRO_heart_of_japan
 		icon = GFX_focus_PRO_heart_of_japan
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
 		
 		mutually_exclusive = { focus = PRO_colaborate_with_fascists }
 		prerequisite = { focus = PRO_the_sun_rises }
@@ -1180,6 +1181,7 @@
 	focus = {
 		id = PRO_reassert_state_authority
 		icon = GFX_focus_PRO_reassert_state_authority
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
 		
 		prerequisite = { focus = PRO_executive_takeover }
 		
@@ -1195,7 +1197,7 @@
 		}
 		
 		completion_reward = {
-		
+			remove_ideas = PRO_political_struggle
 		}
 	}
 	
@@ -1217,14 +1219,60 @@
 		}
 		
 		completion_reward = {
-		
+			if = {
+				limit = {
+					NOT = { has_tech = tech_military_police4 } 
+				}
+				custom_effect_tooltip = PRO_expand_policeforces_tt_1
+			} else = {
+				army_experience = 25
+			}
+			custom_effect_tooltip = PRO_expand_policeforces_tt_2
+			hidden_effect = {
+				if = {
+					limit = { has_tech = tech_military_police3 NOT = { has_tech = tech_military_police4 } }
+					set_technology = { tech_military_police4 = 1}
+				}
+				if = {
+					limit = { has_tech = tech_military_police2 NOT = { has_tech = tech_military_police3 } }
+					set_technology = { tech_military_police3 = 1}
+				}
+				if = {
+					limit = { has_tech = tech_military_police NOT = { has_tech = tech_military_police2 } }
+					set_technology = { tech_military_police2 = 1}
+				}
+				if = {
+					limit = { NOT = { has_tech = tech_military_police } }
+					set_technology = { tech_military_police = 1}
+				}
+				division_template = {
+					name = "Military Police"
+					division_names_group = JAP_GAR_01
+					regiments = {
+						cavalry = { x = 0 y = 0 }
+						cavalry = { x = 0 y = 1 }
+						cavalry = { x = 0 y = 2 }
+					}
+					support = {
+						military_police = { x = 0 y = 0 }
+					}
+					priority = 0
+				}
+				capital_scope = {
+					create_unit = {
+							division = "name = \"Military Police\" division_template = \"Military Police\" start_experience_factor = 0.33 start_equipment_factor = 1"
+							owner = ROOT
+					}
+				}
+			}
 		}
 	}
 
 	focus = {
 		id = PRO_ban_extremist_parties
 		icon = GFX_focus_PRO_ban_extremist_parties
-		
+		search_filters = { FOCUS_FILTER_POLITICAL }
+
 		prerequisite = { focus = PRO_expand_policeforces }
 		
 		relative_position_id = PRO_expand_policeforces
@@ -1239,8 +1287,7 @@
 		}
 		
 		completion_reward = {
-			add_political_power = -75
-			remove_ideas = PRO_political_struggle
+			add_ideas = PRO_idea_ban_extremist_parties
 		}
 	}
 	
@@ -1310,6 +1357,7 @@
 	focus = {	#Focus for Zaibatsus Takeover
 		id = PRO_zaibatsus_takeover
 		icon = GFX_focus_PRO_zaibatsus_takeover
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		
 		mutually_exclusive = { focus = PRO_executive_takeover }
 		prerequisite = { focus = PRO_assassination_of_the_prime_minister }
@@ -1367,7 +1415,7 @@
 	focus = {	#
 		id = PRO_corporate_covenant
 		icon = GFX_focus_PRO_embrace_stability
-		search_filters = { FOCUS_FILTER_INDUSTRY }
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_RESEARCH }
 
 		prerequisite = { focus = PRO_zaibatsus_takeover }
 		
@@ -1383,7 +1431,7 @@
 		available_if_capitulated = yes
 		
 		completion_reward = {
-			# add economic bonus
+			remove_ideas = PRO_political_struggle
 	    }
 	}
 	
@@ -1752,7 +1800,7 @@
 	
 	focus = {	#
 		id = PRO_secure_local_market
-		icon = GFX_focus_SHO_isolation
+		icon = GFX_focus_PRO_closed_economy
 		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_INDUSTRY }
 
 		mutually_exclusive = { focus = PRO_lobby_the_west }
@@ -2025,8 +2073,7 @@
 		
 		completion_reward = {
 			# printer goes brrrrr
-			# - stability  ?
-			# more civ fac ?
+			add_ideas = PRO_idea_print_money
 	    }
 	}
 	
@@ -2051,8 +2098,7 @@
 		
 		completion_reward = {
 			# credit card goes brrrrr
-			# more civ fac now
-			# less civ factory later
+			add_ideas = PRO_idea_borrow_money
 	    }
 	}
 	
