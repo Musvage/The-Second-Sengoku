@@ -1,0 +1,106 @@
+### operations are sorted by order of 
+### 1) no. of required operatives
+### 2) required network strength
+### eg. 1/70 comes before 2/40
+
+operation_start_kansai_civil_war = {
+	icon = GFX_operations_collaboration_government
+	map_icon = GFX_operations_coup_government_map
+	name = operation_start_kansai_civil_war
+	desc = operation_start_kansai_civil_war_desc
+	priority = 0
+
+	days = 14
+	network_strength = 50
+	operatives = 2
+
+	visible = {
+		AND = {
+			original_tag = SHO
+			has_completed_focus = SHO_dem_authorize_plan
+		}
+		FROM = {
+			original_tag = KAN
+		}
+	}
+
+	available = {
+		AND = {
+			original_tag = SHO
+			has_completed_focus = SHO_dem_authorize_plan
+		}
+	}
+
+	requirements = {
+		country_exists = KAN
+	}
+	
+	equipment = {
+		infantry_equipment = 1000
+	}
+
+	risk_chance = 0.25
+	experience = 2
+	cost_multiplier = 0 
+
+	outcome_potential = {
+		FROM = {
+			start_civil_war = {
+				ruling_party = fascism
+				ideology = ROOT
+				size = 0.5
+				only_own_territory = no
+				keep_political_leader = yes
+			}
+
+		}
+	}
+
+	outcome_execute = {
+		FROM = {
+			start_civil_war = {
+				ruling_party = autocracy
+				ideology = ROOT
+				size = 0.5
+				only_own_territory = no
+				keep_political_leader = yes
+			}
+
+			set_cosmetic_tag = KAN_monarchist_civil_war
+		}
+
+		random_other_country = {
+			limit = {
+				original_tag = KAN
+				has_government = democratic
+			}
+			set_cosmetic_tag = KAN_democratic_civil_war
+		}
+	}
+
+	phases = { #infiltration
+		infiltration_border = { base = 50 }
+		infiltration_submarine = { base = 50 }
+	}
+	phases = { #attack
+		lar_communist_uprising_organise_cells = { base = 33 }
+		lar_communist_uprising_infiltrate_civil_service = { base = 33 }
+		lar_communist_uprising_organize_strikes = { base = 33 }
+	}
+	phases = { #exfiltration
+	exfiltration_air_pickup = { 
+		base = 15 
+		modifier = {
+			ROOT = { 
+				has_equipment = {
+					transport_plane_equipment < 1
+				}
+			}
+			factor = 0.1 #less likely if we have no transports
+		}
+	}
+	exfiltration_border = { base = 30 }
+	exfiltration_go_to_ground = { base = 30 }
+	exfiltration_submarine_pickup = { base = 25 }
+	}
+}
