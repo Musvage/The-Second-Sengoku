@@ -120,6 +120,7 @@
 	focus = {
 		id = PRO_the_sun_rises
 		icon = GFX_focus_PRO_the_sun_rises
+		search_filters = { FOCUS_FILTER_MILITARY }
 		
 		relative_position_id = PRO_conservative_majority
 		x = 0
@@ -165,6 +166,7 @@
 	focus = {
 		id = PRO_colaborate_with_fascists
 		icon = GFX_focus_KYU_the_black_dragon
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY FOCUS_FILTER_MANPOWER }
 		
 		prerequisite = { focus = PRO_the_sun_rises }
 		mutually_exclusive = { focus = PRO_heart_of_japan }
@@ -235,8 +237,8 @@
 		
 		ai_will_do = {
 			factor = 1
-		
 		}
+		
 		completion_reward = {
 			add_political_power = 100
 		}
@@ -477,6 +479,7 @@
 	focus = {
 		id = PRO_social_democratic_majority
 		icon = GFX_focus_PRO_social_democratic_majority
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = PRO_1936_elections }
 		mutually_exclusive = { focus = PRO_conservative_majority }
@@ -512,6 +515,7 @@
 	focus = {
 		id = PRO_the_sun_settels
 		icon = GFX_focus_PRO_the_sun_settles
+		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_MANPOWER }
 		
 		prerequisite = { focus = PRO_social_democratic_majority }
 		
@@ -558,6 +562,7 @@
 	focus = {
 		id = PRO_pacts_of_nonaggression
 		icon = GFX_focus_generic_non_aggression
+		search_filters = { FOCUS_FILTER_DIPLOMACY }
 		
 		prerequisite = { focus = PRO_inward_perfection }
 		mutually_exclusive = {focus = PRO_eliminate_radicalism}
@@ -1099,6 +1104,7 @@
 	focus = {
 		id = PRO_deal_with_america_and_britain
 		icon = GFX_focus_PRO_deal_with_america_and_british
+		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_DIPLOMACY }
 		
 		prerequisite = { focus = PRO_urbanise_tokyo_bay focus = PRO_synthetic_refinery_production }
 			
@@ -1114,16 +1120,34 @@
 		
 		available = {
 			NOT = { has_war_with = AMC }
+			NOT = { has_war_with = OSA }
 		}
 		
 		completion_reward = {
-			add_ideas = PRO_deal_with_america
+			add_tech_bonus = {
+				name = industrial_bonus
+				bonus = 2.0
+				uses = 1
+				category = industry
+			}
+			every_country = {
+				limit = { OR = { tag = OSA tag = AMC } }
+				reverse_add_opinion_modifier = {
+					target = PRO
+					modifier = PRO_deal_with_anglosphere_trade
+				}
+				add_opinion_modifier = {
+					target = PRO
+					modifier = PRO_deal_with_anglosphere_opinion
+				}
+			}
 		}
 	}
 	
 	focus = {
 		id = PRO_recover_from_the_braindrain
 		icon = GFX_focus_PRO_recover_from_the_braindrain
+		search_filters = { FOCUS_FILTER_RESEARCH }
 		
 		prerequisite = { focus = PRO_urbanise_tokyo_bay focus = PRO_synthetic_refinery_production }
 		
@@ -1148,6 +1172,7 @@
 	focus = {
 		id = PRO_executive_takeover
 		icon = GFX_focus_PRO_executive_takeover
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		
 		mutually_exclusive = { focus = PRO_zaibatsus_takeover }
 		prerequisite = { focus = PRO_assassination_of_the_prime_minister }
@@ -1204,6 +1229,7 @@
 	focus = {
 		id = PRO_expand_policeforces
 		icon = GFX_focus_generic_expand_police_forces
+		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_RESEARCH }
 		
 		prerequisite = { focus = PRO_reassert_state_authority }
 		
@@ -1294,6 +1320,7 @@
 	focus = {
 		id = PRO_reopen_talks_with_the_juntas
 		icon = GFX_focus_PRO_reopen_talks_with_the_junta
+		search_filters = { FOCUS_FILTER_DIPLOMACY }
 		
 		prerequisite = { focus = PRO_expand_policeforces }
 		
@@ -1338,6 +1365,7 @@
 	focus = {
 		id = PRO_accept_ezos_independence
 		icon = GFX_focus_PRO_accept_ezo_independence
+		search_filters = { FOCUS_FILTER_DIPLOMACY }
 		
 		prerequisite = { focus = PRO_reopen_talks_with_the_juntas }
 		
@@ -1415,7 +1443,7 @@
 	focus = {	#
 		id = PRO_corporate_covenant
 		icon = GFX_focus_PRO_embrace_stability
-		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_RESEARCH }
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
 
 		prerequisite = { focus = PRO_zaibatsus_takeover }
 		
@@ -1454,229 +1482,232 @@
 		available_if_capitulated = yes
 		
 		completion_reward = {
-			if = {
-				limit = {
-					has_idea = mitsubish_tank_manufacturer_1
+			custom_effect_tooltip = PRO_subsidize_loans_tt
+			hidden_effect = {
+				if = {
+					limit = {
+						has_idea = mitsubish_tank_manufacturer_1
+					}
+					swap_ideas = {
+						remove_idea = mitsubish_tank_manufacturer_1
+						add_idea = mitsubish_tank_manufacturer_2
+					}
 				}
-				swap_ideas = {
-					remove_idea = mitsubish_tank_manufacturer_1
-					add_idea = mitsubish_tank_manufacturer_2
+				if = {
+					limit = {
+						has_idea = mitsubish_aircraft_manufacturer_1
+					}
+					swap_ideas = {
+						remove_idea = mitsubish_aircraft_manufacturer_1
+						add_idea = mitsubish_aircraft_manufacturer_2
+					}
 				}
-			}
-			if = {
-				limit = {
-					has_idea = mitsubish_aircraft_manufacturer_1
+				if = {
+					limit = {
+						has_idea = mitsubish_naval_manufacturer_1
+					}
+					swap_ideas = {
+						remove_idea = mitsubish_naval_manufacturer_1
+						add_idea = mitsubish_naval_manufacturer_2
+					}
 				}
-				swap_ideas = {
-					remove_idea = mitsubish_aircraft_manufacturer_1
-					add_idea = mitsubish_aircraft_manufacturer_2
+				if = {
+					limit = {
+						has_idea = mitsubish_industrial_concern_1
+					}
+					swap_ideas = {
+						remove_idea = mitsubish_industrial_concern_1
+						add_idea = mitsubish_industrial_concern_2
+					}
 				}
-			}
-			if = {
-				limit = {
-					has_idea = mitsubish_naval_manufacturer_1
+				if = {
+					limit = {
+						has_idea = mitsubish_equipment_manufacturer_1
+					}
+					swap_ideas = {
+						remove_idea = mitsubish_equipment_manufacturer_1
+						add_idea = mitsubish_equipment_manufacturer_2
+					}
 				}
-				swap_ideas = {
-					remove_idea = mitsubish_naval_manufacturer_1
-					add_idea = mitsubish_naval_manufacturer_2
+				if = {
+					limit = {
+						has_idea = mitsui_tank_manufacturer_1
+					}
+					swap_ideas = {
+						remove_idea = mitsui_tank_manufacturer_1
+						add_idea = mitsui_tank_manufacturer_2
+					}
 				}
-			}
-			if = {
-				limit = {
-					has_idea = mitsubish_industrial_concern_1
+				if = {
+					limit = {
+						has_idea = mitsui_aircraft_manufacturer_1
+					}
+					swap_ideas = {
+						remove_idea = mitsui_aircraft_manufacturer_1
+						add_idea = mitsui_aircraft_manufacturer_2
+					}
 				}
-				swap_ideas = {
-					remove_idea = mitsubish_industrial_concern_1
-					add_idea = mitsubish_industrial_concern_2
+				if = {
+					limit = {
+						has_idea = mitsui_naval_manufacturer_1
+					}
+					swap_ideas = {
+						remove_idea = mitsui_naval_manufacturer_1
+						add_idea = mitsui_naval_manufacturer_2
+					}
 				}
-			}
-			if = {
-				limit = {
-					has_idea = mitsubish_equipment_manufacturer_1
+				if = {
+					limit = {
+						has_idea = mitsui_industrial_concern_1
+					}
+					swap_ideas = {
+						remove_idea = mitsui_industrial_concern_1
+						add_idea = mitsui_industrial_concern_2
+					}
 				}
-				swap_ideas = {
-					remove_idea = mitsubish_equipment_manufacturer_1
-					add_idea = mitsubish_equipment_manufacturer_2
+				if = {
+					limit = {
+						has_idea = mitsui_equipment_manufacturer_1
+					}
+					swap_ideas = {
+						remove_idea = mitsui_equipment_manufacturer_1
+						add_idea = mitsui_equipment_manufacturer_2
+					}
 				}
-			}
-			if = {
-				limit = {
-					has_idea = mitsui_tank_manufacturer_1
+				if = {
+					limit = {
+						has_idea = sumitomo_tank_manufacturer_1
+					}
+					swap_ideas = {
+						remove_idea = sumitomo_tank_manufacturer_1
+						add_idea = sumitomo_tank_manufacturer_2
+					}
 				}
-				swap_ideas = {
-					remove_idea = mitsui_tank_manufacturer_1
-					add_idea = mitsui_tank_manufacturer_2
+				if = {
+					limit = {
+						has_idea = sumitomo_aircraft_manufacturer_1
+					}
+					swap_ideas = {
+						remove_idea = sumitomo_aircraft_manufacturer_1
+						add_idea = sumitomo_aircraft_manufacturer_2
+					}
 				}
-			}
-			if = {
-				limit = {
-					has_idea = mitsui_aircraft_manufacturer_1
+				if = {
+					limit = {
+						has_idea = sumitomo_naval_manufacturer_1
+					}
+					swap_ideas = {
+						remove_idea = sumitomo_naval_manufacturer_1
+						add_idea = sumitomo_naval_manufacturer_2
+					}
 				}
-				swap_ideas = {
-					remove_idea = mitsui_aircraft_manufacturer_1
-					add_idea = mitsui_aircraft_manufacturer_2
+				if = {
+					limit = {
+						has_idea = sumitomo_industrial_concern_1
+					}
+					swap_ideas = {
+						remove_idea = sumitomo_industrial_concern_1
+						add_idea = sumitomo_industrial_concern_2
+					}
 				}
-			}
-			if = {
-				limit = {
-					has_idea = mitsui_naval_manufacturer_1
+				if = {
+					limit = {
+						has_idea = sumitomo_equipment_manufacturer_1
+					}
+					swap_ideas = {
+						remove_idea = sumitomo_equipment_manufacturer_1
+						add_idea = sumitomo_equipment_manufacturer_2
+					}
 				}
-				swap_ideas = {
-					remove_idea = mitsui_naval_manufacturer_1
-					add_idea = mitsui_naval_manufacturer_2
+				if = {
+					limit = {
+						has_idea = yasuda_tank_manufacturer_1
+					}
+					swap_ideas = {
+						remove_idea = yasuda_tank_manufacturer_1
+						add_idea = yasuda_tank_manufacturer_2
+					}
 				}
-			}
-			if = {
-				limit = {
-					has_idea = mitsui_industrial_concern_1
+				if = {
+					limit = {
+						has_idea = yasuda_aircraft_manufacturer_1
+					}
+					swap_ideas = {
+						remove_idea = yasuda_aircraft_manufacturer_1
+						add_idea = yasuda_aircraft_manufacturer_2
+					}
 				}
-				swap_ideas = {
-					remove_idea = mitsui_industrial_concern_1
-					add_idea = mitsui_industrial_concern_2
+				if = {
+					limit = {
+						has_idea = yasuda_naval_manufacturer_1
+					}
+					swap_ideas = {
+						remove_idea = yasuda_naval_manufacturer_1
+						add_idea = yasuda_naval_manufacturer_2
+					}
 				}
-			}
-			if = {
-				limit = {
-					has_idea = mitsui_equipment_manufacturer_1
+				if = {
+					limit = {
+						has_idea = yasuda_industrial_concern_1
+					}
+					swap_ideas = {
+						remove_idea = yasuda_industrial_concern_1
+						add_idea = yasuda_industrial_concern_2
+					}
 				}
-				swap_ideas = {
-					remove_idea = mitsui_equipment_manufacturer_1
-					add_idea = mitsui_equipment_manufacturer_2
+				if = {
+					limit = {
+						has_idea = yasuda_equipment_manufacturer_1
+					}
+					swap_ideas = {
+						remove_idea = yasuda_equipment_manufacturer_1
+						add_idea = yasuda_equipment_manufacturer_2
+					}
 				}
-			}
-			if = {
-				limit = {
-					has_idea = sumitomo_tank_manufacturer_1
+				if = {
+					limit = {
+						has_idea = asano_tank_manufacturer_1
+					}
+					swap_ideas = {
+						remove_idea = asano_tank_manufacturer_1
+						add_idea = asano_tank_manufacturer_2
+					}
 				}
-				swap_ideas = {
-					remove_idea = sumitomo_tank_manufacturer_1
-					add_idea = sumitomo_tank_manufacturer_2
+				if = {
+					limit = {
+						has_idea = asano_aircraft_manufacturer_1
+					}
+					swap_ideas = {
+						remove_idea = asano_aircraft_manufacturer_1
+						add_idea = asano_aircraft_manufacturer_2
+					}
 				}
-			}
-			if = {
-				limit = {
-					has_idea = sumitomo_aircraft_manufacturer_1
+				if = {
+					limit = {
+						has_idea = asano_naval_manufacturer_1
+					}
+					swap_ideas = {
+						remove_idea = asano_naval_manufacturer_1
+						add_idea = asano_naval_manufacturer_2
+					}
 				}
-				swap_ideas = {
-					remove_idea = sumitomo_aircraft_manufacturer_1
-					add_idea = sumitomo_aircraft_manufacturer_2
+				if = {
+					limit = {
+						has_idea = asano_industrial_concern_1
+					}
+					swap_ideas = {
+						remove_idea = asano_industrial_concern_1
+						add_idea = asano_industrial_concern_2
+					}
 				}
-			}
-			if = {
-				limit = {
-					has_idea = sumitomo_naval_manufacturer_1
-				}
-				swap_ideas = {
-					remove_idea = sumitomo_naval_manufacturer_1
-					add_idea = sumitomo_naval_manufacturer_2
-				}
-			}
-			if = {
-				limit = {
-					has_idea = sumitomo_industrial_concern_1
-				}
-				swap_ideas = {
-					remove_idea = sumitomo_industrial_concern_1
-					add_idea = sumitomo_industrial_concern_2
-				}
-			}
-			if = {
-				limit = {
-					has_idea = sumitomo_equipment_manufacturer_1
-				}
-				swap_ideas = {
-					remove_idea = sumitomo_equipment_manufacturer_1
-					add_idea = sumitomo_equipment_manufacturer_2
-				}
-			}
-			if = {
-				limit = {
-					has_idea = yasuda_tank_manufacturer_1
-				}
-				swap_ideas = {
-					remove_idea = yasuda_tank_manufacturer_1
-					add_idea = yasuda_tank_manufacturer_2
-				}
-			}
-			if = {
-				limit = {
-					has_idea = yasuda_aircraft_manufacturer_1
-				}
-				swap_ideas = {
-					remove_idea = yasuda_aircraft_manufacturer_1
-					add_idea = yasuda_aircraft_manufacturer_2
-				}
-			}
-			if = {
-				limit = {
-					has_idea = yasuda_naval_manufacturer_1
-				}
-				swap_ideas = {
-					remove_idea = yasuda_naval_manufacturer_1
-					add_idea = yasuda_naval_manufacturer_2
-				}
-			}
-			if = {
-				limit = {
-					has_idea = yasuda_industrial_concern_1
-				}
-				swap_ideas = {
-					remove_idea = yasuda_industrial_concern_1
-					add_idea = yasuda_industrial_concern_2
-				}
-			}
-			if = {
-				limit = {
-					has_idea = yasuda_equipment_manufacturer_1
-				}
-				swap_ideas = {
-					remove_idea = yasuda_equipment_manufacturer_1
-					add_idea = yasuda_equipment_manufacturer_2
-				}
-			}
-			if = {
-				limit = {
-					has_idea = asano_tank_manufacturer_1
-				}
-				swap_ideas = {
-					remove_idea = asano_tank_manufacturer_1
-					add_idea = asano_tank_manufacturer_2
-				}
-			}
-			if = {
-				limit = {
-					has_idea = asano_aircraft_manufacturer_1
-				}
-				swap_ideas = {
-					remove_idea = asano_aircraft_manufacturer_1
-					add_idea = asano_aircraft_manufacturer_2
-				}
-			}
-			if = {
-				limit = {
-					has_idea = asano_naval_manufacturer_1
-				}
-				swap_ideas = {
-					remove_idea = asano_naval_manufacturer_1
-					add_idea = asano_naval_manufacturer_2
-				}
-			}
-			if = {
-				limit = {
-					has_idea = asano_industrial_concern_1
-				}
-				swap_ideas = {
-					remove_idea = asano_industrial_concern_1
-					add_idea = asano_industrial_concern_2
-				}
-			}
-			if = {
-				limit = {
-					has_idea = asano_equipment_manufacturer_1
-				}
-				swap_ideas = {
-					remove_idea = asano_equipment_manufacturer_1
-					add_idea = asano_equipment_manufacturer_2
+				if = {
+					limit = {
+						has_idea = asano_equipment_manufacturer_1
+					}
+					swap_ideas = {
+						remove_idea = asano_equipment_manufacturer_1
+						add_idea = asano_equipment_manufacturer_2
+					}
 				}
 			}
 	    }
@@ -2174,8 +2205,113 @@
 		
 		available_if_capitulated = yes
 		
+		available = {
+			has_full_control_of_state = 29
+		}
+		
 		completion_reward = {
-			# improved tokyo
+			29 = {
+				if = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 0
+							include_locked = yes
+						}
+					}
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+					add_extra_state_shared_building_slots = 1
+				} else = {
+					random_owned_controlled_state = {
+						limit = {
+							OR = { state = 55 state = 55 state = 66 }
+							free_building_slots = {
+								building = industrial_complex
+								size > 0
+								include_locked = yes
+							}
+						}
+						add_building_construction = {
+							type = industrial_complex
+							level = 1
+							instant_build = yes
+						}
+						add_extra_state_shared_building_slots = 1
+					}
+				}
+			}
+			29 = {
+				if = {
+					limit = {
+						free_building_slots = {
+							building = arms_factory
+							size > 0
+							include_locked = yes
+						}
+					}
+					add_building_construction = {
+						type = arms_factory
+						level = 1
+						instant_build = yes
+					}
+					add_extra_state_shared_building_slots = 1
+				} else = {
+					random_owned_controlled_state = {
+						limit = {
+							OR = { state = 55 state = 55 state = 66 }
+							free_building_slots = {
+								building = arms_factory
+								size > 0
+								include_locked = yes
+							}
+						}
+						add_building_construction = {
+							type = arms_factory
+							level = 1
+							instant_build = yes
+						}
+						add_extra_state_shared_building_slots = 1
+					}
+				}
+			}
+			29 = {
+				if = {
+					limit = {
+						free_building_slots = {
+							building = dockyard
+							size > 0
+							include_locked = yes
+						}
+					}
+					add_building_construction = {
+						type = dockyard
+						level = 1
+						instant_build = yes
+					}
+					add_extra_state_shared_building_slots = 1
+				} else = {
+					random_owned_controlled_state = {
+						limit = {
+							OR = { state = 55 state = 55 state = 66 }
+							free_building_slots = {
+								building = dockyard
+								size > 0
+								include_locked = yes
+							}
+						}
+						add_building_construction = {
+							type = dockyard
+							level = 1
+							instant_build = yes
+						}
+						add_extra_state_shared_building_slots = 1
+					}
+				}
+			}
 	    }
 	}
 	
