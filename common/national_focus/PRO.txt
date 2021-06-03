@@ -1806,11 +1806,11 @@
 	}
 	
 	focus = {	#
-		id = PRO_lobby_the_west
-		icon = GFX_focus_SHO_neutral_coalition
-		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_INDUSTRY}
+		id = PRO_trade_foreign
+		icon = GFX_focus_PRO_trade_foreign
+		search_filters = { FOCUS_FILTER_INDUSTRY}
 
-		mutually_exclusive = { focus = PRO_secure_local_market }
+		mutually_exclusive = { focus = PRO_trade_japan }
 		prerequisite = { focus = PRO_sponsor_politicians }
 		
 		ai_will_do = {
@@ -1825,16 +1825,24 @@
 		available_if_capitulated = yes
 		
 		completion_reward = {
-			# political/diplomatic/economic bonus with trade cities/FER
+			custom_effect_tooltip = PRO_trade_foreign_tt
+			hidden_effect = {
+				every_other_country = {
+					limit = {
+						OR = { tag = OSA tag = HIR tag = KOB tag = REI tag = FER tag = JOS tag = AMC tag = OKI tag = PRT }
+					}
+					add_ideas = PRO_idea_tokyo_commodities_exchange_foreign
+				}
+			}
 	    }
 	}
 	
 	focus = {	#
-		id = PRO_secure_local_market
-		icon = GFX_focus_PRO_closed_economy
-		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_INDUSTRY }
+		id = PRO_trade_japan
+		icon = GFX_focus_PRO_trade_japan
+		search_filters = { FOCUS_FILTER_INDUSTRY }
 
-		mutually_exclusive = { focus = PRO_lobby_the_west }
+		mutually_exclusive = { focus = PRO_trade_foreign }
 		prerequisite = { focus = PRO_sponsor_politicians }
 		
 		ai_will_do = {
@@ -1849,7 +1857,15 @@
 		available_if_capitulated = yes
 		
 		completion_reward = {
-			# political/diplomatic/economic bonus with other japanese/korea
+			custom_effect_tooltip = PRO_trade_japan_tt
+			hidden_effect = {
+				every_other_country = {
+					limit = {
+						NOT = { tag = OSA tag = HIR tag = KOB tag = REI tag = FER tag = JOS tag = AMC tag = OKI tag = PRT }
+					}
+					add_ideas = PRO_idea_tokyo_commodities_exchange_japan
+				}
+			}
 	    }
 	}
 	
@@ -1961,13 +1977,13 @@
 		icon = GFX_focus_PRO_state_monopoly
 		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_POLITICAL }
 
-		prerequisite = { focus = PRO_lobby_the_west focus = PRO_secure_local_market }
+		prerequisite = { focus = PRO_trade_foreign focus = PRO_trade_japan }
 		
 		ai_will_do = {
 			factor = 1
 		}
 		
-		relative_position_id = PRO_lobby_the_west
+		relative_position_id = PRO_trade_foreign
 		x = 1
 		y = 1
 		cost = 10
@@ -2190,7 +2206,7 @@
 	focus = {	#
 		id = PRO_great_tokyo
 		icon = GFX_focus_PRO_urbanise_tokyo_bay
-		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_DIPLOMACY }
 
 		prerequisite = { focus = PRO_expansive_monetary_policy focus = PRO_issue_debt_bonds }
 		
@@ -2210,6 +2226,9 @@
 		}
 		
 		completion_reward = {
+			set_rule = {
+				can_create_factions = yes
+			}
 			29 = {
 				if = {
 					limit = {
