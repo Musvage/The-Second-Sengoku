@@ -1,5 +1,7 @@
 set_up_global_division_limit_system = {
 	set_variable = { global.division_limit_base = 300 }
+	# trade port
+	set_variable = { global.division_limit_trade_city = -100 }
 	# economic laws
 	set_variable = { global.division_limit_undisturbed_isolation = -90 }
 	set_variable = { global.division_limit_isolation = -40 }
@@ -138,10 +140,15 @@ calculate_support_companies = {
 
 calculate_division_limit = {
 	set_variable = { country_division_limit = global.division_limit_base }
+	#### TRADE CITY
+	if = {
+		limit = { OR = { tag = AMC tag = HIR tag = KOB tag = OKI tag = OSA tag = PRT tag = REI } }
+		set_variable = { division_limit_trade_city = global.division_limit_trade_city }
+	}
 	#### ECONOMIC LAW
 	if = {
 		limit = { has_idea = undisturbed_isolation }
-		set_variable = { division_limit_economy_law = global.division_limit_undisturbed_isolation}
+		set_variable = { division_limit_economy_law = global.division_limit_undisturbed_isolation }
 	}
 	if = {
 		limit = { has_idea = isolation }
@@ -223,6 +230,7 @@ calculate_division_limit = {
 	add_to_variable = { country_division_limit_multiplier = division_limit_other_multiplier }
 	
 	#### CALCULATE EFFECT
+	add_to_variable = { country_division_limit = division_limit_trade_city }
 	add_to_variable = { country_division_limit = division_limit_economy_law }
 	add_to_variable = { country_division_limit = division_limit_training_law }
 	add_to_variable = { country_division_limit = division_limit_technology_bonus }
@@ -305,14 +313,37 @@ check_division_limit = {
 		}
 		force_update_dynamic_modifier = yes
 	} else = {
+		set_variable = { division_limit_proportion = division_limit_num_battalions }
+		divide_variable = { division_limit_proportion = country_division_limit }
 		if = {
 			limit = {
-				has_dynamic_modifier = {
-					modifier = division_limit_spirit
-				}
+				check_variable = { division_limit_proportion < 0.25 }
 			}
-			remove_dynamic_modifier = { modifier = division_limit_spirit }
-			set_variable = { division_limit_overhead = 0 }
+			set_variable = { army_org_factor_mod = 0.25 }
+			subtract_from_variable = { army_org_factor_mod = division_limit_proportion }
+			multiply_variable = { army_org_factor_mod = 2 }
+			clamp_variable = { var = army_org_factor_mod	min = 0	max = 0.25 }
+			if = {
+				limit = {
+					NOT = {
+						has_dynamic_modifier = {
+							modifier = division_limit_spirit
+						}
+					}
+				}
+				add_dynamic_modifier = { modifier = division_limit_spirit } 
+			}
+			force_update_dynamic_modifier = yes
+		} else = {
+			if = {
+				limit = {
+					has_dynamic_modifier = {
+						modifier = division_limit_spirit
+					}
+				}
+				remove_dynamic_modifier = { modifier = division_limit_spirit }
+				set_variable = { division_limit_overhead = 0 }
+			}
 		}
 	}
 }
