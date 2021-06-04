@@ -616,14 +616,15 @@
 		
 		completion_reward = {
 			add_political_power = 100
-			add_war_support = 0.05	
-			every_other_country = {
-				limit = {
-					OR = { tag = KYU tag = CHU tag = KAN tag = SHO tag = TOH tag = EZO tag = SHI tag = REI }
-					OR = { has_government = fascism has_government = communism }
-				}
-				custom_effect_tooltip = PRO_eliminate_radicalism_tt
-				hidden_effect = {
+			add_war_support = 0.05
+			custom_effect_tooltip = PRO_eliminate_radicalism_tt
+			hidden_effect = {
+				every_other_country = {
+					limit = {
+						NOT = { tag = FER tag = JOS }
+						OR = { has_government = fascism has_government = communism }
+					}
+					custom_effect_tooltip = PRO_eliminate_radicalism_tt_2
 					PRO = {
 						create_wargoal = {
 						target = PREV
@@ -1808,7 +1809,7 @@
 	focus = {	#
 		id = PRO_trade_foreign
 		icon = GFX_focus_PRO_trade_foreign
-		search_filters = { FOCUS_FILTER_INDUSTRY}
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_DIPLOMACY }
 
 		mutually_exclusive = { focus = PRO_trade_japan }
 		prerequisite = { focus = PRO_sponsor_politicians }
@@ -1840,7 +1841,7 @@
 	focus = {	#
 		id = PRO_trade_japan
 		icon = GFX_focus_PRO_trade_japan
-		search_filters = { FOCUS_FILTER_INDUSTRY }
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_DIPLOMACY }
 
 		mutually_exclusive = { focus = PRO_trade_foreign }
 		prerequisite = { focus = PRO_sponsor_politicians }
@@ -1973,9 +1974,9 @@
 	    }
 	}
 	focus = {	#
-		id = PRO_direct_investment
-		icon = GFX_focus_PRO_state_monopoly
-		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_POLITICAL }
+		id = PRO_invest_steelworks
+		icon = GFX_focus_PRO_steelworks
+		search_filters = { FOCUS_FILTER_INDUSTRY }
 
 		prerequisite = { focus = PRO_trade_foreign focus = PRO_trade_japan }
 		
@@ -1991,7 +1992,11 @@
 		available_if_capitulated = yes
 		
 		completion_reward = {
-			## allows for investments in other nations
+			add_resource = {
+				type = steel
+				amount = 12
+				state = 29
+			}
 	    }
 	}
 	
@@ -2111,7 +2116,7 @@
 			factor = 1
 		}
 		
-		relative_position_id = PRO_direct_investment
+		relative_position_id = PRO_invest_steelworks
 		x = -1
 		y = 1
 		cost = 10
@@ -2136,7 +2141,7 @@
 			factor = 1
 		}
 		
-		relative_position_id = PRO_direct_investment
+		relative_position_id = PRO_invest_steelworks
 		x = 1
 		y = 1
 		cost = 10
@@ -2402,6 +2407,7 @@
 	focus = {	#
 		id = PRO_arasaka_leadership
 		icon = GFX_focus_PRO_saburo_arasaka
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_RESEARCH }
 
 		prerequisite = { focus = PRO_technological_leap }
 		
