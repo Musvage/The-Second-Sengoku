@@ -193,6 +193,7 @@
 	focus = {
 		id = PRO_contact_the_emperor
 		icon = GFX_focus_PRO_contact_the_emperor
+		search_filters = { FOCUS_FILTER_DIPLOMACY }
 		
 		mutually_exclusive = { focus = PRO_contact_the_zaibatsus }
 		prerequisite = { focus = PRO_heart_of_japan }
@@ -225,6 +226,7 @@
 		id = PRO_contact_the_zaibatsus
 		icon = GFX_focus_jap_zaibatsu
 		
+		
 		mutually_exclusive = { focus = PRO_contact_the_emperor }
 		prerequisite = { focus = PRO_heart_of_japan focus = PRO_colaborate_with_fascists }
 		
@@ -247,6 +249,7 @@
 	focus = {
 		id = PRO_imperial_deal
 		icon = GFX_focus_PRO_imperial_deal
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = PRO_contact_the_emperor }
 		
@@ -277,6 +280,7 @@
 	focus = {
 		id = PRO_prince_chichibu_arrives
 		icon = GFX_focus_PRO_prince_chichibu_arrives
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = PRO_imperial_deal }
 		
@@ -340,6 +344,7 @@
 	focus = {
 		id = PRO_monarchy_consolidated
 		icon = GFX_focus_PRO_monarchy_consolidated
+		search_filters = { FOCUS_FILTER_MANPOWER FOCUS_FILTER_MILITARY }
 		
 		prerequisite = { focus = PRO_prince_chichibu_arrives }
 			
@@ -372,6 +377,7 @@
 	focus = {
 		id = PRO_conference_of_the_two_capitals
 		icon = GFX_focus_PRO_conference_of_the_two_capitals
+		search_filters = { FOCUS_FILTER_DIPLOMACY }
 		
 		prerequisite = { focus = PRO_prince_chichibu_arrives }
 		
@@ -398,6 +404,7 @@
 	focus = {
 		id = PRO_stop_zaibatsus_influence
 		icon = GFX_goal_generic_forceful_treaty
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = PRO_contact_the_zaibatsus }
 		prerequisite = { focus = PRO_colaborate_with_fascists }
@@ -409,7 +416,7 @@
 		
 		available_if_capitulated = yes
 		
-		mutually_exclusive = { focus = PRO_guide_the_zaibatsus }
+		mutually_exclusive = { focus = PRO_zaibatsus_empowered }
 		
 		ai_will_do = {
 			factor = 1
@@ -417,13 +424,14 @@
 		
 		completion_reward = {
 			add_stability = -0.05
-			remove_ideas = JAP_zaibatsus
+			remove_ideas = PRO_idea_zaibatsus
 		}
 	}
 	
 	focus = {
 		id = PRO_guide_the_zaibatsus
-		icon = GFX_focus_mex_privatisation 
+		icon = GFX_focus_mex_privatisation
+		search_filters = { FOCUS_FILTER_INDUSTRY }
 		
 		mutually_exclusive = { focus = PRO_stop_zaibatsus_influence }
 		prerequisite = { focus = PRO_contact_the_zaibatsus }
@@ -439,10 +447,17 @@
 			factor = 1
 		}
 		
+		available = {
+			NOT = {
+				has_government = communism
+				has_government = democratic_socialism
+			}
+		}
+		
 		completion_reward = {
 			swap_ideas = {
-				remove_idea = JAP_zaibatsus
-				add_idea = JAP_guide_the_zaibatsus
+				remove_idea = PRO_idea_zaibatsus
+				add_idea = PRO_idea_zaibatsus_empowered
 			}
 		}
 	}
@@ -451,6 +466,7 @@
 	focus = {
 		id = PRO_boycott_tohokese_products
 		icon = GFX_focus_SHI_tackle_communism
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_DIPLOMACY }
 		
 		prerequisite = { focus = PRO_guide_the_zaibatsus focus = PRO_stop_zaibatsus_influence }
 		
@@ -538,6 +554,7 @@
 	focus = {
 		id = PRO_inward_perfection
 		icon = GFX_focus_PRO_inward_perfection
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
 		
 		prerequisite = { focus = PRO_the_sun_settels }
 		
@@ -586,6 +603,7 @@
 	focus = {
 		id = PRO_eliminate_radicalism
 		icon = GFX_focus_PRO_eliminate_radicalism
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY FOCUS_FILTER_ANNEXATION }
 		
 		mutually_exclusive = { focus = PRO_pacts_of_nonaggression }
 		prerequisite = { focus = PRO_inward_perfection }
@@ -628,7 +646,7 @@
 					PRO = {
 						create_wargoal = {
 						target = PREV
-						type = annex_everything
+						type = topple_government
 						}
 					}
 				}
@@ -704,6 +722,7 @@
 	focus = {
 		id = PRO_beacon_of_equality
 		icon = GFX_focus_PRO_beacon_of_equality
+		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
 		
 		prerequisite = { focus = PRO_neutrality_act }
 		
@@ -728,6 +747,7 @@
 	focus = {
 		id = PRO_propose_reunion
 		icon = GFX_focus_PRO_propose_reunion
+		search_filters = { FOCUS_FILTER_ANNEXATION FOCUS_FILTER_DIPLOMACY }
 		
 		prerequisite = { focus = PRO_pacts_of_nonaggression focus = PRO_eliminate_radicalism }
 		
@@ -762,8 +782,9 @@
 	focus = {
 		id = PRO_nationalize
 		icon = GFX_focus_generic_strong_economy
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		
-		mutually_exclusive = { focus = PRO_encourage_lobbying }
+		mutually_exclusive = { focus = PRO_allow_foreign_investment }
 		prerequisite = { focus = PRO_the_sun_rises focus = PRO_the_sun_settels }
 		
 		relative_position_id = PRO_the_sun_settels
@@ -786,15 +807,16 @@
 		
 		completion_reward = {
 			swap_ideas = {
-				remove_idea = JAP_zaibatsus
-				add_idea = JAP_nationalize_the_zaibatsus				
+				remove_idea = PRO_idea_zaibatsus
+				add_idea = PRO_idea_zaibatsus_nationalized				
 			}
 		}
 	}
 	
 	focus = {
-		id = PRO_encourage_lobbying
+		id = PRO_allow_foreign_investment
 		icon = GFX_focus_PRO_encourage_lobbying
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_RESEARCH }
 		
 		mutually_exclusive = { focus = PRO_nationalize }
 		prerequisite = { focus = PRO_the_sun_rises focus = PRO_the_sun_settels focus = PRO_reassert_state_authority }
@@ -810,18 +832,19 @@
 			factor = 1
 		}
 		
-		allow_branch = {
+		available = {
 			NOT = { has_government = communism }
 		}
 		
 		completion_reward = {
-			add_ideas = PRO_lobbying
+			add_ideas = PRO_idea_foreign_investment
 		}
 	}
 	
 	focus = {
 		id = PRO_invest_in_outer_kanto
 		icon = GFX_focus_PRO_invest_in_outer_kanto
+		search_filters = { FOCUS_FILTER_INDUSTRY }
 		
 		prerequisite = { focus = PRO_nationalize }
 		
@@ -870,8 +893,9 @@
 	focus = {
 		id = PRO_raise_infrastructure_standarts
 		icon = GFX_focus_PRO_raise_infrastructure_standarts
+		search_filters = { FOCUS_FILTER_INDUSTRY }
 		
-		prerequisite = { focus = PRO_nationalize focus = PRO_encourage_lobbying }
+		prerequisite = { focus = PRO_nationalize focus = PRO_allow_foreign_investment }
 		
 		relative_position_id = PRO_nationalize
 		x = 1
@@ -957,10 +981,11 @@
 	focus = {
 		id = PRO_invest_in_inner_kanto
 		icon = GFX_focus_PRO_invest_in_inner_kanto
+		search_filters = { FOCUS_FILTER_INDUSTRY }
 		
-		prerequisite = { focus = PRO_encourage_lobbying }
+		prerequisite = { focus = PRO_allow_foreign_investment }
 		
-		relative_position_id = PRO_encourage_lobbying
+		relative_position_id = PRO_allow_foreign_investment
 		x = 1
 		y = 1
 		cost = 10
@@ -1005,6 +1030,7 @@
 	focus = {
 		id = PRO_synthetic_refinery_production
 		icon = GFX_focus_PRO_synthetic_refinery_production
+		search_filters = { FOCUS_FILTER_INDUSTRY }
 		
 		prerequisite = { focus = PRO_invest_in_outer_kanto focus = PRO_raise_infrastructure_standarts }
 		
@@ -1060,6 +1086,7 @@
 	focus = {
 		id = PRO_urbanise_tokyo_bay
 		icon = GFX_focus_PRO_urbanise_tokyo_bay
+		search_filters = { FOCUS_FILTER_INDUSTRY }
 		
 		prerequisite = { focus = PRO_invest_in_inner_kanto focus = PRO_raise_infrastructure_standarts }
 		
@@ -2211,7 +2238,7 @@
 	focus = {	#
 		id = PRO_great_tokyo
 		icon = GFX_focus_PRO_urbanise_tokyo_bay
-		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_DIPLOMACY }
+		search_filters = { FOCUS_FILTER_INDUSTRY }
 
 		prerequisite = { focus = PRO_expansive_monetary_policy focus = PRO_issue_debt_bonds }
 		
@@ -2231,9 +2258,6 @@
 		}
 		
 		completion_reward = {
-			set_rule = {
-				can_create_factions = yes
-			}
 			29 = {
 				if = {
 					limit = {
@@ -2448,6 +2472,7 @@
 	focus = {
 		id = PRO_war_cabinet
 		icon = GFX_focus_PRO_war_cabinet
+		search_filters = { FOCUS_FILTER_WAR_SUPPORT }
 		
 		prerequisite = { focus = PRO_conference_of_the_two_capitals focus = PRO_propose_reunion focus = PRO_boycott_tohokese_products focus = PRO_japanese_entente focus = PRO_great_tokyo }
 		
@@ -2471,6 +2496,7 @@
 	focus = {
 		id = PRO_war_plan_red
 		icon = GFX_focus_generic_attack_tohoku
+		search_filters = { FOCUS_FILTER_ANNEXATION }
 		
 		prerequisite = { focus = PRO_war_cabinet }
 		
@@ -2504,6 +2530,7 @@
 	focus = {
 		id = PRO_war_plan_cyan
 		icon = GFX_focus_generic_attack_ezo
+		search_filters = { FOCUS_FILTER_ANNEXATION }
 		
 		relative_position_id = PRO_war_cabinet
 		x = -2
@@ -2529,6 +2556,7 @@
 	focus = {
 		id = PRO_war_plan_gray
 		icon = GFX_focus_generic_attack_chugoku
+		search_filters = { FOCUS_FILTER_ANNEXATION }
 		
 		prerequisite = { focus = PRO_war_cabinet }
 		
@@ -2562,6 +2590,7 @@
 	focus = {
 		id = PRO_war_plan_blue
 		icon = GFX_focus_generic_attack_kyushu
+		search_filters = { FOCUS_FILTER_ANNEXATION }
 		
 		prerequisite = { focus = PRO_war_cabinet }
 		
@@ -2595,6 +2624,7 @@
 	focus = {
 		id = PRO_war_plan_black
 		icon = GFX_focus_generic_attack_shikoku
+		search_filters = { FOCUS_FILTER_ANNEXATION }
 		
 		prerequisite = { focus = PRO_war_cabinet }
 		
@@ -2628,6 +2658,7 @@
 	focus = {
 		id = PRO_war_plan_yellow
 		icon = GFX_focus_generic_attack_shogun
+		search_filters = { FOCUS_FILTER_ANNEXATION }
 		
 		prerequisite = { focus = PRO_war_cabinet }
 		
@@ -2663,6 +2694,7 @@
 	focus = {
 		id = PRO_defense_spendings
 		icon = GFX_focus_PRO_defense_spendings
+		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_RESEARCH }
 		
 		relative_position_id = PRO_assassination_of_the_prime_minister
 		x = 15
@@ -2688,6 +2720,7 @@
 	focus = {
 		id = PRO_kanto_militia
 		icon = GFX_focus_generic_army_expansion
+		search_filters = { FOCUS_FILTER_MANPOWER }
 
 		prerequisite = { focus = PRO_defense_spendings }
 		
@@ -2710,6 +2743,7 @@
 	focus = {
 		id = PRO_optimise_smallarms_production
 		icon = GFX_focus_generic_army_expansion_3
+		search_filters = { FOCUS_FILTER_INDUSTRY }
 		
 		prerequisite = { focus = PRO_kanto_militia }
 		
@@ -2725,7 +2759,6 @@
 		}
 		
 		completion_reward = {
-			army_experience = 25
 			add_ideas = PRO_optimise_smallarms_production
 		}
 	}
@@ -2733,6 +2766,7 @@
 	focus = {
 		id = PRO_artillery_support
 		icon = GFX_focus_PRO_artillery_support
+		search_filters = { FOCUS_FILTER_INDUSTRY }
 		
 		prerequisite = { focus = PRO_optimise_smallarms_production }
 		
@@ -2758,6 +2792,7 @@
 	focus = {
 		id = PRO_heavy_tank_program
 		icon = GFX_focus_PRO_heavy_tank_program
+		search_filters = { FOCUS_FILTER_RESEARCH }
 		
 		prerequisite = { focus = PRO_kanto_militia }
 		
@@ -2785,6 +2820,7 @@
 	focus = {
 		id = PRO_fortify_tohoku_border
 		icon = GFX_focus_PRO_fortify_tohoku_border
+		search_filters = { FOCUS_FILTER_MILITARY }
 		
 		prerequisite = { focus = PRO_heavy_tank_program }
 		
@@ -2920,6 +2956,7 @@
 	focus = {
 		id = PRO_fortify_chubu_border
 		icon = GFX_focus_PRO_fortify_chubu_border
+		search_filters = { FOCUS_FILTER_MILITARY }
 		
 		prerequisite = { focus = PRO_fortify_tohoku_border }
 		
@@ -3049,6 +3086,7 @@
 	focus = {
 		id = PRO_tokyo_bay_costal_defense
 		icon = GFX_focus_generic_tokyo_bay_costal_defense
+		search_filters = { FOCUS_FILTER_MILITARY }
 		
 		prerequisite = { focus = PRO_defense_spendings }
 		
@@ -3115,6 +3153,7 @@
 	focus = {
 		id = PRO_destroyer_effort
 		icon = GFX_focus_generic_destroyer_effort
+		search_filters = { FOCUS_FILTER_RESEARCH }
 		
 		prerequisite = { focus = PRO_tokyo_bay_costal_defense }
 		
@@ -3142,6 +3181,7 @@
 	focus = {
 		id = PRO_cruiser_effort
 		icon = GFX_focus_generic_cruiser_effort
+		search_filters = { FOCUS_FILTER_RESEARCH }
 		
 		prerequisite = { focus = PRO_destroyer_effort }
 		
@@ -3170,7 +3210,8 @@
 	
 	focus = {
 		id = PRO_submarine_effort
-		icon = GFX_focus_generic_submarine_effort
+		icon = GFX_focus_PRO_submarine_tactics
+		search_filters = { FOCUS_FILTER_RESEARCH }
 		
 		prerequisite = { focus = PRO_tokyo_bay_costal_defense }
 		
@@ -3186,15 +3227,21 @@
 		}
 		
 		completion_reward = {
-			add_tech_bonus = {
-				name = sub_op_bonus
-				bonus = 1.0
-				uses = 2
-				technology = convoy_interdiction_ti
-				technology = unrestricted_submarine_warfare
-				technology = wolfpacks
-				technology = advanced_submarine_warfare
-				technology = combined_operations_raiding
+			effect_tooltip = {
+				add_tech_bonus = {
+					name = sub_op_bonus
+					bonus = 1.0
+					uses = 2
+					category = submarine_doctrine
+				}
+			}
+			hidden_effect = {
+				add_tech_bonus = {
+					name = sub_op_bonus
+					bonus = 1.0
+					uses = 2
+					category = submarine_doc_tech
+				}
 			}
 		}
 	}
@@ -3202,6 +3249,7 @@
 	focus = {
 		id = PRO_submarine_effort_ii
 		icon = GFX_focus_generic_submarine_effort_2
+		search_filters = { FOCUS_FILTER_RESEARCH }
 		
 		prerequisite = { focus = PRO_submarine_effort }
 		
@@ -3230,6 +3278,7 @@
 	focus = {
 		id = PRO_oxygen_torpedos
 		icon = GFX_focus_PRO_oxygen_torpedos
+		search_filters = { FOCUS_FILTER_RESEARCH }
 		
 		prerequisite = { focus = PRO_cruiser_effort focus = PRO_submarine_effort_ii }
 		
@@ -3258,6 +3307,7 @@
 	focus = {
 		id = PRO_conquering_the_skies
 		icon = GFX_focus_PRO_conquering_the_skies
+		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_RESEARCH }
 		
 		prerequisite = { focus = PRO_defense_spendings }
 		
@@ -3284,10 +3334,11 @@
 	}
 	
 	focus = {
-		id = PRO_deal_with_mitsubishi
-		icon = GFX_focus_PRO_deal_with_mitsubishi
+		id = PRO_develop_radar
+		icon = GFX_focus_PRO_develop_radar
+		search_filters = { FOCUS_FILTER_RESEARCH }
 		
-		prerequisite = { focus = PRO_conquering_the_skies }
+		prerequisite = { focus = PRO_conquering_the_skies focus = PRO_tokyo_bay_costal_defense }
 		
 		relative_position_id = PRO_conquering_the_skies
 		x = -1
@@ -3301,18 +3352,23 @@
 		}
 		
 		completion_reward = {
-			#custom_effect_tooltip = "Unlocks: "
-			add_ideas = PRO_mitsubishi
+			add_tech_bonus = {
+				name = USA_naval_radar
+				ahead_reduction = 2
+				bonus = 2.0
+				category = radar_tech
+			}
 		}
 	}
 	
 	focus = {
 		id = PRO_strategic_bombing_doctrine
 		icon = GFX_focus_PRO_strategic_bombing_doctrine
+		search_filters = { FOCUS_FILTER_RESEARCH }
 		
-		prerequisite = { focus = PRO_deal_with_mitsubishi }
+		prerequisite = { focus = PRO_develop_radar }
 		
-		relative_position_id = PRO_deal_with_mitsubishi
+		relative_position_id = PRO_develop_radar
 		x = 0
 		y = 1
 		cost = 10
@@ -3336,6 +3392,7 @@
 	focus = {
 		id = PRO_open_grants_for_horikoshi_jiro
 		icon = GFX_focus_PRO_open_grants_for_horikoshi_jiro
+		search_filters = { FOCUS_FILTER_INDUSTRY }
 		
 		prerequisite = { focus = PRO_conquering_the_skies }
 		
@@ -3359,8 +3416,9 @@
 		id = PRO_a6m_zero
 		icon = GFX_focus_PRO_a6m_zero
 		search_filters = { FOCUS_FILTER_RESEARCH }
+		search_filters = { FOCUS_FILTER_EQUIPMENT }
 		
-		prerequisite = { focus = PRO_deal_with_mitsubishi }
+		prerequisite = { focus = PRO_develop_radar }
 		prerequisite = { focus = PRO_open_grants_for_horikoshi_jiro }
 		
 		relative_position_id = PRO_open_grants_for_horikoshi_jiro
@@ -3390,6 +3448,7 @@
 	focus = {
 		id = PRO_extensive_pilot_training
 		icon = GFX_focus_PRO_extensive_pilot_training
+		search_filters = { FOCUS_FILTER_MANPOWER FOCUS_FILTER_MILITARY }
 		
 		prerequisite = { focus = PRO_a6m_zero }
 		prerequisite = { focus = PRO_strategic_bombing_doctrine }
@@ -3413,6 +3472,7 @@
 	focus = {
 		id = PRO_prepared_for_the_next_war
 		icon = GFX_focus_generic_army_doctrine
+		search_filters = { FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_POLITICAL FOCUS_FILTER_MANPOWER }
 		
 		prerequisite = { focus = PRO_extensive_pilot_training focus = PRO_fortify_chubu_border focus = PRO_oxygen_torpedos }
 		
