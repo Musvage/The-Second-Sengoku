@@ -101,7 +101,7 @@ attack_kyushu = {
 
 CHU_spread_democracy = { 
 
-spread_democracy_kyu = { 
+spread_democracy_kyu_decisions = { 
 
 	icon = generic_nationalism
 
@@ -111,12 +111,14 @@ spread_democracy_kyu = {
 			has_capitulated = no
 			has_civil_war = no
 		}
-		has_completed_focus = CHU_spread_democracy
+		has_completed_focus = CHU_spread_democracy_neighbors_01
+		NOT = { has_country_flag = chugoku_democracy_revolt }
 	}
 
 	available = {
 		KYU = {
 			NOT = { has_government = democratic }
+			exists = yes
 		}	
 	}
 	
@@ -148,23 +150,26 @@ kyu_civil_war = {
 
 	visible = {
 		original_tag = CHU
-		KYU = { democratic > 0.30 has_civil_war = no }
-		has_completed_focus = CHU_spread_democracy
+		has_completed_focus = CHU_spread_democracy_neighbors_01
+		has_country_flag = chugoku_democracy_revolt_civil_war_kyu
 	}
 
 	available = {
 		KYU = {
 			NOT = { has_government = democratic }
-		}	
+			has_civil_war = no
+			exists = yes
+		}
 	}
 	
 	cost = 200
 	
 	complete_effect = {
+		set_equipment_fraction = 0.7
 	KYU = {
 		start_civil_war = {
 			ideology = democratic
-			size = 0.50
+			size = var:party_popularity@democratic	
 			capital = 100
 			states = { 139 100 120 122 74 127 17 30 }
 		}
@@ -180,7 +185,7 @@ kyu_civil_war = {
 
 }
 
-spread_democracy_shi = { 
+spread_democracy_shi_decisions = { 
 
 	icon = generic_nationalism
 
@@ -190,12 +195,14 @@ spread_democracy_shi = {
 			has_capitulated = no
 			has_civil_war = no
 		}
-		has_completed_focus = CHU_spread_democracy
+		has_completed_focus = CHU_spread_democracy_neighbors_01
+		NOT = { has_country_flag = chugoku_democracy_revolt }
 	}
 
 	available = {
 		SHI = {
 			NOT = { has_government = democratic }
+			exists = yes
 		}	
 	}
 	
@@ -227,28 +234,28 @@ shi_civil_war = {
 
 	visible = {
 		original_tag = CHU
-		SHI = { 
-			democratic > 0.30 
-			has_civil_war = no 
-		}
-		has_completed_focus = CHU_spread_democracy
+		has_completed_focus = CHU_spread_democracy_neighbors_01
+		has_country_flag = chugoku_democracy_revolt_civil_war_SHI
 	}
 
 	available = {
 		SHI = {
 			NOT = { has_government = democratic }
+			has_civil_war = no
+			exists = yes
 		}	
 	}
 	
 	cost = 200
 	
 	complete_effect = {
+		set_equipment_fraction = 0.7
 	SHI = {
 		start_civil_war = {
 			ideology = democratic
-			size = 0.50
+			size = var:party_popularity@democratic
 			capital = 207
-			states = { 201 31 200 124 207 }
+			states = { 201 31 200 124 207 85 }
 		}
 		has_added_tension_amount = 10
 	}
@@ -264,6 +271,162 @@ shi_civil_war = {
 
 }
 
+CHU_spread_democracy_kyu = { 
+	chu_kyu_democracy_revolt = { 
+
+	icon = chu_trade_unions_demand
+
+	visible = {
+		tag = CHU
+		has_country_flag = chugoku_democracy_revolt
+	}
+
+	available = {
+		KYU = {
+			exists = yes
+		}
+	}
+	
+	cost = 10
+	days_remove = 10
+	fire_only_once = no
+	
+	remove_effect = {
+		add_equipment_to_stockpile = {
+			type = infantry_equipment_1
+			amount = -500
+		}
+		add_to_variable = { var = CHU.chu_democracy_revolt_power_kyu value = 5 }
+	}
+
+	ai_will_do = {
+		factor = 0.03
+		modifier = {
+				
+		}
+			
+	}
+
+}
+}
+
+CHU_spread_democracy_shi = { 
+	chu_shi_democracy_revolt = { 
+
+	icon = chu_trade_unions_demand
+
+	visible = {
+		tag = CHU
+		has_country_flag = chugoku_democracy_revolt
+	}
+
+	available = {
+		SHI = {
+			exists = yes
+		}
+	}
+	
+	cost = 10
+
+	fire_only_once = no
+	days_remove = 10
+
+	remove_effect = {
+		add_equipment_to_stockpile = {
+			type = infantry_equipment_1
+			amount = -500
+		}
+		add_to_variable = { var = CHU.chu_democracy_revolt_power_shi value = 5 }
+	}
+
+	ai_will_do = {
+		factor = 0.03
+		modifier = {
+				
+		}
+			
+	}
+
+}
+}
+
+SHI_democracy_revolt = { 
+
+	shi_democracy_revolt_decision = { 
+
+	icon = chu_trade_unions_demand
+
+	visible = {
+		tag = SHI
+		has_country_flag = chugoku_democracy_revolt
+	}
+
+	available = {
+		
+	}
+	
+	cost = 10
+	days_remove = 10
+	fire_only_once = no
+	
+	remove_effect = {
+		add_equipment_to_stockpile = {
+			type = infantry_equipment_1
+			amount = -1000
+		}
+		add_to_variable = { var = CHU.shi_democracy_revolt_power value = 5 }
+	}
+
+	ai_will_do = {
+		factor = 0.03
+		modifier = {
+				
+		}
+			
+	}
+
+}
+
+}
+
+KYU_democracy_revolt = { 
+
+	kyu_democracy_revolt_decision = { 
+
+	icon = chu_trade_unions_demand
+
+	visible = {
+		tag = KYU
+		has_country_flag = chugoku_democracy_revolt
+	}
+
+	available = {
+
+	}
+	
+	cost = 10
+	days_remove = 10
+	fire_only_once = no
+	
+	remove_effect = {
+		add_equipment_to_stockpile = {
+			type = infantry_equipment_1
+			amount = -1000
+		}
+		add_to_variable = { var = CHU.kyu_democracy_revolt_power value = 5 }
+	}
+
+	ai_will_do = {
+		factor = 0.03
+		modifier = {
+				
+		}
+			
+	}
+
+}
+	
+}
 
 CHU_clan_management_0_category = { 
 
