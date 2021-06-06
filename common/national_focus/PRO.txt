@@ -22,7 +22,8 @@
 		
 		available = {
 			custom_trigger_tooltip = {
-				tooltip = PRO_1936_elections_unlock_tt
+				tooltip = SS_unlock_focus_tt
+				#tooltip = PRO_1936_elections_unlock_tt
 				always = no
 			}
 		}
@@ -63,9 +64,10 @@
 		}
 		
 		completion_reward = {
-		    set_politics = { ruling_party = democratic elections_allowed = no }
+		    hidden_effect = { set_politics = { ruling_party = democratic elections_allowed = no } }
 			remove_decision = PRO_election_timer
 			set_country_flag = PRO_assassination_of_the_prime_minister_completed
+			kill_ideology_leader = democratic
 			hidden_effect = {
 				create_country_leader = {
 					name = "National Diet"
@@ -146,7 +148,7 @@
 		icon = GFX_focus_PRO_heart_of_japan
 		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
 		
-		mutually_exclusive = { focus = PRO_colaborate_with_fascists }
+		mutually_exclusive = { focus = PRO_collaborate_with_fascists }
 		prerequisite = { focus = PRO_the_sun_rises }
 		
 		relative_position_id = PRO_the_sun_rises
@@ -165,9 +167,9 @@
 	}
 	
 	focus = {
-		id = PRO_colaborate_with_fascists
+		id = PRO_collaborate_with_fascists
 		icon = GFX_focus_KYU_the_black_dragon
-		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY FOCUS_FILTER_MANPOWER }
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_POLITICAL FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_MANPOWER FOCUS_FILTER_MILITARY }
 		
 		prerequisite = { focus = PRO_the_sun_rises }
 		mutually_exclusive = { focus = PRO_heart_of_japan }
@@ -183,10 +185,60 @@
 			factor = 10
 		}
 		
+		available = {
+			fascism > 0.25
+		}
+		
 		completion_reward = {
 			swap_ideas = {
 				remove_idea = PRO_political_struggle
 				add_idea = PRO_political_struggle2
+			}
+			hidden_effect = {
+				division_template = {
+					name = "Boukyou Minpei"
+					is_locked = yes
+					division_names_group = JAP_INF_01
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 0 y = 2 }
+						infantry = { x = 0 y = 3 }
+						infantry = { x = 1 y = 0 }
+						infantry = { x = 1 y = 1 }
+						infantry = { x = 1 y = 2 }
+						infantry = { x = 1 y = 3 }
+					}
+					priority = 0
+				}
+			}
+			if = {
+				limit = {
+					fascism > 0.25
+				}
+				random_controlled_state = {
+					custom_effect_tooltip = PRO_spawn_militia_2_divisions
+					hidden_effect = {
+						create_unit = {
+							division = "name = \"Boukyou Minpei\" division_template = \"Boukyou Minpei\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+							owner = ROOT
+						}
+						create_unit = {
+							division = "name = \"Boukyou Minpei\" division_template = \"Boukyou Minpei\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+							owner = ROOT
+						}
+					}
+				}
+			} else = {
+				random_controlled_state = {
+					custom_effect_tooltip = PRO_spawn_militia_1_division
+					hidden_effect = {
+						create_unit = {
+							division = "name = \"Boukyou Minpei\" division_template = \"Boukyou Minpei\" start_experience_factor = 0.2 start_equipment_factor = 0.5"
+							owner = ROOT
+						}
+					}
+				}
 			}
 		}
 	}
@@ -227,9 +279,9 @@
 		icon = GFX_focus_PRO_address_zaibatsu
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
-		prerequisite = { focus = PRO_heart_of_japan focus = PRO_colaborate_with_fascists }
+		prerequisite = { focus = PRO_heart_of_japan focus = PRO_collaborate_with_fascists }
 		
-		relative_position_id = PRO_colaborate_with_fascists
+		relative_position_id = PRO_collaborate_with_fascists
 		x = -1
 		y = 1
 		cost = 10
@@ -405,7 +457,7 @@
 		icon = GFX_focus_PRO_limit_zaibatsu
 		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_POLITICAL }
 		
-		prerequisite = { focus = PRO_heart_of_japan focus = PRO_colaborate_with_fascists }
+		prerequisite = { focus = PRO_heart_of_japan focus = PRO_collaborate_with_fascists }
 		prerequisite = { focus = PRO_adress_the_zaibatsus }
 		
 		relative_position_id = PRO_adress_the_zaibatsus
@@ -433,7 +485,7 @@
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		
 		mutually_exclusive = { focus = PRO_stop_zaibatsus_influence }
-		prerequisite = { focus = PRO_colaborate_with_fascists }
+		prerequisite = { focus = PRO_collaborate_with_fascists }
 		prerequisite = { focus = PRO_adress_the_zaibatsus }
 		
 		relative_position_id = PRO_adress_the_zaibatsus
@@ -520,7 +572,10 @@
 		
 		completion_reward = {
 			news_event = { days = 2 id = SSnews.16 }
-		    set_politics = { ruling_party = democratic_socialism elections_allowed = yes }
+			if = {
+				limit = { NOT = { has_government = democratic_socialism } }
+				set_politics = { ruling_party = democratic_socialism elections_allowed = yes }
+			}
 			add_popularity = {
 				popularity = 0.3
 				ideology = democratic_socialism
