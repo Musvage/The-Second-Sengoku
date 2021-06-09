@@ -36,7 +36,7 @@
 	focus = {
 		id = CHU_reate_autonomous_governments
 		icon = GFX_focus_generic_treaty
-		x = 25
+		x = 23
 		y = 1
 		available = {
 			date < 1938.1.1
@@ -270,180 +270,255 @@
 
 	focus = {
 		id = CHU_Unite_All_Japan_People
-		icon = GFX_focus_generic_unite_japan
-		x = 0
-		y = 2
-		cost = 20
-		available = {
-			has_completed_focus = CHU_we_are_enough_for_monarchy
-		}
-		relative_position_id = CHU_hiroshima_university2
-		available_if_capitulated = no
-		prerequisite = { focus = CHU_recruit_volunteers }
-		prerequisite = { focus = CHU_hiroshima_university2 focus = CHU_moderate_voice }
-		ai_will_do = {
-			factor = 1
-		}
-		completion_reward = {
-			every_state = {
-			limit = { is_owned_by = KAN }
-			add_core_of = CHU
-			}
-			every_state = {
-			limit = { is_owned_by = SHO }
-			add_core_of = CHU
-			}
-			every_state = {
-			limit = { is_owned_by = PRO }
-			add_core_of = CHU
-			}
-			every_state = {
-			limit = { is_owned_by = TOH }
-			add_core_of = CHU
-			}
-			every_state = {
-			limit = { is_owned_by = EZO }
-			add_core_of = CHU
-			}
-		}
-	}
-
-	focus = {
-		id = CHU_Create_the_united_japan
 		icon = GFX_focus_generic_one_empire_2
-		x = -3
+		x = 0
 		y = 2
 		cost = 10
 		available = {
 			has_completed_focus = CHU_we_are_enough_for_monarchy
 		}
-		relative_position_id = CHU_Unite_All_Japan_People
+		relative_position_id = CHU_hiroshima_university2
 		available_if_capitulated = no
-		prerequisite = { 
-			focus = CHU_destroy_fleet 
-			focus = CHU_destroy_SHI
-			focus = CHU_Unite_All_Japan_People
-		}
+		prerequisite = { focus = CHU_invite_new_ally }
+		prerequisite = { focus = CHU_hiroshima_university2 focus = CHU_moderate_voice }
 		ai_will_do = {
 			factor = 1
 		}
 		completion_reward = {
-			CHU = {
-				create_wargoal = {
-				type = take_state_focus
-				target = KAN
+			add_ideas = CHU_Unite_All_Japan_People
+			if = {
+				limit = {  KAN = {
+					exists = yes
+					is_in_faction_with = yes
+				} }
+				KAN = {
+					add_ideas = CHU_Unite_All_Japan_People
+				}
 			}
-			}
-			CHU = {
-				create_wargoal = {
-				type = take_state_focus
-				target = SHO
-			}
-			}
-			CHU = {
-				create_wargoal = {
-				type = take_state_focus
-				target = PRO
-			}
-			}
-			CHU = {
-				create_wargoal = {
-				type = take_state_focus
-				target = TOH
-			}
-			}
-			CHU = {
-				create_wargoal = {
-				type = take_state_focus
-				target = EZO
+			if = {
+				limit = { SHO = {
+					exists = yes
+					is_in_faction_with = yes
+				} }
+				SHO = {
+					add_ideas = CHU_Unite_All_Japan_People
 				}
 			}
 		}
 	}
 
 	focus = {
-		id = CHU_Banish_Foreign_Forces_from_Japan
-		icon = GFX_focus_generic_one_empire_3
-		x = 2
+		id = CHU_monarchist_technology_sharing
+		icon = GFX_goal_tfv_generic_tech_sharing
+		x = 0
 		y = 1
-		cost = 20
-		relative_position_id = CHU_Create_the_united_japan
+		cost = 10
+		available = {
+			has_completed_focus = CHU_Unite_All_Japan_People
+		}
+		relative_position_id = CHU_Unite_All_Japan_People
 		available_if_capitulated = no
-		prerequisite = { focus = CHU_Create_the_united_japan }
 		prerequisite = { focus = CHU_Unite_All_Japan_People }
 		ai_will_do = {
 			factor = 1
 		}
 		completion_reward = {
-			every_state = {
-			limit = { is_owned_by = AMC }
-			add_core_of = CHU
-			}
-			CHU = {
-				create_wargoal = {
-				type = take_state_focus
-				target = AMC
+			add_to_tech_sharing_group = New_Japanese_Empire_tech_share_group
+			if = {
+				limit = {  KAN = {
+					exists = yes
+					is_in_faction_with = yes
+				} }
+				KAN = {
+					add_to_tech_sharing_group = New_Japanese_Empire_tech_share_group
 				}
 			}
-			every_state = {
-			limit = { is_owned_by = OSA }
-			add_core_of = CHU
-			}
-			CHU = {
-				create_wargoal = {
-				type = take_state_focus
-				target = OSA
+			if = {
+				limit = { SHO = {
+					exists = yes
+					is_in_faction_with = yes
+				} }
+				SHO = {
+					add_to_tech_sharing_group = New_Japanese_Empire_tech_share_group
 				}
 			}
-			every_state = {
-			limit = { is_owned_by = KOB }
-			add_core_of = CHU
-			}
-			CHU = {
-				create_wargoal = {
-				type = take_state_focus
-				target = KOB
+		}
+	}
+
+	focus = {
+		id = CHU_monarchist_industry
+		icon = GFX_focus_KAN_nationalist_front
+		x = 0
+		y = 1
+		cost = 10
+		available = {
+		
+		}
+		relative_position_id = CHU_monarchist_technology_sharing
+		available_if_capitulated = no
+		prerequisite = { focus = CHU_monarchist_technology_sharing }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = arms_factory
+					level = 2
+					instant_build = yes
 				}
 			}
-			every_state = {
-			limit = { is_owned_by = REI }
-			add_core_of = CHU
-			}
-			CHU = {
-				create_wargoal = {
-				type = take_state_focus
-				target = REI
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
 				}
 			}
-			every_state = {
-			limit = { is_owned_by = HIR }
-			add_core_of = CHU
-			}
-			CHU = {
-				create_wargoal = {
-				type = take_state_focus
-				target = HIR
+			if = {
+				limit = {  KAN = {
+					exists = yes
+					is_in_faction_with = yes
+				} }
+				KAN = {
+					random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = arms_factory
+					level = 2
+					instant_build = yes
 				}
 			}
-			every_state = {
-			limit = { is_owned_by = PRT }
-			add_core_of = CHU
-			}
-			CHU = {
-				create_wargoal = {
-				type = take_state_focus
-				target = PRT
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
 				}
 			}
-			every_state = {
-			limit = { is_owned_by = FER }
-			add_core_of = CHU
-			}
-			CHU = {
-				create_wargoal = {
-				type = take_state_focus
-				target = FER
 				}
+			}
+			if = {
+				limit = { SHO = {
+					exists = yes
+					is_in_faction_with = yes
+				} }
+				SHO = {
+					random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = arms_factory
+					level = 2
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = CHU_defend_monarchist_nations
+		icon = GFX_focus_KAN_national_defense_state
+		x = 0
+		y = 1
+		cost = 10
+		available = {
+		
+		}
+		relative_position_id = CHU_monarchist_industry
+		available_if_capitulated = no
+		prerequisite = { focus = CHU_monarchist_industry }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			add_ideas = CHU_defend_monarchist_nations
+			if = {
+				limit = {  KAN = {
+					exists = yes
+					is_in_faction_with = yes
+				} }
+				KAN = {
+					add_ideas = CHU_defend_monarchist_nations
+				}
+			}
+			if = {
+				limit = { SHO = {
+					exists = yes
+					is_in_faction_with = yes
+				} }
+				SHO = {
+					add_ideas = CHU_defend_monarchist_nations
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = CHU_unite_all_monarchist
+		icon = GFX_focus_SHO_united
+		x = 0
+		y = 1
+		cost = 20
+		available = {
+			OR = {
+				KAN = { is_in_faction_with = ROOT }
+				SHO = { is_in_faction_with = ROOT }
+			}
+		}
+		relative_position_id = CHU_defend_monarchist_nations
+		available_if_capitulated = no
+		prerequisite = { focus = CHU_defend_monarchist_nations }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			if = {
+				limit = {  KAN = {
+					exists = yes
+					is_in_faction_with = yes
+				} }
+				annex_country = { target = KAN transfer_troops = yes }
+			}
+			if = {
+				limit = { SHO = {
+					exists = yes
+					is_in_faction_with = yes
+				} }
+				annex_country = { target = SHO transfer_troops = yes }
 			}
 		}
 	}
@@ -4107,6 +4182,9 @@
 		icon = GFX_goal_tfv_generic_tech_sharing
 		x = 0
 		y = 1
+		available = {
+			is_in_faction_with = yes
+		}
 		relative_position_id = CHU_clans_developt_infrustracture_2
 		prerequisite = { focus = CHU_clans_developt_civilian_2 }
 		prerequisite = { focus = CHU_clans_developt_infrustracture_2 }
@@ -4126,6 +4204,7 @@
 					}
 				}
 				add_research_slot = 1
+				add_to_tech_sharing_group = chugoku_clans_tech_share_group
 			}
 			hidden_effect = {
 				#UCC
@@ -4142,6 +4221,7 @@
 				}
 				UCC = {
 					add_research_slot = 1
+					add_to_tech_sharing_group = chugoku_clans_tech_share_group
 				}
 			}
 			#OIK
@@ -4158,6 +4238,7 @@
 				}
 				OIK = {
 					add_research_slot = 1
+					add_to_tech_sharing_group = chugoku_clans_tech_share_group
 				}
 			}
 			#TMA
@@ -4174,6 +4255,7 @@
 				}
 				TMA = {
 					add_research_slot = 1
+					add_to_tech_sharing_group = chugoku_clans_tech_share_group
 				}
 			}
 			#IKE
@@ -4190,6 +4272,7 @@
 				}
 				IKE = {
 					add_research_slot = 1
+					add_to_tech_sharing_group = chugoku_clans_tech_share_group
 				}
 			}
 			#MAT
@@ -4206,6 +4289,7 @@
 				}
 				MAT = {
 					add_research_slot = 1
+					add_to_tech_sharing_group = chugoku_clans_tech_share_group
 				}
 			}
 			#AMA
@@ -4222,6 +4306,7 @@
 				}
 				AMA = {
 					add_research_slot = 1
+					add_to_tech_sharing_group = chugoku_clans_tech_share_group
 				}
 			}
 			#ABE
@@ -4238,6 +4323,7 @@
 				}
 				ABE = {
 				add_research_slot = 1
+				add_to_tech_sharing_group = chugoku_clans_tech_share_group
 				}
 			}
 			#ASO
@@ -4254,6 +4340,7 @@
 				}
 				ASO = {
 					add_research_slot = 1
+					add_to_tech_sharing_group = chugoku_clans_tech_share_group
 				}
 			}
 			}
@@ -6502,10 +6589,6 @@
 			add_political_power = 50
 			add_stability = -0.10
 			add_war_support = 0.05
-			every_state = {
-			limit = { is_owned_by = KYU }
-			add_core_of = CHU
-			}
 			CHU = {
 				declare_war_on = {
 				target = KYU
@@ -6539,16 +6622,155 @@
 			add_political_power = 50
 			add_stability = -0.10
 			add_war_support = 0.05
-			every_state = {
-			limit = { is_owned_by = SHI }
-			add_core_of = CHU
-			}
 			CHU = {
 				declare_war_on = {
 				target = SHI
 				type = take_state_focus
 				generator = { 100 }
 				}
+			}
+		}
+	}
+
+		focus = {
+		id = CHU_Create_the_united_japan
+		icon = GFX_focus_generic_unite_japan
+		x = -1
+		y = 1
+		cost = 10
+		available = {
+			has_completed_focus = CHU_we_are_enough_for_monarchy
+		}
+		relative_position_id = CHU_destroy_SHI
+		available_if_capitulated = no
+		prerequisite = { 
+			focus = CHU_destroy_fleet 
+			focus = CHU_destroy_SHI
+		}
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			if = {
+				limit = { KAN = { NOT = {is_in_faction_with = CHU}}}
+				create_wargoal = {
+				type = take_state_focus
+				target = KAN
+				}
+			}
+			if = {
+				limit = { SHO = { NOT = {is_in_faction_with = CHU}}}
+				create_wargoal = {
+				type = take_state_focus
+				target = SHO
+			}
+			}
+			CHU = {
+				create_wargoal = {
+				type = take_state_focus
+				target = PRO
+			}
+			}
+			CHU = {
+				create_wargoal = {
+				type = take_state_focus
+				target = TOH
+			}
+			}
+			CHU = {
+				create_wargoal = {
+				type = take_state_focus
+				target = EZO
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = CHU_Banish_Foreign_Forces_from_Japan
+		icon = GFX_focus_generic_one_empire_3
+		x = 0
+		y = 1
+		cost = 20
+		relative_position_id = CHU_Create_the_united_japan
+		available_if_capitulated = no
+		prerequisite = { focus = CHU_Create_the_united_japan }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			custom_effect_tooltip = gain_war_goal_for_all_colonial_states
+			hidden_effect = {
+			every_state = {
+			limit = { is_owned_by = AMC }
+			add_core_of = CHU
+			}
+			CHU = {
+				create_wargoal = {
+				type = take_state_focus
+				target = AMC
+				}
+			}
+			every_state = {
+			limit = { is_owned_by = OSA }
+			add_core_of = CHU
+			}
+			CHU = {
+				create_wargoal = {
+				type = take_state_focus
+				target = OSA
+				}
+			}
+			every_state = {
+			limit = { is_owned_by = KOB }
+			add_core_of = CHU
+			}
+			CHU = {
+				create_wargoal = {
+				type = take_state_focus
+				target = KOB
+				}
+			}
+			every_state = {
+			limit = { is_owned_by = REI }
+			add_core_of = CHU
+			}
+			CHU = {
+				create_wargoal = {
+				type = take_state_focus
+				target = REI
+				}
+			}
+			every_state = {
+			limit = { is_owned_by = HIR }
+			add_core_of = CHU
+			}
+			CHU = {
+				create_wargoal = {
+				type = take_state_focus
+				target = HIR
+				}
+			}
+			every_state = {
+			limit = { is_owned_by = PRT }
+			add_core_of = CHU
+			}
+			CHU = {
+				create_wargoal = {
+				type = take_state_focus
+				target = PRT
+				}
+			}
+			every_state = {
+			limit = { is_owned_by = FER }
+			add_core_of = CHU
+			}
+			CHU = {
+				create_wargoal = {
+				type = take_state_focus
+				target = FER
+				}
+			}
 			}
 		}
 	}
@@ -8185,6 +8407,11 @@
 			factor = 1
 		}
 
+		bypass = {
+			IMS = {
+				exists = no
+			}
+		}
 
 		completion_reward = {
 			26 = {
