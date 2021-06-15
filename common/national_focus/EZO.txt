@@ -54,6 +54,7 @@ focus_tree = {
 		completion_reward = {
 			add_stability = 0.05
 			custom_effect_tooltip = unlock_desions_traditionalism
+			
 		}
 		search_filters = { FOCUS_FILTER_POLITICAL }
 	}
@@ -64,7 +65,7 @@ focus_tree = {
 		x = -8
 		y = 2
 		cost = 10
-		available = {  }
+		available = { country_exists = PRO }
 		prerequisite = { focus = EZO_elections focus = EZO_traditionalism }
 		relative_position_id = EZO_traditionalism
 		ai_will_do = {
@@ -101,7 +102,7 @@ focus_tree = {
 		x = 0
 		y = 1
 		cost = 10
-		available = {  }
+		available = { country_exists = PRO }
 		prerequisite = { focus = EZO_get_support_from_PRO }
 		relative_position_id = EZO_get_support_from_PRO
 		ai_will_do = {
@@ -133,7 +134,7 @@ focus_tree = {
 		x = 1
 		y = 1
 		cost = 10
-		available = {  }
+		available = { country_exists = PRO }
 		prerequisite = { focus = EZO_strengthen_social_democratic_system }
 		relative_position_id = EZO_strengthen_social_democratic_system
 		ai_will_do = {
@@ -200,7 +201,7 @@ focus_tree = {
 		x = 0
 		y = 1
 		cost = 10
-		available = {  }
+		available = { country_exists = PRO }
 		prerequisite = { focus = EZO_echonomic_aid }
 		relative_position_id = EZO_echonomic_aid
 		ai_will_do = {
@@ -229,7 +230,7 @@ focus_tree = {
 		x = -1
 		y = 1
 		cost = 10
-		available = {  }
+		available = { country_exists = PRO }
 		prerequisite = { focus = EZO_strengthen_social_democratic_system }
 		relative_position_id = EZO_strengthen_social_democratic_system
 		ai_will_do = {
@@ -260,7 +261,7 @@ focus_tree = {
 		x = 0
 		y = 1
 		cost = 10
-		available = {  }
+		available = { country_exists = PRO }
 		prerequisite = { focus = EZO_technology_transfer }
 		relative_position_id = EZO_technology_transfer
 		ai_will_do = {
@@ -299,11 +300,11 @@ focus_tree = {
 
 	focus = {
 		id = EZO_technology_transfer_industrial
-		icon = GFX_
+		icon = GFX_focus_KYU_naval_academy
 		x = 1
 		y = 1
 		cost = 10
-		available = {  }
+		available = { country_exists = PRO }
 		prerequisite = { focus = EZO_new_farmer_technology_integrat focus = EZO_technology_transfer_army }
 		relative_position_id = EZO_technology_transfer_army
 		ai_will_do = {
@@ -803,13 +804,14 @@ focus_tree = {
 		y = 1
 		cost = 10
 		available = {  }
-		mutually_exclusive = { focus = EZO_deal_separatists }
+		mutually_exclusive = { focus = EZO_suppress_the_separatists }
 		prerequisite = { focus = EZO_defend_nationalist }
 		relative_position_id = EZO_defend_nationalist
 		ai_will_do = {
 			factor = 10
 		}	
 		completion_reward = {
+			country_event = { id = WIT.3 days = 3 }
 			add_stability = -0.20
 			set_party_name = { 
 				ideology = neutrality
@@ -828,6 +830,7 @@ focus_tree = {
 				long_name = White_Russia_Party
 				name = WRP
 				}
+				set_technology = { russian_infantry = 1 }
 				add_ideas = WHI_We_dont_want_to_fight_them
 				transfer_state = 48
 				transfer_state = 3
@@ -849,12 +852,12 @@ focus_tree = {
 						division_names_group = EZO_INF_03
 
 						regiments = {
-							infantry = { x = 0 y = 0 }
-							infantry = { x = 0 y = 1 }
-							infantry = { x = 0 y = 2 }
-							infantry = { x = 1 y = 0 }
-							infantry = { x = 1 y = 1 }
-							infantry = { x = 1 y = 2 }
+							russian_infantry = { x = 0 y = 0 }
+							russian_infantry = { x = 0 y = 1 }
+							russian_infantry = { x = 0 y = 2 }
+							russian_infantry = { x = 1 y = 0 }
+							russian_infantry = { x = 1 y = 1 }
+							russian_infantry = { x = 1 y = 2 }
 						}
 						support = {
 							engineer = { x = 0 y = 0 }
@@ -961,6 +964,24 @@ focus_tree = {
 					}
 				}
 			}
+			hidden_effect = {
+				FROM = { 
+					every_unit_leader = {
+						limit = {
+							has_trait = foreign_general
+						}
+						set_nationality = WIT
+					}
+				}	
+				FROM = { 
+					every_unit_leader = {
+						limit = {
+							has_trait = foreign_admiral
+						}
+						set_nationality = WIT
+					}
+				}
+			}
 			#exrussian fleet add WIT
 
 					transfer_ship = {
@@ -998,13 +1019,130 @@ focus_tree = {
 	}
 
 	focus = {
-		id = EZO_fighting_separatists
+		id = EZO_industry_help_WIT
+		icon = GFX_
+		x = 0
+		y = 1
+		cost = 10
+		available = { country_exists = WIT }
+	
+		prerequisite = { focus = EZO_deal_separatists }
+		relative_position_id = EZO_deal_separatists
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			add_opinion_modifier = {
+			    target = WIT
+			    modifier = huge_increase
+			}
+			WIT = {
+				add_opinion_modifier = {
+			    	target = EZO
+			    	modifier = huge_increase
+				}
+			}
+
+			WIT = {
+				random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+				}
+				random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			}
+		}
+		search_filters = { FOCUS_FILTER_POLITICAL }
+	}
+
+	focus = {
+		id = EZO_send_volunteers_WIT
+		icon = GFX_
+		x = 0
+		y = 1
+		cost = 10
+		available = { country_exists = WIT }
+	
+		prerequisite = { focus = EZO_industry_help_WIT }
+		relative_position_id = EZO_industry_help_WIT
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			add_opinion_modifier = {
+			    target = WIT
+			    modifier = offered_support
+			}
+			WIT = {
+				add_opinion_modifier = {
+			    	target = EZO
+			    	modifier = offered_support
+				}
+			}
+			add_timed_idea = {
+				idea = EZO_send_volunteers
+				days = 180
+			}
+			WIT = {
+				add_timed_idea = {
+				idea = EZO_send_volunteers_WIT
+				days = 180
+				}
+			}
+		}
+		search_filters = { FOCUS_FILTER_POLITICAL }
+	}
+
+	focus = {
+		id = EZO_demand_green_ukraine_lands
+		icon = GFX_
+		x = 0
+		y = 1
+		cost = 10
+		available = { 
+			WIT = {
+				has_completed_focus = WIT_enemy
+				NOT = { 
+					WIT = { has_war_with = FER }
+					country_exists = FER
+				}
+			}
+		 }
+	
+		prerequisite = { focus = EZO_send_volunteers_WIT }
+		relative_position_id = EZO_send_volunteers_WIT
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			WIT = {
+				country_event = { id = WIT.2 days = 7 }
+			}
+			custom_effect_tooltip = Unlock_decisions_green_ukraine
+			set_country_flag = unlock_establish_green_ukraine
+			drop_cosmetic_tag = yes
+		}
+		search_filters = { FOCUS_FILTER_POLITICAL }
+	}
+
+	focus = {
+		id = EZO_suppress_the_separatists
 		icon = GFX_
 		x = -1
 		y = 1
 		cost = 10
 		available = {  }
-		mutually_exclusive = { focus = EZO_fighting_separatists }
+		mutually_exclusive = { focus = EZO_deal_separatists }
 		prerequisite = { focus = EZO_defend_nationalist }
 		relative_position_id = EZO_defend_nationalist
 		ai_will_do = {
@@ -1020,14 +1158,8 @@ focus_tree = {
 					add_idea = EZO_white_russians_people_angry
 				}
 			}
+			set_technology = { russian_infantry = 1 }
 			add_stability = -0.10
-			remove_ideas = EZO_white_russians_people
-			remove_unit_leader = 301
-			remove_unit_leader = 901
-			remove_unit_leader = 902
-			remove_unit_leader = 903
-			remove_unit_leader = 904
-			retire_ideology_leader = neutrality
 			country_event = { id = EZO.25 days = 5 }
 		}
 		search_filters = { FOCUS_FILTER_POLITICAL }
@@ -1074,7 +1206,7 @@ focus_tree = {
 	focus = {
 		id = EZO_League_Of_Nations
 		icon = GFX_focus_EZO_League_Of_Nations
-		x = 22
+		x = 24
 		y = 1
 		cost = 10
 		mutually_exclusive = { focus = EZO_elections }
@@ -1140,7 +1272,7 @@ focus_tree = {
 
 	focus = {
 		id = EZO_build_rail_ways
-		icon = GFX_
+		icon = GFX_goal_generic_construct_infrastructure
 		x = -2
 		y = 1
 		cost = 10
@@ -1407,7 +1539,7 @@ focus_tree = {
 
 	focus = {
 		id = EZO_open_hakodate_university
-		icon = GFX_focus_KAN_kyoto_university
+		icon = GFX_
 		x = -2
 		y = 1
 		cost = 10
@@ -1549,7 +1681,7 @@ focus_tree = {
 
 	focus = {
 		id = EZO_nationalise_the_industry
-		icon = GFX_
+		icon = GFX_focus_PRO_zaibatsu_partnership
 		x = -1
 		y = 1
 		cost = 9
@@ -1567,7 +1699,7 @@ focus_tree = {
 
 	focus = {
 		id = EZO_unionise_the_workers
-		icon = GFX_
+		icon = GFX_focus_SHI_industrialization
 		x = 1
 		y = 1
 		relative_position_id = EZO_nationalise_the_industry
@@ -1623,7 +1755,7 @@ focus_tree = {
 	}
 	focus = {
 		id = EZO_Yotei_bank
-		icon = GFX_
+		icon = GFX_focus_PRO_subsidize_loans
 		x = 1
 		y = 1
 		relative_position_id = EZO_kolchi_kido
@@ -1739,7 +1871,7 @@ focus_tree = {
 	}
 	focus = {
 		id = EZO_The_National_Hokkaido_Rail
-		icon = GFX_
+		icon = GFX_goal_generic_construct_infrastructure
 		x = 1
 		y = 1
 		relative_position_id = EZO_tetsu_katayama
@@ -1804,6 +1936,7 @@ focus_tree = {
 		x = 0
 		y = 1
 		available = {
+			country_exists = PRO
 			PRO = {
 				has_opinion = {
 					target = EZO
@@ -1859,7 +1992,7 @@ focus_tree = {
 	focus = {
 		id = EZO_observe_japan
 		icon = GFX_focus_EZO_observe_japan
-		x = -5
+		x = -7
 		y = 1
 		relative_position_id = EZO_akai_rising
 		cost = 7
@@ -1893,6 +2026,79 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus EZO_defend_the_sea"
 			navy_experience = 50
 			
+		}
+	}
+	focus = {
+		id = EZO_defend_the_air
+		icon = GFX_
+		x = 3
+		y = 1
+		relative_position_id = EZO_observe_japan
+		cost = 10
+		prerequisite = {
+			focus = EZO_observe_japan
+			focus = EZO_Yotei_bank
+			focus = EZO_the_white_coat_coup
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			air_experience = 50
+		}
+	}
+	focus = {
+		id = EZO_defend_the_fighter
+		icon = GFX_focus_PRO_a6m_zero
+		x = 0
+		y = 1
+		relative_position_id = EZO_defend_the_air
+		cost = 10
+		prerequisite = {
+			focus = EZO_defend_the_air
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			add_tech_bonus = {
+				name = EZO_Create_land_force
+				bonus = 0.50
+				uses = 2
+				category = light_fighter
+			}
+		}
+	}
+	focus = {
+		id = EZO_defend_the_air_base
+		icon = GFX_goal_generic_air_production
+		x = 0
+		y = 2
+		relative_position_id = EZO_defend_the_fighter
+		cost = 10
+		prerequisite = {
+			focus = EZO_defend_the_fighter
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			214 = {
+				if = {
+					limit = {
+						free_building_slots = {
+							building = air_base
+							size > 1
+							include_locked = yes
+						}
+					}
+				}
+				add_building_construction = {
+					type = air_base
+					level = 2
+					instant_build = yes
+				}
+			}
 		}
 	}
 	focus = {
@@ -1946,12 +2152,13 @@ focus_tree = {
 	}
 	focus = {
 		id = EZO_support_PRO
-		icon = GFX_focus_PRO_urbanise_tokyo_bay
+		icon = GFX_focus_SHO_special_operation
 		x = 0
 		y = 2
 		relative_position_id = EZO_prepare_arms
 		cost = 7
 		available = {
+			country_exists = PRO
 			NOT = {
 				AND = {
 					has_completed_focus = EZO_akai_rising
@@ -1998,7 +2205,7 @@ focus_tree = {
 			add_tech_bonus = {
 				name = "Listen Beyond Hokkaido"
     			bonus = 0.5
-	    		uses = 1
+	    		uses = 2
 			    category = radar_tech
 			}
 
@@ -2051,7 +2258,7 @@ focus_tree = {
 	}
 	focus = {
 		id = EZO_truck_to_tokyo
-		icon = GFX_
+		icon = GFX_focus_TOH_motor_effort
 		x = 1
 		y = 1
 		relative_position_id = EZO_fund_military_academies
@@ -2067,14 +2274,14 @@ focus_tree = {
 			add_tech_bonus = {
 				name = "Truck to Tokyo"
     			bonus = 1
-	    		uses = 1
+	    		uses = 2
 			    category = motorized_equipment
 			}
 		}
 	}
 	focus = {
 		id = EZO_prepare_motorize
-		icon = GFX_
+		icon = GFX_focus_PRO_zaibatsu_partnership
 		x = 0
 		y = 1
 		relative_position_id =  EZO_truck_to_tokyo
@@ -2114,7 +2321,7 @@ focus_tree = {
 			add_tech_bonus = {
 				name = "Ezo Armor"
     			bonus = 1
-	    		uses = 1
+	    		uses = 2
 			    category = armor
 			}
 		}
@@ -2228,7 +2435,7 @@ focus_tree = {
 			add_tech_bonus = {
 				name = nuke_bonus
 				bonus = 1.0
-				uses = 1
+				uses = 2
 				category = nuclear
 			}
 		}
@@ -2289,6 +2496,7 @@ focus_tree = {
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus EZO_clan_deals"
 			add_stability = 0.10
+			set_technology = { russian_infantry = 1 }
 		}
 		search_filters = { FOCUS_FILTER_POLITICAL }
 	}
@@ -2554,7 +2762,7 @@ focus_tree = {
 	}
 	focus = {
 		id = EZO_akai_revolutionary_council
-		icon = GFX_
+		icon = GFX_focus_TOH_one_party_rule
 		x = 0
 		y = 1
 		relative_position_id = EZO_akai_rising
@@ -2585,7 +2793,7 @@ focus_tree = {
 	}
 	focus = {
 		id = EZO_private_talk_with_stalin
-		icon = GFX_
+		icon = GFX_focus_TOH_stalinists
 		x = -1
 		y = 1
 		relative_position_id = EZO_akai_revolutionary_council
@@ -2614,7 +2822,7 @@ focus_tree = {
 	}
 	focus = {
 		id = EZO_invite_communist_advisors
-		icon = GFX_
+		icon = GFX_focus_TOH_invite_soviet_advisors
 		x = -1
 		y = 1
 		relative_position_id = EZO_private_talk_with_stalin
@@ -2632,7 +2840,7 @@ focus_tree = {
 	}
 	focus = {
 		id = EZO_communist_army_order 
-		icon = GFX_
+		icon = GFX_focus_TOH_soviet_licenses
 		x = 0
 		y = 1
 		relative_position_id = EZO_invite_communist_advisors
@@ -2650,7 +2858,7 @@ focus_tree = {
 	}
 	focus = {
 		id = EZO_private_talk_with_nosaka
-		icon = GFX_
+		icon = GFX_focus_TOH_one_state
 		x = 1
 		y = 1
 		relative_position_id = EZO_akai_revolutionary_council
@@ -2678,7 +2886,7 @@ focus_tree = {
 	}
 	focus = {
 		id = EZO_establish_the_northern_workers_union
-		icon = GFX_
+		icon = GFX_FER_the_soviet_worker
 		x = -1
 		y = 1
 		relative_position_id = EZO_private_talk_with_nosaka
@@ -2707,7 +2915,7 @@ focus_tree = {
 
 	focus = {
 		id = EZO_communist_cooperation 
-		icon = GFX_
+		icon = GFX_FER_rapid_industrialisation
 		x = 0
 		y = 1
 		relative_position_id = EZO_establish_the_northern_workers_union
@@ -2777,7 +2985,7 @@ focus_tree = {
 
 	focus = {
 		id = EZO_create_communist_front
-		icon = GFX_
+		icon = GFX_focus_TOH_the_spread_of_communism
 		x = 0
 		y = 1
 		relative_position_id = EZO_communist_cooperation 
@@ -2805,7 +3013,7 @@ focus_tree = {
 
 	focus = {
 		id = EZO_echonomic_aid_FER_and_TOH
-		icon = GFX_
+		icon = GFX_focus_TOH_reduce_farm_taxes
 		x = 2
 		y = 1
 		relative_position_id = EZO_communist_cooperation 
