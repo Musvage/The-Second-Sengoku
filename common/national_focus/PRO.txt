@@ -615,7 +615,7 @@
 		}
 	}
 	
-	focus = {
+	focus = {	############ CHANGE LATER ############ CHANGE LATER ############ CHANGE LATER ############ CHANGE LATER 
 		id = PRO_neutrality_act
 		icon = GFX_focus_PRO_neutrality_act
 		
@@ -750,7 +750,7 @@
 	focus = {
 		id = PRO_republicanism
 		icon = GFX_focus_PRO_republicanism
-		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		search_filters = { FOCUS_FILTER_MANPOWER }
 		
 		mutually_exclusive = { focus = PRO_prince_chichibu_arrives }
 		prerequisite = { focus = PRO_guide_the_zaibatsus focus = PRO_eliminate_radicalism focus = PRO_stop_zaibatsus_influence }
@@ -771,14 +771,14 @@
 		}
 		
 		completion_reward = {
-			country_event = { id = pro.3 days = 2 } 
+			add_ideas = PRO_idea_republicanism
 		}
 	}
 	
 	focus = {	#
 		id = PRO_great_tokyo
 		icon = GFX_focus_PRO_great_tokyo
-		search_filters = { FOCUS_FILTER_INDUSTRY }
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_DIPLOMACY }
 
 		prerequisite = { focus = PRO_expansive_monetary_policy focus = PRO_issue_debt_bonds }
 		
@@ -798,6 +798,7 @@
 		}
 		
 		completion_reward = {
+			set_rule = { can_create_factions = yes }
 			29 = {
 				if = {
 					limit = {
@@ -926,6 +927,7 @@
 		}
 		
 		completion_reward = {
+			set_rule = { can_create_factions = yes }
 			country_event = { id = pro.3 days = 2 } 
 		}
 	}
@@ -933,7 +935,7 @@
 	focus = {
 		id = PRO_war_cabinet
 		icon = GFX_focus_PRO_war_cabinet
-		search_filters = { FOCUS_FILTER_WAR_SUPPORT }
+		search_filters = { FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_DIPLOMACY }
 		
 		prerequisite = { focus = PRO_republicanism }
 		
@@ -949,15 +951,16 @@
 		}
 		
 		completion_reward = {
+			set_rule = { can_create_factions = yes }
 			add_war_support = 0.05
-			add_ideas = PRO_war_cabinet_2
+			#add_ideas = PRO_war_cabinet
 		}
 	}
 	
 	focus = {
 		id = PRO_military_reforms
 		icon = GFX_focus_generic_army_quality
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_DIPLOMACY }
 
 		prerequisite = { focus = PRO_military_rule focus = PRO_consented_opposition }
 		
@@ -973,6 +976,7 @@
 		}
 		
 		completion_reward = {
+			set_rule = { can_create_factions = yes }
 			add_tech_bonus = {
 				name = land_doc_bonus
 				bonus = 2.0
@@ -1062,7 +1066,7 @@
 	focus = {
 		id = PRO_aizuwakamatsu_iwaki
 		icon = GFX_focus_PRO_aizuwakamatsu_iwaki
-		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		search_filters = { FOCUS_FILTER_ANNEXATION }
 		
 		mutually_exclusive = { focus = PRO_modus_vivendi }
 		prerequisite = { focus = PRO_military_reforms focus = PRO_conference_of_the_two_capitals focus = PRO_war_cabinet focus = PRO_great_tokyo }
@@ -1649,7 +1653,14 @@
 		
 		completion_reward = {
 			add_ideas = PRO_idea_propaganda_machine
-			hidden_effect = { add_dynamic_modifier = { modifier = PRO_modifier_propaganda_machine } }
+			hidden_effect = {
+				if = {
+					limit = {
+						NOT = { has_dynamic_modifier = { modifier = PRO_modifier_ruling_party_popularity } }
+					}
+					add_dynamic_modifier = { modifier = PRO_modifier_ruling_party_popularity }
+				}
+			}
 		}
 	}
 
@@ -1674,12 +1685,21 @@
 		
 		completion_reward = {
 			add_ideas = PRO_idea_ban_extremist_parties
+			hidden_effect = {
+				if = {
+					limit = {
+						NOT = { has_dynamic_modifier = { modifier = PRO_modifier_ruling_party_popularity } }
+					}
+					add_dynamic_modifier = { modifier = PRO_modifier_ruling_party_popularity }
+				}
+			}
 		}
 	}
 	
 	focus = {
 		id = PRO_intelligence_service
 		icon = GFX_focus_PRO_intelligence_service
+		search_filters = { FOCUS_FILTER_SPY }
 		
 		prerequisite = { focus = PRO_propaganda_machine focus = PRO_ban_extremist_parties }
 		
@@ -1702,6 +1722,7 @@
 	focus = {
 		id = PRO_military_rule
 		icon = GFX_focus_PRO_japanese_entente
+		search_filters = { FOCUS_FILTER_MILITARY }
 		
 		prerequisite = { focus = PRO_propaganda_machine }
 		
@@ -1717,7 +1738,7 @@
 		}
 		
 		completion_reward = {
-		
+			add_ideas = PRO_idea_military_rule
 		}
 	}
 	
@@ -3581,7 +3602,7 @@
 		completion_reward = {
 			add_ideas = PRO_prepared_for_the_next_war
 			add_war_support = 0.10
-			set_rule = { can_create_factions = yes }
+			#set_rule = { can_create_factions = yes }
 		}
 	}
 	
@@ -3589,8 +3610,9 @@
 
 
 #End of focuses 
- }
+}
 
+#FOCUS_FILTER_SPY
 #FOCUS_FILTER_ANNEXATION
 #FOCUS_FILTER_DIPLOMACY
 #FOCUS_FILTER_EQUIPMENT
