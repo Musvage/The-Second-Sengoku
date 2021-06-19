@@ -13,9 +13,9 @@ country_event = {
 	# Assassination
 	option = {
 		name = pro.1.a
-ai_chance = {
-				base = 0
-			}
+		ai_chance = {
+			base = 0
+		}
 		complete_national_focus = PRO_assassination_of_the_prime_minister
 		add_political_power = -35
 		add_popularity = {
@@ -26,9 +26,9 @@ ai_chance = {
 	# Elections Continue
 	option = {
 		name = pro.1.b
-ai_chance = {
-				base = 100
-			}
+		ai_chance = {
+			base = 100
+		}
 		complete_national_focus = PRO_1936_elections
 	}
 }
@@ -702,4 +702,222 @@ country_event = { # Chubu Federation strikes at us
 			country_event = shogunate.36
 		}
 	}
+}
+
+country_event = {	# ZAIBATSU TAKEOVER - CHOOSE LEADER
+	id = pro.17
+	title = pro.17.t
+	desc = pro.17.desc
+	picture = GFX_report_event_election_vote
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = pro.17.a1
+		trigger = {
+			OR = {
+				has_idea = asano_tank_manufacturer_1
+				has_idea = asano_naval_manufacturer_1
+				has_idea = asano_aircraft_manufacturer_1
+				has_idea = asano_industrial_concern_1
+				has_idea = asano_equipment_manufacturer_1
+			}
+		}
+		create_country_leader = {
+			name = "Ryozo Asano"
+			desc = "POLITICS_BIGFOUR_DESC"
+			picture = "Portrait_PRO_Ryozo_Asano.dds"
+			expire = "1965.1.1"
+			ideology = oligarchism
+			traits = {
+				PRO_zaibatsu_leader
+				PRO_ryozo_asano_trait
+			}
+		}
+	}
+	option = {
+		name = pro.17.a2
+		trigger = {
+			OR = {
+				has_idea = mitsui_tank_manufacturer_1
+				has_idea = mitsui_naval_manufacturer_1
+				has_idea = mitsui_aircraft_manufacturer_1
+				has_idea = mitsui_industrial_concern_1
+				has_idea = mitsui_equipment_manufacturer_1
+			}
+		}
+		create_country_leader = {
+			name = "Masuda Takashi"
+			desc = "POLITICS_BIGFOUR_DESC"
+			picture = "Portrait_PRO_Masuda_Takashi.dds"
+			expire = "1965.1.1"
+			ideology = oligarchism
+			traits = {
+				PRO_zaibatsu_leader
+				PRO_masuda_takashi_trait
+			}
+		}
+	}
+	option = {
+		name = "REMOVE THIS LATER"
+		trigger = {
+			always = yes
+		}
+		create_country_leader = {
+			name = "Masuda Takashi"
+			desc = "POLITICS_BIGFOUR_DESC"
+			picture = "Portrait_PRO_Masuda_Takashi.dds"
+			expire = "1965.1.1"
+			ideology = oligarchism
+			traits = {
+				PRO_zaibatsu_leader
+				PRO_masuda_takashi_trait
+			}
+		}
+	}
+}
+
+country_event = {	# MODUS VIVENDI - PRO offers non-aggression and drop claims to TOH
+	id = pro.18
+	title = pro.18.t
+	desc = pro.18.desc
+	picture = GFX_report_event_election_vote
+	
+	is_triggered_only = yes
+	
+	option = {	# accepts
+		name = pro.18.a1
+		effect_tooltip  = {
+			diplomatic_relation = {
+				country = PRO
+				relation = non_aggression_pact
+				active = yes
+			}
+			131 = { remove_claim_by = PRO }
+			43 = { remove_claim_by = PRO }
+			96 = { remove_claim_by = PRO }
+			add_opinion_modifier = {
+				target = PRO
+				modifier = PRO_modus_vivendi_opinion
+			}
+			PRO = {
+				add_opinion_modifier = {
+					target = TOH
+					modifier = PRO_modus_vivendi_opinion
+				}
+			}
+		}
+		hidden_effect = {
+			PRO = { country_event = pro.19 }
+		}
+		ai_chance = {
+			base = 100
+			modifier = {
+				factor = 0.5
+				strength_ratio = {
+					tag = PRO
+					ratio > 1
+				}
+			}
+			modifier = {
+				factor = 0.5
+				strength_ratio = {
+					tag = PRO
+					ratio > 2
+				}
+			}
+			modifier = {
+				factor = 0.5
+				131 = { is_core_of = TOH }
+				43 = { is_core_of = TOH }
+				96 = { is_core_of = TOH }
+			}
+			modifier = {
+				factor = 4
+				has_war = yes
+			}
+		}
+	}
+	option = {	# refuses
+		name = pro.18.a2
+		custom_effect_tooltip = pro.18.a2tt
+		hidden_effect = {
+			PRO = { country_event = { id = pro.20 hours = 2 } }
+		}
+		ai_chance = {
+			base = 25
+		}
+	}
+	
+}
+
+news_event = {	# MODUS VIVENDI - TOH accepts
+	id = pro.19
+	title = pro.19.t
+	desc = pro.19.desc
+	picture = GFX_report_event_election_vote
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = pro.19.a
+		131 = { remove_claim_by = PRO }
+		43 = { remove_claim_by = PRO }
+		96 = { remove_claim_by = PRO }
+		add_opinion_modifier = {
+			target = TOH
+			modifier = PRO_modus_vivendi_opinion
+		}
+		TOH = {
+			add_opinion_modifier = {
+				target = PRO
+				modifier = PRO_modus_vivendi_opinion
+			}
+			diplomatic_relation = {
+				country = PRO
+				relation = non_aggression_pact
+				active = yes
+			}
+		}
+	}
+	
+}
+
+news_event = {	# MODUS VIVENDI - TOH refuses
+	id = pro.20
+	title = pro.20.t
+	desc = pro.20.desc
+	picture = GFX_report_event_election_vote
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = pro.20.a1
+		TOH = {
+			add_ideas = PRO_idea_economic_sanction_TOH
+		}
+		hidden_effect = {
+			every_country = {
+				limit = {
+					OR = {
+						tag = PRO
+						is_puppet_of = PRO
+						NOT = { has_idea = PRO_idea_economic_sanction }
+					}
+				}
+				add_ideas = PRO_idea_economic_sanction
+			}
+			set_country_flag = PRO_enacted_sanctions_against_TOH
+			set_country_flag = PRO_can_enact_sanctions_against_TOH
+			activate_targeted_decision = {
+				target = TOH
+				decision = PRO_lift_sanctions_against_TOH
+			}
+			activate_targeted_decision = {
+				target = TOH
+				decision = PRO_enact_sanctions_against_TOH
+			}
+		}
+	}
+	
 }

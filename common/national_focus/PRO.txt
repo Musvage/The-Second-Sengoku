@@ -329,43 +329,11 @@
 	}
 	
 	focus = {
-		id = PRO_monarchy_consolidated
-		icon = GFX_focus_PRO_monarchy_consolidated
-		search_filters = { FOCUS_FILTER_MANPOWER FOCUS_FILTER_MILITARY }
-		
-		prerequisite = { focus = PRO_prince_chichibu_arrives }
-			
-		relative_position_id = PRO_prince_chichibu_arrives
-		x = -1
-		y = 1
-		cost = 10
-		
-		available_if_capitulated = yes
-		
-		available = {
-			OR = {
-				autocracy > 0.99
-				democratic > 0.99
-			}
-		}
-		
-		ai_will_do = {
-			factor = 1
-		}
-		
-		completion_reward = {
-			swap_ideas = {
-				remove_idea = PRO_unexpected_monarchy
-				add_idea = PRO_unexpected_monarchy2
-			}
-		}
-	}
-	
-	focus = {
 		id = PRO_stop_zaibatsus_influence
 		icon = GFX_focus_PRO_limit_zaibatsu
 		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_POLITICAL }
 		
+		mutually_exclusive = { focus = PRO_guide_the_zaibatsus }
 		prerequisite = { focus = PRO_heart_of_japan focus = PRO_collaborate_with_fascists }
 		prerequisite = { focus = PRO_adress_the_zaibatsus }
 		
@@ -375,8 +343,6 @@
 		cost = 10
 		
 		available_if_capitulated = yes
-		
-		mutually_exclusive = { focus = PRO_zaibatsus_empowered }
 		
 		ai_will_do = {
 			factor = 1
@@ -683,417 +649,6 @@
 					}
 				}
 			}
-		}
-	}
-	
-	### FOREIGN POLICY ###
-	
-	focus = {
-		id = PRO_prince_chichibu_arrives
-		icon = GFX_focus_PRO_prince_chichibu_arrives
-		search_filters = { FOCUS_FILTER_POLITICAL }
-		
-		mutually_exclusive = { focus = PRO_republicanism }
-		prerequisite = { focus = PRO_imperial_deal }
-		
-		relative_position_id = PRO_imperial_deal
-		x = 1
-		y = 1
-		cost = 10
-		
-		available_if_capitulated = yes
-		
-		available = {
-			NOT = { has_war_with = KAN }
-			OR = { has_country_flag = pro_const_monarch
-				has_country_flag = pro_abs_monarch
-			}
-		}
-		
-		ai_will_do = {
-			factor = 1
-		}
-		
-		completion_reward = {
-			add_ideas = PRO_unexpected_monarchy
-			if = {
-				limit = {
-					has_country_flag = pro_const_monarch
-				}
-				add_popularity = {
-					ideology = autocracy
-					popularity = 0.1
-				}
-				add_ideas = PRO_chichibu_idea
-				set_variable = { dual_leader_second_title = 8 }
-				set_variable = { dual_leader_id = 41 }
-			}
-			if = {
-				limit = {
-					has_country_flag = pro_abs_monarch
-				}
-				add_popularity = {
-					ideology = autocracy
-					popularity = 0.2
-				}
-				create_country_leader = {
-					name = "Yasuhito"
-					desc = "POLITICS_CHICHIBU_DESC"
-					picture = "Portrait_PRO_Prince_Chichibu.dds"
-					expire = "1945.1.1"
-					ideology = autocracy_subtype
-					traits = {
-						prince_yasuhito
-					}
-				}
-				set_variable = { dual_leader_first_title = 2 }
-				set_variable = { dual_leader_second_title = 6 }
-				set_variable = { dual_leader_id = 40 }
-			}
-		}
-	}
-	
-	focus = {
-		id = PRO_republicanism
-		icon = GFX_focus_PRO_republicanism
-		search_filters = { FOCUS_FILTER_MANPOWER FOCUS_FILTER_MILITARY }
-		
-		mutually_exclusive = { focus = PRO_prince_chichibu_arrives }
-		prerequisite = { focus = PRO_guide_the_zaibatsus focus = PRO_eliminate_radicalism focus = PRO_stop_zaibatsus_influence }
-		
-		relative_position_id = PRO_guide_the_zaibatsus
-		x = 1
-		y = 1
-		cost = 10
-		
-		available_if_capitulated = yes
-		
-		available = {
-			NOT = {
-				has_war_with = KAN
-				has_government = autocracy
-				autocracy > 0.25
-			}
-		}
-		
-		ai_will_do = {
-			factor = 1
-		}
-		
-		completion_reward = {
-			add_ideas = PRO_idea_republicanism
-		}
-	}
-	
-	focus = {	#
-		id = PRO_great_tokyo
-		icon = GFX_focus_PRO_great_tokyo
-		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_DIPLOMACY }
-
-		prerequisite = { focus = PRO_expansive_monetary_policy focus = PRO_issue_debt_bonds }
-		
-		ai_will_do = {
-			factor = 1
-		}
-		
-		relative_position_id = PRO_expansive_monetary_policy
-		x = 1
-		y = 1
-		cost = 10
-		
-		available_if_capitulated = yes
-		
-		available = {
-			has_full_control_of_state = 29
-		}
-		
-		completion_reward = {
-			set_rule = { can_create_factions = yes }
-			29 = {
-				if = {
-					limit = {
-						free_building_slots = {
-							building = industrial_complex
-							size > 0
-							include_locked = yes
-						}
-					}
-					add_building_construction = {
-						type = industrial_complex
-						level = 1
-						instant_build = yes
-					}
-					add_extra_state_shared_building_slots = 1
-				} else = {
-					random_owned_controlled_state = {
-						limit = {
-							OR = { state = 55 state = 55 state = 66 }
-							free_building_slots = {
-								building = industrial_complex
-								size > 0
-								include_locked = yes
-							}
-						}
-						add_building_construction = {
-							type = industrial_complex
-							level = 1
-							instant_build = yes
-						}
-						add_extra_state_shared_building_slots = 1
-					}
-				}
-			}
-			29 = {
-				if = {
-					limit = {
-						free_building_slots = {
-							building = arms_factory
-							size > 0
-							include_locked = yes
-						}
-					}
-					add_building_construction = {
-						type = arms_factory
-						level = 1
-						instant_build = yes
-					}
-					add_extra_state_shared_building_slots = 1
-				} else = {
-					random_owned_controlled_state = {
-						limit = {
-							OR = { state = 55 state = 55 state = 66 }
-							free_building_slots = {
-								building = arms_factory
-								size > 0
-								include_locked = yes
-							}
-						}
-						add_building_construction = {
-							type = arms_factory
-							level = 1
-							instant_build = yes
-						}
-						add_extra_state_shared_building_slots = 1
-					}
-				}
-			}
-			29 = {
-				if = {
-					limit = {
-						free_building_slots = {
-							building = dockyard
-							size > 0
-							include_locked = yes
-						}
-					}
-					add_building_construction = {
-						type = dockyard
-						level = 1
-						instant_build = yes
-					}
-					add_extra_state_shared_building_slots = 1
-				} else = {
-					random_owned_controlled_state = {
-						limit = {
-							OR = { state = 55 state = 55 state = 66 }
-							free_building_slots = {
-								building = dockyard
-								size > 0
-								include_locked = yes
-							}
-						}
-						add_building_construction = {
-							type = dockyard
-							level = 1
-							instant_build = yes
-						}
-						add_extra_state_shared_building_slots = 1
-					}
-				}
-			}
-	    }
-	}
-	
-	focus = {
-		id = PRO_conference_of_the_two_capitals
-		icon = GFX_focus_PRO_conference_of_the_two_capitals
-		search_filters = { FOCUS_FILTER_DIPLOMACY }
-		
-		prerequisite = { focus = PRO_prince_chichibu_arrives}
-		
-		relative_position_id = PRO_prince_chichibu_arrives
-		x = 1
-		y = 1
-		cost = 10
-		
-		available_if_capitulated = yes
-		
-		available = {
-			NOT = { has_war_with = KAN }
-		}
-		
-		ai_will_do = {
-			factor = 1
-		}
-		
-		completion_reward = {
-			set_rule = { can_create_factions = yes }
-			country_event = { id = pro.3 days = 2 } 
-		}
-	}
-	
-	focus = {
-		id = PRO_war_cabinet
-		icon = GFX_focus_PRO_war_cabinet
-		search_filters = { FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_DIPLOMACY }
-		
-		prerequisite = { focus = PRO_republicanism }
-		
-		relative_position_id = PRO_republicanism
-		x = 0
-		y = 1
-		cost = 5
-		
-		available_if_capitulated = yes
-		
-		ai_will_do = {
-			factor = 1
-		}
-		
-		completion_reward = {
-			set_rule = { can_create_factions = yes }
-			add_war_support = 0.05
-			#add_ideas = PRO_war_cabinet
-		}
-	}
-	
-	focus = {
-		id = PRO_military_reforms
-		icon = GFX_focus_generic_army_quality
-		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_DIPLOMACY }
-
-		prerequisite = { focus = PRO_military_rule focus = PRO_consented_opposition }
-		
-		relative_position_id = PRO_military_rule
-		x = 1
-		y = 1
-		cost = 10
-		
-		available_if_capitulated = yes
-		
-		ai_will_do = {
-			factor = 1
-		}
-		
-		completion_reward = {
-			set_rule = { can_create_factions = yes }
-			add_tech_bonus = {
-				name = land_doc_bonus
-				bonus = 2.0
-				uses = 1
-				category = land_doctrine
-			}
-		}
-	}
-	
-	focus = {
-		id = PRO_propose_reunion
-		icon = GFX_focus_PRO_propose_reunion
-		search_filters = { FOCUS_FILTER_ANNEXATION FOCUS_FILTER_DIPLOMACY }
-		
-		mutually_exclusive = { focus = PRO_accept_ezos_independence }
-		prerequisite = { focus = PRO_military_reforms focus = PRO_conference_of_the_two_capitals focus = PRO_war_cabinet focus = PRO_great_tokyo }
-		
-		relative_position_id = PRO_military_reforms
-		x = -7
-		y = 1
-		cost = 10
-		available_if_capitulated = yes
-		
-		available = {
-			NOT = { has_war_with = EZO }
-			EZO = { is_in_faction = no }
-		}
-		
-		ai_will_do = {
-			factor = 1
-		}
-		
-		completion_reward = {
-			#every_state = {
-			#	limit = { is_owned_by = EZO }
-			#	add_core_of = PRO
-			#} 
-			EZO = {
-				country_event = { id = pro.12 days = 7 } 
-			}
-		}
-	}
-	
-	focus = {
-		id = PRO_accept_ezos_independence 
-		icon = GFX_focus_PRO_accept_ezo_independence
-		search_filters = { FOCUS_FILTER_DIPLOMACY }
-		
-		mutually_exclusive = { focus = PRO_propose_reunion }
-		prerequisite = { focus = PRO_military_reforms focus = PRO_conference_of_the_two_capitals focus = PRO_war_cabinet focus = PRO_great_tokyo }
-		
-		relative_position_id = PRO_military_reforms
-		x = -9
-		y = 1
-		
-		available_if_capitulated = yes
-		
-		ai_will_do = {
-			factor = 1
-		}
-	}
-	
-	focus = {
-		id = PRO_modus_vivendi
-		icon = GFX_focus_PRO_modus_vivendi
-		search_filters = { FOCUS_FILTER_DIPLOMACY }
-		
-		mutually_exclusive = { focus = PRO_aizuwakamatsu_iwaki }
-		prerequisite = { focus = PRO_military_reforms focus = PRO_conference_of_the_two_capitals focus = PRO_war_cabinet focus = PRO_great_tokyo }
-		
-		relative_position_id = PRO_military_reforms
-		x = -4
-		y = 1
-		cost = 10
-		
-		available_if_capitulated = yes
-		
-		ai_will_do = {
-			factor = 1
-		}
-		
-		completion_reward = {
-		
-		}
-	}
-	
-	focus = {
-		id = PRO_aizuwakamatsu_iwaki
-		icon = GFX_focus_PRO_aizuwakamatsu_iwaki
-		search_filters = { FOCUS_FILTER_ANNEXATION }
-		
-		mutually_exclusive = { focus = PRO_modus_vivendi }
-		prerequisite = { focus = PRO_military_reforms focus = PRO_conference_of_the_two_capitals focus = PRO_war_cabinet focus = PRO_great_tokyo }
-		
-		relative_position_id = PRO_military_reforms
-		x = -2
-		y = 1
-		cost = 10
-		
-		available_if_capitulated = yes
-		
-		ai_will_do = {
-			factor = 1
-		}
-		
-		completion_reward = {
-		
 		}
 	}
 	
@@ -1854,17 +1409,7 @@
 		completion_reward = {
 		    set_politics = { ruling_party = neutrality elections_allowed = no }
 			hidden_effect = { retire_ideology_leader = neutrality set_cosmetic_tag = PRO_zaibatsu }
-			create_country_leader = {
-				name = "Ryozo Asano"
-				desc = "POLITICS_BIGFOUR_DESC"
-				picture = "Portrait_PRO_Ryozo_Asano.dds"
-				expire = "1965.1.1"
-				ideology = oligarchism
-				traits = {
-					PRO_zaibatsu_leader
-					PRO_ryozo_asano_trait
-				}
-			}
+			country_event = { id = pro.17 hours = 2 }
 	    }
 	}
 	
@@ -3613,6 +3158,456 @@
 			add_ideas = PRO_prepared_for_the_next_war
 			add_war_support = 0.10
 			#set_rule = { can_create_factions = yes }
+		}
+	}
+	
+	### FOREIGN POLICY ###
+	
+	focus = {
+		id = PRO_prince_chichibu_arrives
+		icon = GFX_focus_PRO_prince_chichibu_arrives
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		
+		mutually_exclusive = { focus = PRO_republicanism }
+		prerequisite = { focus = PRO_imperial_deal }
+		
+		relative_position_id = PRO_imperial_deal
+		x = 1
+		y = 1
+		cost = 10
+		
+		available_if_capitulated = yes
+		
+		available = {
+			NOT = { has_war_with = KAN }
+			OR = { has_country_flag = pro_const_monarch
+				has_country_flag = pro_abs_monarch
+			}
+		}
+		
+		ai_will_do = {
+			factor = 1
+		}
+		
+		completion_reward = {
+			add_ideas = PRO_unexpected_monarchy
+			if = {
+				limit = {
+					has_country_flag = pro_const_monarch
+				}
+				add_popularity = {
+					ideology = autocracy
+					popularity = 0.1
+				}
+				add_ideas = PRO_chichibu_idea
+				set_variable = { dual_leader_second_title = 8 }
+				set_variable = { dual_leader_id = 41 }
+			}
+			if = {
+				limit = {
+					has_country_flag = pro_abs_monarch
+				}
+				add_popularity = {
+					ideology = autocracy
+					popularity = 0.2
+				}
+				create_country_leader = {
+					name = "Yasuhito"
+					desc = "POLITICS_CHICHIBU_DESC"
+					picture = "Portrait_PRO_Prince_Chichibu.dds"
+					expire = "1945.1.1"
+					ideology = autocracy_subtype
+					traits = {
+						prince_yasuhito
+					}
+				}
+				set_variable = { dual_leader_first_title = 2 }
+				set_variable = { dual_leader_second_title = 6 }
+				set_variable = { dual_leader_id = 40 }
+			}
+		}
+	}
+	
+	focus = {
+		id = PRO_monarchy_consolidated
+		icon = GFX_focus_PRO_monarchy_consolidated
+		search_filters = { FOCUS_FILTER_MANPOWER FOCUS_FILTER_MILITARY }
+		
+		prerequisite = { focus = PRO_prince_chichibu_arrives }
+			
+		relative_position_id = PRO_prince_chichibu_arrives
+		x = -1
+		y = 1
+		cost = 10
+		
+		available_if_capitulated = yes
+		
+		available = {
+			OR = {
+				autocracy > 0.99
+				democratic > 0.99
+			}
+		}
+		
+		ai_will_do = {
+			factor = 1
+		}
+		
+		completion_reward = {
+			swap_ideas = {
+				remove_idea = PRO_unexpected_monarchy
+				add_idea = PRO_unexpected_monarchy2
+			}
+		}
+	}
+	
+	focus = {
+		id = PRO_republicanism
+		icon = GFX_focus_PRO_republicanism
+		search_filters = { FOCUS_FILTER_MANPOWER FOCUS_FILTER_MILITARY }
+		
+		mutually_exclusive = { focus = PRO_prince_chichibu_arrives }
+		prerequisite = { focus = PRO_guide_the_zaibatsus focus = PRO_eliminate_radicalism focus = PRO_stop_zaibatsus_influence }
+		
+		relative_position_id = PRO_guide_the_zaibatsus
+		x = 1
+		y = 1
+		cost = 10
+		
+		available_if_capitulated = yes
+		
+		available = {
+			NOT = {
+				has_war_with = KAN
+				has_government = autocracy
+				autocracy > 0.25
+			}
+		}
+		
+		ai_will_do = {
+			factor = 1
+		}
+		
+		completion_reward = {
+			add_ideas = PRO_idea_republicanism
+		}
+	}
+	
+	focus = {	#
+		id = PRO_great_tokyo
+		icon = GFX_focus_PRO_great_tokyo
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_DIPLOMACY }
+
+		prerequisite = { focus = PRO_expansive_monetary_policy focus = PRO_issue_debt_bonds }
+		
+		ai_will_do = {
+			factor = 1
+		}
+		
+		relative_position_id = PRO_expansive_monetary_policy
+		x = 1
+		y = 1
+		cost = 10
+		
+		available_if_capitulated = yes
+		
+		available = {
+			has_full_control_of_state = 29
+		}
+		
+		completion_reward = {
+			set_rule = { can_create_factions = yes }
+			29 = {
+				if = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 0
+							include_locked = yes
+						}
+					}
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+					add_extra_state_shared_building_slots = 1
+				} else = {
+					PRO = {
+						random_owned_controlled_state = {
+							limit = {
+								OR = { state = 55 state = 55 state = 66 }
+								free_building_slots = {
+									building = industrial_complex
+									size > 0
+									include_locked = yes
+								}
+							}
+							add_building_construction = {
+								type = industrial_complex
+								level = 1
+								instant_build = yes
+							}
+							add_extra_state_shared_building_slots = 1
+						}
+					}
+				}
+			}
+			29 = {
+				if = {
+					limit = {
+						free_building_slots = {
+							building = arms_factory
+							size > 0
+							include_locked = yes
+						}
+					}
+					add_building_construction = {
+						type = arms_factory
+						level = 1
+						instant_build = yes
+					}
+					add_extra_state_shared_building_slots = 1
+				} else = {
+					PRO = {
+						random_owned_controlled_state = {
+							limit = {
+								OR = { state = 55 state = 55 state = 66 }
+								free_building_slots = {
+									building = arms_factory
+									size > 0
+									include_locked = yes
+								}
+							}
+							add_building_construction = {
+								type = arms_factory
+								level = 1
+								instant_build = yes
+							}
+							add_extra_state_shared_building_slots = 1
+						}
+					}
+				}
+			}
+			29 = {
+				if = {
+					limit = {
+						free_building_slots = {
+							building = dockyard
+							size > 0
+							include_locked = yes
+						}
+					}
+					add_building_construction = {
+						type = dockyard
+						level = 1
+						instant_build = yes
+					}
+					add_extra_state_shared_building_slots = 1
+				} else = {
+					PRO = {
+						random_owned_controlled_state = {
+							limit = {
+								OR = { state = 55 state = 55 state = 66 }
+								free_building_slots = {
+									building = dockyard
+									size > 0
+									include_locked = yes
+								}
+							}
+							add_building_construction = {
+								type = dockyard
+								level = 1
+								instant_build = yes
+							}
+							add_extra_state_shared_building_slots = 1
+						}
+					}
+				}
+			}
+	    }
+	}
+	
+	focus = {
+		id = PRO_conference_of_the_two_capitals
+		icon = GFX_focus_PRO_conference_of_the_two_capitals
+		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		
+		prerequisite = { focus = PRO_prince_chichibu_arrives}
+		
+		relative_position_id = PRO_prince_chichibu_arrives
+		x = 1
+		y = 1
+		cost = 10
+		
+		available_if_capitulated = yes
+		
+		available = {
+			NOT = { has_war_with = KAN }
+		}
+		
+		ai_will_do = {
+			factor = 1
+		}
+		
+		completion_reward = {
+			set_rule = { can_create_factions = yes }
+			country_event = { id = pro.3 days = 2 } 
+		}
+	}
+	
+	focus = {
+		id = PRO_war_cabinet
+		icon = GFX_focus_PRO_war_cabinet
+		search_filters = { FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_DIPLOMACY }
+		
+		prerequisite = { focus = PRO_republicanism }
+		
+		relative_position_id = PRO_republicanism
+		x = 0
+		y = 1
+		cost = 5
+		
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 1
+		}
+		
+		completion_reward = {
+			set_rule = { can_create_factions = yes }
+			add_war_support = 0.05
+			#add_ideas = PRO_war_cabinet
+		}
+	}
+	
+	focus = {
+		id = PRO_military_reforms
+		icon = GFX_focus_generic_army_quality
+		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_DIPLOMACY }
+
+		prerequisite = { focus = PRO_military_rule focus = PRO_consented_opposition }
+		
+		relative_position_id = PRO_military_rule
+		x = 1
+		y = 1
+		cost = 10
+		
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 1
+		}
+		
+		completion_reward = {
+			set_rule = { can_create_factions = yes }
+			add_tech_bonus = {
+				name = land_doc_bonus
+				bonus = 2.0
+				uses = 1
+				category = land_doctrine
+			}
+		}
+	}
+	
+	focus = {
+		id = PRO_propose_reunion
+		icon = GFX_focus_PRO_propose_reunion
+		search_filters = { FOCUS_FILTER_ANNEXATION FOCUS_FILTER_DIPLOMACY }
+		
+		mutually_exclusive = { focus = PRO_accept_ezos_independence }
+		prerequisite = { focus = PRO_military_reforms focus = PRO_conference_of_the_two_capitals focus = PRO_war_cabinet focus = PRO_great_tokyo }
+		
+		relative_position_id = PRO_military_reforms
+		x = -7
+		y = 1
+		cost = 10
+		available_if_capitulated = yes
+		
+		available = {
+			NOT = { has_war_with = EZO }
+			EZO = { is_in_faction = no }
+		}
+		
+		ai_will_do = {
+			factor = 1
+		}
+		
+		completion_reward = {
+			#every_state = {
+			#	limit = { is_owned_by = EZO }
+			#	add_core_of = PRO
+			#} 
+			EZO = {
+				country_event = { id = pro.12 days = 7 } 
+			}
+		}
+	}
+	
+	focus = {
+		id = PRO_accept_ezos_independence 
+		icon = GFX_focus_PRO_accept_ezo_independence
+		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		
+		mutually_exclusive = { focus = PRO_propose_reunion }
+		prerequisite = { focus = PRO_military_reforms focus = PRO_conference_of_the_two_capitals focus = PRO_war_cabinet focus = PRO_great_tokyo }
+		
+		relative_position_id = PRO_military_reforms
+		x = -9
+		y = 1
+		
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	
+	focus = {
+		id = PRO_modus_vivendi
+		icon = GFX_focus_PRO_modus_vivendi
+		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		
+		mutually_exclusive = { focus = PRO_aizuwakamatsu_iwaki }
+		prerequisite = { focus = PRO_military_reforms focus = PRO_conference_of_the_two_capitals focus = PRO_war_cabinet focus = PRO_great_tokyo }
+		
+		relative_position_id = PRO_military_reforms
+		x = -4
+		y = 1
+		cost = 10
+		
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 1
+		}
+		
+		completion_reward = {
+		
+		}
+	}
+	
+	focus = {
+		id = PRO_aizuwakamatsu_iwaki
+		icon = GFX_focus_PRO_aizuwakamatsu_iwaki
+		search_filters = { FOCUS_FILTER_ANNEXATION }
+		
+		mutually_exclusive = { focus = PRO_modus_vivendi }
+		prerequisite = { focus = PRO_military_reforms focus = PRO_conference_of_the_two_capitals focus = PRO_war_cabinet focus = PRO_great_tokyo }
+		
+		relative_position_id = PRO_military_reforms
+		x = -2
+		y = 1
+		cost = 10
+		
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 1
+		}
+		
+		completion_reward = {
+		
 		}
 	}
 	
