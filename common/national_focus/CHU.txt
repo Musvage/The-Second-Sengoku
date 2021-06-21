@@ -26,10 +26,9 @@
 		cost = 5
 		available_if_capitulated = yes
 		ai_will_do = {
-			factor = 1
+			base = 10
 		}
 		completion_reward = {
-			set_variable = { global.division_limit_base = 400 }
 			add_political_power = 120
 			add_ideas = CHU_We_promised_the_army_and_the_people
 		}
@@ -38,7 +37,7 @@
 	focus = {
 		id = CHU_reate_autonomous_governments
 		icon = GFX_focus_CHU_reate_autonomous_goverment
-		x = 25
+		x = 29
 		y = 1
 		available = {
 			date < 1938.1.1
@@ -53,6 +52,7 @@
 		}
 
 		completion_reward = {
+			add_to_variable = { var = global.division_limit_base value = 50 }
 			add_ideas = tot_economic_mobilisation
 			add_political_power = 200
 			add_stability = -0.05
@@ -81,11 +81,11 @@
 		available_if_capitulated = yes
 		mutually_exclusive = { focus = CHU_reate_autonomous_governments }
 		ai_will_do = {
-			factor = 1
+			base = 10
 		}
 
 		completion_reward = {
-			add_to_variable = { var = global.division_limit_base value = 100 }
+			add_to_variable = { var = global.division_limit_base value = 50 }
 			add_political_power = 100
 			add_stability = -0.05
 		}
@@ -95,7 +95,7 @@
 	focus = {
 		id = CHU_go_alone
 		icon = GFX_focus_CHU_go_alone
-		x = 6
+		x = 9
 		y = 1
 		cost = 5
 		relative_position_id = CHU_open_political_sphere
@@ -107,6 +107,7 @@
 			factor = 1
 		}
 		completion_reward = {
+			add_to_variable = { var = global.division_limit_base value = 100 }
 			add_political_power = 100
 			add_stability = -0.25 		
 			add_popularity = {
@@ -125,7 +126,7 @@
 		focus = {
 		id = CHU_conserve_the_status_quo
 		icon = GFX_focus_CHU_conserve_the_status_quo
-		x = 0
+		x = 1
 		y = 1
 		cost = 5
 		relative_position_id = CHU_open_political_sphere
@@ -134,13 +135,13 @@
 		mutually_exclusive = { focus = CHU_go_alone }
 		mutually_exclusive = { focus = CHU_increase_civillian_influence }
 		ai_will_do = {
-			factor = 1
+			base = 10
 		}
 		completion_reward = { 
 			add_political_power = 100
 			add_country_leader_trait = army_junta
 			add_popularity = {
-				popularity = 0.2
+				popularity = 0.1
 				ideology = neutrality
 			}
 			add_stability = -0.10
@@ -161,7 +162,8 @@
 		ai_will_do = {
 			factor = 1
 		}
-		completion_reward = { 	
+		completion_reward = { 
+			add_to_variable = { var = global.division_limit_base value = 100 }	
 			add_political_power = 100	
 			add_popularity = {
 				popularity = 0.05
@@ -178,20 +180,24 @@
 	}
 	
 	focus = {
-		id = CHU_support_teichi_suzukis_policies
-		icon = GFX_focus_CHU_teiichi_suzuki
+		id = CHU_Chugoku_Fate
+		icon = GFX_focus_CHU_Chugoku_Fate
 		x = 0
-		y = 2
+		y = 4
 		cost = 10
 		relative_position_id = CHU_conserve_the_status_quo
 		available_if_capitulated = yes
-		prerequisite = { focus = CHU_conserve_the_status_quo }
+		prerequisite = { focus = CHU_trade_deal }
+		prerequisite = { focus = CHU_invite_new_generals }
 		ai_will_do = {
 			factor = 1
 		}
 		completion_reward = {
-			add_ideas = war_economy
-			add_ideas = CHU_teichi_suzukis_policies
+			add_popularity = {
+				popularity = 0.1
+				ideology = neutrality
+			}
+			add_stability = 0.05
 		}
 	}
 
@@ -216,15 +222,15 @@
 	focus = {
 		id = CHU_Shunroku_Hata_path
 		icon = GFX_focus_CHU_Shunroku_Hata_path
-		x = 0
-		y = 3
+		x = 2
+		y = 1
 		cost = 10
-		relative_position_id = CHU_support_teichi_suzukis_policies
+		relative_position_id = CHU_Chugoku_Fate
 		available_if_capitulated = yes
-		prerequisite = { focus = CHU_support_teichi_suzukis_policies }
+		prerequisite = { focus = CHU_Chugoku_Fate }
 		mutually_exclusive = {focus = CHU_Tomoyuki_Yamashita_path focus = CHU_Teiichi_Suzuki_path}
 		ai_will_do = {
-			factor = 1
+			base = 10
 		}
 		completion_reward = {
 			add_political_power = 50
@@ -233,14 +239,85 @@
 	}
 
 	focus = {
+		id = CHU_gain_war_lord
+		icon = GFX_focus_CHU_gain_war_lord
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = CHU_Shunroku_Hata_path
+		available_if_capitulated = yes
+		prerequisite = { focus = CHU_Shunroku_Hata_path }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			add_country_leader_trait = war_lord
+		}
+	}
+
+	focus = {
+		id = CHU_invasion_army
+		icon = GFX_focus_CHU_invasion_army
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = CHU_gain_war_lord
+		available_if_capitulated = yes
+		prerequisite = { focus = CHU_gain_war_lord }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			custom_effect_tooltip = spawn_5_armor_divisions
+			hidden_effect = {
+				random_owned_controlled_state = {
+					limit = { PREV = { has_full_control_of_state = PREV } }
+					create_unit = {
+						division = "name = \"Amayunitto\" division_template = \"Amayunitto\" start_experience_factor = 1.0" 
+						owner = PREV
+					}
+				}
+				random_owned_controlled_state = {
+					limit = { PREV = { has_full_control_of_state = PREV } }
+					create_unit = {
+						division = "name = \"Amayunitto\" division_template = \"Amayunitto\" start_experience_factor = 1.0" 
+						owner = PREV
+					}
+				}
+				random_owned_controlled_state = {
+					limit = { PREV = { has_full_control_of_state = PREV } }
+					create_unit = {
+						division = "name = \"Amayunitto\" division_template = \"Amayunitto\" start_experience_factor = 1.0" 
+						owner = PREV
+					}
+				}
+				random_owned_controlled_state = {
+					limit = { PREV = { has_full_control_of_state = PREV } }
+					create_unit = {
+						division = "name = \"Amayunitto\" division_template = \"Amayunitto\" start_experience_factor = 1.0" 
+						owner = PREV
+					}
+				}
+				random_owned_controlled_state = {
+					limit = { PREV = { has_full_control_of_state = PREV } }
+					create_unit = {
+						division = "name = \"Amayunitto\" division_template = \"Amayunitto\" start_experience_factor = 1.0" 
+						owner = PREV
+					}
+				}
+			}
+		}
+	}
+
+	focus = {
 		id = CHU_Tomoyuki_Yamashita_path
 		icon = GFX_focus_CHU_Tomoyuki_Yamashita_path
-		x = -3
-		y = 3
+		x = -4
+		y = 1
 		cost = 10
-		relative_position_id = CHU_support_teichi_suzukis_policies
+		relative_position_id = CHU_Chugoku_Fate
 		available_if_capitulated = yes
-		prerequisite = { focus = CHU_support_teichi_suzukis_policies }
+		prerequisite = { focus = CHU_Chugoku_Fate }
 		mutually_exclusive = { focus = CHU_Shunroku_Hata_path focus = CHU_Teiichi_Suzuki_path }
 		ai_will_do = {
 			factor = 1
@@ -357,7 +434,7 @@
 	focus = {
 		id = CHU_enpower_junta
 		icon = GFX_focus_CHU_enpower_junta
-		x = -1
+		x = -3
 		y = 1
 		cost = 10
 		
@@ -372,12 +449,6 @@
 		}
 		completion_reward = {
 			add_country_leader_trait = supreme_leader
-			if = {
-				limit = {
-					has_completed_focus = CHU_Shunroku_Hata_path
-				}
-				add_country_leader_trait = war_lord
-			}
 		}
 	}
 
@@ -394,40 +465,7 @@
 			factor = 1
 		}
 		completion_reward = {
-			if = {
-				limit = {
-					has_completed_focus = CHU_Tomoyuki_Yamashita_path
-				}
-				remove_unit_leader = 1000
-				FROM = { 
-					every_unit_leader = {
-						limit = {
-							has_trait = Hata_supporters_general
-						}
-						retire = yes
-					}
-				}
-			}
-			else_if = {
-				limit = {
-					has_completed_focus = CHU_Shunroku_Hata_path
-				}
-				FROM = { 
-					every_unit_leader = {
-						limit = {
-							has_trait = Suzuki_supporters_general
-						}
-						retire = yes
-					}
-				}
-				remove_unit_leader = 1001
-			}
-			if = {
-				limit = {
-					has_war = no
-				}
-				country_event = { id = chugoku.29 }
-			}
+			country_event = { id = chugoku.29 }
 			set_variable = { dual_leader_id = 59 }
 		}
 	}
@@ -435,15 +473,15 @@
 	focus = {
 		id = CHU_Teiichi_Suzuki_path
 		icon = GFX_focus_CHU_Teiichi_Suzuki_path
-		x = 2
-		y = 3
+		x = 5
+		y = 1
 		cost = 10
 		available = {
 			date < 1938.12.20
 		}
-		relative_position_id = CHU_support_teichi_suzukis_policies
+		relative_position_id = CHU_Chugoku_Fate
 		available_if_capitulated = yes
-		prerequisite = { focus = CHU_support_teichi_suzukis_policies }
+		prerequisite = { focus = CHU_Chugoku_Fate }
 		mutually_exclusive = {focus = CHU_Tomoyuki_Yamashita_path focus = CHU_Shunroku_Hata_path }
 		ai_will_do = {
 			factor = 1
@@ -510,45 +548,6 @@
 		completion_reward = {
 			set_variable = { dual_leader_id = 59 }
 			add_stability = -0.15
-			remove_unit_leader = 1001
-			FROM = { 
-				every_unit_leader = {
-					limit = {
-						has_trait = Hata_supporters_general
-					}
-					retire = yes
-				}
-			}
-			create_corps_commander = {
-				name = "Kiichiro Higuchi"
-				picture = "Portrait_CHU_Kiichiro_Higuchi.dds"
-				traits = { career_officer trait_cautious }
-				skill = 2
-				attack_skill = 2
-				defense_skill = 2
-				planning_skill = 2
-				logistics_skill = 1
-			}
-			create_corps_commander = {
-				name = "Shizuichi Tanaka"
-					picture = "Portrait_CHU_Shizuichi_Tanaka.dds"
-				traits = { trickster career_officer infantry_officer }
-				skill = 4
-				attack_skill = 4
-				defense_skill = 3
-				planning_skill = 2
-				logistics_skill = 4
-			}
-			create_corps_commander = {
-				name = "Joichiro Sanada"
-					picture = "Portrait_CHU_Joichiro_Sanada.dds"
-				traits = { career_officer infantry_officer }
-				skill = 3
-				attack_skill = 3
-				defense_skill = 3
-				planning_skill = 2
-				logistics_skill = 2
-			}
 			set_cosmetic_tag = CHU_Chugoku_neutrality
 			if = {
 				limit = {
@@ -579,7 +578,7 @@
 	focus = {
 		id = CHU_national_defance_force
 		icon = GFX_focus_CHU_national_defance_force
-		x = 2
+		x = 1
 		y = 1
 		cost = 10
 		relative_position_id = CHU_build_neutrality
@@ -593,7 +592,7 @@
 			factor = 1
 		}
 		completion_reward = {
-			set_variable = { global.division_limit_base = 500 }
+			add_to_variable = { var = global.division_limit_base value = 50 }
 			custom_effect_tooltip = clan_spawn_15_inf_divisions
 			division_template = {
 				name = "Chugoku Defance Forces"
@@ -732,7 +731,7 @@
 	focus = {
 		id = CHU_national_defance
 		icon = GFX_focus_CHU_national_defance
-		x = 0
+		x = -1
 		y = 1
 		cost = 10
 		relative_position_id = CHU_national_defance_force
@@ -749,7 +748,7 @@
 	focus = {
 		id = CHU_recruit_volunteer
 		icon = GFX_focus_TOH_independent_militias
-		x = 2
+		x = 1
 		y = 1
 		cost = 10
 		relative_position_id = CHU_national_defance_force
@@ -1187,6 +1186,52 @@
 	}
 
 	focus = {
+		id = CHU_invite_new_generals
+		icon = GFX_focus_CHU_invite_new_generals
+		x = -1
+		y = 1
+		cost = 10
+		relative_position_id = CHU_boost_morale_to_the_army
+		available_if_capitulated = yes
+		prerequisite = { focus = CHU_boost_morale_to_the_army }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			create_corps_commander = {
+				name = "Kiichiro Higuchi"
+				picture = "Portrait_CHU_Kiichiro_Higuchi.dds"
+				traits = { career_officer trait_cautious }
+				skill = 2
+				attack_skill = 2
+				defense_skill = 2
+				planning_skill = 2
+				logistics_skill = 1
+			}
+			create_corps_commander = {
+				name = "Shizuichi Tanaka"
+					picture = "Portrait_CHU_Shizuichi_Tanaka.dds"
+				traits = { trickster career_officer infantry_officer }
+				skill = 4
+				attack_skill = 4
+				defense_skill = 3
+				planning_skill = 2
+				logistics_skill = 4
+			}
+			create_corps_commander = {
+				name = "Joichiro Sanada"
+					picture = "Portrait_CHU_Joichiro_Sanada.dds"
+				traits = { career_officer infantry_officer }
+				skill = 3
+				attack_skill = 3
+				defense_skill = 3
+				planning_skill = 2
+				logistics_skill = 2
+			}
+		}
+	}
+
+	focus = {
 		id = CHU_ideological_army_design
 		icon = GFX_focus_CHU_ideological_army
 		x = -2
@@ -1207,7 +1252,7 @@
 	focus = {
 		id = CHU_military_factory1
 		icon = GFX_focus_SHO_zaibatsu_movements
-		x = 2
+		x = 3
 		y = 1
 		cost = 10
 		available_if_capitulated = yes
@@ -1291,7 +1336,8 @@
 		y = 1
 		cost = 10
 		bypass = {
-			has_completed_focus = CHU_work_on_our_economy
+			has_idea = finances_civilian
+			has_idea = nationalization_capital
 		}
 		relative_position_id = CHU_conserve_the_status_quo
 		available_if_capitulated = yes
@@ -1300,14 +1346,74 @@
 			factor = 1
 		}
 		completion_reward = {
-			add_ideas = free_trade
+			add_ideas = finances_civilian
+			add_ideas = nationalization_capital
+		}
+	}
+
+	focus = {
+		id = CHU_trade_deal
+		icon = GFX_focus_generic_refit_merchant_ships
+		x = 1
+		y = 1
+		cost = 10
+		bypass = {
+			
+		}
+		relative_position_id = CHU_decentralize_the_junta
+		available_if_capitulated = yes
+		prerequisite = { focus = CHU_decentralize_the_junta }
+		ai_will_do = {
+			factor = 1
+		}
+		completion_reward = {
+			add_opinion_modifier = {
+			    target = OSA
+			    modifier = CHU_trading_partner
+			}
+			OSA = {
+				add_opinion_modifier = {
+			    	target = CHU
+			    	modifier = CHU_trading_partner
+				}
+			}
+			add_opinion_modifier = {
+			    target = KOB
+			    modifier = CHU_trading_partner
+			}
+			KOB = {
+				add_opinion_modifier = {
+			    	target = CHU
+			    	modifier = CHU_trading_partner
+				}
+			}
+			add_opinion_modifier = {
+			    target = AMC
+			    modifier = CHU_trading_partner
+			}
+			AMC = {
+				add_opinion_modifier = {
+			    	target = CHU
+			    	modifier = CHU_trading_partner
+				}
+			}
+			add_opinion_modifier = {
+			    target = HIR
+			    modifier = CHU_trading_partner
+			}
+			HIR = {
+				add_opinion_modifier = {
+			    	target = CHU
+			    	modifier = CHU_trading_partner
+				}
+			}
 		}
 	}
 	
 	focus = {
 		id = CHU_moderate_voice
 		icon = GFX_focus_generic_concessions
-		x = -2
+		x = -3
 		y = 2
 		cost = 10
 		relative_position_id = CHU_decentralize_the_junta
@@ -6380,14 +6486,14 @@
 	focus = {
 		id = CHU_sanyo_fishing_industry
 		icon = GFX_focus_generic_cruiser2
-		x = -2
+		x = -1
 		y = 1
 		cost = 10
-		relative_position_id = CHU_support_teichi_suzukis_policies
+		relative_position_id = CHU_decentralize_the_junta
 		available_if_capitulated = yes
 		prerequisite = { 
 			focus = CHU_decentralize_the_junta
-			focus = CHU_support_teichi_suzukis_policies 
+			focus = CHU_support_shinzo_hamais_policies
 		}
 		ai_will_do = {
 			factor = 1
@@ -6503,12 +6609,12 @@
 	focus = {
 		id = CHU_sanchi_iron_sand
 		icon = GFX_focus_SHO_encourage_mining
-		x = 2
+		x = 1
 		y = 1
 		cost = 10
-		relative_position_id = CHU_support_teichi_suzukis_policies
+		relative_position_id = CHU_boost_morale_to_the_army
 		available_if_capitulated = yes
-		prerequisite = { focus = CHU_support_teichi_suzukis_policies focus = CHU_ideological_army_design }
+		prerequisite = { focus = CHU_boost_morale_to_the_army focus = CHU_ideological_army_design }
 		ai_will_do = {
 			factor = 1
 		}
@@ -6524,7 +6630,7 @@
 	
 	focus = {
 		id = CHU_military_factory3
-		icon = GFX_focus_generic_strong_economy
+		icon = GFX_focus_CHU_teiichi_suzuki
 		x = 0
 		y = 1
 		cost = 10
@@ -6558,13 +6664,14 @@
 					instant_build = yes
 				}
 			}
+			add_ideas = CHU_teichi_suzukis_policies
 		}
 	}
 	
 	focus = {
 		id = CHU_hiroshima_university
 		icon = GFX_focus_research
-		x = 2
+		x = 1
 		y = 1
 		cost = 5
 		relative_position_id = CHU_military_factory3
@@ -6885,7 +6992,7 @@
 			factor = 1
 		}
 		completion_reward = {
-			set_variable = { global.division_limit_base = 500 }
+			add_to_variable = { var = global.division_limit_base value = 100 }
 			add_ideas = CHU_recruit_volunteers
 		}
 	}
@@ -7330,7 +7437,7 @@
 		id = CHU_Create_the_united_japan
 		icon = GFX_focus_generic_unite_japan
 		x = -1
-		y = 1
+		y = 2
 		cost = 10
 		available = {
 			has_completed_focus = CHU_we_are_enough_for_monarchy
@@ -8318,10 +8425,7 @@
 		y = 0
 		cost = 3
 		bypass = {
-			OR = {
-			has_completed_focus = CHU_decentralize_the_junta
 			has_completed_focus = CHU_support_shinzo_hamais_policies
-			}
 		}
 		relative_position_id = CHU_assess_our_situation
 		available_if_capitulated = yes
@@ -9134,7 +9238,7 @@
 			factor = 1
 		}
 		completion_reward = {
-			set_variable = { global.division_limit_base = 450 }
+			add_to_variable = { var = global.division_limit_base value = 50 }
 			add_ideas = CHU_kotaro_nakamura
 			add_ideas = generic_army_administrarion_japan_3
 			army_experience = 25
@@ -9465,6 +9569,7 @@
 			factor = 1
 		}
 		completion_reward = {
+			add_to_variable = { var = global.division_limit_base value = 100 }
 			add_manpower = 100000
 			add_war_support = 0.1
 		}	
