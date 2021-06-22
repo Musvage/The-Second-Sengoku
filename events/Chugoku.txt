@@ -1052,82 +1052,118 @@ country_event = {
 			tag = CHU 
 		}
 		name = chugoku.29.b #Chugoku exile
-		custom_effect_tooltip = The_traitors_will_be_exiled_to_PRO
+		custom_effect_tooltip = The_traitors_will_be_exiled_to_Others
 		CHU = { set_country_flag = generals_exile }
-		PRO = { country_event = { id = chugoku.31 days = 2 } }
-		if = {
-			limit = {
-				has_country_leader = {
-					name = "Teiichi Suzuki"
-					ruling_only = yes
-				}
-			}
-			FROM = { 
-					every_unit_leader = {
-						limit = {
-							has_ID = 1001
+			if = {
+				limit = {
+					CHU = {	
+						has_country_leader = {
+							name = "Teiichi Suzuki"
+							ruling_only = yes
 						}
-						set_nationality = PRO
 					}
 				}
-			FROM = { 
-				every_unit_leader = {
+				random_country = {
 					limit = {
-						has_trait = Hata_supporters_general
+						NOT = {
+							OR = {
+								has_government = communism
+								has_government = fascism
+							}
+						}
+						is_major = yes
 					}
-					set_nationality = PRO
+					FROM = {
+						every_unit_leader = {
+							limit = {
+								has_ID = 1001
+							}
+						set_nationality = PREV.PREV
+						}
+						every_unit_leader = {
+							limit = {
+								has_trait = Hata_supporters_general
+							}
+						set_nationality = PREV.PREV
+						}
+					}
+					country_event = { id = chugoku.31 days = 2 }
 				}
 			}
-		}
-		if = {
-			limit = {
-				has_country_leader = {
-					name = "Shunroku Hata"
-					ruling_only = yes
+					
+			if = {
+				limit = {
+					CHU = {
+						has_country_leader = {
+							name = "Shunroku Hata"
+							ruling_only = yes
+						}
+					}
+				}
+				random_country = {
+					limit = {
+						NOT = {
+							OR = {
+								has_government = communism
+								has_government = fascism
+							}
+						}
+						is_major = yes
+					}
+					FROM = {
+						every_unit_leader = {
+							limit = {
+								has_ID = 1001
+							}
+						set_nationality = PREV.PREV
+						}
+						every_unit_leader = {
+							limit = {
+								has_trait = Suzuki_supporters_general
+							}
+						set_nationality = PREV.PREV
+						}
+					}
+					country_event = { id = chugoku.31 days = 2 }
 				}
 			}
-			FROM = { 
-					every_unit_leader = {
-						limit = {
-							has_trait = Suzuki_supporters_general
+			
+			if = {
+				limit = {
+					CHU = {
+						has_country_leader = {
+							name = "Tomoyuki Yamashita"
+							ruling_only = yes
 						}
-						set_nationality = PRO
 					}
 				}
-				FROM = { 
-					every_unit_leader = {
-						limit = {
-							has_ID = 1001
+				random_country = {
+					limit = {
+						NOT = {
+							OR = {
+								has_government = communism
+								has_government = fascism
+							}
 						}
-						set_nationality = PRO
+						is_major = yes
 					}
-				}
-		}
-		if = {
-			limit = {
-				has_country_leader = {
-					name = "Tomoyuki Yamashita"
-					ruling_only = yes
-				}
-			}
-			FROM = { 
-					every_unit_leader = {
-						limit = {
-							has_ID = 1000
+					FROM = {
+						every_unit_leader = {
+							limit = {
+								has_ID = 1000
+							}
+						set_nationality = PREV.PREV
 						}
-						set_nationality = PRO
-					}
-				}
-				FROM = { 
-					every_unit_leader = {
-						limit = {
-							has_trait = Hata_supporters_general
+						every_unit_leader = {
+							limit = {
+								has_trait = Hata_supporters_general
+							}
+						set_nationality = PREV.PREV
 						}
-						set_nationality = PRO
 					}
-				}
-				
-		}
+					country_event = { id = chugoku.31 days = 2 }
+				}		
+			}	
 	}
 	
 	option = {
@@ -1438,60 +1474,63 @@ country_event = {
 	
 	option = {
 		trigger = { 
-			tag = PRO
 			CHU = { 
 				has_country_flag = generals_exile 
 			}
 		}
 		name = chugoku.31.e #Chugoku exile
-		CHU = { clr_country_flag = generals_exile }
-		FROM = { 
-			every_unit_leader = {
-				limit = {
-					has_trait = Hata_supporters_general
+		hidden_effect = {
+			CHU = { clr_country_flag = generals_exile }
+			FROM = { 
+				every_unit_leader = {
+					limit = {
+						has_trait = Hata_supporters_general
+					}
+					remove_unit_leader_trait = Hata_supporters_general
 				}
-				remove_unit_leader_trait = Hata_supporters_general
+			}
+			FROM = { 
+				every_unit_leader = {
+					limit = {
+						has_trait = Suzuki_supporters_general
+					}
+					remove_unit_leader_trait = Suzuki_supporters_general
+				}
 			}
 		}
-		FROM = { 
-			every_unit_leader = {
-				limit = {
-					has_trait = Suzuki_supporters_general
-				}
-				remove_unit_leader_trait = Suzuki_supporters_general
-			}
+		add_timed_idea = {
+			idea = CHU_Discontent_Among_Commanders
+			days = 200
 		}
 	}
 	
 	option = {
-		trigger = { 
-			tag = PRO
-		}
 		name = chugoku.31.g #Chugoku prison PRO
-		custom_effect_tooltip = Division_limit_add_50
 		CHU { clr_country_flag = generals_exile }
-		ROOT = { add_to_variable = { var = global.division_limit_base value = 50 } }
-
-		FROM = { 
-			every_unit_leader = {
-				limit = {
-					has_trait = Hata_supporters_general
+		hidden_effect = {
+			FROM = { 
+				every_unit_leader = {
+					limit = {
+						has_trait = Hata_supporters_general
+					}
+					retire = yes
 				}
-				retire = yes
 			}
-		}
 
-		FROM = { 
-			every_unit_leader = {
-				limit = {
-					has_trait = Suzuki_supporters_general
+			FROM = { 
+				every_unit_leader = {
+					limit = {
+						has_trait = Suzuki_supporters_general
+					}
+					retire = yes
 				}
-				retire = yes
 			}
+			
+			remove_unit_leader = 1001
+			remove_unit_leader = 1000
 		}
-		
-		remove_unit_leader = 1001
-		remove_unit_leader = 1000
+		add_political_power = 120
+		add_stability = 0.10
 	}
 	
 	
