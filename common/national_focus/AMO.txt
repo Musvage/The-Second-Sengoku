@@ -1,14 +1,280 @@
 focus_tree = {
 	id = AMO
 	continuous_focus_position = {
-		x = 500
-		y = 300
+		x = 0
+		y = 800
 	}
 	country = {
 		factor = 0
 		modifier = {
 			add = 2
 			tag = AMO
+		}
+	}
+
+	focus = {
+		id = AMO_war_started
+		icon = GFX_focus_generic_attack_shogun
+		cost = 0
+		available = {
+			always = no
+		}
+
+		x = 5
+		y = 0
+
+		completion_reward = {
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = 2000
+				producer = AMO
+			}
+
+			hidden_effect = {
+				set_variable = {
+					weaken_sho = 0
+				}
+				set_variable = {
+					chance_collapse = 0
+				}
+				set_variable = {
+					military_development_index = 0
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = AMO_send_Tamemoto_away
+		icon = GFX_focus_prc_infiltration
+		cost = 5
+		x = 4
+		y = 1
+
+		completion_reward = {
+			custom_effect_tooltip = AMO_general_retire_tt
+			custom_effect_tooltip = AMO_increase_tension_slight
+			custom_effect_tooltip = AMO_chance_collapse_slight
+			
+			hidden_effect = {
+				every_unit_leader = {
+				limit = {
+					has_id = 505
+				}
+
+				retire = yes
+				}
+				add_to_variable = { weaken_sho = 1 }
+				add_to_variable = { chance_collapse = 1 }
+			}
+		}
+	}
+
+	focus = {
+		id = AMO_provide_guns
+		icon = GFX_focus_generic_army_quantity
+		cost = 5
+		x = 4
+		y = 2
+
+		completion_reward = {
+			custom_effect_tooltip = AMO_provide_guns_tt
+			custom_effect_tooltip = AMO_increase_tension_medium
+			custom_effect_tooltip = AMO_chance_collapse_high
+			hidden_effect = {
+				if = {
+					limit = {
+						has_equipment = {
+							infantry_equipment_1 > 2000
+						}
+					}
+
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = -2000
+						producer = AMO
+					}
+				}
+				else = {
+					add_timed_idea = {
+						idea = AMO_paying_weapons
+						days = 100
+					}
+				}
+				add_to_variable = { weaken_sho = 2 }
+				add_to_variable = { chance_collapse = 3 }
+			}
+		}
+	}
+
+	focus = {
+		id = AMO_lend_naval_industry
+		icon = GFX_focus_generic_refit_merchant_ships
+		cost = 5
+		x = 4
+		y = 3
+
+		completion_reward = {
+			custom_effect_tooltip = AMO_lend_dockyards_tt
+			custom_effect_tooltip = AMO_increase_tension_slight
+			custom_effect_tooltip = AMO_chance_collapse_medium
+			
+			hidden_effect = {
+				add_timed_idea = {
+					idea = AMO_lending_dockyards
+					days = 70
+				}
+				add_to_variable = { weaken_sho = 1 }
+				add_to_variable = { chance_collapse = 2 }
+			}
+		}
+	}
+
+	focus = {
+		id = AMO_promise_asylum
+		icon = GFX_focus_generic_treaty
+		cost = 5
+		x = 4
+		y = 4
+
+		completion_reward = {
+			custom_effect_tooltip = AMO_asylum_tt
+			custom_effect_tooltip = AMO_increase_tension_high
+			custom_effect_tooltip = AMO_chance_collapse_high
+			hidden_effect = {
+				add_stability = -0.15
+				SHO = {
+					every_unit_leader = {
+						limit = {
+							has_id = 6
+						}
+
+						add_unit_leader_trait = hidden_sympathies
+					}
+				}
+				add_to_variable = { weaken_sho = 3 }
+				add_to_variable = { chance_collapse = 3 }
+			}
+		}
+	}
+
+	focus = {
+		id = AMO_send_our_generals_to_school
+		icon = GFX_focus_generic_treaty
+		cost = 5
+		x = 6
+		y = 1
+
+		completion_reward = {
+			custom_effect_tooltip = AMO_generals_to_school_tt
+			custom_effect_tooltip = AMO_increase_mil_index_tt
+
+			hidden_effect = {
+				every_unit_leader = {
+					limit = {
+						has_trait = old_guard
+					}
+					retire = yes
+				}
+
+				create_field_marshal = {
+					name = "Mitsuru Ushijima"
+					portrait_path = "gfx/leaders/AMO/Portrait_AMO_Mitsuru_Ushijima.dds"
+					traits = { JAP_samurai_lineage logistics_wizard }
+					skill = 3
+					attack_skill = 3
+					defense_skill = 4
+					planning_skill = 2
+					logistics_skill = 2
+				}
+				
+				create_field_marshal = {
+					name = "Oku Yasukata"
+					portrait_path = "gfx/leaders/AMO/Portrait_AMO_Oku_Yasukata.dds"
+					traits = { brilliant_strategist veteran_general war_hero JAP_samurai_lineage legendary_general }
+					skill = 5
+					attack_skill = 6
+					defense_skill = 2
+					planning_skill = 3
+					logistics_skill = 5
+					set_unit_leader_flag = legendary_already_flag
+				}
+				
+				create_corps_commander = {
+					name = "Baba Masao"
+					picture = "Portrait_AMO_Baba_Masao.dds"
+					traits = { harsh_leader trait_reckless trickster }
+					skill = 2
+					attack_skill = 4
+					defense_skill = 2
+					planning_skill = 1
+					logistics_skill = 4
+				}
+				
+				create_corps_commander = {
+					name = "Kuroki Tamemoto"
+					picture = "Portrait_AMO_Kuroki_Tamemoto.dds"
+					traits = { infantry_officer career_officer veteran_general infantry_leader }
+					skill = 4
+					id = 506
+					attack_skill = 5
+					defense_skill = 2
+					planning_skill = 3
+					logistics_skill = 6
+				}
+				
+				create_corps_commander = {
+					name = "Keiji Suzuki"
+					picture = "Portrait_AMO_Kenji_Suzuki.dds"
+					traits = { commando trait_engineer }
+					skill = 2
+					attack_skill = 2
+					defense_skill = 2
+					planning_skill = 2
+					logistics_skill = 3
+				}
+			
+				add_to_variable = { military_development_index = 1 }
+			}
+		}
+	}
+
+	focus = {
+		id = AMO_women_in_army
+		icon = GFX_focus_generic_treaty
+		cost = 5
+		x = 6
+		y = 2
+
+		completion_reward = {
+			custom_effect_tooltip = AMO_women_army_tt
+			custom_effect_tooltip = AMO_increase_mil_index_tt
+			hidden_effect = {
+				set_rule = {
+					can_generate_female_aces = yes
+				}
+				add_ideas = AMO_women_army
+				add_to_variable = { military_development_index = 1 }
+			}
+		}
+	}
+
+	focus = {
+		id = AMO_international_help
+		icon = GFX_focus_generic_treaty
+		cost = 5
+		x = 6
+		y = 3
+
+		completion_reward = {
+			custom_effect_tooltip = AMO_as_help_tt
+			custom_effect_tooltip = AMO_increase_mil_index_tt
+
+			hidden_effect = {
+				country_event = amaterasu.4
+				add_to_variable = { military_development_index = 1 }
+			}
+
 		}
 	}
 
