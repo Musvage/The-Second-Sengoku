@@ -748,19 +748,20 @@ country_event = { #chugoku clan wars
 }
 
 #Chugoku Clan Wars Start
-country_event = {
+news_event = {
 	id = chugoku.21
 	title = chugoku.21.t
 	desc = chugoku.21.desc
-	picture = GFX_report_event_japan_army_mountainside
+	picture = GFX_news_clan_war
 
 	is_triggered_only = yes
 	
 	option = {
+		trigger = { tag = CHU }
 		name = chugoku.21.a #Start war!
 		add_war_support = 0.10
 	}
-}
+} 
 
 country_event = { #chugoku clan core
 	id = chugoku.22
@@ -835,12 +836,12 @@ country_event = { #chugoku clan core
 	}
 }
 
-#Chugoku invite KYU federe goverment 
-country_event = {
+#Chugoku invite KYU federe goverment
+news_event = {
 	id = chugoku.23
 	title = chugoku.23.t
 	desc = chugoku.23.desc
-	picture = GFX_report_event_generic_sign_treaty2
+	picture = GFX_news_event_CFR
 
 	is_triggered_only = yes
 	
@@ -875,13 +876,13 @@ news_event = {
 	id = chugoku.24
 	title = chugoku.24.t
 	desc = chugoku.24.desc
-	picture = GFX_news_event_eng_churchill_sign_treaty
+	picture = GFX_news_chugoku_democracy_spred
 
 	is_triggered_only = yes
 	fire_only_once = yes
 	
 	option = {
-		name = chugoku.24.a #Chugoku has become rival!
+		name = chugoku.24.a
 		custom_effect_tooltip = Unlock_Decisions_Democrat_Revolt
 		ROOT = {
 			set_country_flag = chugoku_democracy_revolt
@@ -894,7 +895,7 @@ news_event = {
 	id = chugoku.25
 	title = chugoku.25.t
 	desc = chugoku.25.desc
-	picture = GFX_news_event_052
+	picture = GFX_news_event_shikoku
 
 	is_triggered_only = yes
 	fire_only_once = yes
@@ -916,7 +917,7 @@ news_event = {
 	id = chugoku.26
 	title = chugoku.26.t
 	desc = chugoku.26.desc
-	picture = GFX_news_event_052
+	picture = GFX_news_event_shikoku
 
 	is_triggered_only = yes
 	fire_only_once = yes
@@ -937,7 +938,7 @@ news_event = {
 	id = chugoku.27
 	title = chugoku.27.t
 	desc = chugoku.27.desc
-	picture = GFX_news_event_052
+	picture = GFX_news_event_kyushu
 
 	is_triggered_only = yes
 	fire_only_once = yes
@@ -960,7 +961,7 @@ news_event = {
 	id = chugoku.28
 	title = chugoku.28.t
 	desc = chugoku.28.desc
-	picture = GFX_news_event_052
+	picture = GFX_news_event_kyushu
 
 	is_triggered_only = yes
 	fire_only_once = yes
@@ -1001,7 +1002,7 @@ country_event = {
 					ruling_only = yes
 				}
 			}
-			remove_unit_leader = 1001
+
 			FROM = { 
 				every_unit_leader = {
 					limit = {
@@ -1010,40 +1011,98 @@ country_event = {
 					retire = yes
 				}
 			}
+			
+			FROM = { 
+				every_unit_leader = {
+					limit = {
+						has_trait = Yamashita_supporters_general
+					}
+					retire = yes
+				}
+			}
+			
+			ROOT = { 
+				every_unit_leader = {
+					limit = {
+						has_trait = Suzuki_supporters_general
+					}
+					add_unit_leader_trait = loyal_commander
+					remove_unit_leader_trait = Suzuki_supporters_general
+				}
+			}
 		}
-		if = {
+		else_if = {
 			limit = {
 				has_country_leader = {
 					name = "Shunroku Hata"
 					ruling_only = yes
 				}
 			}
+			
 			FROM = { 
-					every_unit_leader = {
-						limit = {
-							has_trait = Suzuki_supporters_general
-						}
-						retire = yes
+				every_unit_leader = {
+					limit = {
+						has_trait = Suzuki_supporters_general
 					}
+					retire = yes
 				}
-				remove_unit_leader = 1001
+			}
+			
+			FROM = { 
+				every_unit_leader = {
+					limit = {
+						has_trait = Yamashita_supporters_general
+					}
+					retire = yes
+				}
+			}
+			
+			ROOT = { 
+				every_unit_leader = {
+					limit = {
+						has_trait = Hata_supporters_general
+					}
+					add_unit_leader_trait = loyal_commander
+					remove_unit_leader_trait = Hata_supporters_general
+				}
+			}
+
 		}
-		if = {
+		else_if = {
 			limit = {
 				has_country_leader = {
 					name = "Tomoyuki Yamashita"
 					ruling_only = yes
 				}
 			}
-			remove_unit_leader = 1000
-				FROM = { 
-					every_unit_leader = {
-						limit = {
-							has_trait = Hata_supporters_general
-						}
-						retire = yes
+
+			FROM = { 
+				every_unit_leader = {
+					limit = {
+						has_trait = Hata_supporters_general
 					}
+					retire = yes
 				}
+			}
+			
+			FROM = { 
+				every_unit_leader = {
+					limit = {
+						has_trait = Suzuki_supporters_general
+					}
+					retire = yes
+				}
+			}
+			
+			ROOT = { 
+				every_unit_leader = {
+					limit = {
+						has_trait = Yamashita_supporters_general
+					}
+					add_unit_leader_trait = loyal_commander
+					remove_unit_leader_trait = Yamashita_supporters_general
+				}
+			}
 		}
 	}
 	
@@ -1063,35 +1122,45 @@ country_event = {
 						}
 					}
 				}
+				
 				random_country = {
 					limit = {
 						NOT = {
-							OR = {
-								has_government = communism
-								has_government = fascism
-							}
+							has_government = communism
+							has_government = fascism
 						}
 						is_major = yes
 					}
 					FROM = {
 						every_unit_leader = {
 							limit = {
-								has_ID = 1001
-							}
-						set_nationality = PREV.PREV
-						}
-						every_unit_leader = {
-							limit = {
 								has_trait = Hata_supporters_general
 							}
-						set_nationality = PREV.PREV
+							set_nationality = PREV.PREV
+						}
+					}
+					FROM = { 
+						every_unit_leader = {
+							limit = {
+								has_trait = Yamashita_supporters_general
+							}
+							set_nationality = PREV.PREV
 						}
 					}
 					country_event = { id = chugoku.31 days = 2 }
 				}
+				ROOT = { 
+					every_unit_leader = {
+						limit = {
+							has_trait = Suzuki_supporters_general
+						}
+						add_unit_leader_trait = loyal_commander
+						remove_unit_leader_trait = Suzuki_supporters_general
+					}
+				}
 			}
 					
-			if = {
+			else_if = {
 				limit = {
 					CHU = {
 						has_country_leader = {
@@ -1100,23 +1169,16 @@ country_event = {
 						}
 					}
 				}
+				
 				random_country = {
 					limit = {
 						NOT = {
-							OR = {
-								has_government = communism
-								has_government = fascism
-							}
+							has_government = communism
+							has_government = fascism
 						}
 						is_major = yes
 					}
 					FROM = {
-						every_unit_leader = {
-							limit = {
-								has_ID = 1001
-							}
-						set_nationality = PREV.PREV
-						}
 						every_unit_leader = {
 							limit = {
 								has_trait = Suzuki_supporters_general
@@ -1124,11 +1186,28 @@ country_event = {
 						set_nationality = PREV.PREV
 						}
 					}
+					FROM = { 
+						every_unit_leader = {
+							limit = {
+								has_trait = Yamashita_supporters_general
+							}
+							set_nationality = PREV.PREV
+						}
+					}
 					country_event = { id = chugoku.31 days = 2 }
+				}
+				ROOT = { 
+					every_unit_leader = {
+						limit = {
+							has_trait = Hata_supporters_general
+						}
+						add_unit_leader_trait = loyal_commander
+						remove_unit_leader_trait = Hata_supporters_general
+					}
 				}
 			}
 			
-			if = {
+			else_if = {
 				limit = {
 					CHU = {
 						has_country_leader = {
@@ -1137,23 +1216,16 @@ country_event = {
 						}
 					}
 				}
+
 				random_country = {
 					limit = {
 						NOT = {
-							OR = {
-								has_government = communism
-								has_government = fascism
-							}
+							has_government = communism
+							has_government = fascism
 						}
 						is_major = yes
 					}
 					FROM = {
-						every_unit_leader = {
-							limit = {
-								has_ID = 1000
-							}
-						set_nationality = PREV.PREV
-						}
 						every_unit_leader = {
 							limit = {
 								has_trait = Hata_supporters_general
@@ -1161,8 +1233,26 @@ country_event = {
 						set_nationality = PREV.PREV
 						}
 					}
+					FROM = {
+						every_unit_leader = {
+							limit = {
+								has_trait = Suzuki_supporters_general
+							}
+						set_nationality = PREV.PREV
+						}
+					}
 					country_event = { id = chugoku.31 days = 2 }
-				}		
+				}	
+					
+				ROOT = { 
+					every_unit_leader = {
+						limit = {
+							has_trait = Yamashita_supporters_general
+						}
+						add_unit_leader_trait = loyal_commander
+						remove_unit_leader_trait = Yamashita_supporters_general
+					}
+				}
 			}	
 	}
 	
@@ -1180,7 +1270,7 @@ country_event = {
 					ruling_only = yes
 				}
 			}
-			remove_unit_leader = 1001
+			
 			FROM = { 
 				every_unit_leader = {
 					limit = {
@@ -1189,40 +1279,96 @@ country_event = {
 					retire = yes
 				}
 			}
+			FROM = { 
+				every_unit_leader = {
+					limit = {
+						has_trait = Yamashita_supporters_general
+					}
+					retire = yes
+				}
+			}
+			
+			ROOT = { 
+				every_unit_leader = {
+					limit = {
+						has_trait = Suzuki_supporters_general
+					}
+					add_unit_leader_trait = loyal_commander
+					remove_unit_leader_trait = Suzuki_supporters_general
+				}
+			}
 		}
-		if = {
+		else_if = {
 			limit = {
 				has_country_leader = {
 					name = "Shunroku Hata"
 					ruling_only = yes
 				}
 			}
+			
 			FROM = { 
-					every_unit_leader = {
-						limit = {
-							has_trait = Suzuki_supporters_general
-						}
-						retire = yes
+				every_unit_leader = {
+					limit = {
+						has_trait = Suzuki_supporters_general
 					}
+					retire = yes
 				}
-				remove_unit_leader = 1001
+			}
+			FROM = { 
+				every_unit_leader = {
+					limit = {
+						has_trait = Yamashita_supporters_general
+					}
+					retire = yes
+				}
+			}
+			
+			ROOT = { 
+				every_unit_leader = {
+					limit = {
+						has_trait = Hata_supporters_general
+					}
+					add_unit_leader_trait = loyal_commander
+					remove_unit_leader_trait = Hata_supporters_general
+				}
+			}
+
 		}
-		if = {
+		else_if = {
 			limit = {
 				has_country_leader = {
 					name = "Tomoyuki Yamashita"
 					ruling_only = yes
 				}
 			}
-			remove_unit_leader = 1000
-				FROM = { 
-					every_unit_leader = {
-						limit = {
-							has_trait = Hata_supporters_general
-						}
-						retire = yes
+
+			FROM = { 
+				every_unit_leader = {
+					limit = {
+						has_trait = Hata_supporters_general
 					}
+					retire = yes
 				}
+			}
+			
+			FROM = { 
+				every_unit_leader = {
+					limit = {
+						has_trait = Suzuki_supporters_general
+					}
+					retire = yes
+				}
+			}
+			
+			ROOT = { 
+				every_unit_leader = {
+					limit = {
+						has_trait = Yamashita_supporters_general
+					}
+					add_unit_leader_trait = loyal_commander
+					remove_unit_leader_trait = Yamashita_supporters_general
+				}
+			}
 		}
 	}
 }
@@ -1257,23 +1403,61 @@ country_event = {
 		}
 		name = chugoku.30.b #Chugoku prison
 		clr_country_flag = generals_prison
+		
+		##### HATA #####
+		
 		create_field_marshal = {
 			name = "Shunroku Hata"
 			picture = "Portrait_CHU_Shunroku_Hata.dds"
-			traits = { offensive_doctrine JAP_samurai_lineage  }
+			traits = { veteran_general offensive_doctrine JAP_samurai_lineage }
 
-			skill = 4
+			skill = 5
 			attack_skill = 3
-			defense_skill = 4
-			planning_skill = 2
+			defense_skill = 3
+			planning_skill = 7
 			logistics_skill = 4
 		}
 
 		create_field_marshal = {
+			name = "Hideki Tojo"
+			picture = "Portrait_CHU_Hideki_Tojo.dds"
+			traits = { inspirational_leader trait_reckless }
+			skill = 2
+			attack_skill = 2
+			defense_skill = 2
+			planning_skill = 3
+			logistics_skill = 1
+		}
+
+		create_corps_commander = {
+			name = "Seishiro Itagaki"
+				picture = "Portrait_CHU_Seishiro_Itagaki.dds"
+			traits = { JAP_samurai_lineage inflexible_strategist trait_reckless}
+			skill = 3
+			attack_skill = 3
+			defense_skill = 3
+			planning_skill = 2
+			logistics_skill = 2
+		}
+
+		create_corps_commander = {
+			name = "Torashiro Kawabe"
+			picture = "Portrait_CHU_Torashiro_Kawabe.dds"
+			traits = { trait_cautious bearer_of_artillery}
+			skill = 2
+			attack_skill = 1
+			defense_skill = 2
+			planning_skill = 3
+			logistics_skill = 1
+		}
+		
+		##### Yamashita #####
+		
+		create_field_marshal = {
 			name = "Tomoyuki Yamashita"
 			picture = "Portrait_CHU_Tomoyuki_Yamashita.dds"
 			traits = {
-				trickster trait_engineer brilliant_strategist politically_connected
+				veteran_general trickster trait_engineer brilliant_strategist politically_connected
 			}
 
 			skill = 5
@@ -1281,39 +1465,39 @@ country_event = {
 			defense_skill = 5
 			planning_skill = 3
 			logistics_skill = 4
-		}
+		}		
 
 		create_field_marshal = {
-			name = "Hideki Tojo"
-			picture = "Portrait_CHU_Hideki_Tojo.dds"
-			traits = { inspirational_leader trait_reckless  }
+			name = "Hisaichi Terauchi"
+			picture = "Portrait_CHU_Hisaichi_Terauchi.dds"
+			traits = { offensive_doctrine JAP_samurai_lineage politically_connected}
+			skill = 4
+			attack_skill = 4
+			defense_skill = 4
+			planning_skill = 3
+			logistics_skill = 2
+		}
+
+		create_corps_commander = {
+			name = "Akira Muto"
+			picture = "Portrait_CHU_Akira_Muto.dds"
+			traits = { career_officer}
 			skill = 2
 			attack_skill = 2
 			defense_skill = 2
-			planning_skill = 3
-			logistics_skill = 1
-		}
-		
-		create_corps_commander = {
-			name = "Seishiro Itagaki"
-				picture = "Portrait_CHU_Seishiro_Itagaki.dds"
-			traits = { JAP_samurai_lineage inflexible_strategist trait_reckless  }
-			skill = 3
-			attack_skill = 3
-			defense_skill = 3
 			planning_skill = 2
-			logistics_skill = 2
-		}
-		
-		create_corps_commander = {
-			name = "Kenji Doihara"
-			picture = "Portrait_CHU_Kenji_Doihara.dds"
-			traits = { career_officer substance_abuser  }
-			skill = 1 
-			attack_skill = 1
-			defense_skill = 1
-			planning_skill = 1
 			logistics_skill = 1
+		}
+
+		create_corps_commander = {
+			name = "Masakazu Kawabe"
+			picture = "Portrait_CHU_Masakazu_Kawabe.dds"
+			traits = { }
+			skill = 2
+			attack_skill = 2
+			defense_skill = 2
+			planning_skill = 1
+			logistics_skill = 2
 		}
 	}
 	
@@ -1330,11 +1514,14 @@ country_event = {
 		}
 		name = chugoku.30.d #Chugoku prison
 		clr_country_flag = generals_prison
+		
+		##### Yamashita #####
+		
 		create_field_marshal = {
 			name = "Tomoyuki Yamashita"
 			picture = "Portrait_CHU_Tomoyuki_Yamashita.dds"
 			traits = {
-				trickster trait_engineer brilliant_strategist politically_connected
+				veteran_general trickster trait_engineer brilliant_strategist politically_connected
 			}
 
 			skill = 5
@@ -1342,12 +1529,47 @@ country_event = {
 			defense_skill = 5
 			planning_skill = 3
 			logistics_skill = 4
+		}		
+
+		create_field_marshal = {
+			name = "Hisaichi Terauchi"
+			picture = "Portrait_CHU_Hisaichi_Terauchi.dds"
+			traits = { offensive_doctrine JAP_samurai_lineage politically_connected }
+			skill = 4
+			attack_skill = 4
+			defense_skill = 4
+			planning_skill = 3
+			logistics_skill = 2
 		}
 
+		create_corps_commander = {
+			name = "Akira Muto"
+			picture = "Portrait_CHU_Akira_Muto.dds"
+			traits = { career_officer }
+			skill = 2
+			attack_skill = 2
+			defense_skill = 2
+			planning_skill = 2
+			logistics_skill = 1
+		}
+
+		create_corps_commander = {
+			name = "Masakazu Kawabe"
+			picture = "Portrait_CHU_Masakazu_Kawabe.dds"
+			traits = { }
+			skill = 2
+			attack_skill = 2
+			defense_skill = 2
+			planning_skill = 1
+			logistics_skill = 2
+		}
+		
+		##### Teiichi #####
+		
 		create_field_marshal = {
 			name = "Kazushige Ugaki"
 			picture = "Portrait_CHU_Kazushige_Ugaki.dds"
-			traits = { trait_cautious old_guard infantry_officer  }
+			traits = { trait_cautious old_guard infantry_officer }
 			skill = 2
 			attack_skill = 1
 			defense_skill = 2
@@ -1356,26 +1578,38 @@ country_event = {
 		}
 		
 		create_corps_commander = {
-			name = "Masakazu Kawabe"
-			picture = "Portrait_CHU_Masakazu_Kawabe.dds"
-			traits = {  }
-			skill = 2
-			attack_skill = 2
-			defense_skill = 2
-			planning_skill = 1
-			logistics_skill = 2
-		}
-
-		create_corps_commander = {
-			name = "Torashiro Kawabe"
-			picture = "Portrait_CHU_Torashiro_Kawabe.dds"
-			traits = { trait_cautious bearer_of_artillery  }
-			skill = 2
+			name = "Kenji Doihara"
+			picture = "Portrait_CHU_Kenji_Doihara.dds"
+			traits = { career_officer substance_abuser }
+			skill = 1 
 			attack_skill = 1
-			defense_skill = 2
-			planning_skill = 3
+			defense_skill = 1
+			planning_skill = 1
 			logistics_skill = 1
 		}
+		
+		create_corps_commander = {
+			name = "Kingoro Hashimoto"
+			picture = "Portrait_CHU_Kingoro_Hashimoto.dds"
+			traits = { politically_connected }
+			skill = 2
+			attack_skill = 3
+			defense_skill = 1
+			planning_skill = 1
+			logistics_skill = 1
+		}
+		
+		create_corps_commander = {
+			name = "Tasuku Okada"
+			picture = "Portrait_CHU_Tasuku_Okada.dds"
+			traits = { war_hero }
+			skill = 1
+			attack_skill = 2
+			defense_skill = 1
+			planning_skill = 1
+			logistics_skill = 1
+		}
+	
 	}
 	
 	option = {
@@ -1391,64 +1625,100 @@ country_event = {
 		}
 		name = chugoku.30.f #Chugoku prison
 		clr_country_flag = generals_prison
-		create_field_marshal = {
-				name = "Shunroku Hata"
-				picture = "Portrait_CHU_Shunroku_Hata.dds"
-				traits = { offensive_doctrine JAP_samurai_lineage  }
-			
-				skill = 4
-				attack_skill = 3
-				defense_skill = 4
-				planning_skill = 2
-				logistics_skill = 4
-			}
+		
+		##### HATA #####
 		
 		create_field_marshal = {
-			name = "Tomoyuki Yamashita"
-			picture = "Portrait_CHU_Tomoyuki_Yamashita.dds"
-			traits = {
-				trickster trait_engineer brilliant_strategist politically_connected
-			}
+			name = "Shunroku Hata"
+			picture = "Portrait_CHU_Shunroku_Hata.dds"
+			traits = { veteran_general offensive_doctrine JAP_samurai_lineage }
 
 			skill = 5
-			attack_skill = 4
-			defense_skill = 5
-			planning_skill = 3
+			attack_skill = 3
+			defense_skill = 3
+			planning_skill = 7
 			logistics_skill = 4
 		}
 
 		create_field_marshal = {
 			name = "Hideki Tojo"
 			picture = "Portrait_CHU_Hideki_Tojo.dds"
-			traits = { inspirational_leader trait_reckless  }
+			traits = { inspirational_leader trait_reckless }
 			skill = 2
 			attack_skill = 2
 			defense_skill = 2
 			planning_skill = 3
 			logistics_skill = 1
 		}
-		
+
 		create_corps_commander = {
 			name = "Seishiro Itagaki"
 				picture = "Portrait_CHU_Seishiro_Itagaki.dds"
-			traits = { JAP_samurai_lineage inflexible_strategist trait_reckless  }
+			traits = { JAP_samurai_lineage inflexible_strategist trait_reckless }
 			skill = 3
 			attack_skill = 3
 			defense_skill = 3
 			planning_skill = 2
 			logistics_skill = 2
 		}
+
+		create_corps_commander = {
+			name = "Torashiro Kawabe"
+			picture = "Portrait_CHU_Torashiro_Kawabe.dds"
+			traits = { trait_cautious bearer_of_artillery }
+			skill = 2
+			attack_skill = 1
+			defense_skill = 2
+			planning_skill = 3
+			logistics_skill = 1
+		}
+		
+		##### Teiichi #####
+		
+		create_field_marshal = {
+			name = "Kazushige Ugaki"
+			picture = "Portrait_CHU_Kazushige_Ugaki.dds"
+			traits = { trait_cautious old_guard infantry_officer }
+			skill = 2
+			attack_skill = 1
+			defense_skill = 2
+			planning_skill = 3
+			logistics_skill = 2
+		}
 		
 		create_corps_commander = {
 			name = "Kenji Doihara"
 			picture = "Portrait_CHU_Kenji_Doihara.dds"
-			traits = { career_officer substance_abuser  }
+			traits = { career_officer substance_abuser }
 			skill = 1 
 			attack_skill = 1
 			defense_skill = 1
 			planning_skill = 1
 			logistics_skill = 1
 		}
+		
+		create_corps_commander = {
+			name = "Kingoro Hashimoto"
+			picture = "Portrait_CHU_Kingoro_Hashimoto.dds"
+			traits = { politically_connected }
+			skill = 2
+			attack_skill = 3
+			defense_skill = 1
+			planning_skill = 1
+			logistics_skill = 1
+		}
+		
+		create_corps_commander = {
+			name = "Tasuku Okada"
+			picture = "Portrait_CHU_Tasuku_Okada.dds"
+			traits = { war_hero }
+			skill = 1
+			attack_skill = 2
+			defense_skill = 1
+			planning_skill = 1
+			logistics_skill = 1
+		}
+		
 	}
 	
 	option = {
@@ -1462,7 +1732,7 @@ country_event = {
 	}
 }
 
-#Chugoku exile generals send PRO 
+#Chugoku exile generals send OTHER 
 country_event = {
 	id = chugoku.31
 	title = chugoku.31.t
@@ -1481,7 +1751,17 @@ country_event = {
 		name = chugoku.31.e #Chugoku exile
 		hidden_effect = {
 			CHU = { clr_country_flag = generals_exile }
-			FROM = { 
+			
+			ROOT = { 
+				every_unit_leader = {
+					limit = {
+						has_trait = Suzuki_supporters_general
+					}
+					remove_unit_leader_trait = Suzuki_supporters_general
+				}
+			}
+			
+			ROOT = { 
 				every_unit_leader = {
 					limit = {
 						has_trait = Hata_supporters_general
@@ -1489,12 +1769,13 @@ country_event = {
 					remove_unit_leader_trait = Hata_supporters_general
 				}
 			}
-			FROM = { 
+			
+			ROOT = { 
 				every_unit_leader = {
 					limit = {
-						has_trait = Suzuki_supporters_general
+						has_trait = Yamashita_supporters_general
 					}
-					remove_unit_leader_trait = Suzuki_supporters_general
+					remove_unit_leader_trait = Yamashita_supporters_general
 				}
 			}
 		}
@@ -1507,8 +1788,8 @@ country_event = {
 	option = {
 		name = chugoku.31.g #Chugoku prison PRO
 		CHU { clr_country_flag = generals_exile }
-		hidden_effect = {
-			FROM = { 
+
+			ROOT = { 
 				every_unit_leader = {
 					limit = {
 						has_trait = Hata_supporters_general
@@ -1516,8 +1797,7 @@ country_event = {
 					retire = yes
 				}
 			}
-
-			FROM = { 
+			ROOT = { 
 				every_unit_leader = {
 					limit = {
 						has_trait = Suzuki_supporters_general
@@ -1525,13 +1805,37 @@ country_event = {
 					retire = yes
 				}
 			}
+			ROOT = { 
+				every_unit_leader = {
+					limit = {
+						has_trait = Yamashita_supporters_general
+					}
+					retire = yes
+				}
+			}
 			
-			remove_unit_leader = 1001
-			remove_unit_leader = 1000
-		}
 		add_political_power = 120
 		add_stability = 0.10
 	}
+}
+
+#Chugoku declare Federal Republic
+news_event = {
+	id = chugoku.32
+	title = chugoku.32.t
+	desc = chugoku.32.desc
+	picture = GFX_news_event_CFR_2
+
+	major = yes
+	is_triggered_only = yes
 	
+	option = {
+		trigger = { OR = { has_government = democratic has_government = neutrality } }
+		name = chugoku.32.a #happy
+	}
 	
+	option = {
+		trigger = { NOT = { OR = { has_government = democratic has_government = neutrality } } }
+		name = chugoku.32.b #angry
+	}
 }
