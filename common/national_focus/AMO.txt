@@ -50,7 +50,8 @@ focus_tree = {
 		cost = 5
 		x = 4
 		y = 1
-
+		prerequisite = { focus =  AMO_war_started }
+		mutually_exclusive = { focus = AMO_send_our_generals_to_school }
 		completion_reward = {
 			custom_effect_tooltip = AMO_general_retire_tt
 			custom_effect_tooltip = AMO_increase_tension_slight
@@ -64,8 +65,8 @@ focus_tree = {
 
 				retire = yes
 				}
-				add_to_variable = { weaken_sho = 1 }
-				add_to_variable = { chance_collapse = 1 }
+				add_to_variable = { weaken_sho = -10 }
+				add_to_variable = { chance_collapse = 10 }
 			}
 		}
 	}
@@ -76,6 +77,13 @@ focus_tree = {
 		cost = 5
 		x = 4
 		y = 2
+
+		prerequisite = { 
+			focus = AMO_war_started 
+			focus = AMO_send_Tamemoto_away
+		
+		}
+		mutually_exclusive = { focus = AMO_women_in_army }
 
 		completion_reward = {
 			custom_effect_tooltip = AMO_provide_guns_tt
@@ -101,8 +109,8 @@ focus_tree = {
 						days = 100
 					}
 				}
-				add_to_variable = { weaken_sho = 2 }
-				add_to_variable = { chance_collapse = 3 }
+				add_to_variable = { weaken_sho = -20 }
+				add_to_variable = { chance_collapse = 30 }
 			}
 		}
 	}
@@ -114,6 +122,13 @@ focus_tree = {
 		x = 4
 		y = 3
 
+		prerequisite = { 
+			focus = AMO_women_in_army 
+			focus = AMO_provide_guns
+		
+		}
+		mutually_exclusive = { focus = AMO_international_help }
+
 		completion_reward = {
 			custom_effect_tooltip = AMO_lend_dockyards_tt
 			custom_effect_tooltip = AMO_increase_tension_slight
@@ -124,8 +139,8 @@ focus_tree = {
 					idea = AMO_lending_dockyards
 					days = 70
 				}
-				add_to_variable = { weaken_sho = 1 }
-				add_to_variable = { chance_collapse = 2 }
+				add_to_variable = { weaken_sho = -10 }
+				add_to_variable = { chance_collapse = 20 }
 			}
 		}
 	}
@@ -136,6 +151,13 @@ focus_tree = {
 		cost = 5
 		x = 4
 		y = 4
+
+		prerequisite = { 
+			focus = AMO_lend_naval_industry 
+			focus = AMO_international_help
+		
+		}
+		mutually_exclusive = { focus = AMO_buy_foreign_tanks }
 
 		completion_reward = {
 			custom_effect_tooltip = AMO_asylum_tt
@@ -152,19 +174,20 @@ focus_tree = {
 						add_unit_leader_trait = hidden_sympathies
 					}
 				}
-				add_to_variable = { weaken_sho = 3 }
-				add_to_variable = { chance_collapse = 3 }
+				add_to_variable = { weaken_sho = -30 }
+				add_to_variable = { chance_collapse = 30 }
 			}
 		}
 	}
 
 	focus = {
 		id = AMO_send_our_generals_to_school
-		icon = GFX_focus_generic_treaty
+		icon = GFX_focus_generic_military_academy
 		cost = 5
 		x = 6
 		y = 1
-
+		prerequisite = { focus = AMO_war_started }
+		mutually_exclusive = { focus = AMO_send_Tamemoto_away }
 		completion_reward = {
 			custom_effect_tooltip = AMO_generals_to_school_tt
 			custom_effect_tooltip = AMO_increase_mil_index_tt
@@ -241,10 +264,17 @@ focus_tree = {
 
 	focus = {
 		id = AMO_women_in_army
-		icon = GFX_focus_generic_treaty
+		icon = GFX_focus_generic_military_mission
 		cost = 5
 		x = 6
 		y = 2
+
+		prerequisite = { 
+			focus = AMO_war_started 
+			focus = AMO_send_Tamemoto_away
+		
+		}
+		mutually_exclusive = { focus = AMO_provide_guns }
 
 		completion_reward = {
 			custom_effect_tooltip = AMO_women_army_tt
@@ -261,10 +291,17 @@ focus_tree = {
 
 	focus = {
 		id = AMO_international_help
-		icon = GFX_focus_generic_treaty
+		icon = GFX_focus_CHU_renamed_party
 		cost = 5
 		x = 6
 		y = 3
+
+		prerequisite = { 
+			focus = AMO_women_in_army 
+			focus = AMO_provide_guns
+		
+		}
+		mutually_exclusive = { focus = AMO_lend_naval_industry }
 
 		completion_reward = {
 			custom_effect_tooltip = AMO_as_help_tt
@@ -275,6 +312,204 @@ focus_tree = {
 				add_to_variable = { military_development_index = 1 }
 			}
 
+		}
+	}
+
+	focus = {
+		id = AMO_buy_foreign_tanks
+		icon = GFX_focus_generic_army_tanks2
+		cost = 5
+		x = 6
+		y = 4
+
+		prerequisite = { 
+			focus = AMO_lend_naval_industry 
+			focus = AMO_international_help
+		
+		}
+		mutually_exclusive = { focus = AMO_promise_asylum }
+
+		completion_reward = {
+
+			add_equipment_to_stockpile = {
+				type = light_tank_equipment_1
+				amount = 450
+				producer = REI
+			}
+
+			add_tech_bonus = {
+				bonus = 1
+				uses = 1
+				category = armor
+			}
+			add_political_power = -50
+
+			custom_effect_tooltip = AMO_light_tank_brigade_tt
+			custom_effect_tooltip = AMO_increase_mil_index_tt
+
+			hidden_effect = {
+				division_template = {
+					name = "Experimental Tank Brigade"
+					is_locked = no
+					priority = 2
+					regiments = {
+						light_armor = { x = 0 y = 0 }
+						light_armor = { x = 0 y = 1 }
+						light_armor = { x = 0 y = 2 }
+						cavalry = { x = 1 y = 0 }
+						cavalry = { x = 1 y = 1 }
+						cavalry = { x = 1 y = 2 }
+						cavalry = { x = 1 y = 3 }
+						light_armor = { x = 2 y = 0 }
+						light_armor = { x = 2 y = 1 }
+						light_armor = { x = 2 y = 2 }
+					}
+					support = { 
+					} 
+				}
+				set_technology = {
+					gwtank = 1
+				}
+				add_to_variable = { military_development_index = 1 }
+			}
+		}
+	}
+
+	focus = {
+		id = AMO_enact_plan
+		icon = GFX_focus_KYU_elite_marines
+		cost = 5.715
+		x = 5
+		y = 5
+
+		prerequisite = { 
+			focus = AMO_buy_foreign_tanks 
+			focus = AMO_promise_asylum
+		}
+
+		completion_reward = {
+			if = {
+				limit = {
+					has_variable = weaken_sho
+					has_variable = chance_collapse
+				}
+				hidden_effect = {
+					SHO = {
+						add_days_mission_timeout = {
+							mission = impending_revolt
+							days = AMO.weaken_sho
+						}
+					}
+
+					set_temp_variable = { temp1 = 100 }
+					subtract_from_temp_variable = { temp1 = chance_collapse }
+
+					random_list = { # Will the nation collapse?
+						temp1 = { # No collapse
+							country_event = { id = amaterasu.16 days = 1 }
+						}
+						chance_collapse = { # Collapse
+							country_event = { id = amaterasu.15 days = 1 }
+						}
+					}
+				}
+
+				if = {
+					limit = {
+						check_variable = { chance_collapse > 0 }
+						check_variable = { chance_collapse < 33 }
+					}
+
+					custom_effect_tooltip = AMO_low_collapse_tt
+
+					else_if = {
+						limit = {
+							check_variable = { chance_collapse > 33 }
+							check_variable = { chance_collapse < 66 }
+						}
+
+						custom_effect_tooltip = AMO_medium_collapse_tt
+					}
+					else_if = {
+						limit = {
+							check_variable = { chance_collapse > 66 }
+						}
+
+						custom_effect_tooltip = AMO_high_collapse_tt
+					}
+					else = {
+						custom_effect_tooltip = AMO_no_collapse_tt
+					}
+				}
+				
+
+
+				if = {
+					limit = {
+						check_variable = { military_development_index < 1 }
+					}
+
+					custom_effect_tooltip = AMO_mil_index_0_tt
+					
+					else_if = {
+						limit = {
+							check_variable = { military_development_index < 2 }
+						}
+
+						custom_effect_tooltip = AMO_mil_index_1_tt
+						
+						hidden_effect = {
+							add_ideas = {
+								AMO_reformed_military_lim
+							}
+						}
+					}
+					else_if = {
+						limit = {
+							check_variable = { military_development_index < 3 }
+						}
+
+						custom_effect_tooltip = AMO_mil_index_2_tt
+
+						hidden_effect = {
+							add_ideas = {
+								AMO_reformed_military_mod
+							}
+						}
+					}
+					else_if = {
+						limit = {
+							check_variable = { military_development_index < 4 }
+						}
+
+						custom_effect_tooltip = AMO_mil_index_3_tt
+
+						hidden_effect = {
+							add_ideas = {
+								AMO_reformed_military_ext
+							}
+						}
+					}
+					else_if = {
+						limit = {
+							check_variable = { military_development_index < 5 }
+						}
+
+						custom_effect_tooltip = AMO_mil_index_4_tt
+
+						hidden_effect = {
+							add_ideas = {
+								AMO_reformed_military_abs
+							}
+						}
+					}
+				}
+				
+			}
+
+			else = {
+				custom_effect_tooltip = AMO_no_vars_tt
+			}
 		}
 	}
 
