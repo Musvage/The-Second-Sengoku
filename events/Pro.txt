@@ -33,7 +33,7 @@ country_event = {
 	}
 }
 
-# 1936 Elections
+# 1936 Elections	#### EVENT DEPRICATED
 country_event = {
 	id = pro.101
 	title = pro.101.t
@@ -933,8 +933,129 @@ news_event = {	# Takahashi Torekio is assassinated
 	option = {
 		name = pro.21.a1
 		set_country_flag = PRO_takahashi_torekio_assassinated
-		kill_ideology_leader = democratic
-		activate_decision = PRO_election_timer
+		#kill_ideology_leader = democratic
+		#activate_decision = PRO_election_timer
+	}
+	
+}
+
+country_event = {	# Election is over
+	id = pro.22
+	title = pro.22.t
+	desc = pro.22.desc
+	picture = GFX_report_event_election_vote
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			country_event = { id = pro.102 days = 380 }
+		}
+	}
+	
+	option = {	# conservative clear majority
+		name = pro.22.a1
+		trigger = {
+			check_variable = { party_popularity@democratic > party_popularity@democratic_socialism }
+		}
+		if = {
+			limit = {
+				NOT = { has_government = democratic }
+			}
+			set_politics = {
+				ruling_party = democratic
+				last_election = "1936.1.1"
+				election_frequency = 48
+				elections_allowed = yes
+			}
+		}
+		hidden_effect = {
+			news_event = { days = 2 id = SSnews.15 }
+		}
+		ai_chance = {
+			base = 1
+		}
+	}
+	option = {	# socdem clear majority
+		name = pro.22.a2
+		trigger = {
+			NOT = { check_variable = { party_popularity@democratic > party_popularity@democratic_socialism } }
+		}
+		if = {
+			limit = {
+				NOT = { has_government = democratic_socialism }
+			}
+			set_politics = {
+				ruling_party = democratic_socialism
+				last_election = "1936.1.1"
+				election_frequency = 48
+				elections_allowed = yes
+			}
+		}
+		hidden_effect = {
+			news_event = { days = 2 id = SSnews.16 }
+		}
+		ai_chance = {
+			base = 1
+		}
+	}
+	option = {	# conservative coalition
+		name = pro.22.a3
+		trigger = {
+			NOT = { check_variable = { party_popularity@democratic > party_popularity@democratic_socialism } }
+			has_completd_focus = PRO_conservative_majority
+		}
+		set_temp_variable = { debuff_duration = 50 }
+		subtract_from_temp_variable = { debuff_duration = party_popularity_100@democratic }
+		multiply_temp_variable = { debuff_duration = 5 }
+		clamp_temp_variable = { var = debuff_duration min = 30 max = 365 }
+		if = {
+			limit = {
+				NOT = { has_government = democratic }
+			}
+			set_politics = {
+				ruling_party = democratic
+				last_election = "1936.1.1"
+				election_frequency = 48
+				elections_allowed = yes
+			}
+		}
+		add_timed_idea = { idea = PRO_idea_coalition_government days = var:debuff_duration }
+		hidden_effect = {
+			news_event = { days = 2 id = SSnews.15 }
+		}
+		ai_chance = {
+			base = 0
+		}
+	}
+	option = {	# socdem coalition
+		name = pro.22.a4
+		trigger = {
+			check_variable = { party_popularity@democratic > party_popularity@democratic_socialism }
+			has_completd_focus = PRO_social_democratic_majority
+		}
+		set_temp_variable = { debuff_duration = 50 }
+		subtract_from_temp_variable = { debuff_duration = party_popularity_100@democratic_socialism }
+		multiply_temp_variable = { debuff_duration = 5 }
+		clamp_temp_variable = { var = debuff_duration min = 30 max = 365 }
+		if = {
+			limit = {
+				NOT = { has_government = democratic_socialism }
+			}
+			set_politics = {
+				ruling_party = democratic_socialism
+				last_election = "1936.1.1"
+				election_frequency = 48
+				elections_allowed = yes
+			}
+		}
+		add_timed_idea = { idea = PRO_idea_coalition_government days = var:debuff_duration }
+		hidden_effect = {
+			news_event = { days = 2 id = SSnews.16 }
+		}
+		ai_chance = {
+			base = 0
+		}
 	}
 	
 }
