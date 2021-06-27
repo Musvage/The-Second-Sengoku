@@ -7,7 +7,7 @@ focus_tree = {
 			tag = KYU
 		}
 	}
-	continuous_focus_position = { x = 20 y = 1500 }
+	continuous_focus_position = { x = 20 y = 2000 }
 	
 	focus = {
 		id = KYU_industrial_effort
@@ -719,6 +719,7 @@ focus_tree = {
 		prerequisite = { focus = KYU_set_sail }
 		mutually_exclusive = { focus = KYU_republican_leanings } 
 		mutually_exclusive = { focus = KYU_young_officer_rebelion } 
+		mutually_exclusive = { focus = KYU_enpower_the_saneyoshi_tojo }
 		available = {
 		}
 		ai_will_do = {
@@ -727,16 +728,52 @@ focus_tree = {
 		completion_reward = {
 		add_stability = 0.05
 		add_war_support = 0.05
-		create_country_leader = {
-	name = "Isoroku Yamamoto"
-	desc = "POLITICS_YAMAMOTO_DESC"
-	picture = "Portrait_KYU_Isoroku_Yamamoto.dds"
-	expire = "1965.1.1"
-	ideology = fascism_ideology
-	traits = {
-		emperor_of_admiralty
+			create_country_leader = {
+				name = "Isoroku Yamamoto"
+				desc = "POLITICS_YAMAMOTO_DESC"
+				picture = "Portrait_KYU_Isoroku_Yamamoto.dds"
+				expire = "1965.1.1"
+				ideology = fascism_ideology
+				traits = {
+					emperor_of_admiralty
+				}
+			}
+		}
 	}
-}
+
+	focus = {
+		id = KYU_enpower_the_saneyoshi_tojo
+		icon = GFX_focus_KYU_invite_shikoku
+		x = 5
+		y = 1
+		cost = 20
+		relative_position_id = KYU_set_sail
+		prerequisite = { focus = KYU_set_sail }
+		mutually_exclusive = { focus = KYU_republican_leanings } 
+		mutually_exclusive = { focus = KYU_young_officer_rebelion } 
+		mutually_exclusive = { focus = KYU_enpower_the_admiralty }
+		available = {
+		}
+		ai_will_do = {
+			factor = 50
+		}	
+		completion_reward = {
+		add_stability = -0.05
+		add_war_support = -0.05
+		set_politics = {
+				ruling_party = fascism
+			}
+		retire_ideology_leader = fascism
+			create_country_leader = {
+				name = "Mineichi Koga"
+				desc = ""
+				picture = "Portrait_KYU_Mineichi_Koga.dds"
+				expire = "1965.1.1"
+				ideology = fascism_ideology
+				traits = {
+					emperor_of_admiralty
+				}
+			}
 		}
 	}
 	
@@ -749,7 +786,7 @@ focus_tree = {
 		y = 1
 		cost = 10
 		relative_position_id = KYU_enpower_the_admiralty
-		prerequisite = { focus = KYU_enpower_the_admiralty }
+		prerequisite = { focus = KYU_enpower_the_saneyoshi_tojo focus = KYU_enpower_the_admiralty }
 		available = {
 		}
 		ai_will_do = {
@@ -773,6 +810,22 @@ focus_tree = {
 					target = SHI 
 					modifier =  FRA_right_wing_rhetoric_fascism
 				}
+			}
+			if = {
+				limit = {
+					has_completed_focus = KYU_enpower_the_saneyoshi_tojo
+				}
+				add_country_leader_trait = Battle_Ship_Admiral_Tojo
+				add_popularity = {
+					popularity = 0.20
+					ideology = fascism
+				}
+			}
+			if = {
+				limit = {
+					has_completed_focus = KYU_enpower_the_admiralty
+				}
+				add_country_leader_trait = Carrier_Ship_Admiral_yamamoto
 			}
 		}
 	}
@@ -844,10 +897,10 @@ modifier = {
 		id = KYU_war_prep
 		icon = GFX_focus_secret_rearmament
 		x = 0
-		y = 1
+		y = 3
 		cost = 10
 		relative_position_id = KYU_join_provisional
-		prerequisite = { focus = KYU_personality_cult focus = KYU_join_provisional focus = KYU_imperial_alliance focus = KYU_the_unthinkable_option2 }
+		prerequisite = { focus = KYU_demand_jeju focus = KYU_deal_hirado focus = KYU_personality_cult focus = KYU_join_provisional focus = KYU_imperial_alliance focus = KYU_the_unthinkable_option2 }
 		available = {
 		has_stability > 0.50
 		has_war_support > 0.50
@@ -1034,7 +1087,7 @@ modifier = {
 		}	
 		will_lead_to_war_with = CHU
 		completion_reward = {
-		create_wargoal = {
+			create_wargoal = {
 				type = annex_everything
 				target = CHU
 			}
@@ -1079,6 +1132,7 @@ modifier = {
 		cost = 20
 		relative_position_id = KYU_set_sail
 		prerequisite = { focus = KYU_set_sail }
+		mutually_exclusive = { focus = KYU_enpower_the_saneyoshi_tojo }
 		mutually_exclusive = { focus = KYU_enpower_the_admiralty } 
 		mutually_exclusive = { focus = KYU_young_officer_rebelion }
 		available = {
@@ -1139,8 +1193,13 @@ modifier = {
 		cost = 10
 		relative_position_id = KYU_war_prep
 		prerequisite = { focus = KYU_war_prep }
-		available  = { NOT = { is_in_faction_with = TOH } 
-		any_home_area_neighbor_country = {tag = TOH } }
+		available  = { 
+			NOT = { is_in_faction_with = TOH } 
+			OR = {
+				any_home_area_neighbor_country = {tag = TOH }
+				is_in_faction_with = EZO 
+			}
+		}
 		ai_will_do = {
 			factor = 10
 		}	
@@ -1156,7 +1215,7 @@ modifier = {
 	focus = {
 		id = KYU_attack_kansai
 		icon = GFX_focus_rom_abdicate
-		x = 3
+		x = 5
 		y = 1
 		cost = 10
 		relative_position_id = KYU_war_prep
@@ -1181,25 +1240,207 @@ modifier = {
 	focus = {
 		id = KYU_republican_model
 		icon = GFX_focus_KYU_republican_model
-		x = 0
+		x = -3
 		y = 1
 		cost = 10
 		relative_position_id = KYU_republican_leanings
 		prerequisite = { focus = KYU_republican_leanings }
+		mutually_exclusive = { focus = KYU_sosylist_democrat_model}
 		ai_will_do = {
 			factor = 10
 		}	
 		completion_reward = {
-		add_popularity = {
+			add_popularity = {
 				popularity = 0.2
 				ideology = democratic
 			}
-	set_politics = {
-					ruling_party = democratic
-					elections_allowed = yes
+			set_politics = {
+				ruling_party = democratic
+				elections_allowed = yes
+			}
+			add_ideas = KYU_republican_model
+			news_event = { days = 2 id = SSnews.10 }
+		}
+	}
+
+	focus = {
+		id = KYU_sosylist_democrat_model
+		icon = GFX_focus_PRO_social_democratic_majority
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = KYU_republican_leanings
+		prerequisite = { focus = KYU_republican_leanings }
+		mutually_exclusive = { focus = KYU_republican_model}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			add_popularity = {
+				popularity = 0.2
+				ideology = democratic_socialism
+			}
+			set_politics = {
+				ruling_party = democratic_socialism
+				elections_allowed = yes
+			}
+			add_ideas = KYU_republican_model
+			news_event = { days = 2 id = SSnews.10 }
+		}
+	}
+
+	focus = {
+		id = KYU_relationship_ezo
+		icon = GFX_focus_generic_diplomacy_ezo
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = KYU_sosylist_democrat_model
+		prerequisite = { focus = KYU_sosylist_democrat_model }
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			add_opinion_modifier = {
+			    target = KYU
+			    modifier = huge_increase
+			}
+			EZO = {
+				add_opinion_modifier = {
+			    	target = KYU
+			    	modifier = huge_increase
 				}
-		add_ideas = KYU_republican_model
-		news_event = { days = 2 id = SSnews.10 }
+			}
+		}
+	}
+
+	focus = {
+		id = KYU_create_socialist_pact
+		icon = GFX_focus_generic_political_power
+		x = -1
+		y = 1
+		cost = 10
+		relative_position_id = KYU_relationship_ezo
+		prerequisite = { focus = KYU_relationship_ezo }
+		prerequisite = { focus = KYU_liberalism }
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			create_faction = KYU_republican_front
+		}
+	}
+
+	focus = {
+		id = KYU_invite_socialist_pact
+		icon = GFX_focus_PRO_propose_reunion
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = KYU_create_socialist_pact
+		prerequisite = { focus = KYU_create_socialist_pact }
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			EZO = {country_event = kyushu.16}
+			PRO = {country_event = kyushu.16}
+		}
+	}
+
+	focus = {
+		id = KYU_support_EZO_navy
+		icon = GFX_focus_KYU_set_sail
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = KYU_invite_socialist_pact
+		prerequisite = { focus = KYU_invite_socialist_pact }
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			if = {
+				limit = {
+					not = { has_dlc = "Man the Guns" }
+				}
+				add_tech_bonus = {
+					name = JAP_the_ultimate_battleship
+					bonus = 1.0
+					uses = 1
+					category = cl_tech	
+				}
+			}
+			else = {
+				if = {
+					limit = {
+						not = { has_tech = ship_hull_cruiser_2 }
+					}
+					set_technology = {
+						ship_hull_cruiser_2 = 1
+					}
+				}
+				EZO = {custom_effect_tooltip = JAP_cruiser_tt}
+				hidden_effect = {
+					EZO = {
+						add_equipment_production = {
+							equipment = {
+								type = ship_hull_cruiser_2
+								creator = "KYU" 
+								version_name = "Tone Class"
+							}
+							name = "Kuma" 
+							requested_factories = 1
+							progress = 0.75
+							amount = 1
+						}
+						add_equipment_production = {
+							equipment = {
+								type = ship_hull_cruiser_2
+								creator = "KYU" 
+								version_name = "Mogami Class"
+							}
+							name = "Nagara" 
+							requested_factories = 1
+							progress = 0.5
+							amount = 1
+						}
+					}
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = KYU_build_EZO_docyards
+		icon = GFX_focus_KYU_empower_the_naval_junta
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = KYU_support_EZO_navy
+		prerequisite = { focus = KYU_support_EZO_navy }
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			EZO = {
+				random_owned_controlled_state = {
+					limit = {
+						is_coastal = yes
+						free_building_slots = {
+							building = dockyard
+							size > 2
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = dockyard
+						level = 2
+						instant_build = yes
+					}
+				}
+			}
 		}
 	}
 	
@@ -1240,7 +1481,7 @@ modifier = {
 		y = 1
 		cost = 10
 		relative_position_id = KYU_republican_model
-		prerequisite = { focus = KYU_republican_model }
+		prerequisite = { focus = KYU_republican_model focus = KYU_sosylist_democrat_model }
 		ai_will_do = {
 			factor = 10
 		}	
@@ -1254,11 +1495,12 @@ modifier = {
 	focus = {
 		id = KYU_young_officer_rebelion
 		icon = GFX_focus_KYU_young_officers_movement
-		x = -3
+		x = -6
 		y = 1
 		cost = 20
 		relative_position_id = KYU_set_sail
 		prerequisite = { focus = KYU_set_sail }
+		mutually_exclusive = { focus = KYU_enpower_the_saneyoshi_tojo }
 		mutually_exclusive = { focus = KYU_enpower_the_admiralty } 
 		mutually_exclusive = { focus = KYU_republican_leanings } 
 		available = {
@@ -1325,6 +1567,149 @@ modifier = {
 		KAN = {create_faction = KYU_imperial_alliance}
 		country_event = kyushu.6
 		
+		}
+	}
+
+	focus = {
+		id = KYU_demand_hirado
+		icon = GFX_focus_generic_strike_dutch_hirado
+		x = 1
+		y = 1
+		cost = 10
+		relative_position_id = KYU_imperial_alliance
+		prerequisite = { focus = KYU_personality_cult focus = KYU_imperial_alliance }
+		
+		bypass = {
+       		
+		} 
+		
+		available = {	
+			
+        }			
+            	
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			HIR = {country_event = kyushu.18}
+		}
+	}
+
+	focus = {
+		id = KYU_demand_jeju
+		icon = GFX_focus_SHI_invade_korea
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = KYU_demand_hirado
+		prerequisite = { focus = KYU_demand_hirado }
+		
+		bypass = {
+       		
+		} 
+		
+		available = {	
+			
+        }			
+            	
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			if = {
+				limit = {
+					HIR = { is_in_faction_with = KYU }
+				}
+				HIR = {
+					declare_war_on = {
+						target = JOS
+						type = annex_everything
+					}
+				}
+			}
+			else_if = {
+				limit = {
+					OR = {
+						NOT = {	
+							HIR = { 
+								OR = {
+									is_in_faction_with = KYU 
+									exists = yes
+								}
+							} 
+						}
+						has_war_with = KYU
+					}
+				}
+				create_wargoal = {
+					type = annex_everything
+					target = JOS
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = KYU_deal_allies
+		icon = GFX_focus_generic_western_focus
+		x = 3
+		y = 1
+		cost = 10
+		relative_position_id = KYU_imperial_alliance
+		prerequisite = { focus = KYU_create_socialist_pact focus = KYU_join_provisional }
+		
+		bypass = {
+       		
+		} 
+		
+		available = {	
+			
+        }			
+            	
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			OSA = {country_event = kyushu.17}
+		}
+	}
+
+	focus = {
+		id = KYU_deal_hirado
+		icon = GFX_focus_HIR_find_allies
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = KYU_deal_allies
+		prerequisite = { focus = KYU_deal_allies }
+		
+		bypass = {
+       		
+		} 
+		
+		available = {	
+			
+        }			
+            	
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			if = {
+				limit = {
+					HIR = {is_in_faction_with = OSA}
+				}
+				declare_war_on = {
+					target = HIR
+					type = annex_everything
+				}
+			}
+			else_if = {
+				limit = {
+					NOT = {HIR = {is_in_faction_with = OSA}}
+				}
+				HIR = {country_event = kyushu.18}
+			}
 		}
 	}
 	
@@ -1404,7 +1789,7 @@ modifier = {
 	focus = {
 		id = KYU_the_unthinkable_option
 		icon = GFX_focus_allied_juntas
-		x = -7
+		x = -10
 		y = 1
 		cost = 10
 		relative_position_id = KYU_set_sail
@@ -1780,11 +2165,30 @@ available = {
 			}
 		}
 	}
+
+		focus = {
+		id = JAP_strengthen_the_divine_wind
+		icon =  GFX_goal_generic_secret_weapon
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id =  KYU_CAS
+		prerequisite = { focus =  KYU_CAS }
+		available = {
+		}
+		ai_will_do = {
+			factor = 5
+		}	
+		completion_reward = {
+			custom_effect_tooltip = JAP_strengthen_the_divine_wind_effect
+			hidden_effect = { set_technology = { suicide_craft = 1 } }
+		}
+	}
 	
 	focus = {
 		id = KYU_enpower_the_naval_junta
 		icon = GFX_focus_KYU_empower_the_naval_junta
-		x = 7
+		x = 8
 		y = 0
 		cost = 10
 		relative_position_id = KYU_industrial_effort
@@ -2057,6 +2461,35 @@ available = {
 			
 		}
 	}
+
+		focus = {
+		id = KYU_kamikaze
+		icon =  GFX_focus_generic_japanese_imperial_glory
+		x = -2
+		y = 1
+		cost = 10
+		relative_position_id = KYU_a_new_route
+		prerequisite = { focus = KYU_a_new_route }
+		available = {
+		}
+		ai_will_do = {
+			factor = 5
+		}	
+		completion_reward = {
+			hidden_effect = {
+				set_rule = {
+					can_use_kamikaze_pilots = yes
+				}
+			}
+			custom_effect_tooltip = kamikaze_focus_tooltip
+			if = { 
+				limit = {
+					has_dlc = "Waking the Tiger"
+				}
+				custom_effect_tooltip = cost_reduced_last_stand 
+			}
+		}
+	}
 	
 	focus = {
 		id = KYU_steady_sailing
@@ -2166,6 +2599,69 @@ available = {
 						}
 						name = "Musashi" 
 						requested_factories = 1
+						progress = 0.5
+						amount = 1
+					}
+				}
+			}
+			
+		}
+	}
+	focus = {
+		id = KYU_build_more_carrier_ship
+		icon = GFX_goal_generic_navy_carrier
+		x = 2
+		y = 1
+		cost = 10
+		relative_position_id = KYU_steady_sailing
+		prerequisite = { focus = KYU_steady_sailing }
+		available = {
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+		if = {
+				limit = {
+					not = { has_dlc = "Man the Guns" }
+				}
+				add_tech_bonus = {
+					name = JAP_the_ultimate_battleship
+					bonus = 1.0
+					uses = 1
+					category = cv_tech	
+				}
+			}
+			else = {
+				if = {
+					limit = {
+						not = { has_tech = ship_hull_carrier_1 }
+					}
+					set_technology = {
+						ship_hull_carrier_1 = 1
+					}
+				}
+				custom_effect_tooltip = JAP_carrier_tt
+				hidden_effect = {
+					add_equipment_production = {
+						equipment = {
+							type = ship_hull_carrier_conversion_bb
+							creator = "KYU" 
+							version_name = "Akagi Class"
+						}
+						name = "Kaga" 
+						requested_factories = 2
+						progress = 0.75
+						amount = 1
+					}
+					add_equipment_production = {
+						equipment = {
+							type = ship_hull_carrier_conversion_bb
+							creator = "KYU" 
+							version_name = "Kaga Class"
+						}
+						name = "Shinano" 
+						requested_factories = 2
 						progress = 0.5
 						amount = 1
 					}
