@@ -31,7 +31,11 @@ focus_tree = {
 			factor = 10
 		}	
 		completion_reward = {
-			add_ideas = HIR_indonesian_volinteer
+			add_timed_idea = {
+				idea = HIR_indonesian_volinteer
+				days = 180
+			}
+			custom_effect_tooltip = unlock_HIR_open_borders_decisions
 		}
 	}
 
@@ -798,6 +802,56 @@ focus_tree = {
 	}
 
 	focus = {
+		id = HIR_Relations_with_juntas
+		icon = GFX_focus_HIR_Relations_with_juntas
+		x = 0
+		y = 1
+		relative_position_id = HIR_ruling_party_junta
+		available_if_capitulated = yes
+		prerequisite = { focus = HIR_ruling_party_junta }
+		cost = 10
+		available = {
+			neutrality > 0.3
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+	
+		completion_reward = {
+			if = {
+				limit = {
+					CHU = { 
+						AND = {
+							has_government = neutrality  
+							NOT = {has_completed_focus = CHU_Teiichi_Suzuki_path}
+						}
+					}
+				}
+				add_opinion_modifier = {
+					target = CHU
+					modifier = huge_increase
+				}
+				CHU = {
+					add_opinion_modifier = {
+						target = HIR
+						modifier = huge_increase
+					}
+				}
+			}
+			add_opinion_modifier = {
+			    target = KYU
+			    modifier = huge_increase
+			}
+			KYU = {
+				add_opinion_modifier = {
+			    	target = HIR
+			    	modifier = huge_increase
+				}
+			}
+		}
+	}
+
+	focus = {
 		id = HIR_defend_main_land
 		icon = GFX_focus_KAN_defenders_of_democracy
 		x = -1
@@ -812,6 +866,7 @@ focus_tree = {
 			factor = 10
 		}	
 		completion_reward = {
+			add_manpower = 100000
 			16 = {
 				if = {
 					limit = { is_controlled_by = ROOT }
@@ -877,6 +932,7 @@ focus_tree = {
 					}
 				}
 			}
+			
 		}
 	}
 
@@ -1373,7 +1429,7 @@ focus_tree = {
 
 	focus = {
 		id = HIR_ruling_party_comunist
-		icon = GFX_focus_TOH_invite_soviet_advisors
+		icon = GFX_FER_nkvd_supremacy
 		x = 0
 		y = 1
 		relative_position_id = HIR_rise_communism
@@ -1615,13 +1671,164 @@ focus_tree = {
 	}
 
 	focus = {
+		id = HIR_Deal_for_islands
+		icon = GFX_focus_HIR_Deal_for_islands
+		x = 1
+		y = 1
+		cost = 10
+		available = {
+			has_completed_focus = HIR_ally_junta
+			OR = {
+				NOT = { has_war_with = KYU }
+				NOT = { has_war_with = CHU }
+			}
+		}
+		relative_position_id = HIR_join_new_ally
+		available_if_capitulated = yes
+		prerequisite = { focus = HIR_join_new_ally }
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			if = {
+				limit = {
+					CHU = { 
+						AND = {
+							has_government = neutrality  
+							NOT = {has_completed_focus = CHU_Teiichi_Suzuki_path}
+						}
+					}
+				}
+				CHU = {
+					country_event = { id = hirado.7 }
+				}
+			}
+			KYU = {
+				country_event = { id = hirado.7 }
+			}
+		}
+	}
+	
+	focus = {
+		id = HIR_Payment_for_islands
+		icon = GFX_focus_generic_money
+		x = 1
+		y = 1
+		cost = 10
+		available = {
+			OR = {
+				has_country_flag = sell_iki_and_Tshushima_Islands
+				has_country_flag = sell_goto_and_koshikijima_Islands
+				has_country_flag = sell_oki_island
+			}
+		}
+		relative_position_id = HIR_Deal_for_islands
+		available_if_capitulated = yes
+		prerequisite = { focus = HIR_unite_all_junta }
+		prerequisite = { focus = HIR_Deal_for_islands }
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			if = {
+				limit = {
+					has_country_flag = sell_iki_and_Tshushima_Islands
+				}
+				transfer_state = 11
+				add_state_core = 11
+				transfer_state = 14
+				add_state_core = 14
+				add_offsite_building = { type = industrial_complex level = -3 }
+				KYU = {add_offsite_building = { type = industrial_complex level = 3 }}
+			}
+
+			else_if = {
+				limit = {
+					has_country_flag = sell_goto_and_koshikijima_Islands
+				}
+				transfer_state = 19
+				add_state_core = 19
+				transfer_state = 39
+				add_state_core = 39
+				add_offsite_building = { type = industrial_complex level = -3 }
+				KYU = {add_offsite_building = { type = industrial_complex level = 3 }}
+			}
+
+			if = {
+				limit = {
+					has_country_flag = sell_oki_island
+				}
+				transfer_state = 12
+				add_state_core = 12
+				add_offsite_building = { type = industrial_complex level = -1 }
+				CHU = {add_offsite_building = { type = industrial_complex level = 1 }}
+			}
+			
+		}
+	}
+
+	focus = {
+		id = HIR_request_support
+		icon = GFX_focus_HIR_request_support
+		x = -1
+		y = 1
+		cost = 10
+		available = {
+			
+		}
+		relative_position_id = HIR_join_new_ally
+		available_if_capitulated = yes
+		prerequisite = { focus = HIR_join_new_ally }
+		ai_will_do = {
+			factor = 10
+		}	
+		bypass = {
+			is_in_faction = no
+		}
+		completion_reward = {
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = 5000
+				producer = var:faction_leader
+			}
+			add_equipment_to_stockpile = {
+				type = fighter1
+				amount = 50
+				producer = var:faction_leader
+			}
+			add_manpower = 10000
+		}
+	}
+
+	focus = {
+		id = HIR_project_combined_colony
+		icon = GFX_focus_HIR_project_combined_colony
+		x = 0
+		y = 2
+		cost = 10
+		available = {
+			
+		}
+		relative_position_id = HIR_request_support
+		available_if_capitulated = yes
+		prerequisite = { focus = HIR_request_support }
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			add_stability = 0.10
+			add_war_support = 0.10
+		}
+	}
+
+	focus = {
 		id = HIR_unite_all_junta
 		icon = GFX_focus_HIR_united_junta
-		x = 2
+		x = 3
 		y = 1
 		relative_position_id = HIR_join_new_ally
 		available_if_capitulated = yes
-		prerequisite = { focus = HIR_join_new_ally focus = HIR_ruling_party_junta }
+		prerequisite = { focus = HIR_join_new_ally focus = HIR_Relations_with_juntas }
 		cost = 10
 		available = {
 			has_completed_focus = HIR_ally_junta
@@ -1665,8 +1872,10 @@ focus_tree = {
 			if = {
    				limit = {
         			HIR = { 
-						is_in_faction_with = KYU 
-						is_in_faction_with = CHU
+						OR = {
+							is_in_faction_with = KYU 
+							is_in_faction_with = CHU
+						}
 					}
     			}   
 				add_stability = 0.10
@@ -1676,8 +1885,10 @@ focus_tree = {
     			limit = {
         			HIR = { 
 						NOT = {
-							is_in_faction_with = KYU 
-							is_in_faction_with = CHU
+							OR = {
+								is_in_faction_with = KYU 
+								is_in_faction_with = CHU
+							}
 							AND = {
 								KYU = { 
 									NOT = {
@@ -1845,6 +2056,106 @@ focus_tree = {
     			}
     			add_stability = 0.10
 				add_war_support = 0.10
+			}
+		}
+	}
+
+	focus = {
+		id = HIR_support_allies
+		icon = GFX_focus_TOH_weapons_effort
+		x = 0
+		y = 1
+		cost = 10
+		available = {
+			has_completed_focus = HIR_western_path
+		}
+		relative_position_id = HIR_take_jeju_island
+		available_if_capitulated = yes
+		prerequisite = { focus = HIR_take_jeju_island }
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			for_each_scope_loop = {
+				array = faction_members
+				if = {
+					limit = {
+						NOT = {tag = ROOT}
+					}
+					add_equipment_to_stockpile = {
+						type = infantry_equipment
+						amount = 1000
+						producer = HIR
+					}
+				}
+			}
+			custom_effect_tooltip = Send_1000_infantry_eq_to_all_alliance_members
+		}
+	}
+
+	focus = {
+		id = HIR_Merge_Colonies
+		icon = GFX_focus_HIR_Merge_Colonies
+		x = 2
+		y = 1
+		cost = 10
+		available = {
+			OKI = {
+				OR = {
+					is_puppet_of = AMC
+					exists = yes
+					NOT = {is_puppet_of = AMC}
+				}
+			}
+		}
+		relative_position_id = HIR_take_jeju_island
+		available_if_capitulated = yes
+		prerequisite = { focus = HIR_project_combined_colony }
+		prerequisite = { focus = HIR_take_jeju_island }
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			if = {
+				limit = {
+					OKI = {is_puppet_of = AMC}
+				}
+				AMC = {
+					country_event = { id = hirado.8 }
+				}
+			}
+			else_if = {
+				limit = {
+					NOT = {
+						OKI = {is_puppet_of = AMC}
+					}
+				}
+				OKI = {
+					country_event = { id = hirado.8 }
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = HIR_take_other_Colonies
+		icon = GFX_focus_HIR_take_other_Colonies
+		x = 0
+		y = 1
+		cost = 10
+		available = {
+			 
+		}
+		relative_position_id = HIR_Merge_Colonies
+		available_if_capitulated = yes
+		prerequisite = { focus = HIR_Merge_Colonies }
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			create_wargoal = {
+				type = take_state_focus
+				target = var:enemies_of_allies
 			}
 		}
 	}
