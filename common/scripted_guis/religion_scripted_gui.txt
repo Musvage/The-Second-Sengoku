@@ -6,6 +6,12 @@ scripted_gui = {
 
 		visible = {
 			is_ai = no
+			OR = {
+				NOT = { has_variable = show_SS_religion }
+				check_variable = {
+					show_SS_religion = 1
+				}
+			}
 		}
 
 		triggers = {
@@ -17,20 +23,47 @@ scripted_gui = {
 
 		effects = {
 			religion_open_button_click = {
-				if = {
-					limit = { has_variable = show_SS_religion }
-					clear_variable = show_SS_religion
-				}
-				else = {
-					set_variable = { show_SS_religion = 1 }
-				}
+				
+					set_variable = { show_SS_religion = 2 }
 			}
 		}
 
 		properties = {
-			religion_open_button = {
-				image = "[GetReligionIcon]"
+			#religion_open_button = {
+			#	image = "[GetReligionIcon]"
+			#}
+		}
+	}
+
+	SS_religion_close = {
+		context_type = player_context
+		window_name = "SS_religion_close_container"
+		parent_window_token = politics_tab
+
+		visible = {
+			is_ai = no
+			check_variable = {
+				show_SS_religion = 2
 			}
+		}
+
+		triggers = {
+			religion_open_button_click_enabled = {
+				set_temp_variable = { religion_frame = religion_id_array^0 }
+				check_variable = { religion_frame > 0 }
+			}
+		}
+
+		effects = {
+			religion_open_button_click = {
+					set_variable = { show_SS_religion = 1 }
+			}
+		}
+
+		properties = {
+			#religion_open_button = {
+			#	image = "[GetReligionIcon]"
+			#}
 		}
 	}
 
@@ -40,7 +73,7 @@ scripted_gui = {
 		dirty = show_SS_religion
 
 		visible = {
-			check_variable = { show_SS_religion > 0 }
+			check_variable = { show_SS_religion = 2 }
 		}
 
 		dynamic_lists = {
@@ -59,9 +92,7 @@ scripted_gui = {
 		}
 
 		effects = {
-			religion_close_button_click = {
-				clear_variable = show_SS_religion
-			}
+			
 		}
 
 		properties = {
