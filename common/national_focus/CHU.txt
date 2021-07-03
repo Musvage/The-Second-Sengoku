@@ -37,7 +37,7 @@
 	focus = {
 		id = CHU_reate_autonomous_governments
 		icon = GFX_focus_CHU_reate_autonomous_goverment
-		x = 29
+		x = 30
 		y = 1
 		available = {
 			date < 1938.1.1
@@ -123,7 +123,7 @@
 	focus = {
 		id = CHU_go_alone
 		icon = GFX_focus_CHU_go_alone
-		x = 9
+		x = 10
 		y = 1
 		cost = 5
 		relative_position_id = CHU_open_political_sphere
@@ -200,7 +200,7 @@
 				popularity = 0.1
 				ideology = neutrality
 			}
-			add_stability = -0.10
+			add_stability = -0.20
 		}
 	}
 	
@@ -267,7 +267,7 @@
 		id = CHU_Chugoku_Fate
 		icon = GFX_focus_CHU_Chugoku_Fate
 		x = 0
-		y = 4
+		y = 5
 		cost = 10
 		relative_position_id = CHU_conserve_the_status_quo
 		available_if_capitulated = yes
@@ -289,7 +289,7 @@
 		id = CHU_Convince_people_to_fight
 		icon = GFX_focus_TOH_farmers
 		x = 0
-		y = 1
+		y = 2
 		cost = 10
 		relative_position_id = CHU_purge_officers
 		available_if_capitulated = yes
@@ -300,6 +300,369 @@
 		completion_reward = {
 			add_ideas = CHU_Convince_people_to_fight
 			add_stability = -0.15
+		}
+	}
+
+	focus = {
+		id = CHU_destroy_KAN
+		icon = GFX_focus_IMS_invite_Prince_Mikasa
+		x = -6
+		y = 1
+		available = {
+			CHU = { 
+				is_puppet = no 
+			}
+			KAN = {NOT = {is_in_faction_with = CHU}}
+		}
+		mutually_exclusive = { focus = CHU_relations_of_interest focus = CHU_alternative_path }
+		relative_position_id = CHU_Convince_people_to_fight
+		prerequisite = { focus = CHU_unite_all_monarchist focus = CHU_Convince_people_to_fight }
+		cost = 10
+		available_if_capitulated = no
+		ai_will_do = {
+			factor = 1
+		}
+
+		bypass = {
+			NOT =  { country_exists = KAN }
+		}
+
+		completion_reward = {
+			add_political_power = 50
+			add_stability = 0.05
+	
+			KAN = { 
+				every_unit_leader = {
+					limit = {
+						has_id = 810
+					}
+					set_nationality = CHU
+				}
+			 }
+		}
+	}
+
+	focus = {
+		id = CHU_new_emperor
+		icon = GFX_
+		x = 0
+		y = 1
+		available = {
+			CHU = { 
+				is_puppet = no 
+			}
+		}
+		relative_position_id = CHU_destroy_KAN
+		prerequisite = { focus = CHU_destroy_KAN }
+		cost = 10
+		available_if_capitulated = no
+		ai_will_do = {
+			factor = 1
+		}
+
+		completion_reward = {
+			complete_national_focus = CHU_deal_with_those_imperial_scum
+		}
+	}
+
+	focus = {
+		id = CHU_one_emperor
+		icon = GFX_
+		x = 0
+		y = 1
+		available = {
+			CHU = { 
+				is_puppet = no 
+			}
+		}
+		relative_position_id = CHU_new_emperor
+		prerequisite = { focus = CHU_new_emperor }
+		cost = 10
+		available_if_capitulated = no
+		ai_will_do = {
+			factor = 1
+		}
+ 
+		completion_reward = {
+			if = {
+				limit = {
+					has_idea = CHU_people_army_dont_like_government
+				}
+				swap_ideas = {
+					remove_idea = CHU_people_army_dont_like_government
+					add_idea = CHU_Prince_Kanin_Kotohito
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = CHU_create_imperial_allies
+		icon = GFX_
+		x = 0
+		y = 1
+		available = {
+			CHU = { 
+				is_puppet = no 
+			}
+		}
+		relative_position_id = CHU_one_emperor
+		prerequisite = { focus = CHU_one_emperor }
+		cost = 10
+		available_if_capitulated = no
+		ai_will_do = {
+			factor = 1
+		}
+
+		bypass = {
+			NOT =  { 
+				country_exists = KAN 
+				country_exists = SHO
+			}
+		}
+
+		completion_reward = {
+			set_rule = { can_create_factions = yes }
+			create_faction = Imperial_allies
+		}
+	}
+
+	focus = {
+		id = CHU_invite_old_shogunate
+		icon = GFX_
+		x = 1
+		y = 1
+		available = {
+			CHU = { 
+				is_puppet = no 
+			}
+		}
+		relative_position_id = CHU_create_imperial_allies
+		prerequisite = { focus = CHU_create_imperial_allies }
+		cost = 10
+		available_if_capitulated = no
+		ai_will_do = {
+			factor = 1
+		}
+
+		bypass = {
+			NOT =  { country_exists = SHO }
+		}
+
+		completion_reward = {
+			SHO = {
+				country_event = { id = generic.5 }
+			}
+		}
+	}
+
+	focus = {
+		id = CHU_imperial_army
+		icon = GFX_
+		x = -1
+		y = 1
+		available = {
+			CHU = { 
+				is_puppet = no 
+			}
+		}
+		relative_position_id = CHU_create_imperial_allies
+		prerequisite = { focus = CHU_create_imperial_allies }
+		cost = 10
+		available_if_capitulated = no
+		ai_will_do = {
+			factor = 1
+		}
+
+		completion_reward = {
+			add_to_variable = { var = global.division_limit_base value = 50 }
+			custom_effect_tooltip = clan_spawn_5_inf_divisions
+			division_template = {
+				name = "Chugoku Imperial Forces"
+				division_names_group = JAP_INF_01
+
+				regiments = {
+					infantry = { x = 0 y = 0 }
+					infantry = { x = 0 y = 1 }
+					infantry = { x = 0 y = 2 }
+					artillery = { x = 0 y = 3 }
+
+					infantry = { x = 1 y = 0 }
+					infantry = { x = 1 y = 1 }
+					artillery = { x = 1 y = 2 }
+
+					infantry = { x = 2 y = 0 }
+					infantry = { x = 2 y = 1 }
+					artillery = { x = 2 y = 2 }
+				}
+				support = {
+					engineer = { x = 0 y = 0 }
+					recon = { x = 0 y = 1 }
+					artillery = { x = 0 y = 2 }
+				}
+			}
+			hidden_effect = {
+				random_owned_controlled_state = {
+					limit = { PREV = { has_full_control_of_state = PREV } }
+					create_unit = {
+						division = "name = \"Chugoku Imperial Forces\" division_template = \"Chugoku Imperial Forces\" start_experience_factor = 1.0" 
+						owner = PREV
+					}
+				}
+				random_owned_controlled_state = {
+					limit = { PREV = { has_full_control_of_state = PREV } }
+					create_unit = {
+						division = "name = \"Chugoku Imperial Forces\" division_template = \"Chugoku Imperial Forces\" start_experience_factor = 1.0" 
+						owner = PREV
+					}
+				}
+				random_owned_controlled_state = {
+					limit = { PREV = { has_full_control_of_state = PREV } }
+					create_unit = {
+						division = "name = \"Chugoku Imperial Forces\" division_template = \"Chugoku Imperial Forces\" start_experience_factor = 1.0" 
+						owner = PREV
+					}
+				}
+				random_owned_controlled_state = {
+					limit = { PREV = { has_full_control_of_state = PREV } }
+					create_unit = {
+						division = "name = \"Chugoku Imperial Forces\" division_template = \"Chugoku Imperial Forces\" start_experience_factor = 1.0" 
+						owner = PREV
+					}
+				}
+				random_owned_controlled_state = {
+					limit = { PREV = { has_full_control_of_state = PREV } }
+					create_unit = {
+						division = "name = \"Chugoku Imperial Forces\" division_template = \"Chugoku Imperial Forces\" start_experience_factor = 1.0" 
+						owner = PREV
+					}
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = CHU_war_goal_KAN
+		icon = GFX_
+		x = -1
+		y = 1
+		available = {
+			CHU = { 
+				is_puppet = no 
+			}
+		}
+		relative_position_id = CHU_invite_old_shogunate
+		prerequisite = { focus = CHU_imperial_army }
+		prerequisite = { focus = CHU_invite_old_shogunate }
+		cost = 10
+		available_if_capitulated = no
+		ai_will_do = {
+			factor = 1
+		}
+
+		bypass = {
+			NOT =  { 
+				country_exists = KAN 
+			}
+		}
+
+		completion_reward = {
+			declare_war_on = {
+				target = KAN
+				type = take_state_focus
+				generator = { 32 }
+			}
+		}
+	}
+
+	focus = {
+		id = CHU_war_goal_KYU
+		icon = GFX_
+		x = -1
+		y = 1
+		available = {
+			CHU = { 
+				is_puppet = no 
+			}
+		}
+		relative_position_id = CHU_war_goal_KAN
+		prerequisite = { focus = CHU_war_goal_KAN }
+		cost = 10
+		available_if_capitulated = no
+		ai_will_do = {
+			factor = 1
+		}
+
+		bypass = {
+			NOT =  { 
+				country_exists = KYU
+			}
+		}
+
+		completion_reward = {
+			create_wargoal = {
+				type = take_state_focus
+				target = KYU
+			}
+		}
+	}
+
+	focus = {
+		id = CHU_war_goal_SHI
+		icon = GFX_
+		x = 1
+		y = 1
+		available = {
+			CHU = { 
+				is_puppet = no 
+			}
+		}
+		relative_position_id = CHU_war_goal_KAN
+		prerequisite = { focus = CHU_war_goal_KAN }
+		cost = 10
+		available_if_capitulated = no
+		ai_will_do = {
+			factor = 1
+		}
+
+		bypass = {
+			NOT =  { 
+				country_exists = SHI
+			}
+		}
+
+		completion_reward = {
+			create_wargoal = {
+				type = take_state_focus
+				target = SHI
+			}
+		}
+	}
+
+	focus = {
+		id = CHU_Declare_Imperial_Shogunate_Junta
+		icon = GFX_
+		x = -2
+		y = 2
+		available = {
+			AND = { 
+				is_puppet = no 
+				country_exists = KAN
+			}
+		}
+		relative_position_id = CHU_war_goal_KAN
+		prerequisite = { focus = CHU_aggressive_policy focus = CHU_unite_all_monarchist focus = CHU_Banish_Foreign_Forces_from_Japan focus = CHU_war_goal_KAN }
+		cost = 10
+		available_if_capitulated = no
+		ai_will_do = {
+			factor = 1
+		}
+
+		completion_reward = {
+			every_state = {
+			limit = { is_owned_by = KAN }
+			add_core_of = CHU
+			}
 		}
 	}
 
@@ -557,7 +920,7 @@
 	focus = {
 		id = CHU_Teiichi_Suzuki_path
 		icon = GFX_focus_CHU_Teiichi_Suzuki_path
-		x = 5
+		x = 6
 		y = 1
 		cost = 10
 		available = {
@@ -5866,14 +6229,14 @@
 	focus = {
 		id = CHU_relations_of_interest
 		icon = GFX_focus_CHU_the_ones_who_will_rule
-		x = 2
+		x = -2
 		y = 1
 		available = {
 			CHU = { 
 				is_puppet = no 
 			}
 		}
-		mutually_exclusive = { focus = CHU_alternative_path }
+		mutually_exclusive = { focus = CHU_destroy_KAN focus = CHU_alternative_path }
 		relative_position_id = CHU_Convince_people_to_fight
 		prerequisite = { focus = CHU_Convince_people_to_fight }
 		cost = 10
@@ -5891,14 +6254,14 @@
 	focus = {
 		id = CHU_alternative_path
 		icon = GFX_focus_KAN_rebuild_the_nation
-		x = -2
+		x = 3
 		y = 1
 		available = {
 			CHU = { 
 				is_puppet = no 
 			}
 		}
-		mutually_exclusive = { focus = CHU_relations_of_interest }
+		mutually_exclusive = { focus = CHU_destroy_KAN focus = CHU_relations_of_interest }
 		relative_position_id = CHU_Convince_people_to_fight
 		prerequisite = { focus = CHU_Convince_people_to_fight }
 		cost = 10
@@ -6775,8 +7138,8 @@
 	focus = {
 		id = CHU_take_over_the_west
 		icon = GFX_focus_generic_western_enemies
-		x = -4
-		y = 1
+		x = 4
+		y = 2
 		cost = 10
 		relative_position_id = CHU_invite_other_neighbor
 		available_if_capitulated = yes
@@ -6796,7 +7159,7 @@
 
 	focus = {
 		id = CHU_take_over_the_west_korea
-		icon = GFX_focus_generic_western_enemies
+		icon = GFX_focus_SHI_invade_korea
 		x = 1
 		y = 1
 		cost = 10
@@ -6812,17 +7175,17 @@
 		}
 
 		completion_reward = {
-			add_state_claim = 186
+			add_state_claim = 178
 			create_wargoal = {
 				type = take_state_focus
-				target = FER
+				target = JOS
 			}
 		}
 	}
 
 	focus = {
 		id = CHU_take_over_the_west_eastern_republic
-		icon = GFX_focus_SHI_invade_korea
+		icon = GFX_focus_generic_western_enemies
 		x = -1
 		y = 1
 		cost = 10
@@ -6838,18 +7201,19 @@
 		}
 
 		completion_reward = {
-			add_state_claim = 178
+			add_state_claim = 186
 			create_wargoal = {
 				type = take_state_focus
-				target = JOS
+				target = FER
 			}
+			
 		}
 	}
 
 	focus = {
 		id = CHU_united_japan
 		icon = GFX_focus_generic_one_empire_2
-		x = 1
+		x = -3
 		y = 1
 		relative_position_id = CHU_take_over_the_west_korea
 		cost = 10
@@ -8402,11 +8766,11 @@
 		id = CHU_aggressive_policy
 		icon = GFX_focus_CHU_traditional_army
 		x = 0
-		y = 1
+		y = 2
 		cost = 10
 		available_if_capitulated = yes
 		relative_position_id = CHU_invite_other_neighbor
-		prerequisite = { focus = CHU_go_to_war focus = CHU_invite_other_neighbor }
+		prerequisite = { focus = CHU_war_goal_KAN focus = CHU_go_to_war focus = CHU_invite_other_neighbor }
 		ai_will_do = {
 			factor = 1
 		}
@@ -8414,7 +8778,7 @@
 		bypass = {
 			
 		}
-
+		
 		completion_reward = {
 			add_war_support = 0.05
 		}
