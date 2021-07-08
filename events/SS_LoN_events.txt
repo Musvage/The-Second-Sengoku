@@ -3,7 +3,7 @@
 
 # Test event
 news_event = {
-	id = league.1
+	id = league.0
 	title = "League of Nations"
 	desc = "I have come here to chew bubble gum and promote peace..."
 	picture = GFX_news_LoN_test
@@ -14,4 +14,41 @@ news_event = {
 		name = "...and I'm all out of bubble gum."
 		add_political_power = 100
 	}
+}
+
+# Ask to Become Observer
+country_event = {
+	id = league.1
+	title = league.1.t
+	desc = league.1.d
+	picture = GFX_news_LoN_test_report
+
+	is_triggered_only = yes
+	
+	option = {	# YES
+		name = league.1.a1
+		add_political_power = 100
+		add_to_variable = { global.LoN_votes_yes = 1 }
+		if = {
+			limit = {
+				NOT = { check_variable = { global.LoN_votes_yes <  global.LoN_votes_needed } }
+			}
+			if = {
+				limit = {
+					NOT = { has_global_flag = LoN_flag_vote_ended }
+				}
+				remove_from_array = {
+					array = global.LON_observers
+					value = FROM
+				}
+				FROM = { add_to_array = { global.LON_members = THIS } }
+				set_global_flag = LoN_flag_vote_ended
+			}
+		}
+	}
+	#option = {	# NO
+	#	name = league.1.a2
+	#	add_political_power = 100
+	#	add_to_variable = { global.LoN_votes_no = 1 }
+	#}
 }

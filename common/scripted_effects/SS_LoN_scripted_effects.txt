@@ -1,0 +1,15 @@
+ask_become_observer = {
+	clr_global_flag = LoN_flag_vote_held
+	clr_global_flag = LoN_flag_vote_ended
+	set_variable = { global.LoN_votes_yes = 0 }
+	set_variable = { global.LoN_votes_no = 0 }
+	set_variable = { global.LoN_votes_needed = global.LON_members^num }
+	add_to_variable = { global.LoN_votes_needed = 0.1 } # just so it's rounded up
+	divide_variable = { global.LoN_votes_needed = 2 }
+	round_variable = global.LoN_votes_needed
+	for_each_scope_loop = {	# sends request to every member
+		array = global.LON_members
+		country_event = { id = league.1 hours = 6 random = 18 }
+	}
+	set_global_flag = LoN_flag_vote_held	# this is used as a day counter for LoN cooldown
+}
