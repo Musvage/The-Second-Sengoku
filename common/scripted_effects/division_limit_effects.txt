@@ -23,12 +23,14 @@ set_up_global_division_limit_system = {
 	set_variable = { global.division_limit_soldier_basic = 60 }
 	set_variable = { global.division_limit_soldier_full = 0 }
 	set_variable = { global.division_limit_soldier_extended = -20 }
+	# attaché
+	set_variable = { global.division_limit_attache_received = 30 }
+	set_variable = { global.division_limit_attache_sent = -30 }
 	# support company
 	set_variable = { global.division_limit_support_companies_tech_level = 0 }
 	# advisor
 	set_variable = { global.division_limit_advisor_1 = 0.05 }
 	set_variable = { global.division_limit_advisor_2 = 0.1 }
-	set_variable = { global.division_limit_advisor_3 = 0.15 }
 	# infrastructure
 	set_variable = { global.division_limit_infrastructure = 0.05 }
 	# other variables
@@ -214,7 +216,7 @@ calculate_division_limit = {
 	set_variable = { division_limit_infrastructure = average_infrastructure_level }
 	multiply_variable = { division_limit_infrastructure = global.division_limit_infrastructure }
 	
-	#### FOOD	DEPRICATED
+	#### FOOD	(DEPRICATED)
 	set_variable = { division_limit_food = 0 }
 	every_controlled_state = {
 		limit = { has_state_flag = state_has_food_surplus }
@@ -222,6 +224,23 @@ calculate_division_limit = {
 	}
 	#### IDEAS
 	# nothing yet, will be added ad-hoc
+	
+	#### ATTACHÉS
+	set_variable = { division_limit_attache = 0 }
+	if = {
+		limit = {
+			has_idea = received_attache
+		}
+		add_to_variable = { division_limit_attache = global.division_limit_attache_received }
+	}
+	if = {
+		limit = {
+			any_other_country = {
+				has_attache_from = PREV
+			}
+		}
+		add_to_variable = { division_limit_attache = global.division_limit_attache_sent }
+	}
 	
 	### Add multipliers
 	set_variable = { country_division_limit_multiplier = 1 }
@@ -236,6 +255,7 @@ calculate_division_limit = {
 	add_to_variable = { country_division_limit = division_limit_technology_bonus }
 	add_to_variable = { country_division_limit = division_limit_food }
 	add_to_variable = { country_division_limit = division_limit_support_companies_bonus }
+	add_to_variable = { country_division_limit = division_limit_attache }
 	add_to_variable = { country_division_limit = division_limit_other_bonus }
 	multiply_variable = { country_division_limit = country_division_limit_multiplier }
 	
