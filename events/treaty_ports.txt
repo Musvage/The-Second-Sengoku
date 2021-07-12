@@ -1,6 +1,6 @@
 ﻿add_namespace = cities
 
-country_event = { #vichyquestion
+country_event = { #Fall of France and Vichy Event
 	id = cities.1
 	title = cities.1.t
 	desc = cities.1.desc
@@ -8,10 +8,10 @@ country_event = { #vichyquestion
 
 	is_triggered_only = yes
 
-	option = {
+	option = { # Become Vichy
 		name = cities.1.a
 		ai_chance = {
-			base = 50
+			base = 42
 		}
 		set_politics = {
 			ruling_party = fascism
@@ -43,10 +43,10 @@ country_event = { #vichyquestion
 		set_variable = { dual_leader_second_title = 1 }
 	}
 
-	option = { 
+	option = { # Join Free France
 		name = cities.1.b
 		ai_chance = {
-			base = 50
+			base = 42
 		}
 		add_political_power = 150
 		add_stability = 0.10
@@ -54,6 +54,16 @@ country_event = { #vichyquestion
 		add_ideas = KOB_free_french_movement
 		set_variable = { dual_leader_id = 22 } # Charles De Gaulle
 		set_variable = { dual_leader_second_title = 12 }
+	}
+
+	option = { # Franco-British Union
+		name = cities.1.c
+		ai_chance = {
+			base = 16
+		}
+		OSA = {
+			country_event = cities.50
+		}
 	}
 }
 
@@ -1930,6 +1940,61 @@ every_other_country  = { limit = { NOT = { OR = { has_idea = SS_catholic_country
 	     }
 	  }
    }
+}
+
+country_event = { # Franco-British Union
+	id = cities.50
+	title = cities.50.t
+	desc = cities.50.desc
+	picture = GFX_report_event_generic_conference
+	is_triggered_only = yes
+
+
+	option = { # Accept
+		name = cities.50.a
+		ai_chance = {
+			base = 100
+		}
+
+		KOB = {
+			transfer_navy = {
+				target = OSA
+			}
+
+			every_unit_leader = {
+				set_nationality = OSA
+			}
+		}
+		annex_country = {
+			target = KOB
+			transfer_troops = yes
+		}
+
+		set_cosmetic_tag = OSA_franco_british_union
+		27 = {
+			add_core_of = OSA
+		}
+		205 = {
+			add_core_of = OSA
+		}
+		transfer_state = 205
+		hidden_effect = {
+			news_event = {
+				id = SSnews.32
+				days = 1
+			}
+		}
+		
+	}
+
+	option = { #Deny
+		name = cities.50.b
+		ai_chance = {
+			base = 0
+		}
+
+		add_stability = 0.1
+	}
 }
 
 
