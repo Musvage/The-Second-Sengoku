@@ -1,4 +1,237 @@
 
+CHU_Ultimate_Betrayal = { 
+
+	Backstab_the_Marshal = { 
+
+		icon = generic_prepare_civil_war
+		allowed = { 
+			original_tag = CHU
+		}
+		visible = {
+			original_tag = CHU
+			OR = {
+				has_country_flag = kanin_kotohito_angry    
+				has_country_flag = generals_angry	
+			}
+		}
+
+		available = {
+			autocracy > 0.40
+		}
+		
+		activation = {  
+			OR = { has_country_flag = kanin_kotohito_angry has_country_flag = generals_angry}
+        }
+		
+	    is_good = no   
+		
+	    selectable_mission = yes    
+		
+	    days_mission_timeout = CHU.add_time
+		
+	    timeout_effect = {
+			if = {
+				limit = { 
+					has_country_flag = kanin_kotohito_angry  
+					OR = {
+						has_completed_focus = CHU_Shunroku_Hata_path 
+						has_completed_focus = CHU_Tomoyuki_Yamashita_path 
+					}
+				}
+				start_civil_war = {
+					ruling_party = autocracy
+					ideology = ROOT
+					size = 0.5
+					only_own_territory = no
+					capital = 32
+					states = { 
+						84 105 86 75 70 91 203 47 18 32 68 87 204 205 2 89 206 64 61 52
+					}
+					create_country_leader = {
+						name = "Kan'in Kotohito"
+						desc = ""
+						picture = "Portrait_CHU_Prince_Kanin_Kotohito.dds"
+						expire = "1965.1.1"
+						ideology = autocracy_subtype
+						traits = {
+							dislikes_kansai emperor_showa supreme_leader
+						}
+					}
+					keep_political_leader = yes
+				}
+				remove_unit_leader = 810
+			}
+			
+			else_if = {
+				limit = { 
+					has_country_flag = generals_angry
+					has_completed_focus = CHU_Tomoyuki_Yamashita_path 
+				}
+				start_civil_war = {
+					ruling_party = neutrality
+					ideology = ROOT
+					size = 0.5
+					only_own_territory = no
+					capital = 198 
+					states = { 
+						138 101 111 117 103 116 198 23 25 98 123 110 197 40 125 112 115
+					}
+					create_country_leader = {
+						name = "Tomoyuki Yamashita"
+						desc = ""
+						picture = "Portrait_CHU_Tomoyuki_Yamashita.dds"
+						expire = "1965.1.1"
+						ideology = junta
+						traits = {
+							#
+						}
+					}
+					keep_political_leader = yes
+				}
+				remove_unit_leader = 1001
+				set_variable = { dual_leader_id = 59 }
+			}
+			
+			else_if = {
+				limit = { 
+					has_country_flag = generals_angry 
+					has_completed_focus = CHU_Shunroku_Hata_path
+				}
+				start_civil_war = {
+					ruling_party = neutrality
+					ideology = ROOT
+					size = 0.5
+					only_own_territory = no
+					capital = 198 
+					states = { 
+						138 101 111 117 103 116 198 23 25 98 123 110 197 40 125 112 115
+					}
+					create_country_leader = {
+						name = "Shunroku Hata"
+						desc = "POLITICS_HATA_DESC"
+						picture = "Portrait_CHU_Shunroku_Hata.dds"
+						expire = "1965.1.1"
+						ideology = junta
+						traits = {
+							warrior_code 
+							#
+						}
+					}
+					keep_political_leader = yes
+				}
+				remove_unit_leader = 1000
+				set_variable = { dual_leader_id = 59 }
+			}
+	    }
+		
+		complete_effect = {
+			clr_country_flag = kanin_kotohito_angry 
+			clr_country_flag = generals_angry
+		}
+
+		ai_will_do = {
+
+			factor = 10
+
+		}
+
+	}
+	
+	rise_autocracy = { 
+
+		icon = eng_propaganda_campaigns
+		
+		allowed = { 
+			original_tag = CHU
+		}
+
+		visible = {
+			original_tag = CHU
+			OR = {
+				has_country_flag = kanin_kotohito_angry    
+				has_country_flag = generals_angry	
+			}
+			autocracy < 0.40
+		}
+
+		available = {
+			
+		}
+		
+		fire_only_once = no
+		
+		days_remove = 60
+
+		cost = 60
+		
+		days_re_enable = 1
+		
+		complete_effect = {
+			add_ideas = CHU_we_are_enough_for_monarchy
+		}
+		
+		remove_effect = {
+			remove_ideas = CHU_we_are_enough_for_monarchy
+		}
+
+		ai_will_do = {
+
+			factor = 10
+
+		}
+
+	}
+	
+	gain_time = { 
+
+		icon = generic_nationalism
+		
+		allowed = { 
+			original_tag = CHU
+		}
+
+		visible = {
+			original_tag = CHU
+			OR = {
+				has_country_flag = kanin_kotohito_angry    
+				has_country_flag = generals_angry	
+			}
+			autocracy < 0.40
+		}
+
+		available = {
+			
+		}
+		
+		fire_only_once = no
+		
+		days_remove = 60
+
+		cost = CHU.gain_time
+		
+		days_re_enable = 1
+		
+		remove_effect = {
+			hidden_effect = {
+				add_to_variable = {
+					var = CHU.gain_time
+					value = 20
+				}
+			}
+			add_days_mission_timeout = {
+				mission = Backstab_the_Marshal
+				days = 100
+			}
+		}
+
+		ai_will_do = {
+
+			factor = 10
+
+		}
+
+	}
+}
 operations = { 
 
 attack_kyushu = { 
@@ -1126,6 +1359,7 @@ CHU_open_political_sphere_category = {
 			has_completed_focus = CHU_assess_our_situation
 			NOT = { has_idea = CHU_stability_effect_idea }
 			NOT = { has_idea = CHU_gather_any_volunteers }
+			has_manpower < 1000000
 		}
 		
 		days_remove = 100
@@ -1169,6 +1403,7 @@ CHU_open_political_sphere_category = {
 			has_completed_focus = CHU_assess_our_situation
 			NOT = { has_idea = CHU_stability_effect_idea }
 			NOT = { has_idea = CHU_gather_any_volunteers }
+			has_stability < 1.0
 		}
 		
 		days_remove = 100
