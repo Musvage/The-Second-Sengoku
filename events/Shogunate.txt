@@ -1009,6 +1009,7 @@ country_event = { # clear civil war flag
 				disband = yes #will refund equipment and manpower
 			}
 			annex_country = { target = NAG transfer_troops = yes }
+			add_state_core = 211
 			mark_focus_tree_layout_dirty = yes
 		}
 	}
@@ -1083,6 +1084,9 @@ country_event = { # Dark Ocean Coup
 		focus_progress = {
 			focus = SHO_dem_our_first_elections
 			progress > 0.5
+		}
+		NOT = {
+			has_completed_focus = SHO_dem_our_first_elections
 		}
 	}
 
@@ -1678,6 +1682,189 @@ country_event = { # Get Nobuhito and kill KAN
 			set_variable = { dual_leader_first_title = 1 }
 			set_variable = { dual_leader_second_title = 8 }
 			set_variable = { dual_leader_id = 60 }
+		}
+	}
+}
+
+country_event = { # Ask PRO for faction (event goes for PRO)
+	id = shogunate.50
+	title = shogunate.50.t
+	desc = shogunate.50.desc
+	picture = GFX_report_event_chinese_japanese_handshake
+	is_triggered_only = yes
+
+	option = { # Accepts
+		name = shogunate.50.a
+
+		ai_chance = {
+			base = 75
+
+			modifier = {
+				has_government = democratic
+				factor = 3
+			}
+			modifier = {
+				has_government = democratic_socialism
+				factor = 2
+			}
+		}
+
+
+		hidden_effect = {
+			SHO = {
+				create_faction = "Pact of Two Republics"
+				add_to_faction = PRO
+			}
+			add_to_tech_sharing_group = confederation_japan_tech_share_group
+
+			SHO = {
+				country_event = shogunate.52
+				add_to_tech_sharing_group = confederation_japan_tech_share_group
+			}
+		}
+	}
+
+	option = { # Denies
+		name = shogunate.50.b
+
+		ai_chance = {
+			base = 25
+		}
+		add_stability = 0.05
+
+		hidden_effect = {
+			SHO = {
+				country_event = shogunate.51
+			}
+		}
+	}
+}
+
+country_event = { # They deny us (PRO denies faction)
+	id = shogunate.51
+	title = shogunate.51.t
+	desc = shogunate.51.desc
+	picture = GFX_report_event_generic_conference
+	is_triggered_only = yes
+
+	option = {
+		name = shogunate.51.a
+	}
+}
+
+country_event = { # They accepts us (PRO accepts faction)
+	id = shogunate.52
+	title = shogunate.52.t
+	desc = shogunate.52.desc
+	picture = GFX_report_event_generic_conference
+	is_triggered_only = yes
+
+	option = {
+		name = shogunate.52.a
+	}
+}
+
+country_event = { # Generic Request Integration request
+	id = shogunate.53
+	title = shogunate.53.t
+	desc = shogunate.53.desc
+	picture = GFX_report_event_generic_conference
+	is_triggered_only = yes
+
+	option = { # Accept
+		name = shogunate.53.a
+		ai_chance = {
+			base = 50
+
+			modifier = { # 85%
+				has_government = democratic
+				factor = 5.6666667
+			}
+
+			modifier = { # 75%
+				has_government = democratic_socialism
+				factor = 3
+			}
+
+			modifier = { # 50%
+				has_government = neutrality
+				factor = 1
+			}
+
+			modifier = { # 40%
+				has_government = autocracy
+				factor = 0.6666667
+			}
+
+			modifier = { # 40%
+				has_government = communism
+				factor = 0.6666667
+			}
+
+			modifier = { # 25%
+				has_government = fascism
+				factor = 0.333333333
+			}
+
+			modifier = { # In faction with SHO = guaranteed
+				is_in_faction_with = SHO
+				factor = 100
+			}
+		}
+		# Effect
+		SHO = {
+			set_autonomy = {
+				target = ROOT
+				autonomy_state = autonomy_governorship
+			}
+			country_event = shogunate.54
+		}
+		add_to_tech_sharing_group = confederation_japan_tech_share_group
+
+	}
+
+	option = { # Deny
+		name = shogunate.53.b
+		ai_chance = {
+			base = 50
+		}
+	}
+}
+
+country_event = { # Someone accepted integration (ROOT = SHO, FROM = new subject)
+	id = shogunate.54
+	title = shogunate.54.t
+	desc = shogunate.54.desc
+	picture = GFX_report_event_generic_conference
+	is_triggered_only = yes
+
+	option = { # Set the new cosmetic tags
+		name = shogunate.54.a
+
+		hidden_effect = {
+			FROm = {
+				set_variable = { dual_leader_first_title = 6 }
+				set_variable = { dual_leader_second_title = 1 }
+				set_variable = { dual_leader_id = 66 }
+			}
+			IF = {
+				limit = {
+					FROM = {
+						original_tag = PRO
+					}
+				}
+
+				FROM = {
+					set_cosmetic_tag = SHO_dem_PRO_governor
+				}
+				transfer_state = 60
+				transfer_state = 66
+				transfer_state = 29
+				add_state_core = 60
+				add_state_core = 66
+				add_state_core = 29
+				set_capital = 29
+			}
 		}
 	}
 }
