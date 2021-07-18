@@ -1,37 +1,44 @@
 
 CHU_Ultimate_Betrayal = { 
 
-	Backstab_the_Marshal = { 
+	Backstab_the_Marshal = {
 
-		icon = generic_prepare_civil_war
+		priority = 3
+
+		icon = generic_ignite_civil_war
+		
 		allowed = { 
 			original_tag = CHU
 		}
 		visible = {
-			original_tag = CHU
+			NOT = {has_country_flag = civil_war_end}
 			OR = {
-				has_country_flag = kanin_kotohito_angry    
-				has_country_flag = generals_angry	
+				has_country_flag = kanin_kotohito_angry
+				has_country_flag = generals_angry
 			}
 		}
 
 		available = {
-			autocracy > 0.40
+			OR = {
+				autocracy > 0.40
+				has_country_flag = civil_war_end
+			}
 		}
 		
 		activation = {  
-			OR = { has_country_flag = kanin_kotohito_angry has_country_flag = generals_angry}
+			
         }
 		
-	    is_good = no   
+	    is_good = yes    
 		
-	    selectable_mission = yes    
+        selectable_mission = no
 		
-	    days_mission_timeout = CHU.add_time
+	    days_mission_timeout = 150
 		
 	    timeout_effect = {
 			if = {
-				limit = { 
+				limit = {
+					has_government = neutrality
 					has_country_flag = kanin_kotohito_angry  
 					OR = {
 						has_completed_focus = CHU_Shunroku_Hata_path 
@@ -39,8 +46,8 @@ CHU_Ultimate_Betrayal = {
 					}
 				}
 				start_civil_war = {
-					ruling_party = autocracy
-					ideology = ROOT
+					ruling_party = neutrality
+					ideology = autocracy
 					size = 0.5
 					only_own_territory = no
 					capital = 32
@@ -64,12 +71,13 @@ CHU_Ultimate_Betrayal = {
 			
 			else_if = {
 				limit = { 
+					has_government = autocracy
 					has_country_flag = generals_angry
 					has_completed_focus = CHU_Tomoyuki_Yamashita_path 
 				}
 				start_civil_war = {
-					ruling_party = neutrality
-					ideology = ROOT
+					ruling_party = autocracy
+					ideology = neutrality
 					size = 0.5
 					only_own_territory = no
 					capital = 198 
@@ -94,12 +102,13 @@ CHU_Ultimate_Betrayal = {
 			
 			else_if = {
 				limit = { 
+					has_government = autocracy
 					has_country_flag = generals_angry 
 					has_completed_focus = CHU_Shunroku_Hata_path
 				}
 				start_civil_war = {
-					ruling_party = neutrality
-					ideology = ROOT
+					ruling_party = autocracy
+					ideology = neutrality
 					size = 0.5
 					only_own_territory = no
 					capital = 198 
@@ -122,49 +131,47 @@ CHU_Ultimate_Betrayal = {
 				remove_unit_leader = 1000
 				set_variable = { dual_leader_id = 59 }
 			}
+			country_event = { id = chugoku.36 }
 	    }
 		
-		complete_effect = {
-			clr_country_flag = kanin_kotohito_angry 
-			clr_country_flag = generals_angry
-		}
-
 		ai_will_do = {
 
-			factor = 10
+			factor = 1
 
 		}
 
 	}
 	
-	rise_autocracy = { 
+	rise_autocracy = {  
+	
+		priority = 2
 
 		icon = eng_propaganda_campaigns
 		
 		allowed = { 
 			original_tag = CHU
+			OR = {
+				has_country_flag = kanin_kotohito_angry
+				has_country_flag = generals_angry
+			}
 		}
 
 		visible = {
-			original_tag = CHU
 			OR = {
-				has_country_flag = kanin_kotohito_angry    
-				has_country_flag = generals_angry	
+				has_country_flag = kanin_kotohito_angry
+				has_country_flag = generals_angry
 			}
-			autocracy < 0.40
 		}
 
 		available = {
-			
+
 		}
-		
-		fire_only_once = no
 		
 		days_remove = 60
 
 		cost = 60
 		
-		days_re_enable = 1
+		days_re_enable = 0
 		
 		complete_effect = {
 			add_ideas = CHU_we_are_enough_for_monarchy
@@ -183,44 +190,48 @@ CHU_Ultimate_Betrayal = {
 	}
 	
 	gain_time = { 
+	
+		priority = 1
 
 		icon = generic_nationalism
 		
 		allowed = { 
 			original_tag = CHU
+			OR = {
+				has_country_flag = kanin_kotohito_angry
+				has_country_flag = generals_angry
+			}
 		}
 
 		visible = {
-			original_tag = CHU
 			OR = {
-				has_country_flag = kanin_kotohito_angry    
-				has_country_flag = generals_angry	
+				has_country_flag = kanin_kotohito_angry
+				has_country_flag = generals_angry
 			}
-			autocracy < 0.40
 		}
 
 		available = {
-			
+
 		}
-		
-		fire_only_once = no
 		
 		days_remove = 60
 
 		cost = CHU.gain_time
 		
-		days_re_enable = 1
+		days_re_enable = 0
 		
 		remove_effect = {
-			hidden_effect = {
-				add_to_variable = {
-					var = CHU.gain_time
-					value = 20
-				}
+			add_to_variable = {
+				var = CHU.gain_time
+				value = 20
+			}
+			add_to_variable = {
+				var = CHU.gain_time_debuff
+				value = -5
 			}
 			add_days_mission_timeout = {
 				mission = Backstab_the_Marshal
-				days = 100
+				days = CHU.gain_time_debuff
 			}
 		}
 

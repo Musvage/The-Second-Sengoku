@@ -1869,12 +1869,15 @@ country_event = {
 			limit = {
 				has_government = neutrality
 			}
+			set_politics = {
+				ruling_party = autocracy
+			}
 			create_country_leader = {
 				name = "Kan'in Kotohito"
 				desc = ""
 				picture = "Portrait_CHU_Prince_Kanin_Kotohito.dds"
 				expire = "1965.1.1"
-				ideology = despotism
+				ideology = autocracy_subtype
 				traits = {
 					dislikes_kansai autocratic_imperialist supreme_leader
 				}
@@ -1888,7 +1891,6 @@ country_event = {
 				limit = {has_completed_focus = CHU_Shunroku_Hata_path}
 				set_variable = { dual_leader_id = 65 }
 			}
-			set_country_flag = generals_angry
 		}
 		else_if = {
 			limit = {
@@ -1908,6 +1910,7 @@ country_event = {
 		}
 		set_variable = { dual_leader_first_title = 2 }
 		set_variable = { dual_leader_second_title = 23 }
+		set_country_flag = generals_angry_event
 	}
 	
 	option = {
@@ -1916,7 +1919,7 @@ country_event = {
 			limit = {
 				has_government = neutrality
 			}
-			set_country_flag = kanin_kotohito_angry
+			set_country_flag = kanin_kotohito_angry_event
 		}
 	}
 }
@@ -1956,23 +1959,82 @@ country_event = {
 		NOT = { country_exists = KAN }
 		has_full_control_of_state = 32
 		OR = {
-			has_country_flag = kanin_kotohito_angry
-			has_country_flag = generals_angry
+			has_country_flag = kanin_kotohito_angry_event
+			has_country_flag = generals_angry_event
 		}
 	}
 	
 	option = { 
-		name = chugoku.35.a #happy
-		activate_targeted_decision = { target = ROOT decision = Backstab_the_Marshal }
+		name = chugoku.35.a
+		clr_country_flag = kanin_kotohito_angry_event
+		clr_country_flag = generals_angry_event
+		if = {
+			limit = { has_government = autocracy }
+			set_country_flag = generals_angry
+		}
+		else_if = {
+			limit = { has_government = neutrality }
+			set_country_flag = kanin_kotohito_angry
+		}
 		hidden_effect = {
 			add_to_variable = {
 				var = CHU.gain_time
 				value = 50
 			}
 			add_to_variable = {
-				var = CHU.add_time
+				var = CHU.gain_time_debuff
 				value = 100
 			}
 		}
+		activate_targeted_decision = { target = ROOT decision = Backstab_the_Marshal }
+	}
+}
+
+#monarchist civil war
+news_event = {
+	id = chugoku.36
+	title = chugoku.36.t
+	desc = chugoku.36.desc
+	picture = GFX_
+	
+	fire_only_once = yes
+	
+	major = yes
+ 
+	is_triggered_only = yes
+	
+	option = { 
+		name = chugoku.36.a
+		clr_country_flag = kanin_kotohito_angry 
+		clr_country_flag = generals_angry
+		set_country_flag = civil_war_end
+	}
+}
+
+#no monarchist civil war
+news_event = {
+	id = chugoku.37
+	title = chugoku.37.t
+	desc = chugoku.37.desc
+	picture = GFX_
+	
+	fire_only_once = yes
+ 
+	trigger = { 
+		tag = CHU 
+		autocracy < 0.40
+		NOT = { country_exists = KAN }
+		has_full_control_of_state = 32
+		OR = {
+			has_country_flag = kanin_kotohito_angry
+			has_country_flag = generals_angry
+		}
+	}
+	
+	option = { 
+		name = chugoku.37.a
+		clr_country_flag = kanin_kotohito_angry 
+		clr_country_flag = generals_angry
+		set_country_flag = civil_war_end
 	}
 }
