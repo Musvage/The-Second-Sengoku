@@ -27,7 +27,72 @@ country_event = {
 	
 	option = {	# YES
 		name = league.1.a1
-		add_political_power = 100
+		add_to_variable = { global.LoN_votes_yes = 1 }
+		if = {
+			limit = {
+				NOT = { check_variable = { global.LoN_votes_yes <  global.LoN_votes_needed } }
+			}
+			if = {
+				limit = {
+					NOT = { has_global_flag = LoN_flag_vote_ended }
+				}
+				FROM = { add_to_array = { global.LON_observers = THIS } }
+				FROM = { news_event = league.2 }
+				set_global_flag = LoN_flag_vote_ended
+			}
+		}
+		if = {
+			limit = {
+				NOT = { check_variable = { global.LoN_votes_no <  global.LoN_votes_needed } }
+			}
+			FROM = { news_event = league.3 }
+		}
+	}
+	#option = {	# NO
+	#	name = league.1.a2
+	#	add_to_variable = { global.LoN_votes_no = 1 }
+	#}
+}
+
+# Ask to Become Observer, approved
+news_event = {
+	id = league.2
+	title = league.2.t
+	desc = league.2.d
+	picture = GFX_news_LoN_test
+
+	is_triggered_only = yes
+	
+	option = {
+		name = league.2.a1
+	}
+}
+
+# Ask to Become Observer, rejected
+news_event = {
+	id = league.2
+	title = league.2.t
+	desc = league.2.d
+	picture = GFX_news_LoN_test
+
+	is_triggered_only = yes
+	
+	option = {
+		name = league.2.a1
+	}
+}
+
+# Ask to Become Member
+country_event = {
+	id = league.4
+	title = league.4.t
+	desc = league.4.d
+	picture = GFX_news_LoN_test_report
+
+	is_triggered_only = yes
+	
+	option = {	# YES
+		name = league.4.a1
 		add_to_variable = { global.LoN_votes_yes = 1 }
 		if = {
 			limit = {
@@ -42,13 +107,47 @@ country_event = {
 					value = FROM
 				}
 				FROM = { add_to_array = { global.LON_members = THIS } }
+				FROM = { news_event = league.5 }
 				set_global_flag = LoN_flag_vote_ended
 			}
 		}
+		if = {
+			limit = {
+				NOT = { check_variable = { global.LoN_votes_no <  global.LoN_votes_needed } }
+			}
+			FROM = { news_event = league.6 }
+		}
 	}
 	#option = {	# NO
-	#	name = league.1.a2
-	#	add_political_power = 100
+	#	name = league.4.a2
 	#	add_to_variable = { global.LoN_votes_no = 1 }
 	#}
+}
+
+# Ask to Become Member, approved
+news_event = {
+	id = league.5
+	title = league.5.t
+	desc = league.5.d
+	picture = GFX_news_LoN_test
+
+	is_triggered_only = yes
+	
+	option = {
+		name = league.5.a1
+	}
+}
+
+# Ask to Become Member, approved
+news_event = {
+	id = league.6
+	title = league.6.t
+	desc = league.6.d
+	picture = GFX_news_LoN_test
+
+	is_triggered_only = yes
+	
+	option = {
+		name = league.6.a1
+	}
 }
