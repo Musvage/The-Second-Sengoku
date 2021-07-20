@@ -1,17 +1,58 @@
+civil_war_ai_category = {
+	civil_war_random_decision = {
+		allowed = { tag = CHU }                 
+          available = { 
+			NOT = {
+				OR = {
+					has_country_flag = kanin_kotohito_angry
+					has_country_flag = generals_angry
+				} 
+			}
+			}
+			activation = {                          
+				has_country_flag = civil_war_ai                   
+			}
+			is_good = no                          
+			selectable_mission = no                
+			days_mission_timeout = 30             
+			timeout_effect = {                     
+               random_list = {
+				3 = {
+					add_political_power = -50
+				}
+				3 = {
+					add_popularity = {
+						popularity = -0.05
+						ideology = autocracy
+					}
+					hidden_effect = {
+						CHU = { country_event = { id = chugoku.38 } }
+					}
+				}
+				3 = {
+					add_days_mission_timeout = {
+						mission = CHU_Backstab_the_Marshal
+						days = -50
+					}
+				}
+			}             
+        }
+
+		ai_will_do = {
+			factor = 0
+		}
+	}
+}
 
 CHU_Ultimate_Betrayal = { 
 
-	Backstab_the_Marshal = {
-
+	CHU_Backstab_the_Marshal = {
+	
 		priority = 3
 
 		icon = generic_ignite_civil_war
 		
-		allowed = { 
-			original_tag = CHU
-		}
 		visible = {
-			NOT = {has_country_flag = civil_war_end}
 			OR = {
 				has_country_flag = kanin_kotohito_angry
 				has_country_flag = generals_angry
@@ -19,21 +60,21 @@ CHU_Ultimate_Betrayal = {
 		}
 
 		available = {
-			OR = {
-				autocracy > 0.40
-				has_country_flag = civil_war_end
-			}
+			autocracy > 0.40
 		}
 		
 		activation = {  
-			
+			OR = {
+				has_country_flag = kanin_kotohito_angry
+				has_country_flag = generals_angry
+			} 
         }
 		
-	    is_good = yes    
+	    is_good = no  
 		
         selectable_mission = no
 		
-	    days_mission_timeout = 150
+	    days_mission_timeout = 200
 		
 	    timeout_effect = {
 			if = {
@@ -132,44 +173,37 @@ CHU_Ultimate_Betrayal = {
 				set_variable = { dual_leader_id = 59 }
 			}
 			country_event = { id = chugoku.36 }
+			clr_country_flag = kanin_kotohito_angry 
+			clr_country_flag = generals_angry
+			clr_country_flag = civil_war_ai 
 	    }
 		
 		ai_will_do = {
-
 			factor = 1
-
 		}
 
 	}
 	
-	rise_autocracy = {  
-	
+	CHU_rise_autocracy = {  
+
 		priority = 2
+		
+		allowed = { original_tag = CHU }
 
 		icon = eng_propaganda_campaigns
-		
-		allowed = { 
-			original_tag = CHU
-			OR = {
-				has_country_flag = kanin_kotohito_angry
-				has_country_flag = generals_angry
-			}
-		}
 
 		visible = {
 			OR = {
 				has_country_flag = kanin_kotohito_angry
 				has_country_flag = generals_angry
-			}
+			} 
 		}
 
-		available = {
-
-		}
+		fire_only_once = no
 		
 		days_remove = 60
 
-		cost = 60
+		cost = 50
 		
 		days_re_enable = 0
 		
@@ -182,63 +216,43 @@ CHU_Ultimate_Betrayal = {
 		}
 
 		ai_will_do = {
-
 			factor = 10
-
 		}
 
 	}
 	
-	gain_time = { 
-	
+	CHU_gain_time = { 
+
 		priority = 1
+		
+		allowed = { original_tag = CHU }
 
 		icon = generic_nationalism
-		
-		allowed = { 
-			original_tag = CHU
-			OR = {
-				has_country_flag = kanin_kotohito_angry
-				has_country_flag = generals_angry
-			}
-		}
 
 		visible = {
 			OR = {
 				has_country_flag = kanin_kotohito_angry
 				has_country_flag = generals_angry
-			}
-		}
-
-		available = {
-
+			} 
 		}
 		
-		days_remove = 60
+		fire_only_once = no
+		
+		days_remove = 40
 
-		cost = CHU.gain_time
+		cost = 40
 		
 		days_re_enable = 0
 		
 		remove_effect = {
-			add_to_variable = {
-				var = CHU.gain_time
-				value = 20
-			}
-			add_to_variable = {
-				var = CHU.gain_time_debuff
-				value = -5
-			}
 			add_days_mission_timeout = {
-				mission = Backstab_the_Marshal
-				days = CHU.gain_time_debuff
+				mission = CHU_Backstab_the_Marshal
+				days = 60
 			}
 		}
 
 		ai_will_do = {
-
 			factor = 10
-
 		}
 
 	}
@@ -347,6 +361,8 @@ CHU_spread_democracy = {
 
 spread_democracy_kyu_decisions = { 
 
+	priority = 1
+
 	icon = generic_nationalism
 
 	visible = {
@@ -390,6 +406,8 @@ spread_democracy_kyu_decisions = {
 
 kyu_civil_war = { 
 
+	priority = 3
+
 	icon = generic_nationalism
 
 	visible = {
@@ -430,6 +448,8 @@ kyu_civil_war = {
 }
 
 spread_democracy_shi_decisions = { 
+
+	priority = 2
 
 	icon = generic_nationalism
 
@@ -472,7 +492,9 @@ spread_democracy_shi_decisions = {
 
 }
 
-shi_civil_war = { 
+shi_civil_war = {
+
+	priority = 4
 
 	icon = generic_nationalism
 
@@ -676,6 +698,8 @@ CHU_clan_management_0_category = {
 
 	CHU_suport_UCC = {
 	
+		priority = 1
+	
 		icon = generic_nationalism
 
 		allowed = { 
@@ -733,6 +757,8 @@ CHU_clan_management_0_category = {
 	}
 
 	CHU_suport_OIK = {
+	
+		priority = 2
 	
 		icon = generic_nationalism
 
@@ -792,6 +818,8 @@ CHU_clan_management_0_category = {
 	
 	CHU_suport_TMA = {
 	
+		priority = 3
+	
 		icon = generic_nationalism
 
 		allowed = { 
@@ -849,6 +877,8 @@ CHU_clan_management_0_category = {
 	}
 	
 	CHU_suport_IKE = {
+	
+		priority = 4
 	
 		icon = generic_nationalism
 
@@ -908,6 +938,8 @@ CHU_clan_management_0_category = {
 	
 	CHU_suport_MAT = {
 	
+		priority = 5
+	
 		icon = generic_nationalism
 
 		allowed = { 
@@ -965,6 +997,8 @@ CHU_clan_management_0_category = {
 	}
 	
 	CHU_suport_AMA = {
+	
+		priority = 6
 	
 		icon = generic_nationalism
 
@@ -1024,6 +1058,8 @@ CHU_clan_management_0_category = {
 	
 	CHU_suport_ABE = {
 	
+		priority = 7
+	
 		icon = generic_nationalism
 
 		allowed = { 
@@ -1081,6 +1117,8 @@ CHU_clan_management_0_category = {
 	}
 	
 	CHU_suport_ASO = {
+	
+		priority = 8
 	
 		icon = generic_nationalism
 
@@ -1143,6 +1181,8 @@ CHU_clan_management_0_category = {
 CHU_open_political_sphere_category = { 
 
 	CHU_Domestic_Political_Promises_army = {
+	
+		priority = 1
 	
 		icon = generic_nationalism
 
@@ -1249,6 +1289,8 @@ CHU_open_political_sphere_category = {
 	
 	CHU_Domestic_Political_Promises_Peoples = {
 	
+		priority = 2
+	
 		icon = generic_nationalism
 
 		allowed = { 
@@ -1354,6 +1396,8 @@ CHU_open_political_sphere_category = {
 
 	CHU_any_volunteers = {
 	
+	priority = 3
+	
 		icon = generic_nationalism
 
 		allowed = { 
@@ -1397,6 +1441,8 @@ CHU_open_political_sphere_category = {
 	}
 
 	CHU_stability_effect = {
+	
+		priority = 4
 	
 		icon = generic_nationalism
 
