@@ -690,7 +690,7 @@
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
 		mutually_exclusive = { focus = PRO_allow_foreign_investment }
-		prerequisite = { focus = PRO_the_sun_rises focus = PRO_the_sun_settels }
+		prerequisite = { focus = PRO_the_sun_rises focus = PRO_the_sun_settels focus = PRO_yakuza_2 }
 		
 		relative_position_id = PRO_the_sun_settels
 		x = 4
@@ -707,6 +707,7 @@
 			OR = {
 				has_government = communism
 				has_government = democratic_socialism
+				has_government = fascism
 			}
 		}
 		
@@ -724,7 +725,7 @@
 		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_RESEARCH }
 		
 		mutually_exclusive = { focus = PRO_nationalize }
-		prerequisite = { focus = PRO_the_sun_rises focus = PRO_the_sun_settels focus = PRO_reassert_state_authority focus = PRO_yakuza }
+		prerequisite = { focus = PRO_the_sun_rises focus = PRO_the_sun_settels focus = PRO_reassert_state_authority focus = PRO_yakuza_2 }
 		
 		relative_position_id = PRO_the_sun_settels
 		x = 6
@@ -1142,15 +1143,54 @@
 	### Executive Takeover Branch
 	
 	focus = {
+		id = PRO_yakuza
+		icon = GFX_focus_PRO_yakuza_1
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
+		
+		prerequisite = { focus = PRO_assassination_of_the_prime_minister }
+		mutually_exclusive = { focus = PRO_executive_takeover focus = PRO_zaibatsus_takeover }
+		
+		relative_position_id = PRO_assassination_of_the_prime_minister
+		x = -5
+		y = 1
+		cost = 10
+		
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 1
+		}
+		
+		completion_reward = {
+			create_country_leader = {
+				name = "Noboru Yamaguchi"
+				desc = "POLITICS_MOHAMMED_ZAHIR_SHAH_DESC"
+				picture = "Portrait_PRO_Noboru_Yamaguchi.dds"
+				expire = "1965.1.1"
+				ideology = fascism_ideology
+				traits = {
+					
+				}
+			}
+			add_timed_idea = { idea = PRO_idea_yakuza days = 365 }
+			set_party_name = { 
+				ideology = fascism 
+				long_name = PRO_pary_yakuza_long 
+				name = PRO_pary_yakuza
+			}
+		}
+	}
+	
+	focus = {
 		id = PRO_executive_takeover
 		icon = GFX_focus_PRO_executive_takeover
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
-		mutually_exclusive = { focus = PRO_zaibatsus_takeover }
+		mutually_exclusive = { focus = PRO_zaibatsus_takeover focus = PRO_yakuza }
 		prerequisite = { focus = PRO_assassination_of_the_prime_minister }
 		
 		relative_position_id = PRO_assassination_of_the_prime_minister
-		x = -4
+		x = -3
 		y = 1
 		cost = 10
 		
@@ -1192,39 +1232,14 @@
 	}
 	
 	focus = {
-		id = PRO_yakuza
-		icon = GFX_focus_PRO_yakuza_1
-		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
-		
-		prerequisite = { focus = PRO_executive_takeover }
-		mutually_exclusive = { focus = PRO_reassert_state_authority }
-		
-		relative_position_id = PRO_executive_takeover
-		x = -1
-		y = 1
-		cost = 10
-		
-		available_if_capitulated = yes
-		
-		ai_will_do = {
-			factor = 1
-		}
-		
-		completion_reward = {
-			remove_ideas = PRO_political_struggle
-		}
-	}
-	
-	focus = {
 		id = PRO_reassert_state_authority
 		icon = GFX_focus_PRO_reassert_state_authority
 		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
 		
 		prerequisite = { focus = PRO_executive_takeover }
-		mutually_exclusive = { focus = PRO_yakuza }
 		
 		relative_position_id = PRO_executive_takeover
-		x = 1
+		x = 0
 		y = 1
 		cost = 10
 		
@@ -1326,21 +1341,33 @@
 		}
 		
 		available = {
+			fascism > 0.33
+			custom_trigger_tooltip = {
+				tooltip = PRO_yakuza_2_trigger
+				NOT = {
+					democratic > 0.5
+					communism > 0.5
+					neutrality > 0.5
+					autocracy > 0.5
+					democratic_socialism > 0.5
+				}
+			}
 			NOT = {
-				has_government = democratic
-				has_government = democratic_socialism
+				has_government = fascism
 			}
 		}
 		
+		bypass = {
+			has_government = fascism
+		}
+		
 		completion_reward = {
-			add_ideas = PRO_idea_propaganda_machine
-			hidden_effect = {
-				if = {
-					limit = {
-						NOT = { has_dynamic_modifier = { modifier = PRO_modifier_ruling_party_popularity } }
-					}
-					add_dynamic_modifier = { modifier = PRO_modifier_ruling_party_popularity }
-				}
+			remove_ideas = PRO_political_struggle
+			set_politics = {
+				ruling_party = fascism
+					elections_allowed = no
+					last_election = "1936.1.1"
+					election_frequency = 48
 			}
 		}
 	}
@@ -1432,7 +1459,7 @@
 		
 		relative_position_id = PRO_yakuza_2
 		x = 0
-		y = 2
+		y = 3
 		cost = 10
 		
 		available_if_capitulated = yes
@@ -1442,14 +1469,11 @@
 		}
 		
 		available = {
-			NOT = {
-				has_government = democratic
-				has_government = democratic_socialism
-			}
+			has_government = fascism
 		}
 		
 		completion_reward = {
-			add_ideas = PRO_idea_propaganda_machine
+			add_ideas = PRO_idea_code_of_conduct
 			hidden_effect = {
 				if = {
 					limit = {
@@ -1537,7 +1561,7 @@
 		icon = GFX_focus_PRO_zaibatsus_takeover
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
-		mutually_exclusive = { focus = PRO_executive_takeover }
+		mutually_exclusive = { focus = PRO_executive_takeover focus = PRO_yakuza }
 		prerequisite = { focus = PRO_assassination_of_the_prime_minister }
 		
 		relative_position_id = PRO_assassination_of_the_prime_minister
