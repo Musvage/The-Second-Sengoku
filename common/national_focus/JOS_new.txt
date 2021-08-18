@@ -1,0 +1,1026 @@
+focus_tree = {
+	id = JOS_new
+	default = no
+
+	#available_if_capitulated = <yes/no>
+	#cancel_if_invalid = <yes/no>
+	#continue_if_invalid = <yes/no>
+
+	#select_effect = {
+	#	<command>
+	#}
+	
+	#completion_reward = {
+	#	<effect>
+	#}
+	
+	#complete_tooltip = {
+	#	<effect>
+	#}
+
+	continuous_focus_position = { x = 10 y = 1800 }
+
+	focus = {
+		id = JOS_handle_peasant_uprising
+		icon = GFX_goal_generic_demand_territory
+		cost = 1.00
+		x = 18
+		y = 0
+		
+		completion_reward = {
+			country_event = {
+				id = joseon.6
+				hours = 1
+			}
+		}
+
+	}
+
+	focus = {
+		id = JOS_reform_government
+		text = JOS_reform_government
+		icon = GFX_goal_unknown
+		cost = 10.00
+		x = 6
+		y = 11
+
+		available = { has_country_flag = JOS_civil_war_is_over_flag }
+
+		completion_reward = {
+			
+		}
+
+	}
+	focus = {
+		id = JOS_purchase_weapon
+		text = JOS_purchase_weapon
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_handle_peasant_uprising
+		}
+		x = 19
+		y = 1
+
+		completion_reward = {
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = 1800
+			}
+		}
+	}
+
+	focus = {
+		id = JOS_call_local_reserve_force
+		text = JOS_call_local_reserve_force
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_handle_peasant_uprising
+		}
+		x = 17
+		y = 1
+
+		completion_reward = {
+			custom_effect_tooltip = JOS_call_local_reserve_force_tt
+			hidden_effect = {
+				division_template = {
+					name = "Reserve Brigade"
+					#division_names_group = JOS_RSV_01
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 0 y = 2 }
+						infantry = { x = 1 y = 0 }
+						infantry = { x = 1 y = 1 }
+						infantry = { x = 1 y = 2 }
+					}
+				}
+
+				random_owned_controlled_state = {
+					prioritize = { 163 }
+					create_unit = {
+						division = "name = \"Haeju Reserve Brigade\" division_template = \"Reserve Brigade\" start_experience_factor = 0.1 start_equipment_factor = 0.25"
+						owner = FKR
+					}
+				}
+
+				random_owned_controlled_state = {
+					prioritize = { 164 }
+					create_unit = {
+						division = "name = \"Sariwon Reserve Brigade\" division_template = \"Reserve Brigade\" start_experience_factor = 0.1 start_equipment_factor = 0.25"
+						owner = FKR
+					}
+					create_unit = {
+						division = "name = \"Songrim Reserve Brigade\" division_template = \"Reserve Brigade\" start_experience_factor = 0.1 start_equipment_factor = 0.25"
+						owner = FKR
+					}
+					create_unit = {
+						division = "name = \"Kaesong Reserve Brigade\" division_template = \"Reserve Brigade\" start_experience_factor = 0.1 start_equipment_factor = 0.25"
+						owner = FKR
+					}
+				}
+			}
+		} #completion_reward
+	}
+
+	focus = {
+		id = JOS_suppress_uprising
+		text = JOS_suppress_uprising
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_purchase_weapon
+		}
+		prerequisite = {
+			focus = JOS_call_local_reserve_force
+		}
+		x = 9
+		y = 2
+
+		available = {
+			divisions_in_state = {
+				type = infantry
+				size > 1
+				state = 163
+			}
+			divisions_in_state = {
+				type = infantry
+				size > 3
+				state = 164
+			}
+		}
+
+		cancel_if_invalid = no
+
+		completion_reward = {
+			custom_effect_tooltip = JOS_strengthen_peasant_uprising_tt
+			hidden_effect = {
+				country_event = { id = joseon.7 }
+			}
+		}
+
+	}
+	focus = {
+		id = JOS_amend_firearm_law
+		text = JOS_amend_firearm_law
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_suppress_uprising
+		}
+		x = 5
+		y = 3
+
+		completion_reward = {
+			custom_effect_tooltip = JOS_weaken_peasant_uprising_tt
+			custom_effect_tooltip = JOS_confiscate_illegal_weapons_tt
+			hidden_effect = {
+				country_event = { id = joseon.8 }
+			}
+
+			add_ideas = JOS_strong_gun_control_act
+
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = 3000
+			}
+		}
+
+	}
+	focus = {
+		id = JOS_run_arrest_operation
+		text = JOS_run_arrest_operation
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_suppress_uprising
+		}
+		x = 7
+		y = 3
+
+		completion_reward ={
+			custom_effect_tooltip = JOS_weaken_peasant_uprising_tt
+			hidden_effect = {
+				country_event = { id = joseon.8 }
+			}
+
+			163 = { add_manpower = -13764 }
+			164 = { add_manpower = -38447 }
+		}
+	}
+	focus = {
+		id = JOS_declare_mobilization
+		text = JOS_declare_mobilization
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_run_arrest_operation
+			focus = JOS_amend_firearm_law
+		}
+		x = 6
+		y = 4
+
+		bypass = {
+			OR = {
+				has_idea = partial_economic_mobilisation
+				has_idea = war_economy
+				has_idea = tot_economic_mobilisation
+			}
+		}
+
+		completion_reward = {
+			add_ideas = partial_economic_mobilisation
+		}
+
+	}
+	focus = {
+		id = JOS_civil_war
+		text = JOS_civil_war
+		icon = GFX_goal_unknown
+		cost = 10.00
+
+		available = {
+			has_country_flag = JOS_civil_war_is_start_flag
+		}
+
+		prerequisite = {
+			focus = JOS_suppress_uprising
+		}
+		x = 9
+		y = 6
+
+		completion_reward = {
+			custom_effect_tooltip = JOS_civil_war_tt
+		}
+
+	}
+	focus = {
+		id = JOS_white_russian_inheritance
+		text = JOS_white_russian_inheritance
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_civil_war
+		}
+		x = 2
+		y = 7
+
+		completion_reward = {
+			add_ideas = JOS_white_russian_inheritance_idea
+
+			create_field_marshal = {
+				name = "Roman von Ungern-Sternberg"
+				picture = "Portrait_JOS_Roman_von_Ungern_Sternberg.dds"
+				traits = { foreign_general guerilla_fighter ranger old_guard cavalry_officer trait_reckless cavalry_officer trickster }
+				skill = 4
+				attack_skill = 4
+				defense_skill = 2
+				planning_skill = 3
+				logistics_skill = 4
+			}
+
+			create_navy_leader = {
+				name = "Pyotr Wrangel"
+				picture = "Portrait_JOS_Pyotr_Wrangel.dds"
+				traits = { war_hero ironside foreign_admiral }
+				skill = 3
+				attack_skill = 4
+				defense_skill = 1
+				maneuvering_skill = 2
+				coordination_skill = 1
+			}
+		}
+
+	}
+	focus = {
+		id = JOS_expand_mobilization
+		text = JOS_expand_mobilization
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_civil_war
+		}
+		x = 9
+		y = 7
+
+		bypass = {
+			OR = {
+				has_idea = war_economy
+				has_idea = tot_economic_mobilisation
+			}
+		}
+
+		completion_reward = {
+			add_ideas = war_economy
+		}
+
+	}
+	focus = {
+		id = JOS_distribution_system
+		text = JOS_distribution_system
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_expand_mobilization
+		}
+		x = 9
+		y = 8
+
+		bypass = {
+			has_war = no
+		}
+
+		completion_reward = {
+			#Why i added this tooltip?
+			#custom_effect_tooltip = JOS_distribution_system_tt
+			add_ideas = JOS_distribution_system
+		}
+
+	}
+	focus = {
+		id = JOS_industrial_complex_expansion
+		text = JOS_industrial_complex_expansion
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_distribution_system
+		}
+		x = 9
+		y = 9
+
+		completion_reward = {
+			random_owned_state = {
+				limit = { 
+					is_core_of = ROOT 
+					NOT = {
+						has_state_flag = JOS_industrial_complex_expansion_target
+					}	
+				}
+				add_extra_state_shared_building_slots = 2
+				set_state_flag = JOS_industrial_complex_expansion_target
+				random_neighbor_state = {
+					limit = { 
+						is_core_of = ROOT 	
+						is_owned_by = ROOT
+						NOT = {
+							has_state_flag = JOS_industrial_complex_expansion_target
+						}	
+					}
+					add_extra_state_shared_building_slots = 2
+					set_state_flag = JOS_industrial_complex_expansion_target
+				}
+			}
+		} #completion_reward
+
+	}
+	focus = {
+		id = JOS_aviation_industrial_complex
+		text = JOS_aviation_industrial_complex
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_industrial_complex_expansion
+		}
+		mutually_exclusive = {
+			focus = JOS_armor_industrial_complex
+		}
+		x = 8
+		y = 10
+
+		complete_tooltip = {
+			every_owned_state = {
+				limit = {
+					is_controlled_by = ROOT
+					has_state_flag = JOS_industrial_complex_expansion_target
+				}
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
+		}
+
+		completion_reward = {
+			custom_effect_tooltip = JOS_industrial_expansion_effect_tt
+			every_owned_state = {
+				limit = {
+					is_controlled_by = ROOT
+					has_state_flag = JOS_industrial_complex_expansion_target
+				}
+				add_building_construction = {
+					type = arms_factory
+					level = 2
+					instant_build = yes
+				}
+			}
+
+			add_tech_bonus = {
+				bonus = 1.0
+				uses = 1
+				category = air_equipment
+			}
+		} #completion_reward
+
+	}
+	focus = {
+		id = JOS_armor_industrial_complex
+		text = JOS_armor_industrial_complex
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_industrial_complex_expansion
+		}
+		mutually_exclusive = {
+			focus = JOS_aviation_industrial_complex
+		}
+		x = 10
+		y = 10
+
+		complete_tooltip = {
+			every_owned_state = {
+				limit = {
+					is_controlled_by = ROOT
+					has_state_flag = JOS_industrial_complex_expansion_target
+				}
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
+		}
+
+		completion_reward = {
+			custom_effect_tooltip = JOS_industrial_expansion_effect_tt
+			every_owned_state = {
+				limit = {
+					is_controlled_by = ROOT
+					has_state_flag = JOS_industrial_complex_expansion_target
+				}
+				add_building_construction = {
+					type = arms_factory
+					level = 2
+					instant_build = yes
+				}
+			}
+
+			add_tech_bonus = {
+				bonus = 1.0
+				uses = 1
+				category = armor
+			}
+		} #completion_reward
+
+	}
+	focus = {
+		id = JOS_build_imperial_press
+		text = JOS_build_imperial_press
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_suppress_uprising
+		}
+		mutually_exclusive = {
+			focus = JOS_expand_DIC
+		}
+		x = 11
+		y = 3
+
+		completion_reward = {
+			if = {
+				limit = {
+					has_intelligence_agency = no
+				}
+				create_intelligence_agency = yes
+			}
+			add_ideas = JOS_imperial_press
+		}
+	}
+	focus = {
+		id = JOS_political_opponent_arrest
+		text = JOS_political_opponent_arrest
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_build_imperial_press
+		}
+		x = 11
+		y = 5
+
+		completion_reward = {
+			add_popularity = {
+				ideology = communism
+				popularity = -0.1
+			}
+			add_political_power = 100
+		}
+
+	}
+	focus = {
+		id = JOS_total_mobilization
+		text = JOS_total_mobilization
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_expand_mobilization
+		}
+		x = 11
+		y = 8
+		
+		available = {
+			has_war = yes
+			surrender_progress > 0.75
+		}
+
+		bypass = {
+			OR = {
+				has_idea = tot_economic_mobilisation
+			}
+		}
+
+		completion_reward = {
+			add_ideas = tot_economic_mobilisation
+		}
+
+	}
+	focus = {
+		id = JOS_last_resistance
+		text = JOS_last_resistance
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_total_mobilization
+		}
+		x = 11
+		y = 9
+
+		available = {
+			has_war = yes
+			surrender_progress > 0.5
+		}
+
+		completion_reward = {
+			add_ideas = JOS_last_resistance_idea
+		}
+
+	}
+	focus = {
+		id = JOS_expand_DIC
+		text = JOS_expand_DIC
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_suppress_uprising
+		}
+		mutually_exclusive = {
+			focus = JOS_build_imperial_press
+		}
+		x = 13
+		y = 3
+
+		completion_reward = {
+			if = {
+				limit = {
+					has_intelligence_agency = no
+				}
+				create_intelligence_agency = yes
+			}
+			add_ideas = JOS_defense_intelligence_command
+		}
+
+	}
+	focus = {
+		id = JOS_media_control
+		text = JOS_media_control
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_build_imperial_press
+			focus = JOS_expand_DIC
+		}
+		x = 12
+		y = 4
+
+		completion_reward = {
+			add_ideas = JOS_media_control_idea
+		}
+
+	}
+	focus = {
+		id = JOS_insufficient_officer_purge
+		text = JOS_insufficient_officer_purge
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_expand_DIC
+		}
+		x = 13
+		y = 5
+
+		completion_reward = {
+			add_war_support = 0.1
+			global_every_army_leader = {
+				limit = {
+					OWNER = { tag = JOS }
+					has_trait = trait_SPR_stalinist_loyalties
+				}
+				retire = yes
+			}
+		}
+
+	}
+	focus = {
+		id = JOS_declare_martial_law
+		text = JOS_declare_martial_law
+		icon = GFX_goal_unknown
+		cost = 10.00
+
+		available = {
+			always = no
+		}
+
+		prerequisite = {
+			focus = JOS_insufficient_officer_purge
+		}
+		prerequisite = {
+			focus = JOS_civil_war
+		}
+		x = 16
+		y = 7
+
+		completion_reward = {
+			custom_effect_tooltip = JOS_not_yet_available_tt
+		}
+
+	}
+	focus = {
+		id = JOS_military_coup
+		text = JOS_military_coup
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_declare_martial_law
+		}
+		x = 16
+		y = 8
+
+		available = {
+			always = no
+		}
+
+		completion_reward = {
+			custom_effect_tooltip = JOS_not_yet_available_tt
+		}
+	}
+	focus = {
+		id = JOS_negotiate_with_peasant
+		text = JOS_negotiate_with_peasant
+		icon = GFX_goal_unknown
+		cost = 10.00
+
+		available = {
+			always = no
+		}
+
+		prerequisite = {
+			focus = JOS_call_local_reserve_force
+		}
+		prerequisite = {
+			focus = JOS_purchase_weapon
+		}
+		x = 27
+		y = 2
+
+		completion_reward = {
+			custom_effect_tooltip = JOS_not_yet_available_tt
+		}
+
+	}
+	focus = {
+		id = JOS_expand_gyeongui_line
+		text = JOS_expand_gyeongui_line
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_declare_mobilization
+		}
+		x = 6
+		y = 5
+
+		completion_reward = {
+			161 = { #Gyeonggi-do
+				if = {
+					limit = {
+						free_building_slots = {
+							building = infrastructure
+							size < 10
+							include_locked = yes
+						}
+					}
+					add_building_construction = {
+						type = infrastructure
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+
+			160 = { #Chunchengbuk-do
+				if = {
+					limit = {
+						free_building_slots = {
+							building = infrastructure
+							size < 10
+							include_locked = yes
+						}
+					}
+					add_building_construction = {
+						type = infrastructure
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+
+			157 = { #Jeollabuk-do
+				if = {
+					limit = {
+						free_building_slots = {
+							building = infrastructure
+							size < 10
+							include_locked = yes
+						}
+					}
+					add_building_construction = {
+						type = infrastructure
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+
+			158 = { #North gyeongsangbuk-do
+				if = {
+					limit = {
+						free_building_slots = {
+							building = infrastructure
+							size < 10
+							include_locked = yes
+						}
+					}
+					add_building_construction = {
+						type = infrastructure
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+
+			195 = { #South gyeongsangbuk-do
+				if = {
+					limit = {
+						free_building_slots = {
+							building = infrastructure
+							size < 10
+							include_locked = yes
+						}
+					}
+					add_building_construction = {
+						type = infrastructure
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+
+		} #completion_reward
+	}
+
+	focus = {
+		id = JOS_ask_for_help_overseas
+		text = JOS_ask_for_help_overseas
+		icon = GFX_goal_unknown
+		cost = 10.00
+
+		
+
+		prerequisite = {
+			focus = JOS_civil_war
+		}
+		x = 6
+		y = 7
+
+		completion_reward = {
+			
+		}
+
+	}
+	focus = {
+		id = JOS_russian_division
+		text = JOS_russian_division
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_white_russian_inheritance
+		}
+		x = 2
+		y = 8
+
+		completion_reward = {
+			custom_effect_tooltip = JOS_russian_division_tt
+			hidden_effect = {
+				division_template = {
+					name = "White Russian Division"
+					#division_names_group = JOS_RSV_01
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 0 y = 2 }
+						infantry = { x = 1 y = 0 }
+						infantry = { x = 1 y = 1 }
+						infantry = { x = 1 y = 2 }
+						infantry = { x = 2 y = 0 }
+						artillery_brigade = { x = 2 y = 1 }
+						artillery_brigade = { x = 2 y = 2 }
+					}
+
+					support = {
+						artillery = { x = 0 y = 0 }
+					}
+				}
+
+				random_owned_controlled_state = {
+					prioritize = { 178 }
+					create_unit = {
+						division = "name = \"1st White Russian Division\" division_template = \"White Russian Division\" start_experience_factor = 1.0 start_equipment_factor = 1.0"
+						owner = FKR
+					}
+				}
+			}
+		} #completion_reward
+
+	}
+	focus = {
+		id = JOS_contact_western_country
+		text = JOS_contact_western_country
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_ask_for_help_overseas
+		}
+		x = 5
+		y = 8
+
+	}
+	focus = {
+		id = JOS_contanct_ezo
+		text = JOS_contanct_ezo
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_ask_for_help_overseas
+		}
+		x = 7
+		y = 8
+
+	}
+	focus = {
+		id = JOS_open_port
+		text = JOS_open_port
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_contact_western_country
+		}
+		x = 5
+		y = 9
+
+	}
+	focus = {
+		id = JOS_russian_pilot
+		text = JOS_russian_pilot
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_russian_division
+		}
+		mutually_exclusive = {
+			focus = JOS_russian_officer
+		}
+		x = 1
+		y = 9
+
+		completion_reward = {
+			swap_ideas = {
+				remove_idea = JOS_white_russian_inheritance_idea
+				add_idea = JOS_russian_pilot_idea
+			}
+			add_ace = {
+				name = "Boris"
+				surname = "Safonov"
+				callsign = "Generous"
+				type = fighter_genius
+				is_female = no
+			}
+		}
+
+	}
+	focus = {
+		id = JOS_russian_officer
+		text = JOS_russian_officer
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_russian_division
+		}
+		mutually_exclusive = {
+			focus = JOS_russian_pilot
+		}
+		x = 3
+		y = 9
+
+		completion_reward = {
+			swap_ideas = {
+				remove_idea = JOS_white_russian_inheritance_idea
+				add_idea = JOS_russian_officer_idea
+			}
+		}
+
+	}
+	focus = {
+		id = JOS_naturalized_russian
+		text = JOS_naturalized_russian
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_russian_pilot
+			focus = JOS_russian_officer
+		}
+		x = 2
+		y = 10
+		
+		completion_reward = {
+			add_ideas = JOS_naturalization_law_idea
+			add_manpower = 103854
+		}
+
+	}
+	focus = {
+		id = JOS_hokkaido_alliance
+		text = JOS_hokkaido_alliance
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_contanct_ezo
+		}
+		x = 7
+		y = 9
+
+	}
+	focus = {
+		id = JOS_conclusion_trade_agreement
+		text = JOS_conclusion_trade_agreement
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_open_port
+			focus = JOS_hokkaido_alliance
+		}
+		x = 0
+		y = 3
+		relative_position_id = JOS_ask_for_help_overseas
+
+	}
+	focus = {
+		id = JOS_aristocratic_republic
+		text = JOS_aristocratic_republic
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_reform_government
+		}
+		mutually_exclusive = {
+			focus = JOS_parliamentary_cabinet_system
+		}
+		x = 4
+		y = 12
+
+	}
+	focus = {
+		id = JOS_parliamentary_cabinet_system
+		text = JOS_parliamentary_cabinet_system
+		icon = GFX_goal_unknown
+		cost = 10.00
+		prerequisite = {
+			focus = JOS_reform_government
+		}
+		mutually_exclusive = {
+			focus = JOS_aristocratic_republic
+		}
+		x = 8
+		y = 12
+
+	}
+}
