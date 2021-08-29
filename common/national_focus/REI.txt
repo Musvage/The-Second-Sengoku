@@ -14,7 +14,7 @@ focus_tree = {
 		id = REI_state_of_affairs
 		icon = GFX
 		cost = 10
-		x = 4
+		x = 20
 		y = 0
 
 		search_filters = { FOCUS_FILTER_POLITICAL }
@@ -30,7 +30,7 @@ focus_tree = {
 		id = REI_colonial_hegemony
 		icon = GFX
 		cost = 10
-		x = 3
+		x = 19
 		y = 1
 		prerequisite = { focus = REI_state_of_affairs }
 		mutually_exclusive = {  focus = REI_matsuyama_pact }
@@ -63,7 +63,7 @@ focus_tree = {
 		id = REI_matsuyama_pact
 		icon = GFX
 		cost = 10
-		x = 5
+		x = 21
 		y = 1
 		prerequisite = { focus = REI_state_of_affairs }
 		mutually_exclusive = {  focus = REI_colonial_hegemony }
@@ -71,7 +71,15 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_DIPLOMACY }
 
 		completion_reward = {
+
 			SHI = {
+				
+				add_ai_strategy = {
+					type = alliance
+					id = REI
+					value = 200
+				}
+
 				country_event = ostasien.6
 			}
 		}
@@ -81,7 +89,7 @@ focus_tree = {
 		id = REI_stand_with_seto
 		icon = GFX
 		cost = 10
-		x = 2
+		x = 18
 		y = 2
 		prerequisite = { focus = REI_colonial_hegemony }
 
@@ -96,7 +104,7 @@ focus_tree = {
 		id = REI_reinforce_garrison
 		icon = GFX
 		cost = 10
-		x = 4
+		x = 20
 		y = 2
 		prerequisite = {
 			focus = REI_colonial_hegemony
@@ -160,7 +168,7 @@ focus_tree = {
 		id = REI_diffuse_IMS_crisis
 		icon = GFX
 		cost = 10
-		x = 6
+		x = 22
 		y = 2
 		prerequisite = { focus = REI_matsuyama_pact }
 
@@ -177,7 +185,7 @@ focus_tree = {
 		id = REI_fading_chancellor
 		icon = GFX
 		cost = 10
-		x = 4
+		x = 20
 		y = 3
 		prerequisite = { focus = REI_reinforce_garrison }
 		prerequisite = {
@@ -188,7 +196,7 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_POLITICAL }
 
 		completion_reward = {
-			# Will add 70 days to Ludendorff's life
+			# FIXME
 		}
 	}
 
@@ -196,7 +204,7 @@ focus_tree = {
 		id = REI_luds_manifesto
 		icon = GFX
 		cost = 10
-		x = 4
+		x = 20
 		y = 4
 		prerequisite = { focus = REI_fading_chancellor }
 
@@ -207,7 +215,346 @@ focus_tree = {
 		}
 	}
 
+	focus = {
+		id = REI_nazi_and_emperor
+		icon = GFX
+		x = 10
+		y = 5
+		cost = 10
+		prerequisite = { focus = REI_luds_manifesto }
 
+		search_filters = { FOCUS_FILTER_POLITICAL }
 
-shared_focus = SS_colonial_board
+		completion_reward = {
+			add_popularity = {
+				ideology = fascism
+				popularity = 0.5
+			}
+			add_popularity = {
+				ideology = autocracy
+				popularity = 0.35
+			}
+
+			set_politics = {
+				ruling_party = fascism
+				elections_allowed = no
+				last_election = "[REI.GetDateString]"
+				election_frequency = 48
+			}
+		}
+	}
+
+	focus = {
+		id = REI_victors_crown
+		icon = GFX
+		x = 10
+		y = 6
+		cost = 10
+		prerequisite = { focus = REI_nazi_and_emperor }
+
+		search_filters = { 
+			FOCUS_FILTER_POLITICAL 
+			FOCUS_FILTER_STABILITY
+			FOCUS_FILTER_MILITARY
+		}
+
+		completion_reward = {
+			swap_ideas = {
+				remove_idea = REI_kaiser_willy
+				add_idea = REI_chad_kaiser_willy
+			}
+		}
+	}
+
+	focus = {
+		id = REI_house_hohenzollern
+		icon = GFX
+		x = 7
+		y = 7
+		cost = 10
+		prerequisite = { focus = REI_victors_crown }
+		mutually_exclusive = { focus = REI_the_nazis }
+
+		search_filters = { 
+			FOCUS_FILTER_POLITICAL 
+			FOCUS_FILTER_MILITARY
+		}
+
+		completion_reward = {
+			add_ideas = REI_house_hohenzollern_0
+		}
+	}
+
+	focus = {
+		id = REI_royal_ties
+		icon = GFX
+		x = 6
+		y = 8
+		cost = 10
+		prerequisite = { focus = REI_house_hohenzollern }
+
+		search_filters = { 
+			FOCUS_FILTER_POLITICAL 
+			FOCUS_FILTER_RESEARCH
+		}
+
+		completion_reward = {
+			if = {
+				limit = {
+					NOT = {
+						has_idea = REI_house_hohenzollern_heros
+					}
+				}
+
+				swap_ideas = {
+					remove_idea = REI_house_hohenzollern_0
+    				add_idea = REI_house_hohenzollern_royal
+				}
+			}
+
+			else = {
+				swap_ideas = {
+					remove_idea = REI_house_hohenzollern_heros
+    				add_idea = REI_house_hohenzollern_royal_heros
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = REI_putsch_heros
+		icon = GFX
+		x = 8
+		y = 8
+		cost = 10
+		prerequisite = { focus = REI_house_hohenzollern }
+
+		search_filters = { 
+			FOCUS_FILTER_POLITICAL 
+			FOCUS_FILTER_MILITARY
+		}
+
+		completion_reward = {
+			if = {
+				limit = {
+					NOT = {
+						has_idea = REI_house_hohenzollern_royal
+					}
+				}
+
+				swap_ideas = {
+					remove_idea = REI_house_hohenzollern_0
+    				add_idea = REI_house_hohenzollern_heros
+				}
+			}
+
+			else = {
+				swap_ideas = {
+					remove_idea = REI_house_hohenzollern_royal
+    				add_idea = REI_house_hohenzollern_royal_heros
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = REI_german_emperor
+		icon = GFX
+		x = 7
+		y = 9
+		cost = 10
+		prerequisite = { focus = REI_putsch_heros }
+		prerequisite = { focus = REI_royal_ties }
+
+		search_filters = { 
+			FOCUS_FILTER_POLITICAL 
+			FOCUS_FILTER_MILITARY
+		}
+
+		completion_reward = {
+			swap_ideas = {
+				remove_idea = REI_house_hohenzollern_royal_heros
+				add_idea = REI_house_hohenzollern_complete
+			}
+		}
+	}
+
+	focus = {
+		id = REI_restore_empire
+		icon = GFX
+		x = 8
+		y = 10
+		cost = 10
+		prerequisite = { focus = REI_german_emperor }
+
+		search_filters = { 
+			FOCUS_FILTER_POLITICAL 
+		}
+
+		completion_reward = {
+			add_popularity = {
+				ideology = autocracy
+				popularity = 0.25
+			}
+
+			set_politics = {
+				ruling_party = autocracy
+				elections_allowed = no
+				last_election = "[REI.GetDateString]"
+				election_frequency = 48
+			}
+
+			hidden_effect = {
+				set_variable = { dual_leader_second_title = 8 }
+				set_variable = { dual_leader_id = 68 }
+			}
+		}
+	}
+
+	focus = {
+		id = REI_the_nazis
+		icon = GFX
+		x = 13
+		y = 7
+		cost = 10
+		prerequisite = { focus = REI_victors_crown }
+		mutually_exclusive = { focus = REI_house_hohenzollern }
+
+		search_filters = { 
+			FOCUS_FILTER_POLITICAL 
+			FOCUS_FILTER_WAR_SUPPORT
+		}
+
+		completion_reward = {
+			add_ideas = REI_the_NSDAP_0
+		}
+	}
+
+	focus = {
+		id = REI_long_knives
+		icon = GFX
+		x = 12
+		y = 8
+		cost = 10
+		prerequisite = { focus = REI_the_nazis }
+
+		search_filters = { 
+			FOCUS_FILTER_POLITICAL 
+			FOCUS_FILTER_SPY
+		}
+
+		completion_reward = {
+			if = {
+				limit = {
+					NOT = {
+						has_idea = REI_the_NSDAP_versailles
+					}
+				}
+
+				swap_ideas = {
+					remove_idea = REI_the_NSDAP_0
+    				add_idea = REI_the_NSDAP_knives
+				}
+			}
+
+			else = {
+				swap_ideas = {
+					remove_idea = REI_the_NSDAP_versailles
+    				add_idea = REI_the_NSDAP_knives_versailles
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = REI_die_versailles
+		icon = GFX
+		x = 14
+		y = 8
+		cost = 10
+		prerequisite = { focus = REI_the_nazis }
+
+		search_filters = { 
+			FOCUS_FILTER_POLITICAL 
+			FOCUS_FILTER_MILITARY
+		}
+
+		completion_reward = {
+			if = {
+				limit = {
+					NOT = {
+						has_idea = REI_the_NSDAP_knives
+					}
+				}
+
+				swap_ideas = {
+					remove_idea = REI_the_NSDAP_0
+    				add_idea = REI_the_NSDAP_versailles
+				}
+			}
+
+			else = {
+				swap_ideas = {
+					remove_idea = REI_the_NSDAP_knives
+    				add_idea = REI_the_NSDAP_knives_versailles
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = REI_cult_of_hitler
+		icon = GFX
+		x = 13
+		y = 9
+		cost = 10
+		prerequisite = { focus = REI_long_knives }
+		prerequisite = { focus = REI_die_versailles }
+
+		search_filters = { 
+			FOCUS_FILTER_POLITICAL 
+			FOCUS_FILTER_MILITARY
+			FOCUS_FILTER_STABILITY
+		}
+
+		completion_reward = {
+			swap_ideas = {
+				remove_idea = REI_the_NSDAP_knives_versailles
+				add_idea = REI_the_NSDAP_complete
+			}
+		}
+	}
+
+	focus = {
+		id = REI_new_reich
+		icon = GFX
+		x = 12
+		y = 10
+		cost = 10
+		prerequisite = { focus = REI_cult_of_hitler }
+
+		search_filters = { 
+			FOCUS_FILTER_POLITICAL 
+		}
+
+		completion_reward = {
+			add_popularity = {
+				ideology = fascism
+				popularity = 0.15
+			}
+
+			set_politics = {
+				ruling_party = fascism
+				elections_allowed = no
+				last_election = "[REI.GetDateString]"
+				election_frequency = 48
+			}
+
+			hidden_effect = {
+				set_cosmetic_tag = REI_UNCENSORED_fascism
+				set_variable = { dual_leader_second_title = 18 }
+				set_variable = { dual_leader_id = 67 }
+			}
+		}
+	}
 }
