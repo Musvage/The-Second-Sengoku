@@ -21,7 +21,7 @@ focus_tree = {
 	}
 
 	default = no
-	continuous_focus_position = { x = 100 y = 1450 }
+	continuous_focus_position = { x = 500 y = 1600 }
 
 	################
 	### Internal ###
@@ -36,30 +36,29 @@ focus_tree = {
 		bypass = {
 			has_civil_war = yes
 			if = {
-				limit = {has_civil_war = yes}
-				OR = {
-					has_government = democratic_socialism
-					AND = {
-						has_government = neutrality
-						has_country_leader = {
-						name = "Ainu Peoples Council"
-						ruling_only = yes
+				limit = { has_civil_war = yes }
+					OR = {
+						OR = {
+							has_government = neutrality
+							has_country_leader = {
+							name = "Ainu Peoples Council"
+							ruling_only = yes
+							}
+						}
+						has_government = fascism
 					}
-					}
-				}
 			}
 		}
 		available = { 
 			if = {
-				limit = {has_civil_war = yes}
-				OR = {
-					has_government = democratic_socialism
-					has_government = anarchism
+				limit = { has_civil_war = yes }
+				AND = {
+					has_government = neutrality
+					has_country_leader = {
+						name = "Ainu Peoples Council"
+						ruling_only = yes
+					}
 				}
-			}
-			if = {
-				limit = { has_civil_war = yes}
-				hidden_trigger = { always = no }
 			}
 		}
 		mutually_exclusive = { focus = EZO_sellect_strengthen_democratic_government }
@@ -74,36 +73,42 @@ focus_tree = {
 			add_stability = 0.05 
 			custom_effect_tooltip = unlock_civil_war_decisions
 		}
+		
 		search_filters = { FOCUS_FILTER_POLITICAL }
 	}
 
 	focus = {
 		id = EZO_traditionalism
 		icon = GFX_focus_KAN_nationalist_front
-		x = 0
+		x = -1
 		y = 1
 		cost = 10
 		bypass = {
 			has_civil_war = yes
 			if = {
-				limit = {has_civil_war = yes}
-				OR = {
-					has_government = democratic_socialism
-					has_government = anarchism
-				}
+				limit = { has_civil_war = yes }
+					AND = {
+						has_government = neutrality
+						has_country_leader = {
+						name = "Ainu Peoples Council"
+						ruling_only = yes
+						}
+					}
 			}
 		}
-		available = { 
+		available = {  
 			if = {
-				limit = {has_civil_war = yes}
+				limit = { has_civil_war = yes }
 				OR = {
-					has_government = democratic_socialism
-					has_government = anarchism
+					has_government = neutrality
+					AND = {
+						has_government = neutrality
+						has_country_leader = {
+						name = "Ainu Peoples Council"
+						ruling_only = yes
+						}
+					}
 				}
-			}
-			if = {
-				limit = { has_civil_war = yes}
-				hidden_trigger = { always = no }
 			}
 		}
 		prerequisite = { focus = EZO_sellect_traditionalism }
@@ -112,6 +117,25 @@ focus_tree = {
 			factor = 10
 		}	
 		completion_reward = {
+			
+			every_owned_state = {
+				limit = {
+					has_dynamic_modifier = { modifier = EZO_ainu_rebellion }
+				}
+				add_dynamic_modifier = { modifier = EZO_ainu_deal }
+			}
+			hidden_effect = {
+				every_owned_state = {
+					limit = {
+						has_dynamic_modifier = { modifier = EZO_ainu_rebellion }
+					}
+					remove_dynamic_modifier = { modifier = EZO_ainu_rebellion }
+				}
+			}
+			add_days_mission_timeout = {
+				mission = EZO_civil_war_time
+				days = -70
+			}
 			add_stability = 0.05
 			set_party_name = { 
 				ideology = neutrality
@@ -128,14 +152,74 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_POLITICAL }
 	}
 
+		focus = {
+		id = EZO_fascist_path
+		icon = GFX_
+		x = -5
+		y = 1
+		bypass = {
+			
+		}
+		available = { 
+			if = { 
+				limit = {has_civil_war = yes}
+				has_government = fascism
+			}
+		}
+		mutually_exclusive = {focus = EZO_support_Ainu_communities }
+		relative_position_id = EZO_traditionalism
+		cost = 9
+		prerequisite = { focus = EZO_traditionalism }
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			add_popularity = {
+			    ideology = fascism
+			    popularity = 0.3
+			}
+			set_politics = {
+				ruling_party = fascism
+			}
+			every_owned_state = {
+				limit = {
+					has_dynamic_modifier = { modifier = EZO_fascist_rebellion }
+				}
+				add_dynamic_modifier = { modifier = EZO_fascist_deal }
+			}
+			every_owned_state = {
+				limit = {
+					has_dynamic_modifier = { modifier = EZO_social_democrats_deal }
+				}
+				add_dynamic_modifier = { modifier = EZO_social_democrats_rebellion }
+			}
+			hidden_effect = {
+				every_owned_state = {
+					limit = {
+						OR = {
+							has_dynamic_modifier = { modifier = EZO_fascist_rebellion  }
+							has_dynamic_modifier = { modifier = EZO_social_democrats_deal }
+						}
+					}
+					remove_dynamic_modifier = { modifier = EZO_fascist_rebellion  }
+					remove_dynamic_modifier = { modifier = EZO_social_democrats_deal }
+				}
+			}
+			log = "[GetDateText]: [Root.GetName]: Focus EZO_akai_rising"	
+			add_stability = 0.05
+			set_country_flag = build_industry
+		}
+		search_filters = { FOCUS_FILTER_POLITICAL }
+	}
+
 	focus = {
 		id = EZO_get_support_from_PRO
 		icon = GFX_focus_PRO_accept_ezo_independence
-		x = -8
-		y = 2
+		x = 6
+		y = 6
 		cost = 10
 		available = { country_exists = PRO }
-		prerequisite = { focus = EZO_elections focus = EZO_traditionalism }
+		prerequisite = { focus = EZO_income_tax_reductions focus = EZO_unlock_economic_help }
 		relative_position_id = EZO_traditionalism
 		ai_will_do = {
 			factor = 10
@@ -145,6 +229,15 @@ focus_tree = {
 			add_popularity = {
 				popularity = 0.10
 				ideology = democratic
+			}
+			if = {
+				limit = {
+					has_completed_focus = EZO_traditionalism
+				}
+				add_popularity = {
+				popularity = 0.10
+				ideology = neutrality
+				}
 			}
 			add_popularity = {
 				popularity = 0.10
@@ -178,6 +271,15 @@ focus_tree = {
 			factor = 10
 		}	
 		completion_reward = {
+			if = {
+				limit = {
+					has_completed_focus = EZO_traditionalism
+				}
+				add_popularity = {
+				popularity = 0.10
+				ideology = neutrality
+				}
+			}
 			add_popularity = {
 				popularity = 0.10
 				ideology = democratic_socialism
@@ -413,8 +515,9 @@ focus_tree = {
 			
 		}
 		available = { 
-			has_civil_war = yes
+			
 		}
+		mutually_exclusive = {focus = EZO_fascist_path }
 		prerequisite = { focus = EZO_traditionalism }
 		relative_position_id = EZO_traditionalism
 		ai_will_do = {
@@ -430,6 +533,7 @@ focus_tree = {
 			}
 			set_variable = { dual_leader_second_title = 9 }
 			set_variable = { dual_leader_first_title = 17 }
+			set_variable = { dual_leader_id = 67 }
 			create_country_leader = {
 				name = "Ainu Peoples Council"
 				desc = ""
@@ -453,6 +557,25 @@ focus_tree = {
 					add_idea = EZO_traditinalism_deal
 				}
 			set_country_flag = build_industry
+			set_cosmetic_tag = EZO_ainu_ezo
+		}
+		search_filters = { FOCUS_FILTER_POLITICAL }
+	}
+
+	focus = {
+		id = EZO_civil_war_aid
+		icon = GFX_
+		x = -3
+		y = 1
+		cost = 10
+		available = {  }
+		prerequisite = { focus = EZO_support_Ainu_communities focus = EZO_fascist_path }
+		relative_position_id = EZO_support_Ainu_communities
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			
 		}
 		search_filters = { FOCUS_FILTER_POLITICAL }
 	}
@@ -460,11 +583,11 @@ focus_tree = {
 	focus = {
 		id = EZO_Create_the_people_of_Ezo
 		icon = GFX_
-		x = 0
+		x = -1
 		y = 1
 		cost = 10
 		available = {  }
-		prerequisite = { focus = EZO_support_Ainu_communities }
+		prerequisite = { focus = EZO_support_Ainu_communities focus = EZO_fascist_path}
 		relative_position_id = EZO_support_Ainu_communities
 		ai_will_do = {
 			factor = 10
@@ -499,11 +622,11 @@ focus_tree = {
 	focus = {
 		id = EZO_Create_ezo_nation_army
 		icon = GFX_
-		x = 1
-		y = 2
+		x = 4
+		y = 3
 		cost = 10
 		available = {  }
-		prerequisite = { focus = EZO_tetsu_katayama focus = EZO_Create_ezo_nation }
+		prerequisite = { focus = EZO_open_hakodate_university focus = EZO_invite_PRO_scientist }
 		relative_position_id = EZO_Create_ezo_nation
 		ai_will_do = {
 			factor = 10
@@ -519,7 +642,7 @@ focus_tree = {
 	focus = {
 		id = EZO_Create_land_force
 		icon = GFX_focus_EZO_modernise_weaponry
-		x = 0
+		x = -2
 		y = 1
 		cost = 10
 		available = {  }
@@ -635,7 +758,7 @@ focus_tree = {
 	focus = {
 		id = EZO_Create_air_force
 		icon = GFX_focus_EZO_high_above_japan
-		x = 2
+		x = 0
 		y = 1
 		cost = 10
 		available = {  }
@@ -760,7 +883,7 @@ focus_tree = {
 	focus = {
 		id = EZO_Create_naval_force
 		icon = GFX_
-		x = 4
+		x = 2
 		y = 1
 		cost = 10
 		available = {  }
@@ -1253,11 +1376,49 @@ focus_tree = {
 			}
 			add_stability = -0.10
 			country_event = { id = EZO.25 days = 5 }
+			
+			every_owned_state = {
+				limit = {
+					OR = {
+						has_dynamic_modifier = { modifier = russians_separatism  }
+						has_dynamic_modifier = { modifier = russians_rebellion }
+					}
+				}
+				add_dynamic_modifier = { modifier = russians_deals }
+			}
+			hidden_effect = {
+				every_owned_state = {
+					limit = {
+						OR = {
+							has_dynamic_modifier = { modifier = russians_separatism  }
+							has_dynamic_modifier = { modifier = russians_rebellion }
+						}
+					}
+					remove_dynamic_modifier = { modifier = russians_separatism }
+					remove_dynamic_modifier = { modifier = russians_rebellion }
+				}
+			}
 		}
 		search_filters = { FOCUS_FILTER_POLITICAL }
 	}
 
-	
+	focus = {
+		id = EZO_deal_other_peoples
+		icon = GFX_
+		x = 0
+		y = 1
+		cost = 10
+		available = { has_civil_war = no }
+		prerequisite = { focus = EZO_suppress_the_separatists focus = EZO_deal_separatists }
+		relative_position_id = EZO_suppress_the_separatists
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			
+		}
+		search_filters = { FOCUS_FILTER_POLITICAL }
+	}
 
 	focus = {
 		id = EZO_sellect_strengthen_democratic_government
@@ -1270,17 +1431,10 @@ focus_tree = {
 			if = {
 				limit = {has_civil_war = yes}
 				OR = {
-				has_government = fascism
-				has_government = communism
-				has_government = democratic
-				has_government = democratic_socialism
-				AND = {
+					has_government = communism
+					has_government = democratic
+					has_government = democratic_socialism
 					has_government = neutrality
-					has_country_leader = {
-						name = "Ainu Peoples Council"
-						ruling_only = no
-					}
-				}
 				}
 			}
 		}
@@ -1288,11 +1442,11 @@ focus_tree = {
 			if = {
 				limit = {has_civil_war = yes}
 				OR = {
-				has_government = fascism
-				has_government = communism
-				has_government = democratic
-				has_government = democratic_socialism
-				has_government = neutrality
+					has_government = fascism
+					has_government = communism
+					has_government = democratic
+					has_government = democratic_socialism
+					has_government = neutrality
 				}
 			}
 			if = {
@@ -1325,11 +1479,10 @@ focus_tree = {
 			if = {
 				limit = {has_civil_war = yes}
 				OR = {
-				has_government = fascism
-				has_government = communism
-				has_government = democratic
-				has_government = democratic_socialism
-				has_government = neutrality
+					has_government = communism
+					has_government = democratic
+					has_government = democratic_socialism
+					has_government = neutrality
 				}
 			}
 		}
@@ -1337,11 +1490,11 @@ focus_tree = {
 			if = {
 				limit = {has_civil_war = yes}
 				OR = {
-				has_government = fascism
-				has_government = communism
-				has_government = democratic
-				has_government = democratic_socialism
-				has_government = neutrality
+					has_government = fascism
+					has_government = communism
+					has_government = democratic
+					has_government = democratic_socialism
+					has_government = neutrality
 				}
 			}
 			if = {
@@ -1369,13 +1522,11 @@ focus_tree = {
 		y = 1
 		cost = 10
 		bypass = {
-			has_civil_war = yes
 			if = {
 				limit = {has_civil_war = yes}
 				OR = {
-				has_government = fascism
-				has_government = communism
-				has_government = neutrality
+					has_government = communism
+					has_government = neutrality
 				}
 			}
 		}
@@ -1383,9 +1534,9 @@ focus_tree = {
 			if = {
 				limit = {has_civil_war = yes}
 				OR = {
-				has_government = fascism
-				has_government = communism
-				has_government = neutrality
+					has_government = fascism
+					has_government = communism
+					has_government = neutrality
 				}
 			}
 			if = {
@@ -1401,6 +1552,10 @@ focus_tree = {
 			factor = 10
 		}	
 		completion_reward = {
+			add_days_mission_timeout = {
+				mission = EZO_civil_war_time
+				days = 70
+			}
 			log = "[GetDateText]: [Root.GetName]: Focus EZO_League_Of_Nations"
 			unlock_decision_tooltip = EZO_League_Of_Nations_decisions
 			country_event = { id = EZO.18 days = 5 }
@@ -1761,7 +1916,7 @@ focus_tree = {
 	focus = {
 		id = EZO_akai_rising
 		icon = GFX_focus_EZO_akai_rising
-		x = -1
+		x = -2
 		y = 1
 		bypass = {
 			
@@ -1770,7 +1925,6 @@ focus_tree = {
 			if = { 
 				limit = {has_civil_war = yes}
 				OR = {
-					has_government = fascism
 					has_government = communism
 					has_country_flag = EZO_akai_rising_left
 				}
@@ -1785,6 +1939,34 @@ focus_tree = {
 			factor = 10
 		}	
 		completion_reward = {
+			add_popularity = {
+			    ideology = communism
+			    popularity = 0.2
+			}
+			every_owned_state = {
+				limit = {
+					has_dynamic_modifier = { modifier = EZO_communist_rebellion }
+				}
+				add_dynamic_modifier = { modifier = EZO_communist_deal }
+			}
+			every_owned_state = {
+				limit = {
+					has_dynamic_modifier = { modifier = EZO_social_democrats_deal }
+				}
+				add_dynamic_modifier = { modifier = EZO_social_democrats_rebellion }
+			}
+			hidden_effect = {
+				every_owned_state = {
+					limit = {
+						OR = {
+							has_dynamic_modifier = { modifier = EZO_communist_rebellion  }
+							has_dynamic_modifier = { modifier = EZO_social_democrats_deal }
+						}
+					}
+					remove_dynamic_modifier = { modifier = EZO_communist_rebellion  }
+					remove_dynamic_modifier = { modifier = EZO_social_democrats_deal }
+				}
+			}
 			log = "[GetDateText]: [Root.GetName]: Focus EZO_akai_rising"	
 			add_stability = 0.05
 			remove_unit_leader = 301
@@ -1799,7 +1981,7 @@ focus_tree = {
 	focus = {
 		id = EZO_constitution_focus
 		icon = GFX_focus_EZO_constitution_focus
-		x = 1
+		x = 2
 		y = 1
 		bypass = {
 			
@@ -1821,6 +2003,36 @@ focus_tree = {
 			factor = 10
 		}	
 		completion_reward = {
+			
+			every_owned_state = {
+				limit = {
+					OR = {
+						has_dynamic_modifier = { modifier = russians_separatism  }
+						has_dynamic_modifier = { modifier = russians_rebellion }
+					}
+				}
+				add_dynamic_modifier = { modifier = russians_deals }
+			}
+			every_owned_state = {
+				limit = {
+					has_dynamic_modifier = { modifier = EZO_social_democrats_deal }
+				}
+				add_dynamic_modifier = { modifier = EZO_social_democrats_rebellion }
+			}
+			hidden_effect = {
+				every_owned_state = {
+					limit = {
+						OR = {
+							has_dynamic_modifier = { modifier = russians_separatism  }
+							has_dynamic_modifier = { modifier = russians_rebellion }
+							has_dynamic_modifier = { modifier = EZO_social_democrats_deal }
+						}
+					}
+					remove_dynamic_modifier = { modifier = russians_separatism  }
+					remove_dynamic_modifier = { modifier = russians_rebellion }
+					remove_dynamic_modifier = { modifier = EZO_social_democrats_deal }
+				}
+			}
 			log = "[GetDateText]: [Root.GetName]: Focus EZO_constitution"	
 			country_event = { id = EZO.3 days = 2 }
 			set_country_flag = build_industry
@@ -1830,15 +2042,15 @@ focus_tree = {
 	focus = {
 		id = EZO_elections
 		icon = GFX_focus_EZO_elections
-		x = 6
+		x = 7
 		y = 1
 		bypass = {
 			has_civil_war = yes
 			if = {
 				limit = {has_civil_war = yes}
 				OR = {
-				has_government = democratic
-				has_government = democratic_socialism
+					has_government = democratic
+					has_government = democratic_socialism
 				}
 			}
 		}
@@ -1846,8 +2058,8 @@ focus_tree = {
 			if = {
 				limit = {has_civil_war = yes}
 				OR = {
-				has_government = democratic
-				has_government = democratic_socialism
+					has_government = democratic
+					has_government = democratic_socialism
 				}
 			}
 			
@@ -1869,6 +2081,10 @@ focus_tree = {
 			factor = 10
 		}	
 		completion_reward = {
+			add_days_mission_timeout = {
+				mission = EZO_civil_war_time
+				days = 70
+			}
 			log = "[GetDateText]: [Root.GetName]: Focus EZO_constitution"	
 			add_political_power = 150
 			add_popularity = {
@@ -1879,13 +2095,146 @@ focus_tree = {
 		}
 		search_filters = { FOCUS_FILTER_POLITICAL }
 	}
+
+	focus = {
+		id = EZO_crush_the_rebels
+		icon = GFX_
+		x = 7
+		y = 2
+		bypass = {
+			
+		}
+		available = { 
+			has_civil_war = yes
+		}
+		relative_position_id = EZO_elections
+		cost = 15
+		prerequisite = { 
+			focus = EZO_kolchi_kido
+			focus = EZO_akai_rising
+			focus = EZO_constitution_focus
+		}
+		mutually_exclusive = { 
+			focus = EZO_deal_with_rebels
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		
+		completion_reward = {
+			swap_ideas = {
+				remove_idea = EZO_civil_war
+				add_idea = EZO_civil_war_2
+			}
+		}
+		search_filters = { FOCUS_FILTER_POLITICAL }
+	}
+
+	focus = {
+		id = EZO_low_autonomy_clr
+		icon = GFX_
+		x = 2
+		y = 1
+		bypass = {
+			
+		}
+		available = { 
+			date > 1945.01.01
+		}
+		relative_position_id = EZO_crush_the_rebels
+		cost = 15
+		prerequisite = { 
+			focus = EZO_crush_the_rebels
+			focus = EZO_deal_with_rebels
+		}
+
+		ai_will_do = {
+			factor = 10
+		}	
+		
+		completion_reward = {
+			every_owned_state = {
+				limit = {
+					has_dynamic_modifier = { modifier = EZO_low_autonomy }
+				}
+				remove_dynamic_modifier = { modifier = EZO_low_autonomy }
+			}
+		}
+		search_filters = { FOCUS_FILTER_POLITICAL }
+	}
+
+	focus = {
+		id = EZO_deal_with_rebels
+		icon = GFX_
+		x = 11
+		y = 2
+		bypass = {
+			
+		}
+		available = { 
+			has_civil_war = yes
+		}
+		relative_position_id = EZO_elections
+		cost = 15
+		prerequisite = { 
+			focus = EZO_kolchi_kido
+			focus = EZO_akai_rising
+			focus = EZO_constitution_focus
+		}
+		mutually_exclusive = { 
+			focus = EZO_crush_the_rebels
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		
+		completion_reward = {
+			
+			every_owned_state = {
+				limit = {
+					OR = {
+						has_dynamic_modifier = { modifier = russians_separatism  }
+						has_dynamic_modifier = { modifier = russians_rebellion }
+						has_dynamic_modifier = { modifier = EZO_fascist_rebellion }
+						has_dynamic_modifier = { modifier = EZO_social_democrats_rebellion }
+						has_dynamic_modifier = { modifier = EZO_communist_rebellion }
+						has_dynamic_modifier = { modifier = EZO_ainu_rebellion }
+					}
+				}
+				add_dynamic_modifier = { modifier = EZO_low_autonomy }
+			}
+			hidden_effect = {
+				every_owned_state = {
+					limit = {
+						OR = {
+							has_dynamic_modifier = { modifier = russians_separatism  }
+							has_dynamic_modifier = { modifier = russians_rebellion }
+							has_dynamic_modifier = { modifier = EZO_fascist_rebellion }
+							has_dynamic_modifier = { modifier = EZO_social_democrats_rebellion }
+							has_dynamic_modifier = { modifier = EZO_communist_rebellion }
+							has_dynamic_modifier = { modifier = EZO_ainu_rebellion }
+						}
+					}
+					remove_dynamic_modifier = { modifier = russians_separatism  }
+					remove_dynamic_modifier = { modifier = russians_rebellion }
+					remove_dynamic_modifier = { modifier = EZO_fascist_rebellion }
+					remove_dynamic_modifier = { modifier = EZO_social_democrats_rebellion }
+					remove_dynamic_modifier = { modifier = EZO_communist_rebellion }
+					remove_dynamic_modifier = { modifier = EZO_ainu_rebellion }
+				}
+			}
+			country_event = { id = EZO.28 days = 2 } 
+		}
+		search_filters = { FOCUS_FILTER_POLITICAL }
+	}
+
 	focus = {
 		id = EZO_tetsu_katayama
 		icon = GFX_focus_EZO_tetsu_katayama
 		x = -2
 		y = 1
 		bypass = {
-
+			
 		}
 		available = { 
 			if = {
@@ -2257,12 +2606,14 @@ focus_tree = {
 	focus = {
 		id = EZO_observe_japan
 		icon = GFX_focus_EZO_observe_japan
-		x = -7
-		y = 1
+		x = -6
+		y = 4
 		relative_position_id = EZO_akai_rising
 		cost = 7
 		prerequisite = {
-			focus = EZO_akai_rising
+			focus = EZO_invite_communist_advisors
+			focus = EZO_claim_the_Kuril_Islands
+			focus = EZO_invite_junta_advisors
 		}
 		ai_will_do = {
 			factor = 10
@@ -2281,8 +2632,6 @@ focus_tree = {
 		cost = 7
 		prerequisite = {
 			focus = EZO_observe_japan
-			focus = EZO_Yotei_bank
-			focus = EZO_the_white_coat_coup
 		}
 		ai_will_do = {
 			factor = 10
@@ -2302,8 +2651,6 @@ focus_tree = {
 		cost = 10
 		prerequisite = {
 			focus = EZO_observe_japan
-			focus = EZO_Yotei_bank
-			focus = EZO_the_white_coat_coup
 		}
 		ai_will_do = {
 			factor = 10
@@ -2399,8 +2746,6 @@ focus_tree = {
 		cost = 7
 		prerequisite = {
 			focus = EZO_observe_japan
-			focus = EZO_Yotei_bank
-			focus = EZO_the_white_coat_coup
 		}
 		ai_will_do = {
 			factor = 10
@@ -2595,7 +2940,7 @@ focus_tree = {
 		id = EZO_french_advisors
 		icon = GFX_focus_EZO_french_advisors
 		x = -3
-		y = 1
+		y = 2
 		available = {
 			NOT = {
 				AND = {
@@ -3038,7 +3383,10 @@ focus_tree = {
 			factor = 10
 		}
 		available = {
-			has_country_flag = EZO_akai_rising_success
+			OR = {
+				has_country_flag = EZO_akai_rising_success
+				has_civil_war = yes
+			}
 		}	
 		completion_reward = {
 			log = "[GetDateText]: [Root.GetName]: Focus EZO_akai_revolutionary_council"
