@@ -32,7 +32,7 @@ focus_tree = {
 		icon = GFX_
 		x = 10
 		y = 0
-		cost = 9
+		cost = 10
 		bypass = {
 			has_civil_war = yes
 			if = {
@@ -151,7 +151,7 @@ focus_tree = {
 		focus = {
 		id = EZO_road_to_sadao_araki
 		icon = GFX_
-		x = -6
+		x = -10
 		y = 1
 		bypass = {
 			
@@ -208,6 +208,54 @@ focus_tree = {
 			log = "[GetDateText]: [Root.GetName]: Focus EZO_akai_rising"	
 			add_stability = 0.05
 			set_country_flag = build_industry
+		}
+		search_filters = { FOCUS_FILTER_POLITICAL }
+	}
+
+	focus = {
+		id = EZO_deal_with_communists
+		icon = GFX_
+		x = 2
+		y = 1
+		cost = 9
+		available = { has_civil_war = yes }
+		prerequisite = { focus = EZO_road_to_sadao_araki focus = EZO_support_Ainu_communities}
+		relative_position_id = EZO_road_to_sadao_araki
+		ai_will_do = {
+			factor = 10
+		}	
+		mutually_exclusive = { focus = EZO_deal_with_facists}
+		completion_reward = {
+			add_popularity = {
+			    ideology = communism
+			    popularity = 0.1
+			}
+			clr_country_flag = communist_enter_civil_war
+		}
+		search_filters = { FOCUS_FILTER_POLITICAL }
+	}
+
+	focus = {
+		id = EZO_deal_with_facists
+		icon = GFX_
+		x = 4
+		y = 1
+		cost = 9
+		available = { 
+			has_civil_war = yes 
+		}
+		prerequisite = { focus = EZO_support_Ainu_communities }
+		relative_position_id = EZO_road_to_sadao_araki
+		ai_will_do = {
+			factor = 10
+		}	
+		mutually_exclusive = { focus = EZO_deal_with_communists}
+		completion_reward = {
+			add_popularity = {
+			    ideology = fascism
+			    popularity = 0.1
+			}
+			clr_country_flag = facist_enter_civil_war
 		}
 		search_filters = { FOCUS_FILTER_POLITICAL }
 	}
@@ -648,7 +696,7 @@ focus_tree = {
 		icon = GFX_
 		x = 1
 		y = 1
-		cost = 15
+		cost = 12
 		available = { has_civil_war = yes }
 		prerequisite = { focus = EZO_support_Ainu_communities focus = EZO_road_to_sadao_araki }
 		relative_position_id = EZO_support_Ainu_communities
@@ -670,7 +718,7 @@ focus_tree = {
 		icon = GFX_
 		x = 0
 		y = 1
-		cost = 15
+		cost = 12
 		available = { has_civil_war = yes }
 		prerequisite = { focus = EZO_civil_war_aid }
 		relative_position_id = EZO_civil_war_aid
@@ -692,7 +740,7 @@ focus_tree = {
 		icon = GFX_
 		x = 0
 		y = 1
-		cost = 15
+		cost = 12
 		available = { has_civil_war = yes }
 		prerequisite = { focus = EZO_civil_war_aid_2 }
 		relative_position_id = EZO_civil_war_aid_2
@@ -763,7 +811,7 @@ focus_tree = {
 		x = 1
 		y = 2
 		cost = 10
-		available = {  }
+		available = { has_civil_war = no }
 		prerequisite = { focus = EZO_Create_ezo_nation }
 		relative_position_id = EZO_Create_ezo_nation
 		ai_will_do = {
@@ -781,7 +829,7 @@ focus_tree = {
 		x = 4
 		y = 3
 		cost = 10
-		available = {  }
+		available = { has_civil_war = no }
 		prerequisite = { focus = EZO_political_stability focus = EZO_invite_PRO_scientist }
 		relative_position_id = EZO_Create_ezo_nation
 		ai_will_do = {
@@ -1133,7 +1181,7 @@ focus_tree = {
 	focus = {
 		id = EZO_nationalist_volunteers
 		icon = GFX_focus_generic_conscription
-		x = -2
+		x = -3
 		y = 1
 		cost = 10
 		available = { 
@@ -1144,7 +1192,7 @@ focus_tree = {
 				has_completed_focus = EZO_clean_up_communists
 			}
 		 }
-		prerequisite = { focus = EZO_Create_ezo_nation }
+		prerequisite = { focus = EZO_Create_ezo_nation focus = EZO_clean_up_communists }
 		relative_position_id = EZO_Create_ezo_nation
 		ai_will_do = {
 			factor = 10
@@ -1191,6 +1239,27 @@ focus_tree = {
 			factor = 10
 		}	
 		completion_reward = {
+			every_owned_state = {
+				limit = {
+					OR = {
+						has_dynamic_modifier = { modifier = russians_separatism  }
+						has_dynamic_modifier = { modifier = russians_rebellion }
+					}
+				}
+				add_dynamic_modifier = { modifier = russians_deals }
+			}
+			hidden_effect = {
+				every_owned_state = {
+					limit = {
+						OR = {
+							has_dynamic_modifier = { modifier = russians_separatism  }
+							has_dynamic_modifier = { modifier = russians_rebellion }
+						}
+					}
+					remove_dynamic_modifier = { modifier = russians_separatism  }
+					remove_dynamic_modifier = { modifier = russians_rebellion }
+				}
+			}
 			country_event = { id = WIT.3 days = 3 }
 			add_stability = -0.20
 			set_party_name = { 
@@ -1628,7 +1697,7 @@ focus_tree = {
 		icon = GFX_
 		x = 12
 		y = 0
-		cost = 9
+		cost = 10
 		bypass = {
 			has_civil_war = yes
 			if = {
