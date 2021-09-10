@@ -1,0 +1,70 @@
+on_actions = {
+
+	on_startup = {
+		### sets global variables for progress of siege in each possible target
+		effect = {
+			### EDO
+			set_variable = { global.29_siege_progress = 0 }
+			set_variable = { global.29_siege_progress_negative = 0 }
+			set_variable = { global.29_siege_progress_days = 0 }
+		}
+	}
+	
+	on_weekly = {
+		effect = {
+			### Edo under siege
+			if = {
+				limit = { controls_state = 29 }
+				if = {
+					limit = {
+						has_war = yes
+						controls_province = 274
+						any_enemy_country = { controls_province = 3722 }
+						any_enemy_country = { controls_province = 1342 }
+						any_enemy_country = { controls_province = 932 }
+						any_enemy_country = { controls_province = 770 }
+						any_enemy_country = { controls_province = 3703 }
+						any_enemy_country = { controls_province = 53 }
+					}
+					if = {
+						limit = { check_variable = { global.29_siege_progress > 0.95 } }
+						set_variable = { global.29_siege_progress_days_event = global.29_siege_progress_days }
+						29 = { owner = { news_event = siege.0 } }
+					}
+					add_to_variable = { global.29_siege_progress = 0.05 }
+					add_to_variable = { global.29_siege_progress_negative = -0.05 }
+					if = {
+						limit = { 29 = { has_dynamic_modifier = { modifier = siege_modifier_state } } }
+						29 = { add_dynamic_modifier = { modifier = siege_modifier_state } }
+					}
+				} else = {
+					add_to_variable = { global.29_siege_progress = -0.1 }
+					add_to_variable = { global.29_siege_progress_negative = 0.1 }
+					if = {
+						limit = {
+							check_variable = { global.29_siege_progress < 0.05 }
+							29 = { has_dynamic_modifier = { modifier = siege_modifier_state } }
+						}
+						29 = { remove_dynamic_modifier = { modifier = siege_modifier_state }  }
+					}
+					set_variable = { global.29_siege_progress_days = 0 }
+				}
+				clamp_variable = { var = global.29_siege_progress min = 0 max = 1 }
+				clamp_variable = { var = global.29_siege_progress_negative min = -1 max = 0 }
+			}
+		}
+	}
+	
+	on_daily = {	# Counts the lenght of the siege
+		effect = {
+			### Edo under siege
+			if = {
+				limit = { controls_state = 29 }
+				if = {
+					limit = { check_variable = { global.29_siege_progress > 0.01 } }
+					add_to_variable = { global.29_siege_progress_days = 1 }
+				}
+			}
+		}
+	}
+}
