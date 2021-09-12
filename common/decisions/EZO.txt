@@ -1,4 +1,70 @@
-EZO_domestic_events = {
+EZO_civil_war_ai_category = { 
+	EZO_add_rebels_power = {
+
+		icon = chu_trade_unions_demand
+
+		allowed = {
+			tag = EZO
+		}
+
+		available = { 
+			NOT = { has_country_flag = ezo_civil_war_time } 
+		}
+		
+        activation = {                         
+            has_country_flag = ezo_civil_war_time                       
+        }
+		
+        is_good = no                           
+        selectable_mission = no              
+        days_mission_timeout = 20       
+        timeout_effect = {
+			add_to_variable = { var = EZO.rebels_power value = 10 }
+		}
+	}
+}
+
+EZO_fall_goverment = {
+
+	EZO_add_goverment_power = {
+
+		icon = chu_trade_unions_demand
+
+		allowed = {
+			tag = EZO
+			has_country_flag = ezo_civil_war_time
+		}
+
+		available = { 
+			tag = EZO
+			has_country_flag = ezo_civil_war_time
+		}
+		
+		visible = {
+			has_country_flag = ezo_civil_war_time
+		}
+
+		days_remove = 7
+
+		cost = 25
+
+		fire_only_once = no
+
+		ai_will_do = {
+			factor = 0.20
+			modifier = {
+				
+			}
+			
+		}
+
+		complete_effect = {
+		}
+
+		remove_effect = {
+			add_to_variable = { var = EZO.goverment_power value = 10 }
+		}
+	}
 
 	EZO_civil_war_time = { 
 
@@ -13,44 +79,54 @@ EZO_domestic_events = {
 		
         is_good = no                           
         selectable_mission = no              
-        days_mission_timeout = 250         
+        days_mission_timeout = 250        
         timeout_effect = {
+			add_ideas = EZO_civil_war
+			set_country_flag = facist_enter_civil_war
+			set_country_flag = communist_enter_civil_war
+			set_country_flag = social_communist_enter_civil_war
+			set_country_flag = ainu_enter_civil_war
+			set_country_flag = russians_enter_civil_war
 			country_lock_all_division_template = no
 			if = {
 				limit = {
 					has_completed_focus = EZO_sellect_traditionalism
 				}
-				set_country_flag = facist_enter_civil_war
-				set_country_flag = communist_enter_civil_war
-				SZO = {
-					set_rule = {
-						can_puppet = no
-						can_create_factions = no
-						can_join_factions = no
-						can_boost_own_ideology = no
-						can_generate_female_aces = yes
-						can_create_collaboration_government = no
+				start_civil_war = {
+					ideology = democratic
+					size = 0.35
+					only_own_territory = yes
+					states = { 
+						3 48 54 49
 					}
-					load_focus_tree = {
-						tree = EZO
-						keep_completed = no
+					keep_unit_leaders = {
+						301 901 902 903 904
 					}
-				} 
-				SZO = {
-
-					transfer_state = 49
-					transfer_state = 51
-					transfer_state = 58
-					transfer_state = 214
-					
-					every_controlled_state = {
-						add_core_of = SZO
+					keep_political_leader = no
+				}
+				
+				random_other_country = {
+					limit = {
+						original_tag = EZO
+						has_government = democratic
 					}
-					
+					add_ideas = EZO_civil_war
+					load_oob = "EZO_Civil_War"
+					set_equipment_fraction = 0.3
+					set_stability = 0.9
+					set_war_support = 0.8
+					add_popularity = {
+						ideology = democratic
+						popularity = 0.35
+					}
 					add_equipment_to_stockpile = {
 						type = infantry_equipment
 						amount = 2000
 						producer = EZO
+					}
+					load_focus_tree = {
+						tree = EZO
+						keep_completed = no
 					}
 					declare_war_on = {
 						target = EZO
@@ -76,150 +152,97 @@ EZO_domestic_events = {
 						target = CZO
 						type = civil_war
 					}
-					add_civil_war_target = EZO
-					set_equipment_fraction = 0.5
-						division_template = {
-							name = "Civilian Volunteer Militias"
-							division_names_group = EZO_INF_01
-
-							regiments = {
-								infantry = { x = 0 y = 0 }
-								infantry = { x = 0 y = 1 }
-								infantry = { x = 0 y = 2 }
-								infantry = { x = 1 y = 0 }
-								infantry = { x = 1 y = 1 }
-								infantry = { x = 1 y = 2 }
+					declare_war_on = {
+						target = SZO
+						type = civil_war
+					}
+					
+					every_owned_state = {
+						create_unit = {
+							division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+							owner = PREV
+						}
+						create_unit = {
+							division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+							owner = PREV
+						}
+						create_unit = {
+							division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+							owner = PREV
+						}
+						create_unit = {
+							division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+							owner = PREV
+						}
+						create_unit = {
+							division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+							owner = PREV
+						}
+					}
+					if = {
+						limit = {
+							check_variable = {
+								EZO.rebels_power > EZO.goverment_power
 							}
-							support = {
-								recon = { x = 0 y = 0 }
+							check_variable = {
+								EZO.rebels_power = EZO.goverment_power
 							}
 						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
+						every_owned_state = {
 							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
+								division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
 								owner = PREV
 							}
 						}
 					}
+				}
 			}
-
 			if = {
 				limit = {
 					has_completed_focus = EZO_sellect_strengthen_democratic_government
 				}
-				AZO = {
-					set_rule = {
-						can_puppet = no
-						can_create_factions = no
-						can_join_factions = no
-						can_boost_own_ideology = no
-						can_generate_female_aces = yes
-						can_create_collaboration_government = no
+				start_civil_war = {
+					ideology = autocracy
+					size = 0.35
+					only_own_territory = yes
+					states = { 
+						3 48 54 49
 					}
-					load_focus_tree = {
-						tree = EZO
-						keep_completed = no
+					keep_unit_leaders = {
+						301 901 902 903 904
 					}
-				} 
-				if = {
-					every_state = {
-						limit = {
-							OR = {
-								state = 71
-								state = 72
-								state = 57
-							}
-							is_capital = no
-							is_controlled_by = ROOT
-						}
-						AZO = {
-							transfer_state = PREV
-						}
-					}
+					keep_political_leader = no
 				}
-				AZO = {
-					transfer_state = 50
-					transfer_state = 9
-					transfer_state = 54
-					every_controlled_state = {
-						add_core_of = AZO
+				
+				random_other_country = {
+					limit = {
+						original_tag = EZO
+						has_government = autocracy
 					}
-					
+					add_ideas = EZO_civil_war
+					load_oob = "EZO_Civil_War"
+					set_equipment_fraction = 0.3
+					set_stability = 0.9
+					set_war_support = 0.8
+					add_popularity = {
+						ideology = democratic
+						popularity = 0.35
+					}
 					add_equipment_to_stockpile = {
 						type = infantry_equipment
 						amount = 2000
 						producer = EZO
+					}
+					load_focus_tree = {
+						tree = EZO
+						keep_completed = no
 					}
 					declare_war_on = {
 						target = EZO
 						type = civil_war
 					}
 					add_popularity = {
-						ideology = neutrality
+						ideology = democratic_socialism
 						popularity = 0.5
 					}
 					declare_war_on = {
@@ -227,160 +250,88 @@ EZO_domestic_events = {
 						type = civil_war
 					}
 					declare_war_on = {
-						target = SZO
+						target = RZO
 						type = civil_war
 					}
 					declare_war_on = {
-						target = RZO
+						target = AZO
 						type = civil_war
 					}
 					declare_war_on = {
 						target = CZO
 						type = civil_war
 					}
-					add_civil_war_target = EZO
-					set_equipment_fraction = 0.5
-						division_template = {
-							name = "Civilian Volunteer Militias"
-							division_names_group = EZO_INF_01
-
-							regiments = {
-								infantry = { x = 0 y = 0 }
-								infantry = { x = 0 y = 1 }
-								infantry = { x = 0 y = 2 }
-								infantry = { x = 1 y = 0 }
-								infantry = { x = 1 y = 1 }
-								infantry = { x = 1 y = 2 }
+					declare_war_on = {
+						target = SZO
+						type = civil_war
+					}
+					every_owned_state = {
+						create_unit = {
+							division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+							owner = PREV
+						}
+						create_unit = {
+							division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+							owner = PREV
+						}
+						create_unit = {
+							division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+							owner = PREV
+						}
+						create_unit = {
+							division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+							owner = PREV
+						}
+						create_unit = {
+							division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+							owner = PREV
+						}
+					}
+					if = {
+						limit = {
+							check_variable = {
+								EZO.rebels_power > EZO.goverment_power
 							}
-							support = {
-								recon = { x = 0 y = 0 }
+							check_variable = {
+								EZO.rebels_power = EZO.goverment_power
 							}
 						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
+						every_owned_state = {
 							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
+								division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
 								owner = PREV
 							}
 						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
+					}
 				}
 			}
 			clr_country_flag = ezo_civil_war_time
 			set_country_flag = ezo_civil_war_time_other
-			
-			division_template = {
-				name = "Civilian Volunteer Militias"
-				division_names_group = EZO_INF_01
-
-				regiments = {
-					infantry = { x = 0 y = 0 }
-					infantry = { x = 0 y = 1 }
-					infantry = { x = 0 y = 2 }
-					infantry = { x = 1 y = 0 }
-					infantry = { x = 1 y = 1 }
-					infantry = { x = 1 y = 2 }
-				}
-				support = {
-					recon = { x = 0 y = 0 }
-				}
-			}
-			
-			random_owned_controlled_state = {
-				limit = { PREV = { has_full_control_of_state = PREV } }
+			load_oob = "EZO_Civil_War"
+			every_owned_state = {
 				create_unit = {
-					division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
+					division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+					owner = PREV
+				}
+				create_unit = {
+					division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
 					owner = PREV
 				}
 			}
-			random_owned_controlled_state = {
-				limit = { PREV = { has_full_control_of_state = PREV } }
-				create_unit = {
-					division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-					owner = PREV
+			if = {
+				limit = {
+					check_variable = {
+						EZO.goverment_power > EZO.rebels_power
+					}
+					check_variable = {
+						EZO.goverment_power = EZO.rebels_power
+					}
 				}
-			}
-			random_owned_controlled_state = {
-				limit = { PREV = { has_full_control_of_state = PREV } }
-				create_unit = {
-					division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-					owner = PREV
-				}
-			}
-			random_owned_controlled_state = {
-				limit = { PREV = { has_full_control_of_state = PREV } }
-				create_unit = {
-					division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-					owner = PREV
-				}
-			}
-			random_owned_controlled_state = {
-				limit = { PREV = { has_full_control_of_state = PREV } }
-				create_unit = {
-					division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-					owner = PREV
+				every_owned_state = {
+					create_unit = {
+						division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+						owner = PREV
+					}
 				}
 			}
         }
@@ -401,11 +352,8 @@ EZO_domestic_events = {
         selectable_mission = no              
         days_mission_timeout = 100          
         timeout_effect = {
-			if = {
-				limit = {
-					has_completed_focus = EZO_sellect_traditionalism
-				}
-				hidden_effect = {
+		
+			hidden_effect = {
 					CZO = {
 						set_rule = {
 							can_puppet = no
@@ -419,59 +367,16 @@ EZO_domestic_events = {
 							tree = EZO
 							keep_completed = no
 						}
-					} 
-					if = {
-						every_state = {
-							limit = {
-								OR = {
-									state = 71
-									state = 72
-									state = 57
-								}
-								is_capital = no
-								is_controlled_by = ROOT
-							}
-							CZO = {
-								transfer_state = PREV
-							}
-						}
 					}
-					FZO = {
-						set_rule = {
-							can_puppet = no
-							can_create_factions = no
-							can_join_factions = no
-							can_boost_own_ideology = no
-							can_generate_female_aces = yes
-							can_create_collaboration_government = no
-						}
-						load_focus_tree = {
-							tree = EZO
-							keep_completed = no
-						}
-					} 
-					if = {
-						every_state = {
-							limit = {
-								OR = {
-									state = 71
-									state = 72
-									state = 57
-								}
-								is_capital = no
-								is_controlled_by = ROOT
-							}
-							FZO = {
-								transfer_state = PREV
-							}
-						}
-					}
+	
 					if = {
 						limit = {
+							NOT = { has_government = communism }
 							has_country_flag = communist_enter_civil_war
 						}
 						clr_country_flag = communist_enter_civil_war
 						CZO = {
+						add_ideas = EZO_civil_war
 							transfer_state = 71
 							transfer_state = 72
 							transfer_state = 57
@@ -508,103 +413,63 @@ EZO_domestic_events = {
 								target = AZO
 								type = civil_war
 							}
+							declare_war_on = {
+								target = DZO
+								type = civil_war
+							}
+							declare_war_on = {
+								target = MZO
+								type = civil_war
+							}
 							add_civil_war_target = EZO
-							set_equipment_fraction = 0.5
-								division_template = {
-									name = "Civilian Volunteer Militias"
-									division_names_group = EZO_INF_01
-
-									regiments = {
-										infantry = { x = 0 y = 0 }
-										infantry = { x = 0 y = 1 }
-										infantry = { x = 0 y = 2 }
-										infantry = { x = 1 y = 0 }
-										infantry = { x = 1 y = 1 }
-										infantry = { x = 1 y = 2 }
-									}
-									support = {
-										recon = { x = 0 y = 0 }
-									}
+							load_oob = "EZO_Civil_War"
+							every_owned_state = {
+								create_unit = {
+									division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+									owner = PREV
 								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
+								create_unit = {
+									division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+									owner = PREV
 								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
+								create_unit = {
+									division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+									owner = PREV
 								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
+								create_unit = {
+									division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+									owner = PREV
 								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
+								create_unit = {
+									division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+									owner = PREV
 								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
+								create_unit = {
+									division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+									owner = PREV
 								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
+								create_unit = {
+									division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+									owner = PREV
 								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
-								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
-								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
-								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
-								}
+							}
+						}
+					}
+	
+				if = {
+					limit = {
+						has_country_flag = russians_enter_civil_war
+						NOT = { 
+							has_completed_focus = EZO_sellect_strengthen_democratic_government
+							has_completed_focus = EZO_sellect_traditionalism
+							has_government = neutrality 
 						}
 					}
 					
-					if = {
-						limit = {
-							has_completed_focus = EZO_sellect_traditionalism
-							has_government = fascism
-						}
+					hidden_effect = {
+					clr_country_flag = russians_enter_civil_war
 						RZO = {
+						add_ideas = EZO_civil_war
 							transfer_state = 48
 							transfer_state = 3
 							transfer_state = 1
@@ -641,1238 +506,267 @@ EZO_domestic_events = {
 								target = CZO
 								type = civil_war
 							}
-							add_civil_war_target = EZO
-							set_equipment_fraction = 0.5
-								division_template = {
-									name = "Civilian Volunteer Militias"
-									division_names_group = EZO_INF_01
-
-									regiments = {
-										infantry = { x = 0 y = 0 }
-										infantry = { x = 0 y = 1 }
-										infantry = { x = 0 y = 2 }
-										infantry = { x = 1 y = 0 }
-										infantry = { x = 1 y = 1 }
-										infantry = { x = 1 y = 2 }
-									}
-									support = {
-										recon = { x = 0 y = 0 }
-									}
-								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
-								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
-								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
-								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
-								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
-								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
-								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
-								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
-								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
-								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
-								}
-						}
-					}
-					
-					if = {
-						limit = {
-							has_country_flag = facist_enter_civil_war
-							NOT = { has_government = fascism }
-						}
-						clr_country_flag = facist_enter_civil_war
-						FZO = {
-							transfer_state = 73
-							transfer_state = 59
-							transfer_state = 77
-							every_controlled_state = {
-								add_core_of = FZO
-							}
-							
-							add_equipment_to_stockpile = {
-								type = infantry_equipment
-								amount = 2000
-								producer = EZO
-							}
 							declare_war_on = {
-								target = EZO
-								type = civil_war
-							}
-							add_popularity = {
-								ideology = fascism
-								popularity = 0.5
-							}
-							declare_war_on = {
-								target = SZO
+								target = DZO
 								type = civil_war
 							}
 							declare_war_on = {
-								target = RZO
-								type = civil_war
-							}
-							declare_war_on = {
-								target = AZO
-								type = civil_war
-							}
-							declare_war_on = {
-								target = CZO
+								target = MZO
 								type = civil_war
 							}
 							add_civil_war_target = EZO
-							set_equipment_fraction = 0.5
-								division_template = {
-									name = "Civilian Volunteer Militias"
-									division_names_group = EZO_INF_01
-
-									regiments = {
-										infantry = { x = 0 y = 0 }
-										infantry = { x = 0 y = 1 }
-										infantry = { x = 0 y = 2 }
-										infantry = { x = 1 y = 0 }
-										infantry = { x = 1 y = 1 }
-										infantry = { x = 1 y = 2 }
-									}
-									support = {
-										recon = { x = 0 y = 0 }
-									}
+							load_oob = "EZO_Civil_War"
+							every_owned_state = {
+								create_unit = {
+									division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+									owner = PREV
 								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
+								create_unit = {
+									division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+									owner = PREV
 								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
+								create_unit = {
+									division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+									owner = PREV
 								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
+								create_unit = {
+									division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+									owner = PREV
 								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
+								create_unit = {
+									division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+									owner = PREV
 								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
+								create_unit = {
+									division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+									owner = PREV
 								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
+								create_unit = {
+									division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+									owner = PREV
 								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
-								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
-								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
-								}
-								random_owned_controlled_state = {
-									limit = { PREV = { has_full_control_of_state = PREV } }
-									create_unit = {
-										division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-										owner = PREV
-									}
-								}
+							}
 						}
 					}
-					
 				}
-			}
-			if = {
-				limit = {
-					has_completed_focus = EZO_elections
-				}
-				CZO = {
-					set_rule = {
-						can_puppet = no
-						can_create_factions = no
-						can_join_factions = no
-						can_boost_own_ideology = no
-						can_generate_female_aces = yes
-						can_create_collaboration_government = no
-					}
-					load_focus_tree = {
-						tree = EZO
-						keep_completed = no
-					}
-				} 
 				if = {
-					every_state = {
-						limit = {
-							OR = {
-								state = 71
-								state = 72
-								state = 57
-							}
-							is_capital = no
-							is_controlled_by = ROOT
-						}
-						CZO = {
-							transfer_state = PREV
-						}
+					limit = {
+						has_country_flag = facist_enter_civil_war
+						NOT = { has_government = fascism }
 					}
-				}
-				RZO = {
-					set_rule = {
-						can_puppet = no
-						can_create_factions = no
-						can_join_factions = no
-						can_boost_own_ideology = no
-						can_generate_female_aces = yes
-						can_create_collaboration_government = no
-					}
-					load_focus_tree = {
-						tree = EZO
-						keep_completed = no
-					}
-				} 
-				if = {
-					every_state = {
-						limit = {
-							OR = {
-								state = 71
-								state = 72
-								state = 57
-							}
-							is_capital = no
-							is_controlled_by = ROOT
-						}
-						RZO = {
-							transfer_state = PREV
-						}
-					}
-				}
-				CZO = {
-					transfer_state = 71
-					transfer_state = 72
-					transfer_state = 57
-					every_controlled_state = {
-								add_core_of = CZO
-							}
-							
-							add_equipment_to_stockpile = {
-								type = infantry_equipment
-								amount = 2000
-								producer = EZO
-							}
-					add_popularity = {
-						ideology = communism
-						popularity = 0.5
-					}
-					declare_war_on = {
-						target = EZO
-						type = civil_war
-					}
-					declare_war_on = {
-						target = FZO
-						type = civil_war
-					}
-					declare_war_on = {
-						target = SZO
-						type = civil_war
-					}
-					declare_war_on = {
-						target = RZO
-						type = civil_war
-					}
-					declare_war_on = {
-						target = AZO
-						type = civil_war
-					}
-					add_civil_war_target = EZO
-					set_equipment_fraction = 0.5
-						division_template = {
-							name = "Civilian Volunteer Militias"
-							division_names_group = EZO_INF_01
-
-							regiments = {
-								infantry = { x = 0 y = 0 }
-								infantry = { x = 0 y = 1 }
-								infantry = { x = 0 y = 2 }
-								infantry = { x = 1 y = 0 }
-								infantry = { x = 1 y = 1 }
-								infantry = { x = 1 y = 2 }
-							}
-							support = {
-								recon = { x = 0 y = 0 }
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-				}
-				RZO = {
-					transfer_state = 48
-					transfer_state = 3
-					transfer_state = 1
-					every_controlled_state = {
-								add_core_of = RZO
-							}
-							
-							add_equipment_to_stockpile = {
-								type = infantry_equipment
-								amount = 2000
-								producer = EZO
-							}
-					declare_war_on = {
-						target = EZO
-						type = civil_war
-					}
-					add_popularity = {
-						ideology = neutrality
-						popularity = 0.5
-					}
-					declare_war_on = {
-						target = FZO
-						type = civil_war
-					}
-					declare_war_on = {
-						target = SZO
-						type = civil_war
-					}
-					declare_war_on = {
-						target = AZO
-						type = civil_war
-					}
-					declare_war_on = {
-						target = CZO
-						type = civil_war
-					}
-					add_civil_war_target = EZO
-					set_equipment_fraction = 0.5
-						division_template = {
-							name = "Civilian Volunteer Militias"
-							division_names_group = EZO_INF_01
-
-							regiments = {
-								infantry = { x = 0 y = 0 }
-								infantry = { x = 0 y = 1 }
-								infantry = { x = 0 y = 2 }
-								infantry = { x = 1 y = 0 }
-								infantry = { x = 1 y = 1 }
-								infantry = { x = 1 y = 2 }
-							}
-							support = {
-								recon = { x = 0 y = 0 }
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-				}
-			}
-			if = {
-				limit = {
-					AND = {
-						has_completed_focus = EZO_League_Of_Nations
-						has_completed_focus = EZO_akai_rising
-					}
-				}
-				FZO = {
-					set_rule = {
-						can_puppet = no
-						can_create_factions = no
-						can_join_factions = no
-						can_boost_own_ideology = no
-						can_generate_female_aces = yes
-						can_create_collaboration_government = no
-					}
-					load_focus_tree = {
-						tree = EZO
-						keep_completed = no
-					}
-				} 
-				if = {
-					every_state = {
-						limit = {
-							OR = {
-								state = 71
-								state = 72
-								state = 57
-							}
-							is_capital = no
-							is_controlled_by = ROOT
-						}
-						FZO = {
-							transfer_state = PREV
-						}
-					}
-				}
-				SZO = {
-					set_rule = {
-						can_puppet = no
-						can_create_factions = no
-						can_join_factions = no
-						can_boost_own_ideology = no
-						can_generate_female_aces = yes
-						can_create_collaboration_government = no
-					}
-					load_focus_tree = {
-						tree = EZO
-						keep_completed = no
-					}
-				} 
-				if = {
-					every_state = {
-						limit = {
-							OR = {
-								state = 71
-								state = 72
-								state = 57
-							}
-							is_capital = no
-							is_controlled_by = ROOT
-						}
-						SZO = {
-							transfer_state = PREV
-						}
-					}
-				}
-				FZO = {
-					transfer_state = 73
-					transfer_state = 59
-					transfer_state = 77
-					every_controlled_state = {
-								add_core_of = FZO
-							}
-							
-							add_equipment_to_stockpile = {
-								type = infantry_equipment
-								amount = 2000
-								producer = EZO
-							}
-					declare_war_on = {
-						target = EZO
-						type = civil_war
-					}
-					add_popularity = {
-						ideology = fascism
-						popularity = 0.5
-					}
-					declare_war_on = {
-						target = SZO
-						type = civil_war
-					}
-					declare_war_on = {
-						target = RZO
-						type = civil_war
-					}
-					declare_war_on = {
-						target = AZO
-						type = civil_war
-					}
-					declare_war_on = {
-						target = CZO
-						type = civil_war
-					}
-					add_civil_war_target = EZO
-					set_equipment_fraction = 0.5
-						division_template = {
-							name = "Civilian Volunteer Militias"
-							division_names_group = EZO_INF_01
-
-							regiments = {
-								infantry = { x = 0 y = 0 }
-								infantry = { x = 0 y = 1 }
-								infantry = { x = 0 y = 2 }
-								infantry = { x = 1 y = 0 }
-								infantry = { x = 1 y = 1 }
-								infantry = { x = 1 y = 2 }
-							}
-							support = {
-								recon = { x = 0 y = 0 }
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-				}
-				SZO = {
-					transfer_state = 49
-					transfer_state = 51
-					transfer_state = 58
-					transfer_state = 214
-					every_controlled_state = {
-								add_core_of = SZO
-							}
-							
-							add_equipment_to_stockpile = {
-								type = infantry_equipment
-								amount = 2000
-								producer = EZO
-							}
-					declare_war_on = {
-						target = EZO
-						type = civil_war
-					}
-					add_popularity = {
-						ideology = democratic_socialism
-						popularity = 0.5
-					}
-					declare_war_on = {
-						target = FZO
-						type = civil_war
-					}
-					declare_war_on = {
-						target = RZO
-						type = civil_war
-					}
-					declare_war_on = {
-						target = AZO
-						type = civil_war
-					}
-					declare_war_on = {
-						target = CZO
-						type = civil_war
-					}
-					add_civil_war_target = EZO
-					set_equipment_fraction = 0.5
-						division_template = {
-							name = "Civilian Volunteer Militias"
-							division_names_group = EZO_INF_01
-
-							regiments = {
-								infantry = { x = 0 y = 0 }
-								infantry = { x = 0 y = 1 }
-								infantry = { x = 0 y = 2 }
-								infantry = { x = 1 y = 0 }
-								infantry = { x = 1 y = 1 }
-								infantry = { x = 1 y = 2 }
-							}
-							support = {
-								recon = { x = 0 y = 0 }
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-				}
-			}
-			if = {
-				limit = {
-					AND = {
-						has_completed_focus = EZO_League_Of_Nations
-						has_completed_focus = EZO_constitution_focus
-					}
-				}
-				FZO = {
-					set_rule = {
-						can_puppet = no
-						can_create_factions = no
-						can_join_factions = no
-						can_boost_own_ideology = no
-						can_generate_female_aces = yes
-						can_create_collaboration_government = no
-					}
-					load_focus_tree = {
-						tree = EZO
-						keep_completed = no
-					}
-				} 
-				SZO = {
-					set_rule = {
-						can_puppet = no
-						can_create_factions = no
-						can_join_factions = no
-						can_boost_own_ideology = no
-						can_generate_female_aces = yes
-						can_create_collaboration_government = no
-					}
-					load_focus_tree = {
-						tree = EZO
-						keep_completed = no
-					}
-				} 
-
-				FZO = {
-					transfer_state = 73
-					transfer_state = 59
-					transfer_state = 77
-					every_controlled_state = {
-								add_core_of = FZO
-							}
-							
-							add_equipment_to_stockpile = {
-								type = infantry_equipment
-								amount = 2000
-								producer = EZO
-							}
-					declare_war_on = {
-						target = EZO
-						type = civil_war
-					}
-					add_popularity = {
-						ideology = fascism
-						popularity = 0.5
-					}
-					declare_war_on = {
-						target = SZO
-						type = civil_war
-					}
-					declare_war_on = {
-						target = RZO
-						type = civil_war
-					}
-					declare_war_on = {
-						target = AZO
-						type = civil_war
-					}
-					declare_war_on = {
-						target = CZO
-						type = civil_war
-					}
-					add_civil_war_target = EZO
-					set_equipment_fraction = 0.5
-						division_template = {
-							name = "Civilian Volunteer Militias"
-							division_names_group = EZO_INF_01
-
-							regiments = {
-								infantry = { x = 0 y = 0 }
-								infantry = { x = 0 y = 1 }
-								infantry = { x = 0 y = 2 }
-								infantry = { x = 1 y = 0 }
-								infantry = { x = 1 y = 1 }
-								infantry = { x = 1 y = 2 }
-							}
-							support = {
-								recon = { x = 0 y = 0 }
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-				}
-				SZO = {
-					transfer_state = 49
-					transfer_state = 51
-					transfer_state = 58
-					transfer_state = 214
-					every_controlled_state = {
-								add_core_of = SZO
-							}
-							
-							add_equipment_to_stockpile = {
-								type = infantry_equipment
-								amount = 2000
-								producer = EZO
-							}
-					declare_war_on = {
-						target = EZO
-						type = civil_war
-					}
-					add_popularity = {
-						ideology = democratic_socialism
-						popularity = 0.5
-					}
-					declare_war_on = {
-						target = FZO
-						type = civil_war
-					}
-					declare_war_on = {
-						target = RZO
-						type = civil_war
-					}
-					declare_war_on = {
-						target = AZO
-						type = civil_war
-					}
-					declare_war_on = {
-						target = CZO
-						type = civil_war
-					}
-					add_civil_war_target = EZO
-					set_equipment_fraction = 0.5
-						division_template = {
-							name = "Civilian Volunteer Militias"
-							division_names_group = EZO_INF_01
-
-							regiments = {
-								infantry = { x = 0 y = 0 }
-								infantry = { x = 0 y = 1 }
-								infantry = { x = 0 y = 2 }
-								infantry = { x = 1 y = 0 }
-								infantry = { x = 1 y = 1 }
-								infantry = { x = 1 y = 2 }
-							}
-							support = {
-								recon = { x = 0 y = 0 }
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-						random_owned_controlled_state = {
-							limit = { PREV = { has_full_control_of_state = PREV } }
-							create_unit = {
-								division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-								owner = PREV
-							}
-						}
-				}
-			}
-			random_owned_controlled_state = {
-				limit = { PREV = { has_full_control_of_state = PREV } }
-				create_unit = {
-					division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-					owner = PREV
-				}
-			}
-			random_owned_controlled_state = {
-				limit = { PREV = { has_full_control_of_state = PREV } }
-				create_unit = {
-					division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-					owner = PREV
-				}
-			}
-			random_owned_controlled_state = {
-				limit = { PREV = { has_full_control_of_state = PREV } }
-				create_unit = {
-					division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-					owner = PREV
-				}
-			}
-			random_owned_controlled_state = {
-				limit = { PREV = { has_full_control_of_state = PREV } }
-				create_unit = {
-					division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-					owner = PREV
-				}
-			}
-			random_owned_controlled_state = {
-				limit = { PREV = { has_full_control_of_state = PREV } }
-				create_unit = {
-					division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-					owner = PREV
-				}
-			}
-			clr_country_flag = ezo_civil_war_time_other
-			set_country_flag = civil_war_finish
-			set_country_flag = ezo_civil_war_time_other_1
-        }
-	} 
-	
-	EZO_civil_war_time_3 = { 
-
-		allowed = { tag = EZO } 
-			 
-        available = {                           
-            NOT = { 
-				has_country_flag = ezo_civil_war_time_other_1
-				has_completed_focus = EZO_deal_separatists
-			}                 
-        }
-        activation = {                         
-            has_country_flag = ezo_civil_war_time_other_1                      
-        }
-		
-        is_good = no                           
-        selectable_mission = no              
-        days_mission_timeout = 100          
-        timeout_effect = {
-			if = {
-				limit = {
-					has_completed_focus = EZO_sellect_traditionalism
-					has_completed_focus = EZO_deal_separatists
-				}
-				RZO = {
-						transfer_state = 48
-						transfer_state = 3
-						transfer_state = 1
+					clr_country_flag = facist_enter_civil_war
+					FZO = {
+					add_ideas = EZO_civil_war
+						transfer_state = 73
+						transfer_state = 59
+						transfer_state = 77
 						every_controlled_state = {
-								add_core_of = RZO
+							add_core_of = FZO
+						}
+						
+						add_equipment_to_stockpile = {
+							type = infantry_equipment
+							amount = 2000
+							producer = EZO
+						}
+						declare_war_on = {
+							target = EZO
+							type = civil_war
+						}
+						add_popularity = {
+							ideology = fascism
+							popularity = 0.5
+						}
+						declare_war_on = {
+							target = SZO
+							type = civil_war
+						}
+						declare_war_on = {
+							target = RZO
+							type = civil_war
+						}
+						declare_war_on = {
+							target = AZO
+							type = civil_war
+						}
+						declare_war_on = {
+							target = CZO
+							type = civil_war
+						}
+						declare_war_on = {
+							target = DZO
+							type = civil_war
+						}
+						declare_war_on = {
+							target = MZO
+							type = civil_war
+						}
+						add_civil_war_target = EZO
+						load_oob = "EZO_Civil_War"
+						every_owned_state = {
+							create_unit = {
+								division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+								owner = PREV
 							}
-							
-							add_equipment_to_stockpile = {
-								type = infantry_equipment
-								amount = 2000
-								producer = EZO
+							create_unit = {
+								division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+								owner = PREV
 							}
+							create_unit = {
+								division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+								owner = PREV
+							}
+							create_unit = {
+								division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+								owner = PREV
+							}
+							create_unit = {
+								division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+								owner = PREV
+							}
+							create_unit = {
+									division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+									owner = PREV
+								}
+							create_unit = {
+								division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+								owner = PREV
+							}
+						}
+					}
+				}
+			
+				if = {
+					limit = {
+						NOT = {has_government = democratic_socialism}
+						has_country_flag = social_communist_enter_civil_war
+					}
+					clr_country_flag = social_communist_enter_civil_war
+					SZO = {
+						set_rule = {
+							can_puppet = no
+							can_create_factions = no
+							can_join_factions = no
+							can_boost_own_ideology = no
+							can_generate_female_aces = yes
+							can_create_collaboration_government = no
+						}
+						load_focus_tree = {
+							tree = EZO
+							keep_completed = no
+						}
+					}
+					SZO = {
+						add_ideas = EZO_civil_war
+						transfer_state = 49
+						transfer_state = 51
+						transfer_state = 58
+						transfer_state = 214
+						every_controlled_state = {
+									add_core_of = SZO
+								}
+								
+								add_equipment_to_stockpile = {
+									type = infantry_equipment
+									amount = 2000
+									producer = EZO
+								}
+						declare_war_on = {
+							target = EZO
+							type = civil_war
+						}
+						add_popularity = {
+							ideology = democratic_socialism
+							popularity = 0.5
+						}
+						declare_war_on = {
+							target = FZO
+							type = civil_war
+						}
+						declare_war_on = {
+							target = RZO
+							type = civil_war
+						}
+						declare_war_on = {
+							target = AZO
+							type = civil_war
+						}
+						declare_war_on = {
+							target = CZO
+							type = civil_war
+						}
+						declare_war_on = {
+							target = DZO
+							type = civil_war
+						}
+						declare_war_on = {
+							target = MZO
+							type = civil_war
+						}
+						add_civil_war_target = EZO
+						load_oob = "EZO_Civil_War"
+						every_owned_state = {
+							create_unit = {
+								division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+								owner = PREV
+							}
+							create_unit = {
+								division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+								owner = PREV
+							}
+							create_unit = {
+								division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+								owner = PREV
+							}
+							create_unit = {
+								division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+								owner = PREV
+							}
+							create_unit = {
+								division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+								owner = PREV
+							}
+							create_unit = {
+								division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+								owner = PREV
+							}
+						}
+					}
+				}
+				if = {
+					limit = {
+						NOT = { has_government = neutrality }
+						has_country_flag = ainu_enter_civil_war
+					}
+					clr_country_flag = ainu_enter_civil_war
+					AZO = {
+						set_rule = {
+							can_puppet = no
+							can_create_factions = no
+							can_join_factions = no
+							can_boost_own_ideology = no
+							can_generate_female_aces = yes
+							can_create_collaboration_government = no
+						}
+						load_focus_tree = {
+							tree = EZO
+							keep_completed = no
+						}
+					}
+					AZO = {
+						add_ideas = EZO_civil_war
+						transfer_state = 50
+						transfer_state = 9
+						transfer_state = 54
+						every_controlled_state = {
+							add_core_of = AZO
+						}
+						
+						add_equipment_to_stockpile = {
+							type = infantry_equipment
+							amount = 2000
+							producer = EZO
+						}
 						declare_war_on = {
 							target = EZO
 							type = civil_war
@@ -1890,108 +784,110 @@ EZO_domestic_events = {
 							type = civil_war
 						}
 						declare_war_on = {
-							target = AZO
+							target = RZO
 							type = civil_war
 						}
 						declare_war_on = {
 							target = CZO
 							type = civil_war
 						}
+						declare_war_on = {
+							target = DZO
+							type = civil_war
+						}
+						declare_war_on = {
+							target = MZO
+							type = civil_war
+						}
 						add_civil_war_target = EZO
-						set_equipment_fraction = 0.5
-							division_template = {
-								name = "Civilian Volunteer Militias"
-								division_names_group = EZO_INF_01
-
-								regiments = {
-									infantry = { x = 0 y = 0 }
-									infantry = { x = 0 y = 1 }
-									infantry = { x = 0 y = 2 }
-									infantry = { x = 1 y = 0 }
-									infantry = { x = 1 y = 1 }
-									infantry = { x = 1 y = 2 }
-								}
-								support = {
-									recon = { x = 0 y = 0 }
-								}
+						load_oob = "EZO_Civil_War"
+						every_owned_state = {
+							create_unit = {
+								division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+								owner = PREV
 							}
-							random_owned_controlled_state = {
-								limit = { PREV = { has_full_control_of_state = PREV } }
-								create_unit = {
-									division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-									owner = PREV
-								}
+							create_unit = {
+								division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+								owner = PREV
 							}
-							random_owned_controlled_state = {
-								limit = { PREV = { has_full_control_of_state = PREV } }
-								create_unit = {
-									division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-									owner = PREV
-								}
+							create_unit = {
+								division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+								owner = PREV
 							}
-							random_owned_controlled_state = {
-								limit = { PREV = { has_full_control_of_state = PREV } }
-								create_unit = {
-									division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-									owner = PREV
-								}
+							create_unit = {
+								division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+								owner = PREV
 							}
-							random_owned_controlled_state = {
-								limit = { PREV = { has_full_control_of_state = PREV } }
-								create_unit = {
-									division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-									owner = PREV
-								}
+							create_unit = {
+								division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+								owner = PREV
 							}
-							random_owned_controlled_state = {
-								limit = { PREV = { has_full_control_of_state = PREV } }
-								create_unit = {
-									division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-									owner = PREV
-								}
+							create_unit = {
+								division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+								owner = PREV
 							}
-							random_owned_controlled_state = {
-								limit = { PREV = { has_full_control_of_state = PREV } }
-								create_unit = {
-									division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-									owner = PREV
-								}
+							create_unit = {
+								division = "division_template = \"Civilian Volunteer Militias\" start_experience_factor = 0 start_equipment_factor = 0.95" 
+								owner = PREV
 							}
-							random_owned_controlled_state = {
-								limit = { PREV = { has_full_control_of_state = PREV } }
-								create_unit = {
-									division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-									owner = PREV
-								}
-							}
-							random_owned_controlled_state = {
-								limit = { PREV = { has_full_control_of_state = PREV } }
-								create_unit = {
-									division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-									owner = PREV
-								}
-							}
-							random_owned_controlled_state = {
-								limit = { PREV = { has_full_control_of_state = PREV } }
-								create_unit = {
-									division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-									owner = PREV
-								}
-							}
-							random_owned_controlled_state = {
-								limit = { PREV = { has_full_control_of_state = PREV } }
-								create_unit = {
-									division = "name = \"Civilian Volunteer Militias\" division_template = \"Civilian Volunteer Militias\" start_experience_factor = 1.0" 
-									owner = PREV
-								}
-							}
+						}
 					}
 				}
-			clr_country_flag = ezo_civil_war_time_other_1 
+			}
+			clr_country_flag = ezo_civil_war_time_other
 			set_country_flag = civil_war_finish
+			set_country_flag = ezo_civil_war_time_other_1
+			set_conutry_flag = democratics_enter_civil_war
+        }
+	}	
+	
+	EZO_civil_war_time_3_testpad = { 
+
+		allowed = { tag = EZO } 
+			 
+        available = {                           
+            NOT = { 
+				has_country_flag = ezo_civil_war_time_other_1
+			}                 
+        }
+        activation = {                         
+            has_country_flag = ezo_civil_war_time_other_1                      
+        }
+		
+        is_good = no                           
+        selectable_mission = no              
+        days_mission_timeout = 100          
+        timeout_effect = {
+			if = {
+				limit = {
+					has_completed_focus = EZO_sellect_traditionalism
+					NOT = { 
+						has_government = fascism 
+						has_country_flag = democratics_enter_civil_war
+					}
+				}
+	
+				start_civil_war = {
+					ideology = democratic
+					size = 0.35
+					only_own_territory = no
+					capital = 58
+					states = { 
+						
+					}
+					keep_political_leader = yes
+					add_ideas = EZO_civil_war
+				}
+			}
+			
+			clr_country_flag = ezo_civil_war_time_other_1 
+			clr_country_flag = democratics_enter_civil_war
         }
 	} 
 	
+}
+
+EZO_domestic_events = {
 
 	EZO_border_security_decision = {
 		icon = decision_category_generic
