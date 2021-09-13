@@ -7,10 +7,21 @@ on_actions = {
 			set_variable = { global.29_siege_progress = 0 }
 			set_variable = { global.29_siege_progress_negative = 0 }
 			set_variable = { global.29_siege_progress_days = 0 }
+			29 = { set_variable = { number_of_sieges = 0 } }
 		}
 	}
 	
 	on_weekly = {
+		effect = {	# decreases war support penalties when loosing a siege, applies to countries individually
+			add_to_variable = { siege_war_support = 0.005 }
+			clamp_variable = { var = siege_war_support max = 0 min = -1 }
+			if = {
+				limit = {
+					NOT = { check_variable = { siege_war_support < 0 } }
+				}
+				clear_variable = siege_war_support
+			}
+		}
 		effect = {
 			### Edo under siege
 			if = {
@@ -29,15 +40,21 @@ on_actions = {
 					if = {
 						limit = { 29 = { NOT = { has_state_flag = is_under_siege } } }
 						29 = { set_state_flag = is_under_siege }
+						29 = { add_to_variable = { number_of_sieges = 1 } }
 					}
 					if = {
-						limit = { check_variable = { global.29_siege_progress > 0.95 } }
+						limit = { check_variable = { global.29_siege_progress > 0.99 } }	# siege ends!
 						set_variable = { global.29_siege_progress_days_event = global.29_siege_progress_days }
 						29 = { clr_state_flag = is_under_siege }	# so the event don't fire twice when the state changes!
 						29 = { owner = { news_event = siege.0 } }
 					}
 					add_to_variable = { global.29_siege_progress = 0.05 }
 					add_to_variable = { global.29_siege_progress_negative = -0.05 }
+					if  = {
+						limit = { 29 = { NOT = { days_since_last_strategic_bombing > 7 } } }	# strategic bombing makes siege progress faster
+						add_to_variable = { global.29_siege_progress = 0.025 }
+						add_to_variable = { global.29_siege_progress_negative = -0.025 }
+					}
 					if = {
 						limit = { 29 = { has_dynamic_modifier = { modifier = siege_modifier_state } } }
 						29 = { add_dynamic_modifier = { modifier = siege_modifier_state } }
@@ -45,7 +62,8 @@ on_actions = {
 				} else = {
 					if = {
 						limit = { 29 = { has_state_flag = is_under_siege } }
-						clr_state_flag = is_under_siege
+						29 = { clr_state_flag = is_under_siege }
+						news_event = siege.2
 					}
 					add_to_variable = { global.29_siege_progress = -0.2 }
 					add_to_variable = { global.29_siege_progress_negative = 0.2 }
@@ -74,8 +92,22 @@ on_actions = {
 					ROOT = { has_war_with = FROM }
 				}
 				FROM.FROM = { clr_state_flag = is_under_siege }
+				FROM = {
+					if = {
+						limit = { has_variable  = siege_war_support }
+						add_to_variable = { siege_war_support = -0.1 }
+					} else = {
+						set_variable = { siege_war_support = -0.1 }
+					}
+					if = {
+						limit = {
+							NOT = { has_dynamic_modifier = { modifier = siege_modifier_country } }
+						}
+						add_dynamic_modifier = { modifier = siege_modifier_country }
+					}
+				}
 				set_variable = { global.29_siege_progress_days_event = global.29_siege_progress_days }
-				ROOT = { news_event = siege.1 }
+				ROOT = { FROM = { news_event = siege.1 } }	# double scope so the event can get the besieger scope
 			}
 		}
 	}
