@@ -30,7 +30,7 @@ on_actions = {
 					limit = {
 						has_war = yes
 						controls_province = 274
-						any_enemy_country = { controls_province = 3722 }
+						any_enemy_country = { controls_province = 1658 }
 						any_enemy_country = { controls_province = 1342 }
 						any_enemy_country = { controls_province = 932 }
 						any_enemy_country = { controls_province = 770 }
@@ -46,7 +46,7 @@ on_actions = {
 						limit = { check_variable = { global.29_siege_progress > 0.99 } }	# siege ends!
 						set_variable = { global.29_siege_progress_days_event = global.29_siege_progress_days }
 						29 = { clr_state_flag = is_under_siege }	# so the event don't fire twice when the state changes!
-						29 = { owner = { news_event = siege.0 } }
+						29 = { controller = { news_event = siege.0 } }
 					}
 					add_to_variable = { global.29_siege_progress = 0.05 }
 					add_to_variable = { global.29_siege_progress_negative = -0.05 }
@@ -55,6 +55,12 @@ on_actions = {
 						add_to_variable = { global.29_siege_progress = 0.025 }
 						add_to_variable = { global.29_siege_progress_negative = -0.025 }
 					}
+					if = {
+						limit = { 29 = { controller = { NOT = { has_full_control_of_state = 29 } } } }			# loosing the suburbs makes siege progress faster
+						add_to_variable = { global.29_siege_progress = 0.025 }
+						add_to_variable = { global.29_siege_progress_negative = -0.025 }
+					}
+					29 = { siege_damage_random_building = yes }
 					if = {
 						limit = { 29 = { has_dynamic_modifier = { modifier = siege_modifier_state } } }
 						29 = { add_dynamic_modifier = { modifier = siege_modifier_state } }
@@ -65,8 +71,14 @@ on_actions = {
 						29 = { clr_state_flag = is_under_siege }
 						news_event = siege.2
 					}
-					add_to_variable = { global.29_siege_progress = -0.2 }
-					add_to_variable = { global.29_siege_progress_negative = 0.2 }
+					if = {
+						limit = { 29 = { controller = { has_full_control_of_state = 29 } } }
+						add_to_variable = { global.29_siege_progress = -0.1 }
+						add_to_variable = { global.29_siege_progress_negative = 0.1 }
+					} else = {
+						add_to_variable = { global.29_siege_progress = -0.05 }
+						add_to_variable = { global.29_siege_progress_negative = 0.05 }
+					}
 					if = {
 						limit = {
 							check_variable = { global.29_siege_progress < 0.05 }
