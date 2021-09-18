@@ -208,3 +208,219 @@ news_event = {
 		}
 	}
 }
+
+# Nagoya surrenders (siege progress reached 100%)
+news_event = {
+	id = siege.3
+	title = siege.3.t
+	desc = siege.3.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			ROOT = {
+				delete_unit = { 
+					state = 211
+					disband = no #w ill no refund equipment and manpower
+				}
+				if = {
+					limit = { has_variable  = siege_war_support }
+					add_to_variable = { siege_war_support = -0.1 }
+				} else = {
+					set_variable = { siege_war_support = -0.1 }
+				}
+				if = {
+					limit = {
+						any_enemy_country = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 220
+								controls_province = 3425
+								controls_province = 3388
+								controls_province = 1365
+								controls_province = 3440
+								controls_province = 113
+								controls_province = 1430
+							}
+						}
+					}
+					random_enemy_country = {
+						limit = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 220
+								controls_province = 3425
+								controls_province = 3388
+								controls_province = 1365
+								controls_province = 3440
+								controls_province = 113
+								controls_province = 1430
+							}
+						}
+						set_state_controller = 211
+					}
+				} else = {
+					random_enemy_country = {
+						limit = {
+							OR = {
+								controls_province = 220
+								controls_province = 3425
+								controls_province = 3388
+								controls_province = 1365
+								controls_province = 3440
+								controls_province = 113
+								controls_province = 1430
+							}
+						}
+						set_state_controller = 211
+					}
+				}
+			}
+		}
+	}
+	
+	option = {	# DEFENDER
+		name = siege.3.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = siege.3.b
+		trigger = {
+			OR = {
+				OR = {
+					controls_province = 220
+					any_allied_country = { controls_province = 220 }
+				}
+				OR = {
+					controls_province = 3425
+					any_allied_country = { controls_province = 3425 }
+				}
+				OR = {
+					controls_province = 3388
+					any_allied_country = { controls_province = 3388 }
+				}
+				OR = {
+					controls_province = 1365
+					any_allied_country = { controls_province = 1365 }
+				}
+				OR = {
+					controls_province = 3440
+					any_allied_country = { controls_province = 3440 }
+				}
+				OR = {
+					controls_province = 113
+					any_allied_country = { controls_province = 113 }
+				}
+				OR = {
+					controls_province = 1430
+					any_allied_country = { controls_province = 1430 }
+				}
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = siege.3.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Nagoya is taken (siege progress did not reach 100%)
+news_event = {
+	id = siege.4
+	title = siege.4.t
+	desc = siege.4.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = siege.4.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = siege.4.b
+		trigger = {
+			OR = {
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = siege.4.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Nagoya is relieved (siege progress did not reach 100%)
+news_event = {
+	id = siege.5
+	title = siege.5.t
+	desc = siege.5.d
+	picture = GFX_news_siege_relieve_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = siege.5.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+	}
+	option = {	# ATTACKER
+		name = siege.5.b
+		trigger = {
+			has_war_with = ROOT
+		}
+	}
+	option = {	# NEUTRAL
+		name = siege.5.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+	}
+}

@@ -8,6 +8,11 @@ on_actions = {
 			set_variable = { global.29_siege_progress_negative = 0 }
 			set_variable = { global.29_siege_progress_days = 0 }
 			29 = { set_variable = { number_of_sieges = 0 } }
+			### NAGOYA
+			set_variable = { global.211_siege_progress = 0 }
+			set_variable = { global.211_siege_progress_negative = 0 }
+			set_variable = { global.211_siege_progress_days = 0 }
+			211 = { set_variable = { number_of_sieges = 0 } }
 		}
 	}
 	
@@ -91,6 +96,75 @@ on_actions = {
 				clamp_variable = { var = global.29_siege_progress min = 0 max = 1 }
 				clamp_variable = { var = global.29_siege_progress_negative min = -1 max = 0 }
 			}
+			### Nagoya under siege
+			if = {
+				limit = { controls_state = 211 }
+				if = {
+					limit = {
+						has_war = yes
+						controls_province = 191
+						any_enemy_country = { controls_province = 220 }
+						any_enemy_country = { controls_province = 3425 }
+						any_enemy_country = { controls_province = 3388 }
+						any_enemy_country = { controls_province = 1365 }
+						any_enemy_country = { controls_province = 3440 }
+						any_enemy_country = { controls_province = 113 }
+						any_enemy_country = { controls_province = 1430 }
+					}
+					if = {
+						limit = { 211 = { NOT = { has_state_flag = is_under_siege } } }
+						211 = { set_state_flag = is_under_siege }
+						211 = { add_to_variable = { number_of_sieges = 1 } }
+					}
+					if = {
+						limit = { check_variable = { global.211_siege_progress > 0.99 } }	# siege ends!
+						set_variable = { global.211_siege_progress_days_event = global.211_siege_progress_days }
+						211 = { clr_state_flag = is_under_siege }	# so the event don't fire twice when the state changes!
+						211 = { controller = { news_event = siege.3 } }
+					}
+					add_to_variable = { global.211_siege_progress = 0.05 }
+					add_to_variable = { global.211_siege_progress_negative = -0.05 }
+					if  = {
+						limit = { 211 = { NOT = { days_since_last_strategic_bombing > 7 } } }	# strategic bombing makes siege progress faster
+						add_to_variable = { global.211_siege_progress = 0.025 }
+						add_to_variable = { global.211_siege_progress_negative = -0.025 }
+					}
+					if = {
+						limit = { 211 = { controller = { NOT = { has_full_control_of_state = 211 } } } }			# loosing the suburbs makes siege progress faster
+						add_to_variable = { global.211_siege_progress = 0.025 }
+						add_to_variable = { global.211_siege_progress_negative = -0.025 }
+					}
+					211 = { siege_damage_random_building = yes }
+					if = {
+						limit = { 211 = { has_dynamic_modifier = { modifier = siege_modifier_state } } }
+						211 = { add_dynamic_modifier = { modifier = siege_modifier_state } }
+					}
+				} else = {
+					if = {
+						limit = { 211 = { has_state_flag = is_under_siege } }
+						211 = { clr_state_flag = is_under_siege }
+						news_event = siege.4
+					}
+					if = {
+						limit = { 211 = { controller = { has_full_control_of_state = 211 } } }
+						add_to_variable = { global.211_siege_progress = -0.1 }
+						add_to_variable = { global.211_siege_progress_negative = 0.1 }
+					} else = {
+						add_to_variable = { global.211_siege_progress = -0.05 }
+						add_to_variable = { global.211_siege_progress_negative = 0.05 }
+					}
+					if = {
+						limit = {
+							check_variable = { global.211_siege_progress < 0.05 }
+							211 = { has_dynamic_modifier = { modifier = siege_modifier_state } }
+						}
+						211 = { remove_dynamic_modifier = { modifier = siege_modifier_state }  }
+					}
+					set_variable = { global.211_siege_progress_days = 0 }
+				}
+				clamp_variable = { var = global.211_siege_progress min = 0 max = 1 }
+				clamp_variable = { var = global.211_siege_progress_negative min = -1 max = 0 }
+			}
 		}
 	}
 	
@@ -121,6 +195,31 @@ on_actions = {
 				set_variable = { global.29_siege_progress_days_event = global.29_siege_progress_days }
 				ROOT = { FROM = { news_event = siege.1 } }	# double scope so the event can get the besieger scope
 			}
+			# Nagoya: siege ends
+			if = {
+				limit = {
+					FROM.FROM = { state = 211 }
+					211 = { has_state_flag = is_under_siege }
+					ROOT = { has_war_with = FROM }
+				}
+				FROM.FROM = { clr_state_flag = is_under_siege }
+				FROM = {
+					if = {
+						limit = { has_variable  = siege_war_support }
+						add_to_variable = { siege_war_support = -0.1 }
+					} else = {
+						set_variable = { siege_war_support = -0.1 }
+					}
+					if = {
+						limit = {
+							NOT = { has_dynamic_modifier = { modifier = siege_modifier_country } }
+						}
+						add_dynamic_modifier = { modifier = siege_modifier_country }
+					}
+				}
+				set_variable = { global.211_siege_progress_days_event = global.211_siege_progress_days }
+				ROOT = { FROM = { news_event = siege.5 } }	# double scope so the event can get the besieger scope
+			}
 		}
 	}
 	
@@ -132,6 +231,14 @@ on_actions = {
 				if = {
 					limit = { check_variable = { global.29_siege_progress > 0.01 } }
 					add_to_variable = { global.29_siege_progress_days = 1 }
+				}
+			}
+			### Nagoya under siege
+			if = {
+				limit = { controls_state = 211 }
+				if = {
+					limit = { check_variable = { global.211_siege_progress > 0.01 } }
+					add_to_variable = { global.211_siege_progress_days = 1 }
 				}
 			}
 		}
