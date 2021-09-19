@@ -79,7 +79,7 @@ EZO_fall_goverment = {
 		
         is_good = no                           
         selectable_mission = no              
-        days_mission_timeout = 250       
+        days_mission_timeout = 265       
         timeout_effect = {
 			add_ideas = EZO_civil_war
 			set_country_flag = facist_enter_civil_war
@@ -1144,51 +1144,7 @@ EZO_fall_goverment = {
 			set_country_flag = ezo_civil_war_time_other_1
 			set_conutry_flag = democratics_enter_civil_war
         }
-	}	
-	
-	EZO_civil_war_time_3_testpad = { 
-
-		allowed = { tag = EZO } 
-			 
-        available = {                           
-            NOT = { 
-				has_country_flag = ezo_civil_war_time_other_1
-			}                 
-        }
-        activation = {                         
-            has_country_flag = ezo_civil_war_time_other_1                      
-        }
-		
-        is_good = no                           
-        selectable_mission = no              
-        days_mission_timeout = 100          
-        timeout_effect = {
-			if = {
-				limit = {
-					has_completed_focus = EZO_sellect_traditionalism
-					NOT = { 
-						has_government = fascism 
-						has_country_flag = democratics_enter_civil_war
-					}
-				}
-	
-				start_civil_war = {
-					ideology = democratic
-					size = 0.35
-					only_own_territory = no
-					capital = 58
-					states = { 
-						
-					}
-					keep_political_leader = yes
-					add_ideas = EZO_civil_war
-				}
-			}
-			
-			clr_country_flag = ezo_civil_war_time_other_1 
-			clr_country_flag = democratics_enter_civil_war
-        }
-	} 
+	}
 	
 }
 
@@ -1292,6 +1248,125 @@ EZO_WIT_FER_WAR = {
 		}
 	}
 
+}
+
+EZO_the_farmer_problems = {
+	EZO_request_financial_aid = {
+		icon = GFX_decision_financial_aid
+		visible = {
+			tag = EZO
+			has_completed_focus = EZO_economic_assistance_to_farmers
+			NOT = {
+				has_government = communism
+				has_country_flag = deal_farmers
+			}
+			has_civil_war = no
+		}
+		available = {
+			NOT = { has_country_flag = deal_farmers }
+			has_civil_war = no
+			has_political_power < 20
+		}
+		fire_only_once = no
+		is_good = yes
+		ai_will_do = {
+			factor = 0
+		}
+		complete_effect = {
+			add_political_power = 25
+		}
+	}
+	EZO_farmers_problem = {
+	priority = 1
+		icon = decision_category_generic
+		visible = {
+			tag = EZO
+			has_completed_focus = EZO_economic_assistance_to_farmers
+			NOT = {
+				has_government = communism
+				has_country_flag = deal_farmers
+			}
+			has_civil_war = no
+		}
+		available = {
+			has_country_flag = deal_farmers
+			has_civil_war = no
+		}
+		activation = {
+			has_completed_focus = EZO_economic_assistance_to_farmers
+			NOT = { has_country_flag = deal_farmers }
+		}
+		is_good = no                           
+        selectable_mission = no              
+        days_mission_timeout = 7         
+        timeout_effect = {
+			add_stability = -0.01
+			add_political_power = -20
+			add_to_variable = {
+				var = farmer_protest
+				value = 10
+			}
+        }
+	}
+	EZO_appease_the_farmers = {
+	priority = 2
+		icon = decision_category_generic
+		visible = {
+			tag = EZO
+			has_completed_focus = EZO_economic_assistance_to_farmers
+			NOT = {
+				has_government = communism
+				has_country_flag = deal_farmers
+			}
+			has_civil_war = no
+		}
+		available = {
+			NOT = { has_country_flag = deal_farmers }
+			has_civil_war = no
+		}
+		cost = 25
+		days_remove = 10
+		fire_only_once = no
+		remove_effect = {
+			add_stability = 0.05
+			add_war_support = -0.05
+			add_to_variable = {
+				var = farmer_protest
+				value = -50
+			}
+        }
+	}
+	EZO_deal_farmers = {
+	priority = 3
+		icon = decision_category_generic
+		visible = {
+			tag = EZO
+			has_completed_focus = EZO_economic_assistance_to_farmers
+			NOT = {
+				has_government = communism
+				has_country_flag = deal_farmers
+			}
+			has_civil_war = no
+		}
+		available = {
+			has_civil_war = no
+			NOT = { has_country_flag = deal_farmers }
+		}
+		cost = farmer_protest?1900
+		days_remove = 150
+		fire_only_once = no
+		remove_effect = {
+			add_stability = 0.25
+			add_political_power = 200
+			set_conutry_flag = deal_farmers
+			add_manpower = 100000 
+			swap_ideas = {
+				remove_idea = EZO_farmer_protest
+				add_idea = EZO_farmer_deal
+			}
+			set_country_flag = deal_farmers
+        }
+	}
 }
 
 EZO_unlock_economic_help = {
@@ -1526,15 +1601,6 @@ EZO_establish_green_ukraine_decision = {
 			add_state_core = 188
 			add_state_core = 187
 			add_state_core = 186
-			hidden_effect = {
-			add_popularity = {
-			    ideology = neutrality
-			    popularity = 0.2
-			}
-			set_politics = {
-				ruling_party = neutrality
-			}
-			}
 			set_country_flag = green_ukraine
 			set_cosmetic_tag = EZO_green_ukraine
 		}
