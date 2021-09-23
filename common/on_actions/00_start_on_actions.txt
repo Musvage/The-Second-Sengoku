@@ -22,6 +22,11 @@ on_actions = {
 			random_country = {
 				crash_1929_system_set_up = yes
 			}
+		# PLANED ECONOMY # PLANED ECONOMY # PLANED ECONOMY # PLANED ECONOMY # PLANED ECONOMY 
+			every_country = {
+				limit = { has_government = communism }
+				planned_economy_set_up = yes
+			}
 		# League of Nations # League of Nations # League of Nations # League of Nations 
 			add_to_array = { global.LON_leader = OSA }
 			add_to_array = { global.LON_members = OSA }
@@ -682,10 +687,32 @@ on_actions = {
 		effect = {
 			update_religion_monthly = yes
 		}
+		### PLANNED ECONOMY### PLANNED ECONOMY### PLANNED ECONOMY
+		effect = {
+			if = {
+				limit = { has_government = communism }
+				if = {
+					limit = { NOT = { has_dynamic_modifier = { modifier = planned_economy_modifier } } }
+					add_dynamic_modifier = { modifier = planned_economy_modifier }
+				}
+				set_variable = { planned_economy_political_power = modifier@consumer_goods_factor }
+				subtract_from_variable = { planned_economy_political_power = 0.3 }
+				multiply_variable = { planned_economy_political_power = 2 }
+				set_variable = { planned_economy_party_popularity = modifier@consumer_goods_factor }
+				subtract_from_variable = { planned_economy_party_popularity = 0.3 }
+				#multiply_variable = { planned_economy_party_popularity = 0.1 }
+			} else = {
+				if = {
+					limit = { has_dynamic_modifier = { modifier = planned_economy_modifier } }
+					remove_dynamic_modifier = { modifier = planned_economy_modifier }
+				}
+			}
+		}
 	}
 	
-	on_ruling_party_change = {	### SET OR RESET 1929 CRASH
+	on_ruling_party_change = {	
 		effect = {
+			### SET OR RESET 1929 CRASH
 			if = {
 				limit = { has_global_flag = crash_1929_global_enabled }
 				if = {
@@ -702,6 +729,11 @@ on_actions = {
 					}
 				}
 			}
+			### PLANNED ECONOMY
+			if = {
+				limit = { has_government = communism }
+				planned_economy_set_up = yes
+			} else = { planned_economy_remove = yes }
 		}
 	}
 }
