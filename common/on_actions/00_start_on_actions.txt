@@ -681,10 +681,10 @@ on_actions = {
 			}
 		}
 	}
-
-	# religion stuff
+	
 	on_monthly = {
 		effect = {
+		### RELIGION STUFF ### RELIGION STUFF ### RELIGION STUFF 
 			update_religion_monthly = yes
 		}
 		### PLANNED ECONOMY### PLANNED ECONOMY### PLANNED ECONOMY
@@ -695,12 +695,22 @@ on_actions = {
 					limit = { NOT = { has_dynamic_modifier = { modifier = planned_economy_modifier } } }
 					add_dynamic_modifier = { modifier = planned_economy_modifier }
 				}
+				set_variable = { planned_economy_minimum_goods = 0.3 }
+				set_variable = { war_support_goods_modifier = 0 }
+				if = {
+					limit = {
+						has_war = yes
+						has_war_support > 0.5
+					}
+					set_variable = { war_support_goods_modifier = has_war_support }
+					multiply_variable = { war_support_goods_modifier = 0.2 }
+					subtract_from_variable = { planned_economy_minimum_goods = war_support_goods_modifier }
+				}
 				set_variable = { planned_economy_political_power = modifier@consumer_goods_factor }
-				subtract_from_variable = { planned_economy_political_power = 0.3 }
+				subtract_from_variable = { planned_economy_political_power = planned_economy_minimum_goods }
 				multiply_variable = { planned_economy_political_power = 2 }
 				set_variable = { planned_economy_party_popularity = modifier@consumer_goods_factor }
-				subtract_from_variable = { planned_economy_party_popularity = 0.3 }
-				#multiply_variable = { planned_economy_party_popularity = 0.1 }
+				subtract_from_variable = { planned_economy_party_popularity = planned_economy_minimum_goods }
 			} else = {
 				if = {
 					limit = { has_dynamic_modifier = { modifier = planned_economy_modifier } }
