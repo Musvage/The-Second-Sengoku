@@ -1,4 +1,4 @@
-name="The Second Sengoku dev"
+name="Second Sengoku map"
 replace_path="history/states"
 replace_path="history/countries"
 replace_path="history/units"
@@ -29,8 +29,9 @@ replace_path="common/units/codenames_operatives"
 replace_path="common/ideas"
 replace_path="common/country_leader"
 tags={
-	"Graphics"
+	"Map"
+	"Utilities"
 }
-picture="SS.png"
+picture="Thumbnail.png"
+version="0.0"
 supported_version="1.10.*"
-path="C:/Users/koen.hehr/Documents/Paradox Interactive/Hearts of Iron IV/mod/The-Second-Sengoku"
