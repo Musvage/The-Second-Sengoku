@@ -1,4 +1,4 @@
-name="Second Sengoku map"
+name="Second Sengoku"
 replace_path="history/states"
 replace_path="history/countries"
 replace_path="history/units"
