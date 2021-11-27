@@ -34,4 +34,4 @@ tags={
 }
 picture="Thumbnail.png"
 version="0.0"
-supported_version="1.10.*"
+supported_version="1.11.*"
