@@ -17,11 +17,14 @@
 # everytime the player changes religious & laws it triggers a check for its effects over religion
 # every focus & decision that deals with religion should trigger a check for its effects over religion
 
-# religion drift is applied to every controlled state, with half effect on non-core states
+# religion drift is applied to every controlled state, with a third less effect on non-core states
 # every country has a religion drift variable applied to its states
 # religion drift is calculated monthly on each state
 # religion drift is scaled according to official religion popularity (the more popular, the less drift)
 # the efect for checking the state religion drift MUST be enacted from its controller (otherwise the code won't work)
+
+# national religion popularity values must be within [0;1] ranges for calculating religion effects
+# state religion popularity values must be within [0;100] ranges so math does not get too off when rounding up numbers
 
 #index of religions
 #1 buddhism
@@ -109,7 +112,7 @@ get_official_religion_popularity = {
 			add_to_temp_variable = { PREV.total_population = state_population_temp }
 			if = {
 				limit = { check_variable = { PREV.country_religion = 1 } } 	# Buddhism
-				multiply_temp_variable = { state_population_temp = var:state_religion_buddhism }
+				multiply_temp_variable = { state_population_temp = var:state_religion_buddhism }	# this is a [0;100] value, gotta be adjusted to [0;1] later
 			}
 			if = {
 				limit = { check_variable = { PREV.country_religion = 2 } } 	# Shinto
@@ -141,6 +144,7 @@ get_official_religion_popularity = {
 	
 	set_variable = { country_official_religion_popularity_cc = total_population_religion }	# country_official_religion_popularity_cc - > core & controlled
 	divide_variable = { country_official_religion_popularity_cc = total_population }
+	divide_variable = { country_official_religion_popularity_cc = 100 } # scales back to [0;1] range
 	
 	# ON CONTROLLED STATES
 	set_temp_variable = { total_population = 0 }	# of core states
@@ -153,7 +157,7 @@ get_official_religion_popularity = {
 			add_to_temp_variable = { PREV.total_population = state_population_temp }
 			if = {
 				limit = { check_variable = { PREV.country_religion = 1 } } 	# Buddhism
-				multiply_temp_variable = { state_population_temp = var:state_religion_buddhism }
+				multiply_temp_variable = { state_population_temp = var:state_religion_buddhism }	# this is a [0;100] value, gotta be adjusted to [0;1] later
 			}
 			if = {
 				limit = { check_variable = { PREV.country_religion = 2 } } 	# Shinto
@@ -185,6 +189,7 @@ get_official_religion_popularity = {
 	
 	set_variable = { country_official_religion_popularity_c = total_population_religion }	# country_official_religion_popularity_c - > controlled
 	divide_variable = { country_official_religion_popularity_c = total_population }
+	divide_variable = { country_official_religion_popularity_c = 100 } # scales back to [0;1] range
 }
 
 scale_country_religion_effect = {
@@ -321,52 +326,56 @@ set_country_religion_modifier = {
 
 get_country_religion_drift = {
 
-	set_variable = { country_religion_drift = 0.01 }	# SHOULD BE ZERO, MUST BE CHANGED AFTER LAWS ARE ADDED
+	set_variable = { country_religion_drift = 0.0 }
 	
 	if = {
 		limit = { has_idea_with_trait = buddhist_monk }
-		add_to_variable = { country_religion_drift = 0.1 }
+		add_to_variable = { country_religion_drift = 0.5 }	### PAY ATTENTION TO THE DECIMALS!
 	}
 	if = {
 		limit = { has_idea_with_trait = shinshoku }
-		add_to_variable = { country_religion_drift = 0.1 }
+		add_to_variable = { country_religion_drift = 0.5 }
 	}
 	if = {
 		limit = { has_idea_with_trait = shinshoku_2 }
-		add_to_variable = { country_religion_drift = 0.15 }
+		add_to_variable = { country_religion_drift = 0.75 }
 	}
 	if = {
 		limit = { has_idea_with_trait = protestant_missionary }
-		add_to_variable = { country_religion_drift = 0.1 }
+		add_to_variable = { country_religion_drift = 0.5 }
 	}
 	if = {
 		limit = { has_idea_with_trait = orthodox_priest }
-		add_to_variable = { country_religion_drift = 0.1 }
+		add_to_variable = { country_religion_drift = 0.5 }
+	}
+	if = {
+		limit = { has_idea_with_trait = catholic_priest }
+		add_to_variable = { country_religion_drift = 0.5 }
 	}
 	if = {
 		limit = { has_idea_with_trait = jesuit }
-		add_to_variable = { country_religion_drift = 0.15 }
+		add_to_variable = { country_religion_drift = 0.75 }
 	}
 	if = {
 		limit = { has_idea_with_trait = daoshi }
-		add_to_variable = { country_religion_drift = 0.1 }
+		add_to_variable = { country_religion_drift = 0.5 }
 	}
 	if = {
 		limit = { has_idea_with_trait = confucian_philosopher }
-		add_to_variable = { country_religion_drift = 0.1 }
+		add_to_variable = { country_religion_drift = 0.5 }
 	}
 	if = {
 		limit = { has_idea_with_trait = republican_thinker }
-		add_to_variable = { country_religion_drift = 0.1 }
+		add_to_variable = { country_religion_drift = 0.5 }
 	}
 	if = {
 		limit = { has_idea_with_trait = militant_atheist }
-		add_to_variable = { country_religion_drift = 0.15 }
+		add_to_variable = { country_religion_drift = 0.75 }
 	}
 
 	if = {
 		limit = { has_idea_with_trait = mad_cultist }
-		add_to_variable = { country_religion_drift = 0.2 }
+		add_to_variable = { country_religion_drift = 1 }
 	}
 
 #	if = {	# LAWS
@@ -430,12 +439,12 @@ state_drift_religion = {
 		}
 		
 		multiply_temp_variable = { drift_scale_effect = 2 }
-		clamp_temp_variable = { var = drift_scale_effect min = 0.25 max = 1 }
+		clamp_temp_variable = { var = drift_scale_effect min = 0.25 max = 2 }
 		multiply_temp_variable = { local_drift_effect = drift_scale_effect }
 		
 		if = {
 			limit = { NOT = { is_core_of = CONTROLLER } }
-			divide_temp_variable = { local_drift_effect = 2 }	# -50% CONVERSION RATE FOR NON-CORE
+			multiply_temp_variable = { local_drift_effect = 0.66 }	# -33% CONVERSION RATE FOR NON-CORE
 		}
 	
 		set_temp_variable = { pool_of_other_religions = 0 }
@@ -467,59 +476,108 @@ state_drift_religion = {
 			limit = { NOT = { CONTROLLER = { check_variable =  {country_religion = 7 } } } }	# Cult of Cthulhu
 			add_to_temp_variable = { pool_of_other_religions = state_religion_cthulhu }
 		}
+		log = "pool_of_other_religions = [?pool_of_other_religions]"
+		if = {
+			limit = { check_variable = { pool_of_other_religions = 0 } }	# anti-error measure
+			set_temp_variable = { pool_of_other_religions = 1 }
+		}
 		
+		# apply negative drift to non-official religions
 		if = {
-			limit = { NOT = { CONTROLLER = { check_variable =  {country_religion = 1 } } } }	# Buddhism
-			set_temp_variable = { drifit_negative = state_religion_buddhism }
-			divide_temp_variable = { drifit_negative = pool_of_other_religions }
+			limit = { CONTROLLER = { check_variable =  {country_religion = 1 } } }	# Buddhism
+		} else = {
+			set_temp_variable = { drifit_negative = state_religion_buddhism }	# it's actually a positive value
 			multiply_temp_variable = { drifit_negative = local_drift_effect }
+			divide_temp_variable = { drifit_negative = pool_of_other_religions }
 			subtract_from_variable = { state_religion_buddhism = drifit_negative }
+			log = "peace was never an option: state_religion_buddhism drifit_negative = [?drifit_negative]"
 		}
 		if = {
-			limit = { NOT = { CONTROLLER = { check_variable =  {country_religion = 2 } } } }	# Shinto
+			limit = { CONTROLLER = { check_variable =  {country_religion = 2 } } }	# Shinto
+		} else = {
 			set_temp_variable = { drifit_negative = state_religion_shinto }
-			divide_temp_variable = { drifit_negative = pool_of_other_religions }
 			multiply_temp_variable = { drifit_negative = local_drift_effect }
+			divide_temp_variable = { drifit_negative = pool_of_other_religions }	
 			subtract_from_variable = { state_religion_shinto = drifit_negative }
+			log = "peace was never an option: state_religion_shinto drifit_negative = [?drifit_negative]"
 		}
 		if = {
-			limit = { NOT = { CONTROLLER = { check_variable =  {country_religion = 3 } } } }	# Christianity
+			limit = { CONTROLLER = { check_variable =  {country_religion = 3 } } }	# Christianity
+		} else = {
 			set_temp_variable = { drifit_negative = state_religion_christianity }
-			divide_temp_variable = { drifit_negative = pool_of_other_religions }
 			multiply_temp_variable = { drifit_negative = local_drift_effect }
+			divide_temp_variable = { drifit_negative = pool_of_other_religions }
 			subtract_from_variable = { state_religion_christianity = drifit_negative }
 		}
 		if = {
-			limit = { NOT = { CONTROLLER = { check_variable =  {country_religion = 4 } } } }	# Taoism
+			limit = { CONTROLLER = { check_variable =  {country_religion = 4 } } }	# Taoism
+		} else = {
 			set_temp_variable = { drifit_negative = state_religion_taoism }
-			divide_temp_variable = { drifit_negative = pool_of_other_religions }
 			multiply_temp_variable = { drifit_negative = local_drift_effect }
+			divide_temp_variable = { drifit_negative = pool_of_other_religions }
 			subtract_from_variable = { state_religion_taoism = drifit_negative }
+			log = "peace was never an option: state_religion_taoism drifit_negative = [?drifit_negative]"
 		}
 		if = {
-			limit = { NOT = { CONTROLLER = { check_variable =  {country_religion = 5 } } } }	# Confucianism
+			limit = { CONTROLLER = { check_variable =  {country_religion = 5 } } }	# Confucianism
+		} else = {
 			set_temp_variable = { drifit_negative = state_religion_confucianism }
-			divide_temp_variable = { drifit_negative = pool_of_other_religions }
 			multiply_temp_variable = { drifit_negative = local_drift_effect }
+			divide_temp_variable = { drifit_negative = pool_of_other_religions }
 			subtract_from_variable = { state_religion_confucianism = drifit_negative }
+			log = "peace was never an option: state_religion_confucianism drifit_negative = [?drifit_negative]"
 		}
 		if = {
-			limit = { NOT = { CONTROLLER = { check_variable =  {country_religion = 6 } } } }	# Secularism
+			limit = { CONTROLLER = { check_variable =  {country_religion = 6 } } }	# Secularism
+		} else = {
 			set_temp_variable = { drifit_negative = state_religion_secularism }
-			divide_temp_variable = { drifit_negative = pool_of_other_religions }
 			multiply_temp_variable = { drifit_negative = local_drift_effect }
+			divide_temp_variable = { drifit_negative = pool_of_other_religions }
 			subtract_from_variable = { state_religion_secularism = drifit_negative }
+			log = "peace was never an option: state_religion_secularism drifit_negative = [?drifit_negative]"
 		}
 		if = {
-			limit = { NOT = { CONTROLLER = { check_variable =  {country_religion = 7 } } } }	# Cult of Cthulhu
+			limit = { CONTROLLER = { check_variable =  {country_religion = 7 } } }	# Cult of Cthulhu
+		} else = {
 			set_temp_variable = { drifit_negative = state_religion_cthulhu }
-			divide_temp_variable = { drifit_negative = pool_of_other_religions }
 			multiply_temp_variable = { drifit_negative = local_drift_effect }
+			divide_temp_variable = { drifit_negative = pool_of_other_religions }
 			subtract_from_variable = { state_religion_cthulhu = drifit_negative }
+			log = "peace was never an option: state_religion_cthulhu drifit_negative = [?drifit_negative]"
+		}
+		
+		# adds drift to official religion
+		if = {
+			limit = { CONTROLLER = { check_variable =  {country_religion = 1 } } }	# Buddhism
+			add_to_variable = { state_religion_buddhism = local_drift_effect }
+		}
+		if = {
+			limit = { CONTROLLER = { check_variable =  {country_religion = 2 } } }	# Shinto
+			add_to_variable = { state_religion_shinto = local_drift_effect }
+		}
+		if = {
+			limit = { CONTROLLER = { check_variable =  {country_religion = 3 } } }	# Christianity
+			add_to_variable = { state_religion_christianity = local_drift_effect }
+		}
+		if = {
+			limit = { CONTROLLER = { check_variable =  {country_religion = 4 } } }	# Taoism
+			add_to_variable = { state_religion_taoism = local_drift_effect }
+		}
+		if = {
+			limit = { CONTROLLER = { check_variable =  {country_religion = 5 } } }	# Confucianism
+			add_to_variable = { state_religion_confucianism = local_drift_effect }
+		}
+		if = {
+			limit = { CONTROLLER = { check_variable =  {country_religion = 6 } } }	# Secularism
+			add_to_variable = { state_religion_secularism = local_drift_effect }
+		}
+		if = {
+			limit = { CONTROLLER = { check_variable =  {country_religion = 7 } } }	# Cult of Cthulhu
+			add_to_variable = { state_religion_cthulhu = local_drift_effect }
 		}
 		
 		## error catcher here! if all religions do not sum 100%, difference is added/subtracted from official religion
-		set_temp_variable = { total_state_religion_temp = 1 }
+		set_temp_variable = { total_state_religion_temp = 100 }
 		subtract_from_temp_variable = { total_state_religion_temp = state_religion_buddhism }
 		subtract_from_temp_variable = { total_state_religion_temp = state_religion_shinto }
 		subtract_from_temp_variable = { total_state_religion_temp = state_religion_christianity }
@@ -529,7 +587,7 @@ state_drift_religion = {
 		subtract_from_temp_variable = { total_state_religion_temp = state_religion_cthulhu }
 		
 		if = {
-			limit = { NOT = { check_variable = { total_state_religion_temp = 0 } } }
+			limit = { NOT = { check_variable = { total_state_religion_temp = 0 } } }	
 			log = "[THIS.GetName]: wrong sum of religion popularities, [?total_state_religion_temp] error!"
 			if = {
 				limit = { CONTROLLER = { check_variable = { country_religion = 1 } } }	# Buddhism
