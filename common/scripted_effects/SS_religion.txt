@@ -327,67 +327,89 @@ set_country_religion_modifier = {
 get_country_religion_drift = {
 
 	set_variable = { country_religion_drift = 0.0 }
+	set_variable = { country_religion_drift_multiplier = 0.0 }
+	set_variable = { country_religion_drift_adviser = 0.0 }
+	set_variable = { country_religion_drift_idea = 0.0 }
+	set_variable = { country_religion_drift_law = 0.0 }
+	set_variable = { country_religion_drift_other = 0.0 }
+	set_variable = { country_religion_drift_christianity = 0.0 }
 	
 	if = {
 		limit = { has_idea_with_trait = buddhist_monk }
-		add_to_variable = { country_religion_drift = 0.5 }	### PAY ATTENTION TO THE DECIMALS!
+		add_to_variable = { country_religion_drift_adviser = 0.5 }	### PAY ATTENTION TO THE DECIMALS!
 	}
 	if = {
 		limit = { has_idea_with_trait = shinshoku }
-		add_to_variable = { country_religion_drift = 0.5 }
+		add_to_variable = { country_religion_drift_adviser = 0.5 }
 	}
 	if = {
 		limit = { has_idea_with_trait = shinshoku_2 }
-		add_to_variable = { country_religion_drift = 0.75 }
+		add_to_variable = { country_religion_drift_adviser = 0.75 }
 	}
 	if = {
 		limit = { has_idea_with_trait = protestant_missionary }
-		add_to_variable = { country_religion_drift = 0.5 }
+		add_to_variable = { country_religion_drift_adviser = 0.5 }
 	}
 	if = {
 		limit = { has_idea_with_trait = orthodox_priest }
-		add_to_variable = { country_religion_drift = 0.5 }
+		add_to_variable = { country_religion_drift_adviser = 0.5 }
 	}
 	if = {
 		limit = { has_idea_with_trait = catholic_priest }
-		add_to_variable = { country_religion_drift = 0.5 }
+		add_to_variable = { country_religion_drift_adviser = 0.5 }
 	}
 	if = {
 		limit = { has_idea_with_trait = jesuit }
-		add_to_variable = { country_religion_drift = 0.75 }
+		add_to_variable = { country_religion_drift_adviser = 0.75 }
 	}
 	if = {
 		limit = { has_idea_with_trait = daoshi }
-		add_to_variable = { country_religion_drift = 0.5 }
+		add_to_variable = { country_religion_drift_adviser = 0.5 }
 	}
 	if = {
 		limit = { has_idea_with_trait = confucian_philosopher }
-		add_to_variable = { country_religion_drift = 0.5 }
+		add_to_variable = { country_religion_drift_adviser = 0.5 }
 	}
 	if = {
 		limit = { has_idea_with_trait = republican_thinker }
-		add_to_variable = { country_religion_drift = 0.5 }
+		add_to_variable = { country_religion_drift_adviser = 0.5 }
 	}
 	if = {
 		limit = { has_idea_with_trait = militant_atheist }
-		add_to_variable = { country_religion_drift = 0.75 }
+		add_to_variable = { country_religion_drift_adviser = 0.75 }
 	}
 
 	if = {
 		limit = { has_idea_with_trait = mad_cultist }
-		add_to_variable = { country_religion_drift = 1 }
+		add_to_variable = { country_religion_drift_adviser = 1 }
 	}
 
 #	if = {	# LAWS
 #		limit = { has_idea = law idea! }		
-#		add_to_variable = { country_religion_drift = 0.1 }
+#		add_to_variable = { country_religion_drift_idea = 0.1 }
 #	}
+
+	#### CALCULATE EFFECT
+	add_to_variable = { country_religion_drift = country_religion_drift_adviser }
+	add_to_variable = { country_religion_drift = country_religion_drift_idea }
+	add_to_variable = { country_religion_drift = country_religion_drift_law }
+	add_to_variable = { country_religion_drift = country_religion_drift_other }
 
 	# CHRISTIAN: DEUS VULT!
 	if = {
-		limit = { check_variable = { country_religion = 3 } }
-		multiply_variable = { country_religion_drift = 2 }
+		limit = {
+			check_variable = { country_religion = 3 }	# Christianity
+			NOT = { check_variable = { country_religion_drift = 0 }	} # If drift is zero, it will not be multiplied
+		}
+		set_variable = { country_religion_drift_christianity = 1 }
 	}
+	
+	### Add multipliers
+	set_variable = { country_religion_drift_multiplier = 1 }
+	add_to_variable = { country_religion_drift_multiplier = country_religion_drift_christianity }
+	
+	#### MULTIPLY EFFECT
+	multiply_variable = { country_religion_drift = country_religion_drift_multiplier }
 }
 
 state_drift_religion = {
@@ -400,7 +422,7 @@ state_drift_religion = {
 	if = {
 		limit = { CONTROLLER = { check_variable = { country_religion_drift > 0 } } }	# if there's not religion drift, don't bother
 		set_temp_variable = { local_drift_effect = PREV.country_religion_drift }
-		set_temp_variable = { drift_scale_effect = 1 }
+		set_temp_variable = { drift_scale_effect = 100 }	# attention to scale!
 		
 		if = {
 			limit = { CONTROLLER = { check_variable = { country_religion = 1 } } }	# Buddhism
@@ -439,6 +461,7 @@ state_drift_religion = {
 		}
 		
 		multiply_temp_variable = { drift_scale_effect = 2 }
+		divide_temp_variable = { drift_scale_effect = 100 }
 		clamp_temp_variable = { var = drift_scale_effect min = 0.25 max = 2 }
 		multiply_temp_variable = { local_drift_effect = drift_scale_effect }
 		
@@ -652,8 +675,8 @@ check_state_main_religion = {
 	}
 }
 
-get_state_compliance_modifier = {
-	set_variable = { religion_local_compliance_bonus = 0 }
+get_religion_state_compliance_modifier = {
+	set_variable = { religion_local_compliance_bonus = 0 }	# this value is within a [0;100] range
 	if = {
 		limit = { NOT = { PREV = { tag = OWNER } } }	# PREV = controller
 		if = {
@@ -684,6 +707,6 @@ get_state_compliance_modifier = {
 			limit = { check_variable = { PREV.country_religion = 7 } }	# Cult of Cthulhu
 			set_variable = { religion_local_compliance_bonus = state_religion_cthulhu }
 		}
-		divide_variable = { state_religion_buddhism = 100 }
+		divide_variable = { religion_local_compliance_bonus = 100 }	# scales back to [0;1] ranges
 	}
 }
