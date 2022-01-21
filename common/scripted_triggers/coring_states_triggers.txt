@@ -1,0 +1,115 @@
+###	Automatically coring of states
+
+state_and_controller_same_culture = {	# localisation must be "Can gain cores in <<area>>"
+	custom_trigger_tooltip = {
+		tooltip = state_and_controller_same_culture_tt
+		OR = {
+			AND = {	## ANY JAPANESE CAN CORE JAPANESE STATES
+				OR = {
+					is_on_continent = honshu
+					is_on_continent = hokkaido
+					is_on_continent = shikoku
+					is_on_continent = kyushu
+				}
+				NOT = {	# OKINAWA IS NOT OF JAPANESE CULTURE
+					region = 119
+					region = 120
+				}
+				CONTROLLER = {
+					is_allowed_to_gain_cores = yes
+					capital_scope = {
+						OR = {
+							is_on_continent = honshu
+							is_on_continent = hokkaido
+							is_on_continent = shikoku
+							is_on_continent = kyushu
+						}
+						NOT = {
+							region = 119
+							region = 120
+						}
+					}
+				}
+			}
+			AND = {	# KOREA
+				is_on_continent = korea
+				CONTROLLER = {
+					is_allowed_to_gain_cores = yes
+					capital_scope = { is_on_continent = korea }
+				}
+			}
+			AND = {	# ASIA
+				OR = {
+					is_on_continent = asia
+					is_on_continent = sakhalin
+				}
+				CONTROLLER = {
+					is_allowed_to_gain_cores = yes
+					capital_scope = {
+						OR = {
+							is_on_continent = asia
+							is_on_continent = sakhalin
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+has_neighbour_core = {
+	custom_trigger_tooltip = {
+		tooltip = has_neighbour_core_tt
+		any_neighbor_state = {
+			is_core_of = CONTROLLER
+		}
+	}
+}
+
+special_permission_for_islands = {
+	always = no	# remove later
+}
+
+is_trade_city = {
+	custom_trigger_tooltip = {
+		tooltip = is_trade_city_tt
+		OR = {
+			tag = OSA
+			tag = KOB
+			tag = REI
+			tag = HIR
+			tag = PRT
+			tag = AMC
+			tag = OKI
+		}
+	}
+}
+
+is_trade_city_and_can_gain_cores = {
+	custom_trigger_tooltip = {
+		tooltip = is_trade_city_and_can_gain_cores_tt
+		OR = {
+			tag = OSA
+			tag = KOB
+			tag = REI
+			tag = HIR
+			tag = PRT
+			tag = AMC
+			tag = OKI
+		}
+		has_country_flag = trade_city_can_gain_cores
+	}
+}
+
+is_allowed_to_gain_cores = {
+	custom_trigger_tooltip = {
+		tooltip = is_trade_city_and_can_gain_cores_tt
+		OR = {
+			is_trade_city = no
+			AND = {
+				is_trade_city = yes
+				is_trade_city_and_can_gain_cores = yes
+			}
+		}
+	}
+}
