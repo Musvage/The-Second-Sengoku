@@ -11,23 +11,51 @@ on_actions = {
 			every_controlled_state = {
 				if = {
 					limit = {
-						check_variable = { coring_progress > 99.99
-						NOT = { is_core_of = ROOT }
-					}
-					add_core_of = ROOT
-				}
-				if = {
-					limit = {
-						NOT = { is_core_of = ROOT }
-						# triggers for coring
+						NOT = { is_core_of = PREV }
 						state_and_controller_same_culture = yes
+						is_fully_controlled_by = PREV
+						compliance > 99.99
+						resistance < 25
 						OR = {
-							# is neighbour, code this later
+							has_neighbour_core = yes
 							special_permission_for_islands = yes 	# code this later
 						}
 					}
-					add_to_variable = { coring_progress = 10 }	# arbitrary number, can change later
+					if = {
+						limit = { check_variable = { coring_progress > 99.99 } }
+						#add_core_of = PREV
+						set_variable = { coring_progress = 0 }
+						set_state_flag = core_this_state_now
+						log = "Adding core of [PREV.GetName] in [THIS.GetName]"
+					} else = {
+						add_to_variable = { coring_progress = 10 }	# arbitrary number, can change later
+						clamp_variable = { var = coring_progress max = 100 min = 0 }
+						log = "(+)Coring progress of [PREV.GetName] in [THIS.GetName]: [?coring_progress]%"
+					}
 				}
+				if = {
+					limit = {
+						NOT = { is_core_of = PREV }
+						NOT = {
+							state_and_controller_same_culture = yes
+							is_fully_controlled_by = PREV
+							compliance > 99.99
+							resistance < 0.25
+							OR = {
+								has_neighbour_core = yes
+								special_permission_for_islands = yes 	# code this later
+							}
+						}
+					}
+					add_to_variable = { coring_progress = -10 }	# arbitrary number, can change later
+					clamp_variable = { var = coring_progress max = 100 min = 0 }
+					log = "(-)Coring progress of [PREV.GetName] in [THIS.GetName]: [?coring_progress]%"
+				}
+			}
+			every_controlled_state = {
+				limit = { has_state_flag = core_this_state_now }
+				add_core_of = PREV
+				clr_state_flag = core_this_state_now
 			}
 		}
 	}
