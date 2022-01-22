@@ -6,14 +6,14 @@
 ##       ##    ##  ##       ##   ### ##    ## ##     ##    ##   ##   ##  ##   ### ##    ##  ##     ## ##     ## ##     ##
 ##       ##     ## ######## ##    ##  ######  ##     ##    ##    ## #### ##    ##  ######   ########   #######  ##     ##
 add_namespace = KOB_french_kingdom
-country_event = {
+country_event = { # 1st rotation
 	id = KOB_french_kingdom.1
 	title = KOB_french_kingdom.1.t
 	desc = KOB_french_kingdom.1.d
 	picture = GFX_report_event_generic_sign_treaty1
 
 	is_triggered_only = yes
-	fire_only_once = yes
+	fire_only_once = no
 
 	option = {
 		name="The first step shall be from Orléans!"
@@ -87,14 +87,14 @@ country_event = {
 	}
 }
 
-country_event = {
+country_event = { # 2nd rotation
 	id = KOB_french_kingdom.4
 	title = KOB_french_kingdom.4.t
 	desc = KOB_french_kingdom.4.d
 	picture = GFX_report_event_generic_sign_treaty1
 
 	is_triggered_only = yes
-	fire_only_once = yes
+	fire_only_once = no
 
 	option = {
 		name="The first step shall be from Bourbon!"
@@ -113,14 +113,14 @@ country_event = {
 	}
 }
 
-country_event = {
+country_event = { # 3rd rotation
 	id = KOB_french_kingdom.5
 	title = KOB_french_kingdom.5.t
 	desc = KOB_french_kingdom.5.d
 	picture = GFX_report_event_generic_sign_treaty1
 
 	is_triggered_only = yes
-	fire_only_once = yes
+	fire_only_once = no
 
 	option = {
 		name="The first step shall be from Bonaparte!"
@@ -133,13 +133,19 @@ country_event = {
 		name="The step resigns for someone else."
 		ROOT = {
 			hidden_effect = {
+				if = {
+					limit = {
+						has_country_flag = "gfx/flags/KOB_autocracy_kingdom_elections_01.tga"
+					}
+					country_event = { id = KOB_french_kingdom.8 days = 30 } # the player has reject the 1st cycle and we're on the 2nd cycle, so go to the easter egg bhopal decision
+				}
 				country_event = { id = KOB_french_kingdom.6 days = 30 }
 			}
 		}
 	}
 }
 
-country_event = {
+country_event = { # 4th rotation
 	id = KOB_french_kingdom.6
 	title = KOB_french_kingdom.6.t
 	desc = KOB_french_kingdom.6.d
@@ -156,16 +162,17 @@ country_event = {
 	}
 
 	option = {
-		name="The step resigns for something else."
+		name="The step resigns for someone else."
 		ROOT = {
 			hidden_effect = {
-				country_event = { id = KOB_french_kingdom.7 days = 1 }
+				set_country_flag = "gfx/flags/KOB_autocracy_kingdom_elections_01.tga"
+				country_event = { id = KOB_french_kingdom.1 days = 7 }
 			}
 		}
 	}
 }
 
-country_event = {
+country_event = { # easter egg floppa leader
 	id = KOB_french_kingdom.7
 	title = KOB_french_kingdom.7.t
 	desc = KOB_french_kingdom.7.d
@@ -178,7 +185,6 @@ country_event = {
 		name="The first step shall be from Floppa!"
 		ROOT = {
 			KOB = {
-				retire_character = KOB_henri_d’orléans
 				recruit_character = KOB_Floppa_le_beau
 				KOB_Floppa_le_beau = {
 					promote_character = {
@@ -191,6 +197,41 @@ country_event = {
 				set_variable = { dual_leader_first_title = 69420 } 
 				set_variable = { dual_leader_second_title = 69420 }
 				set_variable = { dual_leader_id = 69420 }  
+			}
+		}
+	}
+}
+
+country_event = { # 4th rotation but player reject previous whole cycle 
+	id = KOB_french_kingdom.8
+	title = KOB_french_kingdom.8.t
+	desc = KOB_french_kingdom.8.d
+	picture = GFX_report_event_generic_sign_treaty1
+
+	is_triggered_only = yes
+	fire_only_once = yes
+
+	option = {
+		name="The first step shall be from Bhopal!"
+		ROOT = {
+			# creates leader
+		}
+	}
+
+	option = {
+		name="The step resigns for someone else."
+		ROOT = {
+			hidden_effect = {
+				if = { # if easter egg enabled
+                limit = {
+                        has_game_rule = {
+                                rule = allow_easteregg_characters
+                                option = EASTERGG_ALLOWED } 
+                }
+                country_event = { id = KOB_french_kingdom.7 days = 1 } # player rejects full cycle
+				}
+				
+				# creates leader		
 			}
 		}
 	}
