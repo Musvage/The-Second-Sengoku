@@ -1,3 +1,8 @@
+
+
+
+
+### OLD
 defined_text = {
 	name = Get_core_is_trade_city
 	
@@ -19,17 +24,12 @@ defined_text = {
 	name = Get_is_fully_controlled
 	
 	text = {
-		trigger = { always = yes }	# default
+		trigger = { NOT = { is_fully_controlled_by = ROOT } }
 		localization_key = is_fully_controlled_negative
 	}
 	text = {
 		trigger = {
-			FROM = {
-				OWNER = {
-					PREV = { is_fully_controlled_by = PREV }
-				}
-						#is_fully_controlled_by = ROOT
-			}
+			is_fully_controlled_by = ROOT
 		}
 		localization_key = is_fully_controlled_positive
 	}
@@ -66,10 +66,9 @@ defined_text = {
 	name = Get_has_neighbour_core
 	text = {
 		trigger = {
-			FROM = {
-				any_neighbor_state = {
-					is_core_of = ROOT
-				}
+			OR = {
+				any_neighbor_state = { is_core_of = ROOT }
+				special_permission_for_islands_tooltip = yes 
 			}
 		}
 		localization_key = has_neighbour_core_positive
@@ -77,27 +76,13 @@ defined_text = {
 	text = {
 		trigger = {
 			NOT = {
-				FROM = {
-					any_neighbor_state = {
-						is_core_of = ROOT
-					}
+				OR = {
+					any_neighbor_state = { is_core_of = ROOT }
+					special_permission_for_islands_tooltip = yes 
 				}
 			}
 		}
 		localization_key = has_neighbour_core_negative
-	}
-}
-
-defined_text = {
-	name = Get_special_permission_for_islands
-	
-	text = {
-		trigger = { special_permission_for_islands_tooltip = yes }
-		localization_key = special_permission_for_islands_positive
-	}
-	text = {
-		trigger = { special_permission_for_islands_tooltip = no }
-		localization_key = special_permission_for_islands_negative
 	}
 }
 
@@ -118,7 +103,18 @@ defined_text = {
 	name = Get_overall_core_permission
 	
 	text = {	# default
-		trigger = { always = yes }
+		trigger = {
+			NOT = {
+				state_and_controller_same_culture_tooltip = yes
+				is_fully_controlled_by = ROOT
+				compliance > 99.99
+				resistance < 25
+				OR = {
+					has_neighbour_core_tooltip = yes
+					special_permission_for_islands_tooltip = yes
+				}
+			}
+		}
 		localization_key = overall_core_permission_negative
 	}
 	text = {
@@ -133,5 +129,70 @@ defined_text = {
 			}
 		}
 		localization_key = overall_core_permission_positive
+	}
+}
+
+defined_text = {
+	name = Get_state_icon_tooltip_not_controlled
+	
+	text = {
+		trigger = {
+			ROOT = {
+				state_and_controller_same_culture_tooltip = no
+				is_trade_city = no
+			}
+		}
+		localization_key = state_coring_icon_not_controlled_not_allowed
+	}
+	text = {
+		trigger = {
+			ROOT = {
+				state_and_controller_same_culture_tooltip = no
+				is_trade_city = yes
+				has_country_flag = trade_city_can_gain_cores
+			}
+		}
+		localization_key = state_coring_icon_not_controlled_not_allowed
+	}
+	text = {
+		trigger = {
+			ROOT = {
+				state_and_controller_same_culture_tooltip = yes
+				is_trade_city = no
+			}
+		}
+		localization_key = state_coring_icon_not_controlled_allowed
+	}
+	text = {
+		trigger = {
+			ROOT = {
+				state_and_controller_same_culture_tooltip = yes
+				is_trade_city = yes
+				has_country_flag = trade_city_can_gain_cores
+			}
+		}
+		localization_key = state_coring_icon_not_controlled_allowed
+	}
+	text = {	# default
+		trigger = {
+			ROOT = {
+				is_trade_city = yes
+				NOT = { has_country_flag = trade_city_can_gain_cores }
+			}
+		}
+		localization_key = state_coring_icon_not_controlled_trade_port
+	}
+}
+
+defined_text = {
+	name = Get_coring_icon
+	
+	text = {	# default
+		trigger = { state_and_controller_same_culture_tooltip = no }
+		localization_key = "core_icon_not_allowed"
+	}
+	text = {
+		trigger = { state_and_controller_same_culture_tooltip = yes }
+		localization_key = "core_icon_allowed"
 	}
 }
