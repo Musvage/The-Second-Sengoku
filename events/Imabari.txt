@@ -1,5 +1,6 @@
 add_namespace = ims
 add_namespace = ims_crisis
+add_namespace = IMS_foreign_influence
 #200+ - news
 #300+ - hidden junk
 #news_event = {
@@ -238,4 +239,80 @@ news_event = {
 		add_political_power = -50
 		#clr_country_flag = ims_withdraw
  	}
+}
+
+# Bleeplo - KOB kingdom influence
+country_event = {
+	id = IMS_foreign_influence.1
+	title = IMS_foreign_influence.1.t
+	desc = IMS_foreign_influence.1.d
+	picture = GFX_report_event_generic_sign_treaty2
+
+	is_triggered_only = yes
+	fire_only_once = yes
+
+	option = {
+		ai_will_do = { 
+			factor = 40 # 50% chance
+
+			modifier = {
+				factor = 160 # 80% chance if monarchy above 40% support/popularity
+				KOB = {
+					autocracy > 0.39
+				}
+			}
+		}
+		name="Absolute!"
+		IMS = {
+			diplomatic_relation = {
+				country = KOB
+				relation = military_access
+			}
+			diplomatic_relation = {
+				country = KOB
+				relation = guarantee
+			}
+		}
+		KOB = {
+			diplomatic_relation = {
+				country = IMS
+				relation = military_access
+			}
+			diplomatic_relation = {
+				country = IMS
+				relation = guarantee
+			}
+			country_event = KOB_foreign_influence.4
+		}
+	}
+
+	option = {
+		ai_will_do = { 
+			factor = 10 # 20% chance
+		}
+		name = "Only our ports, shall they be able to dock."
+		IMS = {
+			diplomatic_relation = {
+				country = KOB
+				relation = docking_rights
+			}
+		}
+		KOB = {
+			diplomatic_relation = {
+				country = ROOT
+				relation = docking_rights
+			}
+			country_event = KOB_foreign_influence.4
+		}
+	}
+
+	option = {
+		ai_will_do = { 
+			factor = 1 # 2.4% chance
+		}
+		name = "We shall not be apart of their affairs."
+		KOB = {
+			country_event = KOB_foreign_influence.3
+		}
+	}
 }
