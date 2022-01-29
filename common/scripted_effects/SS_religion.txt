@@ -6,11 +6,11 @@
 
 # every state has a set of variables related to religion popularity (values range from 0 to 1)
 # every state has a variable for the most popular religion (numerical value, indexes the religion)
-# every state has a dynamic modifier for compliance bonus/penalty depending on the controller's official religion & laws & ideas
+# every state has a dynamic modifier for compliance/resistnce modifier depending on the controller's official religion & laws & ideas
 
 # the game sets up initial religions on the state's history file
 # the game checks monthly for changes in religion popularity for each state
-# the game checks monthly for compliance dynamic modifier
+# the game checks monthly for compliance/resistance dynamic modifier
 # the game checks upon each state changing control for compliance dynamic modifier
 # the game checks weekly for the effects of laws & ideas over the effects of religion
 
@@ -677,37 +677,113 @@ check_state_main_religion = {
 
 get_religion_state_compliance_modifier = {
 	set_variable = { religion_local_compliance_bonus = 0 }	# this value is within a [0;100] range
+	set_variable = { religion_local_resistance_penalties = 100 }	# this value is within a [0;100] range
+	set_variable = { religion_local_syncretism_bonus = 0 }	# this value is within a [0;100] range
 	if = {
 		limit = { NOT = { PREV = { tag = OWNER } } }	# PREV = controller
+		### Main religion
 		if = {
 			limit = { check_variable = { PREV.country_religion = 1 } }	# Buddhism
-			set_variable = { religion_local_compliance_bonus = state_religion_buddhism }
+			add_to_variable = { religion_local_compliance_bonus = state_religion_buddhism }
+			subtract_from_variable = { religion_local_resistance_penalties = state_religion_buddhism }
 		}
 		if = {
 			limit = { check_variable = { PREV.country_religion = 2 } }	# Shinto
-			set_variable = { religion_local_compliance_bonus = state_religion_shinto }
+			add_to_variable = { religion_local_compliance_bonus = state_religion_shinto }
+			subtract_from_variable = { religion_local_resistance_penalties = state_religion_shinto }
 		}
 		if = {
 			limit = { check_variable = { PREV.country_religion = 3 } }	# Christianity
-			set_variable = { religion_local_compliance_bonus = state_religion_christianity }
+			add_to_variable = { religion_local_compliance_bonus = state_religion_christianity }
+			subtract_from_variable = { religion_local_resistance_penalties = state_religion_christianity }
 		}
 		if = {
 			limit = { check_variable = { PREV.country_religion = 4 } }	# Taoism
-			set_variable = { religion_local_compliance_bonus = state_religion_taoism }
+			add_to_variable = { religion_local_compliance_bonus = state_religion_taoism }
+			subtract_from_variable = { religion_local_resistance_penalties = state_religion_taoism }
 		}
 		if = {
 			limit = { check_variable = { PREV.country_religion = 5 } }	# Confucianism
-			set_variable = { religion_local_compliance_bonus = state_religion_confucianism }
+			add_to_variable = { religion_local_compliance_bonus = state_religion_confucianism }
+			subtract_from_variable = { religion_local_resistance_penalties = state_religion_confucianism }
 		}
 		if = {
 			limit = { check_variable = { PREV.country_religion = 6 } }	# Secularism
-			set_variable = { religion_local_compliance_bonus = state_religion_secularism }
+			add_to_variable = { religion_local_compliance_bonus = state_religion_secularism }
+			subtract_from_variable = { religion_local_resistance_penalties = state_religion_secularism }
 		}
 		if = {
 			limit = { check_variable = { PREV.country_religion = 7 } }	# Cult of Cthulhu
-			set_variable = { religion_local_compliance_bonus = state_religion_cthulhu }
+			add_to_variable = { religion_local_compliance_bonus = state_religion_cthulhu }
+			subtract_from_variable = { religion_local_resistance_penalties = state_religion_cthulhu }
 		}
+		### Syncretism
+		if = {
+			limit = { PREV = {
+				has_idea_with_trait = religion_syncretism_buddhism
+				NOT = { check_variable = { country_religion = 1 } } } } # Buddhism
+			add_to_variable = { religion_local_syncretism_bonus = state_religion_buddhism }
+			subtract_from_variable = { religion_local_resistance_penalties = state_religion_buddhism }
+		}
+		if = {
+			limit = { PREV = {
+				has_idea_with_trait = religion_syncretism_shinto
+				NOT = { check_variable = { country_religion = 2 } } } } # Shinto
+			add_to_variable = { religion_local_syncretism_bonus = state_religion_shinto }
+			subtract_from_variable = { religion_local_resistance_penalties = state_religion_shinto }
+		}
+		if = {
+			limit = { PREV = {
+				has_idea_with_trait = religion_syncretism_christianity
+				NOT = { check_variable = { country_religion = 3 } } } } # Christianity
+			add_to_variable = { religion_local_syncretism_bonus = state_religion_christianity }
+			subtract_from_variable = { religion_local_resistance_penalties = state_religion_christianity}
+		}
+		if = {
+			limit = { PREV = {
+				has_idea_with_trait = religion_syncretism_taoism
+				NOT = { check_variable = { country_religion = 4 } } } } # Taoism
+			add_to_variable = { religion_local_syncretism_bonus = state_religion_taoism } }
+			subtract_from_variable = { religion_local_resistance_penalties = state_religion_taoism }
+		}
+		if = {
+			limit = { PREV = {
+				has_idea_with_trait = religion_syncretism_confucianism
+				NOT = { check_variable = { country_religion = 5 } } } } # Confucianism
+			add_to_variable = { religion_local_syncretism_bonus = state_religion_confucianism }
+			subtract_from_variable = { religion_local_resistance_penalties = state_religion_confucianism }
+		}
+		if = {
+			limit = { PREV = {
+				has_idea_with_trait = religion_syncretism_secularism
+				NOT = { check_variable = { country_religion = 6 } } } } # Secularism
+			add_to_variable = { religion_local_syncretism_bonus = state_religion_secularism }
+			subtract_from_variable = { religion_local_resistance_penalties = state_religion_secularism }
+		}
+		if = {
+			limit = { PREV = {
+				has_idea_with_trait = religion_syncretism_cthulhu
+				NOT = { check_variable = { country_religion = 7 } } } } # Cult of Cthulhu
+			add_to_variable = { religion_local_syncretism_bonus = state_religion_cthulhu }
+			subtract_from_variable = { religion_local_resistance_penalties = state_religion_cthulhu }
+		}
+		### Final modifers
 		divide_variable = { religion_local_compliance_bonus = 100 }	# scales back to [0;1] ranges
+		divide_variable = { religion_local_resistance_penalties = 100 }	# scales back to [0;1] ranges
+		divide_variable = { religion_local_syncretism_bonus = 200 }	# scales back to [0;1] ranges
+		clamp_temp_variable = { var = religion_local_syncretism_bonus min = 0 max = 0.5 }
+		clamp_temp_variable = { var = religion_local_resistance_penalties min = 0 max = 0.25 }
+		if = {
+			limit = {
+				PREV = {
+					OR = {
+						has_government = democratic
+						has_government = democratic_socialism
+					}
+				}
+			}
+			set_variable = { religion_local_resistance_penalties = 0 }	### Democracies do not suffer from religious unrest
+		}
 	}
 }
 
