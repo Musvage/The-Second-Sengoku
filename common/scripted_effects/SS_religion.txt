@@ -17,7 +17,7 @@
 # everytime the player changes religious & laws it triggers a check for its effects over religion
 # every focus & decision that deals with religion should trigger a check for its effects over religion
 
-# religion drift is applied to every controlled state, with a third less effect on non-core states
+# religion drift is applied to every controlled state, [with a third less effect on non-core states REMOVED]
 # every country has a religion drift variable applied to its states
 # religion drift is calculated monthly on each state
 # religion drift is scaled according to official religion popularity (the more popular, the less drift)
@@ -465,10 +465,10 @@ state_drift_religion = {
 		clamp_temp_variable = { var = drift_scale_effect min = 0.25 max = 2 }
 		multiply_temp_variable = { local_drift_effect = drift_scale_effect }
 		
-		if = {
-			limit = { NOT = { is_core_of = CONTROLLER } }
-			multiply_temp_variable = { local_drift_effect = 0.66 }	# -33% CONVERSION RATE FOR NON-CORE
-		}
+		#if = {	### REMOVED!
+		#	limit = { NOT = { is_core_of = CONTROLLER } }
+		#	multiply_temp_variable = { local_drift_effect = 0.66 }	# -33% CONVERSION RATE FOR NON-CORE
+		#}
 	
 		set_temp_variable = { pool_of_other_religions = 0 }
 		if = {
@@ -767,12 +767,15 @@ get_religion_state_compliance_modifier = {
 			add_to_variable = { religion_local_syncretism_bonus = state_religion_cthulhu }
 			subtract_from_variable = { religion_local_resistance_penalties = state_religion_cthulhu }
 		}
+		### National spirits
+		if = { limit = { PREV = { has_idea = FER_atheist_state } } multiply_variable = { religion_local_resistance_penalties = 2 } }
 		### Final modifers
 		divide_variable = { religion_local_compliance_bonus = 100 }	# scales back to [0;1] ranges
-		divide_variable = { religion_local_resistance_penalties = 100 }	# scales back to [0;1] ranges
+		divide_variable = { religion_local_resistance_penalties = 400 }	# scales back to [0;1] ranges
 		divide_variable = { religion_local_syncretism_bonus = 200 }	# scales back to [0;1] ranges
-		clamp_temp_variable = { var = religion_local_syncretism_bonus min = 0 max = 0.5 }
-		clamp_temp_variable = { var = religion_local_resistance_penalties min = 0 max = 0.25 }
+		clamp_temp_variable = { var = religion_local_compliance_bonus min = 0 max = 1 }
+		clamp_temp_variable = { var = religion_local_resistance_penalties min = 0 max = 1 }
+		clamp_temp_variable = { var = religion_local_syncretism_bonus min = 0 max = 1 }
 		if = {
 			limit = {
 				PREV = {
