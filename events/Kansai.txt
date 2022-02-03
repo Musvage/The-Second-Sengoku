@@ -1,4 +1,5 @@
 add_namespace = kansai
+add_namespace = KAN_foreign_influence
 
 country_event = { #civilwar
 	id = kansai.1
@@ -242,3 +243,78 @@ set_politics = { ruling_party = democratic elections_allowed = yes }
 			}
 		}
 	}
+
+country_event = {
+	id = KAN_foreign_influence.1
+	title = KAN_foreign_influence.1.t
+	desc = KAN_foreign_influence.1.d
+	picture = GFX_report_event_generic_sign_treaty2
+
+	is_triggered_only = yes
+	fire_only_once = yes
+
+	option = {
+		ai_will_do = { 
+			factor = 10 # 20% chance
+
+			modifier = {
+				factor = 40 # 50% chance if monarchy above 70% support/popularity
+				KOB = {
+					autocracy > 0.69
+				}
+			}
+		}
+		name="Absolute!"
+		KAN = {
+			diplomatic_relation = {
+				country = KOB
+				relation = military_access
+			}
+			diplomatic_relation = {
+				country = KOB
+				relation = guarantee
+			}
+		}
+		KOB = {
+			diplomatic_relation = {
+				country = KAN
+				relation = military_access
+			}
+			diplomatic_relation = {
+				country = KAN
+				relation = guarantee
+			}
+			country_event = KOB_foreign_influence.4
+		}
+	}
+
+	option = {
+		ai_will_do = { 
+			factor = 20 # 33.3% chance
+		}
+		name = "Only our ports, shall they be able to dock."
+		KAN = {
+			diplomatic_relation = {
+				country = KOB
+				relation = docking_rights
+			}
+		}
+		KOB = {
+			diplomatic_relation = {
+				country = KAN
+				relation = docking_rights
+			}
+			country_event = KOB_foreign_influence.4
+		}
+	}
+
+	option = {
+		ai_will_do = { 
+			factor = 80 # 66.7% chance
+		}
+		name = "We shall not be apart of their affairs."
+		KOB = {
+			country_event = KOB_foreign_influence.3
+		}
+	}
+}

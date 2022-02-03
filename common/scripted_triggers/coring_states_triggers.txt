@@ -1,0 +1,170 @@
+###	Automatically coring of states
+
+state_and_controller_same_culture = {
+	# THIS is state
+	# PREV is state owner
+	custom_trigger_tooltip = {
+		tooltip = state_and_controller_same_culture_tt
+		OR = {
+			AND = {	## ANY JAPANESE CAN CORE JAPANESE STATES
+				OR = {
+					is_on_continent = honshu
+					is_on_continent = hokkaido
+					is_on_continent = shikoku
+					is_on_continent = kyushu
+				}
+				NOT = {	# OKINAWA IS NOT OF JAPANESE CULTURE
+					region = 119
+					region = 120
+				}
+				PREV = {
+					is_allowed_to_gain_cores = yes
+					capital_scope = {
+						OR = {
+							is_on_continent = honshu
+							is_on_continent = hokkaido
+							is_on_continent = shikoku
+							is_on_continent = kyushu
+						}
+						NOT = {
+							region = 119
+							region = 120
+						}
+					}
+				}
+			}
+			AND = {	# KOREA
+				is_on_continent = korea
+				PREV = {
+					is_allowed_to_gain_cores = yes
+					capital_scope = { is_on_continent = korea }
+				}
+			}
+			AND = {	# ASIA
+				OR = {
+					is_on_continent = asia
+					is_on_continent = sakhalin
+				}
+				PREV = {
+					is_allowed_to_gain_cores = yes
+					capital_scope = {
+						OR = {
+							is_on_continent = asia
+							is_on_continent = sakhalin
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+has_neighbour_core = {
+	any_neighbor_state = {
+		is_core_of = PREV
+	}
+}
+
+special_permission_for_islands = {
+	always = no	# remove later
+}
+
+is_trade_city = {
+	# INNER TRIGGER
+	OR = {
+		tag = OSA
+		tag = KOB
+		tag = REI
+		tag = HIR
+		tag = PRT
+		tag = AMC
+		tag = OKI
+	}
+}
+
+is_trade_city_and_can_gain_cores = {
+	# INNER TRIGGER
+	OR = {
+		tag = OSA
+		tag = KOB
+		tag = REI
+		tag = HIR
+		tag = PRT
+		tag = AMC
+		tag = OKI
+	}
+	has_country_flag = trade_city_can_gain_cores
+}
+
+is_allowed_to_gain_cores = {
+	# trade cities cannot, as a rule, gain cores
+	custom_trigger_tooltip = {
+		tooltip = is_trade_city_and_can_gain_cores_tt
+		OR = {
+			is_trade_city = no
+			AND = {
+				is_trade_city = yes
+				is_trade_city_and_can_gain_cores = yes
+			}
+		}
+	}
+}
+
+### TRIGGERS FOR TOOLTIPS IN STATE INTERFACE
+
+state_and_controller_same_culture_tooltip = {	# works with controller = root, for icon & tooltips
+	FROM = {
+		OR = {
+			AND = {	## ANY JAPANESE CAN CORE JAPANESE STATES
+				OR = {
+					is_on_continent = honshu
+					is_on_continent = hokkaido
+					is_on_continent = shikoku
+					is_on_continent = kyushu
+				}
+				NOT = {	# OKINAWA IS NOT OF JAPANESE CULTURE
+					region = 119
+					region = 120
+				}
+				ROOT = {
+					capital_scope = {
+						OR = {
+							is_on_continent = honshu
+							is_on_continent = hokkaido
+							is_on_continent = shikoku
+							is_on_continent = kyushu
+						}
+						NOT = {
+							region = 119
+							region = 120
+						}
+					}
+				}
+			}
+			AND = {	# KOREA
+				is_on_continent = korea
+				ROOT = {
+					capital_scope = { is_on_continent = korea }
+				}
+			}
+			AND = {	# ASIA
+				OR = {
+					is_on_continent = asia
+					is_on_continent = sakhalin
+				}
+				ROOT = {
+					capital_scope = {
+						OR = {
+							is_on_continent = asia
+							is_on_continent = sakhalin
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+special_permission_for_islands_tooltip = {
+	always = no	# remove later
+}

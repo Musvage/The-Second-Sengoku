@@ -1,0 +1,448 @@
+EZO_civil_war_state_transfer_with_rebels = {
+	if = {
+		limit = {
+			has_completed_focus = EZO_sellect_traditionalism
+		}
+		every_owned_state = {
+			limit = {
+				has_state_flag = EZO_player_revolt_flag
+			}
+			transfer_state_to = DZO
+			add_core_of = DZO
+			remove_core_of = EZO
+		}
+	}
+	if = {
+		limit = {
+			has_completed_focus = EZO_sellect_strengthen_democratic_government
+		}
+		every_owned_state = {
+			limit = {
+				has_state_flag = EZO_player_revolt_flag
+			}
+			transfer_state_to = MZO
+			add_core_of = MZO
+			remove_core_of = EZO
+		}
+	}
+}
+
+get_random_general_dna = {
+	log = "get_random_general_dna"
+	random_list = {
+		1 = { set_variable = { global.random_portrait = 1 } }
+		1 = { set_variable = { global.random_portrait = 2 } }
+		1 = { set_variable = { global.random_portrait = 3 } }
+	}
+	set_variable = { global.random_name = 1 }
+	set_variable = { global.random_surname = 1 }
+	randomize_variable = {	var = global.random_name distribution = uniform min = 1 max = 36 }
+	randomize_variable = {	var = global.random_surname distribution = uniform min = 1 max = 46 }
+	get_random_land_trait = yes
+	get_random_navy_trait = yes
+	round_variable = global.random_name
+	round_variable = global.random_surname
+	round_variable = global.random_land_trait
+	log = "dice rolls: [GetRandomExiledName] [GetRandomExiledSurname] ([GetRandomLandTrait]), [?global.random_name]/[?global.random_surname]/[?global.random_land_trait]/[?global.random_portrait]"
+}
+
+create_random_exiled_general = {
+	log = "create_random_exiled_general"
+	meta_effect = {
+		text = {
+			generate_character = {
+				token_base = generic_exiled_general_[NEW_ID]
+				name = "[RANDOM_NAME] [RANDOM_SURNAME]"
+				portraits={
+					army={
+						small="GFX_portrait_white_russian_land_[RANDOM_PORTRAIT]_small"
+					}
+					army={
+						large="GFX_portrait_white_russian_land_[RANDOM_PORTRAIT]"
+					}
+				}
+				
+				corps_commander={
+					skill = 1
+					attack_skill = 1
+					defense_skill = 1
+					planning_skill = 1
+					logistics_skill = 1
+					traits = {
+						[RANDOM_TRAIT]
+						foreign_general
+					}
+				}   
+			}
+			log = "create general [RANDOM_NAME] [RANDOM_SURNAME], id generic_exiled_general_[NEW_ID], portrait [RANDOM_PORTRAIT] (meta effect)"
+		}
+		RANDOM_NAME = "[THIS.GetRandomExiledName]"
+		RANDOM_SURNAME = "[THIS.GetRandomExiledSurname]"
+		RANDOM_PORTRAIT = "[?global.random_portrait|.0]"
+		RANDOM_TRAIT = "[THIS.GetRandomLandTrait]"
+		NEW_ID = "[?global.generic_exiled_general_id]"
+	}
+	add_to_variable = { global.generic_exiled_general_id = 1 }
+}
+
+create_random_exiled_admiral = {
+	log = "create_random_exiled_admiral"
+	meta_effect = {
+		text = {
+			generate_character = {
+				token_base = generic_exiled_general_[NEW_ID]
+				name = "[RANDOM_NAME] [RANDOM_SURNAME]"
+				portraits={
+					army={
+						small="GFX_portrait_white_russian_navy_[RANDOM_PORTRAIT]_small"
+					}
+					army={
+						large="GFX_portrait_white_russian_navy_[RANDOM_PORTRAIT]"
+					}
+				}
+				
+				navy_leader={
+					skill= 1
+					attack_skill= 1
+					defense_skill= 1
+					maneuvering_skill= 1
+					coordination_skill= 1
+					traits = {
+						[RANDOM_TRAIT]
+						foreign_admiral
+					}
+				}  
+			}
+			log = "create general [RANDOM_NAME] [RANDOM_SURNAME], id generic_exiled_general_[NEW_ID], portrait [RANDOM_PORTRAIT] (meta effect)"
+		}
+		RANDOM_NAME = "[THIS.GetRandomExiledName]"
+		RANDOM_SURNAME = "[THIS.GetRandomExiledSurname]"
+		RANDOM_PORTRAIT = "[?global.random_portrait|.0]"
+		RANDOM_TRAIT = "[THIS.GetRandomNavyTrait]"
+		NEW_ID = "[?global.generic_exiled_general_id]"
+	}
+	add_to_variable = { global.generic_exiled_general_id = 1 }
+}
+
+get_random_land_trait = {
+	random_list = {
+		6 = { set_variable = { global.random_land_trait = 0 } }	# no traits
+		1 = { 
+			set_variable = { global.random_land_trait = 1 }	# brilliant_strategist
+			modifier = {
+				has_idea = best_of_the_best_spirit
+				factor = 0
+			}
+			modifier = {
+				has_idea = academy_scholarships_spirit
+				factor = 0
+			}
+		}
+		1 = { 
+			set_variable = { global.random_land_trait = 2 }	# inflexible_strategist
+			modifier = {
+				has_idea = best_of_the_best_spirit
+				factor = 0
+			}
+			modifier = {
+				has_idea = academy_scholarships_spirit
+				factor = 0
+			}
+		}
+		1 = { 
+			set_variable = { global.random_land_trait = 3 }	# politically_connected
+			modifier = {
+				has_idea = best_of_the_best_spirit
+				factor = 0
+			}
+			modifier = {
+				has_idea = academy_scholarships_spirit
+				factor = 0
+			}
+		}
+		1 = { 
+			set_variable = { global.random_land_trait = 4 }	# career_officer
+			modifier = {
+				has_idea = best_of_the_best_spirit
+				factor = 0
+			}
+			modifier = {
+				has_idea = academy_scholarships_spirit
+				factor = 0
+			}
+		}
+		1 = { 
+			set_variable = { global.random_land_trait = 5 }	# trait_cautious
+			modifier = {
+				has_idea = best_of_the_best_spirit
+				factor = 0
+			}
+			modifier = {
+				has_idea = academy_scholarships_spirit
+				factor = 0
+			}
+		}
+		1 = { 
+			set_variable = { global.random_land_trait = 6 }	# trait_reckless
+			modifier = {
+				has_idea = best_of_the_best_spirit
+				factor = 0
+			}
+			modifier = {
+				has_idea = academy_scholarships_spirit
+				factor = 0
+			}
+		}
+		1 = { 
+			set_variable = { global.random_land_trait = 7 }	# media_personality
+			modifier = {
+				has_idea = best_of_the_best_spirit
+				factor = 0
+			}
+			modifier = {
+				has_idea = academy_scholarships_spirit
+				factor = 0
+			}
+		}
+		1 = { 
+			set_variable = { global.random_land_trait = 8 }	# harsh_leader
+			modifier = {
+				has_idea = best_of_the_best_spirit
+				factor = 0
+			}
+			modifier = {
+				has_idea = academy_scholarships_spirit
+				factor = 0
+			}
+		}
+		1 = { 
+			set_variable = { global.random_land_trait = 9 }	# infantry_officer
+			modifier = {
+				has_idea = mass_assault_academy_spirit
+				factor = 1.5
+			}
+			
+			modifier = {
+				has_idea = best_of_the_best_spirit
+				factor = 0
+			}
+			modifier = {
+				has_idea = academy_scholarships_spirit
+				factor = 0
+			}
+		}
+		1 = { 
+			set_variable = { global.random_land_trait = 10 }	# cavalry_officer
+			modifier = {
+				has_idea = best_of_the_best_spirit
+				factor = 0
+			}
+			modifier = {
+				has_idea = academy_scholarships_spirit
+				factor = 0
+			}
+		}
+		1 = { 
+			set_variable = { global.random_land_trait = 11 }	# armor_officer
+			modifier = {
+				has_idea = mobile_warfare_academy_spirit
+				factor = 1.5 
+			}
+			modifier = {
+				has_idea = best_of_the_best_spirit
+				factor = 0
+			}
+			modifier = {
+				has_idea = academy_scholarships_spirit
+				factor = 0
+			}
+		}
+		1 = { 
+			set_variable = { global.random_land_trait = 12 }	# engineer_officer
+			modifier = {
+				has_idea = superior_firepower_academy_spirit
+				factor = 2
+			}
+
+			modifier = {
+				has_idea = best_of_the_best_spirit
+				factor = 0
+			}
+			modifier = {
+				has_idea = academy_scholarships_spirit
+				factor = 0
+			}
+		}
+		1 = { 
+			set_variable = { global.random_land_trait = 13 }	# old_guard
+			modifier = {
+				has_idea = best_of_the_best_spirit
+				factor = 0
+			}
+			modifier = {
+				has_idea = academy_scholarships_spirit
+				factor = 0
+			}
+		}
+	}
+}
+
+get_random_navy_trait = {
+	random_list = {
+		7 = { set_variable = { global.random_navy_trait = 0 } }	# no traits
+		1 = { 
+			set_variable = { global.random_navy_trait = 1 }	# politically_connected
+			modifier = {
+				has_idea = best_of_the_best_naval_academy_spirit
+				factor = 0
+			}
+			modifier = {
+				has_idea = naval_academy_scholarships_spirit
+				factor = 0
+			}
+		}
+		1 = { 
+			set_variable = { global.random_navy_trait = 2 }	# old_guard_navy
+			modifier = {
+				has_idea = best_of_the_best_naval_academy_spirit
+				factor = 0
+			}
+			modifier = {
+				has_idea = naval_academy_scholarships_spirit
+				factor = 0
+			}
+		}
+		1 = { 
+			set_variable = { global.random_navy_trait = 3 }	# gentlemanly
+			modifier = {
+				has_idea = best_of_the_best_naval_academy_spirit
+				factor = 0
+			}
+			modifier = {
+				has_idea = naval_academy_scholarships_spirit
+				factor = 0
+			}
+		}
+		1 = { 
+			set_variable = { global.random_navy_trait = 4 }	# gunnery_expert
+			modifier = {
+				has_idea = best_of_the_best_naval_academy_spirit
+				factor = 0
+			}
+			modifier = {
+				has_idea = naval_academy_scholarships_spirit
+				factor = 0
+			}
+		}
+		1 = { 
+			set_variable = { global.random_navy_trait = 5 }	# cuts_corners
+			modifier = {
+				has_idea = best_of_the_best_naval_academy_spirit
+				factor = 0
+			}
+			modifier = {
+				has_idea = naval_academy_scholarships_spirit
+				factor = 0
+			}
+		}
+		1 = { 
+			set_variable = { global.random_navy_trait = 6 }	# chief_engineer
+			modifier = {
+				has_idea = best_of_the_best_naval_academy_spirit
+				factor = 0
+			}
+			modifier = {
+				has_idea = naval_academy_scholarships_spirit
+				factor = 0
+			}
+		}
+		1 = { 
+			set_variable = { global.random_navy_trait = 7 }	# navy_media_personality
+			modifier = {
+				has_idea = best_of_the_best_naval_academy_spirit
+				factor = 0
+			}
+			modifier = {
+				has_idea = naval_academy_scholarships_spirit
+				factor = 0
+			}
+		}
+		1 = { 
+			set_variable = { global.random_navy_trait = 8 }	# bold
+			modifier = {
+				has_idea = best_of_the_best_naval_academy_spirit
+				factor = 0
+			}
+			modifier = {
+				has_idea = naval_academy_scholarships_spirit
+				factor = 0
+			}
+		}
+		1 = { 
+			set_variable = { global.random_navy_trait = 9 }	# navy_career_officer
+			modifier = {
+				has_idea = best_of_the_best_naval_academy_spirit
+				factor = 0
+			}
+			modifier = {
+				has_idea = naval_academy_scholarships_spirit
+				factor = 0
+			}
+		}
+		1 = { 
+			set_variable = { global.random_navy_trait = 10 }	# battleship_adherent
+			modifier = {
+				has_idea = best_of_the_best_naval_academy_spirit
+				factor = 0
+			}
+			modifier = {
+				has_idea = naval_academy_scholarships_spirit
+				factor = 0
+			}
+		}
+		1 = { 
+			set_variable = { global.random_navy_trait = 11 }	# aviation_enthusiast
+			modifier = {
+				has_idea = best_of_the_best_naval_academy_spirit
+				factor = 0
+			}
+			modifier = {
+				has_idea = naval_academy_scholarships_spirit
+				factor = 0
+			}
+		}
+		1 = { 
+			set_variable = { global.random_navy_trait = 12 }	# caustic_personality
+			modifier = {
+				has_idea = best_of_the_best_naval_academy_spirit
+				factor = 0
+			}
+			modifier = {
+				has_idea = naval_academy_scholarships_spirit
+				factor = 0
+			}
+		}
+		1 = { 
+			set_variable = { global.random_navy_trait = 13 }	# craven
+			modifier = {
+				has_idea = best_of_the_best_naval_academy_spirit
+				factor = 0
+			}
+			modifier = {
+				has_idea = naval_academy_scholarships_spirit
+				factor = 0
+			}
+		}
+		1 = { 
+			set_variable = { global.random_navy_trait = 14 }	# naval_lineage
+			modifier = {
+				has_idea = best_of_the_best_naval_academy_spirit
+				factor = 0
+			}
+			modifier = {
+				has_idea = naval_academy_scholarships_spirit
+				factor = 0
+			}
+		}
+	}
+}

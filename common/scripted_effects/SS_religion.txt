@@ -1,0 +1,828 @@
+### Religion System 2.0 ###
+
+# the game sets up variables for the base value of religion effects on start
+
+# every country has a dynamic modifier with the effects of its official religion, the base effects scale to its popularity on controlled-and-core states
+
+# every state has a set of variables related to religion popularity (values range from 0 to 1)
+# every state has a variable for the most popular religion (numerical value, indexes the religion)
+# every state has a dynamic modifier for compliance/resistnce modifier depending on the controller's official religion & laws & ideas
+
+# the game sets up initial religions on the state's history file
+# the game checks monthly for changes in religion popularity for each state
+# the game checks monthly for compliance/resistance dynamic modifier
+# the game checks upon each state changing control for compliance dynamic modifier
+# the game checks weekly for the effects of laws & ideas over the effects of religion
+
+# everytime the player changes religious & laws it triggers a check for its effects over religion
+# every focus & decision that deals with religion should trigger a check for its effects over religion
+
+# religion drift is applied to every controlled state, [with a third less effect on non-core states REMOVED]
+# every country has a religion drift variable applied to its states
+# religion drift is calculated monthly on each state
+# religion drift is scaled according to official religion popularity (the more popular, the less drift)
+# the efect for checking the state religion drift MUST be enacted from its controller (otherwise the code won't work)
+
+# national religion popularity values must be within [0;1] ranges for calculating religion effects
+# state religion popularity values must be within [0;100] ranges so math does not get too off when rounding up numbers
+
+#index of religions
+#1 buddhism
+#2 shinto
+#3 christianity
+#4 taoism
+#5 confucianism
+#6 secularism
+#7 cult of cthulhu
+
+# the Cult of Cthulhu believes that ph'nglui mglw'nafh Cthulhu R'lyeh wgah'nagl fhtagn
+
+# Setting Up Base Values
+set_up_global_religion_variables = {
+	set_variable = { global.religion_base_buddhism_compliance_growth = 0.2 }
+	set_variable = { global.religion_base_buddhism_resistance_growth = -0.2 }
+	set_variable = { global.religion_base_buddhism_resistance_growth_on_our_occupied_states = -0.2 }
+	set_variable = { global.religion_base_shinto_conscription = 0.1 }
+	set_variable = { global.religion_base_shinto_surrender_limit = 0.1 }
+	set_variable = { global.religion_base_christianity_conversion_speed = 0.2 }
+	set_variable = { global.religion_base_christianity_resistance_growth_on_our_occupied_states = 0.2 }
+	set_variable = { global.religion_base_taoism_stability_factor = 0.1 }
+	set_variable = { global.religion_base_taoism_compliance_growth = 0.1 }
+	set_variable = { global.religion_base_confucianism_political_advisor_cost = -0.15 }
+	set_variable = { global.religion_base_confucianism_theorist_cost = -0.15 }
+	set_variable = { global.religion_base_secularism_political_power = 0.1 }
+	set_variable = { global.religion_base_secularism_compliance_growth = 0.1 }
+	set_variable = { global.religion_base_cthulhu_stability_factor = -0.25 }
+	set_variable = { global.religion_base_cthulhu_intel_factor = 0.25 }
+	set_variable = { global.religion_base_cthulhu_research_speed = 0.25 }
+	set_variable = { global.religion_base_cthulhu_nuke_production = 0.50 }
+}
+
+state_religion_error_catcher = {
+	
+	every_state = {
+		if = {
+			limit = { NOT = { has_variable = state_religion_buddhism } }
+			log = "[THIS.GetName] is missing state_religion_buddhism"
+			set_variable = { state_religion_buddhism = 0 }
+		}
+		if = {
+			limit = { NOT = { has_variable = state_religion_shinto } }
+			log = "[THIS.GetName] is missing state_religion_shinto"
+			set_variable = { state_religion_shinto = 0 }
+		}
+		if = {
+			limit = { NOT = { has_variable = state_religion_christianity } }
+			log = "[THIS.GetName] is missing state_religion_christianity"
+			set_variable = { state_religion_christianity = 0 }
+		}
+		if = {
+			limit = { NOT = { has_variable = state_religion_taoism } }
+			log = "[THIS.GetName] is missing state_religion_taoism"
+			set_variable = { state_religion_taoism = 0 }
+		}
+		if = {
+			limit = { NOT = { has_variable = state_religion_confucianism } }
+			log = "[THIS.GetName] is missing state_religion_confucianism"
+			set_variable = { state_religion_confucianism = 0 }
+		}
+		if = {
+			limit = { NOT = { has_variable = state_religion_secularism } }
+			log = "[THIS.GetName] is missing state_religion_secularism"
+			set_variable = { state_religion_secularism = 0 }
+		}
+		if = {
+			limit = { NOT = { has_variable = state_religion_cthulhu } }
+			log = "[THIS.GetName] is missing state_religion_cthulhu"
+			set_variable = { state_religion_cthulhu = 0 }
+		}
+	}
+}
+
+get_official_religion_popularity = {
+
+	# ON CONTROLLED STATES ONLY
+	set_temp_variable = { total_population = 0 }	# of core states
+	set_temp_variable = { total_population_religion = 0 }	# members of official religion on core states
+	
+	every_controlled_state = {
+		if = {
+			limit = { is_core_of = PREV }
+			set_temp_variable = { state_population_temp = state_population_k }
+			add_to_temp_variable = { PREV.total_population = state_population_temp }
+			if = {
+				limit = { check_variable = { PREV.country_religion = 1 } } 	# Buddhism
+				multiply_temp_variable = { state_population_temp = var:state_religion_buddhism }	# this is a [0;100] value, gotta be adjusted to [0;1] later
+			}
+			if = {
+				limit = { check_variable = { PREV.country_religion = 2 } } 	# Shinto
+				multiply_temp_variable = { state_population_temp = var:state_religion_shinto }
+			}
+			if = {
+				limit = { check_variable = { PREV.country_religion = 3 } } 	# Christianity
+				multiply_temp_variable = { state_population_temp = var:state_religion_christianity }
+			}
+			if = {
+				limit = { check_variable = { PREV.country_religion = 4 } } 	# Taoism
+				multiply_temp_variable = { state_population_temp = var:state_religion_taoism }
+			}
+			if = {
+				limit = { check_variable = { PREV.country_religion = 5 } } 	# Confucianism
+				multiply_temp_variable = { state_population_temp = var:state_religion_confucianism }
+			}
+			if = {
+				limit = { check_variable = { PREV.country_religion = 6 } } 	# Secularism
+				multiply_temp_variable = { state_population_temp = var:state_religion_secularism }
+			}
+			if = {
+				limit = { check_variable = { PREV.country_religion = 7 } } 	# Cult of Cthulhu
+				multiply_temp_variable = { state_population_temp = var:state_religion_cthulhu }
+			}
+			add_to_temp_variable = { PREV.total_population_religion = state_population_temp }
+		}
+	}
+	
+	set_variable = { country_official_religion_popularity_cc = total_population_religion }	# country_official_religion_popularity_cc - > core & controlled
+	divide_variable = { country_official_religion_popularity_cc = total_population }
+	divide_variable = { country_official_religion_popularity_cc = 100 } # scales back to [0;1] range
+	
+	# ON CONTROLLED STATES
+	set_temp_variable = { total_population = 0 }	# of core states
+	set_temp_variable = { total_population_religion = 0 }	# members of official religion on core states
+	
+	every_controlled_state = {
+		if = {
+			#limit = { is_core_of = PREV }
+			set_temp_variable = { state_population_temp = state_population_k }
+			add_to_temp_variable = { PREV.total_population = state_population_temp }
+			if = {
+				limit = { check_variable = { PREV.country_religion = 1 } } 	# Buddhism
+				multiply_temp_variable = { state_population_temp = var:state_religion_buddhism }	# this is a [0;100] value, gotta be adjusted to [0;1] later
+			}
+			if = {
+				limit = { check_variable = { PREV.country_religion = 2 } } 	# Shinto
+				multiply_temp_variable = { state_population_temp = var:state_religion_shinto }
+			}
+			if = {
+				limit = { check_variable = { PREV.country_religion = 3 } } 	# Christianity
+				multiply_temp_variable = { state_population_temp = var:state_religion_christianity }
+			}
+			if = {
+				limit = { check_variable = { PREV.country_religion = 4 } } 	# Taoism
+				multiply_temp_variable = { state_population_temp = var:state_religion_taoism }
+			}
+			if = {
+				limit = { check_variable = { PREV.country_religion = 5 } } 	# Confucianism
+				multiply_temp_variable = { state_population_temp = var:state_religion_confucianism }
+			}
+			if = {
+				limit = { check_variable = { PREV.country_religion = 6 } } 	# Secularism
+				multiply_temp_variable = { state_population_temp = var:state_religion_secularism }
+			}
+			if = {
+				limit = { check_variable = { PREV.country_religion = 7 } } 	# Cult of Cthulhu
+				multiply_temp_variable = { state_population_temp = var:state_religion_cthulhu }
+			}
+			add_to_temp_variable = { PREV.total_population_religion = state_population_temp }
+		}
+	}
+	
+	set_variable = { country_official_religion_popularity_c = total_population_religion }	# country_official_religion_popularity_c - > controlled
+	divide_variable = { country_official_religion_popularity_c = total_population }
+	divide_variable = { country_official_religion_popularity_c = 100 } # scales back to [0;1] range
+}
+
+scale_country_religion_effect = {
+	set_variable = { religion_buddhism_compliance_growth = 0 }
+	set_variable = { religion_buddhism_resistance_growth = 0 }
+	set_variable = { religion_buddhism_resistance_growth_on_our_occupied_states = 0 }
+	set_variable = { religion_shinto_conscription = 0 }
+	set_variable = { religion_shinto_surrender_limit = 0 }
+	set_variable = { religion_christianity_conversion_speed = 0 }
+	set_variable = { religion_christianity_resistance_growth_on_our_occupied_states = 0 }
+	set_variable = { religion_taoism_stability_factor = 0 }
+	set_variable = { religion_taoism_compliance_growth = 0 }
+	set_variable = { religion_confucianism_political_advisor_cost = 0 }
+	set_variable = { religion_confucianism_theorist_cost = 0 }
+	set_variable = { religion_secularism_political_power = 0 }
+	set_variable = { religion_secularism_compliance_growth = 0 }
+	set_variable = { religion_cthulhu_stability_factor = 0 }
+	set_variable = { religion_cthulhu_intel_factor = 0 }
+	set_variable = { religion_cthulhu_research_speed = 0 }
+	set_variable = { religion_cthulhu_nuke_production = 0 }
+	
+	if = {
+		limit = { check_variable = { country_religion = 1 } } 	# Buddhism
+		set_variable = { religion_buddhism_compliance_growth = global.religion_base_buddhism_compliance_growth }
+		set_variable = { religion_buddhism_resistance_growth = global.religion_base_buddhism_resistance_growth }
+		set_variable = { religion_buddhism_resistance_growth_on_our_occupied_states = global.religion_base_buddhism_resistance_growth_on_our_occupied_states }
+		multiply_variable = { religion_buddhism_compliance_growth = country_official_religion_popularity }
+		multiply_variable = { religion_buddhism_resistance_growth = country_official_religion_popularity }
+		multiply_variable = { religion_buddhism_resistance_growth_on_our_occupied_states =country_official_religion_popularity }
+	}
+	if = {
+		limit = { check_variable = { country_religion = 2 } } 	# Shinto	
+		set_variable = { religion_shinto_conscription = global.religion_base_shinto_conscription }
+		set_variable = { religion_shinto_surrender_limit = global.religion_base_shinto_surrender_limit }
+		multiply_variable = { religion_shinto_conscription = country_official_religion_popularity }
+		multiply_variable = { religion_shinto_surrender_limit = country_official_religion_popularity }
+	}
+	if = {
+		limit = { check_variable = { country_religion = 3 } } 	# Christianity	
+		set_variable = { religion_christianity_conversion_speed = global.religion_base_christianity_conversion_speed }
+		set_variable = { religion_christianity_resistance_growth_on_our_occupied_states = global.religion_base_christianity_resistance_growth_on_our_occupied_states }
+		multiply_variable = { religion_christianity_conversion_speed = country_official_religion_popularity }
+		multiply_variable = { religion_christianity_resistance_growth_on_our_occupied_states = country_official_religion_popularity }
+	}
+	if = {
+		limit = { check_variable = { country_religion = 4 } } 	# Taoism	
+		set_variable = { religion_taoism_stability_factor = global.religion_base_taoism_stability_factor }
+		set_variable = { religion_taoism_compliance_growth = global.religion_base_taoism_compliance_growth }
+		multiply_variable = { religion_taoism_stability_factor = country_official_religion_popularity }
+		multiply_variable = { religion_taoism_compliance_growth = country_official_religion_popularity }
+	}
+	if = {
+		limit = { check_variable = { country_religion = 5 } } 	# Confucianism	
+		set_variable = { religion_confucianism_political_advisor_cost = global.religion_base_confucianism_political_advisor_cost }
+		set_variable = { religion_confucianism_theorist_cost = global.religion_base_confucianism_theorist_cost }
+		multiply_variable = { religion_confucianism_political_advisor_cost = country_official_religion_popularity }
+		multiply_variable = { religion_confucianism_theorist_cost = country_official_religion_popularity }
+	}
+	if = {
+		limit = { check_variable = { country_religion = 6 } } 	# Secularism	
+		set_variable = { religion_secularism_political_power = global.religion_base_secularism_political_power }
+		set_variable = { religion_secularism_compliance_growth = global.religion_base_secularism_compliance_growth }
+		multiply_variable = { religion_secularism_political_power = country_official_religion_popularity }
+		multiply_variable = { religion_secularism_compliance_growth = country_official_religion_popularity }
+	}
+	if = {
+		limit = { check_variable = { country_religion = 7 } } 	# Cult of Cthulhu	
+		set_variable = { religion_cthulhu_stability_factor = global.religion_base_cthulhu_stability_factor }
+		set_variable = { religion_cthulhu_intel_factor = global.religion_base_cthulhu_intel_factor }
+		set_variable = { religion_cthulhu_research_speed = global.religion_base_cthulhu_research_speed }
+		set_variable = { religion_cthulhu_nuke_production = global.religion_base_cthulhu_nuke_production }
+		multiply_variable = { religion_cthulhu_stability_factor = country_official_religion_popularity }
+		multiply_variable = { religion_cthulhu_intel_factor = country_official_religion_popularity }
+		multiply_variable = { religion_cthulhu_research_speed = country_official_religion_popularity }
+		multiply_variable = { religion_cthulhu_nuke_production = country_official_religion_popularity }
+	}
+}
+
+set_country_religion_modifier = {
+	if = {
+		limit = { check_variable = { country_religion = 1 } } 	# Buddhism
+		add_dynamic_modifier = { modifier = religion_buddhism_modifier }
+	} else = { if = {
+		limit = { has_dynamic_modifier = { modifier = religion_buddhism_modifier } }
+		remove_dynamic_modifier = { modifier = religion_buddhism_modifier }
+	} }
+	if = {
+		limit = { check_variable = { country_religion = 2 } } 	# Shinto
+		add_dynamic_modifier = { modifier = religion_shinto_modifier }
+	} else = { if = {
+		limit = { has_dynamic_modifier = { modifier = religion_shinto_modifier } }
+		remove_dynamic_modifier = { modifier = religion_shinto_modifier }
+	} }
+	if = {
+		limit = { check_variable = { country_religion = 3 } } 	# Christianity
+		add_dynamic_modifier = { modifier = religion_christianity_modifier }
+	} else = { if = {
+		limit = { has_dynamic_modifier = { modifier = religion_christianity_modifier } }
+		remove_dynamic_modifier = { modifier = religion_christianity_modifier }
+	} }
+	if = {
+		limit = { check_variable = { country_religion = 4 } } 	# Taoism
+		add_dynamic_modifier = { modifier = religion_taoism_modifier }
+	} else = { if = {
+		limit = { has_dynamic_modifier = { modifier = religion_taoism_modifier } }
+		remove_dynamic_modifier = { modifier = religion_taoism_modifier }
+	} }
+	if = {
+		limit = { check_variable = { country_religion = 5 } } 	# Confucianism
+		add_dynamic_modifier = { modifier = religion_confucianism_modifier }
+	} else = { if = {
+		limit = { has_dynamic_modifier = { modifier = religion_confucianism_modifier } }
+		remove_dynamic_modifier = { modifier = religion_confucianism_modifier }
+	} }
+	if = {
+		limit = { check_variable = { country_religion = 6 } } 	# Secularism
+		add_dynamic_modifier = { modifier = religion_secularism_modifier }
+	} else = { if = {
+		limit = { has_dynamic_modifier = { modifier = religion_secularism_modifier } }
+		remove_dynamic_modifier = { modifier = religion_secularism_modifier }
+	} }
+	if = {
+		limit = { check_variable = { country_religion = 7 } } 	# Cult of Cthulhu
+		add_dynamic_modifier = { modifier = religion_cthulhu_modifier }
+	} else = { if = {
+		limit = { has_dynamic_modifier = { modifier = religion_cthulhu_modifier } }
+		remove_dynamic_modifier = { modifier = religion_cthulhu_modifier }
+	} }
+	if = {
+		limit = { NOT = { has_variable = country_religion } }
+		log = "[THIS.GetName] does not have an official religion"
+	}
+}
+
+get_country_religion_drift = {
+
+	set_variable = { country_religion_drift = 0.0 }
+	set_variable = { country_religion_drift_multiplier = 0.0 }
+	set_variable = { country_religion_drift_adviser = 0.0 }
+	set_variable = { country_religion_drift_idea = 0.0 }
+	set_variable = { country_religion_drift_law = 0.0 }
+	set_variable = { country_religion_drift_other = 0.0 }
+	set_variable = { country_religion_drift_christianity = 0.0 }
+	
+	if = {
+		limit = { has_idea_with_trait = buddhist_monk }
+		add_to_variable = { country_religion_drift_adviser = 0.5 }	### PAY ATTENTION TO THE DECIMALS!
+	}
+	if = {
+		limit = { has_idea_with_trait = shinshoku }
+		add_to_variable = { country_religion_drift_adviser = 0.5 }
+	}
+	if = {
+		limit = { has_idea_with_trait = shinshoku_2 }
+		add_to_variable = { country_religion_drift_adviser = 0.75 }
+	}
+	if = {
+		limit = { has_idea_with_trait = protestant_missionary }
+		add_to_variable = { country_religion_drift_adviser = 0.5 }
+	}
+	if = {
+		limit = { has_idea_with_trait = orthodox_priest }
+		add_to_variable = { country_religion_drift_adviser = 0.5 }
+	}
+	if = {
+		limit = { has_idea_with_trait = catholic_priest }
+		add_to_variable = { country_religion_drift_adviser = 0.5 }
+	}
+	if = {
+		limit = { has_idea_with_trait = jesuit }
+		add_to_variable = { country_religion_drift_adviser = 0.75 }
+	}
+	if = {
+		limit = { has_idea_with_trait = daoshi }
+		add_to_variable = { country_religion_drift_adviser = 0.5 }
+	}
+	if = {
+		limit = { has_idea_with_trait = confucian_philosopher }
+		add_to_variable = { country_religion_drift_adviser = 0.5 }
+	}
+	if = {
+		limit = { has_idea_with_trait = republican_thinker }
+		add_to_variable = { country_religion_drift_adviser = 0.5 }
+	}
+	if = {
+		limit = { has_idea_with_trait = militant_atheist }
+		add_to_variable = { country_religion_drift_adviser = 0.75 }
+	}
+
+	if = {
+		limit = { has_idea_with_trait = mad_cultist }
+		add_to_variable = { country_religion_drift_adviser = 1 }
+	}
+
+#	if = {	# LAWS
+#		limit = { has_idea = law idea! }		
+#		add_to_variable = { country_religion_drift_idea = 0.1 }
+#	}
+
+	#### CALCULATE EFFECT
+	add_to_variable = { country_religion_drift = country_religion_drift_adviser }
+	add_to_variable = { country_religion_drift = country_religion_drift_idea }
+	add_to_variable = { country_religion_drift = country_religion_drift_law }
+	add_to_variable = { country_religion_drift = country_religion_drift_other }
+
+	# CHRISTIAN: DEUS VULT!
+	if = {
+		limit = {
+			check_variable = { country_religion = 3 }	# Christianity
+			NOT = { check_variable = { country_religion_drift = 0 }	} # If drift is zero, it will not be multiplied
+		}
+		set_variable = { country_religion_drift_christianity = 1 }
+	}
+	
+	### Add multipliers
+	set_variable = { country_religion_drift_multiplier = 1 }
+	add_to_variable = { country_religion_drift_multiplier = country_religion_drift_christianity }
+	
+	#### MULTIPLY EFFECT
+	multiply_variable = { country_religion_drift = country_religion_drift_multiplier }
+}
+
+state_drift_religion = {
+
+# gets total drift for controller's official religion
+# gets total of other religons
+# applies drift to official religion
+# applices negative drift to othe religions proportional to their popularities
+
+	if = {
+		limit = { CONTROLLER = { check_variable = { country_religion_drift > 0 } } }	# if there's not religion drift, don't bother
+		set_temp_variable = { local_drift_effect = PREV.country_religion_drift }
+		set_temp_variable = { drift_scale_effect = 100 }	# attention to scale!
+		
+		if = {
+			limit = { CONTROLLER = { check_variable = { country_religion = 1 } } }	# Buddhism
+			#if = { limit = { NOT = { check_variable = { state_religion_buddhism < 1 } } } break = yes }	# no need to further math!
+			subtract_from_temp_variable = { drift_scale_effect = state_religion_buddhism }
+		}
+		if = {
+			limit = { CONTROLLER = { check_variable = { country_religion = 2 } } }	# Shinto
+			#if = { limit = { NOT = { check_variable = { state_religion_shinto < 1 } } } break = yes }
+			subtract_from_temp_variable = { drift_scale_effect = state_religion_shinto }
+		}
+		if = {
+			limit = { CONTROLLER = { check_variable = { country_religion = 3 } } }	# Christianity
+			#if = { limit = { NOT = { check_variable = { state_religion_christianity < 1 } } } break = yes }
+			subtract_from_temp_variable = { drift_scale_effect = state_religion_christianity }
+		}
+		if = {
+			limit = { CONTROLLER = { check_variable = { country_religion = 4 } } }	# Taoism
+			#if = { limit = { NOT = { check_variable = { state_religion_taoism < 1 } } } break = yes }
+			subtract_from_temp_variable = { drift_scale_effect = state_religion_taoism }
+		}
+		if = {
+			limit = { CONTROLLER = { check_variable = { country_religion = 5 } } }	# Confucianism
+			#if = { limit = { NOT = { check_variable = { state_religion_confucianism < 1 } } } break = yes }
+			subtract_from_temp_variable = { drift_scale_effect = state_religion_confucianism }
+		}
+		if = {
+			limit = { CONTROLLER = { check_variable = { country_religion = 6 } } }	# Secularism
+			#if = { limit = { NOT = { check_variable = { state_religion_secularism < 1 } } } break = yes }
+			subtract_from_temp_variable = { drift_scale_effect = state_religion_secularism }
+		}
+		if = {
+			limit = { CONTROLLER = { check_variable = { country_religion = 7 } } }	# Cult of Cthulhu
+			#if = { limit = { NOT = { check_variable = { state_religion_cthulhu < 1 } } } break = yes }
+			subtract_from_temp_variable = { drift_scale_effect = state_religion_cthulhu }
+		}
+		
+		multiply_temp_variable = { drift_scale_effect = 2 }
+		divide_temp_variable = { drift_scale_effect = 100 }
+		clamp_temp_variable = { var = drift_scale_effect min = 0.25 max = 2 }
+		multiply_temp_variable = { local_drift_effect = drift_scale_effect }
+		
+		#if = {	### REMOVED!
+		#	limit = { NOT = { is_core_of = CONTROLLER } }
+		#	multiply_temp_variable = { local_drift_effect = 0.66 }	# -33% CONVERSION RATE FOR NON-CORE
+		#}
+	
+		set_temp_variable = { pool_of_other_religions = 0 }
+		if = {
+			limit = { NOT = { CONTROLLER = { check_variable =  {country_religion = 1 } } } }	# Buddhism
+			add_to_temp_variable = { pool_of_other_religions = state_religion_buddhism }
+		}
+		if = {
+			limit = { NOT = { CONTROLLER = { check_variable =  {country_religion = 2 } } } }	# Shinto
+			add_to_temp_variable = { pool_of_other_religions = state_religion_shinto }
+		}
+		if = {
+			limit = { NOT = { CONTROLLER = { check_variable =  {country_religion = 3 } } } }	# Christianity
+			add_to_temp_variable = { pool_of_other_religions = state_religion_christianity }
+		}
+		if = {
+			limit = { NOT = { CONTROLLER = { check_variable =  {country_religion = 4 } } } }	# Taoism
+			add_to_temp_variable = { pool_of_other_religions = state_religion_taoism }
+		}
+		if = {
+			limit = { NOT = { CONTROLLER = { check_variable =  {country_religion = 5 } } } }	# Confucianism
+			add_to_temp_variable = { pool_of_other_religions = state_religion_confucianism }
+		}
+		if = {
+			limit = { NOT = { CONTROLLER = { check_variable =  {country_religion = 6 } } } }	# Secularism
+			add_to_temp_variable = { pool_of_other_religions = state_religion_secularism }
+		}
+		if = {
+			limit = { NOT = { CONTROLLER = { check_variable =  {country_religion = 7 } } } }	# Cult of Cthulhu
+			add_to_temp_variable = { pool_of_other_religions = state_religion_cthulhu }
+		}
+		
+		if = {
+			limit = { check_variable = { pool_of_other_religions = 0 } }	# anti-error measure
+			set_temp_variable = { pool_of_other_religions = 1 }
+		}
+		
+		# apply negative drift to non-official religions
+		if = {
+			limit = { CONTROLLER = { check_variable =  {country_religion = 1 } } }	# Buddhism
+		} else = {
+			set_temp_variable = { drifit_negative = state_religion_buddhism }	# it's actually a positive value
+			multiply_temp_variable = { drifit_negative = local_drift_effect }
+			divide_temp_variable = { drifit_negative = pool_of_other_religions }
+			subtract_from_variable = { state_religion_buddhism = drifit_negative }
+		}
+		if = {
+			limit = { CONTROLLER = { check_variable =  {country_religion = 2 } } }	# Shinto
+		} else = {
+			set_temp_variable = { drifit_negative = state_religion_shinto }
+			multiply_temp_variable = { drifit_negative = local_drift_effect }
+			divide_temp_variable = { drifit_negative = pool_of_other_religions }	
+			subtract_from_variable = { state_religion_shinto = drifit_negative }
+		}
+		if = {
+			limit = { CONTROLLER = { check_variable =  {country_religion = 3 } } }	# Christianity
+		} else = {
+			set_temp_variable = { drifit_negative = state_religion_christianity }
+			multiply_temp_variable = { drifit_negative = local_drift_effect }
+			divide_temp_variable = { drifit_negative = pool_of_other_religions }
+			subtract_from_variable = { state_religion_christianity = drifit_negative }
+		}
+		if = {
+			limit = { CONTROLLER = { check_variable =  {country_religion = 4 } } }	# Taoism
+		} else = {
+			set_temp_variable = { drifit_negative = state_religion_taoism }
+			multiply_temp_variable = { drifit_negative = local_drift_effect }
+			divide_temp_variable = { drifit_negative = pool_of_other_religions }
+			subtract_from_variable = { state_religion_taoism = drifit_negative }
+		}
+		if = {
+			limit = { CONTROLLER = { check_variable =  {country_religion = 5 } } }	# Confucianism
+		} else = {
+			set_temp_variable = { drifit_negative = state_religion_confucianism }
+			multiply_temp_variable = { drifit_negative = local_drift_effect }
+			divide_temp_variable = { drifit_negative = pool_of_other_religions }
+			subtract_from_variable = { state_religion_confucianism = drifit_negative }
+		}
+		if = {
+			limit = { CONTROLLER = { check_variable =  {country_religion = 6 } } }	# Secularism
+		} else = {
+			set_temp_variable = { drifit_negative = state_religion_secularism }
+			multiply_temp_variable = { drifit_negative = local_drift_effect }
+			divide_temp_variable = { drifit_negative = pool_of_other_religions }
+			subtract_from_variable = { state_religion_secularism = drifit_negative }
+		}
+		if = {
+			limit = { CONTROLLER = { check_variable =  {country_religion = 7 } } }	# Cult of Cthulhu
+		} else = {
+			set_temp_variable = { drifit_negative = state_religion_cthulhu }
+			multiply_temp_variable = { drifit_negative = local_drift_effect }
+			divide_temp_variable = { drifit_negative = pool_of_other_religions }
+			subtract_from_variable = { state_religion_cthulhu = drifit_negative }
+		}
+		
+		# adds drift to official religion
+		if = {
+			limit = { CONTROLLER = { check_variable =  {country_religion = 1 } } }	# Buddhism
+			add_to_variable = { state_religion_buddhism = local_drift_effect }
+		}
+		if = {
+			limit = { CONTROLLER = { check_variable =  {country_religion = 2 } } }	# Shinto
+			add_to_variable = { state_religion_shinto = local_drift_effect }
+		}
+		if = {
+			limit = { CONTROLLER = { check_variable =  {country_religion = 3 } } }	# Christianity
+			add_to_variable = { state_religion_christianity = local_drift_effect }
+		}
+		if = {
+			limit = { CONTROLLER = { check_variable =  {country_religion = 4 } } }	# Taoism
+			add_to_variable = { state_religion_taoism = local_drift_effect }
+		}
+		if = {
+			limit = { CONTROLLER = { check_variable =  {country_religion = 5 } } }	# Confucianism
+			add_to_variable = { state_religion_confucianism = local_drift_effect }
+		}
+		if = {
+			limit = { CONTROLLER = { check_variable =  {country_religion = 6 } } }	# Secularism
+			add_to_variable = { state_religion_secularism = local_drift_effect }
+		}
+		if = {
+			limit = { CONTROLLER = { check_variable =  {country_religion = 7 } } }	# Cult of Cthulhu
+			add_to_variable = { state_religion_cthulhu = local_drift_effect }
+		}
+		
+		## error catcher here! if all religions do not sum 100%, difference is added/subtracted from official religion
+		set_temp_variable = { total_state_religion_temp = 100 }
+		subtract_from_temp_variable = { total_state_religion_temp = state_religion_buddhism }
+		subtract_from_temp_variable = { total_state_religion_temp = state_religion_shinto }
+		subtract_from_temp_variable = { total_state_religion_temp = state_religion_christianity }
+		subtract_from_temp_variable = { total_state_religion_temp = state_religion_taoism }
+		subtract_from_temp_variable = { total_state_religion_temp = state_religion_confucianism }
+		subtract_from_temp_variable = { total_state_religion_temp = state_religion_secularism }
+		subtract_from_temp_variable = { total_state_religion_temp = state_religion_cthulhu }
+		
+		if = {
+			limit = { NOT = { check_variable = { total_state_religion_temp = 0 } } }	
+			#log = "[THIS.GetName]: wrong sum of religion popularities, [?total_state_religion_temp] error!"
+			if = {
+				limit = { CONTROLLER = { check_variable = { country_religion = 1 } } }	# Buddhism
+				add_to_variable = { state_religion_buddhism = total_state_religion_temp } # it should make all sum 100% again
+			}
+			if = {
+				limit = { CONTROLLER = { check_variable = { country_religion = 2 } } }	# Shinto
+				add_to_variable = { state_religion_shinto = total_state_religion_temp } # it should make all sum 100% again
+			}
+			if = {
+				limit = { CONTROLLER = { check_variable = { country_religion = 3 } } }	# Christianity
+				add_to_variable = { state_religion_christianity = total_state_religion_temp } # it should make all sum 100% again
+			}
+			if = {
+				limit = { CONTROLLER = { check_variable = { country_religion = 4 } } }	# Taoism
+				add_to_variable = { state_religion_taoism = total_state_religion_temp } # it should make all sum 100% again
+			}
+			if = {
+				limit = { CONTROLLER = { check_variable = { country_religion = 5 } } }	# Confucianism
+				add_to_variable = { state_religion_confucianism = total_state_religion_temp } # it should make all sum 100% again
+			}
+			if = {
+				limit = { CONTROLLER = { check_variable = { country_religion = 6 } } }	# Secularism
+				add_to_variable = { state_religion_secularism = total_state_religion_temp } # it should make all sum 100% again
+			}
+			if = {
+				limit = { CONTROLLER = { check_variable = { country_religion = 7 } } }	# Culf of Cthulhu
+				add_to_variable = { state_religion_cthulhu = total_state_religion_temp } # it should make all sum 100% again
+			}
+		}
+		check_state_main_religion = yes
+	}
+}
+
+check_state_main_religion = {
+
+	set_variable = { state_religion = 1 }	# defaults to buddhism
+	set_temp_variable = { highest_popularity = state_religion_buddhism }
+	if = {
+		limit = { check_variable = { state_religion_shinto > highest_popularity } }
+		set_variable = { state_religion = 2 }
+		set_temp_variable = { highest_popularity = state_religion_shinto }
+	}
+	if = {
+		limit = { check_variable = { state_religion_christianity > highest_popularity } }
+		set_variable = { state_religion = 3 }
+		set_temp_variable = { highest_popularity = state_religion_christianity }
+	}
+	if = {
+		limit = { check_variable = { state_religion_taoism > highest_popularity } }
+		set_variable = { state_religion = 4 }
+		set_temp_variable = { highest_popularity = state_religion_taoism }
+	}
+	if = {
+		limit = { check_variable = { state_religion_confucianism > highest_popularity } }
+		set_variable = { state_religion = 5 }
+		set_temp_variable = { highest_popularity = state_religion_confucianism }
+	}
+	if = {
+		limit = { check_variable = { state_religion_secularism > highest_popularity } }
+		set_variable = { state_religion = 6 }
+		set_temp_variable = { highest_popularity = state_religion_secularism }
+	}
+	if = {
+		limit = { check_variable = { state_religion_cthulhu > highest_popularity } }
+		set_variable = { state_religion = 7 }
+		set_temp_variable = { highest_popularity = state_religion_cthulhu }
+	}
+}
+
+get_religion_state_compliance_modifier = {
+	set_variable = { religion_local_compliance_bonus = 0 }	# this value is within a [0;100] range
+	set_variable = { religion_local_resistance_penalties = 100 }	# this value is within a [0;100] range
+	set_variable = { religion_local_syncretism_bonus = 0 }	# this value is within a [0;100] range
+	if = {
+		limit = { NOT = { PREV = { tag = OWNER } } }	# PREV = controller
+		### Main religion
+		if = {
+			limit = { check_variable = { PREV.country_religion = 1 } }	# Buddhism
+			add_to_variable = { religion_local_compliance_bonus = state_religion_buddhism }
+			subtract_from_variable = { religion_local_resistance_penalties = state_religion_buddhism }
+		}
+		if = {
+			limit = { check_variable = { PREV.country_religion = 2 } }	# Shinto
+			add_to_variable = { religion_local_compliance_bonus = state_religion_shinto }
+			subtract_from_variable = { religion_local_resistance_penalties = state_religion_shinto }
+		}
+		if = {
+			limit = { check_variable = { PREV.country_religion = 3 } }	# Christianity
+			add_to_variable = { religion_local_compliance_bonus = state_religion_christianity }
+			subtract_from_variable = { religion_local_resistance_penalties = state_religion_christianity }
+		}
+		if = {
+			limit = { check_variable = { PREV.country_religion = 4 } }	# Taoism
+			add_to_variable = { religion_local_compliance_bonus = state_religion_taoism }
+			subtract_from_variable = { religion_local_resistance_penalties = state_religion_taoism }
+		}
+		if = {
+			limit = { check_variable = { PREV.country_religion = 5 } }	# Confucianism
+			add_to_variable = { religion_local_compliance_bonus = state_religion_confucianism }
+			subtract_from_variable = { religion_local_resistance_penalties = state_religion_confucianism }
+		}
+		if = {
+			limit = { check_variable = { PREV.country_religion = 6 } }	# Secularism
+			add_to_variable = { religion_local_compliance_bonus = state_religion_secularism }
+			subtract_from_variable = { religion_local_resistance_penalties = state_religion_secularism }
+		}
+		if = {
+			limit = { check_variable = { PREV.country_religion = 7 } }	# Cult of Cthulhu
+			add_to_variable = { religion_local_compliance_bonus = state_religion_cthulhu }
+			subtract_from_variable = { religion_local_resistance_penalties = state_religion_cthulhu }
+		}
+		### Syncretism
+		if = {
+			limit = { PREV = {
+				has_idea_with_trait = religion_syncretism_buddhism
+				NOT = { check_variable = { country_religion = 1 } } } } # Buddhism
+			add_to_variable = { religion_local_syncretism_bonus = state_religion_buddhism }
+			subtract_from_variable = { religion_local_resistance_penalties = state_religion_buddhism }
+		}
+		if = {
+			limit = { PREV = {
+				has_idea_with_trait = religion_syncretism_shinto
+				NOT = { check_variable = { country_religion = 2 } } } } # Shinto
+			add_to_variable = { religion_local_syncretism_bonus = state_religion_shinto }
+			subtract_from_variable = { religion_local_resistance_penalties = state_religion_shinto }
+		}
+		if = {
+			limit = { PREV = {
+				has_idea_with_trait = religion_syncretism_christianity
+				NOT = { check_variable = { country_religion = 3 } } } } # Christianity
+			add_to_variable = { religion_local_syncretism_bonus = state_religion_christianity }
+			subtract_from_variable = { religion_local_resistance_penalties = state_religion_christianity}
+		}
+		if = {
+			limit = { PREV = {
+				has_idea_with_trait = religion_syncretism_taoism
+				NOT = { check_variable = { country_religion = 4 } } } } # Taoism
+			add_to_variable = { religion_local_syncretism_bonus = state_religion_taoism } }
+			subtract_from_variable = { religion_local_resistance_penalties = state_religion_taoism }
+		}
+		if = {
+			limit = { PREV = {
+				has_idea_with_trait = religion_syncretism_confucianism
+				NOT = { check_variable = { country_religion = 5 } } } } # Confucianism
+			add_to_variable = { religion_local_syncretism_bonus = state_religion_confucianism }
+			subtract_from_variable = { religion_local_resistance_penalties = state_religion_confucianism }
+		}
+		if = {
+			limit = { PREV = {
+				has_idea_with_trait = religion_syncretism_secularism
+				NOT = { check_variable = { country_religion = 6 } } } } # Secularism
+			add_to_variable = { religion_local_syncretism_bonus = state_religion_secularism }
+			subtract_from_variable = { religion_local_resistance_penalties = state_religion_secularism }
+		}
+		if = {
+			limit = { PREV = {
+				has_idea_with_trait = religion_syncretism_cthulhu
+				NOT = { check_variable = { country_religion = 7 } } } } # Cult of Cthulhu
+			add_to_variable = { religion_local_syncretism_bonus = state_religion_cthulhu }
+			subtract_from_variable = { religion_local_resistance_penalties = state_religion_cthulhu }
+		}
+		### National spirits
+		if = { limit = { PREV = { has_idea = FER_atheist_state } } multiply_variable = { religion_local_resistance_penalties = 2 } }
+		### Final modifers
+		divide_variable = { religion_local_compliance_bonus = 100 }	# scales back to [0;1] ranges
+		divide_variable = { religion_local_resistance_penalties = 400 }	# scales back to [0;1] ranges
+		divide_variable = { religion_local_syncretism_bonus = 200 }	# scales back to [0;1] ranges
+		clamp_temp_variable = { var = religion_local_compliance_bonus min = 0 max = 1 }
+		clamp_temp_variable = { var = religion_local_resistance_penalties min = 0 max = 1 }
+		clamp_temp_variable = { var = religion_local_syncretism_bonus min = 0 max = 1 }
+		if = {
+			limit = {
+				PREV = {
+					OR = {
+						has_government = democratic
+						has_government = democratic_socialism
+					}
+				}
+			}
+			set_variable = { religion_local_resistance_penalties = 0 }	### Democracies do not suffer from religious unrest
+		}
+	}
+}
+
+### Effects for decisons, focuses, events...
+
+set_religion_buddhism = {
+	custom_effect_tooltip = set_religion_buddhism
+	set_variable = { country_variable = 1 }
+}
+
+set_religion_shinto = {
+	custom_effect_tooltip = set_religion_shinto
+	set_variable = { country_variable = 2 }
+}
+
+set_religion_christianity = {
+	custom_effect_tooltip = set_religion_christianity
+	set_variable = { country_variable = 3 }
+}
+
+set_religion_taoism = {
+	custom_effect_tooltip = set_religion_taoism
+	set_variable = { country_variable = 4 }
+}
+
+set_religion_confucianism = {
+	custom_effect_tooltip = set_religion_confucianism
+	set_variable = { country_variable = 5 }
+}
+
+set_religion_secularism = {
+	custom_effect_tooltip = set_religion_secularism
+	set_variable = { country_variable = 6 }
+}
+
+set_religion_cthulhu = {
+	custom_effect_tooltip = set_religion_cthulhu
+	set_variable = { country_variable = 7 }
+}
