@@ -29,6 +29,48 @@ on_actions = {
 					recruit_character = HIR_rutger_hauer	# blocked runner
 				}
 			}
+			### COALITION STABILITY BONUS ###
+			every_country = {
+				add_dynamic_modifier = { modifier = coalition_stability_modifier }
+				if = {
+					limit = {
+						NOT = {
+							has_idea_with_trait = coalition_with_democratic
+							has_idea_with_trait = coalition_with_democratic_socialism
+							has_idea_with_trait = coalition_with_communism
+							has_idea_with_trait = coalition_with_neutrality
+							has_idea_with_trait = coalition_with_autocracy
+							has_idea_with_trait = coalition_with_fascism
+						}
+					}
+					set_variable = { coalition_stability_bonus = 0 }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_democratic }
+					set_variable = { coalition_stability_bonus = party_popularity@democratic }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_democratic_socialism }
+					set_variable = { coalition_stability_bonus = party_popularity@democratic_socialism }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_neutrality }
+					set_variable = { coalition_stability_bonus = party_popularityneutrality}
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_autocracy }
+					set_variable = { coalition_stability_bonus = party_popularity@autocracy }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_fascism }
+					set_variable = { coalition_stability_bonus = party_popularity@fascism }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_communism }
+					set_variable = { coalition_stability_bonus = party_popularity@communism }
+				}
+				multiply_variable = { coalition_stability_bonus = 0.15 }
+			}
 			### DIVISION LIMIT SYSTEM	###
 			random_country = {
 				set_up_global_division_limit_system = yes
@@ -232,6 +274,15 @@ on_actions = {
 	
 	on_weekly = {
 		effect = {
+			### COALITION STABILITY BONUS ###
+			if = {
+				NOT = {
+					has_dynamic_modifier = { modifier = coalition_stability_modifier }
+				}
+				add_dynamic_modifier = { modifier = coalition_stability_modifier }
+			}
+		}
+		effect = {
 			### DIVISION LIMIT SYSTEM	###
 			if = {
 				limit = { NOT = { has_country_flag = has_division_limit_system } }
@@ -345,6 +396,47 @@ on_actions = {
 	}
 	
 	on_daily = {
+		effect = {
+			### COALITION STABILITY BONUS ###
+			if = {
+				limit = { has_idea_with_trait = coalition_with_democratic NOT = { has_government = democratic } }
+				set_variable = { coalition_stability_bonus = party_popularity@democratic }
+			}
+			if = {
+				limit = { has_idea_with_trait = coalition_with_democratic_socialism NOT = { has_government = democratic_socialism } }
+				set_variable = { coalition_stability_bonus = party_popularity@democratic_socialism }
+			}
+			if = {
+				limit = { has_idea_with_trait = coalition_with_neutrality NOT = { has_government = neutrality } }
+				set_variable = { coalition_stability_bonus = party_popularity@neutrality}
+			}
+			if = {
+				limit = { has_idea_with_trait = coalition_with_autocracy NOT = { has_government = autocracy } }
+				set_variable = { coalition_stability_bonus = party_popularity@autocracy }
+			}
+			if = {
+				limit = { has_idea_with_trait = coalition_with_fascism NOT = { has_government = fascism } }
+				set_variable = { coalition_stability_bonus = party_popularity@fascism }
+			}
+			if = {
+				limit = { has_idea_with_trait = coalition_with_communism NOT = { has_government = communism } }
+				set_variable = { coalition_stability_bonus = party_popularity@communism }
+			}
+			multiply_variable = { coalition_stability_bonus = 0.15 }
+			if = {
+				limit = {
+					NOT = {
+						has_idea_with_trait = coalition_with_democratic
+						has_idea_with_trait = coalition_with_democratic_socialism
+						has_idea_with_trait = coalition_with_communism
+						has_idea_with_trait = coalition_with_neutrality
+						has_idea_with_trait = coalition_with_autocracy
+						has_idea_with_trait = coalition_with_fascism
+					}
+				}
+				set_variable = { coalition_stability_bonus = 0 }
+			}
+		}
 		effect = {
 			# DIVISION LIMIT SYSTEM	# DIVISION LIMIT SYSTEM	# DIVISION LIMIT SYSTEM
 			every_country = {
