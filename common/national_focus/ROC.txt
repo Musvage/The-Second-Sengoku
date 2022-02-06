@@ -391,13 +391,19 @@ focus_tree = {
 		cost = 10
 		
 		available = {
-			has_idea = volunteer_only
+			OR = {
+				has_idea = volunteer_only
+				has_idea = disarmed_nation
+			}
 			has_war_support > 0.25
 			threat > 0.25
 		}
 		
 		bypass = {
-			NOT = { has_war_support = volunteer_only }
+			NOT = {
+				has_idea = volunteer_only
+				has_idea = disarmed_nation
+			}
 		}
 		
 		available_if_capitulated = yes
@@ -407,9 +413,23 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			swap_ideas = {
-				remove_idea = volunteer_only
-				add_idea = extensive_conscription
+			if = {
+				limit = {
+					has_idea = volunteer_only
+				}
+				swap_ideas = {
+					remove_idea = volunteer_only
+					add_idea = extensive_conscription
+				}
+			}
+			if = {
+				limit = {
+					has_idea = disarmed_nation
+				}
+				swap_ideas = {
+					remove_idea = volunteer_only
+					add_idea = limited_conscription
+				}
 			}
 		}
 	}
@@ -441,13 +461,67 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			
+			# adds decisions to get resources/arms/manpower
+		}
+	}
+	
+	focus = {
+		id = ROC_call_army	# Northeastern Army
+		icon = GFX_focus_ROC_call_beyang_army
+		search_filters = {  }
+		
+		prerequisite = { focus = ROC_requests }
+		
+		relative_position_id = ROC_requests
+		x = -1
+		y = 1
+		cost = 10
+		
+		available = {
+	
+		}
+		
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		completion_reward = {
+			# 4 inf brigades, 1 cav brigade
+		}
+	}
+	
+	focus = {
+		id = ROC_call_navy	# Beiyang Fleet
+		icon = GFX_focus_generic_cruiser_effort		### MISSING GFX!
+		search_filters = {  }
+		
+		prerequisite = { focus = ROC_requests }
+		
+		relative_position_id = ROC_requests
+		x = 1
+		y = 1
+		cost = 10
+		
+		available = {
+	
+		}
+		
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		completion_reward = {
+			# ships
 		}
 	}
 	
 	focus = {
 		id = ROC_national_mobilisation
-		icon = GFX_focus_generic_infantry	### MISSING GFX!
+		icon = GFX_focus_ROC_national_mobilization
 		search_filters = {  }
 		
 		prerequisite = { focus = ROC_conscription_laws }
@@ -764,10 +838,10 @@ focus_tree = {
 	
 	focus = {
 		id = ROC_autonomous_diplomacy
-		icon = GFX_focus_generic_non_aggression	### MISSING GFX!
+		icon = GFX_focus_ROC_autonomous_diplomacy
 		search_filters = {  }
 		
-		mutually_exclusive = { focus = ROC_join_komintern focus = ROC_join_lon }
+		mutually_exclusive = { focus = ROC_join_komintern focus = ROC_autonomous_diplomacy }
 		prerequisite = { focus = ROC_support_federalisation }
 		
 		relative_position_id = ROC_support_federalisation
@@ -1024,7 +1098,7 @@ focus_tree = {
 		cost = 10
 		
 		available = {
-			NOT = { has_governmnet = communism }
+			NOT = { has_government = communism }
 			communism > 0.33
 			neutrality < 0.5
 			fascism < 0.5
@@ -1032,7 +1106,7 @@ focus_tree = {
 		}
 		
 		bypass = {
-			has_governmnet = communism
+			has_government = communism
 		}
 		
 		available_if_capitulated = yes
@@ -1063,7 +1137,7 @@ focus_tree = {
 		cost = 10
 		
 		available = {
-			NOT = { has_governmnet = democratic_socialism }
+			NOT = { has_government = democratic_socialism }
 			democratic_socialism > 0.33
 			neutrality < 0.5
 			fascism < 0.5
@@ -1071,7 +1145,7 @@ focus_tree = {
 		}
 		
 		bypass = {
-			has_governmnet = democratic_socialism
+			has_government = democratic_socialism
 		}
 		
 		available_if_capitulated = yes
@@ -1196,8 +1270,8 @@ focus_tree = {
 		
 		completion_reward = {
 			add_ideas = ROC_idea_westernized_administration
-			every_other_nation = {
-				limit = { has_governmnet = democratic }
+			every_other_country = {
+				limit = { has_government = democratic }
 				# diplo bonus
 			}
 		}
@@ -1665,7 +1739,7 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = ROC_manchurian_shipyards
+		id = ROC_manchurian_shipyards	# Weihaiwei Naval Base
 		icon = GFX_focus_generic_dockyards		### MISSING GFX!
 		search_filters = {  }
 		
@@ -1678,7 +1752,7 @@ focus_tree = {
 		cost = 10
 		
 		available = {
-			any_controlled_province = {
+			any_controlled_state = {
 				is_coastal = yes
 				free_building_slots = {
 					building = dockyard
