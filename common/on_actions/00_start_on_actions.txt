@@ -24,10 +24,53 @@ on_actions = {
 				}
 				AMC = {
 					recruit_character = AMC_indiana_niedell	# media personality
+					recruit_character = AMC_willis_snake_corto	# commando
 				}
 				HIR = {
 					recruit_character = HIR_rutger_hauer	# blocked runner
 				}
+			}
+			### COALITION STABILITY BONUS ###
+			every_country = {
+				add_dynamic_modifier = { modifier = coalition_stability_modifier }
+				if = {
+					limit = {
+						NOT = {
+							has_idea_with_trait = coalition_with_democratic
+							has_idea_with_trait = coalition_with_democratic_socialism
+							has_idea_with_trait = coalition_with_communism
+							has_idea_with_trait = coalition_with_neutrality
+							has_idea_with_trait = coalition_with_autocracy
+							has_idea_with_trait = coalition_with_fascism
+						}
+					}
+					set_variable = { coalition_stability_bonus = 0 }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_democratic }
+					set_variable = { coalition_stability_bonus = party_popularity@democratic }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_democratic_socialism }
+					set_variable = { coalition_stability_bonus = party_popularity@democratic_socialism }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_neutrality }
+					set_variable = { coalition_stability_bonus = party_popularityneutrality}
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_autocracy }
+					set_variable = { coalition_stability_bonus = party_popularity@autocracy }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_fascism }
+					set_variable = { coalition_stability_bonus = party_popularity@fascism }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_communism }
+					set_variable = { coalition_stability_bonus = party_popularity@communism }
+				}
+				multiply_variable = { coalition_stability_bonus = 0.15 }
 			}
 			### DIVISION LIMIT SYSTEM	###
 			random_country = {
@@ -102,14 +145,14 @@ on_actions = {
 				set_variable = { global.tc_base_vladvostok_tungsten = 0 }
 				# fengtian
 				set_variable = { global.tc_base_fengtian_aluminium = 0 }
-				set_variable = { global.tc_base_fengtian_chromium = 0 }
-				set_variable = { global.tc_base_fengtian_oil = 0 }
+				set_variable = { global.tc_base_fengtian_chromium = 16 }
+				set_variable = { global.tc_base_fengtian_oil = 2 }
 				set_variable = { global.tc_base_fengtian_rubber = 0 }
-				set_variable = { global.tc_base_fengtian_steel = 0 }
-				set_variable = { global.tc_base_fengtian_tungsten = 0 }
+				set_variable = { global.tc_base_fengtian_steel = 119 }
+				set_variable = { global.tc_base_fengtian_tungsten = 82 }
 				# muroran
-				set_variable = { global.tc_base_muroran_aluminium = 0 }
-				set_variable = { global.tc_base_muroran_chromium = 0 }
+				set_variable = { global.tc_base_muroran_aluminium = 3 }
+				set_variable = { global.tc_base_muroran_chromium = 3 }
 				set_variable = { global.tc_base_muroran_oil = 0 }
 				set_variable = { global.tc_base_muroran_rubber = 0 }
 				set_variable = { global.tc_base_muroran_steel =  0 }
@@ -232,6 +275,15 @@ on_actions = {
 	
 	on_weekly = {
 		effect = {
+			### COALITION STABILITY BONUS ###
+			if = {
+				NOT = {
+					has_dynamic_modifier = { modifier = coalition_stability_modifier }
+				}
+				add_dynamic_modifier = { modifier = coalition_stability_modifier }
+			}
+		}
+		effect = {
 			### DIVISION LIMIT SYSTEM	###
 			if = {
 				limit = { NOT = { has_country_flag = has_division_limit_system } }
@@ -244,6 +296,8 @@ on_actions = {
 			### RELIGION 2.0 ###
 			get_country_religion_drift = yes
 			get_official_religion_popularity = yes
+			scale_country_religion_effect = yes
+			set_country_religion_modifier = yes
 			every_controlled_state = {
 				get_religion_state_compliance_modifier = yes
 			}
@@ -345,6 +399,47 @@ on_actions = {
 	}
 	
 	on_daily = {
+		effect = {
+			### COALITION STABILITY BONUS ###
+			if = {
+				limit = { has_idea_with_trait = coalition_with_democratic NOT = { has_government = democratic } }
+				set_variable = { coalition_stability_bonus = party_popularity@democratic }
+			}
+			if = {
+				limit = { has_idea_with_trait = coalition_with_democratic_socialism NOT = { has_government = democratic_socialism } }
+				set_variable = { coalition_stability_bonus = party_popularity@democratic_socialism }
+			}
+			if = {
+				limit = { has_idea_with_trait = coalition_with_neutrality NOT = { has_government = neutrality } }
+				set_variable = { coalition_stability_bonus = party_popularity@neutrality}
+			}
+			if = {
+				limit = { has_idea_with_trait = coalition_with_autocracy NOT = { has_government = autocracy } }
+				set_variable = { coalition_stability_bonus = party_popularity@autocracy }
+			}
+			if = {
+				limit = { has_idea_with_trait = coalition_with_fascism NOT = { has_government = fascism } }
+				set_variable = { coalition_stability_bonus = party_popularity@fascism }
+			}
+			if = {
+				limit = { has_idea_with_trait = coalition_with_communism NOT = { has_government = communism } }
+				set_variable = { coalition_stability_bonus = party_popularity@communism }
+			}
+			multiply_variable = { coalition_stability_bonus = 0.15 }
+			if = {
+				limit = {
+					NOT = {
+						has_idea_with_trait = coalition_with_democratic
+						has_idea_with_trait = coalition_with_democratic_socialism
+						has_idea_with_trait = coalition_with_communism
+						has_idea_with_trait = coalition_with_neutrality
+						has_idea_with_trait = coalition_with_autocracy
+						has_idea_with_trait = coalition_with_fascism
+					}
+				}
+				set_variable = { coalition_stability_bonus = 0 }
+			}
+		}
 		effect = {
 			# DIVISION LIMIT SYSTEM	# DIVISION LIMIT SYSTEM	# DIVISION LIMIT SYSTEM
 			every_country = {

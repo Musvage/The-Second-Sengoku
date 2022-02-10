@@ -28,7 +28,12 @@ KOB_claim_pondichery_category = {
 
         complete_effect = {
             add_stability = 0.20
-            resistance_damage_to_garrison = -0.05
+            add_tech_bonus = {
+                name = "GOOD SCHOOLING"
+                bonus = 0.25
+                uses = 1
+                category = industry
+            }
         }
 
         fire_only_once = yes
@@ -201,10 +206,10 @@ KOB_contact_french_royalist_category = {
             fire_only_once = yes
         }
 
-        KOB_join_the_fight_for_france_decision_two = {
+        KOB_join_the_fight_for_france_decision_two = { # remove jap citizenship
             icon = generic_break_treaty
 
-            cost = 75
+            cost = 75   
             allowed = { tag = KOB }
             visible = { has_completed_focus = KOB_join_the_fight_for_france has_completed_focus = KOB_offer_full_citizenship_to_japanese } 
             available = { has_completed_focus = KOB_offer_full_citizenship_to_japanese }
@@ -215,33 +220,38 @@ KOB_contact_french_royalist_category = {
                     ideology = fascism
                     popularity = 0.10
                 }
+                hidden_effect = {
+                    activate_decision = KOB_join_the_fight_for_france_decision_hidden_one
+                }
             }
     
             fire_only_once = yes
         }
 
-        KOB_join_the_fight_for_france_decision_three = {
+        KOB_join_the_fight_for_france_decision_three = { # force jap conscription
             icon = generic_army_support
 
             cost = 100
             allowed = { tag = KOB }
-            visible = { has_completed_focus = KOB_join_the_fight_for_france has_completed_focus = KOB_offer_full_citizenship_to_japanese has_decision = KOB_join_the_fight_for_france_decision_two } # has_decision basically means once decision is completed, make this avaible
+            visible = { has_completed_focus = KOB_join_the_fight_for_france has_completed_focus = KOB_offer_full_citizenship_to_japanese has_decision = KOB_join_the_fight_for_france_decision_hidden_one } # has_decision basically means once decision is completed, make this avaible
             available = { has_completed_focus = KOB_join_the_fight_for_france }
             
-            days_remove = -1
-            remove_effect = {
+            complete_effect = {
                 add_stability = -0.10
                 add_popularity = {
                     ideology = fascism
                     popularity = 0.05
                 }
                 add_ideas = KOB_forced_japanese_conscription
+                hidden_effect = {
+                    activate_decision = KOB_join_the_fight_for_france_decision_hidden_three
+                }
             }
     
             fire_only_once = yes
         }
 
-        KOB_join_the_fight_for_france_decision_four = {
+        KOB_join_the_fight_for_france_decision_four = { #communist cannon fauter
             icon = generic_army_support
 
             cost = 50
@@ -260,6 +270,9 @@ KOB_contact_french_royalist_category = {
                     popularity = -0.05
                 }
                 add_timed_idea = { idea = KOB_communist_cannon_fauter  days = 365 }
+                hidden_effect = {
+                    activate_decision = KOB_join_the_fight_for_france_decision_hidden_two
+                }
             }
     
             fire_only_once = yes
@@ -292,37 +305,38 @@ KOB_contact_french_royalist_category = {
             fire_only_once = yes
         }
 
-        KOB_join_the_fight_for_france_decision_six = {
+        KOB_join_the_fight_for_france_decision_six = { # incorp fascism
             icon = ger_reichskommissariats
 
             cost = 50
             allowed = { tag = KOB }
-            visible = { has_completed_focus = KOB_join_the_fight_for_france has_decision = KOB_join_the_fight_for_france_decision_three has_decision = KOB_join_the_fight_for_france_decision_four  } 
+            visible = { has_completed_focus = KOB_join_the_fight_for_france has_decision = KOB_join_the_fight_for_france_decision_hidden_three has_decision = KOB_join_the_fight_for_france_decision_hidden_two  } 
             available = { has_completed_focus = KOB_join_the_fight_for_france }
     
-            days_remove = -1
-            remove_effect = {
+            complete_effect = {
                 add_stability = 0.05
                 add_popularity = {
                     ideology = fascism
                     popularity = 0.05
                 }
                 add_timed_idea = { idea = KOB_fascist_ideals  days = 365 }
+                hidden_effect = {
+                    activate_decision = KOB_join_the_fight_for_france_decision_hidden_four
+                }
             }
     
             fire_only_once = yes
         }
 
-        KOB_join_the_fight_for_france_decision_seven = {
+        KOB_join_the_fight_for_france_decision_seven = { # become fasc
             icon = generic_form_nation
 
             cost = 100
             allowed = { tag = KOB }
-            visible = { has_completed_focus = KOB_join_the_fight_for_france has_decision = KOB_join_the_fight_for_france_decision_six  } 
+            visible = { has_completed_focus = KOB_join_the_fight_for_france has_decision = KOB_join_the_fight_for_france_decision_hidden_four  } 
             available = { has_completed_focus = KOB_join_the_fight_for_france FASCISM > 0.80 }
     
-            days_remove = -1
-            remove_effect = {
+            complete_effect = {
                 add_stability = 0.10 
                 set_politics = {
                     ruling_party = FASCISM
@@ -330,6 +344,66 @@ KOB_contact_french_royalist_category = {
                 }               
             }
     
+            fire_only_once = yes
+        }
+
+        KOB_join_the_fight_for_france_decision_hidden_one = {
+            icon = generic_break_treaty
+            cost = 0
+            allowed = { tag = KOB }
+            visible = { is_debug = yes }
+            available = { }
+
+            days_remove = -1
+            remove_effect = {
+                
+            }
+
+            fire_only_once = yes
+        }
+
+        KOB_join_the_fight_for_france_decision_hidden_two = {
+            icon = generic_army_support
+            cost = 0
+            allowed = { tag = KOB }
+            visible = { is_debug = yes }
+            available = { }
+
+            days_remove = -1
+            remove_effect = {
+                
+            }
+
+            fire_only_once = yes
+        }
+
+        KOB_join_the_fight_for_france_decision_hidden_three = {
+            icon = generic_army_support
+            cost = 0
+            allowed = { tag = KOB }
+            visible = { is_debug = yes }
+            available = { }
+
+            days_remove = -1
+            remove_effect = {
+                
+            }
+
+            fire_only_once = yes
+        }
+
+        KOB_join_the_fight_for_france_decision_hidden_four = {
+            icon = ger_reichskommissariats
+            cost = 0
+            allowed = { tag = KOB }
+            visible = { is_debug = yes }
+            available = { }
+
+            days_remove = -1
+            remove_effect = {
+                
+            }
+
             fire_only_once = yes
         }
     }
@@ -346,8 +420,7 @@ KOB_contact_french_royalist_category = {
 
             days_remove = -1
             remove_effect = {
-                consumer_goods_factor = -0.10
-                crash_1929_decrease_level = yes
+                custom_effect_tooltip = "Unlocks YEconomic Wdecisions"
             }
 
             fire_only_once = yes
@@ -358,11 +431,15 @@ KOB_contact_french_royalist_category = {
 
             cost = 75
             allowed = { tag = KOB }
-            visible = { has_completed_focus = KOB_the_raja_of_france } 
-            available = { has_completed_focus = KOB_the_raja_of_france has_decision = KOB_the_raja_of_france_decision_one }
+            visible = { has_completed_focus = KOB_the_raja_of_france has_decision = KOB_the_raja_of_france_decision_one } 
+            available = { has_completed_focus = KOB_the_raja_of_france }
 
             complete_effect = {
-                consumer_goods_factor = -0.07
+                add_ideas = KOB_currency_backed_by_gold
+                add_timed_idea = {
+                    idea = KOB_legitimatized_currency
+                    days = 365
+                }
                 add_stability = 0.10
                 crash_1929_decrease_level = yes
             }
@@ -394,7 +471,7 @@ KOB_contact_french_royalist_category = {
             cost = 15
             allowed = { tag = KOB }
             visible = { has_completed_focus = KOB_the_raja_of_france has_decision = KOB_the_raja_of_france_decision_three } 
-            available = { has_completed_focus = KOB_the_raja_of_france has_manpower > 2000 }
+            available = { has_completed_focus = KOB_the_raja_of_france has_manpower > 2000  has_intelligence_agency = yes}
 
             complete_effect = {
                 add_manpower = -2000
@@ -403,5 +480,142 @@ KOB_contact_french_royalist_category = {
 
             fire_only_once = yes        
         }
+
+        KOB_the_raja_of_france_decision_five = {
+            icon = generic_construction
+
+            cost = 25
+            allowed = { tag = KOB }
+            visible = { has_completed_focus = KOB_the_raja_of_france has_decision = KOB_the_raja_of_france_decision_three } 
+            available = { has_completed_focus = KOB_the_raja_of_france }
+
+            complete_effect = {
+                add_timed_idea = {
+                    idea = KOB_land_of_opportunity
+                    days = 100
+                }
+            }
+
+            fire_only_once = yes        
+        }
+
+        KOB_the_raja_of_france_decision_six = {
+            icon = generic_research
+
+            cost = 25
+            allowed = { tag = KOB }
+            visible = { has_completed_focus = KOB_the_raja_of_france has_decision = KOB_the_raja_of_france_decision_one } 
+            available = { has_completed_focus = KOB_the_raja_of_france }
+
+            complete_effect = {
+                add_tech_bonus = {
+                    name = "SEX"
+                    bonus = 0.5
+                    uses = 2
+                    category = industry
+                }
+            }
+
+            fire_only_once = yes        
+        }
+
+        KOB_the_raja_of_france_decision_seven = {
+            icon = generic_research
+
+            cost = 25
+            allowed = { tag = KOB }
+            visible = { has_completed_focus = KOB_the_raja_of_france has_decision = KOB_the_raja_of_france_decision_one } 
+            available = { has_completed_focus = KOB_the_raja_of_france }
+
+            complete_effect = {
+                add_tech_bonus = {
+                    name = electronics_bonus
+                    bonus = 0.75
+                    uses = 2
+                    category = electronics
+                }
+            }
+
+            fire_only_once = yes        
+        }
+
+        KOB_the_raja_of_france_decision_eight = {
+            icon = generic_political_discourse
+
+            target_trigger = {
+                FROM = { tag = OSA }
+            }
+
+            cost = 25
+            allowed = { tag = KOB }
+            visible = { has_completed_focus = KOB_the_raja_of_france has_decision = KOB_the_raja_of_france_decision_three } 
+            available = { has_completed_focus = KOB_the_raja_of_france 
+                OSA = {
+                    OR = {
+                        exists = yes
+                        has_capitulated = no
+                    }
+                }
+            }
+
+            complete_effect = {
+                OSA = { country_event = OSA_foreign_influence.2 }
+            }
+
+            fire_only_once = yes        
+        }
+
+        KOB_the_raja_of_france_decision_nine = {
+            icon = generic_political_discourse
+
+            target_trigger = {
+                FROM = { tag = IMS }
+            }
+
+            cost = 25
+            allowed = { tag = KOB }
+            visible = { has_completed_focus = KOB_the_raja_of_france has_decision = KOB_the_raja_of_france_decision_three } 
+            available = { has_completed_focus = KOB_the_raja_of_france 
+                IMS = {
+                    OR = {
+                        exists = yes
+                        has_capitulated = no
+                    }
+                }
+            }
+
+            complete_effect = {
+                IMS = { country_event= IMS_foreign_influence.1 }
+            }
+
+            fire_only_once = yes        
+        }
+
+        KOB_the_raja_of_france_decision_ten = {
+            icon = generic_political_discourse
+
+            target_trigger = {
+                FROM = { tag = KAN }
+            }
+
+            cost = 25
+            allowed = { tag = KOB }
+            visible = { has_completed_focus = KOB_the_raja_of_france has_decision = KOB_the_raja_of_france_decision_three } 
+            available = { has_completed_focus = KOB_the_raja_of_france 
+                KAN = {
+                    OR = {
+                        exists = yes
+                        has_capitulated = no
+                    }
+                }
+            }
+
+            complete_effect = {
+                KAN = { country_event = KAN_foreign_influence.1 }
+            }
+
+            fire_only_once = yes        
+        }
+
 
     }
