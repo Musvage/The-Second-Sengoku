@@ -57,6 +57,7 @@ focus_tree = {
 		icon = GFX_focus_generic_army	### MISSING GFX!
 		search_filters = {  }
 		
+		mutually_exclusive = { focus = ROC_favourable_treatment }
 		prerequisite = { focus = ROC_temporary_provisions }
 		
 		relative_position_id = ROC_temporary_provisions
@@ -71,7 +72,7 @@ focus_tree = {
 		}
 	 
 		completion_reward = {
-			
+			add_timed_idea = { idea = ROC_idea_whampoa_clique days = 1095 }
 		}
 	}
 	
@@ -92,14 +93,26 @@ focus_tree = {
 		ai_will_do = {
 			factor = 10
 		}
+		
+		available = {
+			fascism > 0.33
+			autocracy < 0.5
+			neutrality < 0.5
+			democratic < 0.5
+			democratic_socialism < 0.5
+			communism < 0.5
+		}
 	 
 		completion_reward = {
-			
+			set_politics = {
+				ruling_party = fascism
+				elections_allowed = no
+			}
 		}
 	}
 	
 	focus = {
-		id = ROC_replace_governors
+		id = ROC_replace_governors	# or any interesting power play
 		icon = GFX_focus_generic_political_power	### MISSING GFX!
 		search_filters = {  }
 		
@@ -117,7 +130,7 @@ focus_tree = {
 		}
 	 
 		completion_reward = {
-			
+			add_political_power = 150
 		}
 	}
 	
@@ -140,7 +153,7 @@ focus_tree = {
 		}
 	 
 		completion_reward = {
-			# add tolerance for christianity
+			add_ideas = ROC_idea_help_white_russians
 		}
 	}
 	
@@ -161,9 +174,17 @@ focus_tree = {
 		ai_will_do = {
 			factor = 10
 		}
+		
+		available = {
+			OR = {
+				has_government = fascism
+				has_government = autocracy
+				has_government = neutrality
+			}
+		}
 	 
 		completion_reward = {
-			
+			add_ideas = ROC_idea_militarised_society
 		}
 	}
 	
@@ -185,6 +206,10 @@ focus_tree = {
 		
 		ai_will_do = {
 			factor = 10
+		}
+		
+		bypass = {
+			# WWII started and ROC and it's at war with FER
 		}
 	 
 		completion_reward = {
@@ -234,7 +259,38 @@ focus_tree = {
 		}
 	 
 		completion_reward = {
-			# mil. tech. bonuses
+			effect_tooltip = {
+				add_tech_bonus = {
+					name = land_equipment_bonus
+					bonus = 1.0
+					uses = 1
+					category = land_equipment_category
+				}
+			}
+			hidden_effect = {
+				add_tech_bonus = {
+					name = land_equipment_bonus
+					bonus = 1.0
+					uses = 1
+					category = armor
+					category = artillery
+					category = infantry_weapons
+					category = cat_mechanized_equipment
+					category = mot_rockets
+				}
+			}
+			add_tech_bonus = {
+				name = naval_equipment_bonus
+				bonus = 1.0
+				uses = 1
+				category = naval_equipment
+			}
+			add_tech_bonus = {
+				name = air_equipment_bonus
+				bonus = 1.0
+				uses = 1
+				category = air_equipment
+			}
 		}
 	}
 	
@@ -362,6 +418,7 @@ focus_tree = {
 		icon = GFX_focus_TOH_sendai_agreement	### MISSING GFX!
 		search_filters = {  }
 		
+		mutually_exclusive = { focus = ROC_whampoa_clique }
 		prerequisite = { focus = ROC_temporary_provisions }
 		
 		relative_position_id = ROC_temporary_provisions
@@ -376,7 +433,7 @@ focus_tree = {
 		}
 	 
 		completion_reward = {
-			
+			add_ideas = ROC_idea_favourable_treatment
 		}
 	}
 	
@@ -630,10 +687,6 @@ focus_tree = {
 	
 		}
 		
-		bypass = {
-		
-		}
-		
 		available_if_capitulated = yes
 		
 		ai_will_do = {
@@ -834,10 +887,13 @@ focus_tree = {
 					name = "Alexander von Falkenhausen"
 				}
 			}
-			swap_ideas = {
-				remove_idea = ROC_idea_limited_army
-				add_idea = ROC_idea_limited_army_2
-			}
+			custom_effect_tooltip = ROC_call_army_tt
+			#hidden_effect = {
+				swap_ideas = {
+					remove_idea = ROC_idea_limited_army
+					add_idea = ROC_idea_limited_army_2
+				}
+			#}
 		}
 	}
 	
@@ -980,13 +1036,13 @@ focus_tree = {
 		x = -3
 		y = 1
 		cost = 10
-		
-		available = {
-	
-		}
-		
+
 		bypass = {
-		
+			has_government = autocracy
+		}
+
+		available = {
+			NOT = { has_government = autocracy }
 		}
 		
 		available_if_capitulated = yes
@@ -996,7 +1052,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			
+			add_timed_idea = { idea = ROC_idea_support_for_puyi days = 365 }
 		}
 	}
 	
@@ -1050,6 +1106,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
+			set_country_flag = ROC_goes_full_machu
 			set_politics = {
 				ruling_party = autocracy
 				elections_allowed = no
@@ -1214,7 +1271,11 @@ focus_tree = {
 		cost = 10
 		
 		available = {
-			has_government = autocracy
+			OR = {
+				has_government = neutrality
+				has_government = fascism
+				has_government = autocracy
+			}
 		}
 		
 		available_if_capitulated = yes
@@ -1224,7 +1285,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			
+			add_ideas = ROC_idea_boy_scouts
 		}
 	}
 	
@@ -1346,10 +1407,6 @@ focus_tree = {
 	
 		}
 		
-		bypass = {
-		
-		}
-		
 		available_if_capitulated = yes
 		
 		ai_will_do = {
@@ -1378,10 +1435,6 @@ focus_tree = {
 	
 		}
 		
-		bypass = {
-		
-		}
-		
 		available_if_capitulated = yes
 		
 		ai_will_do = {
@@ -1408,10 +1461,6 @@ focus_tree = {
 		
 		available = {
 	
-		}
-		
-		bypass = {
-		
 		}
 		
 		available_if_capitulated = yes
@@ -1444,10 +1493,6 @@ focus_tree = {
 	
 		}
 		
-		bypass = {
-		
-		}
-		
 		available_if_capitulated = yes
 		
 		ai_will_do = {
@@ -1455,7 +1500,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			
+			add_timed_idea = { idea = ROC_idea_support_for_mao days = 365 }
 		}
 	}
 	
@@ -1567,7 +1612,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-		
+			add_ideas = ROC_idea_young_pioneers
 		}
 	}
 	
@@ -1594,7 +1639,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-		
+			add_ideas = ROC_idea_walfare
 		}
 	}
 	
@@ -1656,7 +1701,7 @@ focus_tree = {
 		}
 		
 		bypass = {
-		
+			# WWII started and ROC is commie and it's at war with GER
 		}
 		
 		available_if_capitulated = yes
@@ -1677,7 +1722,7 @@ focus_tree = {
 		icon = GFX_focus_ROC_three_principles
 		search_filters = {  }
 		
-		mutually_exclusive = { focus = ROC_mao_returns }
+		mutually_exclusive = { focus = ROC_mao_returns focus = ROC_confucian_administration }
 		prerequisite = { focus = ROC_aditional_articles }
 		
 		relative_position_id = ROC_mao_returns
@@ -1816,7 +1861,7 @@ focus_tree = {
 		}
 		
 		bypass = {
-		
+			# WWII started and ROC is not commie and it's at war with GER
 		}
 		
 		available_if_capitulated = yes
@@ -1895,6 +1940,7 @@ focus_tree = {
 		id = ROC_whampoa_academy
 		icon = GFX_focus_generic_army	### MISSING GFX!
 		search_filters = {  }
+		dynamic = yes
 		
 		prerequisite = { focus = ROC_falkenhausean_reforms }
 		
@@ -1903,14 +1949,6 @@ focus_tree = {
 		y = 1
 		cost = 10
 		
-		available = {
-	
-		}
-		
-		bypass = {
-		
-		}
-		
 		available_if_capitulated = yes
 		
 		ai_will_do = {
@@ -1918,7 +1956,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			
+			add_ideas = ROC_idea_whampoa_academy
 		}
 	}
 	
@@ -1926,6 +1964,7 @@ focus_tree = {
 		id = ROC_mukden_arsenal
 		icon = GFX_focus_generic_army_expansion_3	### MISSING GFX!
 		search_filters = {  }
+		dynamic = yes
 		
 		prerequisite = { focus = ROC_falkenhausean_reforms focus = ROC_south_manchurian_railway }
 		
@@ -2338,6 +2377,7 @@ focus_tree = {
 		id = ROC_research_2
 		icon = GFX_focus_ROC_tech_manchuria
 		search_filters = {  }
+		dynamic = yes
 		
 		prerequisite = { focus = ROC_anshan_steelworks }
 		
