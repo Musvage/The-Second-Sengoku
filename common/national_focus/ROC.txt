@@ -411,14 +411,14 @@ focus_tree = {
 		}
 	}
 	
-	# Articles of Favourable Treatment
+	# Articles of Favourable Treatment (or not...)
 	
 	focus = {
 		id = ROC_favourable_treatment
 		icon = GFX_focus_TOH_sendai_agreement	### MISSING GFX!
 		search_filters = {  }
 		
-		mutually_exclusive = { focus = ROC_whampoa_clique }
+		mutually_exclusive = { focus = ROC_whampoa_clique focus = ROC_focus_ROC_execute_puyi }
 		prerequisite = { focus = ROC_temporary_provisions }
 		
 		relative_position_id = ROC_temporary_provisions
@@ -434,6 +434,30 @@ focus_tree = {
 	 
 		completion_reward = {
 			add_ideas = ROC_idea_favourable_treatment
+		}
+	}
+	
+	focus = {
+		id = ROC_focus_ROC_execute_puyi
+		icon = GFX_focus_ROC_execute_puyi
+		search_filters = {  }
+		
+		mutually_exclusive = { focus = ROC_favourable_treatment }
+		prerequisite = { focus = ROC_temporary_provisions }
+		
+		relative_position_id = ROC_temporary_provisions
+		x = -3
+		y = 1
+		cost = 10
+		
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 10
+		}
+	 
+		completion_reward = {
+			
 		}
 	}
 	
@@ -1111,6 +1135,7 @@ focus_tree = {
 				ruling_party = autocracy
 				elections_allowed = no
 			}
+			5 = { set_state_name = "Mukden" }
 			promote_character = ROC_emperor_puyi
 			hidden_effect = {
 				# down with Beyiang star, long live the Orchid Seal!
@@ -1259,7 +1284,7 @@ focus_tree = {
 	
 	focus = {
 		id = ROC_boy_scouts
-		icon = GFX_goal_generic_more_territorial_claims	### MISSING GFX!
+		icon = GFX_focus_ROC_boy_scouts
 		search_filters = {  }
 		
 		prerequisite = { focus = ROC_purge_concordia }
@@ -1302,7 +1327,11 @@ focus_tree = {
 		cost = 10
 		
 		available = {
-			has_government = autocracy
+			OR = {
+				has_government = neutrality
+				has_government = fascism
+				has_government = autocracy
+			}
 		}
 		
 		available_if_capitulated = yes
@@ -1974,11 +2003,13 @@ focus_tree = {
 		cost = 10
 		
 		available = {
-	
-		}
-		
-		bypass = {
-		
+			any_controlled_state = {
+				free_building_slots = {
+					building = industrial_complex
+					size > 0
+					include_locked = yes
+				}
+			}
 		}
 		
 		available_if_capitulated = yes
