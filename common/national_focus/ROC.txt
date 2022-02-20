@@ -214,6 +214,7 @@ focus_tree = {
 	 
 		completion_reward = {
 			# sides with germany of wwii
+			REI = { add_to_faction = ROC }
 		}
 	}
 	
@@ -366,7 +367,7 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = ROC_east_endies
+		id = ROC_east_indies
 		icon = GFX_focus_usa_focus_on_asia	### MISSING GFX!
 		search_filters = {  }
 		
@@ -454,6 +455,12 @@ focus_tree = {
 		
 		ai_will_do = {
 			factor = 10
+		}
+		
+		available = {
+			NOT = {
+				has_government = autocracy
+			}
 		}
 	 
 		completion_reward = {
@@ -688,6 +695,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
+			add_political_power = 150
 			swap_ideas = {
 				add_idea = closed_economy
 				remove_idea = limited_exports
@@ -895,7 +903,15 @@ focus_tree = {
 		cost = 10
 		
 		available = {
-	
+			OR = {
+				controls_state = 233
+				controls_state = 228
+				controls_state = 235
+				controls_state = 232
+				controls_state = 231
+				controls_state = 253
+			}
+			# ROC has > X power in WWII
 		}
 		
 		available_if_capitulated = yes
@@ -905,19 +921,170 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			# 4 inf brigades, 1 cav brigade
 			effect_tooltip = {
 				create_corps_commander = {
 					name = "Alexander von Falkenhausen"
 				}
 			}
-			custom_effect_tooltip = ROC_call_army_tt
-			#hidden_effect = {
+			custom_effect_tooltip = ROC_call_army_tt	# custom-made swap idea tooltip
+			hidden_effect = {
 				swap_ideas = {
 					remove_idea = ROC_idea_limited_army
 					add_idea = ROC_idea_limited_army_2
 				}
-			#}
+			}
+			hidden_effect = {
+				division_template = {
+					name = "Beiyang Infantry Brigade"
+					is_locked = no
+					division_names_group = ROC_BEIYANG_01	### ADD PROPER ROC NAMES LATER
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 0 y = 2 }
+						infantry = { x = 0 y = 3 }
+						infantry = { x = 0 y = 4 }
+						infantry = { x = 1 y = 0 }
+						infantry = { x = 1 y = 1 }
+						artillery_brigade = { x = 1 y = 2 }
+						artillery_brigade = { x = 1 y = 3 }
+					}
+					support = {
+						engineer = { x = 0 y = 0 }
+					}
+					priority = 1
+				}
+				division_template = {
+					name = "Beiyang Cavalry Brigade"
+					is_locked = no
+					division_names_group = ROC_BEIYANG_01	### ADD PROPER ROC NAMES LATER
+					regiments = {
+						cavalry = { x = 0 y = 0 }
+						cavalry = { x = 0 y = 1 }
+						cavalry = { x = 0 y = 2 }
+						cavalry = { x = 0 y = 3 }
+						cavalry = { x = 0 y = 4 }
+						cavalry = { x = 1 y = 0 }
+						cavalry = { x = 1 y = 1 }
+						mot_artillery_brigade = { x = 1 y = 2 }
+						mot_artillery_brigade = { x = 1 y = 3 }
+					}
+					support = {
+						recon = { x = 0 y = 0 }
+					}
+					priority = 1
+				}
+			}
+			random_controlled_state = {
+				limit = {
+					OR = {
+						state = 233
+						state = 228
+						state = 235
+						state = 232
+						state = 231
+						state = 253
+					}
+				}
+				custom_effect_tooltip = ROC_call_army_tt_1
+				custom_effect_tooltip = ROC_call_army_tt_2
+				hidden_effect = {
+					create_unit = {
+						division = "name = \"1. Beiyang Brigade\" division_template = \"Beiyang Infantry Brigade\" start_experience_factor = 0.66 start_equipment_factor = 1"
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"2. Beiyang Brigade\" division_template = \"Beiyang Infantry Brigade\" start_experience_factor = 0.66 start_equipment_factor = 1"
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"3. Beiyang Brigade\" division_template = \"Beiyang Infantry Brigade\" start_experience_factor = 0.66 start_equipment_factor = 1"
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"4. Beiyang Brigade\" division_template = \"Beiyang Infantry Brigade\" start_experience_factor = 0.66 start_equipment_factor = 1"
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"5. Beiyang Brigade\" division_template = \"Beiyang Cavalry Brigade\" start_experience_factor = 0.66 start_equipment_factor = 1"
+						owner = ROOT
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = ROC_call_air_force	# Beiyang Air Fleet
+		icon = GFX_focus_generic_airport	### MISSING GFX!
+		search_filters = {  }
+		
+		prerequisite = { focus = ROC_requests }
+		
+		relative_position_id = ROC_requests
+		x = 0
+		y = 2
+		cost = 10
+		
+		available = {
+			# ROC has > X power in WWII
+			any_controlled_state = {
+				air_base > 0
+			}
+		}
+		
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		completion_reward = {
+			if = {
+				limit = { has_tech = fighter1 }
+				add_equipment_to_stockpile = {
+					type = fighter_equipment_1
+					amount = 24
+					producer = ROC
+				}
+			} else = {
+				add_equipment_to_stockpile = {
+					type = fighter_equipment_0
+					amount = 24
+					producer = ROC
+				}
+			}
+			if = {
+				limit = { has_tech = CAS2 }
+				add_equipment_to_stockpile = {
+					type = CAS_equipment_2
+					amount = 24
+					producer = ROC
+				}
+			} else = {
+				add_equipment_to_stockpile = {
+					type = CAS_equipment_1
+					amount = 24
+					producer = ROC
+				}
+			}
+			if = {
+				limit = { has_tech = early_bomber }
+				add_equipment_to_stockpile = {
+					type = tac_bomber_equipment_0
+					amount = 12
+					producer = ROC
+				}
+			}
+			if = {
+				limit = { has_tech = scout_plane1 }
+				add_equipment_to_stockpile = {
+					type = scout_plane_equipment_1
+					amount = 6
+					producer = ROC
+				}
+				
+			}
 		}
 	}
 	
@@ -934,7 +1101,10 @@ focus_tree = {
 		cost = 10
 		
 		available = {
-	
+			# ROC has > X power in WWII
+			any_controlled_state = {
+				is_coastal = yes
+			}
 		}
 		
 		available_if_capitulated = yes
@@ -1138,7 +1308,7 @@ focus_tree = {
 			5 = { set_state_name = "Mukden" }
 			promote_character = ROC_emperor_puyi
 			hidden_effect = {
-				# down with Beyiang star, long live the Orchid Seal!
+				# down with Beiyang star, long live the Orchid Seal!
 				ROC_xi_qia = {
 					set_leader_portrait = GFX_Portrait_ROC_Xi_Qia_alt
 				}
@@ -1252,6 +1422,45 @@ focus_tree = {
 					name = "Emperor Puyi"
 				}
 			}
+			hidden_effect = {
+				division_template = {
+					name = "Upper Banner"
+					is_locked = no
+					division_names_group = ROC_BANNER_01	### ADD PROPER ROC NAMES LATER
+					regiments = {
+						cavalry = { x = 0 y = 0 }
+						cavalry = { x = 0 y = 1 }
+						cavalry = { x = 0 y = 2 }
+						mot_artillery_brigade = { x = 0 y = 3 }
+						cavalry = { x = 1 y = 0 }
+						cavalry = { x = 1 y = 1 }
+						cavalry = { x = 1 y = 2 }
+						mot_artillery_brigade = { x = 1 y = 3 }
+					}
+					support = {
+						engineer = { x = 0 y = 0 }
+						recon = { x = 0 y = 1 }
+					}
+					priority = 2
+				}
+			}
+			capital_scope = {
+				custom_effect_tooltip = ROC_three_upper_banners_tt
+				hidden_effect = {
+					create_unit = {
+						division = "name = \"Kubuhe Suwayan Gūsa\" division_template = \"Upper Banner\" start_experience_factor = 0.75 start_equipment_factor = 1"
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"Gulu Suwayan Gūsa\" division_template = \"Upper Banner\" start_experience_factor = 0.75 start_equipment_factor = 1"
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"Gulu Šanggiyan Gūsa\" division_template = \"Upper Banner\" start_experience_factor = 0.75 start_equipment_factor = 1"
+						owner = ROOT
+					}
+				}
+			}
 		}
 	}
 	
@@ -1278,7 +1487,97 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			
+			hidden_effect = {
+				division_template = {
+					name = "Lower Banner"
+					is_locked = no
+					division_names_group = ROC_BANNER_02	### ADD PROPER ROC NAMES LATER
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 0 y = 2 }
+						artillery_brigade = { x = 0 y = 3 }
+						infantry = { x = 1 y = 0 }
+						infantry = { x = 1 y = 1 }
+						infantry = { x = 1 y = 2 }
+						artillery_brigade = { x = 1 y = 3 }
+					}
+					support = {
+						engineer = { x = 0 y = 0 }
+					}
+					priority = 1
+				}
+			}
+			random_controlled_state = {
+				limit = {
+					OR = {
+						is_in_home_area = yes
+					}
+				}
+				custom_effect_tooltip = ROC_five_lower_banners_tt
+				hidden_effect = {
+					create_unit = {
+						division = "name = \"Gulu Fulgiyan Gūsa\" division_template = \"Lower Banner\" start_experience_factor = 0.5 start_equipment_factor = 1"
+						owner = ROOT
+					}
+				}
+			}
+			random_controlled_state = {
+				limit = {
+					OR = {
+						is_in_home_area = yes
+					}
+				}
+				custom_effect_tooltip = ROC_five_lower_banners_tt
+				hidden_effect = {
+					create_unit = {
+						division = "name = \"Kubuhe Šanggiyan Gūsa\" division_template = \"Lower Banner\" start_experience_factor = 0.5 start_equipment_factor = 1"
+						owner = ROOT
+					}
+				}
+			}
+			random_controlled_state = {
+				limit = {
+					OR = {
+						is_in_home_area = yes
+					}
+				}
+				custom_effect_tooltip = ROC_five_lower_banners_tt
+				hidden_effect = {
+					create_unit = {
+						division = "name = \"Kubuhe Fulgiyan Gūsa\" division_template = \"Lower Banner\" start_experience_factor = 0.5 start_equipment_factor = 1"
+						owner = ROOT
+					}
+				}
+			}
+			random_controlled_state = {
+				limit = {
+					OR = {
+						is_in_home_area = yes
+					}
+				}
+				custom_effect_tooltip = ROC_five_lower_banners_tt
+				hidden_effect = {
+					create_unit = {
+						division = "name = \"Gulu Lamun Gūsa\" division_template = \"Lower Banner\" start_experience_factor = 0.5 start_equipment_factor = 1"
+						owner = ROOT
+					}
+				}
+			}
+			random_controlled_state = {
+				limit = {
+					OR = {
+						is_in_home_area = yes
+					}
+				}
+				custom_effect_tooltip = ROC_five_lower_banners_tt
+				hidden_effect = {
+					create_unit = {
+						division = "name = \"Kubuhe Lamun Gūsa\" division_template = \"Lower Banner\" start_experience_factor = 0.5 start_equipment_factor = 1"
+						owner = ROOT
+					}
+				}
+			}
 		}
 	}
 	
@@ -1740,7 +2039,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			
+			FER = { add_to_faction = ROC }
 		}
 	}
 	
@@ -1766,7 +2065,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			add_timed_idea = { idea = ROC_idea_three_principles days = 1095 }
+			add_ideas = ROC_idea_three_principles
 			set_politics = {
 				ruling_party = democratic
 					elections_allowed = yes
@@ -1792,6 +2091,10 @@ focus_tree = {
 		
 		ai_will_do = {
 			factor = 10
+		}
+		
+		available = {
+			has_religion_5 = yes
 		}
 		
 		completion_reward = {
@@ -1900,7 +2203,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			
+			OSA = { add_to_faction = ROC }
 		}
 	}
 	
