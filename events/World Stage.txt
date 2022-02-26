@@ -18,7 +18,7 @@ news_event = {
 	option = {
 		name = worldstage.1.axis
 		trigger = {
-			has_world_stage_coalition_axis = yes
+			has_government = fascism
 		}
 		if = {
 			limit = { OR = { tag = FER tag = ROC } }
@@ -28,7 +28,7 @@ news_event = {
 	option = {
 		name = worldstage.1.komin
 		trigger = {
-			has_world_stage_coalition_komintern = yes
+			has_government = communism
 		}
 		if = {
 			limit = { OR = { tag = FER tag = ROC } }
@@ -38,63 +38,42 @@ news_event = {
 	option = {
 		name = worldstage.1.other
 		trigger = {
-			OR = {
-				has_world_stage_coalition_allies = yes
-				has_world_stage_coalition_unaligned = yes
+			NOT = {
+				has_government = fascism
+				has_government = communism
 			}
 		}
 	}
-
 }
 
-# ROC wins in Mongolia
+# ROC completes 'ROC_aid_mongolia', hidden event (looks convoluted, but this is to guarantee the final event will fire if both FER and ROC no longer exist fater 90 days)
 news_event = {
 	id = worldstage.2
-	title = worldstage.2.t
-	desc = worldstage.2.d 
+	title = "worldstage.2"
+	desc = "this event shuold not appear!"
 	picture = GFX_news_great_depression_over
 
 	is_triggered_only = yes
 
-	major = yes
+	hidden = yes
 	
 	immediate = {
-		add_to_variable = { global.world_stage_power_chi = 5 }
-	}
-	
-	option = {
-		name = worldstage.2.axis
-		trigger = {
-			has_world_stage_coalition_axis = yes
-		}
-		effect_tooltip = {
-			add_world_stage_power_chi_5 = yes
-		}
-	}
-	option = {
-		name = worldstage.2.komin
-		trigger = {
-			has_world_stage_coalition_komintern = yes
-		}
-		effect_tooltip = {
-			add_world_stage_power_chi_5 = yes
-		}
-	}
-	option = {
-		name = worldstage.2.other
-		trigger = {
-			OR = {
-				has_world_stage_coalition_allies = yes
-				has_world_stage_coalition_unaligned = yes
+		if = {
+			limit = {
+				NOT = { has_global_flag = world_stage_flag_mongolia }
 			}
-		}
-		effect_tooltip = {
-			add_world_stage_power_chi_5 = yes
+			if = {
+				limit = { check_variable = { global.ROC_strength_mongolia > global.SOV_strength_mongolia } }
+				random_country = { country_event =  worldstage.3 }
+			} else = {
+				random_country = { country_event =  worldstage.4 }
+			}
+			set_global_flag = world_stage_flag_mongolia
 		}
 	}
 }
 
-# SOV wins in Mongolia
+# ROC wins in Mongolia
 news_event = {
 	id = worldstage.3
 	title = worldstage.3.t
@@ -106,33 +85,80 @@ news_event = {
 	major = yes
 	
 	immediate = {
-		add_to_variable = { global.world_stage_power_sov = 5 }
+		add_to_variable = { global.world_stage_power_chi = 5 }
 	}
 	
 	option = {
 		name = worldstage.3.axis
 		trigger = {
-			has_world_stage_coalition_axis = yes
+			has_government = fascism
 		}
 		effect_tooltip = {
-			add_world_stage_power_sov_5 = yes
+			add_world_stage_power_chi_5 = yes
 		}
 	}
 	option = {
 		name = worldstage.3.komin
 		trigger = {
-			has_world_stage_coalition_komintern = yes
+			has_government = communism
+		}
+		effect_tooltip = {
+			add_world_stage_power_chi_5 = yes
+		}
+	}
+	option = {
+		name = worldstage.3.other
+		trigger = {
+			NOT = {
+				has_government = communism
+				has_government = fascism
+			}
+		}
+		effect_tooltip = {
+			add_world_stage_power_chi_5 = yes
+		}
+	}
+}
+
+# SOV wins in Mongolia
+news_event = {
+	id = worldstage.4
+	title = worldstage.4.t
+	desc = worldstage.4.d 
+	picture = GFX_news_great_depression_over
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		add_to_variable = { global.world_stage_power_sov = 5 }
+	}
+	
+	option = {
+		name = worldstage.4.axis
+		trigger = {
+			has_government = fascism
 		}
 		effect_tooltip = {
 			add_world_stage_power_sov_5 = yes
 		}
 	}
 	option = {
-		name = worldstage.3.other
+		name = worldstage.4.komin
 		trigger = {
-			OR = {
-				has_world_stage_coalition_allies = yes
-				has_world_stage_coalition_unaligned = yes
+			has_government = communism
+		}
+		effect_tooltip = {
+			add_world_stage_power_sov_5 = yes
+		}
+	}
+	option = {
+		name = worldstage.4.other
+		trigger = {
+			NOT = {
+				has_government = communism
+				has_government = fascism
 			}
 		}
 		effect_tooltip = {
