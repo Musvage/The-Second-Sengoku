@@ -1,0 +1,242 @@
+world_stage_mongolia_category = {
+
+	world_stage_mongolia_main_mission = {
+
+		icon = eng_propaganda_campaigns
+		
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = world_stage_mongolia_main_mission_tt
+				OR = {
+					AND = {
+						tag = ROC
+						check_variable = { global.ROC_strength_mongolia > global.SOV_strength_mongolia }
+					}
+					AND = {
+						tag = FER
+						check_variable = { global.ROC_strength_mongolia < global.SOV_strength_mongolia }
+					}
+				}
+			}
+		}
+
+		visible = {
+			always = no
+		}
+
+		activation = { always = no }	 # The mission appears and starts counting down under these circumstances:
+		
+		days_mission_timeout = 90
+		is_good = no 
+		selectable_mission = no
+		
+		timeout_effect  = {	# fail
+			if = {
+				limit = { tag = FER }
+				ROC = { country_event = worldstage.2 }
+			}
+			if = {
+				limit = { tag = ROC }
+				FER = { country_event = worldstage.3 }
+			}
+		}
+
+		ai_will_do = {
+			factor = 0
+		}
+	}
+	
+	world_stage_mongolia_main_mission = {
+
+		icon = eng_propaganda_campaigns
+		
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = world_stage_mongolia_main_mission_tt
+				OR = {
+					AND = {
+						tag = ROC
+						check_variable = { global.ROC_strength_mongolia > global.SOV_strength_mongolia }
+					}
+					AND = {
+						tag = FER
+						check_variable = { global.ROC_strength_mongolia < global.SOV_strength_mongolia }
+					}
+				}
+			}
+		}
+
+		visible = {
+			always = no
+		}
+
+		activation = { always = no }	 # The mission appears and starts counting down under these circumstances:
+		
+		days_mission_timeout = 90
+		is_good = no 
+		selectable_mission = no
+		
+		timeout_effect  = {	# fail
+			if = {
+				limit = { tag = FER }
+				ROC = { country_event = worldstage.2 }
+			}
+			if = {
+				limit = { tag = ROC }
+				FER = { country_event = worldstage.3 }
+			}
+		}
+
+		ai_will_do = {
+			factor = 0
+		}
+	}
+	
+	world_stage_mongolia_send_weapons = {
+
+		icon = decision_generic_industry
+		
+		available = {
+			OR = {
+				AND = { tag = FER has_world_stage_coalition_komintern = yes }
+				AND = { tag = ROC has_world_stage_coalition_axix = yes }
+			}
+		}
+		
+		visible = {
+			has_active_mission = world_stage_mongolia_main_mission
+		}
+		
+		custom_cost_trigger = {
+			has_equipment = { infantry_equipment > 999 } 
+		}
+		
+		custom_cost_text = world_stage_mongolia_send_weapons_cost
+		
+		days_remove = 14
+		
+		cost = 50
+		
+		remove_effect  = {
+			hidden_effect = {
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = 1000
+				}
+			}
+			if = {
+				limit = { tag = ROC }
+				custom_trigger_tooltip = world_stage_mongolia_send_weapons_tt
+				add_to_variable = { global.ROC_strength_mongolia = 10 }
+			}
+			if = {
+				limit = { tag = FER }
+				custom_trigger_tooltip = world_stage_mongolia_send_weapons_tt
+				add_to_variable = { global.SOV_strength_mongolia = 10 }
+			}
+			add_named_threat = { 
+				threat = 0.25 
+				name = ROC_threat_aid_mongolia_more
+			}
+		}
+	}
+	
+	world_stage_mongolia_send_forces = {
+
+		icon = decision_generic_military
+		
+		available = {
+			OR = {
+				AND = { tag = FER has_world_stage_coalition_komintern = yes }
+				AND = { tag = ROC has_world_stage_coalition_axix = yes }
+			}
+		}
+		
+		visible = {
+			has_active_mission = world_stage_mongolia_main_mission
+		}
+		
+		custom_cost_trigger = {
+			OR = {
+				AND = {
+					tag = FER
+					check_variable = { global.world_stage_power_sov > 0 }
+				}
+				AND = {
+					tag = ROC
+					check_variable = { global.world_stage_power_chi > 0 }
+				}
+			}
+		}
+		
+		custom_cost_text = world_stage_mongolia_send_forces_cost
+		
+		days_remove = 14
+		
+		cost = 50
+		
+		remove_effect  = {
+			if = {
+				limit = { tag = ROC }
+				custom_trigger_tooltip = world_stage_mongolia_send_forces_tt
+				add_to_variable = { global.ROC_strength_mongolia = 20 }
+				add_to_variable = {global.world_stage_power_chi = 1 }
+			}
+			if = {
+				limit = { tag = FER }
+				custom_trigger_tooltip = world_stage_mongolia_send_forces_tt
+				add_to_variable = { global.SOV_strength_mongolia = 20 }
+				add_to_variable = {global.world_stage_power_sov = 1 }
+			}
+			add_named_threat = { 
+				threat = 0.25 
+				name = ROC_threat_aid_mongolia_more
+			}
+		}
+	}
+
+	world_stage_mongolia_send_adviser = {
+
+		icon = decision_generic_army_support
+		
+		available = {
+			OR = {
+				AND = { tag = FER has_world_stage_coalition_komintern = yes }
+				AND = { tag = ROC has_world_stage_coalition_axix = yes }
+			}
+		}
+		
+		visible = {
+			has_active_mission = world_stage_mongolia_main_mission
+		}
+		
+		custom_cost_trigger = {
+			command_power > 24.99
+		}
+		
+		custom_cost_text = world_stage_mongolia_send_adviser_cost
+		
+		days_remove = 14
+		
+		cost = 50
+		
+		remove_effect  = {
+			if = {
+				limit = { tag = ROC }
+				custom_trigger_tooltip = world_stage_mongolia_send_forces_tt
+				add_to_variable = { global.ROC_strength_mongolia = 10 }
+				add_command_power = -25
+			}
+			if = {
+				limit = { tag = FER }
+				custom_trigger_tooltip = world_stage_mongolia_send_forces_tt
+				add_to_variable = { global.SOV_strength_mongolia = 10 }
+				add_command_power = -25
+			}
+			add_named_threat = { 
+				threat = 0.25 
+				name = ROC_threat_aid_mongolia_more
+			}
+		}
+	}
+}
