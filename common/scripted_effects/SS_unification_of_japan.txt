@@ -1,0 +1,28 @@
+unification_get_score = {
+	set_variable = { country_unification_score = 0 }
+	# add linear modifiers
+	if = { limit = { unification_has_largest_army = yes } add_to_variable = { country_unification_score = 10 } }
+	if = { limit = { unification_has_largest_army = yes } add_to_variable = { country_unification_score = 10 } }
+	if = { limit = { unification_has_largest_navy = yes } add_to_variable = { country_unification_score = 10 } }
+	if = { limit = { unification_has_largest_economy = yes } add_to_variable = { country_unification_score = 10 } }
+	if = { limit = { unification_has_most_nukes = yes } add_to_variable = { country_unification_score = 10 } }
+		# holds important cities
+	if = { limit = { controls_state = 29 } add_to_variable = { country_unification_score = 10 } }	# Edo
+	if = { limit = { controls_state = 32 } add_to_variable = { country_unification_score = 10 } }	# Tokyo
+	if = { limit = { controls_state = 21 } add_to_variable = { country_unification_score = 5 } }	# Chiba
+	if = { limit = { controls_state = 16 } add_to_variable = { country_unification_score = 5 } }	# Hirado
+	if = { limit = { controls_state = 27 } add_to_variable = { country_unification_score = 5 } }	# Kobe
+	if = { limit = { controls_state = 99 } add_to_variable = { country_unification_score = 5 } }	# Osaka
+	if = { limit = { controls_state = 140 } add_to_variable = { country_unification_score = 5 } }	# Nagasaki
+	if = { limit = { controls_state = 254 } add_to_variable = { country_unification_score = 5 } }	# Yawatahama
+	# calculate multiplier
+	set_temp_variable = { country_unification_score_multiplier = 1 }
+	if = { limit = { is_puppet = yes } add_to_temp_variable = { country_unification_score_multiplier = -0.25 } }
+	if = { limit = { has_idea = all_internationally_recognised } add_to_temp_variable = { country_unification_score_multiplier = 0.25 } }
+	if = { limit = { is_in_faction = yes } add_to_temp_variable = { country_unification_score_multiplier = 0.25 } }
+	if = { limit = { is_faction_leader = yes } add_to_temp_variable = { country_unification_score_multiplier = 0.25 } }
+		# capitulated!
+	if = { limit = { has_capitulated = yes } set_temp_variable = { country_unification_score_multiplier = 0 } }
+	# calculate final score
+	multiply_variable = { country_unification_score = country_unification_score_multiplier }
+}
