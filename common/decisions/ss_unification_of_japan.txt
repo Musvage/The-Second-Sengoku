@@ -1,3 +1,68 @@
+foreign_politics = {
+
+	unification_of_japan_claim_international_recognition = {
+		#icon = ?
+		visible = {
+			unification_candidate = yes
+			NOT = { has_idea = all_internationally_recognised }
+		}
+		available = {
+			OR = {
+				 controls_state = 29	# Edo
+				 controls_state = 32	# Tokyo
+				 custom_trigger_tooltip = {
+					tooltip = "Is a puppet of a non-Japanese who holds Kyoto or Edo " # unification_of_japan_overlord_has_capitals_tt	### FIX THIS TOOLTIP LATER
+					 AND = {
+						is_puppet = yes
+						OVERLORD = {
+							OR = {
+								controls_state = 29
+								controls_state = 32
+							}
+							hidden_trigger = { unification_candidate = no }
+						 }
+					 }
+				 }
+			}
+			NOT = {
+				any_other_country = {
+					is_unification_catidate = yes
+					OR = { controls_state = 29 controls_state = 32 }
+					custom_trigger_tooltip = {
+						tooltip = "Does not have a higher unification score" # unification_of_japan_has_higher_score_tt	### FIX THIS TOOLTIP LATER (it is a double negative)
+						check_variable = { country_unification_score > PREV.country_unification_score }
+					}
+				}
+			}
+			has_global_flag = {
+				flag = international_recognition_changed_flag
+				days > 45
+			}
+		}
+		cost = 150
+		complete_effect = {
+			every_country = {
+				limit = { has_idea = all_internationally_recognised }
+				remove_ideas = all_internationally_recognised
+				# add an event here!												## <<---------------------------------------- here! here! look at me!
+			}
+			add_ideas = all_internationally_recognised
+			set_global_flag = international_recognition_changed_flag
+			hidden_effect = {
+				every_country = {
+					if = {
+						limit = { unification_candidate = yes }
+						unification_get_score = yes
+					}
+				}
+			}
+		}
+		days_re_enable = 45
+		ai_will_do = {
+			factor = 99
+		}
+	}
+}
 ss_placeholder_unification_of_japan_category = {
 
 	ui_placeholder_unification_goals = {
@@ -14,25 +79,30 @@ ss_placeholder_unification_of_japan_category = {
 		}
 		
 		complete_effect = {
+			custom_effect_tooltip = "Current unification score: [?country_unification_score]"
 			random_country = {
 				limit = { unification_has_largest_army = yes }
-				custom_effect_tooltip = "Largest Japanese Army"
+				custom_effect_tooltip = "Largest Japanese Army (their score: [?country_unification_score])"
 			}
 			random_country = {
 				limit = { unification_has_largest_navy = yes }
-				custom_effect_tooltip = "Largest Japanese Navy"
+				custom_effect_tooltip = "Largest Japanese Navy (their score: [?country_unification_score])"
 			}
 			random_country = {
 				limit = { unification_has_largest_economy = yes }
-				custom_effect_tooltip = "Largest Japanese Economy"
+				custom_effect_tooltip = "Largest Japanese Economy (their score: [?country_unification_score])"
 			}
 			random_country = {
 				limit = { unification_has_most_nukes = yes }
-				custom_effect_tooltip = "Largest Japanese Nuclear Arsenal"
+				custom_effect_tooltip = "Largest Japanese Nuclear Arsenal (their score: [?country_unification_score])"
+			}
+			random_country = {
+				limit = { unification_has_largest_population = yes }
+				custom_effect_tooltip = "Largest Japanese Population (their score: [?country_unification_score])"
 			}
 			random_country = {
 				limit = { unification_has_highest_score = yes }
-				custom_effect_tooltip = "Highest Unification Score"
+				custom_effect_tooltip = "Highest Unification Score (their score: [?country_unification_score])"
 			}
 		}
 	}
