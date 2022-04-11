@@ -32,7 +32,12 @@ foreign_politics = {
 					# or is regional japan!	# <------------------------------------------------------------- here! look at me!
 					custom_trigger_tooltip = {
 						tooltip = "Does not have a higher unification score" # unification_of_japan_has_higher_score_tt	### FIX THIS TOOLTIP LATER (it is a double negative)
-						check_variable = { country_unification_score > PREV.country_unification_score }
+						#check_variable = { country_unification_score > PREV.country_unification_score }
+						check_variable = {
+							var = country_unification_score
+							value = PREV.country_unification_score
+							compare = greater_than
+						}
 					}
 				}
 			}
@@ -113,6 +118,31 @@ ss_placeholder_unification_of_japan_category = {
 				limit = { unification_has_highest_score = yes }
 				custom_effect_tooltip = "Highest Unification Score (their score: [?country_unification_score])"
 			}
+		}
+	}
+	
+	debug_unify_south_japan = {
+		visible = {
+			is_debug = yes
+			is_unification_catidate = yes
+			any_controlled_state = {
+				OR = { region = 2 region = 3 region = 4 region = 5 region = 5 region = 9 region = 16 region = 17 region =  42 region = 60 region = 80 region = 83 region = 84 region = 97 region = 110 region = 119 region = 142 }
+			}
+		}
+		available = {
+			always = no
+		}
+		complete_effect = {
+			# become south japan
+			news_event = formablenations.1
+			every_state = {
+				limit = {
+					OR = { region = 2 region = 3 region = 4 region = 5 region = 5 region = 9 region = 16 region = 17 region =  42 region = 60 region = 80 region = 83 region = 84 region = 97 region = 110 region = 119 region = 142 }
+					NOT = { is_core_of = ROOT }
+				}
+				add_core_of = ROOT	# or claim?
+			}
+			# invite annexation
 		}
 	}
 }
