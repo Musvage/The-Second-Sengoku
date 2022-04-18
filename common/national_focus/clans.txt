@@ -1758,6 +1758,12 @@ focus_tree = {
 					}
 				}
 			}
+			hidden_effect = {
+				add_equipment_to_stockpile = {
+					type = infantry_equipment_traditional
+					amount = 1000
+				}
+			}
 			if = {
 				limit = {
 					capital_scope = {
@@ -1765,14 +1771,14 @@ focus_tree = {
 					}
 				}
 				capital_scope = {
-					custom_effect_tooltip = clan_initial_spawn_2_inf_divisions
+					custom_effect_tooltip = clan_initial_spawn_2_inf_divisions_capital
 					hidden_effect = {
 						create_unit = {
-								division = "name = \"Hohei Ryodan\" division_template = \"Hohei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 1"
+								division = "name = \"Hohei Ryodan\" division_template = \"Hohei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 0.001"
 								owner = ROOT
 						}
 						create_unit = {
-								division = "name = \"Hohei Ryodan\" division_template = \"Hohei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 1"
+								division = "name = \"Hohei Ryodan\" division_template = \"Hohei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 0.001"
 								owner = ROOT
 						}
 					}
@@ -1796,6 +1802,41 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = clan_old_weapons	# Issue All Weapons Availale
+		icon = GFX_focus_generic_old_weapons
+		search_filters = { FOCUS_FILTER_MILITARY }
+		
+		prerequisite = { focus = clan_restructure_army }
+		mutually_exclusive = { focus = clan_train_army }
+		
+		x = 0
+		y = 1
+		cost = 5
+		
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 50
+				has_war = yes
+			}
+		}
+		
+		relative_position_id = clan_restructure_army
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			set_temp_variable = { num_guns = var:num_of_factories }
+			multiply_temp_variable = { num_guns = 250 }
+			add_to_temp_variable = { num_guns = 250 }
+			add_equipment_to_stockpile = {
+				type = infantry_equipment_traditional
+				amount = var:num_guns
+			}
+		}
+	}
+	
+	focus = {
 		id = clan_quick_conscription	# Form Ad Hoc Battalions
 		icon = GFX_focus_generic_army_quantity
 		search_filters = { FOCUS_FILTER_MILITARY }
@@ -1804,7 +1845,7 @@ focus_tree = {
 		mutually_exclusive = { focus = clan_train_army }
 		
 		x = -1
-		y = 1
+		y = 2
 		cost = 10
 		
 		ai_will_do = {
@@ -1818,6 +1859,12 @@ focus_tree = {
 		relative_position_id = clan_restructure_army
 
 		available_if_capitulated = yes
+		
+		available = {
+			has_equipment = {
+				infantry_equipment > 899
+			}
+		}
 
 		completion_reward = {
 			set_temp_variable = { militia_amount = 3 }
@@ -1850,15 +1897,15 @@ focus_tree = {
 				custom_effect_tooltip = clan_spawn_militia_X_divisions
 				hidden_effect = {
 					create_unit = {
-							division = "name = \"Minpei\" division_template = \"Minpei\" start_experience_factor = 0.15 start_equipment_factor = 1"
+							division = "name = \"Minpei\" division_template = \"Minpei\" start_experience_factor = 0.15 start_equipment_factor = 0.01"
 							owner = ROOT
 					}
 					create_unit = {
-							division = "name = \"Minpei\" division_template = \"Minpei\" start_experience_factor = 0.15 start_equipment_factor = 1"
+							division = "name = \"Minpei\" division_template = \"Minpei\" start_experience_factor = 0.15 start_equipment_factor = 0.01"
 							owner = ROOT
 					}
 					create_unit = {
-							division = "name = \"Minpei\" division_template = \"Minpei\" start_experience_factor = 0.15 start_equipment_factor = 1"
+							division = "name = \"Minpei\" division_template = \"Minpei\" start_experience_factor = 0.15 start_equipment_factor = 0.01"
 							owner = ROOT
 					}
 					if = {
@@ -1866,7 +1913,7 @@ focus_tree = {
 							ROOT = { num_of_factories > 9 }
 						}
 						create_unit = {
-							division = "name = \"Minpei\" division_template = \"Minpei\" start_experience_factor = 0.15 start_equipment_factor = 1"
+							division = "name = \"Minpei\" division_template = \"Minpei\" start_experience_factor = 0.15 start_equipment_factor = 0.1"
 							owner = ROOT
 						}
 					}
@@ -1875,7 +1922,7 @@ focus_tree = {
 							ROOT = { num_of_factories > 14 }
 						}
 						create_unit = {
-							division = "name = \"Minpei\" division_template = \"Minpei\" start_experience_factor = 0.15 start_equipment_factor = 1"
+							division = "name = \"Minpei\" division_template = \"Minpei\" start_experience_factor = 0.15 start_equipment_factor = 0.1"
 							owner = ROOT
 						}
 					}
@@ -1884,7 +1931,7 @@ focus_tree = {
 							ROOT = { num_of_factories > 19 }
 						}
 						create_unit = {
-							division = "name = \"Minpei\" division_template = \"Minpei\" start_experience_factor = 0.15 start_equipment_factor = 1"
+							division = "name = \"Minpei\" division_template = \"Minpei\" start_experience_factor = 0.15 start_equipment_factor = 0.1"
 							owner = ROOT
 						}
 					}
@@ -1902,7 +1949,7 @@ focus_tree = {
 		mutually_exclusive = { focus = clan_quick_conscription }
 		
 		x = 1
-		y = 1
+		y = 2
 		cost = 10
 		
 		ai_will_do = {
@@ -1942,6 +1989,9 @@ focus_tree = {
 			NOT = {
 				has_government = communism
 			}
+			has_equipment = {
+				infantry_equipment > 499
+			}
 		}
 
 		completion_reward = {
@@ -1971,38 +2021,32 @@ focus_tree = {
 					}
 				}
 				capital_scope = {
-					custom_effect_tooltip = clan_spawn_2_samurai_divisions
+					custom_effect_tooltip = clan_spawn_samurai_division
 					hidden_effect = {
 						create_unit = {
-								division = "name = \"Konoe Dai-ichi Shidan\" division_template = \"Konoe Dai-ichi Shidan\" start_experience_factor = 0.9 start_equipment_factor = 1"
-								owner = ROOT
-						}
-						create_unit = {
-								division = "name = \"Konoe Dai-ichi Shidan\" division_template = \"Konoe Dai-ichi Shidan\" start_experience_factor = 0.9 start_equipment_factor = 1"
+								division = "name = \"Konoe Dai-ichi Shidan\" division_template = \"Konoe Dai-ichi Shidan\" start_experience_factor = 0.9 start_equipment_factor = 0.01"
 								owner = ROOT
 						}
 					}
 				}
 			} else = {
 				random_controlled_state = {
-					custom_effect_tooltip = clan_spawn_2_samurai_divisions
+					custom_effect_tooltip = clan_spawn_samurai_division
 					hidden_effect = {
 						create_unit = {
-								division = "name = \"Konoe Dai-ichi Shidan\" division_template = \"Konoe Dai-ichi Shidan\" start_experience_factor = 0.9 start_equipment_factor = 1"
-								owner = ROOT
-						}
-						create_unit = {
-								division = "name = \"Konoe Dai-ichi Shidan\" division_template = \"Konoe Dai-ichi Shidan\" start_experience_factor = 0.9 start_equipment_factor = 1"
+								division = "name = \"Konoe Dai-ichi Shidan\" division_template = \"Konoe Dai-ichi Shidan\" start_experience_factor = 0.9 start_equipment_factor = 0.01"
 								owner = ROOT
 						}
 					}
 				}
 			}
+			custom_effect_tooltip = unlock_samurai_tech
+			hidden_effect = { set_technology = { tech_samurai = 1 popup = no } }
 		}
 	}
 	
 	focus = {
-		id = clan_regular_soldiers	# Expand Land Army
+		id = clan_regular_soldiers	# Expand Regular Army
 		icon = GFX_focus_generic_infantry
 		search_filters = { FOCUS_FILTER_MILITARY }
 		
@@ -2020,6 +2064,12 @@ focus_tree = {
 		relative_position_id = clan_quick_conscription
 
 		available_if_capitulated = yes
+		
+		available = {
+			has_equipment = {
+				infantry_equipment > 1439
+			}
+		}
 
 		completion_reward = {
 			hidden_effect = {
@@ -2048,15 +2098,15 @@ focus_tree = {
 					custom_effect_tooltip = clan_spawn_3_cav_divisions
 					hidden_effect = {
 						create_unit = {
-								division = "name = \"1 Kihei Ryodan\" division_template = \"Kihei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 1"
+								division = "name = \"1 Kihei Ryodan\" division_template = \"Kihei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 0.01"
 								owner = ROOT
 						}
 						create_unit = {
-								division = "name = \"2 Kihei Ryodan\" division_template = \"Kihei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 1"
+								division = "name = \"2 Kihei Ryodan\" division_template = \"Kihei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 0.01"
 								owner = ROOT
 						}
 						create_unit = {
-								division = "name = \"3 Kihei Ryodan\" division_template = \"Kihei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 1"
+								division = "name = \"3 Kihei Ryodan\" division_template = \"Kihei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 0.01"
 								owner = ROOT
 						}
 					}
@@ -2066,15 +2116,15 @@ focus_tree = {
 					custom_effect_tooltip = clan_spawn_3_cav_divisions
 					hidden_effect = {
 						create_unit = {
-								division = "name = \"1 Kihei Ryodan\" division_template = \"Kihei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 1"
+								division = "name = \"1 Kihei Ryodan\" division_template = \"Kihei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 0.01"
 								owner = ROOT
 						}
 						create_unit = {
-								division = "name = \"2 Kihei Ryodan\" division_template = \"Kihei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 1"
+								division = "name = \"2 Kihei Ryodan\" division_template = \"Kihei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 0.01"
 								owner = ROOT
 						}
 						create_unit = {
-								division = "name = \"3 Kihei Ryodan\" division_template = \"Kihei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 1"
+								division = "name = \"3 Kihei Ryodan\" division_template = \"Kihei Ryodan\" start_experience_factor = 0.33 start_equipment_factor = 0.01"
 								owner = ROOT
 						}
 					}
