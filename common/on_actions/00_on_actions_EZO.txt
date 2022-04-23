@@ -6,6 +6,64 @@ on_actions = {
 			if = {
 				limit = {
 					FROM = {
+						always = no	####
+						#tag = EZO
+					}
+				}
+				random_list = {
+					100 = {}	# nothing happens
+					50 = {		# foreign leader
+						if = {
+							limit = {
+								is_army_leader = yes
+							}
+							add_unit_leader_trait = foreign_general
+							meta_effect = {
+								text = {
+									set_portraits = {
+										army = {
+											small="GFX_portrait_white_russian_land_[RANDOM_PORTRAIT]_small"
+											large="GFX_portrait_white_russian_land_[RANDOM_PORTRAIT]"
+										}
+									}
+									set_character_name = "[RANDOM_NAME] [RANDOM_SURNAME]"
+								}
+								RANDOM_NAME = "[THIS.GetRandomExiledName]"
+								RANDOM_SURNAME = "[THIS.GetRandomExiledSurname]"
+								RANDOM_PORTRAIT = "[?global.random_portrait|.0]"
+							}
+						} else = {
+							add_unit_leader_trait = foreign_admiral
+							meta_effect = {
+								text = {
+									set_portraits = {
+										army = {
+											small="GFX_portrait_white_russian_navy_[RANDOM_PORTRAIT]_small"
+											large="GFX_portrait_white_russian_navy_[RANDOM_PORTRAIT]"
+										}
+									}
+									set_character_name = "[RANDOM_NAME] [RANDOM_SURNAME]"
+								}
+								RANDOM_NAME = "[THIS.GetRandomExiledName]"
+								RANDOM_SURNAME = "[THIS.GetRandomExiledSurname]"
+								RANDOM_PORTRAIT = "[?global.random_portrait|.0]"
+							}
+						}
+						if = {
+							limit = {
+								has_trait = samurai_lineage_land
+							}
+							remove_unit_leader_trait = samurai_lineage_land
+							add_unit_leader_trait = noble_lineage_land
+						}
+						get_random_general_dna = yes # rolls dice for next leader
+					}
+				}
+			}
+			if = {
+				limit = {
+					FROM = {
+						#always = no	####
 						tag = EZO
 						NOT = { has_country_flag = stop_random_exiled_general }
 					}
@@ -15,27 +73,17 @@ on_actions = {
 					100 = { log = "nothing happens, keep generic leader" }	# nothing happens, keep generic leader
 					50 = {	# generate generic exiled leader
 						log = "generate generic exiled leader"
-						# now we check to see if this leader is a general or an admiral
-						set_unit_leader_flag = new_unit_leader_flag
-						if = {
+						FROM = { get_random_general_dna = yes } # rolls dice for next leader
+						if = {	# now we check to see if this leader is a general or an admiral
 							limit = {
-								FROM = {
-									any_army_leader = {	# "reverse search" to check if new leader is general or not
-										has_unit_leader_flag = new_unit_leader_flag
-									}
-								}
+								is_army_leader = yes
 							}
-							# new leader is a general
 							FROM = {
-								# create random exiled general
 								create_random_exiled_general = yes
-								get_random_general_dna = yes # rolls dice for next leader
 							}
 						} else = {
-							# new leader is an admiral
 							FROM = {
 								create_random_exiled_admiral = yes
-								get_random_general_dna = yes # rolls dice for next leader
 							}
 						}
 						if = {
