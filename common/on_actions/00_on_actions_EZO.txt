@@ -32,6 +32,13 @@ on_actions = {
 								RANDOM_SURNAME = "[THIS.GetRandomExiledSurname]"
 								RANDOM_PORTRAIT = "[?global.random_portrait|.0]"
 							}
+							if = {
+								limit = {
+									has_trait = samurai_lineage_land
+								}
+								remove_unit_leader_trait = samurai_lineage_land
+								add_unit_leader_trait = noble_lineage_land
+							}
 						} else = {
 							add_unit_leader_trait = foreign_admiral
 							meta_effect = {
@@ -48,13 +55,13 @@ on_actions = {
 								RANDOM_SURNAME = "[THIS.GetRandomExiledSurname]"
 								RANDOM_PORTRAIT = "[?global.random_portrait|.0]"
 							}
-						}
-						if = {
-							limit = {
-								has_trait = samurai_lineage_land
+							if = {
+								limit = {
+									has_trait = samurai_lineage_navy
+								}
+								remove_unit_leader_trait = samurai_lineage_navy
+								add_unit_leader_trait = noble_lineage_navy
 							}
-							remove_unit_leader_trait = samurai_lineage_land
-							add_unit_leader_trait = noble_lineage_land
 						}
 						get_random_general_dna = yes # rolls dice for next leader
 					}
@@ -86,23 +93,24 @@ on_actions = {
 								create_random_exiled_admiral = yes
 							}
 						}
-						if = {
-							limit = {	# begone!, random generic general. This bit of code looks clunky but trust me, it's necessary
-								FROM = {
-									is_ai = no
-									any_other_country = { is_ai = yes }
-								}
-							}
-							random_country = {
-								limit = { is_ai = yes }	# exile the general to an AI country just so the player won't notice that he would last for an hour
-								ROOT = {
-									set_nationality = PREV
-									unit_leader_event = { id = EZO.999 hours = 1 }
-								}
-								log = "general sent to [THIS.GetName]!"
-							}
-							unit_leader_event = { id = EZO.999 hours = 1 }
-						}
+						FROM = { retire_character = ROOT }	# begone!, random generic general
+					#	if = {
+					#		limit = {	# begone!, random generic general. [This bit of code looks clunky but trust me, it's necessary] Acktchually, I think we can get rid of it!
+					#			FROM = {
+					#				is_ai = no
+					#				any_other_country = { is_ai = yes }
+					#			}
+					#		}
+					#		random_country = {
+					#			limit = { is_ai = yes }	# exile the general to an AI country just so the player won't notice that he would last for an hour
+					#			ROOT = {
+					#				set_nationality = PREV
+					#				unit_leader_event = { id = EZO.999 hours = 1 }
+					#			}
+					#			log = "general sent to [THIS.GetName]!"
+					#		}
+					#		unit_leader_event = { id = EZO.999 hours = 1 }
+					#	}
 					}
 				}
 				FROM = { clr_country_flag = stop_random_exiled_general }
