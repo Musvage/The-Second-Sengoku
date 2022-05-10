@@ -259,4 +259,81 @@ ss_placeholder_unification_of_japan_category = {
 			}
 		}
 	}
+	
+	debug_unify_actual_japan = {
+		visible = {
+			is_debug = yes
+			unification_candidate = yes
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = "Must control [?global.number_of_required_states_japan] of the [?global.number_of_total_states_japan] states in Japan (current: [?number_of_states_controlled_japan]/[?global.number_of_required_states_japan])"
+				check_variable = { number_of_states_controlled_japan > global.number_of_required_states_japan }
+			}
+			OR = {
+				 controls_state = 29	# Edo
+				 controls_state = 32	# Tokyo
+			}
+			NOT = {
+				any_other_country = {
+					hidden_trigger = { unification_candidate = yes }
+					OR = { controls_state = 29 controls_state = 32 }
+					# or is regional japan!	# <------------------------------------------------------------- here! look at me!
+					custom_trigger_tooltip = {
+						tooltip = "Does not have a higher unification score" # unification_of_japan_has_higher_score_tt	### FIX THIS TOOLTIP LATER (it is a double negative)
+						#check_variable = { country_unification_score > PREV.country_unification_score }
+						check_variable = {
+							var = country_unification_score
+							value = PREV.country_unification_score
+							compare = greater_than
+						}
+					}
+				}
+			}
+		}
+		complete_effect = {
+			# become Japan
+			every_country = {
+				limit = {
+					NOT = { tag = ROOT has_war_with = ROOT }
+					unification_candidate = yes
+					capital_scope = { has_state_flag = state_is_northern_japan }
+				}
+				country_event = { id = formablenations.41 hours = 6 random = 6 }
+			}
+			every_country = {
+				limit = {
+					OR = {
+						tag = ROOT
+						has_war_with = ROOT
+						unification_candidate = no
+						NOT = {
+							OR = {
+								capital_scope = { has_state_flag = state_is_southern_japan }
+								capital_scope = { has_state_flag = state_is_central_japan }
+								capital_scope = { has_state_flag = state_is_northern_japan }
+							}
+						}
+					}
+				}
+				news_event = formablenations.4	# cosmetic news
+			}
+			every_state = {
+				limit = {
+					OR = {
+						has_state_flag = state_is_southern_japan
+						has_state_flag = state_is_central_japan
+						has_state_flag = state_is_northern_japan
+					}
+					NOT = {
+						is_core_of = ROOT
+						OWNER = {
+							NOT = { owner = { OR = { tag = AMC tag = OSA tag = REI tag = KOB tag = PRT tag = OKI tag = HIR } has_country_flag = is_not_japan } }
+						}
+					}
+				}
+				add_claim_by = ROOT	#
+			}
+		}
+	}
 }

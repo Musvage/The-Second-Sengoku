@@ -102,5 +102,25 @@ unification_has_japanese_puppets = {
 
 unification_can_unify = {
 	unification_candidate = yes
-	
+	check_variable = { number_of_states_controlled_japan > global.number_of_required_states_japan }
+	OR = {
+		 controls_state = 29	# Edo
+		 controls_state = 32	# Tokyo
+	}
+	NOT = {
+		any_other_country = {
+			hidden_trigger = { unification_candidate = yes }
+			OR = { controls_state = 29 controls_state = 32 }
+			# or is regional japan!	# <------------------------------------------------------------- here! look at me!
+			custom_trigger_tooltip = {
+				tooltip = "Does not have a higher unification score" # unification_of_japan_has_higher_score_tt	### FIX THIS TOOLTIP LATER (it is a double negative)
+				#check_variable = { country_unification_score > PREV.country_unification_score }
+				check_variable = {
+					var = country_unification_score
+					value = PREV.country_unification_score
+					compare = greater_than
+				}
+			}
+		}
+	}
 }
