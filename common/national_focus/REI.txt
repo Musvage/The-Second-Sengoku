@@ -282,8 +282,9 @@ focus_tree = {
 	focus = {
 		id = REI_kaiser_august
 		icon = GFX_focus_REI_kaiser_august
-		search_filters = {  }
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		
+		mutually_exclusive = { focus = REI_new_reich }
 		prerequisite = { focus = REI_nazi_and_emperor }
 		
 		relative_position_id = REI_nazi_and_emperor
@@ -315,8 +316,9 @@ focus_tree = {
 	focus = {
 		id = REI_new_reich	# A New Reich
 		icon = GFX_focus_REI_restore_empire
-		search_filters = {  }
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		
+		mutually_exclusive = { focus = REI_kaiser_august }
 		prerequisite = { focus = REI_nazi_and_emperor }
 		
 		relative_position_id = REI_nazi_and_emperor
@@ -348,8 +350,9 @@ focus_tree = {
 	focus = {
 		id = REI_fascist_cabinet
 		icon = GFX_focus_REI_fascist_cabinet
-		search_filters = {  }
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		
+		mutually_exclusive = { focus = REI_military_dictatorship }
 		prerequisite = { focus = REI_general_staff }
 		
 		relative_position_id = REI_general_staff
@@ -376,8 +379,9 @@ focus_tree = {
 	focus = {
 		id = REI_military_dictatorship
 		icon = GFX_focus_REI_military_cabinet
-		search_filters = {  }
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		
+		mutually_exclusive = { focus = REI_fascist_cabinet }
 		prerequisite = { focus = REI_general_staff }
 		
 		relative_position_id = REI_general_staff
@@ -401,6 +405,7 @@ focus_tree = {
 		icon = GFX_focus_REI_saint_lud
 		search_filters = { FOCUS_FILTER_RELIGION FOCUS_FILTER_WAR_SUPPORT }
 		
+		mutually_exclusive = { focus = REI_paganphiles }
 		prerequisite = { focus = REI_cthule_putsch }
 		
 		relative_position_id = REI_cthule_putsch
@@ -429,6 +434,7 @@ focus_tree = {
 		icon = GFX_focus_REI_paganphiles
 		search_filters = { FOCUS_FILTER_RELIGION FOCUS_FILTER_STABILITY }
 		
+		mutually_exclusive = { focus = REI_saint_lud }
 		prerequisite = { focus = REI_cthule_putsch }
 		
 		relative_position_id = REI_cthule_putsch
@@ -1067,7 +1073,7 @@ focus_tree = {
 	
 	focus = {
 		id = REI_army_tech
-		icon = GFX_
+		icon = GFX_focus_REI_army_tech
 		search_filters = { FOCUS_FILTER_RESEARCH }
 		
 		prerequisite = { focus = REI_west_ost_wall }
@@ -1110,7 +1116,7 @@ focus_tree = {
 	
 	focus = {
 		id = REI_air_tech
-		icon = GFX_
+		icon = GFX_focus_HIR_air_force_modernized
 		search_filters = { FOCUS_FILTER_RESEARCH }
 		
 		prerequisite = { focus = REI_west_ost_wall }
@@ -1394,7 +1400,7 @@ focus_tree = {
 	
 	focus = {
 		id = REI_wehrmacht_administration
-		icon = GFX_
+		icon = GFX_focus_REI_wehrmacht_administration
 		search_filters = { FOCUS_FILTER_MANPOWER }
 		
 		mutually_exclusive = { focus = REI_ss_administration focus = REI_civilian_administration }
@@ -1418,7 +1424,7 @@ focus_tree = {
 	
 	focus = {
 		id = REI_ss_administration
-		icon = GFX_focus_REI_ss_volunteers
+		icon = GFX_focus_REI_special_jurisdiction
 		search_filters = { FOCUS_FILTER_MANPOWER }
 		
 		mutually_exclusive = { focus = REI_wehrmacht_administration focus = REI_civilian_administration }
@@ -1542,7 +1548,7 @@ focus_tree = {
 	
 	focus = {
 		id = REI_local_industry
-		icon = GFX_
+		icon = GFX_focus_generic_arms_factory
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		
 		prerequisite = { focus = REI_state_of_affairs }
@@ -1631,7 +1637,7 @@ focus_tree = {
 	
 	focus = {
 		id = REI_local_volunteers
-		icon = GFX_
+		icon = GFX_focus_REI_local_volunteers
 		search_filters = { FOCUS_FILTER_MANPOWER }
 		
 		prerequisite = { focus = REI_local_industry }
@@ -1654,7 +1660,7 @@ focus_tree = {
 	
 	focus = {
 		id = REI_seto_sea_strategy
-		icon = GFX_
+		icon = GFX_focus_REI_seto_sea_supremacy
 		search_filters = {  }
 		
 		prerequisite = { focus = REI_german_standard }
@@ -1710,8 +1716,8 @@ focus_tree = {
 	
 	focus = {
 		id = REI_modernize_equipment
-		icon = GFX_
-		search_filters = {  }
+		icon = GFX_focus_REI_modern_equipment
+		search_filters = { FOCUS_FILTER_RESEARCH }
 		
 		prerequisite = { focus = REI_local_volunteers }
 		
@@ -1727,14 +1733,20 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			
+			add_tech_bonus = {
+				name = infantry_artillery_bonus
+				bonus = 2.0
+				uses = 2
+				category = infantry_weapons
+				category = artillery
+			}
 		}
 	}
 	
 	focus = {
 		id = REI_secret_police
-		icon = GFX_
-		search_filters = { F }
+		icon = GFX_focus_REI_secret_police
+		search_filters = { FOCUS_FILTER_SPY }
 		
 		prerequisite = { focus = REI_local_volunteers }
 		
@@ -1750,7 +1762,14 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			add_ideas = REI_idea_secret_police
+			if = {
+				limit = {
+					has_dlc = "La Resistance"
+				}
+				add_ideas = REI_idea_secret_police_lar
+			} else = {
+				add_ideas = REI_idea_secret_police
+			}
 			custom_effect_tooltip = REI_secret_police_tt
 			hidden_effect = {
 				division_template = {
