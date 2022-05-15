@@ -1,0 +1,142 @@
+on_actions = {
+	
+	on_startup = {
+	
+		effect = {
+
+			every_country = {
+				
+				set_variable = { ROOT.influence_power = 0.00 }
+				set_variable = { ROOT.influence_power_daily_gain = 0.00 }
+			
+			}
+		
+		}
+
+	}
+	
+	on_daily = {
+	
+		effect = {
+			
+			set_variable = { ROOT.influence_power_daily_gain = political_power_daily }
+			divide_variable = { ROOT.influence_power_daily_gain = 2 }
+			add_to_variable = { ROOT.influence_power = ROOT.influence_power_daily_gain  }
+			if = {
+				limit = {
+					check_variable = { ROOT.influence_power > 100.00 }
+				}
+				set_variable = { ROOT.influence_power = 100.00 }
+			}
+			
+			clear_array = ROOT.all_countries
+			every_country = {
+				limit = {
+					OR = {
+						check_variable = {
+							var = ROOT.influence_level@THIS
+							value = 0
+							compare = greater_than
+						}
+						check_variable = {
+							var = THIS.influence_level@ROOT
+							value = 0
+							compare = greater_than
+						}
+					}
+				}
+				add_to_array = { ROOT.all_countries = THIS.id }
+			}
+		
+		}
+	
+	}
+	
+	on_weekly = {
+	
+		effect = {
+			every_country = {
+			
+				if = {
+					limit = {
+						check_variable = { ROOT.influence_level@THIS > 0 }
+					}
+					add_to_variable = { ROOT.influence_level@THIS = -0.05 }
+				}
+				if = {
+					limit = {
+						check_variable = { ROOT.influence_level@THIS < 0 }
+					}
+					set_variable = { ROOT.influence_level@THIS = 0 }
+				}
+				if = {
+					limit = {
+						check_variable = { ROOT.influence_level@THIS > 10.2 }
+					}
+					set_variable = { ROOT.influence_level@THIS = 10.2 }
+				}
+			
+			}
+		
+		}
+	
+	}
+	
+	on_daily = {
+	
+		effect = {
+		
+			every_country = {
+				
+				if = {
+					limit = {
+						check_variable = { ROOT.influence_level@THIS < 0 }
+						NOT = {
+							THIS = {
+								gives_military_access_to = ROOT
+								has_country_flag = under_influence_of_@ROOT
+							}
+						}
+					}
+					set_variable = { ROOT.influence_level@THIS = 0 }
+				}
+				if = {
+					limit = {
+						check_variable = { ROOT.influence_level@THIS < 0.2 }
+						THIS = {
+							gives_military_access_to = ROOT
+							has_country_flag = under_influence_of_@ROOT
+						}
+					}
+					set_variable = { ROOT.influence_level@THIS = 0.2 }
+				}
+				if = {
+					limit = {
+						check_variable = { ROOT.influence_level@THIS > 10.19 }
+					}
+					set_variable = { ROOT.influence_level@THIS = 10.2 }
+				}
+			
+			}
+			every_country = {
+			
+				if = {
+					limit = {
+						check_variable = { ROOT.dependence_level@THIS < 0 }
+					}
+					set_variable = { ROOT.dependence_level@THIS = 0 }
+				}
+				if = {
+					limit = {
+						check_variable = { ROOT.dependence_level@THIS > 10 }
+					}
+					set_variable = { ROOT.dependence_level@THIS = 10 }
+				}
+			
+			}
+		
+		}
+	
+	}
+
+}

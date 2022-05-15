@@ -1,0 +1,346 @@
+delta_influence_campaign = {
+	start_influence_campaign_in_delta = {
+		#icon = delta
+		days_remove = 0
+		days_re_enable = 0
+		fire_only_once = yes
+		target_trigger = {
+			FROM = {
+				has_opinion = { target = ROOT value > 29 }
+				NOT = {
+					TAG = REI
+					TAG = OSA
+					TAG = HIR
+					TAG = AMC
+					TAG = PRT
+					TAG = KOB
+					TAG = SPR
+				}
+			}
+		}
+		available = {
+			FROM = {
+				has_opinion = { target = ROOT value > 29 }
+				#is_major = no
+				NOT = {
+					is_puppet = yes
+					is_in_faction = yes
+				}
+				OR = {
+					AND = {
+						is_neighbor_of = ROOT
+					}
+					AND = {
+						any_state = {
+							is_coastal = yes
+							is_controlled_by = FROM
+						}
+						ROOT = {
+							has_navy_size = { size > 4 }
+						}
+					}
+				}
+				NOT = {
+					has_war_with = ROOT
+				}
+			}
+			ROOT = {
+				num_of_factories > FROM.num_of_factories
+				is_puppet = no
+			}
+			NOT = {
+				has_country_flag = has_influence_campaign_@FROM
+			}
+		}
+		visible = {
+			FROM = {
+				is_puppet = no
+				is_in_faction = no
+				#is_major = no
+			}
+		}
+		complete_effect = {
+			set_country_flag = has_influence_campaign_@FROM
+			FROM = { set_country_flag = under_influence_of_@ROOT }
+			set_variable = { ROOT.influence_level@FROM = 0.00 }
+			set_variable = { var = THIS.opinion_about@ROOT value = 0.00 }
+			set_variable = { var = ROOT.this_multiplier@THIS value = 0.00 }
+		}
+		remove_effect = {
+			
+		}
+	}
+	send_factories_to_delta = {
+		#icon = delta
+		days_remove = 60
+		days_re_enable = 14
+		
+		target_trigger = {
+			FROM = {
+				has_opinion = { target = ROOT value > 29 }
+				NOT = {
+					TAG = REI
+					TAG = OSA
+					TAG = HIR
+					TAG = AMC
+					TAG = PRT
+					TAG = KOB
+					TAG = SPR
+				}
+			}
+		}
+		
+		available = {
+			check_variable = { ROOT.influence_power > 29.99 }
+			FROM = {
+				NOT = {
+					is_puppet = yes
+				}
+				NOT = {
+					is_in_faction = yes
+				}
+				OR = {
+					AND = {
+						is_neighbor_of = ROOT
+					}
+					AND = {
+						any_state = {
+							is_coastal = yes
+							is_controlled_by = FROM
+						}
+					}
+				}
+				NOT = {
+					has_war_with = ROOT
+				}
+			}
+			ROOT = {
+				num_of_factories > FROM.num_of_factories
+				is_puppet = no
+			}
+			has_country_flag = has_influence_campaign_@FROM
+		}
+		visible = {
+			FROM = {
+				has_country_flag = under_influence_of_@ROOT
+			}
+		}
+		targeted_modifier = {
+			tag = FROM
+			cic_to_target_factor = 0.15
+		}
+		complete_effect = {
+			add_to_variable = { ROOT.influence_power = -30 }
+			FROM = {
+				add_opinion_modifier = {
+					target = ROOT
+					modifier = sent_factories
+				}
+			}
+		}
+		remove_effect = {
+			add_to_variable = { ROOT.influence_level@FROM = 1.0 }
+			set_variable = { ROOT.delta_a@FROM = 1.0 }
+			multiply_variable = { ROOT.delta_a@FROM = ROOT.influence_multiplier@FROM }
+			add_to_variable = { ROOT.influence_level@FROM = ROOT.delta_a@FROM }
+			clear_variable = ROOT.delta_a@FROM
+		}
+	}
+	send_advisors_to_delta = {
+		icon = delta
+		days_remove = 15
+		days_re_enable = 5
+		
+		target_trigger = {
+			FROM = {
+				has_opinion = { target = ROOT value > 29 }
+				NOT = {
+					TAG = REI
+					TAG = OSA
+					TAG = HIR
+					TAG = AMC
+					TAG = PRT
+					TAG = KOB
+					TAG = SPR
+				}
+			}
+		}
+		
+		available = {
+			check_variable = { ROOT.influence_power > 14.99 }
+			FROM = {
+				NOT = {
+					is_puppet = yes
+				}
+				NOT = {
+					is_in_faction = yes
+				}
+				OR = {
+					AND = {
+						is_neighbor_of = ROOT
+					}
+					AND = {
+						any_state = {
+							is_coastal = yes
+							is_controlled_by = FROM
+						}
+					}
+				}
+				NOT = {
+					has_war_with = ROOT
+				}
+			}
+			ROOT = {
+				num_of_factories > FROM.num_of_factories
+				is_puppet = no
+			}
+			has_country_flag = has_influence_campaign_@FROM
+		}
+		visible = {
+			FROM = {
+				has_country_flag = under_influence_of_@ROOT
+			}
+		}
+		modifier = {
+			political_power_factor = -0.2
+		}
+		complete_effect = {
+			add_to_variable = { ROOT.influence_power = -15 }
+			FROM = {
+				add_opinion_modifier = {
+					target = ROOT
+					modifier = sent_advisors
+				}
+			}
+		}
+		remove_effect = {
+			FROM = {
+				add_political_power = 75
+			}
+			add_to_variable = { ROOT.influence_level@FROM = 0.5 }
+			set_variable = { ROOT.delta_b@FROM = 0.5 }
+			multiply_variable = { ROOT.delta_b@FROM = ROOT.influence_multiplier@FROM }
+			add_to_variable = { ROOT.influence_level@FROM = ROOT.delta_b@FROM }
+			clear_variable = ROOT.delta_b@FROM
+		}
+	}
+	send_investment_expedition_in_delta = {
+		#icon = delta
+		days_remove = 90
+		days_re_enable = 7
+		
+		target_trigger = {
+			FROM = {
+				has_opinion = { target = ROOT value > 29 }
+				NOT = {
+					TAG = REI
+					TAG = OSA
+					TAG = HIR
+					TAG = AMC
+					TAG = PRT
+					TAG = KOB
+					TAG = SPR
+				}
+			}
+		}
+		
+		available = {
+			check_variable = { ROOT.influence_power > 59.99 }
+			FROM = {
+				NOT = {
+					is_puppet = yes
+				}
+				NOT = {
+					is_in_faction = yes
+				}
+				OR = {
+					AND = {
+						is_neighbor_of = ROOT
+					}
+					AND = {
+						any_state = {
+							is_coastal = yes
+							is_controlled_by = FROM
+						}
+					}
+				}
+				NOT = {
+					has_war_with = ROOT
+				}
+			}
+			ROOT = {
+				num_of_factories > FROM.num_of_factories
+				is_puppet = no
+			}
+			has_country_flag = has_influence_campaign_@FROM
+		}
+		visible = {
+			FROM = {
+				has_country_flag = under_influence_of_@ROOT
+			}
+		}
+		modifier = {
+			political_power_factor = -0.4
+		}
+		complete_effect = {
+			add_to_variable = { ROOT.influence_power = -60 }
+			FROM = {
+				add_opinion_modifier = {
+					target = ROOT
+					modifier = sent_investment_expedition
+				}
+			}
+		}
+		remove_effect = {
+			FROM = {
+				add_political_power = 150
+			}
+			add_to_variable = { ROOT.influence_level@FROM = 1.5 }
+			set_variable = { ROOT.delta_c@FROM = 1.5 }
+			multiply_variable = { ROOT.delta_c@FROM = ROOT.influence_multiplier@FROM }
+			add_to_variable = { ROOT.influence_level@FROM = ROOT.delta_c@FROM }
+			clear_variable = ROOT.delta_c@FROM
+		}
+	}
+	take_over_delta = {
+		#icon = delta
+		days_remove = 0
+		days_re_enable = 180
+		cost = 25
+		
+		target_trigger = {
+			check_variable = { ROOT.influence_level@FROM > 8.99 }
+		}
+		
+		available = {
+			FROM = {
+				has_war = no
+			}
+			check_variable = { ROOT.influence_level@FROM > 9.99 }
+		}
+		visible = {
+			FROM = {
+				has_country_flag = under_influence_of_@ROOT
+			}
+		}
+		complete_effect = {
+			if = {
+				limit = {
+					ROOT = {
+						is_in_faction = yes
+					}
+				}
+				ROOT = {
+					add_to_faction = FROM
+				}
+			}
+			ROOT = {
+				puppet = FROM
+				set_autonomy = { target = FROM autonomy_state = autonomy_colony }
+			}
+		}
+		remove_effect = {
+			
+		}
+	}
+}
