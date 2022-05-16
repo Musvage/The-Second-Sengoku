@@ -637,7 +637,7 @@ focus = {
 focus = {
 	id = KOB_le_secret_du_roy
 	icon = GFX_focus_KOB_le_secret_du_roy
-	cost = 5
+	cost = 10
 	x = 11
 	y = 5
 	available = {
@@ -660,16 +660,27 @@ focus = {
 	completion_reward = {
 		add_stability = 0.20
 		add_political_power = 50
+		custom_effect_tooltip = "Creates YIntelligence Agency! named YLe Secret Du Roy!"
+
+		hidden_effect = {
+			create_intelligence_agency = {
+				name = "Le Secret Du Roy"
+				icon = "GFX_intelligence_agency_logo_fra"
+			}
+		}
 	}
+
+	
 }
 
 focus = {
 	id = KOB_infiltrate_the_british_high_sphere
 	icon = GFX_focus_KOB_infiltrate_the_british_high_sphere
-	cost = 6
+	cost = 5
 	x = 9
 	y = 6
 	available = {
+
 	}
 
 	bypass = {
@@ -678,7 +689,7 @@ focus = {
 			is_controlled_by = ROOT
 		}
 		OSA = {
-			OR = {
+			AND = {
 				exists = no
 				has_capitulated = yes
 			}
@@ -697,20 +708,41 @@ focus = {
 	}	
 
 	completion_reward = {
-		# give decisions
+		add_decryption = {
+			target = OSA
+			amount = 25
+		}
+		add_intel = {
+			target = OSA
+			civilian_intel = 50
+			army_intel = 50
+			navy_intel = 50
+			airforce_intel = 50
+		}
 	}
 }
 
 focus = {
 	id = KOB_spy_on_the_emperor
 	icon = GFX_focus_KOB_spy_on_the_emperor
-	cost = 6
+	cost = 5
 	x = 9
 	y = 7
 	available = {
+
 	}
 
 	bypass = {
+		any_state = { 
+			is_core_of = KAN
+			is_controlled_by = ROOT
+		}
+		KAN = {
+			AND = {
+				exists = no
+				has_capitulated = yes
+			}
+		}
 	}
 
 	prerequisite = {
@@ -725,20 +757,35 @@ focus = {
 	}	
 
 	completion_reward = {
-		# give decisions
+		add_decryption = {
+			target = KAN
+			amount = 25
+		}
+		add_intel = {
+			target = KAN
+			civilian_intel = 50
+			army_intel = 50
+			navy_intel = 50
+			airforce_intel = 50
+		}
 	}
 }
 
 focus = {
 	id = KOB_infiltrate_the_junta
 	icon = GFX_focus_KOB_infiltrate_the_junta
-	cost = 6
+	cost = 5
 	x = 9
 	y = 8
 	available = {
+
 	}
 
 	bypass = {
+		any_state = { 
+			is_core_of = CHU
+			is_controlled_by = ROOT
+		}
 	}
 
 	prerequisite = {
@@ -753,7 +800,17 @@ focus = {
 	}	
 
 	completion_reward = {
-		# give decisions
+		add_decryption = {
+			target = CHU
+			amount = 25
+		}
+		add_intel = {
+			target = CHU
+			civilian_intel = 50
+			army_intel = 50
+			navy_intel = 50
+			airforce_intel = 50
+		}
 	}
 }
 
@@ -1177,6 +1234,10 @@ focus = {
 	x = 21
 	y = 9
 	available = { 
+		FER = {
+			exists = yes
+			has_capitulated = no
+		}
 	}
 
 	bypass = {
@@ -1193,9 +1254,10 @@ focus = {
 		factor = 10
 	}	
 
-	search_filters = { FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_ANNEXATION FOCUS_FILTER_ANNEXATION }
+	search_filters = { FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_ANNEXATION }
 	completion_reward = {
-		# declare_war_on = 
+		add_war_support = 0.10
+		ROOT = { declare_war_on = { type = annex_everything target = FER } }
 	}
 }
 
@@ -1203,16 +1265,20 @@ focus = {
 	id = KOB_the_second_1807
 	icon = GFX_goal_generic_major_war
 	cost = 7
-	x = 20
-	y = 10
+	x = 19
+	y = 9
 	available = { 
+		PRT = {
+			exists = yes
+			has_capitulated = no
+		}
 	}
 
 	bypass = {
 	}
 
 	prerequisite = {
-		focus = KOB_avenge_1814
+		focus = KOB_join_the_fight_for_france
 	}
 
 	mutually_exclusive = {
@@ -1222,9 +1288,10 @@ focus = {
 		factor = 10
 	}	
 
-	search_filters = { FOCUS_FILTER_WAR_SUPPORT }
+	search_filters = { FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_ANNEXATION }
 	completion_reward = {
-		# declare_war_on = 
+		add_war_support = 0.10
+		ROOT = { declare_war_on = { type = annex_everything target = PRT } }
 	}
 }
 
@@ -1482,8 +1549,15 @@ focus = {
 	}	
 
 	completion_reward = {
-		# country_event =
-		# make buildings
+		# ROC = { country_event =  }
+		add_offsite_building = { 
+			type = dockyard
+			level = 2
+		}
+		add_offsite_building = { 
+			type = industrial_complex
+			level = 2
+		}
 	}
 }
 
@@ -1590,7 +1664,7 @@ focus = {
 	}	
 
 	completion_reward = {
-		# country_event = 
+		country_event = KOB_french_kingdom.13
 	}
 }
 
@@ -1700,33 +1774,7 @@ focus = {
 ################
 # FAITH QUESTION
 ################
-focus = {
-	id = KOB_the_faith_question
-	icon = GFX_goal_unknown
-	cost = 5
-	x = 31
-	y = 5
-	available = {
-	}
 
-	bypass = {
-	}
-
-	prerequisite = {
-		focus = KOB_the_house_of_orleans
-	}
-
-	mutually_exclusive = {
-	}
-
-	ai_will_do = {
-		factor = 10
-	}	
-
-	completion_reward = {
-		# country_event = 
-	}
-}
 #####################
 # FATIH TOLERANCE LAW
 #####################
@@ -1744,18 +1792,21 @@ focus = {
 	}
 
 	prerequisite = {
-		focus = KOB_the_faith_question
+		focus = KOB_the_house_of_orleans
 	}
 
-	mutually_exclusive = {
-		focus = KOB_invite_catholic_settlers
-	}
+	#mutually_exclusive = {
+	#	focus = KOB_invite_catholic_settlers
+	#}
 
 	ai_will_do = {
 		factor = 10
 	}	
 
 	completion_reward = {
+		KOB = {
+			add_ideas = KOB_faith_tolerance
+		}
 	}
 }
 
@@ -1868,7 +1919,7 @@ focus = {
 focus = {
 	id = KOB_invite_catholic_settlers
 	icon = GFX_focus_POL_end_the_regency
-	cost = 1
+	cost = 5
 	x = 33
 	y = 6
 	available = {
@@ -1879,12 +1930,12 @@ focus = {
 	}
 
 	prerequisite = {
-		focus = KOB_the_faith_question
+		focus = KOB_the_house_of_orleans
 	}
 
-	mutually_exclusive = {
-		focus = KOB_faith_tolerance_law
-	}
+	#mutually_exclusive = {
+	#	focus = KOB_faith_tolerance_law
+	#}
 
 	ai_will_do = {
 		factor = 10
