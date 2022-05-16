@@ -554,6 +554,7 @@ get_country_religion_drift = {
 	set_variable = { country_religion_drift_other = 0.0 }
 	set_variable = { country_religion_drift_christianity = 0.0 }
 	
+	# ADVISERS
 	if = {
 		limit = { has_idea_with_trait = buddhist_monk has_religion_1 = yes }
 		add_to_variable = { country_religion_drift_adviser = 0.5 }	### PAY ATTENTION TO THE DECIMALS!
@@ -604,11 +605,17 @@ get_country_religion_drift = {
 		add_to_variable = { country_religion_drift_adviser = 1 }
 	}
 
-#	if = {	# LAWS
-#		limit = { has_idea = law idea! }		
-#		add_to_variable = { country_religion_drift_idea = 0.1 }
+	# LAWS
+	if = {
+		limit = { has_idea = welfare_law_philanthropy_religion }		
+		add_to_variable = { country_religion_drift_law = 0.1 }
+	}
+#	if = {
+#		limit = { has_idea = education }		
+#		add_to_variable = { country_religion_drift_law = 0.1 }
 #	}
 
+	# NATIONAL SPIRITS
 	if = {
 		limit = {
 			has_idea = PRT_portuguese_missions
@@ -939,6 +946,7 @@ get_religion_state_compliance_modifier = {
 	set_variable = { religion_local_compliance_bonus = 0 }	# this value is within a [0;100] range
 	set_variable = { religion_local_resistance_penalties = 100 }	# this value is within a [0;100] range
 	set_variable = { religion_local_syncretism_bonus = 0 }	# this value is within a [0;100] range
+	set_temp_variable = { religion_local_resistance_multiplier = 1 }
 	if = {
 		limit = { NOT = { PREV = { tag = OWNER } } }	# PREV = controller
 		### Main religion
@@ -1028,14 +1036,24 @@ get_religion_state_compliance_modifier = {
 			subtract_from_variable = { religion_local_resistance_penalties = state_religion_cthulhu }
 		}
 		### National spirits
-		if = { limit = { PREV = { has_idea = FER_atheist_state } } multiply_variable = { religion_local_resistance_penalties = 2 } }
-		if = { limit = { PREV = { has_idea = REI_idea_paganphile } } multiply_variable = { religion_local_resistance_penalties = 0.5 } }
+		if = { limit = { PREV = { has_idea = FER_atheist_state } } add_to_temp_variable = { religion_local_resistance_multiplier = 1 } }
+		if = { limit = { PREV = { has_idea = REI_idea_paganphile } } add_to_temp_variable = { religion_local_resistance_multiplier = -0.5 } }
+		if = { limit = { PREV = { has_idea = welfare_law_philanthropy_religion } } add_to_temp_variable = { religion_local_resistance_multiplier = 0.5 } }
+		if = { limit = { PREV = { has_idea = education_law_religious_1 } } add_to_temp_variable = { religion_local_resistance_multiplier = 0.5 } }
+		if = { limit = { PREV = { has_idea = education_law_religious_2 } } add_to_temp_variable = { religion_local_resistance_multiplier = 0.5 } }
+		if = { limit = { PREV = { has_idea = education_law_religious_3 } } add_to_temp_variable = { religion_local_resistance_multiplier = 0.5 } }
+		if = { limit = { PREV = { has_idea = education_law_religious_4 } } add_to_temp_variable = { religion_local_resistance_multiplier = 0.5 } }
+		if = { limit = { PREV = { has_idea = education_law_religious_5 } } add_to_temp_variable = { religion_local_resistance_multiplier = 0.5 } }
+		if = { limit = { PREV = { has_idea = education_law_religious_7 } } add_to_temp_variable = { religion_local_resistance_multiplier = 0.5 } }
+		if = { limit = { PREV = { has_idea = education_law_jesuits } } add_to_temp_variable = { religion_local_resistance_multiplier = 0.5 } }
+		multiply_variable = { religion_local_resistance_penalties = religion_local_resistance_multiplier }
+		clamp_variable = { var = religion_local_resistance_multiplier min = 0 max = 999 }
 		### Final modifers
 		divide_variable = { religion_local_compliance_bonus = 100 }	# scales back to [0;1] ranges
 		divide_variable = { religion_local_resistance_penalties = 400 }	# scales back to [0;1] ranges
 		divide_variable = { religion_local_syncretism_bonus = 200 }	# scales back to [0;1] ranges
 		clamp_temp_variable = { var = religion_local_compliance_bonus min = 0 max = 1 }
-		clamp_temp_variable = { var = religion_local_resistance_penalties min = 0 max = 1 }
+		clamp_temp_variable = { var = religion_local_resistance_penalties min = 0 max = 999 }
 		clamp_temp_variable = { var = religion_local_syncretism_bonus min = 0 max = 1 }
 		if = {
 			limit = {
@@ -1056,71 +1074,197 @@ get_religion_state_compliance_modifier = {
 set_religion_buddhism = {
 	custom_effect_tooltip = set_religion_buddhism
 	set_variable = { country_religion = 1 }
+	hidden_effect = {
+		#if = { limit = { has_idea = education_law_religious_1 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_1 } }
+		if = { limit = { has_idea = education_law_religious_2 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_1 } }
+		if = { limit = { has_idea = education_law_religious_3 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_1 } }
+		if = { limit = { has_idea = education_law_religious_4 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_1 } }
+		if = { limit = { has_idea = education_law_religious_5 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_1 } }
+		if = { limit = { has_idea = education_law_religious_7 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_1 } }
+		if = { limit = { has_idea = education_law_jesuits } swap_ideas = { remove_idea = education_law_jesuits add_idea = education_law_religious_1 } }
+	}
 }
 
 set_religion_shinto = {
 	custom_effect_tooltip = set_religion_shinto
 	set_variable = { country_religion = 2 }
+	hidden_effect = {
+		if = { limit = { has_idea = education_law_religious_1 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_2 } }
+		#if = { limit = { has_idea = education_law_religious_2 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_2 } }
+		if = { limit = { has_idea = education_law_religious_3 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_2 } }
+		if = { limit = { has_idea = education_law_religious_4 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_2 } }
+		if = { limit = { has_idea = education_law_religious_5 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_2 } }
+		if = { limit = { has_idea = education_law_religious_7 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_2 } }
+		if = { limit = { has_idea = education_law_jesuits } swap_ideas = { remove_idea = education_law_jesuits add_idea = education_law_religious_2 } }
+	}
 }
 
 set_religion_christianity = {
 	custom_effect_tooltip = set_religion_christianity
 	set_variable = { country_religion = 3 }
+	hidden_effect = {
+		if = { limit = { has_idea = education_law_religious_1 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_3 } }
+		if = { limit = { has_idea = education_law_religious_2 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_3 } }
+		#if = { limit = { has_idea = education_law_religious_3 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_3 } }
+		if = { limit = { has_idea = education_law_religious_4 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_3 } }
+		if = { limit = { has_idea = education_law_religious_5 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_3 } }
+		if = { limit = { has_idea = education_law_religious_7 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_3 } }
+		if = { limit = { has_idea = education_law_jesuits } swap_ideas = { remove_idea = education_law_jesuits add_idea = education_law_religious_3 } }
+	}
 }
 
 set_religion_taoism = {
 	custom_effect_tooltip = set_religion_taoism
 	set_variable = { country_religion = 4 }
+	hidden_effect = {
+		if = { limit = { has_idea = education_law_religious_1 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_4 } }
+		if = { limit = { has_idea = education_law_religious_2 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_4 } }
+		if = { limit = { has_idea = education_law_religious_3 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_4 } }
+		#if = { limit = { has_idea = education_law_religious_4 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_4 } }
+		if = { limit = { has_idea = education_law_religious_5 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_4 } }
+		if = { limit = { has_idea = education_law_religious_7 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_4 } }
+		if = { limit = { has_idea = education_law_jesuits } swap_ideas = { remove_idea = education_law_jesuits add_idea = education_law_religious_4 } }
+	}
 }
 
 set_religion_confucianism = {
 	custom_effect_tooltip = set_religion_confucianism
 	set_variable = { country_religion = 5 }
+	hidden_effect = {
+		if = { limit = { has_idea = education_law_religious_1 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_5 } }
+		if = { limit = { has_idea = education_law_religious_2 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_5 } }
+		if = { limit = { has_idea = education_law_religious_3 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_5 } }
+		if = { limit = { has_idea = education_law_religious_4 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_5 } }
+		#if = { limit = { has_idea = education_law_religious_5 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_5 } }
+		if = { limit = { has_idea = education_law_religious_7 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_5 } }
+		if = { limit = { has_idea = education_law_jesuits } swap_ideas = { remove_idea = education_law_jesuits add_idea = education_law_religious_5 } }
+	}
 }
 
 set_religion_secularism = {
 	custom_effect_tooltip = set_religion_secularism
 	set_variable = { country_religion = 6 }
+	hidden_effect = {
+		if = { limit = { has_idea = education_law_religious_1 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_none } }
+		if = { limit = { has_idea = education_law_religious_2 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_none } }
+		if = { limit = { has_idea = education_law_religious_3 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_none } }
+		if = { limit = { has_idea = education_law_religious_4 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_none } }
+		if = { limit = { has_idea = education_law_religious_5 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_none } }
+		if = { limit = { has_idea = education_law_religious_7 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_none } }
+		if = { limit = { has_idea = education_law_jesuits } swap_ideas = { remove_idea = education_law_jesuits add_idea = education_law_none } }
+	}
 }
 
 set_religion_cthulhu = {
 	custom_effect_tooltip = set_religion_cthulhu
 	set_variable = { country_religion = 7 }
+	hidden_effect = {
+		if = { limit = { has_idea = education_law_religious_1 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_7 } }
+		if = { limit = { has_idea = education_law_religious_2 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_7 } }
+		if = { limit = { has_idea = education_law_religious_3 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_7 } }
+		if = { limit = { has_idea = education_law_religious_4 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_7 } }
+		if = { limit = { has_idea = education_law_religious_5 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_7 } }
+		#if = { limit = { has_idea = education_law_religious_7 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_7 } }
+		if = { limit = { has_idea = education_law_jesuits } swap_ideas = { remove_idea = education_law_jesuits add_idea = education_law_religious_7 } }
+	}
 }
 
 set_religion_1 = {
 	custom_effect_tooltip = set_religion_buddhism
 	set_variable = { country_religion = 1 }
+	hidden_effect = {
+		#if = { limit = { has_idea = education_law_religious_1 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_1 } }
+		if = { limit = { has_idea = education_law_religious_2 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_1 } }
+		if = { limit = { has_idea = education_law_religious_3 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_1 } }
+		if = { limit = { has_idea = education_law_religious_4 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_1 } }
+		if = { limit = { has_idea = education_law_religious_5 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_1 } }
+		if = { limit = { has_idea = education_law_religious_7 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_1 } }
+		if = { limit = { has_idea = education_law_jesuits } swap_ideas = { remove_idea = education_law_jesuits add_idea = education_law_religious_1 } }
+	}
 }
 
 set_religion_2 = {
 	custom_effect_tooltip = set_religion_shinto
 	set_variable = { country_religion = 2 }
+	hidden_effect = {
+		if = { limit = { has_idea = education_law_religious_1 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_2 } }
+		#if = { limit = { has_idea = education_law_religious_2 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_2 } }
+		if = { limit = { has_idea = education_law_religious_3 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_2 } }
+		if = { limit = { has_idea = education_law_religious_4 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_2 } }
+		if = { limit = { has_idea = education_law_religious_5 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_2 } }
+		if = { limit = { has_idea = education_law_religious_7 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_2 } }
+		if = { limit = { has_idea = education_law_jesuits } swap_ideas = { remove_idea = education_law_jesuits add_idea = education_law_religious_2 } }
+	}
 }
 
 set_religion_3 = {
 	custom_effect_tooltip = set_religion_christianity
 	set_variable = { country_religion = 3 }
+	hidden_effect = {
+		if = { limit = { has_idea = education_law_religious_1 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_3 } }
+		if = { limit = { has_idea = education_law_religious_2 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_3 } }
+		#if = { limit = { has_idea = education_law_religious_3 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_3 } }
+		if = { limit = { has_idea = education_law_religious_4 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_3 } }
+		if = { limit = { has_idea = education_law_religious_5 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_3 } }
+		if = { limit = { has_idea = education_law_religious_7 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_3 } }
+		if = { limit = { has_idea = education_law_jesuits } swap_ideas = { remove_idea = education_law_jesuits add_idea = education_law_religious_3 } }
+	}
 }
 
 set_religion_4 = {
 	custom_effect_tooltip = set_religion_taoism
 	set_variable = { country_religion = 4 }
+	hidden_effect = {
+		if = { limit = { has_idea = education_law_religious_1 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_4 } }
+		if = { limit = { has_idea = education_law_religious_2 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_4 } }
+		if = { limit = { has_idea = education_law_religious_3 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_4 } }
+		#if = { limit = { has_idea = education_law_religious_4 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_4 } }
+		if = { limit = { has_idea = education_law_religious_5 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_4 } }
+		if = { limit = { has_idea = education_law_religious_7 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_4 } }
+		if = { limit = { has_idea = education_law_jesuits } swap_ideas = { remove_idea = education_law_jesuits add_idea = education_law_religious_4 } }
+	}
 }
 
 set_religion_5 = {
 	custom_effect_tooltip = set_religion_confucianism
 	set_variable = { country_religion = 5 }
+	hidden_effect = {
+		if = { limit = { has_idea = education_law_religious_1 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_5 } }
+		if = { limit = { has_idea = education_law_religious_2 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_5 } }
+		if = { limit = { has_idea = education_law_religious_3 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_5 } }
+		if = { limit = { has_idea = education_law_religious_4 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_5 } }
+		#if = { limit = { has_idea = education_law_religious_5 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_5 } }
+		if = { limit = { has_idea = education_law_religious_7 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_5 } }
+		if = { limit = { has_idea = education_law_jesuits } swap_ideas = { remove_idea = education_law_jesuits add_idea = education_law_religious_5 } }
+	}
 }
 
 set_religion_6 = {
 	custom_effect_tooltip = set_religion_secularism
 	set_variable = { country_religion = 6 }
+	hidden_effect = {
+		if = { limit = { has_idea = education_law_religious_1 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_none } }
+		if = { limit = { has_idea = education_law_religious_2 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_none } }
+		if = { limit = { has_idea = education_law_religious_3 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_none } }
+		if = { limit = { has_idea = education_law_religious_4 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_none } }
+		if = { limit = { has_idea = education_law_religious_5 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_none } }
+		if = { limit = { has_idea = education_law_religious_7 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_none } }
+		if = { limit = { has_idea = education_law_jesuits } swap_ideas = { remove_idea = education_law_jesuits add_idea = education_law_none } }
+	}
 }
 
 set_religion_7 = {
 	custom_effect_tooltip = set_religion_cthulhu
 	set_variable = { country_religion = 7 }
+	hidden_effect = {
+		if = { limit = { has_idea = education_law_religious_1 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_7 } }
+		if = { limit = { has_idea = education_law_religious_2 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_7 } }
+		if = { limit = { has_idea = education_law_religious_3 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_7 } }
+		if = { limit = { has_idea = education_law_religious_4 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_7 } }
+		if = { limit = { has_idea = education_law_religious_5 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_7 } }
+		#if = { limit = { has_idea = education_law_religious_7 } swap_ideas = { remove_idea = education_law_religious_1 add_idea = education_law_religious_7 } }
+		if = { limit = { has_idea = education_law_jesuits } swap_ideas = { remove_idea = education_law_jesuits add_idea = education_law_religious_7 } }
+	}
 }
 
 #### DEPRICATED
