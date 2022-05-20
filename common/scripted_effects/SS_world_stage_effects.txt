@@ -26,6 +26,33 @@ world_stage_daily_effect = {	# activated from on_actions/daily from a random sco
 			resolve_mongolian_crisis = yes
 		}
 	}
+	if = {	### POLAND
+		limit = { has_global_flag = world_stage_theater_poland_is_active }
+		subtract_from_variable = { global.theater_poland_timer = 1 }
+		set_variable = { global.GER_strength_poland_final = global.GER_strength_poland }
+		set_variable = { global.GER_strength_doc_air = REI.air_doctrine_level }
+		set_variable = { global.GER_strength_doc_land = REI.land_doctrine_level }
+		multiply_variable = { global.GER_strength_doc_air = 0.05 }
+		multiply_variable = { global.GER_strength_doc_land = 0.10 }
+		set_temp_variable = { global.GER_strength_poland_multiplier = 1 }
+		add_to_temp_variable = { global.GER_strength_poland_multiplier = global.GER_strength_doc_air }
+		add_to_temp_variable = { global.GER_strength_poland_multiplier = global.GER_strength_doc_land }
+		multiply_variable = { global.GER_strength_poland_final = global.GER_strength_poland_multiplier }
+		set_variable = { global.ENG_strength_poland_final = global.ENG_strength_poland }
+		set_variable = { global.ENG_strength_doc_air = 0 } #.air_doctrine_level }	# poland will not get doctrines
+		set_variable = { global.ENG_strength_doc_land = 0 } #.land_doctrine_level }		# poland will not get doctrines
+		#multiply_variable = { global.ENG_strength_doc_air = 0.05 }
+		#multiply_variable = { global.ENG_strength_doc_land = 0.10 }
+		#set_temp_variable = { global.ENG_strength_poland_multiplier = 1 }
+		#add_to_temp_variable = { global.ENG_strength_poland_multiplier = global.ENG_strength_doc_air }
+		#add_to_temp_variable = { global.ENG_strength_poland_multiplier = global.ENG_strength_doc_land }
+		#multiply_variable = { global.ENG_strength_poland_final = global.ENG_strength_poland_multiplier }
+		world_stage_get_poland_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_poland_timer < 1 } }
+			resolve_theater_poland = yes
+		}
+	}
 }
 
 ### THEATER RESOLUTIONS
@@ -45,14 +72,25 @@ resolve_mongolian_crisis = {
 	clr_global_variable = global.SOV_strength_mongolia_final_final
 }
 
+resolve_theater_poland = {
+	clr_global_flag = world_stage_theater_poland_is_active
+}
+
 ### INTERFACE HANDLER
 
 world_stage_get_mongolia_timer_frame = {
 	set_variable = { global.theater_mongolia_timer_frame = global.theater_mongolia_timer }
-	divide_variable = { global.theater_mongolia_timer_frame = 10 }	# timer has 90 max days
+	divide_variable = { global.theater_mongolia_timer_frame = 9 }	# timer has 90 max days
 	round_variable = global.theater_mongolia_timer_frame
 	clamp_variable = { var = global.theater_mongolia_timer_frame min = 1 max = 9 }
 	log = "[?global.theater_mongolia_timer_frame]" 
+}
+world_stage_get_poland_timer_frame = {
+	set_variable = { global.theater_poland_timer_frame = global.theater_poland_timer }
+	divide_variable = { global.theater_poland_timer_frame = 3.8 }	# timer has 35 max days, 35/3.8 ~= 9
+	round_variable = global.theater_poland_timer_frame
+	clamp_variable = { var = global.theater_poland_timer_frame min = 1 max = 9 }
+	log = "[?global.theater_poland_timer_frame]" 
 }
 
 ### COUNTRY EFFECTS
