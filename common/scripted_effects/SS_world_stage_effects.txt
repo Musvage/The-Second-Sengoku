@@ -1,3 +1,50 @@
+world_stage_daily_effect = {	# activated from on_actions/daily from a random scope
+	if = {	### MONGOLIA
+		limit = { has_global_flag = world_stage_conflict_mongolia_on_going }
+		subtract_from_variable = { global.theater_mongolia_timer = 1 }
+		set_variable = { global.ROC_strength_mongolia_final = global.ROC_strength_mongolia }
+		set_variable = { global.ROC_strength_doc_air = ROC.air_doctrine_level }
+		set_variable = { global.ROC_strength_doc_land = ROC.land_doctrine_level }
+		multiply_variable = { global.ROC_strength_doc_air = 0.05 }
+		multiply_variable = { global.ROC_strength_doc_land = 0.10 }
+		set_temp_variable = { global.ROC_strength_mongolia_multiplier = 1 }
+		add_to_temp_variable = { global.ROC_strength_mongolia_multiplier = global.ROC_strength_doc_air }
+		add_to_temp_variable = { global.ROC_strength_mongolia_multiplier = global.ROC_strength_doc_land }
+		multiply_variable = { global.ROC_strength_mongolia_final = global.ROC_strength_mongolia_multiplier }
+		set_variable = { global.SOV_strength_mongolia_final = global.SOV_strength_mongolia }
+		set_variable = { global.SOV_strength_doc_air = FER.air_doctrine_level }
+		set_variable = { global.SOV_strength_doc_land = FER.land_doctrine_level }
+		multiply_variable = { global.SOV_strength_doc_air = 0.05 }
+		multiply_variable = { global.SOV_strength_doc_land = 0.10 }
+		set_temp_variable = { global.SOV_strength_mongolia_multiplier = 1 }
+		add_to_temp_variable = { global.SOV_strength_mongolia_multiplier = global.SOV_strength_doc_air }
+		add_to_temp_variable = { global.SOV_strength_mongolia_multiplier = global.SOV_strength_doc_land }
+		multiply_variable = { global.SOV_strength_mongolia_final = global.SOV_strength_mongolia_multiplier }
+		world_stage_get_mongolia_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_mongolia_timer < 1 } }
+			resolve_mongolian_crisis = yes
+		}
+	}
+}
+
+### THEATER RESOLUTIONS
+resolve_mongolian_crisis = {
+	if = {
+		limit = { check_variable = { global.ROC_strength_mongolia_final > global.SOV_strength_mongolia_final } }
+		multiply_variable = { global.ROC_strength_mongolia_final = global.ROC_strength_mongolia_final }
+	} else = { multiply_variable = { global.SOV_strength_mongolia_final = global.SOV_strength_mongolia_final } }
+	random_list = {
+		var:global.ROC_strength_mongolia_final = { country_event = worldstage.2 add_world_stage_power_chi_5 = yes }
+		var:global.SOV_strength_mongolia_final = { country_event = worldstage.3 add_world_stage_power_sov_5 = yes }
+	}
+	clr_global_flag = world_stage_conflict_mongolia_on_going
+	clr_global_variable = global.ROC_strength_mongolia_final
+	clr_global_variable = global.ROC_strength_mongolia_final_final
+	clr_global_variable = global.SOV_strength_mongolia_final
+	clr_global_variable = global.SOV_strength_mongolia_final_final
+}
+
 ### INTERFACE HANDLER
 
 world_stage_get_mongolia_timer_frame = {
@@ -5,11 +52,7 @@ world_stage_get_mongolia_timer_frame = {
 	divide_variable = { global.theater_mongolia_timer_frame = 10 }	# timer has 90 max days
 	round_variable = global.theater_mongolia_timer_frame
 	clamp_variable = { var = global.theater_mongolia_timer_frame min = 1 max = 9 }
-	log = "[?global.theater_mongolia_timer_frame]"
-}
-
-d_show_timer_mongolia = {
-	log = "log [?global.theater_mongolia_timer] /frame [?global.theater_mongolia_timer_frame]"
+	log = "[?global.theater_mongolia_timer_frame]" 
 }
 
 ### COUNTRY EFFECTS
