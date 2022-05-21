@@ -170,6 +170,9 @@ focus_tree = {
 				set_country_flag = FER_path_chosen
 			}
 			country_event = primorski.3
+			custom_effect_tooltip = FER_stalin_trust_tt
+			set_country_flag = FER_active_stalin_trust_flag
+			set_variable = { FER_stalin_trust = 35 }
 			#hidden_effect = {
 			#	set_variable = { dual_leader_first_title = 19 }
 			#}
@@ -210,6 +213,8 @@ focus_tree = {
 		}
 		completion_reward = {
 			add_war_support = 0.1
+			custom_effect_tooltip = FER_stalin_trust_reduce_5_tt
+			add_to_variable = { FER_stalin_trust = -5 }
 		}
 	}
 
@@ -230,6 +235,8 @@ focus_tree = {
 				popularity = -0.1
 			}
 			add_stability = 0.1
+			custom_effect_tooltip = FER_stalin_trust_increase_10_tt
+			add_to_variable = { FER_stalin_trust = 10 }
 		}
 	}
 
@@ -250,6 +257,8 @@ focus_tree = {
 				days = 180
 			}
 			add_stability = 0.15
+			custom_effect_tooltip = FER_stalin_trust_increase_15_tt
+			add_to_variable = { FER_stalin_trust = 15 }
 		}
 	}
 
@@ -266,6 +275,8 @@ focus_tree = {
 		completion_reward = {
 			add_political_power = 50
 			add_stability = 0.15
+			custom_effect_tooltip = FER_stalin_trust_reduce_10_tt
+			add_to_variable = { FER_stalin_trust = -10 }
 		}
 	}
 
@@ -296,6 +307,8 @@ focus_tree = {
 					instant_build = yes
 				}
 			}
+			custom_effect_tooltip = FER_stalin_trust_increase_10_tt
+			add_to_variable = { FER_stalin_trust = 10 }
 		}
 	}
 
@@ -318,6 +331,8 @@ focus_tree = {
 				days = 360
 			}
 			remove_ideas = FER_weak_administration_idea
+			custom_effect_tooltip = FER_stalin_trust_increase_15_tt
+			add_to_variable = { FER_stalin_trust = 15 }
 		}
 	}
 
@@ -334,6 +349,8 @@ focus_tree = {
 		completion_reward = {
 			add_stability = 0.1
 			add_war_support = 0.1
+			custom_effect_tooltip = FER_stalin_trust_end_tt
+			clr_country_flag = FER_active_stalin_trust_flag
 		}
 	}
 
@@ -728,6 +745,24 @@ focus_tree = {
 		available = {
 		}
 		completion_reward = {
+			if = {
+				limit = {
+					has_country_leader = {
+						ruling_only = yes
+						name = "Lavrenti Beria"
+					}
+				}
+				custom_effect_tooltip = FER_nkvd_in_korea_tt_beria
+				set_variable = { FER_korea_influence_gain = 3 }
+				set_variable = { FER_korea_influence = 0 }
+				set_variable = { FER_korea_influence_max = 60 }
+			}
+			else = {
+				custom_effect_tooltip = FER_nkvd_in_korea_tt
+				set_variable = { FER_korea_influence_gain = 2 }
+				set_variable = { FER_korea_influence = 0 }
+				set_variable = { FER_korea_influence_max = 60 }
+			}
 		}
 	}
 
@@ -743,6 +778,14 @@ focus_tree = {
 		available = {
 		}
 		completion_reward = {
+			custom_effect_tooltip = FER_nkvd_in_korea_add_max_influence_20_tt
+			add_to_variable = { FER_korea_influence_max = 20 }
+			JOS = {
+				add_popularity = {
+					ideology = communism
+					popularity = 0.1
+				}
+			}
 		}
 	}
 
@@ -759,6 +802,27 @@ focus_tree = {
 		available = {
 		}
 		completion_reward = {
+			if = {
+				limit = {
+					has_completed_focus = FER_nkvd_contact_korean_communists
+				}
+				custom_effect_tooltip = FER_nkvd_in_korea_add_max_influence_20_tt
+				add_to_variable = { FER_korea_influence_max = 20 }
+				JOS = {
+					add_popularity = {
+						ideology = communism
+						popularity = 0.2
+					}
+				}
+			}
+			else = {
+				JOS = {
+					add_popularity = {
+						ideology = communism
+						popularity = 0.2
+					}
+				}
+			}
 		}
 	}
 
@@ -771,6 +835,10 @@ focus_tree = {
 		prerequisite = { focus = FER_share_communist_experience }
 		prerequisite = { focus = FER_korean_weak_points }
 		available = {
+			custom_trigger_tooltip = {
+				tooltip = FER_require_100_influence_tt
+				check_variable = { FER_korea_influence = 100 }
+			}
 		}
 		completion_reward = {
 		}
@@ -793,6 +861,8 @@ focus_tree = {
 		available = {
 		}
 		completion_reward = {
+			add_political_power = 75
+			add_war_support = 0.1
 		}
 	}
 
@@ -808,6 +878,7 @@ focus_tree = {
 		available = {
 		}
 		completion_reward = {
+			custom_effect_tooltip = FER_korean_war_preped_tt
 		}
 	}
 
@@ -817,11 +888,25 @@ focus_tree = {
 		cost = 10
 		x = 18
 		y = 11
-		prerequisite = { focus = FER_soviet_military }
-		prerequisite = { focus = FER_korean_weak_points }
+		prerequisite = { 
+			focus = FER_soviet_military
+			focus = FER_korean_weak_points
+		}
 		available = {
 		}
 		completion_reward = {
+			declare_war_on = {
+				target = JOS
+			}
+			if = {
+				limit = {
+					has_completed_focus = FER_soviet_military
+				}
+				add_timed_idea = {
+					idea = FER_prepared_for_war_idea
+					days = 180
+				}
+			}
 		}
 	}
 
