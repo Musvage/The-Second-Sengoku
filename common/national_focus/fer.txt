@@ -345,6 +345,10 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_STABILITY }
 		prerequisite = { focus = FER_standart_stalinist_state }
 		available = {
+			custom_trigger_tooltip = {
+				tooltip = FER_stalin_trust_tt_military_gov
+				check_variable = { FER_stalin_trust > 65 }
+			}
 		}
 		completion_reward = {
 			add_stability = 0.1
@@ -475,12 +479,13 @@ focus_tree = {
 		cost = 10
 		x = 3
 		y = 5
-		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_RESEARCH }
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		prerequisite = { focus = FER_multicommunist_party }
 		prerequisite = { focus = FER_far_eastern_soviet_science }
 		available = {
 		}
 		completion_reward = {
+			remove_ideas = FER_weak_administration_idea
 			add_stability = 0.1
 			add_popularity = {
 				ideology = communism
@@ -764,6 +769,7 @@ focus_tree = {
 				set_variable = { FER_korea_influence_max = 60 }
 			}
 		}
+		country_event = primorski.20
 	}
 
 	focus = {
@@ -786,6 +792,7 @@ focus_tree = {
 					popularity = 0.1
 				}
 			}
+			custom_effect_tooltip = FER_share_communist_experience_tt
 		}
 	}
 
@@ -814,13 +821,11 @@ focus_tree = {
 						popularity = 0.2
 					}
 				}
+				custom_effect_tooltip = FER_korean_weak_points_tt
 			}
 			else = {
 				JOS = {
-					add_popularity = {
-						ideology = communism
-						popularity = 0.2
-					}
+					add_stability = -0.15
 				}
 			}
 		}
@@ -832,15 +837,61 @@ focus_tree = {
 		cost = 10
 		x = 16
 		y = 11
-		prerequisite = { focus = FER_share_communist_experience }
-		prerequisite = { focus = FER_korean_weak_points }
+		prerequisite = { 
+			focus = FER_share_communist_experience
+			focus = FER_korean_weak_points
+		}
 		available = {
 			custom_trigger_tooltip = {
 				tooltip = FER_require_100_influence_tt
 				check_variable = { FER_korea_influence = 100 }
 			}
+			NOT = {
+				has_completed_focus = FER_prepare_for_korean_war
+			}
 		}
 		completion_reward = {
+			if = {
+				limit = { 
+					has_completed_focus = FER_share_communist_experience
+					NOT = {
+						has_completed_focus = FER_korean_weak_points
+					}
+				}
+				JOS = {
+					add_timed_idea = {
+						idea = FER_soviet_influence_0
+						days = 120
+					}
+				}
+			}
+			if = {
+				limit = { 
+					has_completed_focus = FER_korean_weak_points
+					NOT = {
+						has_completed_focus = FER_share_communist_experience
+					}
+				}
+				JOS = {
+					add_timed_idea = {
+						idea = FER_soviet_influence_1
+						days = 120
+					}
+				}
+			}
+			if = {
+				limit = { 
+					has_completed_focus = FER_korean_weak_points
+					has_completed_focus = FER_share_communist_experience
+				}
+				JOS = {
+					add_timed_idea = {
+						idea = FER_soviet_influence_2
+						days = 180
+					}
+				}
+			}
+			country_event = primorski.23
 		}
 	}
 
@@ -893,6 +944,7 @@ focus_tree = {
 			focus = FER_korean_weak_points
 		}
 		available = {
+			has_completed_focus = FER_prepare_for_korean_war
 		}
 		completion_reward = {
 			declare_war_on = {
