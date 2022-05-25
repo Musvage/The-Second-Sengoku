@@ -553,7 +553,7 @@ focus_tree = {
 	focus = {
 		id = REI_anschluss
 		icon = GFX_focus_REI_aschluss
-		search_filters = {  }
+		search_filters = { FOCUS_FILTER_WORLD }
 		
 		prerequisite = { focus = REI_long_knives focus = REI_help_spain }
 		
@@ -570,6 +570,10 @@ focus_tree = {
 		
 		completion_reward = {
 			add_world_stage_power_ger_20 = yes
+			add_named_threat = { 
+				threat = 10
+				name = REI_threat_anschluss
+			}
 		}
 	}
 	
@@ -593,14 +597,37 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			
+			every_other_country = {
+				if = {
+					limit = { has_government = fascism }
+					add_opinion_modifier = {
+						target = REI
+						modifier = REI_enemy_of_soviets_strong
+					}
+				}
+				if = {
+					limit = { OR = { has_government = neutrality has_government = autocracy } }
+					add_opinion_modifier = {
+						target = REI
+						modifier = REI_enemy_of_soviets
+					}
+				}
+				if = {
+					limit = { has_government = communism }
+					add_opinion_modifier = {
+						target = REI
+						modifier = REI_enemy_of_soviets_bad
+					}
+				}
+			}
 		}
 	}
 	
 	focus = {
 		id = REI_molotov_ribbentrop
 		icon = GFX_focus_REI_molotov_ribbentrop
-		search_filters = {  }
+		search_filters = { FOCUS_FILTER_WORLD FOCUS_FILTER_DIPLOMACY }
+		dynamic = yes
 		
 		mutually_exclusive = { focus = REI_befriend_soviet_enemies }
 		prerequisite = { focus = REI_anschluss }
@@ -616,8 +643,38 @@ focus_tree = {
 			factor = 10
 		}
 		
+		available = {
+			NOT = { is_justifying_wargoal_against = FER }
+		}
+		
 		completion_reward = {
-			
+			add_named_threat = {
+				threat = -5
+				name = REI_threat_molotov_ribbentrop
+			}
+			set_global_flag = GER_SOV_pact_enabled
+			add_ideas = REI_idea_molotov_ribeentrop_rei
+			diplomatic_relation = {
+				country = FER
+				relation = non_aggression_pact
+				active = yes
+			}
+			remove_wargoal = {
+				type = all
+				target = FER
+			}
+			FER = {
+				add_ideas = REI_idea_molotov_ribeentrop_fer
+				diplomatic_relation = {
+					country = REI
+					relation = non_aggression_pact
+					active = yes
+				}
+				remove_wargoal = {
+					type = all
+					target = REI
+				}
+			}
 		}
 	}
 	
@@ -626,7 +683,7 @@ focus_tree = {
 	focus = {
 		id = REI_help_finland
 		icon = GFX_focus_REI_help_finland
-		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_DIPLOMACY }
+		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WORLD }
 		
 		prerequisite = { focus = REI_befriend_soviet_enemies }
 		
@@ -659,7 +716,7 @@ focus_tree = {
 	focus = {
 		id = REI_help_baltics
 		icon = GFX_focus_REI_help_baltic
-		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_MILITARY }
+		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_MILITARY FOCUS_FILTER_WORLD }
 		
 		prerequisite = { focus = REI_befriend_soviet_enemies }
 		
@@ -686,7 +743,7 @@ focus_tree = {
 	focus = {
 		id = REI_help_mongolia
 		icon = GFX_focus_REI_help_mongolia
-		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_DIPLOMACY }
+		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WORLD }
 		
 		prerequisite = { focus = REI_befriend_soviet_enemies }
 		
@@ -716,12 +773,12 @@ focus_tree = {
 	focus = {
 		id = REI_sudetenland
 		icon = GFX_focus_REI_sudetenland
-		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		search_filters = { FOCUS_FILTER_WORLD }
 		
 		prerequisite = { focus = REI_molotov_ribbentrop focus = REI_befriend_soviet_enemies }
 		
 		relative_position_id = REI_molotov_ribbentrop
-		x = 0
+		x = -1
 		y = 1
 		cost = 10
 		
@@ -732,20 +789,23 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			
+			add_named_threat = { 
+				threat = 15
+				name = REI_threat_sudetenland
+			}
 		}
 	}
 	
 	focus = {
 		id = REI_attack_poland
 		icon = GFX_focus_REI_poland
-		search_filters = {  }
+		search_filters = { FOCUS_FILTER_WORLD }
 		
 		prerequisite = { focus = REI_sudetenland }
 		prerequisite = { focus = REI_army_tech }
 		
 		relative_position_id = REI_sudetenland
-		x = 2
+		x = 3
 		y = 1
 		cost = 10
 		
@@ -759,11 +819,12 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			set_global_flag = world_stage_theater_poland_is_active
+			set_global_flag = world_stage_theater_poland_is_active_first
 			add_named_threat = { 
 				threat = 25
 				name = REI_threat_attack_poland
 			}
+			custom_effect_tooltip = world_stage_theater_poland_is_active_first_tt
 			custom_effect_tooltip = REI_attack_poland_tt
 		}
 	}
@@ -787,7 +848,10 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			
+			add_named_threat = { 
+				threat = 10
+				name = REI_threat_operation_weserbung
+			}
 		}
 	}
 	
@@ -880,7 +944,7 @@ focus_tree = {
 	focus = {
 		id = REI_barbarossa
 		icon = GFX_focus_generic_western_enemies
-		search_filters = {  }
+		search_filters = { FOCUS_FILTER_WORLD }
 		
 		prerequisite = { focus = REI_lossberg_halder_plans }
 		
@@ -896,7 +960,18 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			
+			add_named_threat = { 
+				threat = 25
+				name = REI_threat_barbarossa
+			}
+			custom_effect_tooltip = world_stage_theater_poland_is_active_tt
+			hidden_effect = {
+				set_global_flag = world_stage_theater_poland_is_active
+				if = {
+					limit = { has_global_flag = GER_SOV_pact_enabled }
+					clr_global_flag = GER_SOV_pact_enabled
+				}
+			}
 		}
 	}
 	
@@ -908,7 +983,7 @@ focus_tree = {
 		prerequisite = { focus = REI_sudetenland }
 		
 		relative_position_id = REI_sudetenland
-		x = -3
+		x = -2
 		y = 1
 		cost = 10
 		
