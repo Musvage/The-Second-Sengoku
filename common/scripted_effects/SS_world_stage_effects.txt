@@ -1,6 +1,6 @@
 world_stage_daily_effect = {	# activated from on_actions/daily from a random scope
 	if = {	### MONGOLIA
-		limit = { has_global_flag = world_stage_conflict_mongolia_on_going }
+		limit = { has_global_flag = world_stage_theater_mongolia_is_active }
 		subtract_from_variable = { global.theater_mongolia_timer = 1 }
 		set_variable = { global.CHI_strength_mongolia_final = global.CHI_strength_mongolia }
 		add_to_variable = { global.CHI_strength_mongolia_final = global.CHI_strength_mongolia_bonus }
@@ -26,6 +26,23 @@ world_stage_daily_effect = {	# activated from on_actions/daily from a random sco
 		if = {
 			limit = { check_variable = { global.theater_mongolia_timer < 1 } }
 			resolve_mongolian_crisis = yes
+		}
+	}
+	if = {	### SPANISH CIVIL WAR
+		limit = { has_global_flag = world_stage_theater_spanish_cw_is_active }
+		subtract_from_variable = { global.theater_spanish_cw_timer = 1 }
+		set_variable = { global.REP_strength_spain_final = global.REP_strength_spain }
+		add_to_variable = { global.REP_strength_spain_final = global.REP_strength_spain_bonus }
+		set_temp_variable = { global.REP_strength_spain_multiplier = 1 }
+		multiply_variable = { global.REP_strength_spain_final = global.REP_strength_spain_multiplier }
+		set_variable = { global.FAL_strength_spain_final = global.FAL_strength_spain }
+		add_to_variable = { global.FAL_strength_spain_final = global.FAL_strength_spain_bonus }
+		set_temp_variable = { global.FAL_strength_spain_multiplier = 1 }
+		multiply_variable = { global.FAL_strength_spain_final = global.FAL_strength_spain_multiplier }
+		world_stage_get_spanish_cw_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_spanish_cw_timer < 1 } }
+			resolve_spanish_cw = yes
 		}
 	}
 	if = {	### POLAND first INVASION
@@ -97,12 +114,84 @@ resolve_mongolian_crisis = {
 		var:global.CHI_strength_mongolia_final = { country_event = worldstage.2 add_world_stage_power_chi_5 = yes }
 		var:global.SOV_strength_mongolia_final = { country_event = worldstage.3 add_world_stage_power_sov_5 = yes }
 	}
-	clr_global_flag = world_stage_conflict_mongolia_on_going
+	clr_global_flag = world_stage_theater_mongolia_is_active
+	clr_global_variable = global.CHI_strength_mongolia
 	clr_global_variable = global.CHI_strength_mongolia_final
-	clr_global_variable = global.CHI_strength_mongolia_final_final
+	clr_global_variable = global.SOV_strength_mongolia
 	clr_global_variable = global.SOV_strength_mongolia_final
-	clr_global_variable = global.SOV_strength_mongolia_final_final
-}
+}	d_resolve_mongolian_crisis = { resolve_mongolian_crisis = yes }	# shortcut console command
+
+resolve_spanish_cw = {
+	# get losses: each side loses a proportion of its forces equal to: [opposite's side strength]/[both sides' strengths]. Example: a force with twice as strong as its enemy loses 1/3 of its total forces
+	set_temp_variable = { win_condition = global.FAL_strength_spain_final }
+	divide_temp_variable = { win_condition = global.REP_strength_spain_final }	# win_condition: proportion of forces after damages
+	if = {
+		limit = { NOT = { check_variable = { global.FAL_strength_spain_final = global.REP_strength_spain_final } } }	# there is no draw in their final strengths
+		set_temp_variable = { total_strength = global.FAL_strength_spain_final }	# sum up both sides final strenghts
+		add_to_temp_variable = { total_strength = global.REP_strength_spain_final }
+		set_temp_variable = { losses_side_a = global.FAL_strength_spain_final }
+		divide_temp_variable = { losses_side_a = total_strength }
+		set_temp_variable = { losses_side_b = global.REP_strength_spain_final }
+		divide_temp_variable = { losses_side_b = total_strength }
+		multiply_variable = { global.FAL_strength_spain = losses_side_a }
+		multiply_variable = { global.FAL_strength_spain_bonus = losses_side_a }
+		multiply_variable = { global.FAL_strength_spain_final = losses_side_a }
+		round_variable = global.FAL_strength_spain
+		round_variable = global.FAL_strength_spain_bonus
+		multiply_variable = { global.REP_strength_spain = losses_side_b }
+		multiply_variable = { global.REP_strength_spain_bonus = losses_side_b }
+		multiply_variable = { global.REP_strength_spain_final = losses_side_b }
+		round_variable = global.REP_strength_spain
+		round_variable = global.REP_strength_spain_bonus
+	} else = {	# draw in final strengths!
+		random_list = {
+			1 = { multiply_variable = { global.FAL_strength_spain = 0.9 } multiply_variable = { global.FAL_strength_spain_bonus = 0.9 } }
+			1 = { multiply_variable = { global.REP_strength_spain = 0.9 } multiply_variable = { global.REP_strength_spain_bonus = 0.9 } }
+		}
+		round_variable = global.REP_strength_spain
+		round_variable = global.REP_strength_spain_bonus
+		set_variable = { global.FAL_strength_spain_final = global.FAL_strength_spain }
+		add_to_variable = { global.FAL_strength_spain_final = global.FAL_strength_spain_bonus }
+		set_variable = { global.REP_strength_spain_final = global.REP_strength_spain }
+		add_to_variable = { global.REP_strength_spain_final = global.REP_strength_spain_bonus }
+	}
+	log = "win condition [?win_condition]"
+	if = {
+		limit = {
+			check_variable = { win_condition > 2 }		# FAL > 2x REP -> FAL WINS!
+		}
+		clr_global_flag = world_stage_theater_spanish_cw_is_active
+		clr_global_variable = global.FAL_strength_spain
+		clr_global_variable = global.FAL_strength_spain_final
+		clr_global_variable = global.REP_strength_spain
+		clr_global_variable = global.REP_strength_spain_final
+		log = "FAL WINS"
+	}
+	if = {
+		limit = {
+			check_variable = { win_condition < 0.5 }	# REP > 2x FAL -> REP WINS!
+		}
+		clr_global_flag = world_stage_theater_spanish_cw_is_active
+		clr_global_variable = global.FAL_strength_spain
+		clr_global_variable = global.FAL_strength_spain_final
+		clr_global_variable = global.REP_strength_spain
+		clr_global_variable = global.REP_strength_spain_final
+		log = "REP WINS"
+	}
+	if = {
+		limit = {
+			NOT = { check_variable = { win_condition > 2 } }
+			NOT = { check_variable = { win_condition < 0.5 } }
+		}
+		log = "no winner"
+		set_variable = { global.theater_spanish_cw_timer = 180 }	# restarts clock
+		world_stage_get_spanish_cw_timer_frame = yes
+		set_variable = { global.FAL_strength_spain_final = global.FAL_strength_spain }
+		add_to_variable = { global.FAL_strength_spain_final = global.FAL_strength_spain_bonus }
+		set_variable = { global.REP_strength_spain_final = global.REP_strength_spain }
+		add_to_variable = { global.REP_strength_spain_final = global.REP_strength_spain_bonus }
+	}
+}	d_resolve_spanish_cw = { resolve_spanish_cw = yes }	# shortcut console command
 
 resolve_theater_poland_first = {
 	clr_global_flag = world_stage_theater_poland_is_active_first
@@ -130,6 +219,14 @@ world_stage_get_poland_timer_frame = {
 	round_variable = global.theater_poland_timer_frame
 	clamp_variable = { var = global.theater_poland_timer_frame min = 1 max = 9 }
 	log = "[?global.theater_poland_timer_frame]" 
+}
+
+world_stage_get_spanish_cw_timer_frame = {
+	set_variable = { global.theater_spanish_cw_timer_frame = global.theater_spanish_cw_timer }
+	divide_variable = { global.theater_spanish_cw_timer_frame = 20 }	# timer has 180 max days, 180/20 = 9
+	round_variable = global.theater_spanish_cw_timer_frame
+	clamp_variable = { var = global.theater_spanish_cw_timer_frame min = 1 max = 9 }
+	log = "[?global.theater_spanish_cw_timer_frame]" 
 }
 
 ### COUNTRY EFFECTS
@@ -562,6 +659,45 @@ remove_world_stage_power_chi_20 = {
 remove_world_stage_power_chi_25 = {
 	add_to_variable = {global.world_stage_power_chi = -25 }
 	custom_effect_tooltip = remove_world_stage_power_chi_25_tt
+}
+
+remove_world_stage_power_SELF_5 = {
+	if = { limit = { tag = ROC }
+		add_to_variable = {global.world_stage_power_chi = -5 }
+		custom_effect_tooltip = remove_world_stage_power_chi_5_tt
+	}
+	if = { limit = { tag = HIR }
+		add_to_variable = {global.world_stage_power_net = -5 }
+		custom_effect_tooltip = remove_world_stage_power_net_5_tt
+	}
+	if = { limit = { tag = PRT }
+		add_to_variable = {global.world_stage_power_prt = -5 }
+		custom_effect_tooltip = remove_world_stage_power_prt_5_tt
+	}
+	if = { limit = { tag = KOB }
+		add_to_variable = {global.world_stage_power_fra = -5 }
+		custom_effect_tooltip = remove_world_stage_power_fra_5_tt
+	}
+	if = { limit = { tag = OSA }
+		add_to_variable = {global.world_stage_power_eng = -5 }
+		custom_effect_tooltip = remove_world_stage_power_eng_5_tt
+	}
+	if = { limit = { tag = OKI }
+		add_to_variable = {global.world_stage_power_usa = -5 }
+		custom_effect_tooltip = remove_world_stage_power_usa_5_tt
+	}
+	if = { limit = { tag = AMC }
+		add_to_variable = {global.world_stage_power_usa = -5 }
+		custom_effect_tooltip = remove_world_stage_power_usa_5_tt
+	}
+	if = { limit = { tag = REI }
+		add_to_variable = {global.world_stage_power_ger = -5 }
+		custom_effect_tooltip = remove_world_stage_power_ger_5_tt
+	}
+	if = { limit = { tag = FER }
+		add_to_variable = {global.world_stage_power_sov = -5 }
+		custom_effect_tooltip = remove_world_stage_power_sov_5_tt
+	}
 }
 
 ### GENERIC
