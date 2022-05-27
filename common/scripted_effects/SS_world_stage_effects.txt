@@ -30,7 +30,7 @@ world_stage_daily_effect = {	# activated from on_actions/daily from a random sco
 	}
 	if = {	### SPANISH CIVIL WAR
 		limit = { has_global_flag = world_stage_theater_spanish_cw_is_active }
-		subtract_from_variable = { global.theater_spanish_cw_timer = 1 }
+		subtract_from_variable = { global.theater_spanish_cw_timer = 5 }
 		set_variable = { global.REP_strength_spain_final = global.REP_strength_spain }
 		add_to_variable = { global.REP_strength_spain_final = global.REP_strength_spain_bonus }
 		set_temp_variable = { global.REP_strength_spain_multiplier = 1 }
@@ -49,6 +49,7 @@ world_stage_daily_effect = {	# activated from on_actions/daily from a random sco
 		limit = { has_global_flag = world_stage_theater_poland_is_active_first }
 		subtract_from_variable = { global.theater_poland_timer = 1 }
 		set_variable = { global.GER_strength_poland_final = global.GER_strength_poland }
+		add_to_variable = { global.GER_strength_poland_final = global.GER_strength_poland_bonus }
 		set_variable = { global.GER_strength_doc_air = REI.air_doctrine_level }
 		set_variable = { global.GER_strength_doc_land = REI.land_doctrine_level }
 		multiply_variable = { global.GER_strength_doc_air = 0.05 }
@@ -60,6 +61,7 @@ world_stage_daily_effect = {	# activated from on_actions/daily from a random sco
 		if = {
 			limit = { has_global_flag = GER_SOV_pact_enabled }
 			set_variable = { global.SOV_strength_poland_final = global.SOV_strength_poland }
+			add_to_variable = { global.SOV_strength_poland_final = global.SOV_strength_poland_bonus }
 			set_variable = { global.SOV_strength_doc_air = FER.air_doctrine_level }
 			set_variable = { global.SOV_strength_doc_land = FER.land_doctrine_level }
 			multiply_variable = { global.SOV_strength_doc_air = 0.05 }
@@ -70,6 +72,7 @@ world_stage_daily_effect = {	# activated from on_actions/daily from a random sco
 			multiply_variable = { global.SOV_strength_poland_final = global.SOV_strength_poland_multiplier }
 		}
 		set_variable = { global.ENG_strength_poland_final = global.ENG_strength_poland }
+		add_to_variable = { global.ENG_strength_poland_final = global.ENG_strength_poland_bonus }
 		set_variable = { global.ENG_strength_doc_air = 0 } #.air_doctrine_level }	# poland will not get doctrines
 		set_variable = { global.ENG_strength_doc_land = 0 } #.land_doctrine_level }		# poland will not get doctrines
 		#multiply_variable = { global.ENG_strength_doc_air = 0.05 }
@@ -88,24 +91,20 @@ world_stage_daily_effect = {	# activated from on_actions/daily from a random sco
 
 ### THEATER RESOLUTIONS
 resolve_mongolian_crisis = {
-	# get losses: each side loses a proportion of its forces equal to: [opposite's side strength]/[both sides' strengths]. Example: a force with twice as strong as its enemy loses 1/3 of its total forces
-	set_temp_variable = { total_strength = global.CHI_strength_mongolia_final }	# sum up both sides final strenghts
-	add_to_temp_variable = { total_strength = global.SOV_strength_mongolia_final }
-	set_temp_variable = { side_a_trickleback_proportion = global.CHI_strength_mongolia_final }	# temp variables do not need to be global
-	divide_temp_variable = { side_a_trickleback_proportion = total_strength }
-	set_temp_variable = { side_b_trickleback_proportion = global.SOV_strength_mongolia_final }
-	divide_temp_variable = { side_b_trickleback_proportion = total_strength }
-	set_variable = { global.CHI_strength_trickleback = global.CHI_strength_mongolia }	# tricklebacks equal to deployed strength multiplied by trickleback proportion
-	multiply_variable = { global.CHI_strength_trickleback = side_a_trickleback_proportion }
+	set_temp_variable = { side_a_attack = random }	# each side causes damage equal to [0-20]% of their final strength
+	multiply_temp_variable = { side_a_attack = global.CHI_strength_mongolia_final }
+	divide_temp_variable = { side_a_attack = 5 }
+	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }
+	set_temp_variable = { side_b_attack = random }
+	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }
+	multiply_temp_variable = { side_b_attack = global.SOV_strength_mongolia_final }
+	divide_temp_variable = { side_b_attack = 5 }
+	set_variable = { global.CHI_strength_trickleback = global.CHI_strength_mongolia }
+	subtract_from_variable = { global.CHI_strength_trickleback = side_b_attack }
 	set_variable = { global.SOV_strength_trickleback = global.SOV_strength_mongolia }
-	multiply_variable = { global.SOV_strength_trickleback = side_b_trickleback_proportion }
-	add_to_variable = { global.world_stage_power_chi = global.CHI_strength_trickleback }
-	add_to_variable = { global.world_stage_power_sov = global.SOV_strength_trickleback }
-	log = "total_strength [?total_strength]"
-	log = "CHI/SOV strentgh [?global.CHI_strength_mongolia]/[?global.SOV_strength_mongolia]"
-	log = "CHI/SOV final strentgh [?global.CHI_strength_mongolia_final]/[?global.SOV_strength_mongolia_final]"
-	log = "side_a/b_trickleback_proportion [?side_a_trickleback_proportion]/[?side_b_trickleback_proportion]"
-	log = "CHI/SOV trickleback [?global.CHI_strength_trickleback]/[?global.SOV_strength_trickleback]"
+	subtract_from_variable = { global.SOV_strength_trickleback = side_a_attack }
+	round_variable = global.CHI_strength_trickleback
+	round_variable = global.SOV_strength_trickleback
 	if = {
 		limit = { check_variable = { global.CHI_strength_mongolia_final > global.SOV_strength_mongolia_final } }
 		multiply_variable = { global.CHI_strength_mongolia_final = global.CHI_strength_mongolia_final }
@@ -114,93 +113,143 @@ resolve_mongolian_crisis = {
 		var:global.CHI_strength_mongolia_final = { country_event = worldstage.2 add_world_stage_power_chi_5 = yes }
 		var:global.SOV_strength_mongolia_final = { country_event = worldstage.3 add_world_stage_power_sov_5 = yes }
 	}
-	clr_global_flag = world_stage_theater_mongolia_is_active
-	clr_global_variable = global.CHI_strength_mongolia
-	clr_global_variable = global.CHI_strength_mongolia_final
-	clr_global_variable = global.SOV_strength_mongolia
-	clr_global_variable = global.SOV_strength_mongolia_final
+	clr_global_flag = world_stage_theater_mongolia_is_active	# CLEAR ALL UNECESSARY DATA (do not delete trickleback data! it's used for localisation)
+	clear_variable = global.CHI_strength_mongolia
+	clear_variable = global.CHI_strength_mongolia_final
+	clear_variable = global.SOV_strength_mongolia
+	clear_variable = global.SOV_strength_mongolia_final
 }	d_resolve_mongolian_crisis = { resolve_mongolian_crisis = yes }	# shortcut console command
 
 resolve_spanish_cw = {
-	# get losses: each side loses a proportion of its forces equal to: [opposite's side strength]/[both sides' strengths]. Example: a force with twice as strong as its enemy loses 1/3 of its total forces
-	set_temp_variable = { win_condition = global.FAL_strength_spain_final }
-	divide_temp_variable = { win_condition = global.REP_strength_spain_final }	# win_condition: proportion of forces after damages
+	log = "resolve_spanish_cw"
+	set_temp_variable = { side_a_attack = random }												# each side causes damage equal to [0;20]% of their final strength ([0;1] * final strength / 5 )
+	multiply_temp_variable = { side_a_attack = global.FAL_strength_spain_final }
+	divide_temp_variable = { side_a_attack = 5 }
+	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }								# minimum 1 attack
+	set_temp_variable = { side_b_attack = random }
+	multiply_temp_variable = { side_b_attack = global.REP_strength_spain_final }
+	divide_temp_variable = { side_b_attack = 5 }
+	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }
+	log = "attacks a/b: [?side_a_attack]/[?side_b_attack]"
+	subtract_from_variable = { global.FAL_strength_spain = side_b_attack }						# each side hacks away at each other a bit
+	subtract_from_variable = { global.REP_strength_spain = side_a_attack }
 	if = {
-		limit = { NOT = { check_variable = { global.FAL_strength_spain_final = global.REP_strength_spain_final } } }	# there is no draw in their final strengths
-		set_temp_variable = { total_strength = global.FAL_strength_spain_final }	# sum up both sides final strenghts
-		add_to_temp_variable = { total_strength = global.REP_strength_spain_final }
-		set_temp_variable = { losses_side_a = global.FAL_strength_spain_final }
-		divide_temp_variable = { losses_side_a = total_strength }
-		set_temp_variable = { losses_side_b = global.REP_strength_spain_final }
-		divide_temp_variable = { losses_side_b = total_strength }
-		multiply_variable = { global.FAL_strength_spain = losses_side_a }
-		multiply_variable = { global.FAL_strength_spain_bonus = losses_side_a }
-		multiply_variable = { global.FAL_strength_spain_final = losses_side_a }
-		round_variable = global.FAL_strength_spain
-		round_variable = global.FAL_strength_spain_bonus
-		multiply_variable = { global.REP_strength_spain = losses_side_b }
-		multiply_variable = { global.REP_strength_spain_bonus = losses_side_b }
-		multiply_variable = { global.REP_strength_spain_final = losses_side_b }
-		round_variable = global.REP_strength_spain
-		round_variable = global.REP_strength_spain_bonus
-	} else = {	# draw in final strengths!
-		random_list = {
-			1 = { multiply_variable = { global.FAL_strength_spain = 0.9 } multiply_variable = { global.FAL_strength_spain_bonus = 0.9 } }
-			1 = { multiply_variable = { global.REP_strength_spain = 0.9 } multiply_variable = { global.REP_strength_spain_bonus = 0.9 } }
+		limit = { OR = { check_variable = { global.FAL_strength_spain < 1 } check_variable = { global.REP_strength_spain < 1 } } }	# one of the sides is destroyed, ends theater (only deployed strength counts here!)
+		if = {
+			limit = {
+				check_variable = {  global.FAL_strength_spain >  global.REP_strength_spain }	# FAL > REP -> FAL WINS!
+			}
+			set_variable = { global.FAL_strength_trickleback = global.FAL_strength_spain }		# already diminished after each side hacked each other
+			clamp_temp_variable = { var = global.FAL_strength_trickleback min = 1 max = 999 }	# at least someone survives
+			round_variable = global.FAL_strength_trickleback
+			set_variable = { global.REP_strength_trickleback = 0 }								# if he dies, he dies...
+			clr_global_flag = world_stage_theater_spanish_cw_is_active							# finishes theater and clear unecessary data
+			clear_variable = global.FAL_strength_spain
+			clear_variable = global.FAL_strength_spain_final
+			clear_variable = global.REP_strength_spain
+			clear_variable = global.REP_strength_spain_final
+			# country event...
+			log = "spain: FAL WINS"
+		} else = {	# <-------------------------------------------------------------- # else:    # REP > FAL -> REP WINS!
+			set_variable = { global.FAL_strength_trickleback = 0 }								# if he dies, he dies...
+			set_variable = { global.REP_strength_trickleback = global.REP_strength_spain }		# already diminished after each side hacked each other
+			clamp_temp_variable = { var = global.REP_strength_trickleback min = 1 max = 999 }	# at least someone survives
+			round_variable = global.REP_strength_trickleback
+			clr_global_flag = world_stage_theater_spanish_cw_is_active							# finishes theater and clear unecessary data
+			clear_variable = global.FAL_strength_spain
+			clear_variable = global.FAL_strength_spain_final
+			clear_variable = global.REP_strength_spain
+			clear_variable = global.REP_strength_spain_final
+			# country event...
+			log = "spain: REP WINS"
 		}
-		round_variable = global.REP_strength_spain
-		round_variable = global.REP_strength_spain_bonus
-		set_variable = { global.FAL_strength_spain_final = global.FAL_strength_spain }
-		add_to_variable = { global.FAL_strength_spain_final = global.FAL_strength_spain_bonus }
-		set_variable = { global.REP_strength_spain_final = global.REP_strength_spain }
-		add_to_variable = { global.REP_strength_spain_final = global.REP_strength_spain_bonus }
-	}
-	log = "win condition [?win_condition]"
-	if = {
-		limit = {
-			check_variable = { win_condition > 2 }		# FAL > 2x REP -> FAL WINS!
-		}
-		clr_global_flag = world_stage_theater_spanish_cw_is_active
-		clr_global_variable = global.FAL_strength_spain
-		clr_global_variable = global.FAL_strength_spain_final
-		clr_global_variable = global.REP_strength_spain
-		clr_global_variable = global.REP_strength_spain_final
-		log = "FAL WINS"
-	}
-	if = {
-		limit = {
-			check_variable = { win_condition < 0.5 }	# REP > 2x FAL -> REP WINS!
-		}
-		clr_global_flag = world_stage_theater_spanish_cw_is_active
-		clr_global_variable = global.FAL_strength_spain
-		clr_global_variable = global.FAL_strength_spain_final
-		clr_global_variable = global.REP_strength_spain
-		clr_global_variable = global.REP_strength_spain_final
-		log = "REP WINS"
-	}
-	if = {
-		limit = {
-			NOT = { check_variable = { win_condition > 2 } }
-			NOT = { check_variable = { win_condition < 0.5 } }
-		}
-		log = "no winner"
-		set_variable = { global.theater_spanish_cw_timer = 180 }	# restarts clock
+	} else = {	# else: theater continues
+		set_variable = { global.theater_spanish_cw_timer = 180 }								# restarts clock
 		world_stage_get_spanish_cw_timer_frame = yes
-		set_variable = { global.FAL_strength_spain_final = global.FAL_strength_spain }
+		round_variable = global.FAL_strength_spain
+		divide_variable = { global.FAL_strength_spain_bonus = 2 }								# each 'turn' halves the strategic advantages of both sides
+		round_variable = global.FAL_strength_spain_bonus
+		round_variable = global.REP_strength_spain
+		divide_variable = { global.REP_strength_spain_bonus = 2 }
+		round_variable = global.REP_strength_spain_bonus
+		set_variable = { global.FAL_strength_spain_final = global.FAL_strength_spain }			# recalculate final strength so tooltips dont get messy after a draw
 		add_to_variable = { global.FAL_strength_spain_final = global.FAL_strength_spain_bonus }
 		set_variable = { global.REP_strength_spain_final = global.REP_strength_spain }
 		add_to_variable = { global.REP_strength_spain_final = global.REP_strength_spain_bonus }
+		log = "spain: no winner"
 	}
 }	d_resolve_spanish_cw = { resolve_spanish_cw = yes }	# shortcut console command
 
 resolve_theater_poland_first = {
-	clr_global_flag = world_stage_theater_poland_is_active_first
+	log = "resolve_theater_poland_first"
+	set_temp_variable = { side_a_attack = random }												# each side causes damage equal to [0;20]% of their final strength ([0;1] * final strength / 5 )
+	multiply_temp_variable = { side_a_attack = global.GER_strength_poland_final }
+	divide_temp_variable = { side_a_attack = 5 }
+	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }								# minimum 1 attack
+	set_temp_variable = { side_b_attack = random }
+	multiply_temp_variable = { side_b_attack = global.ENG_strength_poland_final }
+	divide_temp_variable = { side_b_attack = 5 }
 	if = {
-		limit = {
-			has_global_flag = GER_SOV_pact_enabled
+		limit = { has_global_flag = GER_SOV_pact_enabled }
+		set_temp_variable = { side_c_attack = random }											# special rule: double invasion of poland
+		multiply_temp_variable = { side_c_attack = global.SOV_strength_poland_final }
+		divide_temp_variable = { side_c_attack = 5 }
+		add_to_temp_variable = { side_a_attack = side_c_attack }
+		divide_temp_variable = { side_b_attack = 2 }											# each side takes half the damage
+	}
+	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }
+	log = "attacks a/b: [?side_a_attack]/[?side_b_attack]"
+	subtract_from_variable = { global.GER_strength_poland = side_b_attack }						# each side hacks away at each other a bit
+	subtract_from_variable = { global.ENG_strength_poland = side_a_attack }
+	if = {
+		limit = {  has_global_flag = GER_SOV_pact_enabled }
+		subtract_from_variable = { global.SOV_strength_poland = side_b_attack }
+	}
+	if = {
+		limit = { check_variable = { global.ENG_strength_poland < 1 } }	# special rule: theater only ends when poland loses, (only deployed strength counts here!) (usual: one of the sides is destroyed, ends theater)
+		if = {
+			limit = {
+				check_variable = {  global.GER_strength_poland >  global.ENG_strength_poland }	# GER > ENG -> GER WINS!
+			}
+			set_variable = { global.GER_strength_trickleback = global.GER_strength_poland }		# already diminished after each side hacked each other
+			clamp_temp_variable = { var = global.GER_strength_trickleback min = 1 max = 999 }	# at least someone survives
+			round_variable = global.GER_strength_trickleback
+			set_variable = { global.ENG_strength_trickleback = 0 }								# if he dies, he dies...
+			clr_global_flag = world_stage_theater_poland_is_active_first						# finishes theater and clear unecessary data
+			set_variable = { global.GER_strength_poland = 0 }
+			set_variable = { global.GER_strength_poland_bonus = 0 }								# do not clear... we'll be back here soon
+			if = {
+				limit = { has_global_flag = GER_SOV_pact_enabled }
+				set_variable = { global.SOV_strength_poland = 0 }
+				set_variable = { global.SOV_strength_poland_bonus = 0 }
+			}
+			clear_variable = global.ENG_strength_poland
+			clear_variable = global.ENG_strength_poland_final
+			# country event...
+			log = "poland: GER WINS"
+		}#  else = {																			# no elses here, GER never loses, only gets delayed
+	} else = {	# else: theater continues
+		set_variable = { global.theater_poland_timer = 35 }										# restarts clock
+		world_stage_get_spanish_cw_timer_frame = yes
+		round_variable = global.GER_strength_poland
+		divide_variable = { global.GER_strength_poland_bonus = 2 }								# each 'turn' halves the strategic advantages of both sides
+		round_variable = global.GER_strength_poland_bonus
+		round_variable = global.ENG_strength_poland
+		divide_variable = { global.ENG_strength_poland_bonus = 2 }
+		round_variable = global.ENG_strength_poland_bonus
+		set_variable = { global.GER_strength_poland_final = global.GER_strength_poland }		# recalculate final strength so tooltips dont get messy after a draw
+		add_to_variable = { global.GER_strength_poland_final = global.GER_strength_poland_bonus }
+		set_variable = { global.ENG_strength_poland_final = global.ENG_strength_poland }
+		add_to_variable = { global.ENG_strength_poland_final = global.ENG_strength_poland_bonus }
+		if = {
+			limit = { has_global_flag = GER_SOV_pact_enabled }
+			round_variable = global.SOV_strength_poland
+			divide_variable = { global.SOV_strength_poland_bonus = 2 }
+			round_variable = global.SOV_strength_poland_bonus
+			set_variable = { global.SOV_strength_poland_final = global.SOV_strength_poland }
+			add_to_variable = { global.SOV_strength_poland_final = global.SOV_strength_poland_bonus }			
 		}
-	} else = {
-	
+		log = "poland: no winner"
 	}
 }
 
