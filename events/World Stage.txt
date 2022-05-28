@@ -148,6 +148,7 @@ news_event = {
 		}
 	}
 }
+### SPANISH CIVIL War
 
 # Spanish Civil War - Start
 news_event = {
@@ -162,7 +163,6 @@ news_event = {
 	
 	immediate = {
 		set_global_flag = world_stage_theater_spanish_cw_is_active
-		log = "worldstage.4: [THIS.GetName]"
 	}
 	
 	option = {
@@ -170,14 +170,12 @@ news_event = {
 		trigger = {
 			has_government = fascism
 		}
-		custom_effect_tooltip = world_stage_tt_spanish_cw_start
 	}
 	option = {
 		name = worldstage.4.komin
 		trigger = {
 			has_government = communism
 		}
-		custom_effect_tooltip = world_stage_tt_spanish_cw_start
 	}
 	option = {
 		name = worldstage.4.other
@@ -187,7 +185,6 @@ news_event = {
 				has_government = fascism
 			}
 		}
-		custom_effect_tooltip = world_stage_tt_spanish_cw_start
 	}
 }
 
@@ -531,6 +528,13 @@ news_event = {
 		trigger = {
 			has_government = communism
 		}
+		if = {
+			limit = { has_country_flag = world_stage_spanish_cw_helped_falange }
+			add_doctrine_cost_reduction = {
+				cost_reduction = 0.5
+				category = air_doctrine
+			}
+		}
 		effect_tooltip = {
 			custom_effect_tooltip = country_name_republica
 			add_to_variable = {
@@ -545,6 +549,13 @@ news_event = {
 			NOT = {
 				has_government = communism
 				has_government = fascism
+			}
+		}
+		if = {
+			limit = { has_country_flag = world_stage_spanish_cw_helped_falange }
+			add_doctrine_cost_reduction = {
+				cost_reduction = 0.5
+				category = air_doctrine
 			}
 		}
 		effect_tooltip = {
@@ -626,16 +637,16 @@ country_event = {
 		if = {
 			limit = { has_country_flag = world_stage_spanish_cw_helped_falange }
 			add_doctrine_cost_reduction = {
-				cost_reduction = 0.5
+				cost_reduction = 0.99
 				category = air_doctrine
 			}
 			add_doctrine_cost_reduction = {
-				cost_reduction = 0.5
+				cost_reduction = 0.99
 				category = land_doctrine
 			}
 			add_doctrine_cost_reduction = {
-				cost_reduction = 0.5
-				category = navy_doctrine
+				cost_reduction = 0.99
+				category = naval_doctrine
 			}
 		}
 	}
@@ -644,7 +655,10 @@ country_event = {
 		trigger = {
 			has_government = communism
 		}
-		# GETS EXILED REPUBLICAN GENERALS
+		if = {
+			limit = { has_country_flag = world_stage_spanish_cw_helped_republica }	# maybe check a tag....
+			# GETS EXILED REPUBLICAN GENERALS
+		}
 	}
 	option = {
 		name = worldstage.12.other
@@ -657,16 +671,16 @@ country_event = {
 		if = {
 			limit = { has_country_flag = world_stage_spanish_cw_helped_falange }
 			add_doctrine_cost_reduction = {
-				cost_reduction = 0.5
+				cost_reduction = 0.99
 				category = air_doctrine
 			}
 			add_doctrine_cost_reduction = {
-				cost_reduction = 0.5
+				cost_reduction = 0.9
 				category = land_doctrine
 			}
 			add_doctrine_cost_reduction = {
-				cost_reduction = 0.5
-				category = navy_doctrine
+				cost_reduction = 0.99
+				category = naval_doctrine
 			}
 		}
 	}
@@ -688,7 +702,10 @@ country_event = {
 		trigger = {
 			has_government = fascism
 		}
-		# GETS EXILED FALANGIST GENERALS
+		if = {
+			limit = { has_country_flag = world_stage_spanish_cw_helped_falange }	# maybe check a tag....
+			# GETS EXILED FALANGIST GENERALS
+		}
 	}
 	option = {
 		name = worldstage.13.komin
@@ -698,16 +715,16 @@ country_event = {
 		if = {
 			limit = { has_country_flag = world_stage_spanish_cw_helped_republica }
 			add_doctrine_cost_reduction = {
-				cost_reduction = 0.5
+				cost_reduction = 0.99
 				category = air_doctrine
 			}
 			add_doctrine_cost_reduction = {
-				cost_reduction = 0.5
+				cost_reduction = 0.99
 				category = land_doctrine
 			}
 			add_doctrine_cost_reduction = {
-				cost_reduction = 0.5
-				category = navy_doctrine
+				cost_reduction = 0.99
+				category = naval_doctrine
 			}
 		}
 	}
@@ -722,16 +739,16 @@ country_event = {
 		if = {
 			limit = { has_country_flag = world_stage_spanish_cw_helped_republica }
 			add_doctrine_cost_reduction = {
-				cost_reduction = 0.5
+				cost_reduction = 0.99
 				category = air_doctrine
 			}
 			add_doctrine_cost_reduction = {
-				cost_reduction = 0.5
+				cost_reduction = 0.99
 				category = land_doctrine
 			}
 			add_doctrine_cost_reduction = {
-				cost_reduction = 0.5
-				category = navy_doctrine
+				cost_reduction = 0.99
+				category = naval_doctrine
 			}
 		}
 	}
@@ -788,5 +805,300 @@ news_event = {
 				tooltip = world_stage_add_help_rep_power
 			}
 		}
+	}
+}
+
+### INVASION OF POLAND
+
+# Invasion of Poland - Start
+country_event = {
+	id = worldstage.15
+	title = worldstage.15.t
+	desc = worldstage.15.d 
+	picture = GFX_news_great_depression_over
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	# immediate: none, effect handled by focus
+	
+	option = {
+		name = worldstage.15.axis
+		trigger = { has_world_stage_coalition_axis = yes }
+		if = { limit = { tag = OSA } REI = { declare_war_on = { target = OSA type = annex_everything } } }	# just in case the trigger is wrong...
+		if = { limit = { tag = KOB } REI = { declare_war_on = { target = KOB type = annex_everything } } }
+	}
+	option = {
+		name = worldstage.15.komin1
+		trigger = {
+			has_world_stage_coalition_komintern = yes
+			NOT = { has_global_flag = GER_SOV_pact_enabled }
+		}
+		if = { limit = { tag = OSA } REI = { declare_war_on = { target = OSA type = annex_everything } } }	# just in case the trigger is wrong...
+		if = { limit = { tag = KOB } REI = { declare_war_on = { target = KOB type = annex_everything } } }
+	}
+	option = {
+		name = worldstage.15.komin2
+		trigger = {
+			has_world_stage_coalition_komintern = yes
+			has_global_flag = GER_SOV_pact_enabled
+		}
+		if = { limit = { tag = OSA } REI = { declare_war_on = { target = OSA type = annex_everything } } }	# just in case the trigger is wrong...
+		if = { limit = { tag = KOB } REI = { declare_war_on = { target = KOB type = annex_everything } } }
+	}
+	option = {
+		name = worldstage.15.allies
+		trigger = { has_world_stage_coalition_allies = yes }
+		if = {
+			limit = { tag = OSA }
+			REI = {
+				declare_war_on = {
+					target = OSA
+					type = annex_everything
+		}	}	}
+		if = {
+			limit = {
+				tag = KOB
+			}
+			REI = {
+				declare_war_on = {
+					target = KOB
+					type = annex_everything
+		}	}	}
+	}
+	option = {
+		name = worldstage.15.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
+		if = { limit = { tag = OSA } REI = { declare_war_on = { target = OSA type = annex_everything } } }	# just in case the trigger is wrong...
+		if = { limit = { tag = KOB } REI = { declare_war_on = { target = KOB type = annex_everything } } }
+	}
+}
+
+# Invasion of Poland - Soviet Invasion
+news_event = {
+	id = worldstage.16
+	title = worldstage.16.t
+	desc = worldstage.16.d 
+	picture = GFX_news_great_depression_over
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		set_global_flag = world_stage_invasion_of_poland_molotov_ribbentrop
+		add_to_variable = { global.world_stage_power_sov = -30 }
+		set_variable = { global.SOV_strength_poland = 30 }
+		add_to_variable = { global.SOV_strength_poland_bonus = 15 }
+		set_variable = { global.SOV_strength_poland_final = global.SOV_strength_poland }
+		add_to_variable = { global.SOV_strength_poland_final = global.SOV_strength_poland_bonus }
+		log = "soviets invade poland (this: [?THIS.GetName], root: [?ROOT.GetName])"
+	}
+	
+	option = {
+		name = worldstage.16.axis
+		trigger = { has_world_stage_coalition_axis = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_russia
+			add_to_variable = {
+				global.SOV_strength_poland = 30
+				tooltip = world_stage_deploy_power_poland
+			}
+			add_to_variable = {
+				global.SOV_strength_poland_bonus = 15
+				tooltip = world_stage_bonus_power_poland
+			}
+		}
+	}
+	option = {
+		name = worldstage.16.komin
+		trigger = { has_world_stage_coalition_komintern = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_russia
+			add_to_variable = {
+				global.SOV_strength_poland = 30
+				tooltip = world_stage_deploy_power_poland
+			}
+			add_to_variable = {
+				global.SOV_strength_poland_bonus = 15
+				tooltip = world_stage_bonus_power_poland
+			}
+		}
+	}
+	option = {
+		name = worldstage.16.allies
+		trigger = { has_world_stage_coalition_allies = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_russia
+			add_to_variable = {
+				global.SOV_strength_poland = 30
+				tooltip = world_stage_deploy_power_poland
+			}
+			add_to_variable = {
+				global.SOV_strength_poland_bonus = 15
+				tooltip = world_stage_bonus_power_poland
+			}
+		}
+	}
+	option = {
+		name = worldstage.16.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_russia
+			add_to_variable = {
+				global.SOV_strength_poland = 30
+				tooltip = world_stage_deploy_power_poland
+			}
+			add_to_variable = {
+				global.SOV_strength_poland_bonus = 15
+				tooltip = world_stage_bonus_power_poland
+			}
+		}
+	}
+}
+
+# Invasion of Poland - Poland Resists
+country_event = {
+	id = worldstage.17
+	title = worldstage.17.t
+	desc = worldstage.17.d 
+	picture = GFX_news_great_depression_over
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	#immediate
+	
+	option = {
+		name = worldstage.17.axis1
+		trigger = {
+			has_world_stage_coalition_axis = yes
+			NOT = { has_global_flag = GER_SOV_pact_enabled }
+		}
+	}
+	option = {
+		name = worldstage.17.axis2
+		trigger = {
+			has_world_stage_coalition_axis = yes
+			has_global_flag = GER_SOV_pact_enabled
+		}
+	}
+	option = {
+		name = worldstage.17.komin1
+		trigger = {
+			has_world_stage_coalition_komintern = yes
+			NOT = { has_global_flag = GER_SOV_pact_enabled }
+		}
+	}
+	option = {
+		name = worldstage.17.komin2
+		trigger = {
+			has_world_stage_coalition_komintern = yes
+			has_global_flag = GER_SOV_pact_enabled
+		}
+	}
+	option = {
+		name = worldstage.17.allies
+		trigger = { has_world_stage_coalition_allies = yes }
+	}
+	option = {
+		name = worldstage.17.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
+	}
+}
+
+# Invasion of Poland - Poland Falls to Germany
+news_event = {
+	id = worldstage.18
+	title = worldstage.18.t
+	desc = worldstage.18.d 
+	picture = GFX_news_great_depression_over
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		add_to_variable = { global.world_stage_power_ger = 10 }
+		add_to_variable = { global.world_stage_power_ger = global.GER_strength_trickeback }
+	}
+	
+	option = {
+		name = worldstage.18.axis
+		trigger = { has_world_stage_coalition_axis = yes }
+		custom_effect_tooltip = GER_strength_trickleback_tt
+		custom_effect_tooltip = add_world_stage_power_ger_10_tt
+	}
+	option = {
+		name = worldstage.18.komin
+		trigger = { has_world_stage_coalition_komintern = yes }
+		custom_effect_tooltip = GER_strength_trickleback_tt
+		custom_effect_tooltip = add_world_stage_power_ger_10_tt
+	}
+	option = {
+		name = worldstage.18.allies
+		trigger = { has_world_stage_coalition_allies = yes }
+		custom_effect_tooltip = GER_strength_trickleback_tt
+		custom_effect_tooltip = add_world_stage_power_ger_10_tt
+	}
+	option = {
+		name = worldstage.18.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
+		custom_effect_tooltip = GER_strength_trickleback_tt
+		custom_effect_tooltip = add_world_stage_power_ger_10_tt
+	}
+}
+
+# Invasion of Poland - Poland Falls to Germany & Soviets
+news_event = {
+	id = worldstage.19
+	title = worldstage.19.t
+	desc = worldstage.19.d 
+	picture = GFX_news_great_depression_over
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		add_to_variable = { global.world_stage_power_ger = 5 }
+		add_to_variable = { global.world_stage_power_ger = global.GER_strength_trickeback }
+		add_to_variable = { global.world_stage_coalition_sov = 5 }
+		add_to_variable = { global.world_stage_coalition_sov = global.SOV_strength_trickeback }
+	}
+	
+	option = {
+		name = worldstage.19.axis
+		trigger = { has_world_stage_coalition_axis = yes }
+		custom_effect_tooltip = GER_strength_trickleback_tt
+		custom_effect_tooltip = add_world_stage_power_ger_5_tt
+		custom_effect_tooltip = SOV_strength_trickleback_tt
+		custom_effect_tooltip = add_world_stage_power_sov_5_tt
+	}
+	option = {
+		name = worldstage.19.komin
+		trigger = { has_world_stage_coalition_komintern = yes }
+		custom_effect_tooltip = GER_strength_trickleback_tt
+		custom_effect_tooltip = add_world_stage_power_ger_5_tt
+		custom_effect_tooltip = SOV_strength_trickleback_tt
+		custom_effect_tooltip = add_world_stage_power_sov_5_tt
+	}
+	option = {
+		name = worldstage.19.allies
+		trigger = { has_world_stage_coalition_allies = yes }
+		custom_effect_tooltip = GER_strength_trickleback_tt
+		custom_effect_tooltip = add_world_stage_power_ger_5_tt
+		custom_effect_tooltip = SOV_strength_trickleback_tt
+		custom_effect_tooltip = add_world_stage_power_sov_5_tt
+	}
+	option = {
+		name = worldstage.19.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
+		custom_effect_tooltip = GER_strength_trickleback_tt
+		custom_effect_tooltip = add_world_stage_power_ger_5_tt
+		custom_effect_tooltip = SOV_strength_trickleback_tt
+		custom_effect_tooltip = add_world_stage_power_sov_5_tt
 	}
 }

@@ -91,14 +91,13 @@ world_stage_daily_effect = {	# activated from on_actions/daily from a random sco
 
 ### THEATER RESOLUTIONS
 resolve_mongolian_crisis = {
-	set_temp_variable = { side_a_attack = random }	# each side causes damage equal to [0-20]% of their final strength
+	log = "resolve_mongolian_crisis"
+	randomize_temp_variable = {	var = side_a_attack	distribution = uniform	min = 0.05 max = 0.2 }	# each side causes damage equal to [5;20]% of their final strength
 	multiply_temp_variable = { side_a_attack = global.CHI_strength_mongolia_final }
-	divide_temp_variable = { side_a_attack = 5 }
-	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }
-	set_temp_variable = { side_b_attack = random }
-	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }
+	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }									# minimum 1 attack
+	randomize_temp_variable = {	var = side_b_attack	distribution = uniform	min = 0.05 max = 0.2 }
 	multiply_temp_variable = { side_b_attack = global.SOV_strength_mongolia_final }
-	divide_temp_variable = { side_b_attack = 5 }
+	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }
 	set_variable = { global.CHI_strength_trickleback = global.CHI_strength_mongolia }
 	subtract_from_variable = { global.CHI_strength_trickleback = side_b_attack }
 	set_variable = { global.SOV_strength_trickleback = global.SOV_strength_mongolia }
@@ -122,17 +121,19 @@ resolve_mongolian_crisis = {
 
 resolve_spanish_cw = {
 	log = "resolve_spanish_cw"
-	set_temp_variable = { side_a_attack = random }												# each side causes damage equal to [0;20]% of their final strength ([0;1] * final strength / 5 )
+	randomize_temp_variable = {	var = side_a_attack	distribution = uniform	min = 0.05 max = 0.2 }	# each side causes damage equal to [5;20]% of their final strength
 	multiply_temp_variable = { side_a_attack = global.FAL_strength_spain_final }
-	divide_temp_variable = { side_a_attack = 5 }
-	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }								# minimum 1 attack
-	set_temp_variable = { side_b_attack = random }
+	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }									# minimum 1 attack
+	randomize_temp_variable = {	var = side_b_attack	distribution = uniform	min = 0.05 max = 0.2 }
 	multiply_temp_variable = { side_b_attack = global.REP_strength_spain_final }
-	divide_temp_variable = { side_b_attack = 5 }
-	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }
+	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }		
 	log = "attacks a/b: [?side_a_attack]/[?side_b_attack]"
 	subtract_from_variable = { global.FAL_strength_spain = side_b_attack }						# each side hacks away at each other a bit
+	subtract_from_variable = { global.FAL_strength_spain_bonus = side_b_attack }
 	subtract_from_variable = { global.REP_strength_spain = side_a_attack }
+	subtract_from_variable = { global.REP_strength_spain_bonus = side_a_attack }
+	clamp_variable = { var = global.FAL_strength_spain_bonus min = 0 max = 999 }						# special rule: no negative bonus values allowed
+	clamp_variable = { var = global.REP_strength_spain_bonus min = 0 max = 999 }
 	if = {
 		limit = { OR = { check_variable = { global.FAL_strength_spain < 1 } check_variable = { global.REP_strength_spain < 1 } } }	# one of the sides is destroyed, ends theater (only deployed strength counts here!)
 		set_global_flag = world_stage_spanish_cw_over
@@ -168,10 +169,8 @@ resolve_spanish_cw = {
 		set_variable = { global.theater_spanish_cw_timer = 180 }								# restarts clock
 		world_stage_get_spanish_cw_timer_frame = yes
 		round_variable = global.FAL_strength_spain
-		divide_variable = { global.FAL_strength_spain_bonus = 2 }								# each 'turn' halves the strategic advantages of both sides
-		round_variable = global.FAL_strength_spain_bonus
+		round_variable = global.FAL_strength_spain_bonus										# no strategic advantages here! (usual: each 'turn' halves the strategic advantages of both sides)
 		round_variable = global.REP_strength_spain
-		divide_variable = { global.REP_strength_spain_bonus = 2 }
 		round_variable = global.REP_strength_spain_bonus
 		set_variable = { global.FAL_strength_spain_final = global.FAL_strength_spain }			# recalculate final strength so tooltips dont get messy after a draw
 		add_to_variable = { global.FAL_strength_spain_final = global.FAL_strength_spain_bonus }
@@ -184,31 +183,34 @@ resolve_spanish_cw = {
 
 resolve_theater_poland_first = {
 	log = "resolve_theater_poland_first"
-	set_temp_variable = { side_a_attack = random }												# each side causes damage equal to [0;20]% of their final strength ([0;1] * final strength / 5 )
+	randomize_temp_variable = {	var = side_a_attack	distribution = uniform	min = 0.05 max = 0.2 }	# each side causes damage equal to [5;20]% of their final strength
 	multiply_temp_variable = { side_a_attack = global.GER_strength_poland_final }
-	divide_temp_variable = { side_a_attack = 5 }
-	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }								# minimum 1 attack
-	set_temp_variable = { side_b_attack = random }
+	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }									# minimum 1 attack
+	randomize_temp_variable = {	var = side_b_attack	distribution = uniform	min = 0.05 max = 0.2 }
 	multiply_temp_variable = { side_b_attack = global.ENG_strength_poland_final }
-	divide_temp_variable = { side_b_attack = 5 }
 	if = {
-		limit = { has_global_flag = GER_SOV_pact_enabled }
-		set_temp_variable = { side_c_attack = random }											# special rule: double invasion of poland
-		multiply_temp_variable = { side_c_attack = global.SOV_strength_poland_final }
-		divide_temp_variable = { side_c_attack = 5 }
+		limit = { has_global_flag = GER_SOV_pact_enabled }											# special rule: double invasion of poland
+		randomize_temp_variable = {	var = side_c_attack	distribution = uniform	min = 0.05 max = 2 }
+		multiply_temp_variable = { side_c_attack = global.SOV_strength_spain_final }
+		clamp_temp_variable = { var = side_c_attack min = 1 max = 999 }
 		add_to_temp_variable = { side_a_attack = side_c_attack }
-		divide_temp_variable = { side_b_attack = 2 }											# each side takes half the damage
+		divide_temp_variable = { side_b_attack = 2 }												# each side takes half the damage
 	}
-	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }
+	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }									# round poland's attack after (possibly) splitting it into GER and SOV
 	log = "attacks a/b: [?side_a_attack]/[?side_b_attack]"
-	subtract_from_variable = { global.GER_strength_poland = side_b_attack }						# each side hacks away at each other a bit
+	subtract_from_variable = { global.GER_strength_poland = side_b_attack }							# each side hacks away at each other a bit
 	subtract_from_variable = { global.ENG_strength_poland = side_a_attack }
 	if = {
 		limit = {  has_global_flag = GER_SOV_pact_enabled }
 		subtract_from_variable = { global.SOV_strength_poland = side_b_attack }
 	}
 	if = {
-		limit = { check_variable = { global.ENG_strength_poland < 1 } }	# special rule: theater only ends when poland loses, (only deployed strength counts here!) (usual: one of the sides is destroyed, ends theater)
+		limit = {
+			OR = {
+				check_variable = { global.ENG_strength_poland < 1 }			# special rule: theater only ends when poland loses, (only deployed strength counts here!) (usual: one of the sides is destroyed, ends theater)
+				AND = { check_variable = { global.ENG_strength_poland < 5.1 } has_global_flag = GER_SOV_pact_enabled }	# if double invasion is minimally competent, it is over in one turn
+			}
+		}
 		if = {
 			limit = {
 				check_variable = {  global.GER_strength_poland >  global.ENG_strength_poland }	# GER > ENG -> GER WINS!
@@ -222,12 +224,15 @@ resolve_theater_poland_first = {
 			set_variable = { global.GER_strength_poland_bonus = 0 }								# do not clear... we'll be back here soon
 			if = {
 				limit = { has_global_flag = GER_SOV_pact_enabled }
+				set_variable = { global.SOV_strength_trickleback = global.SOV_strength_poland }		# already diminished after each side hacked each other
+				clamp_temp_variable = { var = global.SOV_strength_trickleback min = 1 max = 999 }	# at least someone survives
+				round_variable = global.SOV_strength_trickleback
 				set_variable = { global.SOV_strength_poland = 0 }
 				set_variable = { global.SOV_strength_poland_bonus = 0 }
-			}
+				news_event = worldstage.19
+			} else = { news_event = worldstage.18 }
 			clear_variable = global.ENG_strength_poland
 			clear_variable = global.ENG_strength_poland_final
-			# country event...
 			log = "poland: GER WINS"
 		}#  else = {																			# no elses here, GER never loses, only gets delayed
 	} else = {	# else: theater continues
@@ -243,6 +248,7 @@ resolve_theater_poland_first = {
 		add_to_variable = { global.GER_strength_poland_final = global.GER_strength_poland_bonus }
 		set_variable = { global.ENG_strength_poland_final = global.ENG_strength_poland }
 		add_to_variable = { global.ENG_strength_poland_final = global.ENG_strength_poland_bonus }
+		country_event = worldstage.17
 		if = {
 			limit = { has_global_flag = GER_SOV_pact_enabled }
 			round_variable = global.SOV_strength_poland
