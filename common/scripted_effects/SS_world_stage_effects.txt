@@ -31,14 +31,14 @@ world_stage_daily_effect = {	# activated from on_actions/daily from a random sco
 	if = {	### SPANISH CIVIL WAR
 		limit = { has_global_flag = world_stage_theater_spanish_cw_is_active }
 		subtract_from_variable = { global.theater_spanish_cw_timer = 1 }
-		set_variable = { global.REP_strength_spain_final = global.REP_strength_spain }
-		add_to_variable = { global.REP_strength_spain_final = global.REP_strength_spain_bonus }
-		set_temp_variable = { global.REP_strength_spain_multiplier = 1 }
-		multiply_variable = { global.REP_strength_spain_final = global.REP_strength_spain_multiplier }
 		set_variable = { global.FAL_strength_spain_final = global.FAL_strength_spain }
 		add_to_variable = { global.FAL_strength_spain_final = global.FAL_strength_spain_bonus }
 		set_temp_variable = { global.FAL_strength_spain_multiplier = 1 }
 		multiply_variable = { global.FAL_strength_spain_final = global.FAL_strength_spain_multiplier }
+		set_variable = { global.REP_strength_spain_final = global.REP_strength_spain }
+		add_to_variable = { global.REP_strength_spain_final = global.REP_strength_spain_bonus }
+		set_temp_variable = { global.REP_strength_spain_multiplier = 1 }
+		multiply_variable = { global.REP_strength_spain_final = global.REP_strength_spain_multiplier }
 		world_stage_get_spanish_cw_timer_frame = yes
 		if = {
 			limit = { check_variable = { global.theater_spanish_cw_timer < 1 } }
@@ -87,6 +87,23 @@ world_stage_daily_effect = {	# activated from on_actions/daily from a random sco
 			resolve_theater_poland_first = yes
 		}
 	}
+	if = {	### BLITZKRIEG
+		limit = { has_global_flag = world_stage_theater_blitzkrieg_is_active }
+		subtract_from_variable = { global.theater_france_timer = 1 }
+		set_variable = { global.GER_strength_france_final = global.GER_strength_france }
+		add_to_variable = { global.GER_strength_france_final = global.GER_strength_france_bonus }
+		set_temp_variable = { global.GER_strength_france_multiplier = 1 }
+		multiply_variable = { global.GER_strength_france_final = global.GER_strength_france_multiplier }
+		set_variable = { global.FRA_strength_france_final = global.FRA_strength_france }
+		add_to_variable = { global.FRA_strength_france_final = global.FRA_strength_france_bonus }
+		set_temp_variable = { global.FRA_strength_france_multiplier = 1 }
+		multiply_variable = { global.FRA_strength_france_final = global.FRA_strength_france_multiplier }
+		world_stage_get_spanish_cw_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_france_timer < 1 } }
+			resolve_threater_blitzkrieg = yes
+		}
+	}
 }
 
 ### THEATER RESOLUTIONS
@@ -114,8 +131,10 @@ resolve_mongolian_crisis = {
 	}
 	clr_global_flag = world_stage_theater_mongolia_is_active	# CLEAR ALL UNECESSARY DATA (do not delete trickleback data! it's used for localisation)
 	clear_variable = global.CHI_strength_mongolia
+	clear_variable = global.CHI_strength_mongolia_bonus
 	clear_variable = global.CHI_strength_mongolia_final
 	clear_variable = global.SOV_strength_mongolia
+	clear_variable = global.SOV_strength_mongolia_bonus
 	clear_variable = global.SOV_strength_mongolia_final
 }	d_resolve_mongolian_crisis = { resolve_mongolian_crisis = yes }	# shortcut console command
 
@@ -147,8 +166,10 @@ resolve_spanish_cw = {
 			set_variable = { global.REP_strength_trickleback = 0 }								# if he dies, he dies...
 			clr_global_flag = world_stage_theater_spanish_cw_is_active							# finishes theater and clear unecessary data
 			clear_variable = global.FAL_strength_spain
+			clear_variable = global.FAL_strength_spain_bonus
 			clear_variable = global.FAL_strength_spain_final
 			clear_variable = global.REP_strength_spain
+			clear_variable = global.REP_strength_spain_bonus
 			clear_variable = global.REP_strength_spain_final
 			news_event = worldstage.12
 			log = "spain: FAL WINS"
@@ -159,8 +180,10 @@ resolve_spanish_cw = {
 			round_variable = global.REP_strength_trickleback
 			clr_global_flag = world_stage_theater_spanish_cw_is_active							# finishes theater and clear unecessary data
 			clear_variable = global.FAL_strength_spain
+			clear_variable = global.FAL_strength_spain_bonus
 			clear_variable = global.FAL_strength_spain_final
 			clear_variable = global.REP_strength_spain
+			clear_variable = global.REP_strength_spain_bonus
 			clear_variable = global.REP_strength_spain_final
 			news_event = worldstage.13
 			log = "spain: REP WINS"
@@ -234,7 +257,7 @@ resolve_theater_poland_first = {
 			clear_variable = global.ENG_strength_poland
 			clear_variable = global.ENG_strength_poland_final
 			log = "poland: GER WINS"
-		}#  else = {																			# no elses here, GER never loses, only gets delayed
+		}#  else = 																				# no elses here, GER never loses, only gets delayed
 	} else = {	# else: theater continues
 		set_variable = { global.theater_poland_timer = 35 }										# restarts clock
 		world_stage_get_spanish_cw_timer_frame = yes
@@ -260,6 +283,30 @@ resolve_theater_poland_first = {
 		log = "poland: no winner"
 	}
 }
+
+resolve_threater_blitzkrieg = {
+	log = "resolve_threater_blitzkrieg"
+	randomize_temp_variable = {	var = side_a_attack	distribution = uniform	min = 0.05 max = 0.2 }	# each side causes damage equal to [5;20]% of their final strength
+	multiply_temp_variable = { side_a_attack = global.GER_strength_france_final }
+	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }									# minimum 1 attack
+	randomize_temp_variable = {	var = side_b_attack	distribution = uniform	min = 0.05 max = 0.2 }
+	multiply_temp_variable = { side_b_attack = global.FRA_strength_france_final }
+	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }
+	set_variable = { global.CHI_strength_trickleback = global.GER_strength_france }
+	subtract_from_variable = { global.CHI_strength_trickleback = side_b_attack }
+	set_variable = { global.SOV_strength_trickleback = global.FRA_strength_france }
+	subtract_from_variable = { global.SOV_strength_trickleback = side_a_attack }
+	round_variable = global.CHI_strength_trickleback
+	round_variable = global.SOV_strength_trickleback
+	# add resolution rules
+	clr_global_flag = world_stage_theater_blitzkrieg_is_active	# CLEAR ALL UNECESSARY DATA (do not delete trickleback data! it's used for localisation)
+	clear_variable = global.GER_strength_france
+	clear_variable = global.GER_strength_france_bonus
+	clear_variable = global.GER_strength_france_final
+	clear_variable = global.FRA_strength_france
+	clear_variable = global.FRA_strength_france_bonus
+	clear_variable = global.FRA_strength_france_final
+}	d_resolve_threater_blitzkrieg = { resolve_threater_blitzkrieg = yes }	# shortcut console command
 
 ### INTERFACE HANDLER
 
