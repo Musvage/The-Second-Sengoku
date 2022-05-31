@@ -828,10 +828,7 @@ country_event = {
 		trigger = { has_world_stage_coalition_axis = yes }
 		if = { limit = { tag = OSA } REI = { declare_war_on = { target = OSA type = annex_everything } } }	# just in case the trigger is wrong...
 		if = { limit = { tag = KOB } REI = { declare_war_on = { target = KOB type = annex_everything } } }
-		effect_tooltip = {
-			custom_effect_tooltip = country_name_germany
-			set_faction_name = "Axis"
-		}
+		custom_effect_tooltip = worldstage.15.factions_tt
 	}
 	option = {
 		name = worldstage.15.komin1
@@ -841,10 +838,7 @@ country_event = {
 		}
 		if = { limit = { tag = OSA } REI = { declare_war_on = { target = OSA type = annex_everything } } }	# just in case the trigger is wrong...
 		if = { limit = { tag = KOB } REI = { declare_war_on = { target = KOB type = annex_everything } } }
-		effect_tooltip = {
-			custom_effect_tooltip = country_name_germany
-			set_faction_name = "Axis"
-		}
+		custom_effect_tooltip = worldstage.15.factions_tt
 	}
 	option = {
 		name = worldstage.15.komin2
@@ -854,10 +848,7 @@ country_event = {
 		}
 		if = { limit = { tag = OSA } REI = { declare_war_on = { target = OSA type = annex_everything } } }	# just in case the trigger is wrong...
 		if = { limit = { tag = KOB } REI = { declare_war_on = { target = KOB type = annex_everything } } }
-		effect_tooltip = {
-			custom_effect_tooltip = country_name_germany
-			set_faction_name = "Axis"
-		}
+		custom_effect_tooltip = worldstage.15.factions_tt
 	}
 	option = {
 		name = worldstage.15.allies
@@ -878,20 +869,14 @@ country_event = {
 					target = KOB
 					type = annex_everything
 		}	}	}
-		effect_tooltip = {
-			custom_effect_tooltip = country_name_germany
-			set_faction_name = "Axis"
-		}
+			custom_effect_tooltip = worldstage.15.factions_tt
 	}
 	option = {
 		name = worldstage.15.other
 		trigger = { has_world_stage_coalition_unaligned = yes }
 		if = { limit = { tag = OSA } REI = { declare_war_on = { target = OSA type = annex_everything } } }	# just in case the trigger is wrong...
 		if = { limit = { tag = KOB } REI = { declare_war_on = { target = KOB type = annex_everything } } }
-		effect_tooltip = {
-			custom_effect_tooltip = country_name_germany
-			set_faction_name = "Axis"
-		}
+		custom_effect_tooltip = worldstage.15.factions_tt
 	}
 }
 
@@ -989,7 +974,24 @@ country_event = {
 
 	major = yes
 	
-	#immediate
+	immediate = {
+		if = {	#
+			limit = {
+				NOT = { has_global_flag = world_stage_theater_ardennes_is_active }
+				NOT = { has_global_flag = world_stage_theater_alsace_is_active }
+				has_global_flag = world_stage_france_exists
+			}
+			if = {
+				limit = { country_exists = KOB }
+				KOB = { country_event = { id = worldstage.20 days = 1 random_days = 6 } }	# Think about it!
+			} else = {
+				random_list = {
+					75 = { news_event = { id = worldstage.21 days = 1 random_days = 6  } }	# Attack!
+					25 = { }																# Hold!
+				}
+			}
+		}
+	}
 	
 	option = {
 		name = worldstage.17.axis1
@@ -1120,5 +1122,384 @@ news_event = {
 		custom_effect_tooltip = add_world_stage_power_ger_5_tt
 		custom_effect_tooltip = SOV_strength_trickleback_tt
 		custom_effect_tooltip = add_world_stage_power_sov_5_tt
+	}
+}
+
+# Invasion of Poland - The Emp... the French! Strike Back
+country_event = {
+	id = worldstage.20
+	title = worldstage.20.t
+	desc = worldstage.20.d 
+	picture = GFX_news_great_depression_over
+
+	is_triggered_only = yes
+	
+	option = {
+		name = worldstage.20.a1				# Attack!
+		custom_effect_tooltip = world_stage_theater_alsace_is_active_tt
+		news_event = worldstage.21
+		custom_effect_tooltip = world_stage_theater_alsace_is_active_tt
+		effect_tooltip = {
+			add_to_variable = {
+				global.FRA_strength_alsace = 120
+				tooltip = world_stage_deploy_power_alsace
+			}
+		}
+	}
+	option = {
+		name = worldstage.20.a2				# Hold!
+	}
+}
+
+# Invasion of Germany - France Attacks after Eastern Front Stalls
+news_event = {
+	id = worldstage.21
+	title = worldstage.21.t
+	desc = worldstage.21.d 
+	picture = GFX_news_great_depression_over
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		set_global_flag = world_stage_theater_alsace_is_active
+		set_variable = { global.FRA_strength_alsace = 120 }
+		set_temp_variable = { ger_forces_value = global.world_stage_power_ger }
+		divide_temp_variable = { ger_forces_value = 2 }
+		round_variable = ger_forces_value
+		set_variable = { global.GER_strength_alsace = ger_forces_value }
+		subtract_from_variable = { global.world_stage_power_ger = ger_forces_value }
+	}
+	
+	option = {
+		name = worldstage.21.axis
+		trigger = { has_world_stage_coalition_axis = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = world_stage_theater_alsace_is_active_tt
+			custom_effect_tooltip = country_name_france
+			add_to_variable = {
+				global.FRA_strength_alsace = 120
+				tooltip = world_stage_deploy_power_alsace
+			}
+			if = {
+				limit = { NOT = { tag = REI } }
+				custom_effect_tooltip = country_name_germany
+			}
+			add_to_variable = {
+				global.GER_strength_alsace = var:ger_forces_value
+				tooltip = world_stage_deploy_power_alsace
+			}
+		}
+	}
+	option = {
+		name = worldstage.21.komin
+		trigger = { has_world_stage_coalition_komintern = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_france
+			add_to_variable = {
+				global.FRA_strength_alsace = 120
+				tooltip = world_stage_deploy_power_alsace
+			}
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				global.GER_strength_alsace = var:ger_forces_value
+				tooltip = world_stage_deploy_power_alsace
+			}
+		}
+	}
+	option = {
+		name = worldstage.21.allies
+		trigger = { has_world_stage_coalition_allies = yes }
+		effect_tooltip = {
+			if = {
+				limit = { NOT = { tag = KOB } }
+				custom_effect_tooltip = country_name_france
+			}
+			add_to_variable = {
+				global.FRA_strength_alsace = 120
+				tooltip = world_stage_deploy_power_alsace
+			}
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				global.GER_strength_alsace = var:ger_forces_value
+				tooltip = world_stage_deploy_power_alsace
+			}
+		}
+	}
+	option = {
+		name = worldstage.21.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_france
+			add_to_variable = {
+				global.FRA_strength_alsace = 120
+				tooltip = world_stage_deploy_power_alsace
+			}
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				global.GER_strength_alsace = var:ger_forces_value
+				tooltip = world_stage_deploy_power_alsace
+			}
+		}
+	}
+}
+
+# Invasion of Germany - France Wins, Advances to Western Germany
+news_event = {
+	id = worldstage.22
+	title = worldstage.22.t
+	desc = worldstage.22.d 
+	picture = GFX_news_great_depression_over
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		
+	}
+	
+	option = {
+		name = worldstage.22.axis
+		trigger = { has_world_stage_coalition_axis = yes }
+		
+	}
+	option = {
+		name = worldstage.22.komin
+		trigger = { has_world_stage_coalition_komintern = yes }
+		
+	}
+	option = {
+		name = worldstage.22.allies
+		trigger = { has_world_stage_coalition_allies = yes }
+		
+	}
+	option = {
+		name = worldstage.22.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
+		
+	}
+}
+
+# Invasion of Germany - Germany Wins, Advances to Eastern France
+news_event = {
+	id = worldstage.23
+	title = worldstage.23.t
+	desc = worldstage.23.d 
+	picture = GFX_news_great_depression_over
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		
+	}
+	
+	option = {
+		name = worldstage.23.axis
+		trigger = { has_world_stage_coalition_axis = yes }
+		
+	}
+	option = {
+		name = worldstage.23.komin
+		trigger = { has_world_stage_coalition_komintern = yes }
+		
+	}
+	option = {
+		name = worldstage.23.allies
+		trigger = { has_world_stage_coalition_allies = yes }
+		
+	}
+	option = {
+		name = worldstage.23.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
+		
+	}
+}
+
+# The Blitzkrieg!
+news_event = {
+	id = worldstage.24
+	title = worldstage.24.t
+	desc = worldstage.24.d 
+	picture = GFX_news_great_depression_over
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		set_temp_variable = { fra_forces_value = global.world_stage_power_fra }
+		divide_temp_variable = { fra_forces_value = 4 }
+		round_temp_variable = fra_forces_value
+		set_variable = { global.FRA_strength_ardennes = fra_forces_value }
+		subtract_from_variable = { global.world_stage_power_fra = fra_forces_value }
+	}
+	
+	option = {
+		name = worldstage.24.axis
+		trigger = { has_world_stage_coalition_axis = yes }
+		effect_tooltip = {
+			if = {
+				limit = { NOT = { tag = REI } }
+				custom_effect_tooltip = world_stage_theater_ardennes_is_active_tt
+				custom_effect_tooltip = country_name_germany
+				add_to_variable = {
+					global.GER_strength_ardennes = 120
+					tooltip = world_stage_deploy_power_ardennes
+				}
+				add_to_variable = {
+					global.GER_strength_ardennes = 120
+					tooltip = world_stage_bonus_power_ardennes
+				}
+			}
+			custom_effect_tooltip = country_name_france
+			add_to_variable = {
+				global.GER_strength_ardennes = global.FRA_strength_ardennes
+				tooltip = world_stage_deploy_power_ardennes
+			}
+		}
+	}
+	option = {
+		name = worldstage.24.komin
+		trigger = { has_world_stage_coalition_komintern = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = world_stage_theater_ardennes_is_active_tt
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				global.GER_strength_ardennes = 120
+				tooltip = world_stage_deploy_power_ardennes
+			}
+			add_to_variable = {
+				global.GER_strength_ardennes = 120
+				tooltip = world_stage_bonus_power_ardennes
+			}
+			custom_effect_tooltip = country_name_france
+			add_to_variable = {
+				global.GER_strength_ardennes = global.FRA_strength_ardennes
+				tooltip = world_stage_deploy_power_ardennes
+			}
+		}
+	}
+	option = {
+		name = worldstage.24.allies
+		trigger = { has_world_stage_coalition_allies = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = world_stage_theater_ardennes_is_active_tt
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				global.GER_strength_ardennes = 120
+				tooltip = world_stage_deploy_power_ardennes
+			}
+			add_to_variable = {
+				global.GER_strength_ardennes = 120
+				tooltip = world_stage_bonus_power_ardennes
+			}
+			effect_tooltip = {
+				if = {
+					limit = { NOT = { tag = KOB } }			
+					custom_effect_tooltip = country_name_france
+				}
+				add_to_variable = {
+					global.GER_strength_ardennes = global.FRA_strength_ardennes
+					tooltip = world_stage_deploy_power_ardennes
+				}
+			}
+		}
+	}
+	option = {
+		name = worldstage.24.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = world_stage_theater_ardennes_is_active_tt
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				global.GER_strength_ardennes = 120
+				tooltip = world_stage_deploy_power_ardennes
+			}
+			add_to_variable = {
+				global.GER_strength_ardennes = 120
+				tooltip = world_stage_bonus_power_ardennes
+			}
+			custom_effect_tooltip = country_name_france
+			add_to_variable = {
+				global.GER_strength_ardennes = global.FRA_strength_ardennes
+				tooltip = world_stage_deploy_power_ardennes
+			}
+		}
+	}
+}
+
+# The Blitzkrieg - France Falls
+country_event = {
+	id = worldstage.25
+	title = worldstage.25.t
+	desc = worldstage.25.d 
+	picture = GFX_news_great_depression_over
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	#immediate = {
+
+	option = {
+		name = worldstage.25.axis
+		trigger = { has_world_stage_coalition_axis = yes }
+	}
+	option = {
+		name = worldstage.25.komin
+		trigger = { has_world_stage_coalition_komintern = yes }
+	}
+	option = {
+		name = worldstage.25.allies
+		trigger = { has_world_stage_coalition_allies = yes }
+	}
+	option = {
+		name = worldstage.25.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
+	}
+}
+
+# The Blitzkrieg - France Resists
+country_event = {
+	id = worldstage.26
+	title = worldstage.26.t
+	desc = worldstage.26.d 
+	picture = GFX_news_great_depression_over
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	#immediate = {
+
+	option = {
+		name = worldstage.26.axis
+		trigger = { has_world_stage_coalition_axis = yes }
+	}
+	option = {
+		name = worldstage.26.komin
+		trigger = { has_world_stage_coalition_komintern = yes }
+	}
+	option = {
+		name = worldstage.26.allies1
+		trigger = {
+			has_world_stage_coalition_allies = yes
+			tag = KOB
+		}
+	}
+	option = {
+		name = worldstage.26.allies2
+		trigger = {
+			has_world_stage_coalition_allies = yes
+			NOT = { tag = KOB }
+		}
+	}
+	option = {
+		name = worldstage.26.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
 	}
 }
