@@ -116,6 +116,64 @@ world_stage_daily_effect = {	# activated from on_actions/daily from a random sco
 			resolve_threater_ardennes = yes
 		}
 	}
+	if = {	### alsace
+		limit = { has_global_flag = world_stage_theater_alsace_is_active }
+		subtract_from_variable = { global.theater_alsace_timer = 1 }
+		set_variable = { global.GER_strength_alsace_final = global.GER_strength_alsace }
+		add_to_variable = { global.GER_strength_alsace_final = global.GER_strength_alsace_bonus }
+		set_variable = { global.GER_strength_doc_air = REI.air_doctrine_level }
+		set_variable = { global.GER_strength_doc_land = REI.land_doctrine_level }
+		multiply_variable = { global.GER_strength_doc_air = 0.05 }
+		multiply_variable = { global.GER_strength_doc_land = 0.10 }
+		set_temp_variable = { global.GER_strength_alsace_multiplier = 1 }
+		add_to_temp_variable = { global.GER_strength_alsace_multiplier = global.GER_strength_doc_air }
+		add_to_temp_variable = { global.GER_strength_alsace_multiplier = global.GER_strength_doc_land }
+		multiply_variable = { global.GER_strength_alsace_final = global.GER_strength_alsace_multiplier }
+		set_variable = { global.FRA_strength_alsace_final = global.FRA_strength_alsace }
+		add_to_variable = { global.FRA_strength_alsace_final = global.FRA_strength_alsace_bonus }
+		set_variable = { global.FRA_strength_doc_air = KOB.air_doctrine_level }
+		set_variable = { global.FRA_strength_doc_land = KOB.land_doctrine_level }
+		multiply_variable = { global.FRA_strength_doc_air = 0.05 }
+		multiply_variable = { global.FRA_strength_doc_land = 0.10 }
+		set_temp_variable = { global.FRA_strength_alsace_multiplier = 1 }
+		add_to_temp_variable = { global.FRA_strength_alsace_multiplier = global.FRA_strength_doc_air }
+		add_to_temp_variable = { global.FRA_strength_alsace_multiplier = global.FRA_strength_doc_land }
+		multiply_variable = { global.FRA_strength_alsace_final = global.FRA_strength_alsace_multiplier }
+		world_stage_get_alsace_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_alsace_timer < 1 } }
+			resolve_threater_alsace = yes
+		}
+	}
+	if = {	### westphalia
+		limit = { has_global_flag = world_stage_theater_westphalia_is_active }
+		subtract_from_variable = { global.theater_westphalia_timer = 1 }
+		set_variable = { global.GER_strength_westphalia_final = global.GER_strength_westphalia }
+		add_to_variable = { global.GER_strength_westphalia_final = global.GER_strength_westphalia_bonus }
+		set_variable = { global.GER_strength_doc_air = REI.air_doctrine_level }
+		set_variable = { global.GER_strength_doc_land = REI.land_doctrine_level }
+		multiply_variable = { global.GER_strength_doc_air = 0.05 }
+		multiply_variable = { global.GER_strength_doc_land = 0.10 }
+		set_temp_variable = { global.GER_strength_westphalia_multiplier = 1 }
+		add_to_temp_variable = { global.GER_strength_westphalia_multiplier = global.GER_strength_doc_air }
+		add_to_temp_variable = { global.GER_strength_westphalia_multiplier = global.GER_strength_doc_land }
+		multiply_variable = { global.GER_strength_westphalia_final = global.GER_strength_westphalia_multiplier }
+		set_variable = { global.FRA_strength_westphalia_final = global.FRA_strength_westphalia }
+		add_to_variable = { global.FRA_strength_westphalia_final = global.FRA_strength_westphalia_bonus }
+		set_variable = { global.FRA_strength_doc_air = KOB.air_doctrine_level }
+		set_variable = { global.FRA_strength_doc_land = KOB.land_doctrine_level }
+		multiply_variable = { global.FRA_strength_doc_air = 0.05 }
+		multiply_variable = { global.FRA_strength_doc_land = 0.10 }
+		set_temp_variable = { global.FRA_strength_westphalia_multiplier = 1 }
+		add_to_temp_variable = { global.FRA_strength_westphalia_multiplier = global.FRA_strength_doc_air }
+		add_to_temp_variable = { global.FRA_strength_westphalia_multiplier = global.FRA_strength_doc_land }
+		multiply_variable = { global.FRA_strength_westphalia_final = global.FRA_strength_westphalia_multiplier }
+		world_stage_get_westphalia_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_westphalia_timer < 1 } }
+			resolve_threater_westphalia = yes
+		}
+	}
 }
 
 ### THEATER RESOLUTIONS
@@ -234,7 +292,6 @@ resolve_theater_poland_first = {
 		divide_temp_variable = { side_b_attack = 2 }												# each side takes half the damage
 	}
 	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }									# round poland's attack after (possibly) splitting it into GER and SOV
-	log = "attacks a/b: [?side_a_attack]/[?side_b_attack]"
 	subtract_from_variable = { global.GER_strength_poland = side_b_attack }							# each side hacks away at each other a bit
 	subtract_from_variable = { global.ENG_strength_poland = side_a_attack }
 	if = {
@@ -255,17 +312,14 @@ resolve_theater_poland_first = {
 			set_variable = { global.GER_strength_trickleback = global.GER_strength_poland }		# already diminished after each side hacked each other
 			clamp_variable = { var = global.GER_strength_trickleback min = 1 max = 999 }	# at least someone survives
 			round_variable = global.GER_strength_trickleback
-			log = "GER world stage power before [?global.world_stage_power_ger]"
 			add_to_variable =  {global.world_stage_power_ger = global.GER_strength_trickleback } 
-			log = "GER trickleback [?global.GER_strength_trickleback]"
-			log = "GER world stage power after [?global.world_stage_power_ger]"
 			set_variable = { global.ENG_strength_trickleback = 0 }								# if he dies, he dies...
 			clr_global_flag = world_stage_theater_poland_is_active_first						# finishes theater and clear unecessary data
 			set_variable = { global.GER_strength_poland = 0 }
 			set_variable = { global.GER_strength_poland_bonus = 0 }								# do not clear... we'll be back here soon
 			if = {
 				limit = { has_global_flag = GER_SOV_pact_enabled }
-				set_variable = { global.SOV_strength_trickleback = global.SOV_strength_poland }		# already diminished after each side hacked each other
+				set_variable = { global.SOV_strength_trickleback = global.SOV_strength_poland }	# already diminished after each side hacked each other
 				clamp_variable = { var = global.SOV_strength_trickleback min = 1 max = 999 }	# at least someone survives
 				round_variable = global.SOV_strength_trickleback
 				set_variable = { global.SOV_strength_poland = 0 }
@@ -276,9 +330,9 @@ resolve_theater_poland_first = {
 			clear_variable = global.ENG_strength_poland_final
 			log = "poland: GER WINS"
 		}#  else = 																				# no elses here, GER never loses, only gets delayed
-	} else = {	# else: theater continues
+	} else = {																					# else: theater continues
 		set_variable = { global.theater_poland_timer = 35 }										# restarts clock
-		world_stage_get_spanish_cw_timer_frame = yes
+		world_stage_get_poland_timer_frame = yes
 		round_variable = global.GER_strength_poland
 		divide_variable = { global.GER_strength_poland_bonus = 2 }								# each 'turn' halves the strategic advantages of both sides
 		round_variable = global.GER_strength_poland_bonus
@@ -333,6 +387,110 @@ resolve_threater_ardennes = {
 	clear_variable = global.FRA_strength_ardennes_final
 }	d_resolve_threater_ardennes = { resolve_threater_ardennes = yes }	# shortcut console command
 
+resolve_threater_alsace = {
+	log = "resolve_threater_alsace"
+	randomize_temp_variable = {	var = side_a_attack	distribution = uniform	min = 0.05 max = 0.2 }	# each side causes damage equal to [5;20]% of their final strength
+	multiply_temp_variable = { side_a_attack = global.GER_strength_alsace_final }
+	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }									# minimum 1 attack
+	randomize_temp_variable = {	var = side_b_attack	distribution = uniform	min = 0.05 max = 0.2 }
+	multiply_temp_variable = { side_b_attack = global.FRA_strength_alsace_final }
+	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }
+	subtract_from_variable = { global.GER_strength_alsace = side_b_attack
+	subtract_from_variable = { global.FRA_strength_alsace = side_a_attack }
+	if = {																							# someone wins
+		limit = { OR = { check_variable = { global.GER_strength_alsace < 1 } check_variable = { global.FRA_strength_alsace < 1 } } }
+		if = {
+			limit = { check_variable = { global.GER_strength_alsace < global.FRA_strength_alsace } }	# GER wins
+			#set_variable = { global.GER_strength_trickleback = global.GER_strength_alsace }					
+			#round_variable = global.GER_strength_trickleback
+			#clamp_variable = { var = global.GER_strength_trickleback min = 1 max = 999 }
+			#add_to_variable = { global.world_stage_power_ger = global.GER_strength_trickleback }	# no trickleback: deployed forces move to next theater
+			news_event = worldstage.23
+		} else = {																					# else: FRA wins
+			#set_variable = { global.FRA_strength_trickleback = global.FRA_strength_alsace }
+			#round_variable = global.FRA_strength_trickleback
+			#clamp_variable = { var = global.FRA_strength_trickleback min = 1 max = 999 }
+			#add_to_variable = { global.world_stage_power_fra = global.FRA_strength_trickleback }
+			news_event = worldstage.22
+		}
+		clr_global_flag = world_stage_theater_alsace_is_active
+		set_variable = { global.theater_alsace_timer = 60 }											# restarts clock
+		world_stage_get_alsace_timer_frame = yes
+	} else = {																						# no winner
+		set_variable = { global.theater_alsace_timer = 60 }											# restarts clock
+		world_stage_get_alsace_timer_frame = yes
+		round_variable = global.GER_strength_alsace
+		divide_variable = { global.GER_strength_alsace_bonus = 2 }									# each 'turn' halves the strategic advantages of both sides
+		round_variable = global.GER_strength_alsace_bonus
+		round_variable = global.ENG_strength_alsace
+		divide_variable = { global.ENG_strength_alsace_bonus = 2 }
+		round_variable = global.ENG_strength_alsace_bonus
+		set_variable = { global.GER_strength_alsace_final = global.GER_strength_alsace }			# recalculate final strength so tooltips dont get messy after a draw
+		add_to_variable = { global.GER_strength_alsace_final = global.GER_strength_alsace_bonus }
+		set_variable = { global.ENG_strength_alsace_final = global.ENG_strength_alsace }
+		add_to_variable = { global.ENG_strength_alsace_final = global.ENG_strength_alsace_bonus }
+		# country_event =																			# no event needed here
+	}
+	clear_variable = global.GER_strength_alsace				# CLEAR ALL UNECESSARY DATA (do not delete trickleback data! it's used for localisation)
+	clear_variable = global.GER_strength_alsace_bonus
+	clear_variable = global.GER_strength_alsace_final
+	clear_variable = global.FRA_strength_alsace
+	clear_variable = global.FRA_strength_alsace_bonus
+	clear_variable = global.FRA_strength_alsace_final
+}	d_resolve_threater_alsace = { resolve_threater_alsace = yes }	# shortcut console command
+
+resolve_threater_westphalia = {
+	log = "resolve_threater_westphalia"
+	randomize_temp_variable = {	var = side_a_attack	distribution = uniform	min = 0.05 max = 0.2 }	# each side causes damage equal to [5;20]% of their final strength
+	multiply_temp_variable = { side_a_attack = global.GER_strength_westphalia_final }
+	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }									# minimum 1 attack
+	randomize_temp_variable = {	var = side_b_attack	distribution = uniform	min = 0.05 max = 0.2 }
+	multiply_temp_variable = { side_b_attack = global.FRA_strength_westphalia_final }
+	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }
+	subtract_from_variable = { global.GER_strength_westphalia = side_b_attack
+	subtract_from_variable = { global.FRA_strength_westphalia = side_a_attack }
+	if = {																							# someone wins
+		limit = { OR = { check_variable = { global.GER_strength_westphalia < 1 } check_variable = { global.FRA_strength_westphalia < 1 } } }
+		if = {
+			limit = { check_variable = { global.GER_strength_westphalia < global.FRA_strength_westphalia } }	# GER wins
+			#set_variable = { global.GER_strength_trickleback = global.GER_strength_westphalia }					
+			#round_variable = global.GER_strength_trickleback
+			#clamp_variable = { var = global.GER_strength_trickleback min = 1 max = 999 }
+			#add_to_variable = { global.world_stage_power_ger = global.GER_strength_trickleback }	# no trickleback: deployed forces move to next theater
+			news_event = worldstage.23
+		} else = {																					# else: FRA wins
+			#set_variable = { global.FRA_strength_trickleback = global.FRA_strength_westphalia }
+			#round_variable = global.FRA_strength_trickleback
+			#clamp_variable = { var = global.FRA_strength_trickleback min = 1 max = 999 }
+			#add_to_variable = { global.world_stage_power_fra = global.FRA_strength_trickleback }
+			news_event = worldstage.22
+		}
+		clr_global_flag = world_stage_theater_westphalia_is_active
+		set_variable = { global.theater_westphalia_timer = 60 }											# restarts clock
+		world_stage_get_westphalia_timer_frame = yes
+	} else = {																						# no winner
+		set_variable = { global.theater_westphalia_timer = 60 }											# restarts clock
+		world_stage_get_westphalia_timer_frame = yes
+		round_variable = global.GER_strength_westphalia
+		divide_variable = { global.GER_strength_westphalia_bonus = 2 }									# each 'turn' halves the strategic advantages of both sides
+		round_variable = global.GER_strength_westphalia_bonus
+		round_variable = global.ENG_strength_westphalia
+		divide_variable = { global.ENG_strength_westphalia_bonus = 2 }
+		round_variable = global.ENG_strength_westphalia_bonus
+		set_variable = { global.GER_strength_westphalia_final = global.GER_strength_westphalia }			# recalculate final strength so tooltips dont get messy after a draw
+		add_to_variable = { global.GER_strength_westphalia_final = global.GER_strength_westphalia_bonus }
+		set_variable = { global.ENG_strength_westphalia_final = global.ENG_strength_westphalia }
+		add_to_variable = { global.ENG_strength_westphalia_final = global.ENG_strength_westphalia_bonus }
+		# country_event =																			# no event needed here
+	}
+	clear_variable = global.GER_strength_westphalia				# CLEAR ALL UNECESSARY DATA (do not delete trickleback data! it's used for localisation)
+	clear_variable = global.GER_strength_westphalia_bonus
+	clear_variable = global.GER_strength_westphalia_final
+	clear_variable = global.FRA_strength_westphalia
+	clear_variable = global.FRA_strength_westphalia_bonus
+	clear_variable = global.FRA_strength_westphalia_final
+}	d_resolve_threater_westphalia = { resolve_threater_westphalia = yes }	# shortcut console command
+
 ### INTERFACE HANDLER
 
 world_stage_get_mongolia_timer_frame = {
@@ -365,6 +523,22 @@ world_stage_get_ardennes_timer_frame = {
 	round_variable = global.theater_ardennes_timer_frame
 	clamp_variable = { var = global.theater_ardennes_timer_frame min = 1 max = 9 }
 	log = "theater_ardennes_timer_frame [?global.theater_ardennes_timer_frame]" 
+}
+
+world_stage_get_alsace_timer_frame = {
+	set_variable = { global.theater_alsace_timer_frame = global.theater_alsace_timer }
+	divide_variable = { global.theater_alsace_timer_frame = 5 }	# timer has 45 max days, 45/5 = 9
+	round_variable = global.theater_alsace_timer_frame
+	clamp_variable = { var = global.theater_alsace_timer_frame min = 1 max = 9 }
+	log = "theater_alsace_timer_frame [?global.theater_alsace_timer_frame]" 
+}
+
+world_stage_get_westphalia_timer_frame = {
+	set_variable = { global.theater_westphalia_timer_frame = global.theater_westphalia_timer }
+	divide_variable = { global.theater_westphalia_timer_frame = 5 }	# timer has 45 max days, 45/5 = 9
+	round_variable = global.theater_westphalia_timer_frame
+	clamp_variable = { var = global.theater_westphalia_timer_frame min = 1 max = 9 }
+	log = "theater_westphalia_timer_frame [?global.theater_westphalia_timer_frame]" 
 }
 
 ### COUNTRY EFFECTS

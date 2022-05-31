@@ -1245,7 +1245,7 @@ news_event = {
 	}
 }
 
-# Invasion of Germany - France Wins, Advances to Western Germany
+# Invasion of Germany - France Wins, Advances to Westphalia
 news_event = {
 	id = worldstage.22
 	title = worldstage.22.t
@@ -1254,35 +1254,96 @@ news_event = {
 
 	is_triggered_only = yes
 
-	major = yes
-	
 	immediate = {
-		
+		set_global_flag = world_stage_theater_westphalia_is_active
+		set_temp_variable = { ger_forces_value = global.world_stage_power_ger }
+		divide_temp_variable = { ger_forces_value = 2 }
+		subtract_from_variable = { global.world_stage_power_ger = ger_forces_value }
+		set_variable = { global.GER_strength_westphalia = ger_forces_value }
+		clr_variable = global.GER_strength_alsace
+		set_variable = { global.FRA_strength_westphalia = global.FRA_strength_alsace }
+		clr_variable = global.GER_strength_alsace
+		#if = {	# <--------------------------------------------------------------------------- HERE! LOOK AT ME! FINISH ME! TODO! TO-DO!
+		#	limit = { ger still fights in netherlands}
+		#	add strategic advantage to allies
+		#}
 	}
 	
 	option = {
 		name = worldstage.22.axis
 		trigger = { has_world_stage_coalition_axis = yes }
-		
+		effect_tooltip = {
+			custom_effect_tooltip = world_stage_theater_westphalia_is_active_tt
+			if = {	limit = { NOT = { tag = REI } }
+				custom_effect_tooltip = country_name_germany
+			}
+			add_to_variable = {
+				global.GER_strength_alsace = global.GER_strength_westphalia				# I'm using GER_alsace because it's supposed to be zero, then the localisation actually works
+				tooltip = world_stage_deploy_power_westphalia
+			}
+			custom_effect_tooltip = country_name_westphalia
+			add_to_variable = {
+				global.GER_strength_alsace = global.FRA_strength_alsace			# I'm using GER_alsace because it's supposed to be zero, then the localisation actually works
+				tooltip = world_stage_deploy_power_westphalia
+			}
+		}
 	}
 	option = {
 		name = worldstage.22.komin
 		trigger = { has_world_stage_coalition_komintern = yes }
-		
+		effect_tooltip = {
+			custom_effect_tooltip = world_stage_theater_westphalia_is_active_tt
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				global.GER_strength_alsace = global.GER_strength_westphalia				# I'm using GER_alsace because it's supposed to be zero, then the localisation actually works
+				tooltip = world_stage_deploy_power_westphalia
+			}
+			custom_effect_tooltip = country_name_westphalia
+			add_to_variable = {
+				global.GER_strength_alsace = global.FRA_strength_alsace				# I'm using GER_alsace because it's supposed to be zero, then the localisation actually works
+				tooltip = world_stage_deploy_power_westphalia
+			}
+		}
 	}
 	option = {
 		name = worldstage.22.allies
 		trigger = { has_world_stage_coalition_allies = yes }
-		
+		effect_tooltip = {
+			custom_effect_tooltip = world_stage_theater_westphalia_is_active_tt
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				global.GER_strength_alsace = global.GER_strength_westphalia				# I'm using GER_alsace because it's supposed to be zero, then the localisation actually works
+				tooltip = world_stage_deploy_power_westphalia
+			}
+			if = {	limit = { NOT = { tag = KOB } }
+				custom_effect_tooltip = country_name_westphalia
+			}
+			add_to_variable = {
+				global.GER_strength_alsace = global.FRA_strength_alsace				# I'm using GER_alsace because it's supposed to be zero, then the localisation actually works
+				tooltip = world_stage_deploy_power_westphalia
+			}
+		}
 	}
 	option = {
 		name = worldstage.22.other
 		trigger = { has_world_stage_coalition_unaligned = yes }
-		
+		effect_tooltip = {
+			custom_effect_tooltip = world_stage_theater_westphalia_is_active_tt
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				global.GER_strength_alsace = global.GER_strength_westphalia				# I'm using GER_alsace because it's supposed to be zero, then the localisation actually works
+				tooltip = world_stage_deploy_power_westphalia
+			}
+			custom_effect_tooltip = country_name_westphalia
+			add_to_variable = {
+				global.GER_strength_alsace = global.FRA_strength_alsace				# I'm using GER_alsace because it's supposed to be zero, then the localisation actually works
+				tooltip = world_stage_deploy_power_westphalia
+			}
+		}
 	}
 }
 
-# Invasion of Germany - Germany Wins, Advances to Eastern France
+# Invasion of Germany - Germany Wins, Advances to France/Paris
 news_event = {
 	id = worldstage.23
 	title = worldstage.23.t
@@ -1294,28 +1355,89 @@ news_event = {
 	major = yes
 	
 	immediate = {
-		
+		set_global_flag = world_stage_theater_france_is_active
+		set_variable = { global.GER_strength_france = global.GER_strength_alsace }
+		clr_variable = global.GER_strength_alsace
+		set_variable = { global.FRA_strength_france = global.world_stage_power_fra }
+		set_variable = { global.world_stage_power_fra = 0 }								# EVERYONE!
+		clr_variable = global.FRA_strength_alsace
+		#if = {	# <--------------------------------------------------------------------------- HERE! LOOK AT ME! FINISH ME! TODO! TO-DO!
+		#	limit = { allies still fights in netherlands}
+		#	add strategic advantage to axis
+		#}
 	}
 	
 	option = {
 		name = worldstage.23.axis
 		trigger = { has_world_stage_coalition_axis = yes }
-		
+		effect_tooltip = {
+			custom_effect_tooltip = world_stage_theater_france_is_active_tt
+			if = {	limit = { NOT = { tag = REI } }
+				custom_effect_tooltip = country_name_germany
+			}
+			add_to_variable = {
+				global.world_stage_power_fra = global.GER_strength_france				# I'm using FRA because it's supposed to be zero, then localisation actually works
+				tooltip = world_stage_deploy_power_france
+			}
+			custom_effect_tooltip = country_name_france
+			add_to_variable = {
+				global.world_stage_power_fra = global.FRA_strength_france				# I'm using FRA because it's supposed to be zero, then localisation actually works
+				tooltip = world_stage_deploy_power_france
+			}
+		}
 	}
 	option = {
 		name = worldstage.23.komin
 		trigger = { has_world_stage_coalition_komintern = yes }
-		
+		effect_tooltip = {
+			custom_effect_tooltip = world_stage_theater_france_is_active_tt
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				global.world_stage_power_fra = global.GER_strength_france				# I'm using FRA because it's supposed to be zero, then localisation actually works
+				tooltip = world_stage_deploy_power_france
+			}
+			custom_effect_tooltip = country_name_france
+			add_to_variable = {
+				global.world_stage_power_fra = global.FRA_strength_france				# I'm using FRA because it's supposed to be zero, then localisation actually works
+				tooltip = world_stage_deploy_power_france
+			}
+		}
 	}
 	option = {
 		name = worldstage.23.allies
 		trigger = { has_world_stage_coalition_allies = yes }
-		
+		effect_tooltip = {
+			custom_effect_tooltip = world_stage_theater_france_is_active_tt
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				global.world_stage_power_fra = global.GER_strength_france				# I'm using FRA because it's supposed to be zero, then localisation actually works
+				tooltip = world_stage_deploy_power_france
+			}
+			if = {	limit = { NOT = { tag = KOB } }
+				custom_effect_tooltip = country_name_france
+			}
+			add_to_variable = {
+				global.world_stage_power_fra = global.FRA_strength_france				# I'm using FRA because it's supposed to be zero, then localisation actually works
+				tooltip = world_stage_deploy_power_france
+			}
+		}
 	}
 	option = {
 		name = worldstage.23.other
 		trigger = { has_world_stage_coalition_unaligned = yes }
-		
+		effect_tooltip = {
+			custom_effect_tooltip = world_stage_theater_france_is_active_tt
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				global.world_stage_power_fra = global.GER_strength_france				# I'm using FRA because it's supposed to be zero, then localisation actually works
+				tooltip = world_stage_deploy_power_france
+			}
+			custom_effect_tooltip = country_name_france
+			add_to_variable = {
+				global.world_stage_power_fra = global.FRA_strength_france				# I'm using FRA because it's supposed to be zero, then localisation actually works
+				tooltip = world_stage_deploy_power_france
+			}
+		}
 	}
 }
 
@@ -1432,7 +1554,7 @@ news_event = {
 	}
 }
 
-# The Blitzkrieg - France Falls
+# The Blitzkrieg - France Falls to Blitzkrieg
 country_event = {
 	id = worldstage.25
 	title = worldstage.25.t
@@ -1501,5 +1623,193 @@ country_event = {
 	option = {
 		name = worldstage.26.other
 		trigger = { has_world_stage_coalition_unaligned = yes }
+	}
+}
+
+# Invasion of Germany - Germany Wins, Advances to Alsace
+news_event = {
+	id = worldstage.27
+	title = worldstage.27.t
+	desc = worldstage.27.d 
+	picture = GFX_news_great_depression_over
+
+	is_triggered_only = yes
+
+	immediate = {
+		set_global_flag = world_stage_theater_alsace_is_active
+		set_variable = { global.GER_strength_alsace = global.GER_strength_westphalia }
+		clr_variable = global.GER_strength_westphalia
+		set_temp_variable = { fra_forces_value = global.world_stage_power_fra }
+		divide_temp_variable = { fra_forces_value = 4 }
+		subtract_from_variable = { global.world_stage_power_ger = fra_forces_value }
+		set_variable = { global.FRA_strength_alsace = fra_forces_value }
+		clr_variable = global.FRA_strength_westphalia
+	}
+	
+	option = {
+		name = worldstage.27.axis
+		trigger = { has_world_stage_coalition_axis = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = world_stage_theater_alsace_is_active_tt
+			if = {	limit = { NOT = { tag = REI } }
+				custom_effect_tooltip = country_name_germany
+			}
+			add_to_variable = {
+				global.GER_strength_westphalia = global.GER_strength_alsace	# I'm using GER_westphalia because it's supposed to be zero, then the localisation actually works
+				tooltip = world_stage_deploy_power_alsace
+			}
+			custom_effect_tooltip = country_name_alsace
+			add_to_variable = {
+				global.GER_strength_westphalia = global.FRA_strength_alsace			# I'm using GER_westphalia because it's supposed to be zero, then the localisation actually works
+				tooltip = world_stage_deploy_power_alsace
+			}
+		}
+	}
+	option = {
+		name = worldstage.27.komin
+		trigger = { has_world_stage_coalition_komintern = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = world_stage_theater_alsace_is_active_tt
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				global.GER_strength_westphalia = global.GER_strength_alsace				# I'm using GER_westphalia because it's supposed to be zero, then the localisation actually works
+				tooltip = world_stage_deploy_power_alsace
+			}
+			custom_effect_tooltip = country_name_alsace
+			add_to_variable = {
+				global.GER_strength_westphalia = global.FRA_strength_alsace				# I'm using GER_westphalia because it's supposed to be zero, then the localisation actually works
+				tooltip = world_stage_deploy_power_alsace
+			}
+		}
+	}
+	option = {
+		name = worldstage.27.allies
+		trigger = { has_world_stage_coalition_allies = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = world_stage_theater_alsace_is_active_tt
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				global.GER_strength_westphalia = global.GER_strength_alsace				# I'm using GER_westphalia because it's supposed to be zero, then the localisation actually works
+				tooltip = world_stage_deploy_power_alsace
+			}
+			if = {	limit = { NOT = { tag = KOB } }
+				custom_effect_tooltip = country_name_alsace
+			}
+			add_to_variable = {
+				global.GER_strength_westphalia = global.FRA_strength_alsace				# I'm using GER_westphalia because it's supposed to be zero, then the localisation actually works
+				tooltip = world_stage_deploy_power_alsace
+			}
+		}
+	}
+	option = {
+		name = worldstage.27.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = world_stage_theater_alsace_is_active_tt
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				global.GER_strength_westphalia = global.GER_strength_alsace				# I'm using GER_westphalia because it's supposed to be zero, then the localisation actually works
+				tooltip = world_stage_deploy_power_alsace
+			}
+			custom_effect_tooltip = country_name_alsace
+			add_to_variable = {
+				global.GER_strength_westphalia = global.FRA_strength_alsace				# I'm using GER_westphalia because it's supposed to be zero, then the localisation actually works
+				tooltip = world_stage_deploy_power_alsace
+			}
+		}
+	}
+}
+
+# Invasion of Germany - France wins, advances to Germany/Berlin
+news_event = {
+	id = worldstage.28
+	title = worldstage.28.t
+	desc = worldstage.28.d 
+	picture = GFX_news_great_depression_over
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		set_global_flag = world_stage_theater_germany_is_active
+		set_variable = { global.GER_strength_germany = global.world_stage_power_ger }
+		set_variable = { global.world_stage_power_ger = 0 }								# EVERYONE!
+		clr_variable = global.GER_strength_westphalia
+		set_variable = { global.FRA_strength_germany = global.FRA_strength_westphalia }
+		clr_variable = global.FRA_strength_westphalia
+	}
+	
+	option = {
+		name = worldstage.28.axis
+		trigger = { has_world_stage_coalition_axis = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = world_stage_theater_germany_is_active_tt
+			if = {	limit = { NOT = { tag = REI } }
+				custom_effect_tooltip = country_name_germany
+			}
+			add_to_variable = {
+				global.world_stage_power_ger = global.GER_strength_germany				# I'm using GER because it's supposed to be zero, then localisation actually works
+				tooltip = world_stage_deploy_power_germany
+			}
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				global.world_stage_power_ger = global.FRA_strength_germany				# I'm using GER because it's supposed to be zero, then localisation actually works
+				tooltip = world_stage_deploy_power_germany
+			}
+		}
+	}
+	option = {
+		name = worldstage.28.komin
+		trigger = { has_world_stage_coalition_komintern = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = world_stage_theater_germany_is_active_tt
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				global.world_stage_power_ger = global.GER_strength_germany				# I'm using GER because it's supposed to be zero, then localisation actually works
+				tooltip = world_stage_deploy_power_germany
+			}
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				global.world_stage_power_ger = global.FRA_strength_germany				# I'm using GER because it's supposed to be zero, then localisation actually works
+				tooltip = world_stage_deploy_power_germany
+			}
+		}
+	}
+	option = {
+		name = worldstage.28.allies
+		trigger = { has_world_stage_coalition_allies = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = world_stage_theater_germany_is_active_tt
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				global.world_stage_power_ger = global.GER_strength_germany				# I'm using GER because it's supposed to be zero, then localisation actually works
+				tooltip = world_stage_deploy_power_germany
+			}
+			if = {	limit = { NOT = { tag = KOB } }
+				custom_effect_tooltip = country_name_germany
+			}
+			add_to_variable = {
+				global.world_stage_power_ger = global.FRA_strength_germany				# I'm using GER because it's supposed to be zero, then localisation actually works
+				tooltip = world_stage_deploy_power_germany
+			}
+		}
+	}
+	option = {
+		name = worldstage.28.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = world_stage_theater_germany_is_active_tt
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				global.world_stage_power_ger = global.GER_strength_germany				# I'm using GER because it's supposed to be zero, then localisation actually works
+				tooltip = world_stage_deploy_power_germany
+			}
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				global.world_stage_power_ger = global.FRA_strength_germany				# I'm using GER because it's supposed to be zero, then localisation actually works
+				tooltip = world_stage_deploy_power_germany
+			}
+		}
 	}
 }
