@@ -1167,7 +1167,7 @@ news_event = {
 		set_variable = { global.FRA_strength_alsace = 120 }
 		set_temp_variable = { ger_forces_value = global.world_stage_power_ger }
 		divide_temp_variable = { ger_forces_value = 2 }
-		round_variable = ger_forces_value
+		round_temp_variable = ger_forces_value
 		set_variable = { global.GER_strength_alsace = ger_forces_value }
 		subtract_from_variable = { global.world_stage_power_ger = ger_forces_value }
 	}
@@ -1245,7 +1245,7 @@ news_event = {
 	}
 }
 
-# Invasion of Germany - France Wins, Advances to Westphalia
+# Invasion of Germany - France Wins in Alsace, Advances to Westphalia
 news_event = {
 	id = worldstage.22
 	title = worldstage.22.t
@@ -1258,6 +1258,7 @@ news_event = {
 		set_global_flag = world_stage_theater_westphalia_is_active
 		set_temp_variable = { ger_forces_value = global.world_stage_power_ger }
 		divide_temp_variable = { ger_forces_value = 2 }
+		round_temp_variable = ger_forces_value
 		subtract_from_variable = { global.world_stage_power_ger = ger_forces_value }
 		set_variable = { global.GER_strength_westphalia = ger_forces_value }
 		clr_variable = global.GER_strength_alsace
@@ -1343,7 +1344,7 @@ news_event = {
 	}
 }
 
-# Invasion of Germany - Germany Wins, Advances to France/Paris
+# Invasion of Germany - Germany Wins in Alsace, Advances to France/Paris
 news_event = {
 	id = worldstage.23
 	title = worldstage.23.t
@@ -1626,7 +1627,7 @@ country_event = {
 	}
 }
 
-# Invasion of Germany - Germany Wins, Advances to Alsace
+# Westphalia Front - Germany Wins, Advances to Alsace
 news_event = {
 	id = worldstage.27
 	title = worldstage.27.t
@@ -1641,6 +1642,7 @@ news_event = {
 		clr_variable = global.GER_strength_westphalia
 		set_temp_variable = { fra_forces_value = global.world_stage_power_fra }
 		divide_temp_variable = { fra_forces_value = 4 }
+		round_temp_variable = fra_forces_value
 		subtract_from_variable = { global.world_stage_power_ger = fra_forces_value }
 		set_variable = { global.FRA_strength_alsace = fra_forces_value }
 		clr_variable = global.FRA_strength_westphalia
@@ -1720,7 +1722,7 @@ news_event = {
 	}
 }
 
-# Invasion of Germany - France wins, advances to Germany/Berlin
+# Westphalia Front - France wins, advances to Germany/Berlin
 news_event = {
 	id = worldstage.28
 	title = worldstage.28.t
@@ -1810,6 +1812,135 @@ news_event = {
 				global.world_stage_power_ger = global.FRA_strength_germany				# I'm using GER because it's supposed to be zero, then localisation actually works
 				tooltip = world_stage_deploy_power_germany
 			}
+		}
+	}
+}
+
+# Battle of France - Germany Wins, France Falls
+news_event = {
+	id = worldstage.29
+	title = worldstage.29.t
+	desc = worldstage.29.d 
+	picture = GFX_news_great_depression_over
+
+	is_triggered_only = yes
+
+	immediate = {
+		
+		
+	}
+	
+	option = {
+		name = worldstage.29.axis
+		trigger = { has_world_stage_coalition_axis = yes }
+		effect_tooltip = {
+			if = {	limit = { NOT = { tag = REI } }
+				
+			}
+			
+		}
+	}
+	option = {
+		name = worldstage.29.komin
+		trigger = { has_world_stage_coalition_komintern = yes }
+		effect_tooltip = {
+			
+		}
+	}
+	option = {
+		name = worldstage.29.allies
+		trigger = { has_world_stage_coalition_allies = yes }
+		effect_tooltip = {
+			if = {	limit = { NOT = { tag = KOB } }
+				
+			}
+		}
+	}
+	option = {
+		name = worldstage.29.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
+		effect_tooltip = {
+		
+		}
+	}
+}
+
+# Battle of France - France Wins, Advances to Alsace
+news_event = {
+	id = worldstage.30
+	title = worldstage.30.t
+	desc = worldstage.30.d 
+	picture = GFX_news_great_depression_over
+
+	is_triggered_only = yes
+
+	immediate = {
+		set_global_flag = world_stage_theater_alsace_is_active
+		# most french return, some are sent to new frot
+		add_to_variable = { global.world_stage_power_fra = global.FRA_strength_france }
+		set_temp_variable = { fra_forces_value = global.world_stage_power_fra }
+		divide_temp_variable = { fra_forces_value = 4 }
+		round_temp_variable = fra_forces_value
+		set_variable = { global.FRA_strength_alsace = fra_forces_value }
+		set_variable = { global.FRA_strength_trickleback = global.world_stage_power_fra }	
+		# germans send fresh troops to new front
+		set_temp_variable = { ger_forces_value = global.world_stage_power_ger }
+		divide_temp_variable = { ger_forces_value = 4 }
+		round_temp_variable = { ger_forces_value
+		subtract_from_variable = { global.world_stage_power_ger = ger_forces_value }
+		set_variable = { global.GER_strength_alsace = ger_forces_value }
+	}
+	
+	option = {
+		name = worldstage.30.axis
+		trigger = { has_world_stage_coalition_axis = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = world_stage_theater_alsace_is_active_tt
+			if = {	limit = { NOT = { tag = REI } }
+				custom_effect_tooltip = country_name_germany
+			}
+			add_to_variable = {
+				global.GER_strength_france = global.GER_strength_alsace			# I'm using GER_france because it's supposed to be zero, then localisation works
+				tooltip = world_stage_deploy_power_alsace
+			}
+			custom_effect_tooltip = country_name_france
+			add_to_variable = {
+				global.GER_strength_france = global.FRA_strength_alsace			# I'm using GER_france because it's supposed to be zero, then localisation works
+				tooltip = world_stage_deploy_power_alsace
+			}
+			add_to_variable = {
+				global.GER_strength_france = global.world_stage_power_fra			# I'm using GER_france because it's supposed to be zero, then localisation works
+				tooltip = world_stage_add_trickleback
+			}
+		}
+	}
+	option = {
+		name = worldstage.30.komin
+		trigger = { has_world_stage_coalition_komintern = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = world_stage_theater_alsace_is_active_tt
+			custom_effect_tooltip = country_name_germany
+			custom_effect_tooltip = country_name_france
+		}
+	}
+	option = {
+		name = worldstage.30.allies
+		trigger = { has_world_stage_coalition_allies = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = world_stage_theater_alsace_is_active_tt
+			custom_effect_tooltip = country_name_germany
+			if = {	limit = { NOT = { tag = KOB } }
+				custom_effect_tooltip = country_name_france
+			}
+		}
+	}
+	option = {
+		name = worldstage.30.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = world_stage_theater_alsace_is_active_tt
+			custom_effect_tooltip = country_name_germany
+			custom_effect_tooltip = country_name_france
 		}
 	}
 }
