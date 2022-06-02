@@ -1037,22 +1037,56 @@ focus_tree = {
 		}
 		
 		available = {
-			has_global_flag = world_stage_world_war_2_is_active
+			custom_trigger_tooltip = {
+				tooltip = has_world_stage_power_ger_150_tt
+				check_variable = { global.world_stage_power_ger > 149 }
+			}
 		}
 		
 		completion_reward = {
+			set_temp_variable = { ger_forces_value = global.world_stage_power_ger }
+			multiply_temp_variable = { ger_forces_value = 0.75 }
+			round_temp_variable = ger_forces_value
+			clamp_temp_variable = { var = ger_forces_value min = 150 max = 999 }
 			add_named_threat = { 
 				threat = 25
 				name = REI_threat_barbarossa
 			}
-			custom_effect_tooltip = world_stage_theater_poland_is_active_tt
-			hidden_effect = {
-				set_global_flag = world_stage_theater_poland_is_active
-				if = {
-					limit = { has_global_flag = GER_SOV_pact_enabled }
-					clr_global_flag = GER_SOV_pact_enabled
+			if = {
+				limit = { has_global_flag = GER_SOV_pact_enabled }
+				clr_global_flag = GER_SOV_pact_enabled
+				news_event = worldstage.33
+				set_global_flag = world_stage_theater_poland_is_active_second
+				custom_effect_tooltip = world_stage_theater_poland_is_active_second_tt
+				custom_effect_tooltip = REI_attack_russia_tt
+				add_to_variable = {
+					global.GER_strength_poland = ger_forces_value
+					tooltip = world_stage_deploy_power_poland
 				}
+				subtract_from_variable = { global.world_stage_power_ger = ger_forces_value }
+				add_to_variable = {
+					global.GER_strength_poland_bonus = 150
+					tooltip = world_stage_bonus_power_poland
+				}
+				set_variable = { global.GER_strength_poland_final = global.GER_strength_poland }
+				add_to_variable = { global.GER_strength_poland_final = global.GER_strength_poland_bonus }
+			} else = {
+				news_event = worldstage.34
+				set_global_flag = world_stage_theater_belarus_is_active
+				custom_effect_tooltip = world_stage_theater_belarus_is_active_tt
+				custom_effect_tooltip = REI_attack_russia_tt
+				add_to_variable = {
+					global.GER_strength_poland = ger_forces_value
+					tooltip = world_stage_deploy_power_poland
+				}
+				subtract_from_variable = { global.world_stage_power_ger = ger_forces_value }
+				add_to_variable = {
+					global.GER_strength_belarus_bonus = 150
+				}
+				set_variable = { global.GER_strength_poland_final = global.GER_strength_belarus }
+				add_to_variable = { global.GER_strength_poland_final = global.GER_strength_poland_belarus }
 			}
+			set_global_flag = world_stage_world_war_2_is_active
 		}
 	}
 	
