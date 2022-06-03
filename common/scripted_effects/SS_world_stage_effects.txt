@@ -284,7 +284,7 @@ world_stage_daily_effect = {	# activated from on_actions/daily from a random sco
 		add_to_temp_variable = { global.SOV_strength_poland_multiplier = global.SOV_strength_doc_air }
 		add_to_temp_variable = { global.SOV_strength_poland_multiplier = global.SOV_strength_doc_land }
 		multiply_variable = { global.SOV_strength_poland_final = global.SOV_strength_poland_multiplier }
-		world_stage_get_poland_timer_frame = yes
+		world_stage_get_poland_timer_frame_second = yes
 		if = {
 			limit = { check_variable = { global.theater_poland_timer_second < 1 } }
 			resolve_threater_poland_second = yes
@@ -808,7 +808,7 @@ resolve_threater_poland = {
 		} else = {																						# else: SOV wins
 			news_event = worldstage.36
 		}
-		clr_global_flag = world_stage_theater_poland_is_active
+		clr_global_flag = world_stage_theater_poland_is_active_second
 		set_variable = { global.theater_poland_timer = 60 }											# restarts clock
 		world_stage_get_poland_timer_frame = yes
 	} else = {																						# no winner
@@ -844,32 +844,13 @@ resolve_threater_poland_second = {
 	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }
 	subtract_from_variable = { global.GER_strength_poland = side_b_attack }
 	subtract_from_variable = { global.SOV_strength_poland = side_a_attack }
-	if = {																							# someone wins
-		limit = { OR = { check_variable = { global.GER_strength_poland < 1 } check_variable = { global.SOV_strength_poland < 1 } } }
-		if = {
-			limit = { check_variable = { global.GER_strength_poland < global.SOV_strength_poland } }	# GER wins	# no trickleback: deployed forces move to next theater
-			news_event = worldstage.37
-		} else = {																						# else: SOV wins
-			news_event = worldstage.38
-		}
-		clr_global_flag = world_stage_theater_poland_is_active
-		set_variable = { global.theater_poland_timer = 60 }											# restarts clock
-		world_stage_get_poland_timer_frame = yes
-	} else = {																						# no winner
-		set_variable = { global.theater_poland_timer = 60 }											# restarts clock
-		world_stage_get_poland_timer_frame = yes
-		round_variable = global.GER_strength_poland
-		divide_variable = { global.GER_strength_poland_bonus = 2 }									# each 'turn' halves the strategic advantages of both sides
-		round_variable = global.GER_strength_poland_bonus
-		round_variable = global.SOV_strength_poland
-		divide_variable = { global.SOV_strength_poland_bonus = 2 }
-		round_variable = global.SOV_strength_poland_bonus
-		set_variable = { global.GER_strength_poland_final = global.GER_strength_poland }			# recalculate final strength so tooltips dont get messy after a draw
-		add_to_variable = { global.GER_strength_poland_final = global.GER_strength_poland_bonus }
-		set_variable = { global.SOV_strength_poland_final = global.SOV_strength_poland }
-		add_to_variable = { global.SOV_strength_poland_final = global.SOV_strength_poland_bonus }
-		# country_event =																			# no event needed here
+	round_variable = global.GER_strength_poland
+	round_variable = global.SOV_strength_poland
+	random_list = {
+		var:global.GER_strength_poland_final = { country_event = worldstage.37 }					# surprise attack works
+		var:global.SOV_strength_poland_final = { country_event = worldstage.38 }					# surprise attack fails
 	}
+	clr_global_flag = world_stage_theater_poland_is_active_second
 	clear_variable = global.GER_strength_poland				# CLEAR ALL UNECESSARY DATA (do not delete trickleback data! it's used for localisation)
 	clear_variable = global.GER_strength_poland_bonus
 	clear_variable = global.GER_strength_poland_final
@@ -943,6 +924,12 @@ resolve_threater_smolensk = {
 		clr_global_flag = world_stage_theater_smolensk_is_active
 		set_variable = { global.theater_smolensk_timer = 60 }											# restarts clock
 		world_stage_get_smolensk_timer_frame = yes
+		clear_variable = global.GER_strength_smolensk				# CLEAR ALL UNECESSARY DATA (do not delete trickleback data! it's used for localisation)
+		clear_variable = global.GER_strength_smolensk_bonus
+		clear_variable = global.GER_strength_smolensk_final
+		clear_variable = global.SOV_strength_smolensk
+		clear_variable = global.SOV_strength_smolensk_bonus
+		clear_variable = global.SOV_strength_smolensk_final
 	} else = {																						# no winner
 		set_variable = { global.theater_smolensk_timer = 60 }											# restarts clock
 		world_stage_get_smolensk_timer_frame = yes
@@ -958,12 +945,6 @@ resolve_threater_smolensk = {
 		add_to_variable = { global.SOV_strength_smolensk_final = global.SOV_strength_smolensk_bonus }
 		# country_event =																			# no event needed here
 	}
-	clear_variable = global.GER_strength_smolensk				# CLEAR ALL UNECESSARY DATA (do not delete trickleback data! it's used for localisation)
-	clear_variable = global.GER_strength_smolensk_bonus
-	clear_variable = global.GER_strength_smolensk_final
-	clear_variable = global.SOV_strength_smolensk
-	clear_variable = global.SOV_strength_smolensk_bonus
-	clear_variable = global.SOV_strength_smolensk_final
 }	d_resolve_threater_smolensk = { resolve_threater_smolensk = yes }	# shortcut console command
 
 resolve_threater_russia = {

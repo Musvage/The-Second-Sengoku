@@ -1261,9 +1261,9 @@ news_event = {
 		round_temp_variable = ger_forces_value
 		subtract_from_variable = { global.world_stage_power_ger = ger_forces_value }
 		set_variable = { global.GER_strength_westphalia = ger_forces_value }
-		clr_variable = global.GER_strength_alsace
+		clear_variable = global.GER_strength_alsace
 		set_variable = { global.FRA_strength_westphalia = global.FRA_strength_alsace }
-		clr_variable = global.GER_strength_alsace
+		clear_variable = global.GER_strength_alsace
 		#if = {	# <--------------------------------------------------------------------------- HERE! LOOK AT ME! FINISH ME! TODO! TO-DO!
 		#	limit = { ger still fights in netherlands}
 		#	add strategic advantage to allies
@@ -1358,10 +1358,10 @@ news_event = {
 	immediate = {
 		set_global_flag = world_stage_theater_france_is_active
 		set_variable = { global.GER_strength_france = global.GER_strength_alsace }
-		clr_variable = global.GER_strength_alsace
+		clear_variable = global.GER_strength_alsace
 		set_variable = { global.FRA_strength_france = global.world_stage_power_fra }
 		set_variable = { global.world_stage_power_fra = 0 }								# EVERYONE!
-		clr_variable = global.FRA_strength_alsace
+		clear_variable = global.FRA_strength_alsace
 		#if = {	# <--------------------------------------------------------------------------- HERE! LOOK AT ME! FINISH ME! TODO! TO-DO!
 		#	limit = { allies still fights in netherlands}
 		#	add strategic advantage to axis
@@ -1639,13 +1639,13 @@ news_event = {
 	immediate = {
 		set_global_flag = world_stage_theater_alsace_is_active
 		set_variable = { global.GER_strength_alsace = global.GER_strength_westphalia }
-		clr_variable = global.GER_strength_westphalia
+		clear_variable = global.GER_strength_westphalia
 		set_temp_variable = { fra_forces_value = global.world_stage_power_fra }
 		divide_temp_variable = { fra_forces_value = 4 }
 		round_temp_variable = fra_forces_value
 		subtract_from_variable = { global.world_stage_power_ger = fra_forces_value }
 		set_variable = { global.FRA_strength_alsace = fra_forces_value }
-		clr_variable = global.FRA_strength_westphalia
+		clear_variable = global.FRA_strength_westphalia
 	}
 	
 	option = {
@@ -1737,9 +1737,9 @@ news_event = {
 		set_global_flag = world_stage_theater_germany_is_active
 		set_variable = { global.GER_strength_germany = global.world_stage_power_ger }
 		set_variable = { global.world_stage_power_ger = 0 }								# EVERYONE!
-		clr_variable = global.GER_strength_westphalia
+		clear_variable = global.GER_strength_westphalia
 		set_variable = { global.FRA_strength_germany = global.FRA_strength_westphalia }
-		clr_variable = global.FRA_strength_westphalia
+		clear_variable = global.FRA_strength_westphalia
 	}
 	
 	option = {
@@ -2363,7 +2363,7 @@ news_event = {
 	}
 }
 
-# Soviets Defeated in Poland
+# Soviets Defeated in Poland (regular battle), front moves to belarus
 news_event = {
 	id = worldstage.35
 	title = worldstage.35.t
@@ -2373,22 +2373,15 @@ news_event = {
 	is_triggered_only = yes
 
 	immediate = {
-		set_global_flag = world_stage_theater_westphalia_is_active	
-		# france sends fresh troops to new front
-		set_temp_variable = { fra_forces_value = global.world_stage_power_fra }
-		divide_temp_variable = { fra_forces_value = 4 }
-		round_temp_variable = fra_forces_value
-		set_variable = { global.FRA_strength_westphalia = fra_forces_value }
-		subtract_from_variable = { global.world_stage_power_fra = fra_forces_value }
-		# most germans return, some a sent to new front
-		set_variable = { global.world_stage_power_ger = global.GER_strength_germany }
-		set_variable = { global.GER_strength_germany = 0 }
-		set_temp_variable = { ger_forces_value = global.world_stage_power_ger }
-		divide_temp_variable = { ger_forces_value = 4 }
-		round_temp_variable = ger_forces_value
-		subtract_from_variable = { global.world_stage_power_ger = ger_forces_value }
-		set_variable = { global.GER_strength_westphalia = ger_forces_value }
-		
+		set_global_flag = world_stage_theater_belarus_is_active
+		set_variable = { global.GER_strength_belarus = global.GER_strength_poland }
+		clear_variable = global.GER_strength_poland
+		set_temp_variable = { sov_forces_value = global.world_stage_power_sov }
+		divide_temp_variable = { sov_forces_value = 4 }
+		round_temp_variable = sov_forces_value
+		set_variable = { global.SOV_strength_belarus = sov_forces_value }
+		subtract_from_variable = { global.world_stage_power_sov = sov_forces_value }
+		clear_variable = global.SOV_strength_poland
 	}
 	
 	option = {
@@ -2426,7 +2419,7 @@ news_event = {
 	}
 }
 
-# Germany Defeated in Poland
+# Germany Defeated in Poland (regular battle)
 news_event = {
 	id = worldstage.36
 	title = worldstage.36.t
@@ -2485,32 +2478,105 @@ news_event = {
 
 	immediate = {
 		set_global_flag = world_stage_theater_smolensk_is_active	# goes straight to Smolensk, 'bypasses' Belarus
-		
+		add_to_variable = {global.world_stage_power_ger = 5 }
+		add_to_variable = {global.world_stage_power_sov = -5 }
+		add_to_variable = { global.GER_strength_smolensk = global.GER_strength_poland }
+		add_to_variable = { global.GER_strength_smolensk_bonus = 75 }
+		set_temp_variable = { sov_forces_value = global.world_stage_power_sov }
+		divide_temp_variable = { sov_forces_value = 4 }
+		round_temp_variable = sov_forces_value
+		add_to_variable = { global.SOV_strength_smolensk = sov_forces_value }
+		subtract_from_variable = { global.world_stage_power_sov = sov_forces_value }
 	}
 	
 	option = {
 		name = worldstage.37.axis
 		trigger = { has_world_stage_coalition_axis = yes }
 		effect_tooltip = {
+			custom_effect_tooltip - world_stage_theater_smolensk_is_active_tt
 			if = {	limit = { NOT = { tag = REI } }
-				
+				custom_effect_tooltip = country_name_germany
 			}
-			
+			add_to_variable = {
+				placeholder_var = global.GER_strength_smolensk			# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_deploy_power_smolensk
+			}
+			add_to_variable = {
+				placeholder_var = global.GER_strength_smolensk_bonus			# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_bonus_power_smolensk
+			}
+			add_to_variable = {
+				placeholder_var = 5										# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_add_power
+			}
+			custom_effect_tooltip = country_name_russia
+			add_to_variable = {
+				placeholder_var = 5										# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_remove_power
+			}
+			add_to_variable = {
+				placeholder_var = global.SOV_strength_smolensk			# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_deploy_power_smolensk
+			}
 		}
 	}
 	option = {
 		name = worldstage.37.komin
 		trigger = { has_world_stage_coalition_komintern = yes }
 		effect_tooltip = {
-			
-		}
+			custom_effect_tooltip - world_stage_theater_smolensk_is_active_tt
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				placeholder_var = global.GER_strength_smolensk			# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_deploy_power_smolensk
+			}
+			add_to_variable = {
+				placeholder_var = global.GER_strength_smolensk_bonus			# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_bonus_power_smolensk
+			}
+			add_to_variable = {
+				placeholder_var = 5										# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_add_power
+			}
+			if = {	limit = { NOT = { tag = FER } }
+				custom_effect_tooltip = country_name_russia
+			}
+			add_to_variable = {
+				placeholder_var = 5										# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_remove_power
+			}
+			add_to_variable = {
+				placeholder_var = global.SOV_strength_smolensk			# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_deploy_power_smolensk
+			}
+		
 	}
 	option = {
 		name = worldstage.37.allies
 		trigger = { has_world_stage_coalition_allies = yes }
 		effect_tooltip = {
-			if = {	limit = { NOT = { tag = KOB } }
-				
+			custom_effect_tooltip - world_stage_theater_smolensk_is_active_tt
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				placeholder_var = global.GER_strength_smolensk			# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_deploy_power_smolensk
+			}
+			add_to_variable = {
+				placeholder_var = global.GER_strength_smolensk_bonus			# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_bonus_power_smolensk
+			}
+			add_to_variable = {
+				placeholder_var = 5										# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_add_power
+			}
+			custom_effect_tooltip = country_name_russia
+			add_to_variable = {
+				placeholder_var = 5										# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_remove_power
+			}
+			add_to_variable = {
+				placeholder_var = global.SOV_strength_smolensk			# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_deploy_power_smolensk
 			}
 		}
 	}
@@ -2518,7 +2584,29 @@ news_event = {
 		name = worldstage.37.other
 		trigger = { has_world_stage_coalition_unaligned = yes }
 		effect_tooltip = {
-		
+			custom_effect_tooltip - world_stage_theater_smolensk_is_active_tt
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				placeholder_var = global.GER_strength_smolensk			# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_deploy_power_smolensk
+			}
+			add_to_variable = {
+				placeholder_var = global.GER_strength_smolensk_bonus			# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_bonus_power_smolensk
+			}
+			add_to_variable = {
+				placeholder_var = 5										# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_add_power
+			}
+			custom_effect_tooltip = country_name_russia
+			add_to_variable = {
+				placeholder_var = 5										# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_remove_power
+			}
+			add_to_variable = {
+				placeholder_var = global.SOV_strength_smolensk			# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_deploy_power_smolensk
+			}
 		}
 	}
 }
@@ -2534,6 +2622,15 @@ news_event = {
 
 	immediate = {
 		set_global_flag = world_stage_theater_belarus_is_active		# Germany wins in poland but the offensive slows down in Belarus
+		add_to_variable = {global.world_stage_power_ger = 5 }
+		add_to_variable = {global.world_stage_power_sov = -5 }
+		add_to_variable = { global.GER_strength_smolensk = global.GER_strength_poland}
+		add_to_variable = { global.GER_strength_smolensk_bonus = 50 }
+		set_temp_variable = { sov_forces_value = global.world_stage_power_sov }
+		divide_temp_variable = { sov_forces_value = 4 }
+		round_temp_variable = sov_forces_value
+		add_to_variable = { global.SOV_strength_smolensk = sov_forces_value }
+		subtract_from_variable = { global.world_stage_power_sov = sov_forces_value }
 		
 	}
 	
@@ -2541,25 +2638,90 @@ news_event = {
 		name = worldstage.38.axis
 		trigger = { has_world_stage_coalition_axis = yes }
 		effect_tooltip = {
+			custom_effect_tooltip - world_stage_theater_smolensk_is_active_tt
 			if = {	limit = { NOT = { tag = REI } }
-				
+				custom_effect_tooltip = country_name_germany
 			}
-			
+			add_to_variable = {
+				placeholder_var = global.GER_strength_smolensk			# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_deploy_power_smolensk
+			}
+			add_to_variable = {
+				placeholder_var = global.GER_strength_smolensk_bonus			# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_bonus_power_smolensk
+			}
+			add_to_variable = {
+				placeholder_var = 5										# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_add_power
+			}
+			custom_effect_tooltip = country_name_russia
+			add_to_variable = {
+				placeholder_var = 5										# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_remove_power
+			}
+			add_to_variable = {
+				placeholder_var = global.SOV_strength_smolensk			# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_deploy_power_smolensk
+			}
 		}
 	}
 	option = {
 		name = worldstage.38.komin
 		trigger = { has_world_stage_coalition_komintern = yes }
 		effect_tooltip = {
-			
-		}
+			custom_effect_tooltip - world_stage_theater_smolensk_is_active_tt
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				placeholder_var = global.GER_strength_smolensk			# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_deploy_power_smolensk
+			}
+			add_to_variable = {
+				placeholder_var = global.GER_strength_smolensk_bonus			# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_bonus_power_smolensk
+			}
+			add_to_variable = {
+				placeholder_var = 5										# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_add_power
+			}
+			if = {	limit = { NOT = { tag = FER } }
+				custom_effect_tooltip = country_name_russia
+			}
+			add_to_variable = {
+				placeholder_var = 5										# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_remove_power
+			}
+			add_to_variable = {
+				placeholder_var = global.SOV_strength_smolensk			# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_deploy_power_smolensk
+			}
+		
 	}
 	option = {
 		name = worldstage.38.allies
 		trigger = { has_world_stage_coalition_allies = yes }
 		effect_tooltip = {
-			if = {	limit = { NOT = { tag = KOB } }
-				
+			custom_effect_tooltip - world_stage_theater_smolensk_is_active_tt
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				placeholder_var = global.GER_strength_smolensk			# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_deploy_power_smolensk
+			}
+			add_to_variable = {
+				placeholder_var = global.GER_strength_smolensk_bonus			# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_bonus_power_smolensk
+			}
+			add_to_variable = {
+				placeholder_var = 5										# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_add_power
+			}
+			custom_effect_tooltip = country_name_russia
+			add_to_variable = {
+				placeholder_var = 5										# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_remove_power
+			}
+			add_to_variable = {
+				placeholder_var = global.SOV_strength_smolensk			# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_deploy_power_smolensk
 			}
 		}
 	}
@@ -2567,7 +2729,29 @@ news_event = {
 		name = worldstage.38.other
 		trigger = { has_world_stage_coalition_unaligned = yes }
 		effect_tooltip = {
-		
+			custom_effect_tooltip - world_stage_theater_smolensk_is_active_tt
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				placeholder_var = global.GER_strength_smolensk			# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_deploy_power_smolensk
+			}
+			add_to_variable = {
+				placeholder_var = global.GER_strength_smolensk_bonus			# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_bonus_power_smolensk
+			}
+			add_to_variable = {
+				placeholder_var = 5										# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_add_power
+			}
+			custom_effect_tooltip = country_name_russia
+			add_to_variable = {
+				placeholder_var = 5										# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_remove_power
+			}
+			add_to_variable = {
+				placeholder_var = global.SOV_strength_smolensk			# placeholder_var = 0, tooltips gets correct value
+				tooltip = world_stage_deploy_power_smolensk
+			}
 		}
 	}
 }
@@ -2583,7 +2767,18 @@ news_event = {
 
 	immediate = {
 		set_global_flag = world_stage_theater_smolensk_is_active
-		
+		set_variable = { global.GER_strength_smolensk = global.GER_strength_belarus }
+		clear_variable = global.GER_strength_belarus
+		set_temp_variable = { sov_forces_value = global.world_stage_power_sov }
+		divide_temp_variable = { sov_forces_value = 4 }
+		round_temp_variable = sov_forces_value
+		set_variable = { global.SOV_strength_smolensk = sov_forces_value }
+		subtract_from_variable = { global.world_stage_power_sov = sov_forces_value }
+		clear_variable = global.SOV_strength_belarus
+		#if = {	# <--------------------------------------------------------------------------- HERE! LOOK AT ME! FINISH ME! TODO! TO-DO!
+		#	limit = { sov still fights in ukraine}
+		#	add strategic advantage to axis
+		#}
 	}
 	
 	option = {
@@ -2632,7 +2827,13 @@ news_event = {
 
 	immediate = {
 		set_global_flag = world_stage_theater_poland_is_active
-		
+		set_temp_variable = { ger_forces_value = global.world_stage_power_ger }
+		divide_temp_variable = { ger_forces_value = 4 }
+		round_temp_variable = ger_forces_value
+		set_variable = { global.GER_strength_poland = ger_forces_value }
+		subtract_from_variable = { global.world_stage_power_ger = ger_forces_value }
+		set_variable = { global.SOV_strength_poland = global.SOV_strength_belarus }
+		clear_variable = global.SOV_strength_belarus
 	}
 	
 	option = {
@@ -2681,7 +2882,15 @@ news_event = {
 
 	immediate = {
 		set_global_flag = world_stage_theater_russia_is_active
-		
+		set_variable = { global.GER_strength_russia = global.GER_strength_smolensk }
+		clear_variable = global.GER_strength_smolensk
+		set_variable = { global.SOV_strength_smolensk = global.world_stage_power_sov }		# EVERYONE !!
+		set_variable = { global.world_stage_power_sov = 0 }
+		clear_variable = global.SOV_strength_smolensk
+		#if = {	# <--------------------------------------------------------------------------- HERE! LOOK AT ME! FINISH ME! TODO! TO-DO!
+		#	limit = { sov still fights in ukraine}
+		#	add strategic advantage to axis
+		#}
 	}
 	
 	option = {
@@ -2730,7 +2939,14 @@ news_event = {
 
 	immediate = {
 		set_global_flag = world_stage_theater_belarus_is_active
-		
+		set_temp_variable = { ger_forces_value = global.world_stage_power_ger }
+		divide_temp_variable = { ger_forces_value = 4 }
+		round_temp_variable = ger_forces_value
+		set_variable = { global.GER_strength_belarus = ger_forces_value }
+		subtract_from_variable = { global.world_stage_power_ger = ger_forces_value }
+		clear_variable = global.GER_strength_smolensk
+		set_variable = { global.SOV_strength_belarus = global.SOV_strength_smolensk }
+		clear_variable = global.SOV_strength_smolensk }
 	}
 	
 	option = {
@@ -2828,7 +3044,21 @@ news_event = {
 
 	immediate = {
 		set_global_flag = world_stage_theater_smolensk_is_active
-		
+		# most soviets return, some are sent to new frot
+		add_to_variable = { global.world_stage_power_sov = global.SOV_strength_russia }
+		set_temp_variable = { sov_forces_value = global.world_stage_power_sov }
+		divide_temp_variable = { sov_forces_value = 4 }
+		round_temp_variable = sov_forces_value
+		subtract_from_variable = { global.world_stage_power_sov = sov_forces_value }
+		set_variable = { global.SOV_strength_smolensk = sov_forces_value }
+		set_variable = { global.SOV_strength_trickleback = global.world_stage_power_sov }	
+		# germans send fresh troops to new front
+		set_temp_variable = { ger_forces_value = global.world_stage_power_ger }
+		divide_temp_variable = { ger_forces_value = 4 }
+		round_temp_variable = ger_forces_value
+		subtract_from_variable = { global.world_stage_power_ger = ger_forces_value }
+		set_variable = { global.GER_strength_smolensk = ger_forces_value }
+		clear_variable = global.GER_strength_russia
 	}
 	
 	option = {
