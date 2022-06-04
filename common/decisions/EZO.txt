@@ -15,26 +15,21 @@ EZO_fall_goverment = {
         selectable_mission = no              
         days_mission_timeout = 200
         timeout_effect = {
-			add_ideas = EZO_civil_war
-			set_country_flag = facist_enter_civil_war
-			set_country_flag = communist_enter_civil_war
-			set_country_flag = social_communist_enter_civil_war
-			set_country_flag = ainu_enter_civil_war
-			set_country_flag = russians_enter_civil_war
-			country_lock_all_division_template = no
 			if = {
 				limit = { has_completed_focus = EZO_the_white_coat_coup }
 				set_cosmetic_tag = EZO_White_Russian_Movement
 			}
-			if = {
-				limit = { NOT = { has_completed_focus = EZO_constitution_focus } }
 				if = {
 					limit = {
-						has_completed_focus = EZO_sellect_traditionalism
+						OR = {
+							has_completed_focus = EZO_constitution_focus
+							has_completed_focus = EZO_sellect_traditionalism
+						}
 					}
 					EZO_civil_war_state_transfer_with_rebels = yes
 					hidden_effect = {
 						DZO = {
+							civil_war_economy = yes
 							add_ideas = EZO_civil_war
 							load_oob = "EZO_Civil_War"
 							set_equipment_fraction = 0.3
@@ -59,8 +54,13 @@ EZO_fall_goverment = {
 								popularity = 0.5
 							}
 							declare_war_other_idology = yes
+							declare_war_on = {
+								target = EZO
+								type = civil_war
+							}
 							every_owned_state = {
-								civil_war_2_militas = yes
+								civil_war_militas = yes
+								civil_war_militas = yes
 							}
 							if = {
 								limit = {
@@ -85,6 +85,7 @@ EZO_fall_goverment = {
 					EZO_civil_war_state_transfer_with_rebels = yes
 					hidden_effect = {
 						MZO = {
+							civil_war_economy = yes
 							add_ideas = EZO_civil_war
 							load_oob = "EZO_Civil_War"
 							set_equipment_fraction = 0.3
@@ -107,9 +108,14 @@ EZO_fall_goverment = {
 								ideology = democratic_socialism
 								popularity = 0.5
 							}
+							declare_war_on = {
+								target = EZO
+								type = civil_war
+							}
 							declare_war_other_idology = yes
 							every_owned_state = {
-								civil_war_2_militas = yes
+								civil_war_militas = yes
+								civil_war_militas = yes
 							}
 							if = {
 								limit = {
@@ -127,62 +133,8 @@ EZO_fall_goverment = {
 						}
 					}
 				}
-			}
-			if = {
-				limit = {
-					has_completed_focus = EZO_constitution_focus
-				}
-				EZO_civil_war_state_transfer_with_rebels = yes
-				hidden_effect = {
-					DZO = {
-						add_ideas = EZO_civil_war
-						load_oob = "EZO_Civil_War"
-						set_equipment_fraction = 0.3
-						set_stability = 0.9
-						set_war_support = 0.8
-						add_popularity = {
-							ideology = democratic
-							popularity = 0.35
-						}
-						add_equipment_to_stockpile = {
-							type = infantry_equipment
-							amount = 2000
-							producer = EZO
-						}
-						load_focus_tree = {
-							tree = EZO
-							keep_completed = no
-						}
-						add_popularity = {
-							ideology = democratic_socialism
-							popularity = 0.5
-						}
-						declare_war_other_idology = yes
-						
-						every_owned_state = {
-							civil_war_2_militas = yes
-						}
-						if = {
-							limit = {
-								OR = {
-									check_variable = {
-										EZO.rebels_power > EZO.goverment_power
-									}
-									check_variable = {
-										EZO.rebels_power = EZO.goverment_power
-									}
-								}
-							}
-							every_owned_state = {
-								civil_war_militas = yes
-							}
-						}
-					}
-				}
-			}
 			hidden_effect = {
 				clr_country_flag = ezo_civil_war_time
-				set_country_flag = ezo_civil_war_time_other
 				load_oob = "EZO_Civil_War"
 				if = {
 					limit = {
@@ -197,8 +149,21 @@ EZO_fall_goverment = {
 					}
 					every_owned_state = {
 						civil_war_militas = yes
+						civil_war_militas = yes
 					}
 				}
+				civil_war_economy = yes
+				add_ideas = EZO_civil_war
+				
+				set_global_flag = facist_enter_civil_war
+				set_global_flag = communist_enter_civil_war
+				set_global_flag = social_communist_enter_civil_war
+				set_global_flag = ainu_enter_civil_war
+				set_global_flag = russians_enter_civil_war
+				set_global_flag = civil_war_finish
+				set_global_flag = ezo_civil_war_time 
+
+				country_lock_all_division_template = no
 			}
         }
 	}
@@ -207,38 +172,36 @@ EZO_fall_goverment = {
 
 		allowed = { tag = EZO } 
 			 
-        available = {                           
-            OR = {
-				NOT = { has_country_flag = ezo_civil_war_time_other}   
-				AND = {
-					50 = { is_controlled_by = EZO }
-					9 = { is_controlled_by = EZO }
-					54 = { is_controlled_by = EZO }
+        available = {
+			50 = { is_controlled_by = EZO }
+			9 = { is_controlled_by = EZO }
+			54 = { is_controlled_by = EZO }
+			AND = {
+				NOT = {
+					50 = { is_controlled_by = DZO }
+					9 = { is_controlled_by = DZO }
+					54 = { is_controlled_by = DZO }
 				}
-			}              
+				NOT = {
+					50 = { is_controlled_by = MZO }
+					9 = { is_controlled_by = MZO }
+					54 = { is_controlled_by = MZO }
+				}
+			}
         }
         activation = {       
-			OR = {
-				has_country_flag = ezo_civil_war_time 
-				has_country_flag = ezo_civil_war_time_other 
-			}
+			has_global_flag = ezo_civil_war_time 
 			NOT = { has_government = neutrality }
-			has_country_flag = ainu_enter_civil_war
+			has_global_flag = ainu_enter_civil_war
         }
 		
         is_good = no                           
         selectable_mission = no              
         days_mission_timeout = 100  
 		complete_effect = {
-			clr_country_flag = ainu_enter_civil_war
+			clr_global_flag = ainu_enter_civil_war
 		}
         timeout_effect = {
-				if = {
-					limit = {
-						NOT = { has_government = neutrality }
-						has_country_flag = ainu_enter_civil_war
-					}
-					clr_country_flag = ainu_enter_civil_war
 					AZO = {
 						set_rule = {
 							can_puppet = no
@@ -254,7 +217,8 @@ EZO_fall_goverment = {
 						}
 					}
 					AZO = {
-						set_country_flag = civil_war_finish
+						civil_war_economy = yes
+						set_global_flag = civil_war_finish
 						add_ideas = EZO_civil_war
 						transfer_state = 50
 						transfer_state = 9
@@ -291,12 +255,12 @@ EZO_fall_goverment = {
 							add_civil_war_target = EZO
 							load_oob = "EZO_Civil_War"
 							every_owned_state = {
-								civil_war_2_militas = yes
+								civil_war_militas = yes
+								civil_war_militas = yes
 							}
 						}
 					}
-				}
-			clr_country_flag = ainu_enter_civil_war
+			clr_global_flag = ainu_enter_civil_war
         }
 	}
 	
@@ -305,39 +269,39 @@ EZO_fall_goverment = {
 		allowed = { tag = EZO } 
 			 
         available = {
-			OR = {
-				NOT = { has_country_flag = ezo_civil_war_time_other}
-				AND = {
-					49 = { is_controlled_by = EZO }
+				49 = { is_controlled_by = EZO }
 					51 = { is_controlled_by = EZO }
 					58 = { is_controlled_by = EZO }
 					214 = { is_controlled_by = EZO }
+			AND = {
+				NOT = {
+					49 = { is_controlled_by = DZO }
+					51 = { is_controlled_by = DZO }
+					58 = { is_controlled_by = DZO }
+					214 = { is_controlled_by = DZO }
+				}
+				NOT = {
+					49 = { is_controlled_by = MZO }
+					51 = { is_controlled_by = MZO }
+					58 = { is_controlled_by = MZO }
+					214 = { is_controlled_by = MZO }
 				}
 			}
         }
         activation = {                         
-            OR = {
-				has_country_flag = ezo_civil_war_time 
-				has_country_flag = ezo_civil_war_time_other 
-			}
+				has_global_flag = ezo_civil_war_time 
 			NOT = {has_government = democratic_socialism}
-			has_country_flag = social_communist_enter_civil_war
+			has_global_flag = social_communist_enter_civil_war
         }
 		
         is_good = no                           
         selectable_mission = no              
         days_mission_timeout = 100
 		complete_effect = {
-			clr_country_flag = social_communist_enter_civil_war
+			clr_global_flag = social_communist_enter_civil_war
 		}
 		
         timeout_effect = {
-				clr_country_flag = social_communist_enter_civil_war
-				if = {
-					limit = {
-						NOT = {has_government = democratic_socialism}
-						has_country_flag = social_communist_enter_civil_war
-					}
 					clr_country_flag = social_communist_enter_civil_war
 					SZO = {
 						set_rule = {
@@ -354,7 +318,8 @@ EZO_fall_goverment = {
 						}
 					}
 					SZO = {
-						set_country_flag = civil_war_finish
+						civil_war_economy = yes
+						set_global_flag = civil_war_finish
 						add_ideas = EZO_civil_war
 						transfer_state = 49
 						transfer_state = 51
@@ -388,11 +353,11 @@ EZO_fall_goverment = {
 							add_civil_war_target = EZO
 							load_oob = "EZO_Civil_War"
 							every_owned_state = {
-								civil_war_2_militas = yes
+								civil_war_militas = yes
+								civil_war_militas = yes
 							}
 						}
 					}
-				}
         }
 	}
 	
@@ -400,22 +365,26 @@ EZO_fall_goverment = {
 
 		allowed = { tag = EZO } 
 			 
-        available = {  
-			OR = {
-				NOT = { has_country_flag = ezo_civil_war_time_other}
-				AND = {
-					73 = { is_controlled_by = EZO }
-				59 = { is_controlled_by = EZO }
-				77 = { is_controlled_by = EZO }
+        available = {
+			73 = { is_controlled_by = EZO }
+					59 = { is_controlled_by = EZO }
+					77 = { is_controlled_by = EZO }
+			AND = {
+				NOT = {
+					73 = { is_controlled_by = DZO }
+					59 = { is_controlled_by = DZO }
+					77 = { is_controlled_by = DZO }
+				}
+				NOT = {
+					73 = { is_controlled_by = MZO }
+					59 = { is_controlled_by = MZO }
+					77 = { is_controlled_by = MZO }
 				}
 			}
         }
         activation = {                         
-            OR = {
-				has_country_flag = ezo_civil_war_time 
-				has_country_flag = ezo_civil_war_time_other 
-			}
-			has_country_flag = facist_enter_civil_war
+			has_global_flag = ezo_civil_war_time 
+			has_global_flag = facist_enter_civil_war
 			NOT = { has_government = fascism }
         }
 		
@@ -423,22 +392,18 @@ EZO_fall_goverment = {
         selectable_mission = no              
         days_mission_timeout = 100 
 		complete_effect = {
-			clr_country_flag = facist_enter_civil_war
+			clr_global_flag = facist_enter_civil_war
 		}
+		
         timeout_effect = {
-			clr_country_flag = facist_enter_civil_war
-				if = {
-					limit = {
-						has_country_flag = facist_enter_civil_war
-						NOT = { has_government = fascism }
-					}
-					clr_country_flag = facist_enter_civil_war
+					clr_global_flag = facist_enter_civil_war
 					FZO = {
+						civil_war_economy = yes
 						load_focus_tree = {
 							tree = EZO
 							keep_completed = no
 						}
-						set_country_flag = civil_war_finish
+						set_global_flag = civil_war_finish
 						add_ideas = EZO_civil_war
 						transfer_state = 73
 						transfer_state = 59
@@ -475,7 +440,6 @@ EZO_fall_goverment = {
 							}
 						}
 					}
-				}
         }
 	}
 	
@@ -484,22 +448,26 @@ EZO_fall_goverment = {
 		allowed = { tag = EZO } 
 			 
         available = {
-			OR = {
-				NOT = { has_country_flag = ezo_civil_war_time_other} 
+		48 = { is_controlled_by = EZO }
+						3 = { is_controlled_by = EZO }
+						1 = { is_controlled_by = EZO }
 				AND = {
-					48 = { is_controlled_by = EZO }
-					3 = { is_controlled_by = EZO }
-					1 = { is_controlled_by = EZO }
+					NOT = {
+						48 = { is_controlled_by = DZO }
+						3 = { is_controlled_by = DZO }
+						1 = { is_controlled_by = DZO }
+					}
+					NOT = {
+						48 = { is_controlled_by = MZO }
+						3 = { is_controlled_by = MZO }
+						1 = { is_controlled_by = MZO }
+					}
 				}
-			}
         }
         activation = {                         
-            OR = {
-				has_country_flag = ezo_civil_war_time 
-				has_country_flag = ezo_civil_war_time_other 
-			}
-			has_country_flag = russians_enter_civil_war
-			NOT = { 
+			has_global_flag = ezo_civil_war_time 
+			has_global_flag = russians_enter_civil_war
+			NOT = {
 				has_completed_focus = EZO_sellect_strengthen_democratic_government
 				has_completed_focus = EZO_sellect_traditionalism
 				has_government = neutrality 
@@ -510,22 +478,13 @@ EZO_fall_goverment = {
         selectable_mission = no              
         days_mission_timeout = 100
 		complete_effect = {
-			clr_country_flag = russians_enter_civil_war		
+			clr_global_flag = russians_enter_civil_war		
 		}
         timeout_effect = {
-			clr_country_flag = russians_enter_civil_war		
-				if = {
-					limit = {
-						has_country_flag = russians_enter_civil_war
-						NOT = { 
-							has_completed_focus = EZO_sellect_strengthen_democratic_government
-							has_completed_focus = EZO_sellect_traditionalism
-							has_government = neutrality 
-						}
-					}
 					clr_country_flag = russians_enter_civil_war
 					RZO = {
-						set_country_flag = civil_war_finish
+						civil_war_economy = yes
+						set_global_flag = civil_war_finish
 						add_ideas = EZO_civil_war
 						transfer_state = 48
 						transfer_state = 3
@@ -562,7 +521,6 @@ EZO_fall_goverment = {
 							}
 						}
 					}
-				}
         }
 	}
 	
@@ -570,33 +528,37 @@ EZO_fall_goverment = {
 
 		allowed = { tag = EZO } 
 			 
-        available = {      
-			OR = {
-				NOT = { has_country_flag = ezo_civil_war_time_other}   
-				AND = {
-					71 = { is_controlled_by = EZO }
-					72 = { is_controlled_by = EZO }
-					57 = { is_controlled_by = EZO }
+        available = {
+		71 = { is_controlled_by = EZO }
+						72 = { is_controlled_by = EZO }
+						57 = { is_controlled_by = EZO }
+			AND = {
+					NOT = {
+						71 = { is_controlled_by = DZO }
+						72 = { is_controlled_by = DZO }
+						57 = { is_controlled_by = DZO }
+					}
+					NOT = {
+						71 = { is_controlled_by = MZO }
+						72 = { is_controlled_by = MZO }
+						57 = { is_controlled_by = MZO }
+					}
 				}
-			}
         }
         activation = {                         
-             OR = {
-				has_country_flag = ezo_civil_war_time 
-				has_country_flag = ezo_civil_war_time_other 
-			}
+			has_global_flag = ezo_civil_war_time 
 			NOT = { has_government = communism }
-			has_country_flag = communist_enter_civil_war
+			has_global_flag = communist_enter_civil_war
         }
 		
         is_good = no                           
         selectable_mission = no              
         days_mission_timeout = 100 
 		complete_effect = {
-			clr_country_flag = communist_enter_civil_war
+			clr_global_flag = communist_enter_civil_war
 		}
         timeout_effect = {
-			clr_country_flag = communist_enter_civil_war
+			clr_global_flag = communist_enter_civil_war
 				CZO = {
 				set_rule = {
 					can_puppet = no
@@ -611,15 +573,9 @@ EZO_fall_goverment = {
 					keep_completed = no
 				}
 			}
-
-			if = {
-				limit = {
-					NOT = { has_government = communism }
-					has_country_flag = communist_enter_civil_war
-				}
-				clr_country_flag = communist_enter_civil_war
 				CZO = {
-					set_country_flag = civil_war_finish
+					civil_war_economy = yes
+					set_global_flag = civil_war_finish
 					add_ideas = EZO_civil_war
 					transfer_state = 71
 					transfer_state = 72
@@ -656,7 +612,6 @@ EZO_fall_goverment = {
 						}
 					}
 				}
-			}
         }
 	}
 	
@@ -793,7 +748,7 @@ EZO_the_farmer_problems = {
 	}
 	
 	EZO_farmers_problem = {
-	priority = 1
+		priority = 1
 		icon = decision_category_generic
 		visible = {
 			tag = EZO
@@ -812,6 +767,7 @@ EZO_the_farmer_problems = {
 			has_completed_focus = EZO_economic_assistance_to_farmers
 			NOT = { has_country_flag = deal_farmers }
 			has_civil_war = no
+			NOT = { has_government = communism }
 		}
 		is_good = no                           
         selectable_mission = no              
@@ -840,7 +796,6 @@ EZO_the_farmer_problems = {
 			tag = EZO
 			has_completed_focus = EZO_economic_assistance_to_farmers
 			NOT = {
-				has_government = communism
 				has_country_flag = deal_farmers
 			}
 			has_civil_war = no
@@ -866,7 +821,7 @@ EZO_the_farmer_problems = {
 	}
 	
 	EZO_deal_farmers = {
-	priority = 3
+		priority = 3
 		icon = decision_category_generic
 		visible = {
 			tag = EZO
@@ -893,7 +848,34 @@ EZO_the_farmer_problems = {
 				remove_idea = EZO_farmer_protest
 				add_idea = EZO_farmer_deal
 			}
+        }
+	}
+	
+	EZO_deal_farmers_communist = {
+		priority = 3
+		icon = decision_category_generic
+		visible = {
+			tag = EZO
+			has_completed_focus = EZO_economic_assistance_to_farmers
+			NOT = {
+				has_government = communism
+				has_country_flag = deal_farmers
+			}
+			has_civil_war = no
+		}
+		available = {
+			has_civil_war = no
+			NOT = { has_country_flag = deal_farmers }
+		}
+		cost = farmer_protest?1900
+		days_remove = 150
+		fire_only_once = no
+		remove_effect = {
+			add_stability = 0.25
+			add_political_power = 200
 			set_country_flag = deal_farmers
+			add_manpower = 100000 
+			remove_ideas = EZO_farmer_protest
         }
 	}
 	
