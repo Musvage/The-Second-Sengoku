@@ -377,6 +377,35 @@ world_stage_daily_effect = {	# activated from on_actions/daily from a random sco
 			resolve_threater_russia = yes
 		}
 	}
+	if = {	### norway
+		limit = { has_global_flag = world_stage_theater_norway_is_active }
+		subtract_from_variable = { global.theater_norway_timer = 1 }
+		set_variable = { global.GER_strength_norway_final = global.GER_strength_norway }
+		add_to_variable = { global.GER_strength_norway_final = global.GER_strength_norway_bonus }
+		set_variable = { global.GER_strength_doc_air = REI.air_doctrine_level }
+		set_variable = { global.GER_strength_doc_land = REI.land_doctrine_level }
+		multiply_variable = { global.GER_strength_doc_air = 0.05 }
+		multiply_variable = { global.GER_strength_doc_land = 0.10 }
+		set_temp_variable = { global.GER_strength_norway_multiplier = 1 }
+		add_to_temp_variable = { global.GER_strength_norway_multiplier = global.GER_strength_doc_air }
+		add_to_temp_variable = { global.GER_strength_norway_multiplier = global.GER_strength_doc_land }
+		multiply_variable = { global.GER_strength_norway_final = global.GER_strength_norway_multiplier }
+		set_variable = { global.ENG_strength_norway_final = global.ENG_strength_norway }
+		add_to_variable = { global.ENG_strength_norway_final = global.ENG_strength_norway_bonus }
+		set_variable = { global.ENG_strength_doc_air = OSA.air_doctrine_level }
+		set_variable = { global.ENG_strength_doc_land = OSA.land_doctrine_level }
+		multiply_variable = { global.ENG_strength_doc_air = 0.05 }
+		multiply_variable = { global.ENG_strength_doc_land = 0.10 }
+		set_temp_variable = { global.ENG_strength_norway_multiplier = 1 }
+		add_to_temp_variable = { global.ENG_strength_norway_multiplier = global.ENG_strength_doc_air }
+		add_to_temp_variable = { global.ENG_strength_norway_multiplier = global.ENG_strength_doc_land }
+		multiply_variable = { global.ENG_strength_norway_final = global.ENG_strength_norway_multiplier }
+		world_stage_get_norway_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_norway_timer < 1 } }
+			resolve_threater_norway = yes
+		}
+	}
 }
 
 ### THEATER RESOLUTIONS {
@@ -991,6 +1020,50 @@ resolve_threater_russia = {
 	clear_variable = global.SOV_strength_russia_final
 }	d_resolve_threater_russia = { resolve_threater_russia = yes }	# shortcut console command
 
+resolve_threater_norway = {
+	log = "resolve_threater_norway"
+	randomize_temp_variable = {	var = side_a_attack	distribution = uniform	min = 0.05 max = 0.2 }	# each side causes damage equal to [5;20]% of their final strength
+	multiply_temp_variable = { side_a_attack = global.GER_strength_norway_final }
+	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }									# minimum 1 attack
+	randomize_temp_variable = {	var = side_b_attack	distribution = uniform	min = 0.05 max = 0.2 }
+	multiply_temp_variable = { side_b_attack = global.ENG_strength_norway_final }
+	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }
+	subtract_from_variable = { global.GER_strength_norway = side_b_attack }
+	subtract_from_variable = { global.ENG_strength_norway = side_a_attack }
+	if = {																							# someone wins
+		limit = { OR = { check_variable = { global.GER_strength_norway < 1 } check_variable = { global.ENG_strength_norway < 1 } } }
+		if = {
+			limit = { check_variable = { global.GER_strength_norway < global.ENG_strength_norway } }	# GER wins
+			#news_event = worldstage.
+		} else = {																					# else: norway wins
+			#news_event = worldstage.
+		}
+		clr_global_flag = world_stage_theater_norway_is_active
+		set_variable = { global.theater_norway_timer = 60 }											# restarts clock
+		world_stage_get_norway_timer_frame = yes
+	} else = {																						# no winner
+		set_variable = { global.theater_norway_timer = 60 }											# restarts clock
+		world_stage_get_norway_timer_frame = yes
+		round_variable = global.GER_strength_norway
+		divide_variable = { global.GER_strength_norway_bonus = 2 }									# each 'turn' halves the strategic advantages of both sides
+		round_variable = global.GER_strength_norway_bonus
+		round_variable = global.ENG_strength_norway
+		divide_variable = { global.ENG_strength_norway_bonus = 2 }
+		round_variable = global.ENG_strength_norway_bonus
+		set_variable = { global.GER_strength_norway_final = global.GER_strength_norway }			# recalculate final strength so tooltips dont get messy after a draw
+		add_to_variable = { global.GER_strength_norway_final = global.GER_strength_norway_bonus }
+		set_variable = { global.ENG_strength_norway_final = global.ENG_strength_norway }
+		add_to_variable = { global.ENG_strength_norway_final = global.ENG_strength_norway_bonus }
+		# country_event =																			# no event needed here
+	}
+	clear_variable = global.GER_strength_norway				# CLEAR ALL UNECESSARY DATA (do not delete trickleback data! it's used for localisation)
+	clear_variable = global.GER_strength_norway_bonus
+	clear_variable = global.GER_strength_norway_final
+	clear_variable = global.ENG_strength_norway
+	clear_variable = global.ENG_strength_norway_bonus
+	clear_variable = global.ENG_strength_norway_final
+}	d_resolve_threater_norway = { resolve_threater_norway = yes }	# shortcut console command
+
 ###} INTERFACE HANDLER {
 
 world_stage_get_mongolia_timer_frame = {
@@ -1095,6 +1168,14 @@ world_stage_get_russia_timer_frame = {
 	round_variable = global.theater_russia_timer_frame
 	clamp_variable = { var = global.theater_russia_timer_frame min = 1 max = 9 }
 	log = "theater_russia_timer_frame [?global.theater_russia_timer_frame]" 
+}
+
+world_stage_get_norway_timer_frame = {
+	set_variable = { global.theater_norway_timer_frame = global.theater_norway_timer }
+	divide_variable = { global.theater_norway_timer_frame = 3.32 }	# timer has 30 max days, 30/3.32 ~= 9
+	round_variable = global.theater_norway_timer_frame
+	clamp_variable = { var = global.theater_norway_timer_frame min = 1 max = 9 }
+	log = "theater_norway_timer_frame [?global.theater_norway_timer_frame]" 
 }
 
 ###} COUNTRY EFFECTS
