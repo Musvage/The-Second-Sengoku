@@ -1127,14 +1127,43 @@ focus_tree = {
 		
 		available = {
 			has_global_flag = world_stage_world_war_2_is_active
-			theater_lybia_controlled_axis
 			has_world_stage_power_ger_30 = yes
+			OR = {
+				custom_trigger_tooltip = {
+					has_global_flag = world_stage_theater_lybia_is_active
+					tooltip = world_stage_theater_lybia_is_active
+				}
+				custom_trigger_tooltip = {
+					has_global_flag = world_stage_theater_egypt_is_active
+					tooltip = world_stage_theater_egypt_is_active
+				}
+			}
 		}
 		
 		completion_reward = {
-			add_to_variable = {
-				global.GER_strength_lybia = 30
-				tooltip = world_stage_deploy_power_lybia
+			set_temp_variable = { ger_forces_value = 30 }
+			if = {
+				limit ={
+					AND = {
+						has_global_flag = world_stage_theater_lybia_is_active
+						has_global_flag = world_stage_theater_egypt_is_active
+					}
+				}
+				divide_temp_variable = { ger_forces_value = 2 }
+			}
+			if = {
+				limit = { has_global_flag = world_stage_theater_lybia_is_active }
+				add_to_variable = {
+					global.GER_strength_lybia = var:ger_forces_value
+					tooltip = world_stage_deploy_power_lybia
+				}
+			}
+			if = {
+				limit = { has_global_flag = world_stage_theater_egypt_is_active }
+				add_to_variable = {
+					global.GER_strength_egypt = var:ger_forces_value
+					tooltip = world_stage_deploy_power_egypt
+				}
 			}
 		}
 	}

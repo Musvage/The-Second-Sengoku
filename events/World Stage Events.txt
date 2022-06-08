@@ -981,7 +981,7 @@ country_event = {
 	major = yes
 	
 	immediate = {
-		if = {	#
+		if = {
 			limit = {
 				NOT = { has_global_flag = world_stage_theater_ardennes_is_active }
 				NOT = { has_global_flag = world_stage_theater_alsace_is_active }
@@ -1050,7 +1050,7 @@ news_event = {
 	
 	immediate = {
 		add_to_variable = { global.world_stage_power_ger = 10 }
-		add_to_variable = { global.world_stage_power_ger = global.GER_strength_trickeback }
+		add_to_variable = { global.world_stage_power_ger = global.GER_strength_trickleback }
 		set_variable = { global.theater_owner_poland = 3 }
 	}
 	
@@ -1093,9 +1093,9 @@ news_event = {
 	
 	immediate = {
 		add_to_variable = { global.world_stage_power_ger = 5 }
-		add_to_variable = { global.world_stage_power_ger = global.GER_strength_trickeback }
+		add_to_variable = { global.world_stage_power_ger = global.GER_strength_trickleback }
 		add_to_variable = { global.world_stage_coalition_sov = 5 }
-		add_to_variable = { global.world_stage_coalition_sov = global.SOV_strength_trickeback }
+		add_to_variable = { global.world_stage_coalition_sov = global.SOV_strength_trickleback }
 		set_variable = { global.theater_owner_poland = 3 }
 	}
 	
@@ -3523,7 +3523,24 @@ news_event = {
 	major = yes
 	
 	immediate = {
-		add_to_variable = { global.BRI_strength_lybia = 1 }	# creates a local garrison
+		if = {
+			limit = { check_variable = { global.theater_owner_egypt = 3 } }
+			if = {
+				limit = { has_global_flag = world_stage_theater_egypt_is_active } 			# if italians are in egypt, attack it
+				add_to_variable = { global.ENG_strength_egypt = global.ENG_strength_lybia }
+			} else = {
+				set_global_flag = world_stage_theater_egypt_is_active
+				set_variable = { global.ENG_strength_egypt = global.ENG_strength_lybia }
+			}
+		} else = {
+			add_to_variable = { global.world_stage_power_eng = global.ENG_strength_lybia }
+			set_variable { global.ENG_strength_trickleback = global.ENG_strength_lybia }
+			set_variable { global.ENG_strength_lybia = 0 }
+		}
+		if = {
+			limit = { check_variable = { global.BRI_strength_lybia < 1 } }
+			set_variable = { global.BRI_strength_lybia = 1 }							#	leaves a colonial garrison
+		}
 		set_variable = { global.theater_owner_lybia = 1 }
 	}
 	
@@ -3781,7 +3798,7 @@ news_event = {
 			}
 		} else = {
 			add_to_variable = { global.world_stage_power_eng = global.ENG_strength_ethiopia }
-			set_variable = { global.ENG_strength_trickeback = global.ENG_strength_ethiopia }
+			set_variable = { global.ENG_strength_trickleback = global.ENG_strength_ethiopia }
 			set_variable = { global.ENG_strength_ethiopia = 0 }
 		}
 		set_variable = { global.theater_owner_ethiopia = 1 }
