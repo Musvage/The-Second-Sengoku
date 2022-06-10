@@ -1,0 +1,892 @@
+### THEATER RESOLUTIONS {
+resolve_mongolian_crisis = {
+	log = "resolve_mongolian_crisis"
+	randomize_temp_variable = {	var = side_a_attack	distribution = uniform	min = 0.05 max = 0.2 }	# each side causes damage equal to [5;20]% of their final strength
+	multiply_temp_variable = { side_a_attack = global.CHI_strength_mongolia_final }
+	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }									# minimum 1 attack
+	randomize_temp_variable = {	var = side_b_attack	distribution = uniform	min = 0.05 max = 0.2 }
+	multiply_temp_variable = { side_b_attack = global.SOV_strength_mongolia_final }
+	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }
+	set_variable = { global.CHI_strength_trickleback = global.CHI_strength_mongolia }
+	subtract_from_variable = { global.CHI_strength_trickleback = side_b_attack }
+	set_variable = { global.SOV_strength_trickleback = global.SOV_strength_mongolia }
+	subtract_from_variable = { global.SOV_strength_trickleback = side_a_attack }
+	round_variable = global.CHI_strength_trickleback
+	round_variable = global.SOV_strength_trickleback
+	add_to_variable = {global.world_stage_power_chi = global.CHI_strength_trickleback } 
+	add_to_variable = {global.world_stage_power_sov = global.SOV_strength_trickleback } 
+	if = {
+		limit = { check_variable = { global.CHI_strength_mongolia_final > global.SOV_strength_mongolia_final } }
+		multiply_variable = { global.CHI_strength_mongolia_final = global.CHI_strength_mongolia_final }
+	} else = { multiply_variable = { global.SOV_strength_mongolia_final = global.SOV_strength_mongolia_final } }
+	random_list = {
+		var:global.CHI_strength_mongolia_final = { country_event = worldstage.2 add_to_variable = {global.world_stage_power_chi = 5 } }
+		var:global.SOV_strength_mongolia_final = { country_event = worldstage.3 add_to_variable = {global.world_stage_power_sov = 5 } }
+	}
+	clr_global_flag = world_stage_theater_mongolia_is_active	# CLEAR ALL UNECESSARY DATA (do not delete trickleback data! it's used for localisation)
+	clear_variable = global.CHI_strength_mongolia
+	clear_variable = global.CHI_strength_mongolia_bonus
+	clear_variable = global.CHI_strength_mongolia_final
+	clear_variable = global.SOV_strength_mongolia
+	clear_variable = global.SOV_strength_mongolia_bonus
+	clear_variable = global.SOV_strength_mongolia_final
+}	d_resolve_mongolian_crisis = { resolve_mongolian_crisis = yes }	# shortcut console command
+
+resolve_spanish_cw = {
+	log = "resolve_spanish_cw"
+	randomize_temp_variable = {	var = side_a_attack	distribution = uniform	min = 0.05 max = 0.2 }	# each side causes damage equal to [5;20]% of their final strength
+	multiply_temp_variable = { side_a_attack = global.FAL_strength_spain_final }
+	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }									# minimum 1 attack
+	randomize_temp_variable = {	var = side_b_attack	distribution = uniform	min = 0.05 max = 0.2 }
+	multiply_temp_variable = { side_b_attack = global.REP_strength_spain_final }
+	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }		
+	log = "attacks a/b: [?side_a_attack]/[?side_b_attack]"
+	subtract_from_variable = { global.FAL_strength_spain = side_b_attack }							# each side hacks away at each other a bit
+	subtract_from_variable = { global.FAL_strength_spain_bonus = side_b_attack }
+	subtract_from_variable = { global.REP_strength_spain = side_a_attack }
+	subtract_from_variable = { global.REP_strength_spain_bonus = side_a_attack }
+	clamp_variable = { var = global.FAL_strength_spain_bonus min = 0 max = 999 }					# special rule: no negative bonus values allowed
+	clamp_variable = { var = global.REP_strength_spain_bonus min = 0 max = 999 }
+	if = {
+		limit = { OR = { check_variable = { global.FAL_strength_spain < 1 } check_variable = { global.REP_strength_spain < 1 } } }	# one of the sides is destroyed, ends theater (only deployed strength counts here!)
+		set_global_flag = world_stage_spanish_cw_over
+		if = {
+			limit = {
+				check_variable = {  global.FAL_strength_spain >  global.REP_strength_spain }	# FAL > REP -> FAL WINS!
+			}
+			set_variable = { global.FAL_strength_trickleback = global.FAL_strength_spain }		# already diminished after each side hacked each other
+			clamp_variable = { var = global.FAL_strength_trickleback min = 1 max = 999 }	# at least someone survives
+			round_variable = global.FAL_strength_trickleback
+			set_variable = { global.REP_strength_trickleback = 0 }								# if he dies, he dies...
+			clr_global_flag = world_stage_theater_spanish_cw_is_active							# finishes theater and clear unecessary data
+			clear_variable = global.FAL_strength_spain
+			clear_variable = global.FAL_strength_spain_bonus
+			clear_variable = global.FAL_strength_spain_final
+			clear_variable = global.REP_strength_spain
+			clear_variable = global.REP_strength_spain_bonus
+			clear_variable = global.REP_strength_spain_final
+			news_event = worldstage.12
+			log = "spain: FAL WINS"
+		} else = {																				# REP > FAL -> REP WINS!
+			set_variable = { global.FAL_strength_trickleback = 0 }								# if he dies, he dies...
+			set_variable = { global.REP_strength_trickleback = global.REP_strength_spain }		# already diminished after each side hacked each other
+			clamp_variable = { var = global.REP_strength_trickleback min = 1 max = 999 }		# at least someone survives
+			round_variable = global.REP_strength_trickleback
+			clr_global_flag = world_stage_theater_spanish_cw_is_active							# finishes theater and clear unecessary data
+			clear_variable = global.FAL_strength_spain
+			clear_variable = global.FAL_strength_spain_bonus
+			clear_variable = global.FAL_strength_spain_final
+			clear_variable = global.REP_strength_spain
+			clear_variable = global.REP_strength_spain_bonus
+			clear_variable = global.REP_strength_spain_final
+			news_event = worldstage.13
+			log = "spain: REP WINS"
+		}
+	} else = {	# else: theater continues
+		set_variable = { global.theater_spanish_cw_timer = 180 }								# restarts clock
+		world_stage_get_spanish_cw_timer_frame = yes
+		round_variable = global.FAL_strength_spain
+		round_variable = global.FAL_strength_spain_bonus										# no strategic advantages here! (usual: each 'turn' halves the strategic advantages of both sides)
+		round_variable = global.REP_strength_spain
+		round_variable = global.REP_strength_spain_bonus
+		set_variable = { global.FAL_strength_spain_final = global.FAL_strength_spain }			# recalculate final strength so tooltips dont get messy after a draw
+		add_to_variable = { global.FAL_strength_spain_final = global.FAL_strength_spain_bonus }
+		set_variable = { global.REP_strength_spain_final = global.REP_strength_spain }
+		add_to_variable = { global.REP_strength_spain_final = global.REP_strength_spain_bonus }
+		news_event = worldstage.11
+		log = "spain: no winner"
+	}
+}	d_resolve_spanish_cw = { resolve_spanish_cw = yes }	# shortcut console command
+
+resolve_theater_poland_first = {
+	log = "resolve_theater_poland_first"
+	randomize_temp_variable = {	var = side_a_attack	distribution = uniform	min = 0.05 max = 0.2 }	# each side causes damage equal to [5;20]% of their final strength
+	multiply_temp_variable = { side_a_attack = global.GER_strength_poland_final }
+	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }									# minimum 1 attack
+	randomize_temp_variable = {	var = side_b_attack	distribution = uniform	min = 0.05 max = 0.2 }
+	multiply_temp_variable = { side_b_attack = global.ENG_strength_poland_final }
+	if = {
+		limit = { has_global_flag = GER_SOV_pact_enabled }											# special rule: double invasion of poland
+		randomize_temp_variable = {	var = side_c_attack	distribution = uniform	min = 0.05 max = 2 }
+		multiply_temp_variable = { side_c_attack = global.SOV_strength_spain_final }
+		clamp_temp_variable = { var = side_c_attack min = 1 max = 999 }
+		add_to_temp_variable = { side_a_attack = side_c_attack }
+		divide_temp_variable = { side_b_attack = 2 }												# each side takes half the damage
+	}
+	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }									# round poland's attack after (possibly) splitting it into GER and SOV
+	subtract_from_variable = { global.GER_strength_poland = side_b_attack }							# each side hacks away at each other a bit
+	subtract_from_variable = { global.ENG_strength_poland = side_a_attack }
+	if = {
+		limit = {  has_global_flag = GER_SOV_pact_enabled }
+		subtract_from_variable = { global.SOV_strength_poland = side_b_attack }
+	}
+	if = {
+		limit = {
+			OR = {
+				check_variable = { global.ENG_strength_poland < 1 }			# special rule: theater only ends when poland loses, (only deployed strength counts here!) (usual: one of the sides is destroyed, ends theater)
+				AND = { check_variable = { global.ENG_strength_poland < 5.1 } has_global_flag = GER_SOV_pact_enabled }	# if double invasion is minimally competent, it is over in one turn
+			}
+		}
+		if = {
+			limit = {
+				check_variable = {  global.GER_strength_poland >  global.ENG_strength_poland }	# GER > ENG -> GER WINS!
+			}
+			set_variable = { global.GER_strength_trickleback = global.GER_strength_poland }		# already diminished after each side hacked each other
+			clamp_variable = { var = global.GER_strength_trickleback min = 1 max = 999 }	# at least someone survives
+			round_variable = global.GER_strength_trickleback
+			add_to_variable =  {global.world_stage_power_ger = global.GER_strength_trickleback } 
+			set_variable = { global.ENG_strength_trickleback = 0 }								# if he dies, he dies...
+			clr_global_flag = world_stage_theater_poland_is_active_first						# finishes theater and clear unecessary data
+			set_variable = { global.GER_strength_poland = 0 }
+			set_variable = { global.GER_strength_poland_bonus = 0 }								# do not clear... we'll be back here soon
+			if = {
+				limit = { has_global_flag = GER_SOV_pact_enabled }
+				set_variable = { global.SOV_strength_trickleback = global.SOV_strength_poland }	# already diminished after each side hacked each other
+				clamp_variable = { var = global.SOV_strength_trickleback min = 1 max = 999 }	# at least someone survives
+				round_variable = global.SOV_strength_trickleback
+				set_variable = { global.SOV_strength_poland = 0 }
+				set_variable = { global.SOV_strength_poland_bonus = 0 }
+				news_event = worldstage.19
+			} else = { news_event = worldstage.18 }
+			clear_variable = global.ENG_strength_poland
+			clear_variable = global.ENG_strength_poland_final
+			log = "poland: GER WINS"
+		}#  else = 																				# no elses here, GER never loses, only gets delayed
+	} else = {																					# else: theater continues
+		set_variable = { global.theater_poland_timer = 35 }										# restarts clock
+		world_stage_get_poland_timer_frame = yes
+		round_variable = global.GER_strength_poland
+		divide_variable = { global.GER_strength_poland_bonus = 2 }								# each 'turn' halves the strategic advantages of both sides
+		round_variable = global.GER_strength_poland_bonus
+		round_variable = global.ENG_strength_poland
+		divide_variable = { global.ENG_strength_poland_bonus = 2 }
+		round_variable = global.ENG_strength_poland_bonus
+		set_variable = { global.GER_strength_poland_final = global.GER_strength_poland }		# recalculate final strength so tooltips dont get messy after a draw
+		add_to_variable = { global.GER_strength_poland_final = global.GER_strength_poland_bonus }
+		set_variable = { global.ENG_strength_poland_final = global.ENG_strength_poland }
+		add_to_variable = { global.ENG_strength_poland_final = global.ENG_strength_poland_bonus }
+		country_event = worldstage.17
+		if = {
+			limit = { has_global_flag = GER_SOV_pact_enabled }
+			round_variable = global.SOV_strength_poland
+			divide_variable = { global.SOV_strength_poland_bonus = 2 }
+			round_variable = global.SOV_strength_poland_bonus
+			set_variable = { global.SOV_strength_poland_final = global.SOV_strength_poland }
+			add_to_variable = { global.SOV_strength_poland_final = global.SOV_strength_poland_bonus }			
+		}
+		log = "poland: no winner"
+	}
+} d_resolve_theater_poland_first = { resolve_theater_poland_first = yes }
+
+resolve_threater_ardennes = {
+	log = "resolve_threater_ardennes"
+	randomize_temp_variable = {	var = side_a_attack	distribution = uniform	min = 0.05 max = 0.2 }	# each side causes damage equal to [5;20]% of their final strength
+	multiply_temp_variable = { side_a_attack = global.GER_strength_ardennes_final }
+	set_temp_variable = { number_of_allies  = 0 }
+	if = { limit = { check_variable  = { global.ENG_strength_ardennes > 0 } add_to_variable = { number_of_allies = 1 } } }
+	if = { limit = { check_variable  = { global.FRA_strength_ardennes > 0 } add_to_variable = { number_of_allies = 1 } } }
+	if = { limit = { check_variable  = { global.USA_strength_ardennes > 0 } add_to_variable = { number_of_allies = 1 } } }
+	clamp_temp_variable = { var = number_of_allies min = 1 max = 3 }								
+	divide_temp_variable = { side_a_attack = number_of_allies }
+	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }									# minimum 1 attack
+	randomize_temp_variable = {	var = side_b_attack	distribution = uniform	min = 0.05 max = 0.2 }
+	multiply_temp_variable = { side_b_attack = global.FRA_strength_ardennes_final }
+	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }
+	set_variable = { global.GER_strength_trickleback = global.GER_strength_ardennes }
+	subtract_from_variable = { global.GER_strength_trickleback = side_b_attack }
+	set_variable = { global.FRA_strength_trickleback = global.FRA_strength_ardennes }
+	subtract_from_variable = { global.FRA_strength_trickleback = side_a_attack }
+	round_variable = global.GER_strength_trickleback
+	round_variable = global.FRA_strength_trickleback 
+	multiply_variable = { global.GER_strength_ardennes_final = global.GER_strength_ardennes_final }
+	multiply_variable = { global.FRA_strength_ardennes_final = global.FRA_strength_ardennes_final }
+	random_list = {
+		var:global.GER_strength_ardennes_final = { country_event = worldstage.25 }	# France Falls
+		var:global.FRA_strength_ardennes_final = { country_event = worldstage.26 }	# France Resists
+	}
+	add_to_variable = { global.world_stage_power_ger = global.GER_strength_trickleback } 
+	add_to_variable = { global.world_stage_power_fra = global.FRA_strength_trickleback }
+	clr_global_flag = world_stage_theater_ardennes_is_active	# CLEAR ALL UNECESSARY DATA (do not delete trickleback data! it's used for localisation)
+	clear_variable = global.GER_strength_ardennes
+	clear_variable = global.GER_strength_ardennes_bonus
+	clear_variable = global.GER_strength_ardennes_final
+	clear_variable = global.FRA_strength_ardennes
+	clear_variable = global.FRA_strength_ardennes_bonus
+	clear_variable = global.FRA_strength_ardennes_final
+}	d_resolve_threater_ardennes = { resolve_threater_ardennes = yes }	# shortcut console command
+
+resolve_threater_alsace = {
+	log = "resolve_threater_alsace"
+	randomize_temp_variable = {	var = side_a_attack	distribution = uniform	min = 0.05 max = 0.2 }	# each side causes damage equal to [5;20]% of their final strength
+	multiply_temp_variable = { side_a_attack = global.GER_strength_alsace_final }
+	set_temp_variable = { number_of_allies  = 0 }
+	if = { limit = { check_variable  = { global.ENG_strength_alsace > 0 } add_to_variable = { number_of_allies = 1 } } }
+	if = { limit = { check_variable  = { global.FRA_strength_alsace > 0 } add_to_variable = { number_of_allies = 1 } } }
+	if = { limit = { check_variable  = { global.USA_strength_alsace > 0 } add_to_variable = { number_of_allies = 1 } } }
+	clamp_temp_variable = { var = number_of_allies min = 1 max = 3 }								
+	divide_temp_variable = { side_a_attack = number_of_allies }
+	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }									# minimum 1 attack
+	randomize_temp_variable = {	var = side_b_attack	distribution = uniform	min = 0.05 max = 0.2 }
+	multiply_temp_variable = { side_b_attack = global.FRA_strength_alsace_final }
+	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }
+	subtract_from_variable = { global.GER_strength_alsace = side_b_attack }
+	subtract_from_variable = { global.FRA_strength_alsace = side_a_attack }
+	if = {																							# someone wins
+		limit = { OR = { check_variable = { global.GER_strength_alsace < 1 } check_variable = { global.FRA_strength_alsace < 1 } } }
+		if = {
+			limit = { check_variable = { global.GER_strength_alsace < global.FRA_strength_alsace } }	# GER wins
+			#set_variable = { global.GER_strength_trickleback = global.GER_strength_alsace }					
+			#round_variable = global.GER_strength_trickleback
+			#clamp_variable = { var = global.GER_strength_trickleback min = 1 max = 999 }
+			#add_to_variable = { global.world_stage_power_ger = global.GER_strength_trickleback }	# no trickleback: deployed forces move to next theater
+			news_event = worldstage.23
+		} else = {																					# else: FRA wins
+			#set_variable = { global.FRA_strength_trickleback = global.FRA_strength_alsace }
+			#round_variable = global.FRA_strength_trickleback
+			#clamp_variable = { var = global.FRA_strength_trickleback min = 1 max = 999 }
+			#add_to_variable = { global.world_stage_power_fra = global.FRA_strength_trickleback }
+			news_event = worldstage.22
+		}
+		clr_global_flag = world_stage_theater_alsace_is_active
+		set_variable = { global.theater_alsace_timer = 60 }											# restarts clock
+		world_stage_get_alsace_timer_frame = yes
+	} else = {																						# no winner
+		set_variable = { global.theater_alsace_timer = 60 }											# restarts clock
+		world_stage_get_alsace_timer_frame = yes
+		round_variable = global.GER_strength_alsace
+		divide_variable = { global.GER_strength_alsace_bonus = 2 }									# each 'turn' halves the strategic advantages of both sides
+		round_variable = global.GER_strength_alsace_bonus
+		round_variable = global.ENG_strength_alsace
+		divide_variable = { global.ENG_strength_alsace_bonus = 2 }
+		round_variable = global.ENG_strength_alsace_bonus
+		set_variable = { global.GER_strength_alsace_final = global.GER_strength_alsace }			# recalculate final strength so tooltips dont get messy after a draw
+		add_to_variable = { global.GER_strength_alsace_final = global.GER_strength_alsace_bonus }
+		set_variable = { global.ENG_strength_alsace_final = global.ENG_strength_alsace }
+		add_to_variable = { global.ENG_strength_alsace_final = global.ENG_strength_alsace_bonus }
+		# country_event =																			# no event needed here
+	}
+	clear_variable = global.GER_strength_alsace				# CLEAR ALL UNECESSARY DATA (do not delete trickleback data! it's used for localisation)
+	clear_variable = global.GER_strength_alsace_bonus
+	clear_variable = global.GER_strength_alsace_final
+	clear_variable = global.FRA_strength_alsace
+	clear_variable = global.FRA_strength_alsace_bonus
+	clear_variable = global.FRA_strength_alsace_final
+}	d_resolve_threater_alsace = { resolve_threater_alsace = yes }	# shortcut console command
+
+resolve_threater_westphalia = {
+	log = "resolve_threater_westphalia"
+	randomize_temp_variable = {	var = side_a_attack	distribution = uniform	min = 0.05 max = 0.2 }	# each side causes damage equal to [5;20]% of their final strength
+	multiply_temp_variable = { side_a_attack = global.GER_strength_westphalia_final }
+	set_temp_variable = { number_of_allies  = 0 }
+	if = { limit = { check_variable  = { global.ENG_strength_westphalia > 0 } add_to_variable = { number_of_allies = 1 } } }
+	if = { limit = { check_variable  = { global.FRA_strength_westphalia > 0 } add_to_variable = { number_of_allies = 1 } } }
+	if = { limit = { check_variable  = { global.USA_strength_westphalia > 0 } add_to_variable = { number_of_allies = 1 } } }
+	clamp_temp_variable = { var = number_of_allies min = 1 max = 3 }								
+	divide_temp_variable = { side_a_attack = number_of_allies }
+	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }									# minimum 1 attack
+	randomize_temp_variable = {	var = side_b_attack	distribution = uniform	min = 0.05 max = 0.2 }
+	multiply_temp_variable = { side_b_attack = global.FRA_strength_westphalia_final }
+	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }
+	subtract_from_variable = { global.GER_strength_westphalia = side_b_attack }
+	subtract_from_variable = { global.FRA_strength_westphalia = side_a_attack }
+	if = {																							# someone wins
+		limit = { OR = { check_variable = { global.GER_strength_westphalia < 1 } check_variable = { global.FRA_strength_westphalia < 1 } } }
+		if = {
+			limit = { check_variable = { global.GER_strength_westphalia < global.FRA_strength_westphalia } }	# GER wins	# no trickleback: deployed forces move to next theater
+			news_event = worldstage.27
+		} else = {																						# else: FRA wins
+			news_event = worldstage.28
+		}
+		clr_global_flag = world_stage_theater_westphalia_is_active
+		set_variable = { global.theater_westphalia_timer = 60 }											# restarts clock
+		world_stage_get_westphalia_timer_frame = yes
+	} else = {																						# no winner
+		set_variable = { global.theater_westphalia_timer = 60 }											# restarts clock
+		world_stage_get_westphalia_timer_frame = yes
+		round_variable = global.GER_strength_westphalia
+		divide_variable = { global.GER_strength_westphalia_bonus = 2 }									# each 'turn' halves the strategic advantages of both sides
+		round_variable = global.GER_strength_westphalia_bonus
+		round_variable = global.FRA_strength_westphalia
+		divide_variable = { global.FRA_strength_westphalia_bonus = 2 }
+		round_variable = global.FRA_strength_westphalia_bonus
+		set_variable = { global.GER_strength_westphalia_final = global.GER_strength_westphalia }			# recalculate final strength so tooltips dont get messy after a draw
+		add_to_variable = { global.GER_strength_westphalia_final = global.GER_strength_westphalia_bonus }
+		set_variable = { global.FRA_strength_westphalia_final = global.FRA_strength_westphalia }
+		add_to_variable = { global.FRA_strength_westphalia_final = global.FRA_strength_westphalia_bonus }
+		# country_event =																			# no event needed here
+	}
+	clear_variable = global.GER_strength_westphalia				# CLEAR ALL UNECESSARY DATA (do not delete trickleback data! it's used for localisation)
+	clear_variable = global.GER_strength_westphalia_bonus
+	clear_variable = global.GER_strength_westphalia_final
+	clear_variable = global.FRA_strength_westphalia
+	clear_variable = global.FRA_strength_westphalia_bonus
+	clear_variable = global.FRA_strength_westphalia_final
+}	d_resolve_threater_westphalia = { resolve_threater_westphalia = yes }	# shortcut console command
+
+resolve_threater_france = {
+	log = "resolve_threater_france"
+	randomize_temp_variable = {	var = side_a_attack	distribution = uniform	min = 0.05 max = 0.2 }	# each side causes damage equal to [5;20]% of their final strength
+	multiply_temp_variable = { side_a_attack = global.GER_strength_france_final }
+	set_temp_variable = { number_of_allies  = 0 }
+	if = { limit = { check_variable  = { global.ENG_strength_france > 0 } add_to_variable = { number_of_allies = 1 } } }
+	if = { limit = { check_variable  = { global.FRA_strength_france > 0 } add_to_variable = { number_of_allies = 1 } } }
+	if = { limit = { check_variable  = { global.USA_strength_france > 0 } add_to_variable = { number_of_allies = 1 } } }
+	clamp_temp_variable = { var = number_of_allies min = 1 max = 3 }								
+	divide_temp_variable = { side_a_attack = number_of_allies }
+	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }									# minimum 1 attack
+	randomize_temp_variable = {	var = side_b_attack	distribution = uniform	min = 0.05 max = 0.2 }
+	multiply_temp_variable = { side_b_attack = global.FRA_strength_france_final }
+	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }
+	subtract_from_variable = { global.GER_strength_france = side_b_attack }
+	subtract_from_variable = { global.FRA_strength_france = side_a_attack }
+	if = {																							# someone wins
+		limit = { OR = { check_variable = { global.GER_strength_france < 1 } check_variable = { global.FRA_strength_france < 1 } } }
+		if = {
+			limit = { check_variable = { global.GER_strength_france < global.FRA_strength_france } }	# GER wins
+			#set_variable = { global.GER_strength_trickleback = global.GER_strength_france }					
+			#round_variable = global.GER_strength_trickleback
+			#clamp_variable = { var = global.GER_strength_trickleback min = 1 max = 999 }
+			#add_to_variable = { global.world_stage_power_ger = global.GER_strength_trickleback }	# no trickleback: deployed forces move to next theater
+			news_event = worldstage.29
+		} else = {																					# else: FRA wins
+			#set_variable = { global.FRA_strength_trickleback = global.FRA_strength_france }
+			#round_variable = global.FRA_strength_trickleback
+			#clamp_variable = { var = global.FRA_strength_trickleback min = 1 max = 999 }
+			#add_to_variable = { global.world_stage_power_fra = global.FRA_strength_trickleback }
+			news_event = worldstage.30
+		}
+		clr_global_flag = world_stage_theater_france_is_active
+		set_variable = { global.theater_france_timer = 60 }											# restarts clock
+		world_stage_get_france_timer_frame = yes
+	} else = {																						# no winner
+		set_variable = { global.theater_france_timer = 60 }											# restarts clock
+		world_stage_get_france_timer_frame = yes
+		round_variable = global.GER_strength_france
+		divide_variable = { global.GER_strength_france_bonus = 2 }									# each 'turn' halves the strategic advantages of both sides
+		round_variable = global.GER_strength_france_bonus
+		round_variable = global.FRA_strength_france
+		divide_variable = { global.FRA_strength_france_bonus = 2 }
+		round_variable = global.FRA_strength_france_bonus
+		set_variable = { global.GER_strength_france_final = global.GER_strength_france }			# recalculate final strength so tooltips dont get messy after a draw
+		add_to_variable = { global.GER_strength_france_final = global.GER_strength_france_bonus }
+		set_variable = { global.FRA_strength_france_final = global.FRA_strength_france }
+		add_to_variable = { global.FRA_strength_france_final = global.FRA_strength_france_bonus }
+		# country_event =																			# no event needed here
+	}
+	clear_variable = global.GER_strength_france				# CLEAR ALL UNECESSARY DATA (do not delete trickleback data! it's used for localisation)
+	clear_variable = global.GER_strength_france_bonus
+	clear_variable = global.GER_strength_france_final
+	clear_variable = global.FRA_strength_france
+	clear_variable = global.FRA_strength_france_bonus
+	clear_variable = global.FRA_strength_france_final
+}	d_resolve_threater_france = { resolve_threater_france = yes }	# shortcut console command
+
+resolve_threater_poland = {
+	log = "resolve_threater_poland"
+	randomize_temp_variable = {	var = side_a_attack	distribution = uniform	min = 0.05 max = 0.2 }	# each side causes damage equal to [5;20]% of their final strength
+	multiply_temp_variable = { side_a_attack = global.GER_strength_poland_final }
+	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }									# minimum 1 attack
+	randomize_temp_variable = {	var = side_b_attack	distribution = uniform	min = 0.05 max = 0.2 }
+	multiply_temp_variable = { side_b_attack = global.SOV_strength_poland_final }
+	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }
+	subtract_from_variable = { global.GER_strength_poland = side_b_attack }
+	subtract_from_variable = { global.SOV_strength_poland = side_a_attack }
+	if = {																							# someone wins
+		limit = { OR = { check_variable = { global.GER_strength_poland < 1 } check_variable = { global.SOV_strength_poland < 1 } } }
+		if = {
+			limit = { check_variable = { global.GER_strength_poland < global.SOV_strength_poland } }	# GER wins	# no trickleback: deployed forces move to next theater
+			news_event = worldstage.35
+		} else = {																						# else: SOV wins
+			news_event = worldstage.36
+		}
+		clr_global_flag = world_stage_theater_poland_is_active_second
+		set_variable = { global.theater_poland_timer = 60 }											# restarts clock
+		world_stage_get_poland_timer_frame = yes
+	} else = {																						# no winner
+		set_variable = { global.theater_poland_timer = 60 }											# restarts clock
+		world_stage_get_poland_timer_frame = yes
+		round_variable = global.GER_strength_poland
+		divide_variable = { global.GER_strength_poland_bonus = 2 }									# each 'turn' halves the strategic advantages of both sides
+		round_variable = global.GER_strength_poland_bonus
+		round_variable = global.SOV_strength_poland
+		divide_variable = { global.SOV_strength_poland_bonus = 2 }
+		round_variable = global.SOV_strength_poland_bonus
+		set_variable = { global.GER_strength_poland_final = global.GER_strength_poland }			# recalculate final strength so tooltips dont get messy after a draw
+		add_to_variable = { global.GER_strength_poland_final = global.GER_strength_poland_bonus }
+		set_variable = { global.SOV_strength_poland_final = global.SOV_strength_poland }
+		add_to_variable = { global.SOV_strength_poland_final = global.SOV_strength_poland_bonus }
+		# country_event =																			# no event needed here
+	}
+	clear_variable = global.GER_strength_poland				# CLEAR ALL UNECESSARY DATA (do not delete trickleback data! it's used for localisation)
+	clear_variable = global.GER_strength_poland_bonus
+	clear_variable = global.GER_strength_poland_final
+	clear_variable = global.SOV_strength_poland
+	clear_variable = global.SOV_strength_poland_bonus
+	clear_variable = global.SOV_strength_poland_final
+}	d_resolve_threater_poland = { resolve_threater_poland = yes }	# shortcut console command
+
+resolve_threater_poland_second = {
+	log = "resolve_threater_poland_second"
+	randomize_temp_variable = {	var = side_a_attack	distribution = uniform	min = 0.05 max = 0.2 }	# each side causes damage equal to [5;20]% of their final strength
+	multiply_temp_variable = { side_a_attack = global.GER_strength_poland_final }
+	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }									# minimum 1 attack
+	randomize_temp_variable = {	var = side_b_attack	distribution = uniform	min = 0.05 max = 0.2 }
+	multiply_temp_variable = { side_b_attack = global.SOV_strength_poland_final }
+	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }
+	subtract_from_variable = { global.GER_strength_poland = side_b_attack }
+	subtract_from_variable = { global.SOV_strength_poland = side_a_attack }
+	round_variable = global.GER_strength_poland
+	round_variable = global.SOV_strength_poland
+	random_list = {
+		var:global.GER_strength_poland_final = { country_event = worldstage.37 }					# surprise attack works
+		var:global.SOV_strength_poland_final = { country_event = worldstage.38 }					# surprise attack fails
+	}
+	clr_global_flag = world_stage_theater_poland_is_active_second
+	clear_variable = global.GER_strength_poland				# CLEAR ALL UNECESSARY DATA (do not delete trickleback data! it's used for localisation)
+	clear_variable = global.GER_strength_poland_bonus
+	clear_variable = global.GER_strength_poland_final
+	clear_variable = global.SOV_strength_poland
+	clear_variable = global.SOV_strength_poland_bonus
+	clear_variable = global.SOV_strength_poland_final
+}	d_resolve_threater_poland = { resolve_threater_poland = yes }	# shortcut console command
+
+resolve_threater_belarus = {
+	log = "resolve_threater_belarus"
+	randomize_temp_variable = {	var = side_a_attack	distribution = uniform	min = 0.05 max = 0.2 }	# each side causes damage equal to [5;20]% of their final strength
+	multiply_temp_variable = { side_a_attack = global.GER_strength_belarus_final }
+	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }									# minimum 1 attack
+	randomize_temp_variable = {	var = side_b_attack	distribution = uniform	min = 0.05 max = 0.2 }
+	multiply_temp_variable = { side_b_attack = global.SOV_strength_belarus_final }
+	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }
+	subtract_from_variable = { global.GER_strength_belarus = side_b_attack }
+	subtract_from_variable = { global.SOV_strength_belarus = side_a_attack }
+	if = {																							# someone wins
+		limit = { OR = { check_variable = { global.GER_strength_belarus < 1 } check_variable = { global.SOV_strength_belarus < 1 } } }
+		if = {
+			limit = { check_variable = { global.GER_strength_belarus < global.SOV_strength_belarus } }	# GER wins	# no trickleback: deployed forces move to next theater
+			news_event = worldstage.39
+		} else = {																						# else: SOV wins
+			news_event = worldstage.40
+		}
+		clr_global_flag = world_stage_theater_belarus_is_active
+		set_variable = { global.theater_belarus_timer = 60 }											# restarts clock
+		world_stage_get_belarus_timer_frame = yes
+	} else = {																						# no winner
+		set_variable = { global.theater_belarus_timer = 60 }											# restarts clock
+		world_stage_get_belarus_timer_frame = yes
+		round_variable = global.GER_strength_belarus
+		divide_variable = { global.GER_strength_belarus_bonus = 2 }									# each 'turn' halves the strategic advantages of both sides
+		round_variable = global.GER_strength_belarus_bonus
+		round_variable = global.SOV_strength_belarus
+		divide_variable = { global.SOV_strength_belarus_bonus = 2 }
+		round_variable = global.SOV_strength_belarus_bonus
+		set_variable = { global.GER_strength_belarus_final = global.GER_strength_belarus }			# recalculate final strength so tooltips dont get messy after a draw
+		add_to_variable = { global.GER_strength_belarus_final = global.GER_strength_belarus_bonus }
+		set_variable = { global.SOV_strength_belarus_final = global.SOV_strength_belarus }
+		add_to_variable = { global.SOV_strength_belarus_final = global.SOV_strength_belarus_bonus }
+		# country_event =																			# no event needed here
+	}
+	clear_variable = global.GER_strength_belarus				# CLEAR ALL UNECESSARY DATA (do not delete trickleback data! it's used for localisation)
+	clear_variable = global.GER_strength_belarus_bonus
+	clear_variable = global.GER_strength_belarus_final
+	clear_variable = global.SOV_strength_belarus
+	clear_variable = global.SOV_strength_belarus_bonus
+	clear_variable = global.SOV_strength_belarus_final
+}	d_resolve_threater_belarus = { resolve_threater_belarus = yes }	# shortcut console command
+
+resolve_threater_smolensk = {
+	log = "resolve_threater_smolensk"
+	randomize_temp_variable = {	var = side_a_attack	distribution = uniform	min = 0.05 max = 0.2 }	# each side causes damage equal to [5;20]% of their final strength
+	multiply_temp_variable = { side_a_attack = global.GER_strength_smolensk_final }
+	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }									# minimum 1 attack
+	randomize_temp_variable = {	var = side_b_attack	distribution = uniform	min = 0.05 max = 0.2 }
+	multiply_temp_variable = { side_b_attack = global.SOV_strength_smolensk_final }
+	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }
+	subtract_from_variable = { global.GER_strength_smolensk = side_b_attack }
+	subtract_from_variable = { global.SOV_strength_smolensk = side_a_attack }
+	if = {																							# someone wins
+		limit = { OR = { check_variable = { global.GER_strength_smolensk < 1 } check_variable = { global.SOV_strength_smolensk < 1 } } }
+		if = {
+			limit = { check_variable = { global.GER_strength_smolensk < global.SOV_strength_smolensk } }	# GER wins	# no trickleback: deployed forces move to next theater
+			news_event = worldstage.41
+		} else = {																						# else: SOV wins
+			news_event = worldstage.42
+		}
+		clr_global_flag = world_stage_theater_smolensk_is_active
+		set_variable = { global.theater_smolensk_timer = 60 }											# restarts clock
+		world_stage_get_smolensk_timer_frame = yes
+		clear_variable = global.GER_strength_smolensk				# CLEAR ALL UNECESSARY DATA (do not delete trickleback data! it's used for localisation)
+		clear_variable = global.GER_strength_smolensk_bonus
+		clear_variable = global.GER_strength_smolensk_final
+		clear_variable = global.SOV_strength_smolensk
+		clear_variable = global.SOV_strength_smolensk_bonus
+		clear_variable = global.SOV_strength_smolensk_final
+	} else = {																						# no winner
+		set_variable = { global.theater_smolensk_timer = 60 }											# restarts clock
+		world_stage_get_smolensk_timer_frame = yes
+		round_variable = global.GER_strength_smolensk
+		divide_variable = { global.GER_strength_smolensk_bonus = 2 }									# each 'turn' halves the strategic advantages of both sides
+		round_variable = global.GER_strength_smolensk_bonus
+		round_variable = global.SOV_strength_smolensk
+		divide_variable = { global.SOV_strength_smolensk_bonus = 2 }
+		round_variable = global.SOV_strength_smolensk_bonus
+		set_variable = { global.GER_strength_smolensk_final = global.GER_strength_smolensk }			# recalculate final strength so tooltips dont get messy after a draw
+		add_to_variable = { global.GER_strength_smolensk_final = global.GER_strength_smolensk_bonus }
+		set_variable = { global.SOV_strength_smolensk_final = global.SOV_strength_smolensk }
+		add_to_variable = { global.SOV_strength_smolensk_final = global.SOV_strength_smolensk_bonus }
+		# country_event =																			# no event needed here
+	}
+}	d_resolve_threater_smolensk = { resolve_threater_smolensk = yes }	# shortcut console command
+
+resolve_threater_russia = {
+	log = "resolve_threater_russia"
+	randomize_temp_variable = {	var = side_a_attack	distribution = uniform	min = 0.05 max = 0.2 }	# each side causes damage equal to [5;20]% of their final strength
+	multiply_temp_variable = { side_a_attack = global.GER_strength_russia_final }
+	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }									# minimum 1 attack
+	randomize_temp_variable = {	var = side_b_attack	distribution = uniform	min = 0.05 max = 0.2 }
+	multiply_temp_variable = { side_b_attack = global.SOV_strength_russia_final }
+	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }
+	subtract_from_variable = { global.GER_strength_russia = side_b_attack }
+	subtract_from_variable = { global.SOV_strength_russia = side_a_attack }
+	if = {																							# someone wins
+		limit = { OR = { check_variable = { global.GER_strength_russia < 1 } check_variable = { global.SOV_strength_russia < 1 } } }
+		if = {
+			limit = { check_variable = { global.GER_strength_russia < global.SOV_strength_russia } }	# GER wins	# no trickleback: deployed forces move to next theater
+			news_event = worldstage.43
+		} else = {																						# else: SOV wins
+			news_event = worldstage.44
+		}
+		clr_global_flag = world_stage_theater_russia_is_active
+		set_variable = { global.theater_russia_timer = 60 }											# restarts clock
+		world_stage_get_russia_timer_frame = yes
+	} else = {																						# no winner
+		set_variable = { global.theater_russia_timer = 60 }											# restarts clock
+		world_stage_get_russia_timer_frame = yes
+		round_variable = global.GER_strength_russia
+		divide_variable = { global.GER_strength_russia_bonus = 2 }									# each 'turn' halves the strategic advantages of both sides
+		round_variable = global.GER_strength_russia_bonus
+		round_variable = global.SOV_strength_russia
+		divide_variable = { global.SOV_strength_russia_bonus = 2 }
+		round_variable = global.SOV_strength_russia_bonus
+		set_variable = { global.GER_strength_russia_final = global.GER_strength_russia }			# recalculate final strength so tooltips dont get messy after a draw
+		add_to_variable = { global.GER_strength_russia_final = global.GER_strength_russia_bonus }
+		set_variable = { global.SOV_strength_russia_final = global.SOV_strength_russia }
+		add_to_variable = { global.SOV_strength_russia_final = global.SOV_strength_russia_bonus }
+		# country_event =																			# no event needed here
+	}
+	clear_variable = global.GER_strength_russia				# CLEAR ALL UNECESSARY DATA (do not delete trickleback data! it's used for localisation)
+	clear_variable = global.GER_strength_russia_bonus
+	clear_variable = global.GER_strength_russia_final
+	clear_variable = global.SOV_strength_russia
+	clear_variable = global.SOV_strength_russia_bonus
+	clear_variable = global.SOV_strength_russia_final
+}	d_resolve_threater_russia = { resolve_threater_russia = yes }	# shortcut console command
+
+resolve_threater_germany = {
+	log = "resolve_threater_germany"
+	randomize_temp_variable = {	var = side_a_attack	distribution = uniform	min = 0.05 max = 0.2 }	# each side causes damage equal to [5;20]% of their final strength
+	multiply_temp_variable = { side_a_attack = global.GER_strength_germany_final }
+	set_temp_variable = { number_of_allies  = 0 }
+	if = { limit = { check_variable  = { global.ENG_strength_germany > 0 } add_to_variable = { number_of_allies = 1 } } }
+	if = { limit = { check_variable  = { global.FRA_strength_germany > 0 } add_to_variable = { number_of_allies = 1 } } }
+	if = { limit = { check_variable  = { global.SOV_strength_germany > 0 } add_to_variable = { number_of_allies = 1 } } }
+	if = { limit = { check_variable  = { global.USA_strength_germany > 0 } add_to_variable = { number_of_allies = 1 } } }
+	clamp_temp_variable = { var = number_of_allies min = 1 max = 4 }								
+	divide_temp_variable = { side_a_attack = number_of_allies }
+	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }									# minimum 1 attack
+	randomize_temp_variable = {	var = side_b_attack	distribution = uniform	min = 0.05 max = 0.2 }
+	multiply_temp_variable = { side_b_attack = global.FRA_strength_germany_final }
+	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }
+	subtract_from_variable = { global.GER_strength_germany = side_b_attack }
+	if = { limit = { check_variable = {  global.ENG_strength_germany > 0 } } subtract_from_variable = { global.ENG_strength_germany > side_a_attack } }
+	if = { limit = { check_variable = {  global.FRA_strength_germany > 0 } } subtract_from_variable = { global.FRA_strength_germany > side_a_attack } }
+	if = { limit = { check_variable = {  global.SOV_strength_germany > 0 } } subtract_from_variable = { global.SOV_strength_germany > side_a_attack } }
+	if = { limit = { check_variable = {  global.USA_strength_germany > 0 } } subtract_from_variable = { global.USA_strength_germany > side_a_attack } }
+	if = {																							# someone wins
+		limit = { OR = { check_variable = { global.GER_strength_germany < 1 } check_variable = { global.FRA_strength_germany < 1 } } }
+		if = {
+			limit = { check_variable = { global.GER_strength_germany < global.FRA_strength_germany } }	# GER wins
+			#set_variable = { global.GER_strength_trickleback = global.GER_strength_germany }					
+			#round_variable = global.GER_strength_trickleback
+			#clamp_variable = { var = global.GER_strength_trickleback min = 1 max = 999 }
+			#add_to_variable = { global.world_stage_power_ger = global.GER_strength_trickleback }	# no trickleback: deployed forces move to next theater
+			news_event = worldstage.31
+		} else = {																					# else: FRA wins
+			#set_variable = { global.FRA_strength_trickleback = global.FRA_strength_germany }
+			#round_variable = global.FRA_strength_trickleback
+			#clamp_variable = { var = global.FRA_strength_trickleback min = 1 max = 999 }
+			#add_to_variable = { global.world_stage_power_fra = global.FRA_strength_trickleback }
+			news_event = worldstage.32
+		}
+		clr_global_flag = world_stage_theater_germany_is_active
+		set_variable = { global.theater_germany_timer = 60 }											# restarts clock
+		world_stage_get_germany_timer_frame = yes
+	} else = {																						# no winner
+		set_variable = { global.theater_germany_timer = 60 }											# restarts clock
+		world_stage_get_germany_timer_frame = yes
+		round_variable = global.GER_strength_germany
+		divide_variable = { global.GER_strength_germany_bonus = 2 }									# each 'turn' halves the strategic advantages of both sides
+		round_variable = global.GER_strength_germany_bonus
+		round_variable = global.FRA_strength_germany
+		divide_variable = { global.FRA_strength_germany_bonus = 2 }
+		round_variable = global.FRA_strength_germany_bonus
+		set_variable = { global.GER_strength_germany_final = global.GER_strength_germany }			# recalculate final strength so tooltips dont get messy after a draw
+		add_to_variable = { global.GER_strength_germany_final = global.GER_strength_germany_bonus }
+		set_variable = { global.FRA_strength_germany_final = global.FRA_strength_germany }
+		add_to_variable = { global.FRA_strength_germany_final = global.FRA_strength_germany_bonus }
+		# country_event =																			# no event needed here
+	}
+	clear_variable = global.GER_strength_germany				# CLEAR ALL UNECESSARY DATA (do not delete trickleback data! it's used for localisation)
+	clear_variable = global.GER_strength_germany_bonus
+	clear_variable = global.GER_strength_germany_final
+	clear_variable = global.FRA_strength_germany
+	clear_variable = global.FRA_strength_germany_bonus
+	clear_variable = global.FRA_strength_germany_final
+}	d_resolve_threater_germany = { resolve_threater_germany = yes }	# shortcut console command
+
+resolve_threater_norway = {
+	log = "resolve_threater_norway"
+	randomize_temp_variable = {	var = side_a_attack	distribution = uniform	min = 0.05 max = 0.2 }	# each side causes damage equal to [5;20]% of their final strength
+	multiply_temp_variable = { side_a_attack = global.GER_strength_norway_final }
+	set_temp_variable = { number_of_allies  = 0 }
+	if = { limit = { check_variable  = { global.ENG_strength_norway > 0 } add_to_variable = { number_of_allies = 1 } } }
+	if = { limit = { check_variable  = { global.FRA_strength_norway > 0 } add_to_variable = { number_of_allies = 1 } } }
+	if = { limit = { check_variable  = { global.NOR_strength_norway > 0 } add_to_variable = { number_of_allies = 1 } } }
+	clamp_temp_variable = { var = number_of_allies min = 1 max = 3 }								
+	divide_temp_variable = { side_a_attack = number_of_allies }
+	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }									# minimum 1 attack
+	randomize_temp_variable = {	var = side_b_attack	distribution = uniform	min = 0.05 max = 0.2 }
+	multiply_temp_variable = { side_b_attack = global.ENG_strength_norway_final }
+	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }
+	subtract_from_variable = { global.GER_strength_norway = side_b_attack }
+	if = { limit = { check_variable = {  global.NOR_strength_norway > 0 } } subtract_from_variable = { global.NOR_strength_norway > side_a_attack } }
+	if = { limit = { check_variable = {  global.ENG_strength_norway > 0 } } subtract_from_variable = { global.ENG_strength_norway > side_a_attack } }
+	if = { limit = { check_variable = {  global.FRA_strength_norway > 0 } } subtract_from_variable = { global.FRA_strength_norway > side_a_attack } }
+	if = {																							# someone wins
+		limit = {
+			OR = {
+				check_variable = { global.GER_strength_norway < 1 } 
+				AND = { check_variable = { global.NOR_strength_norway < 1 } check_variable = { global.ENG_strength_norway < 1 } check_variable = { global.FRA_strength_norway < 1 } }
+			}
+		}
+		if = {
+			limit = { check_variable = { global.GER_strength_norway < global.ENG_strength_norway } }	# GER wins
+			news_event = worldstage.46
+		} else = {																					# else: norway wins
+			news_event = worldstage.47
+		}
+		clr_global_flag = world_stage_theater_norway_is_active
+		set_variable = { global.theater_norway_timer = 60 }											# restarts clock
+		world_stage_get_norway_timer_frame = yes
+	} else = {																						# no winner
+		set_variable = { global.theater_norway_timer = 60 }											# restarts clock
+		world_stage_get_norway_timer_frame = yes
+		round_variable = global.GER_strength_norway
+		divide_variable = { global.GER_strength_norway_bonus = 2 }									# each 'turn' halves the strategic advantages of both sides
+		round_variable = global.GER_strength_norway_bonus
+		round_variable = global.ENG_strength_norway
+		divide_variable = { global.ENG_strength_norway_bonus = 2 }
+		round_variable = global.ENG_strength_norway_bonus
+		set_variable = { global.GER_strength_norway_final = global.GER_strength_norway }			# recalculate final strength so tooltips dont get messy after a draw
+		add_to_variable = { global.GER_strength_norway_final = global.GER_strength_norway_bonus }
+		set_variable = { global.ENG_strength_norway_final = global.ENG_strength_norway }
+		add_to_variable = { global.ENG_strength_norway_final = global.ENG_strength_norway_bonus }
+		# country_event =																			# no event needed here
+	}
+	clear_variable = global.GER_strength_norway				# CLEAR ALL UNECESSARY DATA (do not delete trickleback data! it's used for localisation)
+	clear_variable = global.GER_strength_norway_bonus
+	clear_variable = global.GER_strength_norway_final
+	clear_variable = global.ENG_strength_norway
+	clear_variable = global.ENG_strength_norway_bonus
+	clear_variable = global.ENG_strength_norway_final
+}	d_resolve_threater_norway = { resolve_threater_norway = yes }	# shortcut console command
+
+resolve_threater_lybia = {
+	log = "resolve_threater_lybia"
+	randomize_temp_variable = {	var = side_a_attack	distribution = uniform	min = 0.05 max = 0.2 }	# each side causes damage equal to [5;20]% of their final strength
+	multiply_temp_variable = { side_a_attack = global.GER_strength_lybia_final }
+	set_temp_variable = { number_of_allies  = 0 }
+	if = { limit = { check_variable  = { global.ENG_strength_lybia > 0 } add_to_variable = { number_of_allies = 1 } } }
+	if = { limit = { check_variable  = { global.FRA_strength_lybia > 0 } add_to_variable = { number_of_allies = 1 } } }
+	if = { limit = { check_variable  = { global.USA_strength_lybia > 0 } add_to_variable = { number_of_allies = 1 } } }
+	if = { limit = { check_variable  = { global.BRI_strength_lybia > 0 } add_to_variable = { number_of_allies = 1 } } }
+	clamp_temp_variable = { var = number_of_allies min = 1 max = 4 }								
+	divide_temp_variable = { side_a_attack = number_of_allies }
+	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }									# minimum 1 attack
+	randomize_temp_variable = {	var = side_b_attack	distribution = uniform	min = 0.05 max = 0.2 }
+	multiply_temp_variable = { side_b_attack = global.ENG_strength_lybia_final }
+	set_temp_variable = { number_of_axis = 0 }
+	if = { limit = { check_variable  = { global.ITA_strength_lybia > 0 } add_to_variable = { number_of_axis = 1 } } }
+	if = { limit = { check_variable  = { global.ITA_strength_lybia > 0 } add_to_variable = { number_of_axis = 1 } } }
+	clamp_temp_variable = { var = number_of_axis min = 1 max = 2 }								
+	divide_temp_variable = { side_b_attack = number_of_axis }
+	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }
+	if = { limit = { check_variable = {  global.GER_strength_lybia > 0 } } subtract_from_variable = { global.GER_strength_lybia > side_b_attack } }
+	if = { limit = { check_variable = {  global.ITA_strength_lybia > 0 } } subtract_from_variable = { global.ITA_strength_lybia > side_b_attack } }
+	if = { limit = { check_variable = {  global.ENG_strength_lybia > 0 } } subtract_from_variable = { global.ENG_strength_lybia > side_a_attack } }
+	if = { limit = { check_variable = {  global.BRI_strength_lybia > 0 } } subtract_from_variable = { global.BRI_strength_lybia > side_a_attack } }
+	if = { limit = { check_variable = {  global.USA_strength_lybia > 0 } } subtract_from_variable = { global.USA_strength_lybia > side_a_attack } }
+	if = { limit = { check_variable = {  global.FRA_strength_lybia > 0 } } subtract_from_variable = { global.FRA_strength_lybia > side_a_attack } }
+	log = "got this far!"
+	if = {																							# someone wins
+		limit = {
+			OR = {
+				check_variable = { global.GER_strength_lybia < 1 } 
+				AND = { check_variable = { global.BRI_strength_lybia < 1 } check_variable = { global.ENG_strength_lybia < 1 } check_variable = { global.FRA_strength_lybia < 1 } { global.USA_strength_lybia < 1 }}
+			}
+		}
+		if = {
+			limit = { check_variable = { global.GER_strength_lybia < global.ENG_strength_lybia } }	# GER wins
+			news_event = worldstage.49
+		} else = {																					# else: england wins
+			news_event = worldstage.50
+		}
+		clr_global_flag = world_stage_theater_lybia_is_active										# restarts clock
+		world_stage_get_lybia_timer_frame = yes
+	} else = {																						# no winner
+		world_stage_get_lybia_timer_frame = yes
+		round_variable = global.GER_strength_lybia
+		divide_variable = { global.GER_strength_lybia_bonus = 2 }									# each 'turn' halves the strategic advantages of both sides
+		round_variable = global.GER_strength_lybia_bonus
+		round_variable = global.ENG_strength_lybia
+		divide_variable = { global.ENG_strength_lybia_bonus = 2 }
+		round_variable = global.ENG_strength_lybia_bonus
+		set_variable = { global.GER_strength_lybia_final = global.GER_strength_lybia }			# recalculate final strength so tooltips dont get messy after a draw
+		add_to_variable = { global.GER_strength_lybia_final = global.GER_strength_lybia_bonus }
+		set_variable = { global.ENG_strength_lybia_final = global.ENG_strength_lybia }
+		add_to_variable = { global.ENG_strength_lybia_final = global.ENG_strength_lybia_bonus }
+		# country_event =																			# no event needed here
+	}
+	set_variable = { global.theater_lybia_timer = 60 }											# restarts clock
+	clear_variable = global.GER_strength_lybia				# CLEAR ALL UNECESSARY DATA (do not delete trickleback data! it's used for localisation)
+	clear_variable = global.GER_strength_lybia_bonus
+	clear_variable = global.GER_strength_lybia_final
+	clear_variable = global.ENG_strength_lybia
+	clear_variable = global.ENG_strength_lybia_bonus
+	clear_variable = global.ENG_strength_lybia_final
+}	d_resolve_threater_lybia = { log = "aa" resolve_threater_lybia = yes }	# shortcut console command
+
+resolve_threater_egypt = {
+	log = "resolve_threater_egypt"
+	randomize_temp_variable = {	var = side_a_attack	distribution = uniform	min = 0.05 max = 0.2 }	# each side causes damage equal to [5;20]% of their final strength
+	multiply_temp_variable = { side_a_attack = global.GER_strength_egypt_final }
+	set_temp_variable = { number_of_allies  = 0 }
+	if = { limit = { check_variable  = { global.ENG_strength_egypt > 0 } add_to_variable = { number_of_allies = 1 } } }
+	if = { limit = { check_variable  = { global.FRA_strength_egypt > 0 } add_to_variable = { number_of_allies = 1 } } }
+	if = { limit = { check_variable  = { global.USA_strength_egypt > 0 } add_to_variable = { number_of_allies = 1 } } }
+	if = { limit = { check_variable  = { global.BRI_strength_egypt > 0 } add_to_variable = { number_of_allies = 1 } } }
+	clamp_temp_variable = { var = number_of_allies min = 1 max = 4 }								
+	divide_temp_variable = { side_a_attack = number_of_allies }
+	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }									# minimum 1 attack
+	randomize_temp_variable = {	var = side_b_attack	distribution = uniform	min = 0.05 max = 0.2 }
+	multiply_temp_variable = { side_b_attack = global.ENG_strength_egypt_final }
+	set_temp_variable = { number_of_axis = 0 }
+	if = { limit = { check_variable  = { global.ITA_strength_egypt > 0 } add_to_variable = { number_of_axis = 1 } } }
+	if = { limit = { check_variable  = { global.ITA_strength_egypt > 0 } add_to_variable = { number_of_axis = 1 } } }
+	clamp_temp_variable = { var = number_of_axis min = 1 max = 2 }								
+	divide_temp_variable = { side_b_attack = number_of_axis }
+	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }
+	if = { limit = { check_variable = {  global.GER_strength_egypt > 0 } } subtract_from_variable = { global.GER_strength_egypt > side_b_attack } }
+	if = { limit = { check_variable = {  global.ITA_strength_egypt > 0 } } subtract_from_variable = { global.ITA_strength_egypt > side_b_attack } }
+	if = { limit = { check_variable = {  global.ENG_strength_egypt > 0 } } subtract_from_variable = { global.ENG_strength_egypt > side_a_attack } }
+	if = { limit = { check_variable = {  global.BRI_strength_egypt > 0 } } subtract_from_variable = { global.BRI_strength_egypt > side_a_attack } }
+	if = { limit = { check_variable = {  global.USA_strength_egypt > 0 } } subtract_from_variable = { global.USA_strength_egypt > side_a_attack } }
+	if = { limit = { check_variable = {  global.FRA_strength_egypt > 0 } } subtract_from_variable = { global.FRA_strength_egypt > side_a_attack } }
+	if = {																							# someone wins
+		limit = {
+			OR = {
+				check_variable = { global.GER_strength_egypt < 1 } 
+				AND = { check_variable = { global.BRI_strength_egypt < 1 } check_variable = { global.ENG_strength_egypt < 1 } check_variable = { global.FRA_strength_egypt < 1 } { global.USA_strength_egypt < 1 }}
+			}
+		}
+		if = {
+			limit = { check_variable = { global.GER_strength_egypt < global.ENG_strength_egypt } }	# GER wins
+			news_event = worldstage.51
+		} else = {																					# else: england wins
+			news_event = worldstage.52
+		}
+		clr_global_flag = world_stage_theater_egypt_is_active
+		set_variable = { global.theater_egypt_timer = 60 }											# restarts clock
+		world_stage_get_egypt_timer_frame = yes
+	} else = {																						# no winner
+		set_variable = { global.theater_egypt_timer = 60 }											# restarts clock
+		world_stage_get_egypt_timer_frame = yes
+		round_variable = global.GER_strength_egypt
+		divide_variable = { global.GER_strength_egypt_bonus = 2 }									# each 'turn' halves the strategic advantages of both sides
+		round_variable = global.GER_strength_egypt_bonus
+		round_variable = global.ENG_strength_egypt
+		divide_variable = { global.ENG_strength_egypt_bonus = 2 }
+		round_variable = global.ENG_strength_egypt_bonus
+		set_variable = { global.GER_strength_egypt_final = global.GER_strength_egypt }			# recalculate final strength so tooltips dont get messy after a draw
+		add_to_variable = { global.GER_strength_egypt_final = global.GER_strength_egypt_bonus }
+		set_variable = { global.ENG_strength_egypt_final = global.ENG_strength_egypt }
+		add_to_variable = { global.ENG_strength_egypt_final = global.ENG_strength_egypt_bonus }
+		# country_event =																			# no event needed here
+	}
+	clear_variable = global.GER_strength_egypt				# CLEAR ALL UNECESSARY DATA (do not delete trickleback data! it's used for localisation)
+	clear_variable = global.GER_strength_egypt_bonus
+	clear_variable = global.GER_strength_egypt_final
+	clear_variable = global.ENG_strength_egypt
+	clear_variable = global.ENG_strength_egypt_bonus
+	clear_variable = global.ENG_strength_egypt_final
+}	d_resolve_threater_egypt = { resolve_threater_egypt = yes }	# shortcut console command
+
+resolve_threater_ethiopia = {
+	log = "resolve_threater_ethiopia"
+	randomize_temp_variable = {	var = side_a_attack	distribution = uniform	min = 0.05 max = 0.2 }	# each side causes damage equal to [5;20]% of their final strength
+	multiply_temp_variable = { side_a_attack = global.GER_strength_ethiopia_final }
+	set_temp_variable = { number_of_allies  = 0 }
+	if = { limit = { check_variable  = { global.ENG_strength_ethiopia > 0 } add_to_variable = { number_of_allies = 1 } } }
+	if = { limit = { check_variable  = { global.BRI_strength_ethiopia > 0 } add_to_variable = { number_of_allies = 1 } } }
+	clamp_temp_variable = { var = number_of_allies min = 1 max = 2 }								
+	divide_temp_variable = { side_a_attack = number_of_allies }
+	clamp_temp_variable = { var = side_a_attack min = 1 max = 999 }									# minimum 1 attack
+	randomize_temp_variable = {	var = side_b_attack	distribution = uniform	min = 0.05 max = 0.2 }
+	multiply_temp_variable = { side_b_attack = global.ENG_strength_ethiopia_final }
+	set_temp_variable = { number_of_axis = 0 }
+	if = { limit = { check_variable  = { global.ITA_strength_ethiopia > 0 } add_to_variable = { number_of_axis = 1 } } }
+	if = { limit = { check_variable  = { global.ITA_strength_ethiopia > 0 } add_to_variable = { number_of_axis = 1 } } }
+	clamp_temp_variable = { var = number_of_axis min = 1 max = 2 }								
+	divide_temp_variable = { side_b_attack = number_of_axis }
+	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }
+	subtract_from_variable = { global.GER_strength_ethiopia = side_b_attack }
+	if = { limit = { check_variable = {  global.ENG_strength_ethiopia > 0 } } subtract_from_variable = { global.ENG_strength_ethiopia > side_a_attack } }
+	if = { limit = { check_variable = {  global.BRI_strength_ethiopia > 0 } } subtract_from_variable = { global.BRI_strength_ethiopia > side_a_attack } }
+	if = {																							# someone wins
+		limit = {
+			OR = {
+				check_variable = { global.GER_strength_ethiopia < 1 } 
+				AND = { check_variable = { global.ENG_strength_ethiopia < 1 } check_variable = { global.BRI_strength_ethiopia < 1 } }
+			}
+		}
+		if = {
+			limit = { check_variable = { global.GER_strength_ethiopia < global.ENG_strength_ethiopia } }	# GER wins
+			news_event = worldstage.53
+		} else = {																					# else: england wins
+			news_event = worldstage.54
+		}
+		clr_global_flag = world_stage_theater_ethiopia_is_active
+		set_variable = { global.theater_ethiopia_timer = 60 }											# restarts clock
+		world_stage_get_ethiopia_timer_frame = yes
+	} else = {																						# no winner
+		set_variable = { global.theater_ethiopia_timer = 60 }											# restarts clock
+		world_stage_get_ethiopia_timer_frame = yes
+		round_variable = global.GER_strength_ethiopia
+		divide_variable = { global.GER_strength_ethiopia_bonus = 2 }									# each 'turn' halves the strategic advantages of both sides
+		round_variable = global.GER_strength_ethiopia_bonus
+		round_variable = global.ENG_strength_ethiopia
+		divide_variable = { global.ENG_strength_ethiopia_bonus = 2 }
+		round_variable = global.ENG_strength_ethiopia_bonus
+		set_variable = { global.GER_strength_ethiopia_final = global.GER_strength_ethiopia }			# recalculate final strength so tooltips dont get messy after a draw
+		add_to_variable = { global.GER_strength_ethiopia_final = global.GER_strength_ethiopia_bonus }
+		set_variable = { global.ENG_strength_ethiopia_final = global.ENG_strength_ethiopia }
+		add_to_variable = { global.ENG_strength_ethiopia_final = global.ENG_strength_ethiopia_bonus }
+		# country_event =																			# no event needed here
+	}
+	clear_variable = global.GER_strength_ethiopia				# CLEAR ALL UNECESSARY DATA (do not delete trickleback data! it's used for localisation)
+	clear_variable = global.GER_strength_ethiopia_bonus
+	clear_variable = global.GER_strength_ethiopia_final
+	clear_variable = global.ENG_strength_ethiopia
+	clear_variable = global.ENG_strength_ethiopia_bonus
+	clear_variable = global.ENG_strength_ethiopia_final
+}	d_resolve_threater_ethiopia = { resolve_threater_ethiopia = yes }	# shortcut console command
