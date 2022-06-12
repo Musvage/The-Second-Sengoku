@@ -30,6 +30,9 @@
 				has_government = democratic
 				has_government = democratic_socialism
 			}
+			NOT = {
+				has_completed_focus = PRO_assassination_of_the_prime_minister
+			}
 		}
 		
 		available_if_capitulated = yes
@@ -39,14 +42,57 @@
 		ai_will_do = {
 			factor = 10
 		}
-		
+		cancel_if_invalid = yes
 		completion_reward = {
 			#set_cosmetic_tag = PRO_republic
 			#hidden_effect = {
 			#	country_event = { id = pro.101 days = 5 }
 			#	set_country_flag = PRO_1936_election_completed
 			#}
-			activate_decision = PRO_election_timer
+			#activate_decision = PRO_election_timer
+			effect_tooltip = {
+				country_event = pro.23
+			}
+			hidden_effect = {
+				clr_country_flag = PRO_ongoing_elections
+				if = {
+					limit = {
+						has_country_flag = PRO_demsoc_won
+					}
+					complete_national_focus = PRO_social_democratic_majority
+					clr_country_flag = PRO_demsoc_won
+				}
+				if = {
+					limit = {
+						has_country_flag = PRO_dem_won
+					}
+					complete_national_focus = PRO_conservative_majority
+					clr_country_flag = PRO_dem_won
+				}
+				clr_country_flag = PRO_AI_conservative_path
+				clr_country_flag = PRO_AI_social_democracy_path
+				clr_country_flag = PRO_AI_coup_path
+			}
+		}
+		select_effect = {
+			set_country_flag = PRO_ongoing_elections
+			country_event = { id = pro.23 days = 10 }
+			country_event = { id = pro.24 days = 30 }
+			country_event = { id = pro.25 days = 50 }
+			country_event = { id = pro.26 days = 68 }
+
+			#AI
+			random_list = {
+				40 = {
+					set_country_flag = PRO_AI_conservative_path
+				}
+				40 = {
+					set_country_flag = PRO_AI_social_democracy_path
+				}
+				20 = {
+					set_country_flag = PRO_AI_coup_path
+				}
+			}
 		}
 	}
 	
@@ -73,6 +119,10 @@
 				#id = 1618151
 				name  = "Wakatsuki Reijiro"
 				ruling_only = yes
+			}
+			custom_trigger_tooltip = {
+				tooltip = PRO_require_elections_tt
+				has_country_flag = PRO_ongoing_elections
 			}
 		}
 		

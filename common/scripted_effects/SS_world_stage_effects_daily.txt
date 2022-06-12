@@ -1,0 +1,2654 @@
+###
+###	these effects are exectued on on_actions/daily by one random country
+### for simplicity, all possible axis and allies countries will be featured in each theater
+### since kominter will never go to war with allies, the code will treat komintern as allies
+### special theaters go in firts
+###
+### each country has it's own doctrine modifiers
+### off-map-only countries have a 'generic' doctrine modifier updated yearly
+###
+### the Netherlands have a special check to see if they are on the axis or allies
+### the Unite States have a special check to see if they are on the allies or neutral
+### Portugal and China have a special check to see in which side they are
+### japanese nations/Korea/Manchuria do not appear here since they have no off-map presence
+###
+
+
+world_stage_daily_effect = {	# activated from on_actions/daily from a random scope
+	if = {
+		limit = {
+			has_global_flag = { flag = phoney_war_countdown days > 180 }
+		}
+		clr_global_flag = phoney_war_countdown
+		set_global_flag = world_stage_theater_alsace_is_active
+	}
+	if = {	### MONGOLIA
+		limit = { has_global_flag = world_stage_theater_mongolia_is_active_first }
+		subtract_from_variable = { global.theater_mongolia_timer = 1 }
+		set_variable = { global.AXIS_strength_mongolia_final = global.CHI_strength_mongolia }
+		add_to_variable = { global.AXIS_strength_mongolia_final = global.CHI_strength_mongolia_bonus }
+		set_variable = { global.CHI_strength_doc_air = ROC.air_doctrine_level }
+		set_variable = { global.CHI_strength_doc_land = ROC.land_doctrine_level }
+		multiply_variable = { global.CHI_strength_doc_air = 0.05 }
+		multiply_variable = { global.CHI_strength_doc_land = 0.10 }
+		set_temp_variable = { global.CHI_strength_mongolia_multiplier = 1 }
+		add_to_temp_variable = { global.CHI_strength_mongolia_multiplier = global.CHI_strength_doc_air }
+		add_to_temp_variable = { global.CHI_strength_mongolia_multiplier = global.CHI_strength_doc_land }
+		multiply_variable = { global.AXIS_strength_mongolia_final = global.CHI_strength_mongolia_multiplier }
+		set_variable = { global.SOV_strength_mongolia_final = global.SOV_strength_mongolia }
+		add_to_variable = { global.SOV_strength_mongolia_final = global.SOV_strength_mongolia_bonus }
+		set_variable = { global.SOV_strength_doc_air = FER.air_doctrine_level }
+		set_variable = { global.SOV_strength_doc_land = FER.land_doctrine_level }
+		multiply_variable = { global.SOV_strength_doc_air = 0.05 }
+		multiply_variable = { global.SOV_strength_doc_land = 0.10 }
+		set_temp_variable = { global.SOV_strength_mongolia_multiplier = 1 }
+		add_to_temp_variable = { global.SOV_strength_mongolia_multiplier = global.SOV_strength_doc_air }
+		add_to_temp_variable = { global.SOV_strength_mongolia_multiplier = global.SOV_strength_doc_land }
+		multiply_variable = { global.SOV_strength_mongolia_final = global.SOV_strength_mongolia_multiplier }
+		world_stage_get_mongolia_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_mongolia_timer < 1 } }
+			resolve_mongolian_crisis = yes
+		}
+	}
+	if = {	### SPANISH CIVIL WAR
+		limit = { has_global_flag = world_stage_theater_spanish_cw_is_active }
+		subtract_from_variable = { global.theater_spanish_cw_timer = 1 }
+		set_variable = { global.FAL_strength_spain_final = global.FAL_strength_spain }
+		add_to_variable = { global.FAL_strength_spain_final = global.FAL_strength_spain_bonus }
+		set_temp_variable = { global.FAL_strength_spain_multiplier = 1 }
+		multiply_variable = { global.FAL_strength_spain_final = global.FAL_strength_spain_multiplier }
+		set_variable = { global.REP_strength_spain_final = global.REP_strength_spain }
+		add_to_variable = { global.REP_strength_spain_final = global.REP_strength_spain_bonus }
+		set_temp_variable = { global.REP_strength_spain_multiplier = 1 }
+		multiply_variable = { global.REP_strength_spain_final = global.REP_strength_spain_multiplier }
+		world_stage_get_spanish_cw_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_spanish_cw_timer < 1 } }
+			resolve_spanish_cw = yes
+		}
+	}
+	if = {	### POLAND first INVASION
+		limit = { has_global_flag = world_stage_theater_poland_is_active_first }
+		subtract_from_variable = { global.theater_poland_timer_first = 1 }
+		set_variable = { global.GER_strength_poland_final = global.GER_strength_poland }
+		add_to_variable = { global.GER_strength_poland_final = global.GER_strength_poland_bonus }
+		set_variable = { global.GER_strength_doc_air = REI.air_doctrine_level }
+		set_variable = { global.GER_strength_doc_land = REI.land_doctrine_level }
+		multiply_variable = { global.GER_strength_doc_air = 0.05 }
+		multiply_variable = { global.GER_strength_doc_land = 0.10 }
+		set_temp_variable = { global.GER_strength_poland_multiplier = 1 }
+		add_to_temp_variable = { global.GER_strength_poland_multiplier = global.GER_strength_doc_air }
+		add_to_temp_variable = { global.GER_strength_poland_multiplier = global.GER_strength_doc_land }
+		multiply_variable = { global.GER_strength_poland_final = global.GER_strength_poland_multiplier }
+		if = {
+			limit = { has_global_flag = GER_SOV_pact_enabled }
+			set_variable = { global.SOV_strength_poland_final = global.SOV_strength_poland }
+			add_to_variable = { global.SOV_strength_poland_final = global.SOV_strength_poland_bonus }
+			set_variable = { global.SOV_strength_doc_air = FER.air_doctrine_level }
+			set_variable = { global.SOV_strength_doc_land = FER.land_doctrine_level }
+			multiply_variable = { global.SOV_strength_doc_air = 0.05 }
+			multiply_variable = { global.SOV_strength_doc_land = 0.10 }
+			set_temp_variable = { global.SOV_strength_poland_multiplier = 1 }
+			add_to_temp_variable = { global.SOV_strength_poland_multiplier = global.SOV_strength_doc_air }
+			add_to_temp_variable = { global.SOV_strength_poland_multiplier = global.SOV_strength_doc_land }
+			multiply_variable = { global.SOV_strength_poland_final = global.SOV_strength_poland_multiplier }
+		}
+		set_variable = { global.ALLIES_strength_poland_final = global.ALLIES_locals_poland }
+		add_to_variable = { global.ALLIES_strength_poland_final = global.ALLIES_strength_poland_bonus }
+		set_variable = { global.ENG_strength_doc_air = 0 } #.air_doctrine_level	# poland will not get doctrines
+		set_variable = { global.ENG_strength_doc_land = 0 } #.land_doctrine_level		# poland will not get doctrines
+		#multiply_variable = { global.ENG_strength_doc_air = 0.05 }
+		#multiply_variable = { global.ENG_strength_doc_land = 0.10 }
+		#set_temp_variable = { global.ENG_strength_poland_multiplier = 1 }
+		#add_to_temp_variable = { global.ENG_strength_poland_multiplier = global.ENG_strength_doc_air }
+		#add_to_temp_variable = { global.ENG_strength_poland_multiplier = global.ENG_strength_doc_land }
+		#multiply_variable = { global.ALLIESstrength_poland_final = global.ENG_strength_poland_multiplier }
+		world_stage_get_poland_timer_frame_first = yes
+		if = {
+			limit = { check_variable = { global.theater_poland_timer_first < 1 } }
+			resolve_theater_poland_first = yes
+		}
+	}
+	if = {	### poland	MOLOTOV-RIBENTROP + BARBAROSSA
+		limit = { has_global_flag = world_stage_theater_poland_is_active_second }
+		subtract_from_variable = { global.theater_poland_timer_second = 1 }
+		set_variable = { global.GER_strength_poland_final = global.GER_strength_poland }
+		add_to_variable = { global.GER_strength_poland_final = global.GER_strength_poland_bonus }
+		set_variable = { global.GER_strength_doc_air = REI.air_doctrine_level }
+		set_variable = { global.GER_strength_doc_land = REI.land_doctrine_level }
+		multiply_variable = { global.GER_strength_doc_air = 0.05 }
+		multiply_variable = { global.GER_strength_doc_land = 0.10 }
+		set_temp_variable = { global.GER_strength_poland_multiplier = 1 }
+		add_to_temp_variable = { global.GER_strength_poland_multiplier = global.GER_strength_doc_air }
+		add_to_temp_variable = { global.GER_strength_poland_multiplier = global.GER_strength_doc_land }
+		multiply_variable = { global.GER_strength_poland_final = global.GER_strength_poland_multiplier }
+		set_variable = { global.SOV_strength_poland_final = global.SOV_strength_poland }
+		add_to_variable = { global.SOV_strength_poland_final = global.SOV_strength_poland_bonus }
+		set_variable = { global.SOV_strength_doc_air = FER.air_doctrine_level }
+		set_variable = { global.SOV_strength_doc_land = FER.land_doctrine_level }
+		multiply_variable = { global.SOV_strength_doc_air = 0.05 }
+		multiply_variable = { global.SOV_strength_doc_land = 0.10 }
+		set_temp_variable = { global.SOV_strength_poland_multiplier = 1 }
+		add_to_temp_variable = { global.SOV_strength_poland_multiplier = global.SOV_strength_doc_air }
+		add_to_temp_variable = { global.SOV_strength_poland_multiplier = global.SOV_strength_doc_land }
+		multiply_variable = { global.SOV_strength_poland_final = global.SOV_strength_poland_multiplier }
+		world_stage_get_poland_timer_frame_second = yes
+		if = {
+			limit = { check_variable = { global.theater_poland_timer_second < 1 } }
+			resolve_threater_poland_second = yes
+		}
+	}
+	if = {	### ardennes
+		limit = { has_global_flag = world_stage_theater_ardennes_is_active }
+		subtract_from_variable = { global.theater_ardennes_timer = 1 }
+		# axis strength
+		set_variable = { global.AXIS_strength_ardennes_final = 0 }
+		set_temp_variable = { strength_value = global.GER_strength_ardennes }
+		multiply_variable = { strength_value = global.GER_doctrine_bonus_land }
+		add_to_variable = { global.AXIS_strength_ardennes_final = strength_value }
+		set_variable = { global.AXIS_number_ardennes = 1 }
+		if = {
+			limit = { china_is_axis = yes }
+			set_temp_variable = { strength_value = global.CHI_strength_ardennes }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_ardennes_final = strength_value }
+			add_to_variable = { global.AXIS_number_ardennes = 1 }
+		}
+		if = {
+			limit = { netherlands_is_axis = yes }
+			set_temp_variable = { strength_value = global.NET_strength_ardennes }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_ardennes_final = strength_value }
+			add_to_variable = { global.AXIS_number_ardennes = 1 }
+		}
+		if = {
+			limit = { portugal_is_axis = yes }
+			set_temp_variable = { strength_value = global.PRT_strength_ardennes }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_ardennes_final = strength_value }
+			add_to_variable = { global.AXIS_number_ardennes = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.AXIS_locals_ardennes > 0 } }
+			set_temp_variable = { strength_value = global.AXIS_locals_ardennes }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_ardennes_final = strength_value }
+			add_to_variable = { global.AXIS_number_ardennes = 1 }
+		}
+		# allies strength
+		set_variable = { global.ALLIES_strength_ardennes_final = 0 }
+		set_variable = { global.ALLIES_number_ardennes = 0 }
+		if = {
+			limit = { france_is_allies = yes }
+			set_temp_variable = { strength_value = global.FRA_strength_ardennes }
+			multiply_variable = { strength_value = global.FRA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_ardennes_final = strength_value }
+			add_to_variable = { global.ALLIES_number_ardennes = 1 }
+		}
+		if = {
+			limit = { england_is_allies = yes }
+			set_temp_variable = { strength_value = global.ENG_strength_ardennes }
+			multiply_variable = { strength_value = global.ENG_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_ardennes_final = strength_value }
+			add_to_variable = { global.ALLIES_number_ardennes = 1 }
+		}
+		if = {
+			limit = { netherlands_is_allies = yes }
+			set_temp_variable = { strength_value = global.NET_strength_ardennes }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_ardennes_final = strength_value }
+			add_to_variable = { global.ALLIES_number_ardennes = 1 }
+		}
+		if = {
+			limit = { portugal_is_allies = yes }
+			set_temp_variable = { strength_value = global.PRT_strength_ardennes }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_ardennes_final = strength_value }
+			add_to_variable = { global.ALLIES_number_ardennes = 1 }
+		}
+		if = {
+			limit = { OR = { china_is_komin = yes china_is_allies = yes } }
+			set_temp_variable = { strength_value = global.CHI_strength_ardennes }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_ardennes_final = strength_value }
+			add_to_variable = { global.ALLIES_number_ardennes = 1 }
+		}
+		if = {
+			limit = { OR = { russia_is_komin = yes russia_is_allies = yes } }
+			set_temp_variable = { strength_value = global.SOV_strength_ardennes }
+			multiply_variable = { strength_value = global.SOV_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_ardennes_final = strength_value }
+			add_to_variable = { global.ALLIES_number_ardennes = 1 }
+		}
+		if = {
+			limit = { usa_is_allies = yes }
+			set_temp_variable = { strength_value = global.USA_strength_ardennes }
+			multiply_variable = { strength_value = global.USA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_ardennes_final = strength_value }
+			add_to_variable = { global.ALLIES_number_ardennes = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.ALLIES_locals_ardennes > 0 } }
+			set_temp_variable = { strength_value = global.ALLIES_locals_ardennes }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_ardennes_final = strength_value }
+			add_to_variable = { global.ALLIES_number_ardennes = 1 }
+		}
+		world_stage_get_ardennes_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_ardennes_timer < 1 } }
+			resolve_threater_ardennes = yes
+		}
+	}
+	### REGULAR THEATERS	### REGULAR THEATERS	### REGULAR THEATERS	### REGULAR THEATERS
+	if = {	### alsace
+		limit = { has_global_flag = world_stage_theater_alsace_is_active }
+		subtract_from_variable = { global.theater_alsace_timer = 1 }
+		# axis strength
+		set_variable = { global.AXIS_strength_alsace_final = 0 }
+		add_to_variable = { global.AXIS_strength_alsace_final = AXIS_strength_alsace_bonus }
+		set_variable = { global.AXIS_number_alsace = 0 }
+		if = {
+			limit = { check_variable = { global.GER_strength_alsace > 0 } }
+			set_temp_variable = { strength_value = global.GER_strength_alsace }
+			multiply_variable = { strength_value = global.GER_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_alsace_final = strength_value }
+			add_to_variable = { global.AXIS_number_alsace = 1 }
+		}
+		if = {
+			limit = { china_is_axis = yes check_variable = { global.CHI_strength_alsace > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_alsace }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_alsace_final = strength_value }
+			add_to_variable = { global.AXIS_number_alsace = 1 }
+		}
+		if = {
+			limit = { netherlands_is_axis = yes check_variable = { global.NET_strength_alsace > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_alsace }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_alsace_final = strength_value }
+			add_to_variable = { global.AXIS_number_alsace = 1 }
+		}
+		if = {
+			limit = { portugal_is_axis = yes check_variable = { global.PRT_strength_alsace > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_alsace }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_alsace_final = strength_value }
+			add_to_variable = { global.AXIS_number_alsace = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.AXIS_locals_alsace > 0 } }
+			set_temp_variable = { strength_value = global.AXIS_locals_alsace }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_alsace_final = strength_value }
+			add_to_variable = { global.AXIS_number_alsace = 1 }
+		}
+		# allies strength
+		set_variable = { global.ALLIES_strength_alsace_final = 0 }
+		add_to_variable = { global.ALLIES_strength_alsace_final = ALLIES_strength_alsace_bonus }
+		set_variable = { global.ALLIES_number_alsace = 0 }
+		if = {
+			limit = { france_is_allies = yes check_variable = { global.FRA_strength_alsace > 0 } }
+			set_temp_variable = { strength_value = global.FRA_strength_alsace }
+			multiply_variable = { strength_value = global.FRA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_alsace_final = strength_value }
+			add_to_variable = { global.ALLIES_number_alsace = 1 }
+		}
+		if = {
+			limit = { england_is_allies = yes check_variable = { global.ENG_strength_alsace > 0 } }
+			set_temp_variable = { strength_value = global.ENG_strength_alsace }
+			multiply_variable = { strength_value = global.ENG_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_alsace_final = strength_value }
+			add_to_variable = { global.ALLIES_number_alsace = 1 }
+		}
+		if = {
+			limit = { netherlands_is_allies = yes check_variable = { global.NET_strength_alsace > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_alsace }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_alsace_final = strength_value }
+			add_to_variable = { global.ALLIES_number_alsace = 1 }
+		}
+		if = {
+			limit = { portugal_is_allies = yes check_variable = { global.PRT_strength_alsace > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_alsace }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_alsace_final = strength_value }
+			add_to_variable = { global.ALLIES_number_alsace = 1 }
+		}
+		if = {
+			limit = { OR = { china_is_komin = yes china_is_allies = yes } check_variable = { global.CHI_strength_alsace > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_alsace }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_alsace_final = strength_value }
+			add_to_variable = { global.ALLIES_number_alsace = 1 }
+		}
+		if = {
+			limit = { OR = { russia_is_komin = yes russia_is_allies = yes } check_variable = { global.SOV_strength_alsace > 0 } }
+			set_temp_variable = { strength_value = global.SOV_strength_alsace }
+			multiply_variable = { strength_value = global.SOV_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_alsace_final = strength_value }
+			add_to_variable = { global.ALLIES_number_alsace = 1 }
+		}
+		if = {
+			limit = { usa_is_allies = yes check_variable = { global.USA_strength_alsace > 0 } }
+			set_temp_variable = { strength_value = global.USA_strength_alsace }
+			multiply_variable = { strength_value = global.USA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_alsace_final = strength_value }
+			add_to_variable = { global.ALLIES_number_alsace = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.ALLIES_locals_alsace > 0 } }
+			set_temp_variable = { strength_value = global.ALLIES_locals_alsace }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_alsace_final = strength_value }
+			add_to_variable = { global.ALLIES_number_alsace = 1 }
+		}
+		world_stage_get_alsace_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_alsace_timer < 1 } }
+			resolve_threater_alsace = yes
+		}
+	}
+	if = {	### westphalia
+		limit = { has_global_flag = world_stage_theater_westphalia_is_active }
+		subtract_from_variable = { global.theater_westphalia_timer = 1 }
+		# axis strength
+		set_variable = { global.AXIS_strength_westphalia_final = 0 }
+		add_to_variable = { global.AXIS_strength_westphalia_final = AXIS_strength_westphalia_bonus }
+		set_variable = { global.AXIS_number_westphalia = 0 }
+		if = {
+			limit = { check_variable = { global.GER_strength_westphalia > 0 } }
+			set_temp_variable = { strength_value = global.GER_strength_westphalia }
+			multiply_variable = { strength_value = global.GER_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_westphalia_final = strength_value }
+			add_to_variable = { global.AXIS_number_westphalia = 1 }
+		}
+		if = {
+			limit = { china_is_axis = yes check_variable = { global.CHI_strength_westphalia > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_westphalia }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_westphalia_final = strength_value }
+			add_to_variable = { global.AXIS_number_westphalia = 1 }
+		}
+		if = {
+			limit = { netherlands_is_axis = yes check_variable = { global.NET_strength_westphalia > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_westphalia }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_westphalia_final = strength_value }
+			add_to_variable = { global.AXIS_number_westphalia = 1 }
+		}
+		if = {
+			limit = { portugal_is_axis = yes check_variable = { global.PRT_strength_westphalia > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_westphalia }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_westphalia_final = strength_value }
+			add_to_variable = { global.AXIS_number_westphalia = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.AXIS_locals_westphalia > 0 } }
+			set_temp_variable = { strength_value = global.AXIS_locals_westphalia }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_westphalia_final = strength_value }
+			add_to_variable = { global.AXIS_number_westphalia = 1 }
+		}
+		# allies strength
+		set_variable = { global.ALLIES_strength_westphalia_final = 0 }
+		add_to_variable = { global.ALLIES_strength_westphalia_final = ALLIES_strength_westphalia_bonus }
+		set_variable = { global.ALLIES_number_westphalia = 0 }
+		if = {
+			limit = { france_is_allies = yes check_variable = { global.FRA_strength_westphalia > 0 } }
+			set_temp_variable = { strength_value = global.FRA_strength_westphalia }
+			multiply_variable = { strength_value = global.FRA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_westphalia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_westphalia = 1 }
+		}
+		if = {
+			limit = { england_is_allies = yes check_variable = { global.ENG_strength_westphalia > 0 } }
+			set_temp_variable = { strength_value = global.ENG_strength_westphalia }
+			multiply_variable = { strength_value = global.ENG_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_westphalia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_westphalia = 1 }
+		}
+		if = {
+			limit = { netherlands_is_allies = yes check_variable = { global.NET_strength_westphalia > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_westphalia }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_westphalia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_westphalia = 1 }
+		}
+		if = {
+			limit = { portugal_is_allies = yes check_variable = { global.PRT_strength_westphalia > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_westphalia }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_westphalia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_westphalia = 1 }
+		}
+		if = {
+			limit = { OR = { china_is_komin = yes china_is_allies = yes } check_variable = { global.CHI_strength_westphalia > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_westphalia }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_westphalia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_westphalia = 1 }
+		}
+		if = {
+			limit = { OR = { russia_is_komin = yes russia_is_allies = yes } check_variable = { global.SOV_strength_westphalia > 0 } }
+			set_temp_variable = { strength_value = global.SOV_strength_westphalia }
+			multiply_variable = { strength_value = global.SOV_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_westphalia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_westphalia = 1 }
+		}
+		if = {
+			limit = { usa_is_allies = yes check_variable = { global.USA_strength_westphalia > 0 } }
+			set_temp_variable = { strength_value = global.USA_strength_westphalia }
+			multiply_variable = { strength_value = global.USA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_westphalia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_westphalia = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.ALLIES_locals_westphalia > 0 } }
+			set_temp_variable = { strength_value = global.ALLIES_locals_westphalia }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_westphalia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_westphalia = 1 }
+		}
+		world_stage_get_westphalia_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_westphalia_timer < 1 } }
+			resolve_threater_westphalia = yes
+		}
+	}
+	if = {	### france
+		limit = { has_global_flag = world_stage_theater_france_is_active }
+		subtract_from_variable = { global.theater_france_timer = 1 }
+		# axis strength
+		set_variable = { global.AXIS_strength_france_final = 0 }
+		add_to_variable = { global.AXIS_strength_france_final = AXIS_strength_france_bonus }
+		set_variable = { global.AXIS_number_france = 0 }
+		if = {
+			limit = { check_variable = { global.GER_strength_france > 0 } }
+			set_temp_variable = { strength_value = global.GER_strength_france }
+			multiply_variable = { strength_value = global.GER_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_france_final = strength_value }
+			add_to_variable = { global.AXIS_number_france = 1 }
+		}
+		if = {
+			limit = { china_is_axis = yes check_variable = { global.CHI_strength_france > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_france }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_france_final = strength_value }
+			add_to_variable = { global.AXIS_number_france = 1 }
+		}
+		if = {
+			limit = { netherlands_is_axis = yes check_variable = { global.NET_strength_france > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_france }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_france_final = strength_value }
+			add_to_variable = { global.AXIS_number_france = 1 }
+		}
+		if = {
+			limit = { portugal_is_axis = yes check_variable = { global.PRT_strength_france > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_france }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_france_final = strength_value }
+			add_to_variable = { global.AXIS_number_france = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.AXIS_locals_france > 0 } }
+			set_temp_variable = { strength_value = global.AXIS_locals_france }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_france_final = strength_value }
+			add_to_variable = { global.AXIS_number_france = 1 }
+		}
+		# allies strength
+		set_variable = { global.ALLIES_strength_france_final = 0 }
+		add_to_variable = { global.ALLIES_strength_france_final = ALLIES_strength_france_bonus }
+		set_variable = { global.ALLIES_number_france = 0 }
+		if = {
+			limit = { france_is_allies = yes check_variable = { global.FRA_strength_france > 0 } }
+			set_temp_variable = { strength_value = global.FRA_strength_france }
+			multiply_variable = { strength_value = global.FRA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_france_final = strength_value }
+			add_to_variable = { global.ALLIES_number_france = 1 }
+		}
+		if = {
+			limit = { england_is_allies = yes check_variable = { global.ENG_strength_france > 0 } }
+			set_temp_variable = { strength_value = global.ENG_strength_france }
+			multiply_variable = { strength_value = global.ENG_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_france_final = strength_value }
+			add_to_variable = { global.ALLIES_number_france = 1 }
+		}
+		if = {
+			limit = { netherlands_is_allies = yes check_variable = { global.NET_strength_france > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_france }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_france_final = strength_value }
+			add_to_variable = { global.ALLIES_number_france = 1 }
+		}
+		if = {
+			limit = { portugal_is_allies = yes check_variable = { global.PRT_strength_france > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_france }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_france_final = strength_value }
+			add_to_variable = { global.ALLIES_number_france = 1 }
+		}
+		if = {
+			limit = { OR = { china_is_komin = yes china_is_allies = yes } check_variable = { global.CHI_strength_france > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_france }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_france_final = strength_value }
+			add_to_variable = { global.ALLIES_number_france = 1 }
+		}
+		if = {
+			limit = { OR = { russia_is_komin = yes russia_is_allies = yes } check_variable = { global.SOV_strength_france > 0 } }
+			set_temp_variable = { strength_value = global.SOV_strength_france }
+			multiply_variable = { strength_value = global.SOV_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_france_final = strength_value }
+			add_to_variable = { global.ALLIES_number_france = 1 }
+		}
+		if = {
+			limit = { usa_is_allies = yes check_variable = { global.USA_strength_france > 0 } }
+			set_temp_variable = { strength_value = global.USA_strength_france }
+			multiply_variable = { strength_value = global.USA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_france_final = strength_value }
+			add_to_variable = { global.ALLIES_number_france = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.ALLIES_locals_france > 0 } }
+			set_temp_variable = { strength_value = global.ALLIES_locals_france }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_france_final = strength_value }
+			add_to_variable = { global.ALLIES_number_france = 1 }
+		}
+		world_stage_get_france_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_france_timer < 1 } }
+			resolve_threater_france = yes
+		}
+	}
+	if = {	### germany
+		limit = { has_global_flag = world_stage_theater_germany_is_active }
+		subtract_from_variable = { global.theater_germany_timer = 1 }
+		# axis strength
+		set_variable = { global.AXIS_strength_germany_final = 0 }
+		add_to_variable = { global.AXIS_strength_germany_final = AXIS_strength_germany_bonus }
+		set_variable = { global.AXIS_number_germany = 0 }
+		if = {
+			limit = { check_variable = { global.GER_strength_germany > 0 } }
+			set_temp_variable = { strength_value = global.GER_strength_germany }
+			multiply_variable = { strength_value = global.GER_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_germany_final = strength_value }
+			add_to_variable = { global.AXIS_number_germany = 1 }
+		}
+		if = {
+			limit = { china_is_axis = yes check_variable = { global.CHI_strength_germany > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_germany }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_germany_final = strength_value }
+			add_to_variable = { global.AXIS_number_germany = 1 }
+		}
+		if = {
+			limit = { netherlands_is_axis = yes check_variable = { global.NET_strength_germany > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_germany }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_germany_final = strength_value }
+			add_to_variable = { global.AXIS_number_germany = 1 }
+		}
+		if = {
+			limit = { portugal_is_axis = yes check_variable = { global.PRT_strength_germany > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_germany }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_germany_final = strength_value }
+			add_to_variable = { global.AXIS_number_germany = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.AXIS_locals_germany > 0 } }
+			set_temp_variable = { strength_value = global.AXIS_locals_germany }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_germany_final = strength_value }
+			add_to_variable = { global.AXIS_number_germany = 1 }
+		}
+		# allies strength
+		set_variable = { global.ALLIES_strength_germany_final = 0 }
+		add_to_variable = { global.ALLIES_strength_germany_final = ALLIES_strength_germany_bonus }
+		set_variable = { global.ALLIES_number_germany = 0 }
+		if = {
+			limit = { france_is_allies = yes check_variable = { global.FRA_strength_germany > 0 } }
+			set_temp_variable = { strength_value = global.FRA_strength_germany }
+			multiply_variable = { strength_value = global.FRA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_germany_final = strength_value }
+			add_to_variable = { global.ALLIES_number_germany = 1 }
+		}
+		if = {
+			limit = { england_is_allies = yes check_variable = { global.ENG_strength_germany > 0 } }
+			set_temp_variable = { strength_value = global.ENG_strength_germany }
+			multiply_variable = { strength_value = global.ENG_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_germany_final = strength_value }
+			add_to_variable = { global.ALLIES_number_germany = 1 }
+		}
+		if = {
+			limit = { netherlands_is_allies = yes check_variable = { global.NET_strength_germany > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_germany }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_germany_final = strength_value }
+			add_to_variable = { global.ALLIES_number_germany = 1 }
+		}
+		if = {
+			limit = { portugal_is_allies = yes check_variable = { global.PRT_strength_germany > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_germany }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_germany_final = strength_value }
+			add_to_variable = { global.ALLIES_number_germany = 1 }
+		}
+		if = {
+			limit = { OR = { china_is_komin = yes china_is_allies = yes } check_variable = { global.CHI_strength_germany > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_germany }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_germany_final = strength_value }
+			add_to_variable = { global.ALLIES_number_germany = 1 }
+		}
+		if = {
+			limit = { OR = { russia_is_komin = yes russia_is_allies = yes } check_variable = { global.SOV_strength_germany > 0 } }
+			set_temp_variable = { strength_value = global.SOV_strength_germany }
+			multiply_variable = { strength_value = global.SOV_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_germany_final = strength_value }
+			add_to_variable = { global.ALLIES_number_germany = 1 }
+		}
+		if = {
+			limit = { usa_is_allies = yes check_variable = { global.USA_strength_germany > 0 } }
+			set_temp_variable = { strength_value = global.USA_strength_germany }
+			multiply_variable = { strength_value = global.USA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_germany_final = strength_value }
+			add_to_variable = { global.ALLIES_number_germany = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.ALLIES_locals_germany > 0 } }
+			set_temp_variable = { strength_value = global.ALLIES_locals_germany }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_germany_final = strength_value }
+			add_to_variable = { global.ALLIES_number_germany = 1 }
+		}
+		world_stage_get_germany_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_germany_timer < 1 } }
+			resolve_threater_germany = yes
+		}
+	}
+	if = {	### poland
+		limit = { has_global_flag = world_stage_theater_poland_is_active }
+		subtract_from_variable = { global.theater_poland_timer = 1 }
+		# axis strength
+		set_variable = { global.AXIS_strength_poland_final = 0 }
+		add_to_variable = { global.AXIS_strength_poland_final = AXIS_strength_poland_bonus }
+		set_variable = { global.AXIS_number_poland = 0 }
+		if = {
+			limit = { check_variable = { global.GER_strength_poland > 0 } }
+			set_temp_variable = { strength_value = global.GER_strength_poland }
+			multiply_variable = { strength_value = global.GER_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_poland_final = strength_value }
+			add_to_variable = { global.AXIS_number_poland = 1 }
+		}
+		if = {
+			limit = { china_is_axis = yes check_variable = { global.CHI_strength_poland > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_poland }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_poland_final = strength_value }
+			add_to_variable = { global.AXIS_number_poland = 1 }
+		}
+		if = {
+			limit = { netherlands_is_axis = yes check_variable = { global.NET_strength_poland > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_poland }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_poland_final = strength_value }
+			add_to_variable = { global.AXIS_number_poland = 1 }
+		}
+		if = {
+			limit = { portugal_is_axis = yes check_variable = { global.PRT_strength_poland > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_poland }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_poland_final = strength_value }
+			add_to_variable = { global.AXIS_number_poland = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.AXIS_locals_poland > 0 } }
+			set_temp_variable = { strength_value = global.AXIS_locals_poland }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_poland_final = strength_value }
+			add_to_variable = { global.AXIS_number_poland = 1 }
+		}
+		# allies strength
+		set_variable = { global.ALLIES_strength_poland_final = 0 }
+		add_to_variable = { global.ALLIES_strength_poland_final = ALLIES_strength_poland_bonus }
+		set_variable = { global.ALLIES_number_poland = 0 }
+		if = {
+			limit = { france_is_allies = yes check_variable = { global.FRA_strength_poland > 0 } }
+			set_temp_variable = { strength_value = global.FRA_strength_poland }
+			multiply_variable = { strength_value = global.FRA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_poland_final = strength_value }
+			add_to_variable = { global.ALLIES_number_poland = 1 }
+		}
+		if = {
+			limit = { england_is_allies = yes check_variable = { global.ENG_strength_poland > 0 } }
+			set_temp_variable = { strength_value = global.ENG_strength_poland }
+			multiply_variable = { strength_value = global.ENG_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_poland_final = strength_value }
+			add_to_variable = { global.ALLIES_number_poland = 1 }
+		}
+		if = {
+			limit = { netherlands_is_allies = yes check_variable = { global.NET_strength_poland > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_poland }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_poland_final = strength_value }
+			add_to_variable = { global.ALLIES_number_poland = 1 }
+		}
+		if = {
+			limit = { portugal_is_allies = yes check_variable = { global.PRT_strength_poland > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_poland }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_poland_final = strength_value }
+			add_to_variable = { global.ALLIES_number_poland = 1 }
+		}
+		if = {
+			limit = { OR = { china_is_komin = yes china_is_allies = yes } check_variable = { global.CHI_strength_poland > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_poland }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_poland_final = strength_value }
+			add_to_variable = { global.ALLIES_number_poland = 1 }
+		}
+		if = {
+			limit = { OR = { russia_is_komin = yes russia_is_allies = yes } check_variable = { global.SOV_strength_poland > 0 } }
+			set_temp_variable = { strength_value = global.SOV_strength_poland }
+			multiply_variable = { strength_value = global.SOV_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_poland_final = strength_value }
+			add_to_variable = { global.ALLIES_number_poland = 1 }
+		}
+		if = {
+			limit = { usa_is_allies = yes check_variable = { global.USA_strength_poland > 0 } }
+			set_temp_variable = { strength_value = global.USA_strength_poland }
+			multiply_variable = { strength_value = global.USA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_poland_final = strength_value }
+			add_to_variable = { global.ALLIES_number_poland = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.ALLIES_locals_poland > 0 } }
+			set_temp_variable = { strength_value = global.ALLIES_locals_poland }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_poland_final = strength_value }
+			add_to_variable = { global.ALLIES_number_poland = 1 }
+		}
+		world_stage_get_poland_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_poland_timer < 1 } }
+			resolve_threater_poland = yes
+		}
+	}
+	if = {	### belarus
+		limit = { has_global_flag = world_stage_theater_belarus_is_active }
+		subtract_from_variable = { global.theater_belarus_timer = 1 }
+		# axis strength
+		set_variable = { global.AXIS_strength_belarus_final = 0 }
+		add_to_variable = { global.AXIS_strength_belarus_final = AXIS_strength_belarus_bonus }
+		set_variable = { global.AXIS_number_belarus = 0 }
+		if = {
+			limit = { check_variable = { global.GER_strength_belarus > 0 } }
+			set_temp_variable = { strength_value = global.GER_strength_belarus }
+			multiply_variable = { strength_value = global.GER_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_belarus_final = strength_value }
+			add_to_variable = { global.AXIS_number_belarus = 1 }
+		}
+		if = {
+			limit = { china_is_axis = yes check_variable = { global.CHI_strength_belarus > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_belarus }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_belarus_final = strength_value }
+			add_to_variable = { global.AXIS_number_belarus = 1 }
+		}
+		if = {
+			limit = { netherlands_is_axis = yes check_variable = { global.NET_strength_belarus > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_belarus }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_belarus_final = strength_value }
+			add_to_variable = { global.AXIS_number_belarus = 1 }
+		}
+		if = {
+			limit = { portugal_is_axis = yes check_variable = { global.PRT_strength_belarus > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_belarus }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_belarus_final = strength_value }
+			add_to_variable = { global.AXIS_number_belarus = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.AXIS_locals_belarus > 0 } }
+			set_temp_variable = { strength_value = global.AXIS_locals_belarus }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_belarus_final = strength_value }
+			add_to_variable = { global.AXIS_number_belarus = 1 }
+		}
+		# allies strength
+		set_variable = { global.ALLIES_strength_belarus_final = 0 }
+		add_to_variable = { global.ALLIES_strength_belarus_final = ALLIES_strength_belarus_bonus }
+		set_variable = { global.ALLIES_number_belarus = 0 }
+		if = {
+			limit = { france_is_allies = yes check_variable = { global.FRA_strength_belarus > 0 } }
+			set_temp_variable = { strength_value = global.FRA_strength_belarus }
+			multiply_variable = { strength_value = global.FRA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_belarus_final = strength_value }
+			add_to_variable = { global.ALLIES_number_belarus = 1 }
+		}
+		if = {
+			limit = { england_is_allies = yes check_variable = { global.ENG_strength_belarus > 0 } }
+			set_temp_variable = { strength_value = global.ENG_strength_belarus }
+			multiply_variable = { strength_value = global.ENG_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_belarus_final = strength_value }
+			add_to_variable = { global.ALLIES_number_belarus = 1 }
+		}
+		if = {
+			limit = { netherlands_is_allies = yes check_variable = { global.NET_strength_belarus > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_belarus }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_belarus_final = strength_value }
+			add_to_variable = { global.ALLIES_number_belarus = 1 }
+		}
+		if = {
+			limit = { portugal_is_allies = yes check_variable = { global.PRT_strength_belarus > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_belarus }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_belarus_final = strength_value }
+			add_to_variable = { global.ALLIES_number_belarus = 1 }
+		}
+		if = {
+			limit = { OR = { china_is_komin = yes china_is_allies = yes } check_variable = { global.CHI_strength_belarus > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_belarus }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_belarus_final = strength_value }
+			add_to_variable = { global.ALLIES_number_belarus = 1 }
+		}
+		if = {
+			limit = { OR = { russia_is_komin = yes russia_is_allies = yes } check_variable = { global.SOV_strength_belarus > 0 } }
+			set_temp_variable = { strength_value = global.SOV_strength_belarus }
+			multiply_variable = { strength_value = global.SOV_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_belarus_final = strength_value }
+			add_to_variable = { global.ALLIES_number_belarus = 1 }
+		}
+		if = {
+			limit = { usa_is_allies = yes check_variable = { global.USA_strength_belarus > 0 } }
+			set_temp_variable = { strength_value = global.USA_strength_belarus }
+			multiply_variable = { strength_value = global.USA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_belarus_final = strength_value }
+			add_to_variable = { global.ALLIES_number_belarus = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.ALLIES_locals_belarus > 0 } }
+			set_temp_variable = { strength_value = global.ALLIES_locals_belarus }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_belarus_final = strength_value }
+			add_to_variable = { global.ALLIES_number_belarus = 1 }
+		}
+		world_stage_get_belarus_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_belarus_timer < 1 } }
+			resolve_threater_belarus = yes
+		}
+	}
+	if = {	### smolensk
+		limit = { has_global_flag = world_stage_theater_smolensk_is_active }
+		subtract_from_variable = { global.theater_smolensk_timer = 60 }
+		# axis strength
+		set_variable = { global.AXIS_strength_smolensk_final = 0 }
+		add_to_variable = { global.AXIS_strength_smolensk_final = AXIS_strength_smolensk_bonus }
+		set_variable = { global.AXIS_number_smolensk = 0 }
+		if = {
+			limit = { check_variable = { global.GER_strength_smolensk > 0 } }
+			set_temp_variable = { strength_value = global.GER_strength_smolensk }
+			multiply_variable = { strength_value = global.GER_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_smolensk_final = strength_value }
+			add_to_variable = { global.AXIS_number_smolensk = 1 }
+		}
+		if = {
+			limit = { china_is_axis = yes check_variable = { global.CHI_strength_smolensk > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_smolensk }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_smolensk_final = strength_value }
+			add_to_variable = { global.AXIS_number_smolensk = 1 }
+		}
+		if = {
+			limit = { netherlands_is_axis = yes check_variable = { global.NET_strength_smolensk > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_smolensk }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_smolensk_final = strength_value }
+			add_to_variable = { global.AXIS_number_smolensk = 1 }
+		}
+		if = {
+			limit = { portugal_is_axis = yes check_variable = { global.PRT_strength_smolensk > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_smolensk }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_smolensk_final = strength_value }
+			add_to_variable = { global.AXIS_number_smolensk = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.AXIS_locals_smolensk > 0 } }
+			set_temp_variable = { strength_value = global.AXIS_locals_smolensk }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_smolensk_final = strength_value }
+			add_to_variable = { global.AXIS_number_smolensk = 1 }
+		}
+		# allies strength
+		set_variable = { global.ALLIES_strength_smolensk_final = 0 }
+		add_to_variable = { global.ALLIES_strength_smolensk_final = ALLIES_strength_smolensk_bonus }
+		set_variable = { global.ALLIES_number_smolensk = 0 }
+		if = {
+			limit = { france_is_allies = yes check_variable = { global.FRA_strength_smolensk > 0 } }
+			set_temp_variable = { strength_value = global.FRA_strength_smolensk }
+			multiply_variable = { strength_value = global.FRA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_smolensk_final = strength_value }
+			add_to_variable = { global.ALLIES_number_smolensk = 1 }
+		}
+		if = {
+			limit = { england_is_allies = yes check_variable = { global.ENG_strength_smolensk > 0 } }
+			set_temp_variable = { strength_value = global.ENG_strength_smolensk }
+			multiply_variable = { strength_value = global.ENG_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_smolensk_final = strength_value }
+			add_to_variable = { global.ALLIES_number_smolensk = 1 }
+		}
+		if = {
+			limit = { netherlands_is_allies = yes check_variable = { global.NET_strength_smolensk > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_smolensk }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_smolensk_final = strength_value }
+			add_to_variable = { global.ALLIES_number_smolensk = 1 }
+		}
+		if = {
+			limit = { portugal_is_allies = yes check_variable = { global.PRT_strength_smolensk > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_smolensk }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_smolensk_final = strength_value }
+			add_to_variable = { global.ALLIES_number_smolensk = 1 }
+		}
+		if = {
+			limit = { OR = { china_is_komin = yes china_is_allies = yes } check_variable = { global.CHI_strength_smolensk > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_smolensk }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_smolensk_final = strength_value }
+			add_to_variable = { global.ALLIES_number_smolensk = 1 }
+		}
+		if = {
+			limit = { OR = { russia_is_komin = yes russia_is_allies = yes } check_variable = { global.SOV_strength_smolensk > 0 } }
+			set_temp_variable = { strength_value = global.SOV_strength_smolensk }
+			multiply_variable = { strength_value = global.SOV_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_smolensk_final = strength_value }
+			add_to_variable = { global.ALLIES_number_smolensk = 1 }
+		}
+		if = {
+			limit = { usa_is_allies = yes check_variable = { global.USA_strength_smolensk > 0 } }
+			set_temp_variable = { strength_value = global.USA_strength_smolensk }
+			multiply_variable = { strength_value = global.USA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_smolensk_final = strength_value }
+			add_to_variable = { global.ALLIES_number_smolensk = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.ALLIES_locals_smolensk > 0 } }
+			set_temp_variable = { strength_value = global.ALLIES_locals_smolensk }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_smolensk_final = strength_value }
+			add_to_variable = { global.ALLIES_number_smolensk = 1 }
+		}
+		world_stage_get_smolensk_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_smolensk_timer < 1 } }
+			resolve_threater_smolensk = yes
+		}
+	}
+	if = {	### russia
+		limit = { has_global_flag = world_stage_theater_russia_is_active }
+		subtract_from_variable = { global.theater_russia_timer = 1 }
+		# axis strength
+		set_variable = { global.AXIS_strength_russia_final = 0 }
+		add_to_variable = { global.AXIS_strength_russia_final = AXIS_strength_russia_bonus }
+		set_variable = { global.AXIS_number_russia = 0 }
+		if = {
+			limit = { check_variable = { global.GER_strength_russia > 0 } }
+			set_temp_variable = { strength_value = global.GER_strength_russia }
+			multiply_variable = { strength_value = global.GER_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_russia_final = strength_value }
+			add_to_variable = { global.AXIS_number_russia = 1 }
+		}
+		if = {
+			limit = { china_is_axis = yes check_variable = { global.CHI_strength_russia > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_russia }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_russia_final = strength_value }
+			add_to_variable = { global.AXIS_number_russia = 1 }
+		}
+		if = {
+			limit = { netherlands_is_axis = yes check_variable = { global.NET_strength_russia > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_russia }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_russia_final = strength_value }
+			add_to_variable = { global.AXIS_number_russia = 1 }
+		}
+		if = {
+			limit = { portugal_is_axis = yes check_variable = { global.PRT_strength_russia > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_russia }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_russia_final = strength_value }
+			add_to_variable = { global.AXIS_number_russia = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.AXIS_locals_russia > 0 } }
+			set_temp_variable = { strength_value = global.AXIS_locals_russia }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_russia_final = strength_value }
+			add_to_variable = { global.AXIS_number_russia = 1 }
+		}
+		# allies strength
+		set_variable = { global.ALLIES_strength_russia_final = 0 }
+		add_to_variable = { global.ALLIES_strength_russia_final = ALLIES_strength_russia_bonus }
+		set_variable = { global.ALLIES_number_russia = 0 }
+		if = {
+			limit = { france_is_allies = yes check_variable = { global.FRA_strength_russia > 0 } }
+			set_temp_variable = { strength_value = global.FRA_strength_russia }
+			multiply_variable = { strength_value = global.FRA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_russia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_russia = 1 }
+		}
+		if = {
+			limit = { england_is_allies = yes check_variable = { global.ENG_strength_russia > 0 } }
+			set_temp_variable = { strength_value = global.ENG_strength_russia }
+			multiply_variable = { strength_value = global.ENG_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_russia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_russia = 1 }
+		}
+		if = {
+			limit = { netherlands_is_allies = yes check_variable = { global.NET_strength_russia > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_russia }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_russia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_russia = 1 }
+		}
+		if = {
+			limit = { portugal_is_allies = yes check_variable = { global.PRT_strength_russia > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_russia }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_russia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_russia = 1 }
+		}
+		if = {
+			limit = { OR = { china_is_komin = yes china_is_allies = yes } check_variable = { global.CHI_strength_russia > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_russia }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_russia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_russia = 1 }
+		}
+		if = {
+			limit = { OR = { russia_is_komin = yes russia_is_allies = yes } check_variable = { global.SOV_strength_russia > 0 } }
+			set_temp_variable = { strength_value = global.SOV_strength_russia }
+			multiply_variable = { strength_value = global.SOV_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_russia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_russia = 1 }
+		}
+		if = {
+			limit = { usa_is_allies = yes check_variable = { global.USA_strength_russia > 0 } }
+			set_temp_variable = { strength_value = global.USA_strength_russia }
+			multiply_variable = { strength_value = global.USA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_russia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_russia = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.ALLIES_locals_russia > 0 } }
+			set_temp_variable = { strength_value = global.ALLIES_locals_russia }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_russia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_russia = 1 }
+		}
+		world_stage_get_russia_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_russia_timer < 1 } }
+			resolve_threater_russia = yes
+		}
+	}
+	if = {	### norway
+		limit = { has_global_flag = world_stage_theater_norway_is_active }
+		subtract_from_variable = { global.theater_norway_timer = 1 }
+		# axis strength
+		set_variable = { global.AXIS_strength_norway_final = 0 }
+		add_to_variable = { global.AXIS_strength_norway_final = AXIS_strength_norway_bonus }
+		set_variable = { global.AXIS_number_norway = 0 }
+		if = {
+			limit = { check_variable = { global.GER_strength_norway > 0 } }
+			set_temp_variable = { strength_value = global.GER_strength_norway }
+			multiply_variable = { strength_value = global.GER_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_norway_final = strength_value }
+			add_to_variable = { global.AXIS_number_norway = 1 }
+		}
+		if = {
+			limit = { china_is_axis = yes check_variable = { global.CHI_strength_norway > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_norway }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_norway_final = strength_value }
+			add_to_variable = { global.AXIS_number_norway = 1 }
+		}
+		if = {
+			limit = { netherlands_is_axis = yes check_variable = { global.NET_strength_norway > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_norway }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_norway_final = strength_value }
+			add_to_variable = { global.AXIS_number_norway = 1 }
+		}
+		if = {
+			limit = { portugal_is_axis = yes check_variable = { global.PRT_strength_norway > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_norway }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_norway_final = strength_value }
+			add_to_variable = { global.AXIS_number_norway = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.AXIS_locals_norway > 0 } }
+			set_temp_variable = { strength_value = global.AXIS_locals_norway }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_norway_final = strength_value }
+			add_to_variable = { global.AXIS_number_norway = 1 }
+		}
+		# allies strength
+		set_variable = { global.ALLIES_strength_norway_final = 0 }
+		add_to_variable = { global.ALLIES_strength_norway_final = ALLIES_strength_norway_bonus }
+		set_variable = { global.ALLIES_number_norway = 0 }
+		if = {
+			limit = { france_is_allies = yes check_variable = { global.FRA_strength_norway > 0 } }
+			set_temp_variable = { strength_value = global.FRA_strength_norway }
+			multiply_variable = { strength_value = global.FRA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_norway_final = strength_value }
+			add_to_variable = { global.ALLIES_number_norway = 1 }
+		}
+		if = {
+			limit = { england_is_allies = yes check_variable = { global.ENG_strength_norway > 0 } }
+			set_temp_variable = { strength_value = global.ENG_strength_norway }
+			multiply_variable = { strength_value = global.ENG_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_norway_final = strength_value }
+			add_to_variable = { global.ALLIES_number_norway = 1 }
+		}
+		if = {
+			limit = { netherlands_is_allies = yes check_variable = { global.NET_strength_norway > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_norway }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_norway_final = strength_value }
+			add_to_variable = { global.ALLIES_number_norway = 1 }
+		}
+		if = {
+			limit = { portugal_is_allies = yes check_variable = { global.PRT_strength_norway > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_norway }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_norway_final = strength_value }
+			add_to_variable = { global.ALLIES_number_norway = 1 }
+		}
+		if = {
+			limit = { OR = { china_is_komin = yes china_is_allies = yes } check_variable = { global.CHI_strength_norway > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_norway }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_norway_final = strength_value }
+			add_to_variable = { global.ALLIES_number_norway = 1 }
+		}
+		if = {
+			limit = { OR = { russia_is_komin = yes russia_is_allies = yes } check_variable = { global.SOV_strength_norway > 0 } }
+			set_temp_variable = { strength_value = global.SOV_strength_norway }
+			multiply_variable = { strength_value = global.SOV_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_norway_final = strength_value }
+			add_to_variable = { global.ALLIES_number_norway = 1 }
+		}
+		if = {
+			limit = { usa_is_allies = yes check_variable = { global.USA_strength_norway > 0 } }
+			set_temp_variable = { strength_value = global.USA_strength_norway }
+			multiply_variable = { strength_value = global.USA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_norway_final = strength_value }
+			add_to_variable = { global.ALLIES_number_norway = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.ALLIES_locals_norway > 0 } }
+			set_temp_variable = { strength_value = global.ALLIES_locals_norway }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_norway_final = strength_value }
+			add_to_variable = { global.ALLIES_number_norway = 1 }
+		}
+		world_stage_get_norway_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_norway_timer < 1 } }
+			resolve_threater_norway = yes
+		}
+	}
+	if = {	### lybia
+		limit = { has_global_flag = world_stage_theater_lybia_is_active }
+		subtract_from_variable = { global.theater_lybia_timer = 1 }
+		# axis strength
+		set_variable = { global.AXIS_strength_lybia_final = 0 }
+		add_to_variable = { global.AXIS_strength_lybia_final = AXIS_strength_lybia_bonus }
+		set_variable = { global.AXIS_number_lybia = 0 }
+		if = {
+			limit = { check_variable = { global.GER_strength_lybia > 0 } }
+			set_temp_variable = { strength_value = global.GER_strength_lybia }
+			multiply_variable = { strength_value = global.GER_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_lybia_final = strength_value }
+			add_to_variable = { global.AXIS_number_lybia = 1 }
+		}
+		if = {
+			limit = { china_is_axis = yes check_variable = { global.CHI_strength_lybia > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_lybia }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_lybia_final = strength_value }
+			add_to_variable = { global.AXIS_number_lybia = 1 }
+		}
+		if = {
+			limit = { netherlands_is_axis = yes check_variable = { global.NET_strength_lybia > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_lybia }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_lybia_final = strength_value }
+			add_to_variable = { global.AXIS_number_lybia = 1 }
+		}
+		if = {
+			limit = { portugal_is_axis = yes check_variable = { global.PRT_strength_lybia > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_lybia }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_lybia_final = strength_value }
+			add_to_variable = { global.AXIS_number_lybia = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.AXIS_locals_lybia > 0 } }
+			set_temp_variable = { strength_value = global.AXIS_locals_lybia }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_lybia_final = strength_value }
+			add_to_variable = { global.AXIS_number_lybia = 1 }
+		}
+		# allies strength
+		set_variable = { global.ALLIES_strength_lybia_final = 0 }
+		add_to_variable = { global.ALLIES_strength_lybia_final = ALLIES_strength_lybia_bonus }
+		set_variable = { global.ALLIES_number_lybia = 0 }
+		if = {
+			limit = { france_is_allies = yes check_variable = { global.FRA_strength_lybia > 0 } }
+			set_temp_variable = { strength_value = global.FRA_strength_lybia }
+			multiply_variable = { strength_value = global.FRA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_lybia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_lybia = 1 }
+		}
+		if = {
+			limit = { england_is_allies = yes check_variable = { global.ENG_strength_lybia > 0 } }
+			set_temp_variable = { strength_value = global.ENG_strength_lybia }
+			multiply_variable = { strength_value = global.ENG_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_lybia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_lybia = 1 }
+		}
+		if = {
+			limit = { netherlands_is_allies = yes check_variable = { global.NET_strength_lybia > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_lybia }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_lybia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_lybia = 1 }
+		}
+		if = {
+			limit = { portugal_is_allies = yes check_variable = { global.PRT_strength_lybia > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_lybia }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_lybia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_lybia = 1 }
+		}
+		if = {
+			limit = { OR = { china_is_komin = yes china_is_allies = yes } check_variable = { global.CHI_strength_lybia > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_lybia }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_lybia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_lybia = 1 }
+		}
+		if = {
+			limit = { OR = { russia_is_komin = yes russia_is_allies = yes } check_variable = { global.SOV_strength_lybia > 0 } }
+			set_temp_variable = { strength_value = global.SOV_strength_lybia }
+			multiply_variable = { strength_value = global.SOV_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_lybia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_lybia = 1 }
+		}
+		if = {
+			limit = { usa_is_allies = yes check_variable = { global.USA_strength_lybia > 0 } }
+			set_temp_variable = { strength_value = global.USA_strength_lybia }
+			multiply_variable = { strength_value = global.USA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_lybia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_lybia = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.ALLIES_locals_lybia > 0 } }
+			set_temp_variable = { strength_value = global.ALLIES_locals_lybia }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_lybia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_lybia = 1 }
+		}
+		world_stage_get_lybia_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_lybia_timer < 1 } }
+			resolve_threater_lybia = yes
+		}
+	}
+	if = {	### ethiopia
+		limit = { has_global_flag = world_stage_theater_ethiopia_is_active }
+		subtract_from_variable = { global.theater_ethiopia_timer = 1 }
+		# axis strength
+		set_variable = { global.AXIS_strength_ethiopia_final = 0 }
+		add_to_variable = { global.AXIS_strength_ethiopia_final = AXIS_strength_ethiopia_bonus }
+		set_variable = { global.AXIS_number_ethiopia = 0 }
+		if = {
+			limit = { check_variable = { global.GER_strength_ethiopia > 0 } }
+			set_temp_variable = { strength_value = global.GER_strength_ethiopia }
+			multiply_variable = { strength_value = global.GER_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_ethiopia_final = strength_value }
+			add_to_variable = { global.AXIS_number_ethiopia = 1 }
+		}
+		if = {
+			limit = { china_is_axis = yes check_variable = { global.CHI_strength_ethiopia > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_ethiopia }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_ethiopia_final = strength_value }
+			add_to_variable = { global.AXIS_number_ethiopia = 1 }
+		}
+		if = {
+			limit = { netherlands_is_axis = yes check_variable = { global.NET_strength_ethiopia > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_ethiopia }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_ethiopia_final = strength_value }
+			add_to_variable = { global.AXIS_number_ethiopia = 1 }
+		}
+		if = {
+			limit = { portugal_is_axis = yes check_variable = { global.PRT_strength_ethiopia > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_ethiopia }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_ethiopia_final = strength_value }
+			add_to_variable = { global.AXIS_number_ethiopia = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.AXIS_locals_ethiopia > 0 } }
+			set_temp_variable = { strength_value = global.AXIS_locals_ethiopia }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_ethiopia_final = strength_value }
+			add_to_variable = { global.AXIS_number_ethiopia = 1 }
+		}
+		# allies strength
+		set_variable = { global.ALLIES_strength_ethiopia_final = 0 }
+		add_to_variable = { global.ALLIES_strength_ethiopia_final = ALLIES_strength_ethiopia_bonus }
+		set_variable = { global.ALLIES_number_ethiopia = 0 }
+		if = {
+			limit = { france_is_allies = yes check_variable = { global.FRA_strength_ethiopia > 0 } }
+			set_temp_variable = { strength_value = global.FRA_strength_ethiopia }
+			multiply_variable = { strength_value = global.FRA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_ethiopia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_ethiopia = 1 }
+		}
+		if = {
+			limit = { england_is_allies = yes check_variable = { global.ENG_strength_ethiopia > 0 } }
+			set_temp_variable = { strength_value = global.ENG_strength_ethiopia }
+			multiply_variable = { strength_value = global.ENG_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_ethiopia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_ethiopia = 1 }
+		}
+		if = {
+			limit = { netherlands_is_allies = yes check_variable = { global.NET_strength_ethiopia > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_ethiopia }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_ethiopia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_ethiopia = 1 }
+		}
+		if = {
+			limit = { portugal_is_allies = yes check_variable = { global.PRT_strength_ethiopia > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_ethiopia }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_ethiopia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_ethiopia = 1 }
+		}
+		if = {
+			limit = { OR = { china_is_komin = yes china_is_allies = yes } check_variable = { global.CHI_strength_ethiopia > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_ethiopia }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_ethiopia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_ethiopia = 1 }
+		}
+		if = {
+			limit = { OR = { russia_is_komin = yes russia_is_allies = yes } check_variable = { global.SOV_strength_ethiopia > 0 } }
+			set_temp_variable = { strength_value = global.SOV_strength_ethiopia }
+			multiply_variable = { strength_value = global.SOV_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_ethiopia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_ethiopia = 1 }
+		}
+		if = {
+			limit = { usa_is_allies = yes check_variable = { global.USA_strength_ethiopia > 0 } }
+			set_temp_variable = { strength_value = global.USA_strength_ethiopia }
+			multiply_variable = { strength_value = global.USA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_ethiopia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_ethiopia = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.ALLIES_locals_ethiopia > 0 } }
+			set_temp_variable = { strength_value = global.ALLIES_locals_ethiopia }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_ethiopia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_ethiopia = 1 }
+		}
+		world_stage_get_ethiopia_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_ethiopia_timer < 1 } }
+			resolve_threater_ethiopia = yes
+		}
+	}
+	if = {	### alsace
+		limit = { has_global_flag = world_stage_theater_alsace_is_active }
+		subtract_from_variable = { global.theater_alsace_timer = 1 }
+		# axis strength
+		set_variable = { global.AXIS_strength_alsace_final = 0 }
+		add_to_variable = { global.AXIS_strength_alsace_final = AXIS_strength_alsace_bonus }
+		set_variable = { global.AXIS_number_alsace = 0 }
+		if = {
+			limit = { check_variable = { global.GER_strength_alsace > 0 } }
+			set_temp_variable = { strength_value = global.GER_strength_alsace }
+			multiply_variable = { strength_value = global.GER_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_alsace_final = strength_value }
+			add_to_variable = { global.AXIS_number_alsace = 1 }
+		}
+		if = {
+			limit = { china_is_axis = yes check_variable = { global.CHI_strength_alsace > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_alsace }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_alsace_final = strength_value }
+			add_to_variable = { global.AXIS_number_alsace = 1 }
+		}
+		if = {
+			limit = { netherlands_is_axis = yes check_variable = { global.NET_strength_alsace > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_alsace }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_alsace_final = strength_value }
+			add_to_variable = { global.AXIS_number_alsace = 1 }
+		}
+		if = {
+			limit = { portugal_is_axis = yes check_variable = { global.PRT_strength_alsace > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_alsace }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_alsace_final = strength_value }
+			add_to_variable = { global.AXIS_number_alsace = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.AXIS_locals_alsace > 0 } }
+			set_temp_variable = { strength_value = global.AXIS_locals_alsace }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_alsace_final = strength_value }
+			add_to_variable = { global.AXIS_number_alsace = 1 }
+		}
+		# allies strength
+		set_variable = { global.ALLIES_strength_alsace_final = 0 }
+		add_to_variable = { global.ALLIES_strength_alsace_final = ALLIES_strength_alsace_bonus }
+		set_variable = { global.ALLIES_number_alsace = 0 }
+		if = {
+			limit = { france_is_allies = yes check_variable = { global.FRA_strength_alsace > 0 } }
+			set_temp_variable = { strength_value = global.FRA_strength_alsace }
+			multiply_variable = { strength_value = global.FRA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_alsace_final = strength_value }
+			add_to_variable = { global.ALLIES_number_alsace = 1 }
+		}
+		if = {
+			limit = { england_is_allies = yes check_variable = { global.ENG_strength_alsace > 0 } }
+			set_temp_variable = { strength_value = global.ENG_strength_alsace }
+			multiply_variable = { strength_value = global.ENG_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_alsace_final = strength_value }
+			add_to_variable = { global.ALLIES_number_alsace = 1 }
+		}
+		if = {
+			limit = { netherlands_is_allies = yes check_variable = { global.NET_strength_alsace > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_alsace }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_alsace_final = strength_value }
+			add_to_variable = { global.ALLIES_number_alsace = 1 }
+		}
+		if = {
+			limit = { portugal_is_allies = yes check_variable = { global.PRT_strength_alsace > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_alsace }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_alsace_final = strength_value }
+			add_to_variable = { global.ALLIES_number_alsace = 1 }
+		}
+		if = {
+			limit = { OR = { china_is_komin = yes china_is_allies = yes } check_variable = { global.CHI_strength_alsace > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_alsace }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_alsace_final = strength_value }
+			add_to_variable = { global.ALLIES_number_alsace = 1 }
+		}
+		if = {
+			limit = { OR = { russia_is_komin = yes russia_is_allies = yes } check_variable = { global.SOV_strength_alsace > 0 } }
+			set_temp_variable = { strength_value = global.SOV_strength_alsace }
+			multiply_variable = { strength_value = global.SOV_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_alsace_final = strength_value }
+			add_to_variable = { global.ALLIES_number_alsace = 1 }
+		}
+		if = {
+			limit = { usa_is_allies = yes check_variable = { global.USA_strength_alsace > 0 } }
+			set_temp_variable = { strength_value = global.USA_strength_alsace }
+			multiply_variable = { strength_value = global.USA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_alsace_final = strength_value }
+			add_to_variable = { global.ALLIES_number_alsace = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.ALLIES_locals_alsace > 0 } }
+			set_temp_variable = { strength_value = global.ALLIES_locals_alsace }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_alsace_final = strength_value }
+			add_to_variable = { global.ALLIES_number_alsace = 1 }
+		}
+		world_stage_get_alsace_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_alsace_timer < 1 } }
+			resolve_threater_alsace = yes
+		}
+	}
+	if = {	### sicily
+		limit = { has_global_flag = world_stage_theater_sicily_is_active }
+		subtract_from_variable = { global.theater_sicily_timer = 1 }
+		# axis strength
+		set_variable = { global.AXIS_strength_sicily_final = 0 }
+		add_to_variable = { global.AXIS_strength_sicily_final = AXIS_strength_sicily_bonus }
+		set_variable = { global.AXIS_number_sicily = 0 }
+		if = {
+			limit = { check_variable = { global.GER_strength_sicily > 0 } }
+			set_temp_variable = { strength_value = global.GER_strength_sicily }
+			multiply_variable = { strength_value = global.GER_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_sicily_final = strength_value }
+			add_to_variable = { global.AXIS_number_sicily = 1 }
+		}
+		if = {
+			limit = { china_is_axis = yes check_variable = { global.CHI_strength_sicily > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_sicily }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_sicily_final = strength_value }
+			add_to_variable = { global.AXIS_number_sicily = 1 }
+		}
+		if = {
+			limit = { netherlands_is_axis = yes check_variable = { global.NET_strength_sicily > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_sicily }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_sicily_final = strength_value }
+			add_to_variable = { global.AXIS_number_sicily = 1 }
+		}
+		if = {
+			limit = { portugal_is_axis = yes check_variable = { global.PRT_strength_sicily > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_sicily }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_sicily_final = strength_value }
+			add_to_variable = { global.AXIS_number_sicily = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.AXIS_locals_sicily > 0 } }
+			set_temp_variable = { strength_value = global.AXIS_locals_sicily }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_sicily_final = strength_value }
+			add_to_variable = { global.AXIS_number_sicily = 1 }
+		}
+		# allies strength
+		set_variable = { global.ALLIES_strength_sicily_final = 0 }
+		add_to_variable = { global.ALLIES_strength_sicily_final = ALLIES_strength_sicily_bonus }
+		set_variable = { global.ALLIES_number_sicily = 0 }
+		if = {
+			limit = { france_is_allies = yes check_variable = { global.FRA_strength_sicily > 0 } }
+			set_temp_variable = { strength_value = global.FRA_strength_sicily }
+			multiply_variable = { strength_value = global.FRA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_sicily_final = strength_value }
+			add_to_variable = { global.ALLIES_number_sicily = 1 }
+		}
+		if = {
+			limit = { england_is_allies = yes check_variable = { global.ENG_strength_sicily > 0 } }
+			set_temp_variable = { strength_value = global.ENG_strength_sicily }
+			multiply_variable = { strength_value = global.ENG_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_sicily_final = strength_value }
+			add_to_variable = { global.ALLIES_number_sicily = 1 }
+		}
+		if = {
+			limit = { netherlands_is_allies = yes check_variable = { global.NET_strength_sicily > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_sicily }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_sicily_final = strength_value }
+			add_to_variable = { global.ALLIES_number_sicily = 1 }
+		}
+		if = {
+			limit = { portugal_is_allies = yes check_variable = { global.PRT_strength_sicily > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_sicily }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_sicily_final = strength_value }
+			add_to_variable = { global.ALLIES_number_sicily = 1 }
+		}
+		if = {
+			limit = { OR = { china_is_komin = yes china_is_allies = yes } check_variable = { global.CHI_strength_sicily > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_sicily }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_sicily_final = strength_value }
+			add_to_variable = { global.ALLIES_number_sicily = 1 }
+		}
+		if = {
+			limit = { OR = { russia_is_komin = yes russia_is_allies = yes } check_variable = { global.SOV_strength_sicily > 0 } }
+			set_temp_variable = { strength_value = global.SOV_strength_sicily }
+			multiply_variable = { strength_value = global.SOV_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_sicily_final = strength_value }
+			add_to_variable = { global.ALLIES_number_sicily = 1 }
+		}
+		if = {
+			limit = { usa_is_allies = yes check_variable = { global.USA_strength_sicily > 0 } }
+			set_temp_variable = { strength_value = global.USA_strength_sicily }
+			multiply_variable = { strength_value = global.USA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_sicily_final = strength_value }
+			add_to_variable = { global.ALLIES_number_sicily = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.ALLIES_locals_sicily > 0 } }
+			set_temp_variable = { strength_value = global.ALLIES_locals_sicily }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_sicily_final = strength_value }
+			add_to_variable = { global.ALLIES_number_sicily = 1 }
+		}
+		world_stage_get_sicily_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_sicily_timer < 1 } }
+			resolve_threater_sicily = yes
+		}
+	}
+	if = {	### italy
+		limit = { has_global_flag = world_stage_theater_italy_is_active }
+		subtract_from_variable = { global.theater_italy_timer = 1 }
+		# axis strength
+		set_variable = { global.AXIS_strength_italy_final = 0 }
+		add_to_variable = { global.AXIS_strength_italy_final = AXIS_strength_italy_bonus }
+		set_variable = { global.AXIS_number_italy = 0 }
+		if = {
+			limit = { check_variable = { global.GER_strength_italy > 0 } }
+			set_temp_variable = { strength_value = global.GER_strength_italy }
+			multiply_variable = { strength_value = global.GER_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_italy_final = strength_value }
+			add_to_variable = { global.AXIS_number_italy = 1 }
+		}
+		if = {
+			limit = { china_is_axis = yes check_variable = { global.CHI_strength_italy > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_italy }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_italy_final = strength_value }
+			add_to_variable = { global.AXIS_number_italy = 1 }
+		}
+		if = {
+			limit = { netherlands_is_axis = yes check_variable = { global.NET_strength_italy > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_italy }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_italy_final = strength_value }
+			add_to_variable = { global.AXIS_number_italy = 1 }
+		}
+		if = {
+			limit = { portugal_is_axis = yes check_variable = { global.PRT_strength_italy > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_italy }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_italy_final = strength_value }
+			add_to_variable = { global.AXIS_number_italy = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.AXIS_locals_italy > 0 } }
+			set_temp_variable = { strength_value = global.AXIS_locals_italy }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_italy_final = strength_value }
+			add_to_variable = { global.AXIS_number_italy = 1 }
+		}
+		# allies strength
+		set_variable = { global.ALLIES_strength_italy_final = 0 }
+		add_to_variable = { global.ALLIES_strength_italy_final = ALLIES_strength_italy_bonus }
+		set_variable = { global.ALLIES_number_italy = 0 }
+		if = {
+			limit = { france_is_allies = yes check_variable = { global.FRA_strength_italy > 0 } }
+			set_temp_variable = { strength_value = global.FRA_strength_italy }
+			multiply_variable = { strength_value = global.FRA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_italy_final = strength_value }
+			add_to_variable = { global.ALLIES_number_italy = 1 }
+		}
+		if = {
+			limit = { england_is_allies = yes check_variable = { global.ENG_strength_italy > 0 } }
+			set_temp_variable = { strength_value = global.ENG_strength_italy }
+			multiply_variable = { strength_value = global.ENG_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_italy_final = strength_value }
+			add_to_variable = { global.ALLIES_number_italy = 1 }
+		}
+		if = {
+			limit = { netherlands_is_allies = yes check_variable = { global.NET_strength_italy > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_italy }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_italy_final = strength_value }
+			add_to_variable = { global.ALLIES_number_italy = 1 }
+		}
+		if = {
+			limit = { portugal_is_allies = yes check_variable = { global.PRT_strength_italy > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_italy }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_italy_final = strength_value }
+			add_to_variable = { global.ALLIES_number_italy = 1 }
+		}
+		if = {
+			limit = { OR = { china_is_komin = yes china_is_allies = yes } check_variable = { global.CHI_strength_italy > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_italy }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_italy_final = strength_value }
+			add_to_variable = { global.ALLIES_number_italy = 1 }
+		}
+		if = {
+			limit = { OR = { russia_is_komin = yes russia_is_allies = yes } check_variable = { global.SOV_strength_italy > 0 } }
+			set_temp_variable = { strength_value = global.SOV_strength_italy }
+			multiply_variable = { strength_value = global.SOV_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_italy_final = strength_value }
+			add_to_variable = { global.ALLIES_number_italy = 1 }
+		}
+		if = {
+			limit = { usa_is_allies = yes check_variable = { global.USA_strength_italy > 0 } }
+			set_temp_variable = { strength_value = global.USA_strength_italy }
+			multiply_variable = { strength_value = global.USA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_italy_final = strength_value }
+			add_to_variable = { global.ALLIES_number_italy = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.ALLIES_locals_italy > 0 } }
+			set_temp_variable = { strength_value = global.ALLIES_locals_italy }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_italy_final = strength_value }
+			add_to_variable = { global.ALLIES_number_italy = 1 }
+		}
+		world_stage_get_italy_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_italy_timer < 1 } }
+			resolve_threater_italy = yes
+		}
+	}
+	if = {	### siberia
+		limit = { has_global_flag = world_stage_theater_siberia_is_active }
+		subtract_from_variable = { global.theater_siberia_timer = 1 }
+		# axis strength
+		set_variable = { global.AXIS_strength_siberia_final = 0 }
+		add_to_variable = { global.AXIS_strength_siberia_final = AXIS_strength_siberia_bonus }
+		set_variable = { global.AXIS_number_siberia = 0 }
+		if = {
+			limit = { check_variable = { global.GER_strength_siberia > 0 } }
+			set_temp_variable = { strength_value = global.GER_strength_siberia }
+			multiply_variable = { strength_value = global.GER_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_siberia_final = strength_value }
+			add_to_variable = { global.AXIS_number_siberia = 1 }
+		}
+		if = {
+			limit = { china_is_axis = yes check_variable = { global.CHI_strength_siberia > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_siberia }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_siberia_final = strength_value }
+			add_to_variable = { global.AXIS_number_siberia = 1 }
+		}
+		if = {
+			limit = { netherlands_is_axis = yes check_variable = { global.NET_strength_siberia > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_siberia }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_siberia_final = strength_value }
+			add_to_variable = { global.AXIS_number_siberia = 1 }
+		}
+		if = {
+			limit = { portugal_is_axis = yes check_variable = { global.PRT_strength_siberia > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_siberia }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_siberia_final = strength_value }
+			add_to_variable = { global.AXIS_number_siberia = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.AXIS_locals_siberia > 0 } }
+			set_temp_variable = { strength_value = global.AXIS_locals_siberia }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_siberia_final = strength_value }
+			add_to_variable = { global.AXIS_number_siberia = 1 }
+		}
+		# allies strength
+		set_variable = { global.ALLIES_strength_siberia_final = 0 }
+		add_to_variable = { global.ALLIES_strength_siberia_final = ALLIES_strength_siberia_bonus }
+		set_variable = { global.ALLIES_number_siberia = 0 }
+		if = {
+			limit = { france_is_allies = yes check_variable = { global.FRA_strength_siberia > 0 } }
+			set_temp_variable = { strength_value = global.FRA_strength_siberia }
+			multiply_variable = { strength_value = global.FRA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_siberia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_siberia = 1 }
+		}
+		if = {
+			limit = { england_is_allies = yes check_variable = { global.ENG_strength_siberia > 0 } }
+			set_temp_variable = { strength_value = global.ENG_strength_siberia }
+			multiply_variable = { strength_value = global.ENG_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_siberia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_siberia = 1 }
+		}
+		if = {
+			limit = { netherlands_is_allies = yes check_variable = { global.NET_strength_siberia > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_siberia }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_siberia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_siberia = 1 }
+		}
+		if = {
+			limit = { portugal_is_allies = yes check_variable = { global.PRT_strength_siberia > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_siberia }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_siberia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_siberia = 1 }
+		}
+		if = {
+			limit = { OR = { china_is_komin = yes china_is_allies = yes } check_variable = { global.CHI_strength_siberia > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_siberia }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_siberia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_siberia = 1 }
+		}
+		if = {
+			limit = { OR = { russia_is_komin = yes russia_is_allies = yes } check_variable = { global.SOV_strength_siberia > 0 } }
+			set_temp_variable = { strength_value = global.SOV_strength_siberia }
+			multiply_variable = { strength_value = global.SOV_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_siberia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_siberia = 1 }
+		}
+		if = {
+			limit = { usa_is_allies = yes check_variable = { global.USA_strength_siberia > 0 } }
+			set_temp_variable = { strength_value = global.USA_strength_siberia }
+			multiply_variable = { strength_value = global.USA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_siberia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_siberia = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.ALLIES_locals_siberia > 0 } }
+			set_temp_variable = { strength_value = global.ALLIES_locals_siberia }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_siberia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_siberia = 1 }
+		}
+		world_stage_get_siberia_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_siberia_timer < 1 } }
+			resolve_threater_siberia = yes
+		}
+	}
+	if = {	### mongolia
+		limit = { has_global_flag = world_stage_theater_mongolia_is_active }
+		subtract_from_variable = { global.theater_mongolia_timer = 1 }
+		# axis strength
+		set_variable = { global.AXIS_strength_mongolia_final = 0 }
+		add_to_variable = { global.AXIS_strength_mongolia_final = AXIS_strength_mongolia_bonus }
+		set_variable = { global.AXIS_number_mongolia = 0 }
+		if = {
+			limit = { check_variable = { global.GER_strength_mongolia > 0 } }
+			set_temp_variable = { strength_value = global.GER_strength_mongolia }
+			multiply_variable = { strength_value = global.GER_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_mongolia_final = strength_value }
+			add_to_variable = { global.AXIS_number_mongolia = 1 }
+		}
+		if = {
+			limit = { china_is_axis = yes check_variable = { global.CHI_strength_mongolia > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_mongolia }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_mongolia_final = strength_value }
+			add_to_variable = { global.AXIS_number_mongolia = 1 }
+		}
+		if = {
+			limit = { netherlands_is_axis = yes check_variable = { global.NET_strength_mongolia > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_mongolia }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_mongolia_final = strength_value }
+			add_to_variable = { global.AXIS_number_mongolia = 1 }
+		}
+		if = {
+			limit = { portugal_is_axis = yes check_variable = { global.PRT_strength_mongolia > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_mongolia }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_mongolia_final = strength_value }
+			add_to_variable = { global.AXIS_number_mongolia = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.AXIS_locals_mongolia > 0 } }
+			set_temp_variable = { strength_value = global.AXIS_locals_mongolia }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_mongolia_final = strength_value }
+			add_to_variable = { global.AXIS_number_mongolia = 1 }
+		}
+		# allies strength
+		set_variable = { global.ALLIES_strength_mongolia_final = 0 }
+		add_to_variable = { global.ALLIES_strength_mongolia_final = ALLIES_strength_mongolia_bonus }
+		set_variable = { global.ALLIES_number_mongolia = 0 }
+		if = {
+			limit = { france_is_allies = yes check_variable = { global.FRA_strength_mongolia > 0 } }
+			set_temp_variable = { strength_value = global.FRA_strength_mongolia }
+			multiply_variable = { strength_value = global.FRA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_mongolia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_mongolia = 1 }
+		}
+		if = {
+			limit = { england_is_allies = yes check_variable = { global.ENG_strength_mongolia > 0 } }
+			set_temp_variable = { strength_value = global.ENG_strength_mongolia }
+			multiply_variable = { strength_value = global.ENG_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_mongolia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_mongolia = 1 }
+		}
+		if = {
+			limit = { netherlands_is_allies = yes check_variable = { global.NET_strength_mongolia > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_mongolia }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_mongolia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_mongolia = 1 }
+		}
+		if = {
+			limit = { portugal_is_allies = yes check_variable = { global.PRT_strength_mongolia > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_mongolia }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_mongolia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_mongolia = 1 }
+		}
+		if = {
+			limit = { OR = { china_is_komin = yes china_is_allies = yes } check_variable = { global.CHI_strength_mongolia > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_mongolia }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_mongolia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_mongolia = 1 }
+		}
+		if = {
+			limit = { OR = { russia_is_komin = yes russia_is_allies = yes } check_variable = { global.SOV_strength_mongolia > 0 } }
+			set_temp_variable = { strength_value = global.SOV_strength_mongolia }
+			multiply_variable = { strength_value = global.SOV_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_mongolia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_mongolia = 1 }
+		}
+		if = {
+			limit = { usa_is_allies = yes check_variable = { global.USA_strength_mongolia > 0 } }
+			set_temp_variable = { strength_value = global.USA_strength_mongolia }
+			multiply_variable = { strength_value = global.USA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_mongolia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_mongolia = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.ALLIES_locals_mongolia > 0 } }
+			set_temp_variable = { strength_value = global.ALLIES_locals_mongolia }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_mongolia_final = strength_value }
+			add_to_variable = { global.ALLIES_number_mongolia = 1 }
+		}
+		world_stage_get_mongolia_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_mongolia_timer < 1 } }
+			resolve_threater_mongolia = yes
+		}
+	}
+	if = {	### tibet
+		limit = { has_global_flag = world_stage_theater_tibet_is_active }
+		subtract_from_variable = { global.theater_tibet_timer = 1 }
+		# axis strength
+		set_variable = { global.AXIS_strength_tibet_final = 0 }
+		add_to_variable = { global.AXIS_strength_tibet_final = AXIS_strength_tibet_bonus }
+		set_variable = { global.AXIS_number_tibet = 0 }
+		if = {
+			limit = { check_variable = { global.GER_strength_tibet > 0 } }
+			set_temp_variable = { strength_value = global.GER_strength_tibet }
+			multiply_variable = { strength_value = global.GER_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_tibet_final = strength_value }
+			add_to_variable = { global.AXIS_number_tibet = 1 }
+		}
+		if = {
+			limit = { china_is_axis = yes check_variable = { global.CHI_strength_tibet > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_tibet }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_tibet_final = strength_value }
+			add_to_variable = { global.AXIS_number_tibet = 1 }
+		}
+		if = {
+			limit = { netherlands_is_axis = yes check_variable = { global.NET_strength_tibet > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_tibet }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_tibet_final = strength_value }
+			add_to_variable = { global.AXIS_number_tibet = 1 }
+		}
+		if = {
+			limit = { portugal_is_axis = yes check_variable = { global.PRT_strength_tibet > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_tibet }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_tibet_final = strength_value }
+			add_to_variable = { global.AXIS_number_tibet = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.AXIS_locals_tibet > 0 } }
+			set_temp_variable = { strength_value = global.AXIS_locals_tibet }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_tibet_final = strength_value }
+			add_to_variable = { global.AXIS_number_tibet = 1 }
+		}
+		# allies strength
+		set_variable = { global.ALLIES_strength_tibet_final = 0 }
+		add_to_variable = { global.ALLIES_strength_tibet_final = ALLIES_strength_tibet_bonus }
+		set_variable = { global.ALLIES_number_tibet = 0 }
+		if = {
+			limit = { france_is_allies = yes check_variable = { global.FRA_strength_tibet > 0 } }
+			set_temp_variable = { strength_value = global.FRA_strength_tibet }
+			multiply_variable = { strength_value = global.FRA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_tibet_final = strength_value }
+			add_to_variable = { global.ALLIES_number_tibet = 1 }
+		}
+		if = {
+			limit = { england_is_allies = yes check_variable = { global.ENG_strength_tibet > 0 } }
+			set_temp_variable = { strength_value = global.ENG_strength_tibet }
+			multiply_variable = { strength_value = global.ENG_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_tibet_final = strength_value }
+			add_to_variable = { global.ALLIES_number_tibet = 1 }
+		}
+		if = {
+			limit = { netherlands_is_allies = yes check_variable = { global.NET_strength_tibet > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_tibet }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_tibet_final = strength_value }
+			add_to_variable = { global.ALLIES_number_tibet = 1 }
+		}
+		if = {
+			limit = { portugal_is_allies = yes check_variable = { global.PRT_strength_tibet > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_tibet }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_tibet_final = strength_value }
+			add_to_variable = { global.ALLIES_number_tibet = 1 }
+		}
+		if = {
+			limit = { OR = { china_is_komin = yes china_is_allies = yes } check_variable = { global.CHI_strength_tibet > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_tibet }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_tibet_final = strength_value }
+			add_to_variable = { global.ALLIES_number_tibet = 1 }
+		}
+		if = {
+			limit = { OR = { russia_is_komin = yes russia_is_allies = yes } check_variable = { global.SOV_strength_tibet > 0 } }
+			set_temp_variable = { strength_value = global.SOV_strength_tibet }
+			multiply_variable = { strength_value = global.SOV_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_tibet_final = strength_value }
+			add_to_variable = { global.ALLIES_number_tibet = 1 }
+		}
+		if = {
+			limit = { usa_is_allies = yes check_variable = { global.USA_strength_tibet > 0 } }
+			set_temp_variable = { strength_value = global.USA_strength_tibet }
+			multiply_variable = { strength_value = global.USA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_tibet_final = strength_value }
+			add_to_variable = { global.ALLIES_number_tibet = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.ALLIES_locals_tibet > 0 } }
+			set_temp_variable = { strength_value = global.ALLIES_locals_tibet }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_tibet_final = strength_value }
+			add_to_variable = { global.ALLIES_number_tibet = 1 }
+		}
+		world_stage_get_tibet_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_tibet_timer < 1 } }
+			resolve_threater_tibet = yes
+		}
+	}
+	if = {	### bengal
+		limit = { has_global_flag = world_stage_theater_bengal_is_active }
+		subtract_from_variable = { global.theater_bengal_timer = 1 }
+		# axis strength
+		set_variable = { global.AXIS_strength_bengal_final = 0 }
+		add_to_variable = { global.AXIS_strength_bengal_final = AXIS_strength_bengal_bonus }
+		set_variable = { global.AXIS_number_bengal = 0 }
+		if = {
+			limit = { check_variable = { global.GER_strength_bengal > 0 } }
+			set_temp_variable = { strength_value = global.GER_strength_bengal }
+			multiply_variable = { strength_value = global.GER_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_bengal_final = strength_value }
+			add_to_variable = { global.AXIS_number_bengal = 1 }
+		}
+		if = {
+			limit = { china_is_axis = yes check_variable = { global.CHI_strength_bengal > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_bengal }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_bengal_final = strength_value }
+			add_to_variable = { global.AXIS_number_bengal = 1 }
+		}
+		if = {
+			limit = { netherlands_is_axis = yes check_variable = { global.NET_strength_bengal > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_bengal }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_bengal_final = strength_value }
+			add_to_variable = { global.AXIS_number_bengal = 1 }
+		}
+		if = {
+			limit = { portugal_is_axis = yes check_variable = { global.PRT_strength_bengal > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_bengal }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_bengal_final = strength_value }
+			add_to_variable = { global.AXIS_number_bengal = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.AXIS_locals_bengal > 0 } }
+			set_temp_variable = { strength_value = global.AXIS_locals_bengal }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_bengal_final = strength_value }
+			add_to_variable = { global.AXIS_number_bengal = 1 }
+		}
+		# allies strength
+		set_variable = { global.ALLIES_strength_bengal_final = 0 }
+		add_to_variable = { global.ALLIES_strength_bengal_final = ALLIES_strength_bengal_bonus }
+		set_variable = { global.ALLIES_number_bengal = 0 }
+		if = {
+			limit = { france_is_allies = yes check_variable = { global.FRA_strength_bengal > 0 } }
+			set_temp_variable = { strength_value = global.FRA_strength_bengal }
+			multiply_variable = { strength_value = global.FRA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_bengal_final = strength_value }
+			add_to_variable = { global.ALLIES_number_bengal = 1 }
+		}
+		if = {
+			limit = { england_is_allies = yes check_variable = { global.ENG_strength_bengal > 0 } }
+			set_temp_variable = { strength_value = global.ENG_strength_bengal }
+			multiply_variable = { strength_value = global.ENG_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_bengal_final = strength_value }
+			add_to_variable = { global.ALLIES_number_bengal = 1 }
+		}
+		if = {
+			limit = { netherlands_is_allies = yes check_variable = { global.NET_strength_bengal > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_bengal }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_bengal_final = strength_value }
+			add_to_variable = { global.ALLIES_number_bengal = 1 }
+		}
+		if = {
+			limit = { portugal_is_allies = yes check_variable = { global.PRT_strength_bengal > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_bengal }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_bengal_final = strength_value }
+			add_to_variable = { global.ALLIES_number_bengal = 1 }
+		}
+		if = {
+			limit = { OR = { china_is_komin = yes china_is_allies = yes } check_variable = { global.CHI_strength_bengal > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_bengal }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_bengal_final = strength_value }
+			add_to_variable = { global.ALLIES_number_bengal = 1 }
+		}
+		if = {
+			limit = { OR = { russia_is_komin = yes russia_is_allies = yes } check_variable = { global.SOV_strength_bengal > 0 } }
+			set_temp_variable = { strength_value = global.SOV_strength_bengal }
+			multiply_variable = { strength_value = global.SOV_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_bengal_final = strength_value }
+			add_to_variable = { global.ALLIES_number_bengal = 1 }
+		}
+		if = {
+			limit = { usa_is_allies = yes check_variable = { global.USA_strength_bengal > 0 } }
+			set_temp_variable = { strength_value = global.USA_strength_bengal }
+			multiply_variable = { strength_value = global.USA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_bengal_final = strength_value }
+			add_to_variable = { global.ALLIES_number_bengal = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.ALLIES_locals_bengal > 0 } }
+			set_temp_variable = { strength_value = global.ALLIES_locals_bengal }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_bengal_final = strength_value }
+			add_to_variable = { global.ALLIES_number_bengal = 1 }
+		}
+		world_stage_get_bengal_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_bengal_timer < 1 } }
+			resolve_threater_bengal = yes
+		}
+	}
+	if = {	### india
+		limit = { has_global_flag = world_stage_theater_india_is_active }
+		subtract_from_variable = { global.theater_india_timer = 1 }
+		# axis strength
+		set_variable = { global.AXIS_strength_india_final = 0 }
+		add_to_variable = { global.AXIS_strength_india_final = AXIS_strength_india_bonus }
+		set_variable = { global.AXIS_number_india = 0 }
+		if = {
+			limit = { check_variable = { global.GER_strength_india > 0 } }
+			set_temp_variable = { strength_value = global.GER_strength_india }
+			multiply_variable = { strength_value = global.GER_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_india_final = strength_value }
+			add_to_variable = { global.AXIS_number_india = 1 }
+		}
+		if = {
+			limit = { china_is_axis = yes check_variable = { global.CHI_strength_india > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_india }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_india_final = strength_value }
+			add_to_variable = { global.AXIS_number_india = 1 }
+		}
+		if = {
+			limit = { netherlands_is_axis = yes check_variable = { global.NET_strength_india > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_india }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_india_final = strength_value }
+			add_to_variable = { global.AXIS_number_india = 1 }
+		}
+		if = {
+			limit = { portugal_is_axis = yes check_variable = { global.PRT_strength_india > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_india }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_india_final = strength_value }
+			add_to_variable = { global.AXIS_number_india = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.AXIS_locals_india > 0 } }
+			set_temp_variable = { strength_value = global.AXIS_locals_india }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_india_final = strength_value }
+			add_to_variable = { global.AXIS_number_india = 1 }
+		}
+		# allies strength
+		set_variable = { global.ALLIES_strength_india_final = 0 }
+		add_to_variable = { global.ALLIES_strength_india_final = ALLIES_strength_india_bonus }
+		set_variable = { global.ALLIES_number_india = 0 }
+		if = {
+			limit = { france_is_allies = yes check_variable = { global.FRA_strength_india > 0 } }
+			set_temp_variable = { strength_value = global.FRA_strength_india }
+			multiply_variable = { strength_value = global.FRA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_india_final = strength_value }
+			add_to_variable = { global.ALLIES_number_india = 1 }
+		}
+		if = {
+			limit = { england_is_allies = yes check_variable = { global.ENG_strength_india > 0 } }
+			set_temp_variable = { strength_value = global.ENG_strength_india }
+			multiply_variable = { strength_value = global.ENG_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_india_final = strength_value }
+			add_to_variable = { global.ALLIES_number_india = 1 }
+		}
+		if = {
+			limit = { netherlands_is_allies = yes check_variable = { global.NET_strength_india > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_india }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_india_final = strength_value }
+			add_to_variable = { global.ALLIES_number_india = 1 }
+		}
+		if = {
+			limit = { portugal_is_allies = yes check_variable = { global.PRT_strength_india > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_india }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_india_final = strength_value }
+			add_to_variable = { global.ALLIES_number_india = 1 }
+		}
+		if = {
+			limit = { OR = { china_is_komin = yes china_is_allies = yes } check_variable = { global.CHI_strength_india > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_india }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_india_final = strength_value }
+			add_to_variable = { global.ALLIES_number_india = 1 }
+		}
+		if = {
+			limit = { OR = { russia_is_komin = yes russia_is_allies = yes } check_variable = { global.SOV_strength_india > 0 } }
+			set_temp_variable = { strength_value = global.SOV_strength_india }
+			multiply_variable = { strength_value = global.SOV_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_india_final = strength_value }
+			add_to_variable = { global.ALLIES_number_india = 1 }
+		}
+		if = {
+			limit = { usa_is_allies = yes check_variable = { global.USA_strength_india > 0 } }
+			set_temp_variable = { strength_value = global.USA_strength_india }
+			multiply_variable = { strength_value = global.USA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_india_final = strength_value }
+			add_to_variable = { global.ALLIES_number_india = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.ALLIES_locals_india > 0 } }
+			set_temp_variable = { strength_value = global.ALLIES_locals_india }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_india_final = strength_value }
+			add_to_variable = { global.ALLIES_number_india = 1 }
+		}
+		world_stage_get_india_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_india_timer < 1 } }
+			resolve_threater_india = yes
+		}
+	}
+	if = {	### china
+		limit = { has_global_flag = world_stage_theater_china_is_active }
+		subtract_from_variable = { global.theater_china_timer = 1 }
+		# axis strength
+		set_variable = { global.AXIS_strength_china_final = 0 }
+		add_to_variable = { global.AXIS_strength_china_final = AXIS_strength_china_bonus }
+		set_variable = { global.AXIS_number_china = 0 }
+		if = {
+			limit = { check_variable = { global.GER_strength_china > 0 } }
+			set_temp_variable = { strength_value = global.GER_strength_china }
+			multiply_variable = { strength_value = global.GER_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_china_final = strength_value }
+			add_to_variable = { global.AXIS_number_china = 1 }
+		}
+		if = {
+			limit = { china_is_axis = yes check_variable = { global.CHI_strength_china > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_china }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_china_final = strength_value }
+			add_to_variable = { global.AXIS_number_china = 1 }
+		}
+		if = {
+			limit = { netherlands_is_axis = yes check_variable = { global.NET_strength_china > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_china }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_china_final = strength_value }
+			add_to_variable = { global.AXIS_number_china = 1 }
+		}
+		if = {
+			limit = { portugal_is_axis = yes check_variable = { global.PRT_strength_china > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_china }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_china_final = strength_value }
+			add_to_variable = { global.AXIS_number_china = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.AXIS_locals_china > 0 } }
+			set_temp_variable = { strength_value = global.AXIS_locals_china }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_china_final = strength_value }
+			add_to_variable = { global.AXIS_number_china = 1 }
+		}
+		# allies strength
+		set_variable = { global.ALLIES_strength_china_final = 0 }
+		add_to_variable = { global.ALLIES_strength_china_final = ALLIES_strength_china_bonus }
+		set_variable = { global.ALLIES_number_china = 0 }
+		if = {
+			limit = { france_is_allies = yes check_variable = { global.FRA_strength_china > 0 } }
+			set_temp_variable = { strength_value = global.FRA_strength_china }
+			multiply_variable = { strength_value = global.FRA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_china_final = strength_value }
+			add_to_variable = { global.ALLIES_number_china = 1 }
+		}
+		if = {
+			limit = { england_is_allies = yes check_variable = { global.ENG_strength_china > 0 } }
+			set_temp_variable = { strength_value = global.ENG_strength_china }
+			multiply_variable = { strength_value = global.ENG_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_china_final = strength_value }
+			add_to_variable = { global.ALLIES_number_china = 1 }
+		}
+		if = {
+			limit = { netherlands_is_allies = yes check_variable = { global.NET_strength_china > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_china }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_china_final = strength_value }
+			add_to_variable = { global.ALLIES_number_china = 1 }
+		}
+		if = {
+			limit = { portugal_is_allies = yes check_variable = { global.PRT_strength_china > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_china }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_china_final = strength_value }
+			add_to_variable = { global.ALLIES_number_china = 1 }
+		}
+		if = {
+			limit = { OR = { china_is_komin = yes china_is_allies = yes } check_variable = { global.CHI_strength_china > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_china }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_china_final = strength_value }
+			add_to_variable = { global.ALLIES_number_china = 1 }
+		}
+		if = {
+			limit = { OR = { russia_is_komin = yes russia_is_allies = yes } check_variable = { global.SOV_strength_china > 0 } }
+			set_temp_variable = { strength_value = global.SOV_strength_china }
+			multiply_variable = { strength_value = global.SOV_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_china_final = strength_value }
+			add_to_variable = { global.ALLIES_number_china = 1 }
+		}
+		if = {
+			limit = { usa_is_allies = yes check_variable = { global.USA_strength_china > 0 } }
+			set_temp_variable = { strength_value = global.USA_strength_china }
+			multiply_variable = { strength_value = global.USA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_china_final = strength_value }
+			add_to_variable = { global.ALLIES_number_china = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.ALLIES_locals_china > 0 } }
+			set_temp_variable = { strength_value = global.ALLIES_locals_china }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_china_final = strength_value }
+			add_to_variable = { global.ALLIES_number_china = 1 }
+		}
+		world_stage_get_china_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_china_timer < 1 } }
+			resolve_threater_china = yes
+		}
+	}
+	if = {	### normandy
+		limit = { has_global_flag = world_stage_theater_normandy_is_active }
+		subtract_from_variable = { global.theater_normandy_timer = 1 }
+		# axis strength
+		set_variable = { global.AXIS_strength_normandy_final = 0 }
+		add_to_variable = { global.AXIS_strength_normandy_final = AXIS_strength_normandy_bonus }
+		set_variable = { global.AXIS_number_normandy = 0 }
+		if = {
+			limit = { check_variable = { global.GER_strength_normandy > 0 } }
+			set_temp_variable = { strength_value = global.GER_strength_normandy }
+			multiply_variable = { strength_value = global.GER_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_normandy_final = strength_value }
+			add_to_variable = { global.AXIS_number_normandy = 1 }
+		}
+		if = {
+			limit = { china_is_axis = yes check_variable = { global.CHI_strength_normandy > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_normandy }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_normandy_final = strength_value }
+			add_to_variable = { global.AXIS_number_normandy = 1 }
+		}
+		if = {
+			limit = { netherlands_is_axis = yes check_variable = { global.NET_strength_normandy > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_normandy }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_normandy_final = strength_value }
+			add_to_variable = { global.AXIS_number_normandy = 1 }
+		}
+		if = {
+			limit = { portugal_is_axis = yes check_variable = { global.PRT_strength_normandy > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_normandy }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_normandy_final = strength_value }
+			add_to_variable = { global.AXIS_number_normandy = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.AXIS_locals_normandy > 0 } }
+			set_temp_variable = { strength_value = global.AXIS_locals_normandy }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_normandy_final = strength_value }
+			add_to_variable = { global.AXIS_number_normandy = 1 }
+		}
+		# allies strength
+		set_variable = { global.ALLIES_strength_normandy_final = 0 }
+		add_to_variable = { global.ALLIES_strength_normandy_final = ALLIES_strength_normandy_bonus }
+		set_variable = { global.ALLIES_number_normandy = 0 }
+		if = {
+			limit = { france_is_allies = yes check_variable = { global.FRA_strength_normandy > 0 } }
+			set_temp_variable = { strength_value = global.FRA_strength_normandy }
+			multiply_variable = { strength_value = global.FRA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_normandy_final = strength_value }
+			add_to_variable = { global.ALLIES_number_normandy = 1 }
+		}
+		if = {
+			limit = { england_is_allies = yes check_variable = { global.ENG_strength_normandy > 0 } }
+			set_temp_variable = { strength_value = global.ENG_strength_normandy }
+			multiply_variable = { strength_value = global.ENG_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_normandy_final = strength_value }
+			add_to_variable = { global.ALLIES_number_normandy = 1 }
+		}
+		if = {
+			limit = { netherlands_is_allies = yes check_variable = { global.NET_strength_normandy > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_normandy }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_normandy_final = strength_value }
+			add_to_variable = { global.ALLIES_number_normandy = 1 }
+		}
+		if = {
+			limit = { portugal_is_allies = yes check_variable = { global.PRT_strength_normandy > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_normandy }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_normandy_final = strength_value }
+			add_to_variable = { global.ALLIES_number_normandy = 1 }
+		}
+		if = {
+			limit = { OR = { china_is_komin = yes china_is_allies = yes } check_variable = { global.CHI_strength_normandy > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_normandy }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_normandy_final = strength_value }
+			add_to_variable = { global.ALLIES_number_normandy = 1 }
+		}
+		if = {
+			limit = { OR = { russia_is_komin = yes russia_is_allies = yes } check_variable = { global.SOV_strength_normandy > 0 } }
+			set_temp_variable = { strength_value = global.SOV_strength_normandy }
+			multiply_variable = { strength_value = global.SOV_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_normandy_final = strength_value }
+			add_to_variable = { global.ALLIES_number_normandy = 1 }
+		}
+		if = {
+			limit = { usa_is_allies = yes check_variable = { global.USA_strength_normandy > 0 } }
+			set_temp_variable = { strength_value = global.USA_strength_normandy }
+			multiply_variable = { strength_value = global.USA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_normandy_final = strength_value }
+			add_to_variable = { global.ALLIES_number_normandy = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.ALLIES_locals_normandy > 0 } }
+			set_temp_variable = { strength_value = global.ALLIES_locals_normandy }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_normandy_final = strength_value }
+			add_to_variable = { global.ALLIES_number_normandy = 1 }
+		}
+		world_stage_get_normandy_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_normandy_timer < 1 } }
+			resolve_threater_normandy = yes
+		}
+	}
+	if = {	### sealion
+		limit = { has_global_flag = world_stage_theater_sealion_is_active }
+		subtract_from_variable = { global.theater_sealion_timer = 1 }
+		# axis strength
+		set_variable = { global.AXIS_strength_sealion_final = 0 }
+		add_to_variable = { global.AXIS_strength_sealion_final = AXIS_strength_sealion_bonus }
+		set_variable = { global.AXIS_number_sealion = 0 }
+		if = {
+			limit = { check_variable = { global.GER_strength_sealion > 0 } }
+			set_temp_variable = { strength_value = global.GER_strength_sealion }
+			multiply_variable = { strength_value = global.GER_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_sealion_final = strength_value }
+			add_to_variable = { global.AXIS_number_sealion = 1 }
+		}
+		if = {
+			limit = { china_is_axis = yes check_variable = { global.CHI_strength_sealion > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_sealion }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_sealion_final = strength_value }
+			add_to_variable = { global.AXIS_number_sealion = 1 }
+		}
+		if = {
+			limit = { netherlands_is_axis = yes check_variable = { global.NET_strength_sealion > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_sealion }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_sealion_final = strength_value }
+			add_to_variable = { global.AXIS_number_sealion = 1 }
+		}
+		if = {
+			limit = { portugal_is_axis = yes check_variable = { global.PRT_strength_sealion > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_sealion }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_sealion_final = strength_value }
+			add_to_variable = { global.AXIS_number_sealion = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.AXIS_locals_sealion > 0 } }
+			set_temp_variable = { strength_value = global.AXIS_locals_sealion }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.AXIS_strength_sealion_final = strength_value }
+			add_to_variable = { global.AXIS_number_sealion = 1 }
+		}
+		# allies strength
+		set_variable = { global.ALLIES_strength_sealion_final = 0 }
+		add_to_variable = { global.ALLIES_strength_sealion_final = ALLIES_strength_sealion_bonus }
+		set_variable = { global.ALLIES_number_sealion = 0 }
+		if = {
+			limit = { france_is_allies = yes check_variable = { global.FRA_strength_sealion > 0 } }
+			set_temp_variable = { strength_value = global.FRA_strength_sealion }
+			multiply_variable = { strength_value = global.FRA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_sealion_final = strength_value }
+			add_to_variable = { global.ALLIES_number_sealion = 1 }
+		}
+		if = {
+			limit = { england_is_allies = yes check_variable = { global.ENG_strength_sealion > 0 } }
+			set_temp_variable = { strength_value = global.ENG_strength_sealion }
+			multiply_variable = { strength_value = global.ENG_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_sealion_final = strength_value }
+			add_to_variable = { global.ALLIES_number_sealion = 1 }
+		}
+		if = {
+			limit = { netherlands_is_allies = yes check_variable = { global.NET_strength_sealion > 0 } }
+			set_temp_variable = { strength_value = global.NET_strength_sealion }
+			multiply_variable = { strength_value = global.NET_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_sealion_final = strength_value }
+			add_to_variable = { global.ALLIES_number_sealion = 1 }
+		}
+		if = {
+			limit = { portugal_is_allies = yes check_variable = { global.PRT_strength_sealion > 0 } }
+			set_temp_variable = { strength_value = global.PRT_strength_sealion }
+			multiply_variable = { strength_value = global.PRT_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_sealion_final = strength_value }
+			add_to_variable = { global.ALLIES_number_sealion = 1 }
+		}
+		if = {
+			limit = { OR = { china_is_komin = yes china_is_allies = yes } check_variable = { global.CHI_strength_sealion > 0 } }
+			set_temp_variable = { strength_value = global.CHI_strength_sealion }
+			multiply_variable = { strength_value = global.CHI_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_sealion_final = strength_value }
+			add_to_variable = { global.ALLIES_number_sealion = 1 }
+		}
+		if = {
+			limit = { OR = { russia_is_komin = yes russia_is_allies = yes } check_variable = { global.SOV_strength_sealion > 0 } }
+			set_temp_variable = { strength_value = global.SOV_strength_sealion }
+			multiply_variable = { strength_value = global.SOV_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_sealion_final = strength_value }
+			add_to_variable = { global.ALLIES_number_sealion = 1 }
+		}
+		if = {
+			limit = { usa_is_allies = yes check_variable = { global.USA_strength_sealion > 0 } }
+			set_temp_variable = { strength_value = global.USA_strength_sealion }
+			multiply_variable = { strength_value = global.USA_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_sealion_final = strength_value }
+			add_to_variable = { global.ALLIES_number_sealion = 1 }
+		}
+		if = {
+			limit = { check_variable = { global.ALLIES_locals_sealion > 0 } }
+			set_temp_variable = { strength_value = global.ALLIES_locals_sealion }
+			multiply_variable = { strength_value = global.generic_doctrine_bonus_land }
+			add_to_variable = { global.ALLIES_strength_sealion_final = strength_value }
+			add_to_variable = { global.ALLIES_number_sealion = 1 }
+		}
+		world_stage_get_sealion_timer_frame = yes
+		if = {
+			limit = { check_variable = { global.theater_sealion_timer < 1 } }
+			resolve_threater_sealion = yes
+		}
+	}
+}
+# list of regular theaters
+# # alsace
+# # westphalia
+# # france
+# # germany
+# # poland
+# # belarus
+# # smolensk
+# # russia
+# # norway
+# # lybia
+# # ethiopia
+# # egypt
+# # sicily
+# # italy
+# # siberia
+# # mongolia
+# # tibet
+# # bengal
+# # india
+# # china
+# # normandy
+# # sealion
+# TO-DO: add 'ural' (between russia and siberia)
+# TO-DO: add 'guanxi' (between begal and india)
+# TO-DO: add 'alpes' (between italy, alsace and westphalia/austria )			### POSSIBLY
+# TO-DO: add 'austria' (between alpes and germany )								### POSSIBLY
+# TO-DO: add 'england' (beyond sealion)
+# TO-DO: fork in the roads in begal (to tibet or guanxi)
+# TO-DO: fork in the roads in alpes (to alsace or westphalia )
+# TO-DO: two fronts push back in germany (westphalia and poland)
+# TO-DO: three fronts push back in germany (westphalia, austria and poland)		### POSSIBLY
+# TO-DO: two fronts push back in russia (smolensk and urals)
