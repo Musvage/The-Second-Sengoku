@@ -115,7 +115,7 @@ resolve_theater_poland_first = {
 	}
 	clamp_temp_variable = { var = side_b_attack min = 1 max = 999 }									# round poland's attack after (possibly) splitting it into GER and SOV
 	subtract_from_variable = { global.GER_strength_poland = side_b_attack }							# each side hacks away at each other a bit
-	subtract_from_variable = { global.ENG_strength_poland = side_a_attack }
+	subtract_from_variable = { global.ALLIES_locals_smolensk = side_a_attack }
 	if = {
 		limit = {  has_global_flag = GER_SOV_pact_enabled }
 		subtract_from_variable = { global.SOV_strength_poland = side_b_attack }
@@ -123,16 +123,16 @@ resolve_theater_poland_first = {
 	if = {
 		limit = {
 			OR = {
-				check_variable = { global.ENG_strength_poland < 1 }			# special rule: theater only ends when poland loses, (only deployed strength counts here!) (usual: one of the sides is destroyed, ends theater)
-				AND = { check_variable = { global.ENG_strength_poland < 5.1 } has_global_flag = GER_SOV_pact_enabled }	# if double invasion is minimally competent, it is over in one turn
+				check_variable = { global.ALLIES_locals_poland < 1 }			# special rule: theater only ends when poland loses, (only deployed strength counts here!) (usual: one of the sides is destroyed, ends theater)
+				AND = { check_variable = { global.ALLIES_locals_poland < 5.1 } has_global_flag = GER_SOV_pact_enabled }	# if double invasion is minimally competent, it is over in one turn
 			}
 		}
 		if = {
 			limit = {
-				check_variable = {  global.GER_strength_poland >  global.ENG_strength_poland }	# GER > ENG -> GER WINS!
+				check_variable = {  global.GER_strength_poland >  global.ALLIES_locals_poland }	# GER > ENG -> GER WINS!
 			}
 			set_variable = { global.GER_strength_trickleback = global.GER_strength_poland }		# already diminished after each side hacked each other
-			clamp_variable = { var = global.GER_strength_trickleback min = 1 max = 999 }	# at least someone survives
+			clamp_variable = { var = global.GER_strength_trickleback min = 1 max = 999 }		# at least someone survives
 			round_variable = global.GER_strength_trickleback
 			add_to_variable =  {global.world_stage_power_ger = global.GER_strength_trickleback } 
 			set_variable = { global.ENG_strength_trickleback = 0 }								# if he dies, he dies...
@@ -148,8 +148,9 @@ resolve_theater_poland_first = {
 				set_variable = { global.SOV_strength_poland_bonus = 0 }
 				news_event = worldstage.19
 			} else = { news_event = worldstage.18 }
-			clear_variable = global.ENG_strength_poland
-			clear_variable = global.ENG_strength_poland_final
+			set_variable = { global.ALLIES_locals_poland = 0 }
+			set_variable = { global.ALLIES_strength_poland_bonus = 0 }
+			set_variable = { global.ALLIES_strength_poland_final = 0 }
 			log = "poland: GER WINS"
 		}#  else = 																				# no elses here, GER never loses, only gets delayed
 	} else = {																					# else: theater continues
@@ -158,13 +159,13 @@ resolve_theater_poland_first = {
 		round_variable = global.GER_strength_poland
 		divide_variable = { global.GER_strength_poland_bonus = 2 }								# each 'turn' halves the strategic advantages of both sides
 		round_variable = global.GER_strength_poland_bonus
-		round_variable = global.ENG_strength_poland
-		divide_variable = { global.ENG_strength_poland_bonus = 2 }
-		round_variable = global.ENG_strength_poland_bonus
+		round_variable = global.ALLIES_locals_poland
+		divide_variable = { global.ALLIES_locals_poland_bonus = 2 }
+		round_variable = global.ALLIES_locals_poland_bonus
 		set_variable = { global.GER_strength_poland_final = global.GER_strength_poland }		# recalculate final strength so tooltips dont get messy after a draw
 		add_to_variable = { global.GER_strength_poland_final = global.GER_strength_poland_bonus }
-		set_variable = { global.ENG_strength_poland_final = global.ENG_strength_poland }
-		add_to_variable = { global.ENG_strength_poland_final = global.ENG_strength_poland_bonus }
+		set_variable = { global.ALLIES_locals_poland_final = global.ALLIES_locals_poland }
+		add_to_variable = { global.ALLIES_locals_poland_final = global.ALLIES_locals_poland_bonus }
 		country_event = worldstage.17
 		if = {
 			limit = { has_global_flag = GER_SOV_pact_enabled }
