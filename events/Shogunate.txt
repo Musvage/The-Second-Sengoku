@@ -2729,3 +2729,191 @@ country_event = {
         KOB = { country_event = KOB_foreign_influence.4 }
 	}
 }
+
+country_event = {
+	id = SHO_foreign_influence.4
+	title = SHO_foreign_influence.4.t
+	desc = SHO_foreign_influence.4.d
+	picture = GFX_report_event_generic_sign_treaty1
+
+	is_triggered_only = yes
+	fire_only_once = yes
+
+	option = {
+        ai_chance = { base = 100 }
+        name="Perhaps change of control is what's needed."
+		custom_effect_tooltip = "Kobe will annex you. R This will result in a GAME OVER for you!"
+		
+		every_state = {
+			trigger = { is_core_of = SHO }
+			add_core_of = KOB
+		}
+
+		### THIS BLOCK HERE IS WHAT ALLOWS FOR THE PLAYER TO JOIN THE WAR AND FIGHT ALL ENEMIES
+		SHO = {
+			every_enemy_country = {
+			  KOB = {
+				add_to_war = {
+				  enemy = PREV
+				  targeted_alliance = SHO
+				}
+			  }
+			}
+		}
+
+		### TRANSFERS ALL STATES THE ENEMY OCCUPIES DURING THE WAR SO WHEN KOB IS TO ANNEX. THE ENEMY DOESNT GET CUCKED BY KOB AND ESSENTIALLY UNDOING WHAT PROGRESS THE ENEMY MADE
+		SHO = {
+			every_enemy_country = {
+				every_controlled_state = {
+				  limit = { is_owned_by = SHO }
+				  transfer_state_to = PREV
+			}
+		  }
+		}
+
+		KOB = {
+			annex_country = {
+				target = SHO
+			}
+		}
+
+		KOB = {			
+			division_template = {
+				name="The Light Offense"
+				divisions_name_group="BRENGL_INF_01"
+			 
+				regiments = {
+					infantry = { x = 0 y =0 }
+					infantry = { x = 0 y =1}
+					infantry = { x = 0 y =2}
+					infantry = { x = 0 y =3}
+					infantry = { x = 0 y =4}
+					infantry = { x = 1 y =0 }
+					infantry = { x = 1 y =1}
+					infantry = { x = 1 y =2}
+					infantry = { x = 1 y =3}
+					infantry = { x = 1 y =4}
+				}
+			 
+				support = {
+					artillery = { x = 0 y = 0 }
+					engineer = { x = 0 y = 1 }
+				}
+			}
+			 
+			division_template = {
+				name="The Wave Offensive"
+				divisions_name_group="BRENGL_INF_01"
+			 
+				regiments = {
+					infantry = { x = 0 y =0 }
+					infantry = { x = 0 y =1}
+					infantry = { x = 0 y =2}
+					infantry = { x = 0 y =3}
+					infantry = { x = 0 y =4}
+					infantry = { x = 1 y =0 }
+					infantry = { x = 1 y =1}
+					infantry = { x = 1 y =2}
+					infantry = { x = 1 y =3}
+					infantry = { x = 1 y =4}
+					artillery_brigade = { x = 2 y =0 }
+					artillery_brigade = { x = 2 y =1}
+					artillery_brigade = { x = 2 y =2}
+					artillery_brigade = { x = 2 y =3}
+					artillery_brigade = { x = 2 y =4}
+				}
+			 
+				support = {
+					artillery = { x = 0 y = 0 }
+					engineer = { x = 0 y = 1 }
+				}
+			}
+
+			division_template = {
+				name="The Beasts of the Mountains"
+				divisions_name_group="BRENGL_MNT_01"
+			 
+				regiments = {
+					mountaineers = { x = 0 y =0 }
+					mountaineers = { x = 0 y =1}
+					mountaineers = { x = 0 y =2}
+					mountaineers = { x = 0 y =3}
+					mountaineers = { x = 0 y =4}
+					infantry = { x = 1 y =0 }
+				}
+			 
+				support = {
+					recon = { x = 0 y = 0 }
+					engineer = { x = 0 y = 1 }
+					artillery = { x = 0 y = 2 }
+				}
+			}
+			
+			division_template = {
+				name="Town's Defense"
+				divisions_name_group="BRENGL_INF_01"
+			 
+				regiments = {
+					anti_air_brigade = { x = 0 y =0 }
+					anti_air_brigade = { x = 0 y =1}
+					anti_air_brigade = { x = 0 y =2}
+					anti_air_brigade = { x = 0 y =3}
+					artillery_brigade = { x = 1 y =0 }
+					artillery_brigade = { x = 1 y =1}
+					artillery_brigade = { x = 1 y =2}
+					artillery_brigade = { x = 1 y =3}
+					infantry = { x = 2 y =0 }
+					infantry = { x = 2 y =1}
+					infantry = { x = 2 y =2}
+					infantry = { x = 2 y =3}
+				}
+			 
+				support = {
+					anti_air = { x = 0 y = 0 }
+					artillery = { x = 0 y = 1 }
+					engineer = { x = 0 y = 2 }
+				}
+			}
+			
+			hidden_effect = {
+				# state id
+				211 = { create_unit = {
+					division = "division_template = \"Town's Defense\" start_experience_factor = 0.6"
+					owner = KOB
+					count = 3
+					} 
+				}
+				27 = { create_unit = {
+					division = "division_template = \"Town's Defense\" start_experience_factor = 0.4"
+					owner = KOB
+					count = 2
+					} 
+				}
+				24 = { create_unit = {
+					division = "division_template = \"The Wave Offensive\" start_experience_factor = 0.2"
+					owner = KOB
+					count = 5
+					} 
+				}
+				90 = { create_unit = {
+					division = "division_template = \"The Light Offense\" start_experience_factor = 0.2"
+					owner = KOB
+					count = 10
+					} 
+				}
+				79 = { create_unit = {
+					division = "division_template = \"The Beasts of the Mountains\" start_experience_factor = 1"
+					owner = KOB
+					count = 3
+					} 
+				}
+			}
+		}
+	}
+
+	option = {
+		ai_chance = { base = 0 }
+        name="Preposterous!"
+        KOB = { country_event = KOB_japanese.5 }
+	}
+}
