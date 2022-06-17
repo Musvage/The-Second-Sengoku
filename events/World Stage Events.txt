@@ -854,7 +854,6 @@ country_event = {
 	major = yes
 	
 	immediate = {
-		REI = { set_faction_name = "Axis" } OSA = { set_faction_name = "Allies" }
 		if = {
 			limit = {
 				country_exists = OSA
@@ -865,7 +864,7 @@ country_event = {
 		}
 		every_country = {
 			if = {
-				limit = { check_variable = { world_stage_coalition = 6 }
+				limit = { check_variable = { world_stage_coalition = 6 } }
 				set_variable = { world_stage_coalition = 3 }				# Pact of Steel becomes Axis
 			}
 			if = {
@@ -2618,6 +2617,277 @@ country_event = {
 			}
 		}
 	}	
+}
+
+# URSS is expelled from the League of Nations
+news_event = {
+	id = worldstage.54
+	title = worldstage.54.t
+	desc = worldstage.54.d 
+	picture = GFX_news_great_depression_over
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		set_global_flag = SOV_expelled_from_lon
+		set_variable = { global.world_stage_coalition_sov = 2 }
+		FER = { set_variable = { world_stage_coalition = 2 } }
+		set_variable = { global.theater_owner_belarus = 2 }
+		set_variable = { global.theater_owner_smolensk = 2 }
+		set_variable = { global.theater_owner_russia = 2 }
+		set_variable = { global.theater_owner_urals = 2 }
+		set_variable = { global.theater_owner_siberia = 2 }
+	}
+	
+	option = {
+		name = worldstage.54.axis
+		trigger = { has_world_stage_coalition_axis = yes }
+		effect_tooltip = {
+			
+		}
+	}
+	option = {
+		name = worldstage.54.komin
+		trigger = { has_world_stage_coalition_komintern = yes }
+		effect_tooltip = {
+			
+		}
+		if = {
+			limit = { tag = FER has_game_rule = { rule = censored_or_uncensored_german_flag option = UNCENSORED } }
+			custom_effect_tooltip = worldstage.54.special
+		}
+	}
+	option = {
+		name = worldstage.54.allies
+		trigger = { has_world_stage_coalition_allies = yes }
+		effect_tooltip = {
+			
+		}
+	}
+	option = {
+		name = worldstage.54.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
+		effect_tooltip = {
+			
+		}
+	}
+}
+
+# The End of the League of Nations
+news_event = {
+	id = worldstage.55
+	title = worldstage.55.t
+	desc = worldstage.55.d 
+	picture = GFX_news_great_depression_over
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		# switch countries' local factions							# (international factions must always be set to ww2 parameters and are used only in the background)
+		OSA = { set_variable = { world_stage_coalition = 1 } }
+		KOB = { set_variable = { world_stage_coalition = 1 } }
+		FER = { set_variable = { world_stage_coalition = 2 } }						# URSS was already expelled from LoN at this point but we'll run the command again just in case the FER player did not play his part 
+		REI = { set_variable = { world_stage_coalition = 3 } }
+#		if = {
+#			limit = { has_global_flag = netherlands_aligned_axis }
+#			set_variable = { world_stage_coalition = 1 }
+#			set_variable = { world_stage_coalition = 1 }
+#		}
+		every_country = {
+			limit = { has_world_stage_coalition_allies = yes }
+			set_variable = { world_stage_coalition = 1 }
+		}
+		every_country = {
+			limit = { has_world_stage_coalition_komintern = yes }
+			set_variable = { world_stage_coalition = 2 }
+		}
+		every_country = {
+			limit = { has_world_stage_coalition_axis = yes }
+			set_variable = { world_stage_coalition = 3 }
+		}
+		every_country = {
+			limit = { has_world_stage_coalition_neutrality = yes }
+			set_variable = { world_stage_coalition = 4 }
+		}
+		# create on-map factions
+		clr_global_flag = league_of_nations_exists
+		if = {
+			limit = { country_exists = REI is_in_faction = no }
+			REI = {
+				create_faction = "Axis"
+				set_variable = { world_stage_coalition = 3 }
+				every_other_country = {
+					limit = { has_world_stage_coalition_axis = yes is_in_faction = no }
+					REI = { add_to_faction = PREV }
+					set_variable = { world_stage_coalition = 3 }
+				}
+			}
+		} else = {
+			if = {
+				limit = { country_exists = ROC is_in_faction = no }
+				ROC = {
+					create_faction = "Axis"
+					set_variable = { world_stage_coalition = 3 }
+					every_other_country = {
+						limit = { has_world_stage_coalition_axis = yes is_in_faction = no }
+						ROC = { add_to_faction = PREV }
+						set_variable = { world_stage_coalition = 3 }
+					}
+				}
+			} else = {
+				random_country = {
+					limit = { has_world_stage_coalition_axis = yes is_in_faction = no }
+					create_faction = "Axis"
+					set_variable = { world_stage_coalition = 3 }
+					every_other_country = {
+						limit = { has_world_stage_coalition_axis = yes }
+						OSA = { add_to_faction = PREV }
+						set_variable = { world_stage_coalition = 3 }
+					}
+				}
+			}
+		}
+		if = {
+			FER = { country_exists = FER is_in_faction = no }
+			FER = {
+				create_faction = "Comintern"
+				set_variable = { world_stage_coalition = 2 }
+				every_other_country = {
+					limit = { has_world_stage_coalition_komintern = yes is_in_faction = no }
+					FER = { add_to_faction = PREV }
+					set_variable = { world_stage_coalition = 2 }
+				}
+			}
+		}
+		if = {
+			limit = { country_exists = OSA is_in_faction = no }
+			OSA = {
+				create_faction = "Allies"
+				set_variable = { world_stage_coalition = 1 }
+				every_other_country = {
+					limit = { has_world_stage_coalition_allies = yes is_in_faction = no }
+					OSA = { add_to_faction = PREV }
+					set_variable = { world_stage_coalition = 1 }
+				}
+			}
+		} else = {
+			if = {
+				limit = { country_exists = KOB is_in_faction = no }
+				KOB = {
+					create_faction = "Allies"
+					set_variable = { world_stage_coalition = 1 }
+					every_other_country = {
+						limit = { has_world_stage_coalition_allies = yes is_in_faction = no }
+						KOB = { add_to_faction = PREV }
+						set_variable = { world_stage_coalition = 1 }
+					}
+				}
+			} else = {
+				random_country = {
+					limit = { has_world_stage_coalition_allies = yes is_in_faction = no }
+					create_faction = "Allies"
+					set_variable = { world_stage_coalition = 1 }
+					every_other_country = {
+						limit = { has_world_stage_coalition_allies = yes }
+						OSA = { add_to_faction = PREV }
+						set_variable = { world_stage_coalition = 1 }
+					}
+				}
+			}
+		}
+		# set new theater owner factions
+		set_variable = { global.theater_owner_poland = 1 }
+		set_variable = { global.theater_owner_england = 1 }
+		set_variable = { global.theater_owner_egypt = 1 }
+		set_variable = { global.theater_owner_india = 1 }
+		set_variable = { global.theater_owner_bengal = 1 }
+		set_variable = { global.theater_owner_france = 1 }
+		set_variable = { global.theater_owner_alsace = 1 }
+		set_variable = { global.theater_owner_russia = 2 }							# URSS was already expelled from LoN at this point but we'll run the command again just in case the FER player did not play his part
+		set_variable = { global.theater_owner_smolensk = 2 }
+		set_variable = { global.theater_owner_urals = 2 }
+		set_variable = { global.theater_owner_belarus = 2 }
+		set_variable = { global.theater_owner_siberia = 2 }
+		if = {
+			limit = { check_variable = global.world_stage_coalition_net = 1 }		# HIR player should have a choice here
+			set_variable = { global.theater_owner_netherlands = 1 }
+			set_variable = { global.theater_owner_indies = 1 }
+		}
+		if = {
+			limit = { check_variable = global.world_stage_coalition_net = 3 }
+			set_variable = { global.theater_owner_netherlands = 3 }
+			set_variable = { global.theater_owner_indies = 3 }
+		}
+		if = {
+			limit = { check_variable = global.world_stage_coalition_net = 0 }
+			set_variable = { global.theater_owner_netherlands = 4 }
+			set_variable = { global.theater_owner_indies = 4 }
+		}
+		if = {
+			limit = { check_variable = global.world_stage_coalition_roc = 1 }		# ROC player should have a choice here
+			set_variable = { global.theater_owner_china = 1 }
+			set_variable = { global.theater_owner_tibet = 1 }
+			set_variable = { global.theater_owner_guanxi = 1 }
+		}
+		if = {
+			limit = { check_variable = global.world_stage_coalition_roc = 2 }
+			set_variable = { global.theater_owner_china = 2 }
+			set_variable = { global.theater_owner_tibet = 2 }
+			set_variable = { global.theater_owner_guanxi = 2 }
+		}
+		if = {
+			limit = { check_variable = global.world_stage_coalition_roc = 3 }
+			set_variable = { global.theater_owner_china = 3 }
+			set_variable = { global.theater_owner_tibet = 3 }
+			set_variable = { global.theater_owner_guanxi = 3 }
+		}
+		if = {
+			limit = { check_variable = global.world_stage_coalition_roc = 4 }
+			set_variable = { global.theater_owner_china = 4 }
+			set_variable = { global.theater_owner_tibet = 4 }
+			set_variable = { global.theater_owner_guanxi = 4 }
+		}
+		set_variable = { global.theater_owner_germany = 3 }							# we can assume that at this point Germany already annexed Austria and Czechoslovakia
+		set_variable = { global.theater_owner_westphalia = 3 }
+		set_variable = { global.theater_owner_austria = 3 }
+		set_variable = { global.theater_owner_alpes = 3 }
+		set_variable = { global.theater_owner_italy = 3 }
+		set_variable = { global.theater_owner_sicily = 3 }
+		set_variable = { global.theater_owner_lybia = 3 }
+	}
+	
+	option = {
+		name = worldstage.55.axis
+		trigger = { has_world_stage_coalition_axis = yes }
+		effect_tooltip = {
+			
+		}
+	}
+	option = {
+		name = worldstage.55.komin
+		trigger = { has_world_stage_coalition_komintern = yes }
+		effect_tooltip = {
+			
+		}
+	}
+	option = {
+		name = worldstage.55.allies
+		trigger = { has_world_stage_coalition_allies = yes }
+		effect_tooltip = {
+			
+		}
+	}
+	option = {
+		name = worldstage.55.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
+		effect_tooltip = {
+			
+		}
+	}
 }
 
 ### REGULAR THEATER RESOLUTIONS	### REGULAR THEATER RESOLUTIONS	### REGULAR THEATER RESOLUTIONS	### REGULAR THEATER RESOLUTIONS	
