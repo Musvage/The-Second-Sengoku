@@ -78,9 +78,13 @@ news_event = {
 	major = yes
 	
 	immediate = {
+		set_global_flag = ROC_won_mongolia
 		log = "test event 'ROC wins in Mongolia', this = [THIS.GetName]"
 		add_to_variable = { global.world_stage_power_chi = 5 }
-		set_variable = { global.theater_owner_mongolia = 3 }
+		if = {
+			limit = { has_global_flag = league_of_nations_exists }
+			set_variable = { global.theater_owner_mongolia = 3 }
+		} else = { global.theater_owner_mongolia = 6 }
 	}
 	
 	option = {
@@ -136,7 +140,14 @@ news_event = {
 	
 	immediate = {
 		add_to_variable = { global.world_stage_power_sov = 5 }
-		set_variable = { global.theater_owner_mongolia = 2 }
+		set_global_flag = SOV_won_mongolia
+		if = {
+			limit = {
+				NOT = { has_global_flag = SOV_expelled_from_lon }
+				has_global_flag = league_of_nations_exists
+			}
+			set_variable = { global.theater_owner_mongolia = 5 }
+		} else = { global.theater_owner_mongolia = 2 }
 	}
 	
 	option = {
@@ -877,8 +888,6 @@ country_event = {
 	option = {
 		name = worldstage.15.axis
 		trigger = { has_world_stage_coalition_axis = yes }
-		custom_effect_tooltip = worldstage.15.factions_tt
-		custom_effect_tooltip = worldstage.15.factions_tt2
 	}
 	option = {
 		name = worldstage.15.komin1
@@ -886,8 +895,6 @@ country_event = {
 			has_world_stage_coalition_komintern = yes
 			NOT = { has_global_flag = GER_SOV_pact_enabled }
 		}
-		custom_effect_tooltip = worldstage.15.factions_tt
-		custom_effect_tooltip = worldstage.15.factions_tt2
 	}
 	option = {
 		name = worldstage.15.komin2
@@ -895,20 +902,14 @@ country_event = {
 			has_world_stage_coalition_komintern = yes
 			has_global_flag = GER_SOV_pact_enabled
 		}
-		custom_effect_tooltip = worldstage.15.factions_tt
-		custom_effect_tooltip = worldstage.15.factions_tt2
 	}
 	option = {
 		name = worldstage.15.allies
 		trigger = { has_world_stage_coalition_allies = yes }
-		custom_effect_tooltip = worldstage.15.factions_tt
-		custom_effect_tooltip = worldstage.15.factions_tt2
 	}
 	option = {
 		name = worldstage.15.other
 		trigger = { has_world_stage_coalition_unaligned = yes }
-		custom_effect_tooltip = worldstage.15.factions_tt
-		custom_effect_tooltip = worldstage.15.factions_tt2
 	}
 }
 
@@ -2639,6 +2640,10 @@ news_event = {
 		set_variable = { global.theater_owner_russia = 2 }
 		set_variable = { global.theater_owner_urals = 2 }
 		set_variable = { global.theater_owner_siberia = 2 }
+		if = {
+			limit = { has_global_flag = SOV_won_mongolia }
+			set_variable = { global.theater_owner_mongolia = 2 }
+		}
 	}
 	
 	option = {
@@ -2687,16 +2692,37 @@ news_event = {
 	major = yes
 	
 	immediate = {
+		every_country = {
+			limit = { has_idea = SS_lon_member }
+			remove_ideas = SS_lon_member
+		}
+		clr_global_flag = league_of_nations_exists
+		set_global_flag = SOV_already_expelled
 		# switch countries' local factions							# (international factions must always be set to ww2 parameters and are used only in the background)
 		OSA = { set_variable = { world_stage_coalition = 1 } }
 		KOB = { set_variable = { world_stage_coalition = 1 } }
-		FER = { set_variable = { world_stage_coalition = 2 } }						# URSS was already expelled from LoN at this point but we'll run the command again just in case the FER player did not play his part 
+		FER = { set_variable = { world_stage_coalition = 2 } }		# URSS was already expelled from LoN at this point but we'll run the command again just in case the FER player did not play his part 
 		REI = { set_variable = { world_stage_coalition = 3 } }
-#		if = {
-#			limit = { has_global_flag = netherlands_aligned_axis }
-#			set_variable = { world_stage_coalition = 1 }
-#			set_variable = { world_stage_coalition = 1 }
-#		}
+		if = {
+			limit = { has_global_flag = netherlands_aligned_allies }
+			set_variable = { global.world_stage_coalition_net = 1 }
+			HIR = { set_variable = { world_stage_coalition = 1 } }
+		}
+		if = {
+			limit = { has_global_flag = netherlands_aligned_axis }
+			set_variable = { global.world_stage_coalition_net = 3 }
+			HIR = { set_variable = { world_stage_coalition = 3 } }
+		}
+		if = {
+			limit = { has_global_flag = portugal_aligned_allies }
+			set_variable = { global.world_stage_coalition_prt = 1 }
+			PRT = { set_variable = { world_stage_coalition = 1 } }
+		}
+		if = {
+			limit = { has_global_flag = portugal_aligned_axis }
+			set_variable = { global.world_stage_coalition_prt = 3 }
+			PRT = { set_variable = { world_stage_coalition = 3 } }
+		}
 		every_country = {
 			limit = { has_world_stage_coalition_allies = yes }
 			set_variable = { world_stage_coalition = 1 }
@@ -2714,7 +2740,6 @@ news_event = {
 			set_variable = { world_stage_coalition = 4 }
 		}
 		# create on-map factions
-		clr_global_flag = league_of_nations_exists
 		if = {
 			limit = { country_exists = REI is_in_faction = no }
 			REI = {
@@ -2832,24 +2857,44 @@ news_event = {
 			set_variable = { global.theater_owner_china = 1 }
 			set_variable = { global.theater_owner_tibet = 1 }
 			set_variable = { global.theater_owner_guanxi = 1 }
+			if = {
+				limit = { has_global_flag = ROC_won_mongolia }
+				set_variable = { global.theater_owner_mongolia = 1 }
+			}
 		}
 		if = {
 			limit = { check_variable = global.world_stage_coalition_roc = 2 }
 			set_variable = { global.theater_owner_china = 2 }
 			set_variable = { global.theater_owner_tibet = 2 }
 			set_variable = { global.theater_owner_guanxi = 2 }
+			if = {
+				limit = { has_global_flag = ROC_won_mongolia }
+				set_variable = { global.theater_owner_mongolia = 2 }
+			}
 		}
 		if = {
 			limit = { check_variable = global.world_stage_coalition_roc = 3 }
 			set_variable = { global.theater_owner_china = 3 }
 			set_variable = { global.theater_owner_tibet = 3 }
 			set_variable = { global.theater_owner_guanxi = 3 }
+			if = {
+				limit = { has_global_flag = ROC_won_mongolia }
+				set_variable = { global.theater_owner_mongolia = 3 }
+			}
 		}
 		if = {
 			limit = { check_variable = global.world_stage_coalition_roc = 4 }
 			set_variable = { global.theater_owner_china = 4 }
 			set_variable = { global.theater_owner_tibet = 4 }
 			set_variable = { global.theater_owner_guanxi = 4 }
+			if = {
+				limit = { has_global_flag = ROC_won_mongolia }
+				set_variable = { global.theater_owner_mongolia = 4 }
+			}
+		}
+		if = {
+			limit = { has_global_flag = SOV_won_mongolia }							# URSS was already expelled from LoN at this point but we'll run the command again just in case the FER player did not play his part
+			set_variable = { global.theater_owner_mongolia = 2 }
 		}
 		set_variable = { global.theater_owner_germany = 3 }							# we can assume that at this point Germany already annexed Austria and Czechoslovakia
 		set_variable = { global.theater_owner_westphalia = 3 }
@@ -2864,28 +2909,34 @@ news_event = {
 		name = worldstage.55.axis
 		trigger = { has_world_stage_coalition_axis = yes }
 		effect_tooltip = {
-			
+			custom_effect_tooltip = worldstage.55.lon_tt
+			custom_effect_tooltip = worldstage.55.axis_tt
 		}
 	}
 	option = {
 		name = worldstage.55.komin
 		trigger = { has_world_stage_coalition_komintern = yes }
 		effect_tooltip = {
-			
+			custom_effect_tooltip = worldstage.55.lon_tt
+			if = {
+				limit = { NOT = { has_global_flag = SOV_already_expelled } }
+				custom_effect_tooltip = worldstage.55.komin_tt
+			}
 		}
 	}
 	option = {
 		name = worldstage.55.allies
 		trigger = { has_world_stage_coalition_allies = yes }
 		effect_tooltip = {
-			
+			custom_effect_tooltip = worldstage.55.lon_tt
+			custom_effect_tooltip = worldstage.55.allies_tt
 		}
 	}
 	option = {
 		name = worldstage.55.other
 		trigger = { has_world_stage_coalition_unaligned = yes }
 		effect_tooltip = {
-			
+			custom_effect_tooltip = worldstage.55.lon_tt
 		}
 	}
 }

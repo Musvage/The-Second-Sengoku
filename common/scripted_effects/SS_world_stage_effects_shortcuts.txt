@@ -865,3 +865,26 @@ world_stage_join_unaligned = {
 	}
 	world_stage_get_coalitions = yes
 }
+
+world_stage_join_league_of_nations = {
+	if = {
+		limit = { has_global_flag = league_of_nations_exists }
+		add_ideas = SS_lon_member
+		set_variable = { world_stage_coalition = 5 }
+		set_temp_variable = { root_tag = THIS.id }
+		every_other_country = {
+			limit = { has_idea = SS_lon_member }
+			set_temp_variable = { other_tag = THIS.id }
+			add_relation_modifier = {
+				target = root_tag
+				modifier = lon_member_relation_modifier
+			}
+			var:root_tag = {
+				add_relation_modifier = {
+					target = other_tag
+					modifier = lon_member_relation_modifier
+				}
+			}
+		}
+	} else = { log = "[THIS.GetName] tried to join the League of Nations after it was disbanded"
+}
