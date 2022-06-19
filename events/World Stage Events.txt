@@ -1386,6 +1386,10 @@ news_event = {
 	major = yes
 	
 	immediate = {
+		if = {
+			limit = { has_global_flag = phoney_war_countdown }
+			clr_global_flag = phoney_war_countdown
+		}
 		set_temp_variable = { fra_forces_value = global.world_stage_power_fra }
 		divide_temp_variable = { fra_forces_value = 4 }
 		round_temp_variable = fra_forces_value
@@ -1498,7 +1502,25 @@ country_event = {
 
 	major = yes
 	
-	immediate = { set_variable = { global.theater_owner_france = 3 } }
+	immediate = {
+		set_variable = { global.theater_owner_france = 3 }
+		set_variable = { global.theater_owner_alsace = 3 }
+		set_variable = { global.FRA_strength_alsace = 3 }
+		set_variable = { global.FRA_strength_france = 3 }
+		set_variable = { global.FRA_strength_westphalia = 0 }
+		set_variable = { global.FRA_strength_ardennes = 0 }
+		set_variable = { global.FRA_strength_germany = 0 }
+		set_variable = { global.FRA_strength_lybia = 0 }
+		set_variable = { global.FRA_strength_egypt = 0 }
+		set_variable = { global.FRA_strength_sicily = 0 }
+		set_variable = { global.FRA_strength_italy = 0 }
+		set_variable = { global.FRA_strength_alpes = 0 }
+		set_variable = { global.FRA_strength_austria = 0 }
+		set_variable = { global.FRA_strength_england = 0 }
+		set_variable = { global.FRA_strength_sealion = 0 }
+		set_variable = { global.FRA_strength_normandy = 0 }
+		#set_variable = { global.FRA_strength_atlantic = 0 }
+	}
 
 	option = {
 		name = worldstage.25.axis
@@ -2411,6 +2433,7 @@ news_event = {
 	immediate = {
 		set_global_flag = italy_joined_ww2
 		set_global_flag = world_stage_theater_lybia_is_active
+		set_global_flag = world_stage_theater_alpes_is_active
 		#set_global_flag = world_stage_theater_ethiopia_is_active
 		set_variable = { global.theater_owner_italy = 3 }
 		set_variable = { global.theater_owner_sicily = 3 }
@@ -2421,6 +2444,7 @@ news_event = {
 		trigger = { has_world_stage_coalition_axis = yes }
 		effect_tooltip = {
 			custom_effect_tooltip = world_stage_theater_lybia_is_active_tt
+			custom_effect_tooltip = world_stage_theater_alpes_is_active_tt
 			#custom_effect_tooltip = world_stage_theater_ethiopia_is_active_tt
 		}
 	}
@@ -2429,6 +2453,7 @@ news_event = {
 		trigger = { has_world_stage_coalition_komintern = yes }
 		effect_tooltip = {
 			custom_effect_tooltip = world_stage_theater_lybia_is_active_tt
+			custom_effect_tooltip = world_stage_theater_alpes_is_active_tt
 			#custom_effect_tooltip = world_stage_theater_ethiopia_is_active_tt
 		}
 	}
@@ -2437,6 +2462,7 @@ news_event = {
 		trigger = { has_world_stage_coalition_allies = yes }
 		effect_tooltip = {
 			custom_effect_tooltip = world_stage_theater_lybia_is_active_tt
+			custom_effect_tooltip = world_stage_theater_alpes_is_active_tt
 			#custom_effect_tooltip = world_stage_theater_ethiopia_is_active_tt
 		}
 	}
@@ -2445,6 +2471,7 @@ news_event = {
 		trigger = { has_world_stage_coalition_unaligned = yes }
 		effect_tooltip = {
 			custom_effect_tooltip = world_stage_theater_lybia_is_active_tt
+			custom_effect_tooltip = world_stage_theater_alpes_is_active_tt
 			#custom_effect_tooltip = world_stage_theater_ethiopia_is_active_tt
 		}
 	}
@@ -2462,18 +2489,18 @@ news_event = {
 	major = yes
 	
 	immediate = {
-		if = {
-			limit = { global.theater_owner_ethiopia = 1 }								# only one of these scenarios should be possible
-			if = {
-				limit = { has_global_flag = world_stage_theater_ethiopia_is_active }
-				add_to_variable = { global.ITA_strength_ethiopia = global.ITA_strength_egypt }
-			}
-			 else = {
-				#set_global_flag = world_stage_theater_ethiopia_is_active
-				set_variable = { global.ITA_strength_ethiopia = global.ITA_strength_egypt }
-			}
-			set_variable = { global.ITA_strength_egypt = 1 }							# leaves a local garrison, others attack ethiopia or lybia
-		}
+#		if = {
+#			limit = { global.theater_owner_ethiopia = 1 }								# only one of these scenarios should be possible	# ETHIOPIA IS DEPRICATED
+#			if = {
+#				limit = { has_global_flag = world_stage_theater_ethiopia_is_active }
+#				add_to_variable = { global.ITA_strength_ethiopia = global.ITA_strength_egypt }
+#			}
+#			 else = {
+#				#set_global_flag = world_stage_theater_ethiopia_is_active
+#				set_variable = { global.ITA_strength_ethiopia = global.ITA_strength_egypt }
+#			}
+#			set_variable = { global.ITA_strength_egypt = 1 }							# leaves a local garrison, others attack ethiopia or lybia
+#		}
 		if = {
 			limit = { global.theater_owner_lybia = 1 }
 			if = {
@@ -2937,6 +2964,113 @@ news_event = {
 		trigger = { has_world_stage_coalition_unaligned = yes }
 		effect_tooltip = {
 			custom_effect_tooltip = worldstage.55.lon_tt
+		}
+	}
+}
+
+
+# Operation Sea Lion
+news_event = {
+	id = worldstage.56
+	title = worldstage.56.t
+	desc = worldstage.56.d 
+	picture = GFX_news_great_depression_over
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		set_temp_variable = { eng_force_value = global.world_stage_power_eng }
+		divide_temp_variable = { eng_force_value = 3 }
+		round_temp_variable = eng_force_value
+		subtract_from_variable = { global.world_stage_power_eng = eng_force_value }
+		set_variable = { global.ENG_strength_sealion = eng_force_value }
+		set_variable = { global.ENG_strength_trickleback_tt = eng_force_value }
+	}
+	
+	option = {
+		name = worldstage.56.axis
+		trigger = { has_world_stage_coalition_axis = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				placeholder_var = global.GER_strength_sealion
+				tooltip = world_stage_deploy_power_sealion
+			}
+			custom_effect_tooltip = country_name_england
+			add_to_variable = {
+				placeholder_var = global.ENG_strength_trickleback_tt
+				tooltip = world_stage_deploy_power_sealion
+			}
+		}
+	}
+	option = {
+		name = worldstage.56.komin
+		trigger = { has_world_stage_coalition_komintern = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				placeholder_var = global.GER_strength_sealion
+				tooltip = world_stage_deploy_power_sealion
+			}
+			custom_effect_tooltip = country_name_england
+			add_to_variable = {
+				placeholder_var = global.ENG_strength_trickleback_tt
+				tooltip = world_stage_deploy_power_sealion
+			}
+		}
+	}
+	option = {
+		name = worldstage.56.allies_other
+		trigger = { has_world_stage_coalition_allies = yes NOT = { tag = OSA} }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				placeholder_var = global.GER_strength_sealion
+				tooltip = world_stage_deploy_power_sealion
+			}
+			custom_effect_tooltip = country_name_england
+			add_to_variable = {
+				placeholder_var = global.ENG_strength_trickleback_tt
+				tooltip = world_stage_deploy_power_sealion
+			}
+		}
+	}
+	option = {
+		name = worldstage.56.allies_osa
+		trigger = { tag = OSA has_world_stage_coalition_allies = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				placeholder_var = global.GER_strength_sealion
+				tooltip = world_stage_deploy_power_sealion
+			}
+			custom_effect_tooltip = country_name_england
+			add_to_variable = {
+				placeholder_var = global.ENG_strength_trickleback_tt
+				tooltip = world_stage_deploy_power_sealion
+			}
+		}
+		if = {
+			limit = { tag = OSA }
+			custom_effect_tooltip = worldstage.56.allies_speach
+		}
+	}
+	option = {
+		name = worldstage.56.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_germany
+			add_to_variable = {
+				placeholder_var = global.GER_strength_sealion
+				tooltip = world_stage_deploy_power_sealion
+			}
+			custom_effect_tooltip = country_name_england
+			add_to_variable = {
+				placeholder_var = global.ENG_strength_trickleback_tt
+				tooltip = world_stage_deploy_power_sealion
+			}
 		}
 	}
 }
@@ -4218,7 +4352,7 @@ news_event = {															# AXIS WINS
 		divide_temp_variable = { forces_value = 10 }
 		clamp_temp_variable = { var = forces_value min = 1 max = 25 }
 		subtract_from_variable = { global.world_stage_power_eng = forces_value }
-		add_to_variable = { global.SOV_strength_egypt = forces_value }
+		add_to_variable = { global.ENG_strength_egypt = forces_value }
 	}
 	
 	option = {
