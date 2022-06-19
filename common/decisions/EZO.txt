@@ -13,126 +13,61 @@ EZO_fall_goverment = {
 		
         is_good = no                           
         selectable_mission = no              
-        days_mission_timeout = 200
+        days_mission_timeout = 60
         timeout_effect = {
 			if = {
 				limit = { has_completed_focus = EZO_the_white_coat_coup }
 				set_cosmetic_tag = EZO_White_Russian_Movement
 			}
-				if = {
-					limit = {
-						OR = {
-							has_completed_focus = EZO_constitution_focus
-							has_completed_focus = EZO_sellect_traditionalism
-						}
-					}
-					EZO_civil_war_state_transfer_with_rebels = yes
-					hidden_effect = {
-						DZO = {
-							civil_war_economy = yes
-							add_ideas = EZO_civil_war
-							load_oob = "EZO_Civil_War"
-							set_equipment_fraction = 0.3
-							set_stability = 0.9
-							set_war_support = 0.8
-				
-							add_popularity = {
-								ideology = democratic
-								popularity = 0.35
-							}
-							add_equipment_to_stockpile = {
-								type = infantry_equipment
-								amount = 2000
-								producer = EZO
-							}
-							load_focus_tree = {
-								tree = EZO
-								keep_completed = no
-							}
-							add_popularity = {
-								ideology = democratic_socialism
-								popularity = 0.5
-							}
-							declare_war_other_idology = yes
-							declare_war_on = {
-								target = EZO
-								type = civil_war
-							}
-							every_owned_state = {
-								civil_war_militas = yes
-								civil_war_militas = yes
-							}
-							if = {
-								limit = {
-									check_variable = {
-										EZO.rebels_power > EZO.goverment_power
-									}
-									check_variable = {
-										EZO.rebels_power = EZO.goverment_power
-									}
-								}
-								every_owned_state = {
-									civil_war_militas = yes
-								}
-							}
-						}
+			if = {
+				limit = {
+					has_completed_focus = EZO_sellect_traditionalism
+				}
+				EZO_civil_war_state_transfer_with_rebels = yes
+				hidden_effect = {
+					DZO = {
+						revolter_ideological_country = yes
 					}
 				}
-				if = {
-					limit = {
-						has_completed_focus = EZO_sellect_strengthen_democratic_government
-					}
-					EZO_civil_war_state_transfer_with_rebels = yes
-					hidden_effect = {
-						MZO = {
-							civil_war_economy = yes
-							add_ideas = EZO_civil_war
-							load_oob = "EZO_Civil_War"
-							set_equipment_fraction = 0.3
-							set_stability = 0.9
-							set_war_support = 0.8
-							add_popularity = {
-								ideology = democratic
-								popularity = 0.35
-							}
-							add_equipment_to_stockpile = {
-								type = infantry_equipment
-								amount = 2000
-								producer = EZO
-							}
-							load_focus_tree = {
-								tree = EZO
-								keep_completed = no
-							}
-							add_popularity = {
-								ideology = democratic_socialism
-								popularity = 0.5
-							}
-							declare_war_on = {
-								target = EZO
-								type = civil_war
-							}
-							declare_war_other_idology = yes
-							every_owned_state = {
-								civil_war_militas = yes
-								civil_war_militas = yes
-							}
-							if = {
-								limit = {
-									check_variable = {
-										EZO.rebels_power > EZO.goverment_power
-									}
-									check_variable = {
-										EZO.rebels_power = EZO.goverment_power
-									}
-								}
-								every_owned_state = {
-									civil_war_militas = yes
-								}
-							}
-						}
+			}
+			else_if = { 
+				limit = {
+					has_completed_focus = EZO_sellect_strengthen_democratic_government
+					has_completed_focus = EZO_ideological_separation
+					has_completed_focus = EZO_house_of_autocracy
+				}
+				EZO_civil_war_state_transfer_with_rebels = yes
+				hidden_effect = {
+					AZO = {
+						revolter_ideological_country = yes
 					}
 				}
+			}
+			else_if = { 
+				limit = {
+					has_completed_focus = EZO_sellect_strengthen_democratic_government
+					has_completed_focus = EZO_ideological_separation
+					NOT = { has_completed_focus = EZO_house_of_autocracy }
+				}
+				EZO_civil_war_state_transfer_with_rebels = yes
+				hidden_effect = {
+					MZO = {
+						revolter_ideological_country = yes
+					}
+				}
+			}
+			else_if = {
+				limit = {
+					has_completed_focus = EZO_sellect_strengthen_democratic_government
+					has_completed_focus = EZO_League_Of_Nations
+				}
+				EZO_civil_war_state_transfer_with_rebels = yes
+				hidden_effect = {
+					MZO = {
+						revolter_ideological_country = yes
+					}
+				}
+			}
 			hidden_effect = {
 				clr_country_flag = ezo_civil_war_time
 				load_oob = "EZO_Civil_War"
@@ -152,6 +87,7 @@ EZO_fall_goverment = {
 						civil_war_militas = yes
 					}
 				}
+				civil_war_militas = yes
 				civil_war_economy = yes
 				add_ideas = EZO_civil_war
 				
@@ -176,18 +112,6 @@ EZO_fall_goverment = {
 			50 = { is_controlled_by = EZO }
 			9 = { is_controlled_by = EZO }
 			54 = { is_controlled_by = EZO }
-			AND = {
-				NOT = {
-					50 = { is_controlled_by = DZO }
-					9 = { is_controlled_by = DZO }
-					54 = { is_controlled_by = DZO }
-				}
-				NOT = {
-					50 = { is_controlled_by = MZO }
-					9 = { is_controlled_by = MZO }
-					54 = { is_controlled_by = MZO }
-				}
-			}
         }
         activation = {       
 			has_global_flag = ezo_civil_war_time 
@@ -220,9 +144,30 @@ EZO_fall_goverment = {
 						civil_war_economy = yes
 						set_global_flag = civil_war_finish
 						add_ideas = EZO_civil_war
-						transfer_state = 50
-						transfer_state = 9
-						transfer_state = 54
+						if = {
+							limit = {
+								50 = {
+									NOT = { is_controlled_by = EZO }
+								}
+							}
+							transfer_state = 50
+						}
+						if = {
+							limit = {
+								9 = {
+									NOT = { is_controlled_by = EZO }
+								}
+							}
+							transfer_state = 9
+						}
+						if = {
+							limit = {
+								54 = {
+									NOT = { is_controlled_by = EZO }
+								}
+							}
+							transfer_state = 54
+						}
 						every_controlled_state = {
 							add_core_of = AZO
 						}
@@ -257,6 +202,7 @@ EZO_fall_goverment = {
 							every_owned_state = {
 								civil_war_militas = yes
 								civil_war_militas = yes
+								civil_war_militas = yes
 							}
 						}
 					}
@@ -269,27 +215,13 @@ EZO_fall_goverment = {
 		allowed = { tag = EZO } 
 			 
         available = {
-				49 = { is_controlled_by = EZO }
+					49 = { is_controlled_by = EZO }
 					51 = { is_controlled_by = EZO }
 					58 = { is_controlled_by = EZO }
 					214 = { is_controlled_by = EZO }
-			AND = {
-				NOT = {
-					49 = { is_controlled_by = DZO }
-					51 = { is_controlled_by = DZO }
-					58 = { is_controlled_by = DZO }
-					214 = { is_controlled_by = DZO }
-				}
-				NOT = {
-					49 = { is_controlled_by = MZO }
-					51 = { is_controlled_by = MZO }
-					58 = { is_controlled_by = MZO }
-					214 = { is_controlled_by = MZO }
-				}
-			}
         }
         activation = {                         
-				has_global_flag = ezo_civil_war_time 
+			has_global_flag = ezo_civil_war_time 
 			NOT = {has_government = democratic_socialism}
 			has_global_flag = social_communist_enter_civil_war
         }
@@ -321,10 +253,38 @@ EZO_fall_goverment = {
 						civil_war_economy = yes
 						set_global_flag = civil_war_finish
 						add_ideas = EZO_civil_war
-						transfer_state = 49
-						transfer_state = 51
-						transfer_state = 58
-						transfer_state = 214
+						if = {
+							limit = {
+								49 = {
+									NOT = { is_controlled_by = EZO }
+								}
+							}
+							transfer_state = 49
+						}
+						if = {
+							limit = {
+								51 = {
+									NOT = { is_controlled_by = EZO }
+								}
+							}
+							transfer_state = 51
+						}
+						if = {
+							limit = {
+								58 = {
+									NOT = { is_controlled_by = EZO }
+								}
+							}
+							transfer_state = 58
+						}
+						if = {
+							limit = {
+								214 = {
+									NOT = { is_controlled_by = EZO }
+								}
+							}
+							transfer_state = 214
+						}
 						every_controlled_state = {
 							add_core_of = SZO
 						}
@@ -355,6 +315,7 @@ EZO_fall_goverment = {
 							every_owned_state = {
 								civil_war_militas = yes
 								civil_war_militas = yes
+								civil_war_militas = yes
 							}
 						}
 					}
@@ -367,20 +328,8 @@ EZO_fall_goverment = {
 			 
         available = {
 			73 = { is_controlled_by = EZO }
-					59 = { is_controlled_by = EZO }
-					77 = { is_controlled_by = EZO }
-			AND = {
-				NOT = {
-					73 = { is_controlled_by = DZO }
-					59 = { is_controlled_by = DZO }
-					77 = { is_controlled_by = DZO }
-				}
-				NOT = {
-					73 = { is_controlled_by = MZO }
-					59 = { is_controlled_by = MZO }
-					77 = { is_controlled_by = MZO }
-				}
-			}
+			59 = { is_controlled_by = EZO }
+			77 = { is_controlled_by = EZO }
         }
         activation = {                         
 			has_global_flag = ezo_civil_war_time 
@@ -405,9 +354,30 @@ EZO_fall_goverment = {
 						}
 						set_global_flag = civil_war_finish
 						add_ideas = EZO_civil_war
-						transfer_state = 73
-						transfer_state = 59
-						transfer_state = 77
+						if = {
+							limit = {
+								73 = {
+									NOT = { is_controlled_by = EZO }
+								}
+							}
+							transfer_state = 73
+						}
+						if = {
+							limit = {
+								59 = {
+									NOT = { is_controlled_by = EZO }
+								}
+							}
+							transfer_state = 59
+						}
+						if = {
+							limit = {
+								77 = {
+									NOT = { is_controlled_by = EZO }
+								}
+							}
+							transfer_state = 77
+						}
 						every_controlled_state = {
 							add_core_of = FZO
 						}
@@ -437,6 +407,7 @@ EZO_fall_goverment = {
 							load_oob = "EZO_Civil_War"
 							every_owned_state = {
 								civil_war_2_militas = yes
+								civil_war_militas = yes
 							}
 						}
 					}
@@ -448,21 +419,9 @@ EZO_fall_goverment = {
 		allowed = { tag = EZO } 
 			 
         available = {
-		48 = { is_controlled_by = EZO }
-						3 = { is_controlled_by = EZO }
-						1 = { is_controlled_by = EZO }
-				AND = {
-					NOT = {
-						48 = { is_controlled_by = DZO }
-						3 = { is_controlled_by = DZO }
-						1 = { is_controlled_by = DZO }
-					}
-					NOT = {
-						48 = { is_controlled_by = MZO }
-						3 = { is_controlled_by = MZO }
-						1 = { is_controlled_by = MZO }
-					}
-				}
+			48 = { is_controlled_by = EZO }
+			3 = { is_controlled_by = EZO }
+			1 = { is_controlled_by = EZO }
         }
         activation = {                         
 			has_global_flag = ezo_civil_war_time 
@@ -486,9 +445,30 @@ EZO_fall_goverment = {
 						civil_war_economy = yes
 						set_global_flag = civil_war_finish
 						add_ideas = EZO_civil_war
-						transfer_state = 48
-						transfer_state = 3
-						transfer_state = 1
+						if = {
+							limit = {
+								48 = {
+									NOT = { is_controlled_by = EZO }
+								}
+							}
+							transfer_state = 48
+						}
+						if = {
+							limit = {
+								3 = {
+									NOT = { is_controlled_by = EZO }
+								}
+							}
+							transfer_state = 3
+						}
+						if = {
+							limit = {
+								1 = {
+									NOT = { is_controlled_by = EZO }
+								}
+							}
+							transfer_state = 1
+						}
 						every_controlled_state = {
 							add_core_of = RZO
 						}
@@ -518,6 +498,7 @@ EZO_fall_goverment = {
 							load_oob = "EZO_Civil_War"
 							every_owned_state = {
 								civil_war_2_militas = yes
+								civil_war_militas = yes
 							}
 						}
 					}
@@ -529,21 +510,9 @@ EZO_fall_goverment = {
 		allowed = { tag = EZO } 
 			 
         available = {
-		71 = { is_controlled_by = EZO }
-						72 = { is_controlled_by = EZO }
-						57 = { is_controlled_by = EZO }
-			AND = {
-					NOT = {
-						71 = { is_controlled_by = DZO }
-						72 = { is_controlled_by = DZO }
-						57 = { is_controlled_by = DZO }
-					}
-					NOT = {
-						71 = { is_controlled_by = MZO }
-						72 = { is_controlled_by = MZO }
-						57 = { is_controlled_by = MZO }
-					}
-				}
+			71 = { is_controlled_by = EZO }
+			72 = { is_controlled_by = EZO }
+			57 = { is_controlled_by = EZO }
         }
         activation = {                         
 			has_global_flag = ezo_civil_war_time 
@@ -577,9 +546,30 @@ EZO_fall_goverment = {
 					civil_war_economy = yes
 					set_global_flag = civil_war_finish
 					add_ideas = EZO_civil_war
-					transfer_state = 71
-					transfer_state = 72
-					transfer_state = 57
+					if = {
+							limit = {
+								71 = {
+									NOT = { is_controlled_by = EZO }
+								}
+							}
+							transfer_state = 71
+						}
+						if = {
+							limit = {
+								72 = {
+									NOT = { is_controlled_by = EZO }
+								}
+							}
+							transfer_state = 72
+						}
+						if = {
+							limit = {
+								57 = {
+									NOT = { is_controlled_by = EZO }
+								}
+							}
+							transfer_state = 57
+						}
 					every_controlled_state = {
 						add_core_of = CZO
 					}
@@ -609,6 +599,7 @@ EZO_fall_goverment = {
 						load_oob = "EZO_Civil_War"
 						every_owned_state = {
 							civil_war_2_militas = yes
+							civil_war_militas = yes 
 						}
 					}
 				}
