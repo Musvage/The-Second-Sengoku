@@ -79,7 +79,6 @@ news_event = {
 	
 	immediate = {
 		set_global_flag = ROC_won_mongolia
-		log = "test event 'ROC wins in Mongolia', this = [THIS.GetName]"
 		add_to_variable = { global.world_stage_power_chi = 5 }
 		if = {
 			limit = { has_global_flag = league_of_nations_exists }
@@ -931,7 +930,6 @@ news_event = {
 		add_to_variable = { global.SOV_strength_poland_bonus = 15 }
 		set_variable = { global.SOV_strength_poland_final = global.SOV_strength_poland }
 		add_to_variable = { global.SOV_strength_poland_final = global.SOV_strength_poland_bonus }
-		log = "soviets invade poland (this: [?THIS.GetName], root: [?ROOT.GetName])"
 	}
 	
 	option = {
@@ -2673,6 +2671,7 @@ news_event = {
 	major = yes
 	
 	immediate = {
+		log = "Begone!, League of Nations!"
 		every_country = {
 			limit = { has_idea = SS_lon_member }
 			remove_ideas = SS_lon_member
@@ -2779,9 +2778,11 @@ news_event = {
 					limit = { has_world_stage_coalition_axis = yes is_in_faction = no }
 					create_faction = "Axis"
 					set_variable = { world_stage_coalition = 3 }
+					set_temp_variable = { leader_id = THIS.id }
 					every_other_country = {
 						limit = { has_world_stage_coalition_axis = yes }
-						OSA = { add_to_faction = PREV }
+						set_temp_variable = { other_id = THIS.id }
+						leader_id = { add_to_faction = other_id }
 						set_variable = { world_stage_coalition = 3 }
 					}
 				}
@@ -2802,6 +2803,7 @@ news_event = {
 		if = {
 			limit = { country_exists = OSA is_in_faction = no }
 			OSA = {
+				log = "OSA creates Allies"
 				create_faction = "Allies"
 				set_variable = { world_stage_coalition = 1 }
 				every_other_country = {
@@ -2814,6 +2816,7 @@ news_event = {
 			if = {
 				limit = { country_exists = KOB is_in_faction = no }
 				KOB = {
+					log = "OSA creates Allies"
 					create_faction = "Allies"
 					set_variable = { world_stage_coalition = 1 }
 					every_other_country = {
@@ -2826,6 +2829,7 @@ news_event = {
 				random_country = {
 					limit = { has_world_stage_coalition_allies = yes is_in_faction = no }
 					create_faction = "Allies"
+					log = "[THIS.GetName] creates Allies"
 					set_variable = { world_stage_coalition = 1 }
 					every_other_country = {
 						limit = { has_world_stage_coalition_allies = yes }
@@ -3131,15 +3135,12 @@ news_event = {
 		hidden_effect = {
 			set_variable = { global.theater_owner_netherlands = 1 }
 			set_variable = { global.world_stage_coalition_net = 1 }
-			log = "test test test"
 			if = {
 				limit = { country_exists = HIR }
 				HIR = { set_variable = { world_stage_coalition = 1 } }
-				log = "hir exists"
 				if = {
 					limit = { OSA = { is_faction_leader = yes has_world_stage_coalition_allies = yes } }
 					OSA = { add_to_faction = HIR }
-					log = "OSA = { is_faction_leader = yes has_world_stage_coalition_allies = yes }"
 				} else = {
 					if = {
 						limit = { KOB = { is_faction_leader = yes has_world_stage_coalition_allies = yes } }
@@ -3147,12 +3148,13 @@ news_event = {
 					} else = {
 						if = {
 							limt = {
-								NOT = {
-									any_country = { is_faction_leader = yes has_world_stage_coalition_allies = yes NOT = { has_global_flag = league_of_nations_exists } has_global_flag = world_stage_world_war_2_is_active }
-								}
+								any_country = { is_faction_leader = yes has_world_stage_coalition_allies = yes NOT = { has_global_flag = league_of_nations_exists } has_global_flag = world_stage_world_war_2_is_active }
 							}
-							create_faction = "Allies"
-						}
+							random_country = {
+								limit = { is_faction_leader = yes has_world_stage_coalition_allies = yes }
+								add_to_faction = HIR
+							}
+						} else = { HIR = { create_faction = "Allies" } }
 					}
 				}
 			}
