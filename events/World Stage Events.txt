@@ -1092,6 +1092,7 @@ news_event = {
 	major = yes
 	
 	immediate = {
+		clr_global_flag = world_stage_theater_poland_is_active_first
 		add_to_variable = { global.world_stage_power_ger = 10 }
 		add_to_variable = { global.world_stage_power_ger = global.GER_strength_trickleback }
 		set_variable = { global.theater_owner_poland = 3 }
@@ -1237,6 +1238,11 @@ country_event = {
 		if = {
 			limit = { NOT = { has_global_flag = italy_joined_ww2 } }
 			custom_effect_tooltip = italy_will_join_ww2
+		}
+		if = {
+			limit = { NOT = { has_global_flag = netherlands_joined_ww2 } has_global_flag = netherlands_aligned_axis }
+			custom_effect_tooltip = netherlands_will_join_ww2
+			hidden_effect = { news_event = { id = worldstage.57 days = 1 random = 36 } }
 		}
 		effect_tooltip = {
 			add_to_variable = {
@@ -1391,103 +1397,51 @@ news_event = {
 			clr_global_flag = phoney_war_countdown
 		}
 		set_temp_variable = { fra_forces_value = global.world_stage_power_fra }
-		divide_temp_variable = { fra_forces_value = 4 }
+		divide_temp_variable = { fra_forces_value = 3 }
 		round_temp_variable = fra_forces_value
-		set_variable = { global.FRA_strength_ardennes = fra_forces_value }
-		subtract_from_variable = { global.world_stage_power_fra = fra_forces_value }
+		set_temp_variable = { fra_forces_value_a = global.world_stage_power_fra }
+		divide_temp_variable = { fra_forces_value_a = 4 }
+		round_temp_variable = fra_forces_value_a
+		set_variable = { global.FRA_strength_ardennes = fra_forces_value_a }
+		subtract_from_variable = { global.world_stage_power_fra = fra_forces_value_a }
+		if = {
+			limit = { has_global_flag = fra_send_forces_netherlands }
+			if = {
+				limit = { check_variable = { global.world_stage_coalition_net = 3 } }	# Netherlands is in axis but did not join war yet
+				set_variable = { global.theater_owner_netherlands = 3 }
+			} else = { set_variable = { global.theater_owner_netherlands = 1 } }
+			clr_global_flag = fra_send_forces_netherlands
+			set_variable = { global.FRA_strength_netherlands = fra_forces_value }
+			subtract_from_variable = { global.world_stage_power_fra = fra_forces_value }
+			set_temp_variable = { net_forces_value = global.world_stage_power_net }
+			divide_temp_variable = { net_forces_value = 2 }
+			round_temp_variable = net_forces_value
+			set_variable = { global.NET_strength_netherlands = net_forces_value }
+			subtract_from_variable = { global.world_stage_power_net = net_forces_value }
+		}
+		if = {
+			limit = { has_global_flag = fra_send_forces_alsace }
+			clr_global_flag = fra_send_forces_alsace
+			set_variable = { global.FRA_strength_alsace = fra_forces_value }
+			subtract_from_variable = { global.world_stage_power_fra = fra_forces_value }
+		}
 	}
 	
 	option = {
 		name = worldstage.24.axis
 		trigger = { has_world_stage_coalition_axis = yes }
-		effect_tooltip = {
-			if = {
-				limit = { NOT = { tag = REI } }
-				custom_effect_tooltip = world_stage_theater_ardennes_is_active_tt
-				custom_effect_tooltip = country_name_germany
-				add_to_variable = {
-					global.GER_strength_ardennes = 120
-					tooltip = world_stage_deploy_power_ardennes
-				}
-				add_to_variable = {
-					global.GER_strength_ardennes = 120
-					tooltip = world_stage_bonus_power_ardennes
-				}
-			}
-			custom_effect_tooltip = country_name_france
-			add_to_variable = {
-				global.GER_strength_ardennes = global.FRA_strength_ardennes
-				tooltip = world_stage_deploy_power_ardennes
-			}
-		}
 	}
 	option = {
 		name = worldstage.24.komin
 		trigger = { has_world_stage_coalition_komintern = yes }
-		effect_tooltip = {
-			custom_effect_tooltip = world_stage_theater_ardennes_is_active_tt
-			custom_effect_tooltip = country_name_germany
-			add_to_variable = {
-				global.GER_strength_ardennes = 120
-				tooltip = world_stage_deploy_power_ardennes
-			}
-			add_to_variable = {
-				global.GER_strength_ardennes = 120
-				tooltip = world_stage_bonus_power_ardennes
-			}
-			custom_effect_tooltip = country_name_france
-			add_to_variable = {
-				global.GER_strength_ardennes = global.FRA_strength_ardennes
-				tooltip = world_stage_deploy_power_ardennes
-			}
-		}
 	}
 	option = {
 		name = worldstage.24.allies
 		trigger = { has_world_stage_coalition_allies = yes }
-		effect_tooltip = {
-			custom_effect_tooltip = world_stage_theater_ardennes_is_active_tt
-			custom_effect_tooltip = country_name_germany
-			add_to_variable = {
-				global.GER_strength_ardennes = 120
-				tooltip = world_stage_deploy_power_ardennes
-			}
-			add_to_variable = {
-				global.GER_strength_ardennes = 120
-				tooltip = world_stage_bonus_power_ardennes
-			}
-			effect_tooltip = {
-				if = {
-					limit = { NOT = { tag = KOB } }			
-					custom_effect_tooltip = country_name_france
-				}
-				add_to_variable = {
-					global.GER_strength_ardennes = global.FRA_strength_ardennes
-					tooltip = world_stage_deploy_power_ardennes
-				}
-			}
-		}
 	}
 	option = {
 		name = worldstage.24.other
 		trigger = { has_world_stage_coalition_unaligned = yes }
-		effect_tooltip = {
-			custom_effect_tooltip = world_stage_theater_ardennes_is_active_tt
-			custom_effect_tooltip = country_name_germany
-			add_to_variable = {
-				global.GER_strength_ardennes = 120
-				tooltip = world_stage_deploy_power_ardennes
-			}
-			add_to_variable = {
-				global.GER_strength_ardennes = 120
-				tooltip = world_stage_bonus_power_ardennes
-			}
-			custom_effect_tooltip = country_name_france
-			add_to_variable = {
-				global.GER_strength_ardennes = global.FRA_strength_ardennes
-				tooltip = world_stage_deploy_power_ardennes
-			}
-		}
 	}
 }
 
@@ -2741,6 +2695,11 @@ news_event = {
 			HIR = { set_variable = { world_stage_coalition = 3 } }
 		}
 		if = {
+			limit = { NOT = { has_global_flag = netherlands_aligned_axis has_global_flag = netherlands_aligned_allies } }
+			set_variable = { global.world_stage_coalition_net = 0 }
+			HIR = { set_variable = { world_stage_coalition = 0 } }
+		}
+		if = {
 			limit = { has_global_flag = portugal_aligned_allies }
 			set_variable = { global.world_stage_coalition_prt = 1 }
 			PRT = { set_variable = { world_stage_coalition = 1 } }
@@ -2749,6 +2708,31 @@ news_event = {
 			limit = { has_global_flag = portugal_aligned_axis }
 			set_variable = { global.world_stage_coalition_prt = 3 }
 			PRT = { set_variable = { world_stage_coalition = 3 } }
+		}
+		if = {
+			limit = { NOT = { has_global_flag = portugal_aligned_axis has_global_flag = portugal_aligned_allies } }
+			set_variable = { global.world_stage_coalition_prt = 0 }
+			PRT = { set_variable = { world_stage_coalition = 0 } }
+		}
+		if = {
+			limit = { has_global_flag = china_aligned_allies }
+			set_variable = { global.world_stage_coalition_chi = 1 }
+			ROC = { set_variable = { world_stage_coalition = 1 } }
+		}
+		if = {
+			limit = { has_global_flag = china_aligned_komintern }
+			set_variable = { global.world_stage_coalition_chi = 2 }
+			ROC = { set_variable = { world_stage_coalition = 2 } }
+		}
+		if = {
+			limit = { has_global_flag = china_aligned_axis }
+			set_variable = { global.world_stage_coalition_chi = 3 }
+			ROC = { set_variable = { world_stage_coalition = 3 } }
+		}
+		if = {
+			limit = { NOT = { has_global_flag = china_aligned_axis has_global_flag = china_aligned_allies has_global_flag = china_aligned_komintern } }
+			set_variable = { global.world_stage_coalition_chi = 0 }
+			ROC = { set_variable = { world_stage_coalition = 0 } }
 		}
 		every_country = {
 			limit = { has_world_stage_coalition_allies = yes }
@@ -2780,7 +2764,7 @@ news_event = {
 			}
 		} else = {
 			if = {
-				limit = { country_exists = ROC is_in_faction = no }
+				limit = { country_exists = ROC is_in_faction = no has_world_stage_coalition_axis = yes }
 				ROC = {
 					create_faction = "Axis"
 					set_variable = { world_stage_coalition = 3 }
@@ -3072,6 +3056,128 @@ news_event = {
 				tooltip = world_stage_deploy_power_sealion
 			}
 		}
+	}
+}
+
+# Netherlands Joins the War PRO AXIS
+news_event = {
+	id = worldstage.57
+	title = worldstage.57.t
+	desc = worldstage.57.d 
+	picture = GFX_news_great_depression_over
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		set_global_flag = netherlands_joined_ww2
+		set_temp_variable = { global.theater_owner_netherlands = 3 }
+		hidden_effect = {
+			if = {
+				limit = { country_exists = HIR }
+				if = {
+					limit = { REI = { is_faction_leader = yes } has_world_stage_coalition_axis = yes }
+					REI = { add_to_faction = HIR }
+				} else = {
+					if = {
+						limt = {
+							NOT = {
+								any_country = { is_faction_leader = yes has_world_stage_coalition_axis = yes NOT = { has_global_flag = league_of_nations_exists } has_global_flag = world_stage_world_war_2_is_active }
+							}
+						}
+						create_faction = "Axis"
+					}
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = worldstage.57.axis
+		trigger = { has_world_stage_coalition_axis = yes NOT = { tag = HIR } }
+	}
+	option = {
+		name = worldstage.57.axis_hir
+		trigger = { has_world_stage_coalition_axis = yes tag = HIR }
+	}
+	option = {
+		name = worldstage.57.komin
+		trigger = { has_world_stage_coalition_komintern = yes }
+	}
+	option = {
+		name = worldstage.57.allies
+		trigger = { has_world_stage_coalition_allies = yes }
+	}
+	option = {
+		name = worldstage.57.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
+	}
+}
+
+# Netherlands Joins the War PRO ALLIES
+news_event = {
+	id = worldstage.58
+	title = worldstage.58.t
+	desc = worldstage.58.d 
+	picture = GFX_news_great_depression_over
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		set_global_flag = netherlands_joined_ww2
+		hidden_effect = {
+			set_variable = { global.theater_owner_netherlands = 1 }
+			set_variable = { global.world_stage_coalition_net = 1 }
+			log = "test test test"
+			if = {
+				limit = { country_exists = HIR }
+				HIR = { set_variable = { world_stage_coalition = 1 } }
+				log = "hir exists"
+				if = {
+					limit = { OSA = { is_faction_leader = yes has_world_stage_coalition_allies = yes } }
+					OSA = { add_to_faction = HIR }
+					log = "OSA = { is_faction_leader = yes has_world_stage_coalition_allies = yes }"
+				} else = {
+					if = {
+						limit = { KOB = { is_faction_leader = yes has_world_stage_coalition_allies = yes } }
+						KOB = { add_to_faction = HIR }
+					} else = {
+						if = {
+							limt = {
+								NOT = {
+									any_country = { is_faction_leader = yes has_world_stage_coalition_allies = yes NOT = { has_global_flag = league_of_nations_exists } has_global_flag = world_stage_world_war_2_is_active }
+								}
+							}
+							create_faction = "Allies"
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = worldstage.58.axis
+		trigger = { has_world_stage_coalition_axis = yes }
+	}
+	option = {
+		name = worldstage.58.komin
+		trigger = { has_world_stage_coalition_komintern = yes }
+	}
+	option = {
+		name = worldstage.58.allies
+		trigger = { has_world_stage_coalition_allies = yes NOT = { tag = HIR } }
+	}
+	option = {
+		name = worldstage.58.allies_hir
+		trigger = { has_world_stage_coalition_allies = yes tag = HIR }
+	}
+	option = {
+		name = worldstage.58.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
 	}
 }
 
@@ -3375,16 +3481,33 @@ news_event = {															# AXIS WINS
 	
 	immediate = {														# NEXT THEATER: sealion
 		set_variable = { global.theater_owner_france = 3 }
-		set_global_flag = world_stage_theater_normandy_is_active
 		clr_global_flag = world_stage_theater_france_is_active
-		add_to_variable = { global.GER_strength_sealion = global.GER_strength_france }
-		add_to_variable = { global.FRA_strength_sealion = global.FRA_strength_france }
-		add_to_variable = { global.SOV_strength_sealion = global.SOV_strength_france }
-		add_to_variable = { global.ENG_strength_sealion = global.ENG_strength_france }
-		add_to_variable = { global.USA_strength_sealion = global.USA_strength_france }
-		add_to_variable = { global.NET_strength_sealion = global.NET_strength_france }
-		add_to_variable = { global.PRT_strength_sealion = global.PRT_strength_france }
-		add_to_variable = { global.CHI_strength_sealion = global.CHI_strength_france }
+		if = {
+			limit = { has_global_flag = sealion_allowed }									# if sealion is possible, start operation
+			set_global_flag = world_stage_theater_sealion_is_active
+			add_to_variable = { global.GER_strength_sealion = global.GER_strength_france }
+			add_to_variable = { global.FRA_strength_sealion = global.FRA_strength_france }
+			add_to_variable = { global.SOV_strength_sealion = global.SOV_strength_france }
+			add_to_variable = { global.ENG_strength_sealion = global.ENG_strength_france }
+			add_to_variable = { global.USA_strength_sealion = global.USA_strength_france }
+			add_to_variable = { global.NET_strength_sealion = global.NET_strength_france }
+			add_to_variable = { global.PRT_strength_sealion = global.PRT_strength_france }
+			add_to_variable = { global.CHI_strength_sealion = global.CHI_strength_france }
+			set_temp_variable = { forces_value = global.world_stage_power_eng }
+			divide_temp_variable = { forces_value = 5 }
+			clamp_temp_variable = { var = forces_value min = 1 max = 25 }
+			subtract_from_variable = { global.world_stage_power_eng = forces_value }
+			add_to_variable = { global.ENG_strength_sealion = forces_value }
+		} else = {																			# if sealion is not possible, recover forces
+			add_to_variable = { global.world_stage_power_ger = global.GER_strength_france }
+			add_to_variable = { global.world_stage_power_fra = global.FRA_strength_france }
+			add_to_variable = { global.world_stage_power_sov = global.SOV_strength_france }
+			add_to_variable = { global.world_stage_power_eng = global.ENG_strength_france }
+			add_to_variable = { global.world_stage_power_usa = global.USA_strength_france }
+			add_to_variable = { global.world_stage_power_net = global.NET_strength_france }
+			add_to_variable = { global.world_stage_power_prt = global.PRT_strength_france }
+			add_to_variable = { global.world_stage_power_chi = global.CHI_strength_france }
+		}
 		set_variable = { global.GER_strength_france = 0 }
 		set_variable = { global.FRA_strength_france = 0 }
 		set_variable = { global.SOV_strength_france = 0 }
@@ -3394,14 +3517,9 @@ news_event = {															# AXIS WINS
 		set_variable = { global.PRT_strength_france = 0 }
 		set_variable = { global.CHI_strength_france = 0 }
 		if = {
-			limit = { check_variable = { global.AXIS_locals_france  < 1 } }	# <-------------------------------# check if sea lion is available
+			limit = { check_variable = { global.AXIS_locals_france  < 1 } }
 			set_variable = { global.AXIS_locals_france = 1 }
 		}
-		set_temp_variable = { forces_value = global.world_stage_power_eng }
-		divide_temp_variable = { forces_value = 5 }
-		clamp_temp_variable = { var = forces_value min = 1 max = 25 }
-		subtract_from_variable = { global.world_stage_power_eng = forces_value }
-		add_to_variable = { global.ENG_strength_sealion = forces_value }
 	}
 	
 	option = {
@@ -3497,6 +3615,137 @@ news_event = {															# ALLIES WINS
 	}
 	option = {
 		name = worldstage_france.2.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
+		effect_tooltip = {
+			
+		}
+	}
+}	# }
+# england {
+news_event = {															# AXIS WINS					
+	id = worldstage_england.1
+	title = worldstage_england.1.t
+	desc = worldstage_england.1.d 
+	picture = GFX_news_great_depression_over
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {														# NEXT THEATER: none
+		set_variable = { global.theater_owner_england = 3 }
+		clr_global_flag = world_stage_theater_england_is_active
+		set_variable = { global.GER_strength_england = 0 }
+		set_variable = { global.FRA_strength_england = 0 }
+		set_variable = { global.SOV_strength_england = 0 }
+		set_variable = { global.ENG_strength_england = 0 }
+		set_variable = { global.USA_strength_england = 0 }
+		set_variable = { global.NET_strength_england = 0 }
+		set_variable = { global.PRT_strength_england = 0 }
+		set_variable = { global.CHI_strength_england = 0 }
+	}
+	
+	option = {
+		name = worldstage_england.1.axis
+		trigger = { has_world_stage_coalition_axis = yes }
+		effect_tooltip = {
+			
+		}
+	}
+	option = {
+		name = worldstage_england.1.komin
+		trigger = { has_world_stage_coalition_komintern = yes }
+		effect_tooltip = {
+			
+		}
+	}
+	option = {
+		name = worldstage_england.1.allies
+		trigger = { has_world_stage_coalition_allies = yes }
+		effect_tooltip = {
+			
+		}
+	}
+	option = {
+		name = worldstage_england.1.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
+		effect_tooltip = {
+			
+		}
+	}
+}
+news_event = {															# ALLIES WINS					
+	id = worldstage_england.2
+	title = worldstage_england.2.t
+	desc = worldstage_england.2.d 
+	picture = GFX_news_great_depression_over
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {														# NEXT THEATER: normandy
+		set_variable = { global.theater_owner_england = 1 }
+		clr_global_flag = world_stage_theater_england_is_active
+		if = {
+			limit = { has_global_flag = normandy_allowed }
+			set_global_flag = world_stage_theater_alsace_is_active
+			add_to_variable = { global.GER_strength_normandy = global.GER_strength_england }
+			add_to_variable = { global.FRA_strength_normandy = global.FRA_strength_england }
+			add_to_variable = { global.SOV_strength_normandy = global.SOV_strength_england }
+			add_to_variable = { global.ENG_strength_normandy = global.ENG_strength_england }
+			add_to_variable = { global.USA_strength_normandy = global.USA_strength_england }
+			add_to_variable = { global.NET_strength_normandy = global.NET_strength_england }
+			add_to_variable = { global.PRT_strength_normandy = global.PRT_strength_england }
+			add_to_variable = { global.CHI_strength_normandy = global.CHI_strength_england }
+		} else = {
+			add_to_variable = { global.world_stage_power_ger = global.GER_strength_england }
+			add_to_variable = { global.world_stage_power_fra = global.FRA_strength_england }
+			add_to_variable = { global.world_stage_power_sov = global.SOV_strength_england }
+			add_to_variable = { global.world_stage_power_eng = global.ENG_strength_england }
+			add_to_variable = { global.world_stage_power_usa = global.USA_strength_england }
+			add_to_variable = { global.world_stage_power_net = global.NET_strength_england }
+			add_to_variable = { global.world_stage_power_prt = global.PRT_strength_england }
+			add_to_variable = { global.world_stage_power_chi = global.CHI_strength_england }
+		}
+		set_variable = { global.GER_strength_england = 0 }
+		set_variable = { global.FRA_strength_england = 0 }
+		set_variable = { global.SOV_strength_england = 0 }
+		set_variable = { global.ENG_strength_england = 0 }
+		set_variable = { global.USA_strength_england = 0 }
+		set_variable = { global.NET_strength_england = 0 }
+		set_variable = { global.PRT_strength_england = 0 }
+		set_variable = { global.CHI_strength_england = 0 }
+		set_temp_variable = { forces_value = global.world_stage_power_ger }
+		divide_temp_variable = { forces_value = 5 }
+		clamp_temp_variable = { var = forces_value min = 1 max = 25 }
+		subtract_from_variable = { global.world_stage_power_ger = forces_value }
+		add_to_variable = { global.GER_strength_alsace = forces_value }
+	}
+	
+	option = {
+		name = worldstage_england.2.axis
+		trigger = { has_world_stage_coalition_axis = yes }
+		effect_tooltip = {
+			
+		}
+	}
+	option = {
+		name = worldstage_england.2.komin
+		trigger = { has_world_stage_coalition_komintern = yes }
+		effect_tooltip = {
+			
+		}
+	}
+	option = {
+		name = worldstage_england.2.allies
+		trigger = { has_world_stage_coalition_allies = yes }
+		effect_tooltip = {
+			
+		}
+	}
+	option = {
+		name = worldstage_england.2.other
 		trigger = { has_world_stage_coalition_unaligned = yes }
 		effect_tooltip = {
 			
@@ -5782,7 +6031,7 @@ news_event = {															# AXIS WINS
 	major = yes
 	
 	immediate = {														# NEXT THEATER: sealion
-		set_variable = { global.theater_owner_normandy = 3 }
+		#set_variable = { global.theater_owner_normandy = 3 }	# normandy is always "controlled" by axis
 		set_global_flag = world_stage_theater_sealion_is_active
 		clr_global_flag = world_stage_theater_normandy_is_active
 		add_to_variable = { global.GER_strength_sealion = global.GER_strength_normandy }
@@ -5805,7 +6054,7 @@ news_event = {															# AXIS WINS
 		divide_temp_variable = { forces_value = 5 }
 		clamp_temp_variable = { var = forces_value min = 1 max = 25 }
 		subtract_from_variable = { global.world_stage_power_eng = forces_value }
-		add_to_variable = { global.ENG_strength_sealion = forces_value }
+		add_to_variable = { global.ENG_strength_england = forces_value }
 	}
 	
 	option = {
@@ -5848,7 +6097,7 @@ news_event = {															# ALLIES WINS
 	major = yes
 	
 	immediate = {														# NEXT THEATER: france
-		set_variable = { global.theater_owner_normandy = 1 }
+		#set_variable = { global.theater_owner_normandy = 3 }	# normandy is always "controlled" by axis
 		set_global_flag = world_stage_theater_france_is_active
 		clr_global_flag = world_stage_theater_normandy_is_active
 		add_to_variable = { global.GER_strength_france = global.GER_strength_normandy }
@@ -5871,7 +6120,7 @@ news_event = {															# ALLIES WINS
 		divide_temp_variable = { forces_value = 5 }
 		clamp_temp_variable = { var = forces_value min = 1 max = 25 }
 		subtract_from_variable = { global.world_stage_power_ger = forces_value }
-		add_to_variable = { global.GER_strength_sealion = forces_value }
+		add_to_variable = { global.GER_strength_france = forces_value }
 	}
 	
 	option = {
@@ -5915,7 +6164,7 @@ news_event = {															# AXIS WINS
 	major = yes
 	
 	immediate = {														# NEXT THEATER: england
-		set_variable = { global.theater_owner_sealion = 3 }
+		#set_variable = { global.theater_owner_sealion = 1 }	# sealion is always "controlled" by allies
 		set_global_flag = world_stage_theater_england_is_active
 		clr_global_flag = world_stage_theater_sealion_is_active
 		add_to_variable = { global.GER_strength_england = global.GER_strength_sealion }
@@ -5935,7 +6184,7 @@ news_event = {															# AXIS WINS
 		set_variable = { global.PRT_strength_sealion = 0 }
 		set_variable = { global.CHI_strength_sealion = 0 }
 		set_temp_variable = { forces_value = global.world_stage_power_eng }
-		divide_temp_variable = { forces_value = 5 }
+		divide_temp_variable = { forces_value = 2 }
 		clamp_temp_variable = { var = forces_value min = 1 max = 25 }
 		subtract_from_variable = { global.world_stage_power_eng = forces_value }
 		add_to_variable = { global.ENG_strength_england = forces_value }
@@ -5981,17 +6230,34 @@ news_event = {															# ALLIES WINS
 	major = yes
 	
 	immediate = {														# NEXT THEATER: normandy
-		set_variable = { global.theater_owner_sealion = 1 }
-		set_global_flag = world_stage_theater_normandy_is_active
+		#set_variable = { global.theater_owner_sealion = 1 }		# sealion is always "controlled" by allies
 		clr_global_flag = world_stage_theater_sealion_is_active
-		add_to_variable = { global.GER_strength_normandy = global.GER_strength_sealion }
-		add_to_variable = { global.FRA_strength_normandy = global.FRA_strength_sealion }
-		add_to_variable = { global.SOV_strength_normandy = global.SOV_strength_sealion }
-		add_to_variable = { global.ENG_strength_normandy = global.ENG_strength_sealion }
-		add_to_variable = { global.USA_strength_normandy = global.USA_strength_sealion }
-		add_to_variable = { global.NET_strength_normandy = global.NET_strength_sealion }
-		add_to_variable = { global.PRT_strength_normandy = global.PRT_strength_sealion }
-		add_to_variable = { global.CHI_strength_normandy = global.CHI_strength_sealion }
+		if = {
+			limit = { has_global_flag = normandy_allowed }
+			set_global_flag = world_stage_theater_normandy_is_active
+			add_to_variable = { global.GER_strength_normandy = global.GER_strength_sealion }
+			add_to_variable = { global.FRA_strength_normandy = global.FRA_strength_sealion }
+			add_to_variable = { global.SOV_strength_normandy = global.SOV_strength_sealion }
+			add_to_variable = { global.ENG_strength_normandy = global.ENG_strength_sealion }
+			add_to_variable = { global.USA_strength_normandy = global.USA_strength_sealion }
+			add_to_variable = { global.NET_strength_normandy = global.NET_strength_sealion }
+			add_to_variable = { global.PRT_strength_normandy = global.PRT_strength_sealion }
+			add_to_variable = { global.CHI_strength_normandy = global.CHI_strength_sealion }
+			set_temp_variable = { forces_value = global.world_stage_power_ger }
+			divide_temp_variable = { forces_value = 5 }
+			clamp_temp_variable = { var = forces_value min = 1 max = 25 }
+			subtract_from_variable = { global.world_stage_power_ger = forces_value }
+			add_to_variable = { global.GER_strength_normandy = forces_value }
+		} else = {
+			add_to_variable = { global.world_stage_power_ger = global.GER_strength_sealion }
+			add_to_variable = { global.world_stage_power_fra = global.FRA_strength_sealion }
+			add_to_variable = { global.world_stage_power_sov = global.SOV_strength_sealion }
+			add_to_variable = { global.world_stage_power_eng = global.ENG_strength_sealion }
+			add_to_variable = { global.world_stage_power_usa = global.USA_strength_sealion }
+			add_to_variable = { global.world_stage_power_net = global.NET_strength_sealion }
+			add_to_variable = { global.world_stage_power_prt = global.PRT_strength_sealion }
+			add_to_variable = { global.world_stage_power_chi = global.CHI_strength_sealion }
+		}
 		set_variable = { global.GER_strength_sealion = 0 }
 		set_variable = { global.FRA_strength_sealion = 0 }
 		set_variable = { global.SOV_strength_sealion = 0 }
@@ -6000,11 +6266,6 @@ news_event = {															# ALLIES WINS
 		set_variable = { global.NET_strength_sealion = 0 }
 		set_variable = { global.PRT_strength_sealion = 0 }
 		set_variable = { global.CHI_strength_sealion = 0 }
-		set_temp_variable = { forces_value = global.world_stage_power_ger }
-		divide_temp_variable = { forces_value = 5 }
-		clamp_temp_variable = { var = forces_value min = 1 max = 25 }
-		subtract_from_variable = { global.world_stage_power_ger = forces_value }
-		add_to_variable = { global.GER_strength_normandy = forces_value }
 	}
 	
 	option = {

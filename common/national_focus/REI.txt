@@ -541,7 +541,7 @@ focus_tree = {
 	focus = {
 		id = REI_long_knives
 		icon = GFX_focus_REI_long_knives
-		search_filters = {  }
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = REI_denounce_versailles }
 		
@@ -557,7 +557,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			
+			add_political_power = 150
 		}
 	}
 	
@@ -586,7 +586,10 @@ focus_tree = {
 				name = REI_threat_anschluss
 			}
 			set_variable = { global.worldstage_europe_map_frame = 2 }
-			set_variable = { global.theater_owner_austria = 3 }
+			if = {
+				limit = { has_global_flag = league_of_nations_exists }
+				set_variable = { global.theater_owner_austria = 6 }
+			} else = { set_variable = { global.theater_owner_austria = 3 } }
 		}
 	}
 	
@@ -924,7 +927,7 @@ focus_tree = {
 	
 	focus = {
 		id = REI_case_yellow	# Fall Gelb (Case Yellow), invade netherlands/belgium
-		icon = GFX_focus_generic_western_enemies
+		icon = GFX_focus_REI_case_yellow
 		search_filters = { FOCUS_FILTER_RESEARCH }
 		
 		prerequisite = { focus = REI_attack_poland }
@@ -938,7 +941,6 @@ focus_tree = {
 		
 		available = {
 			has_global_flag = world_stage_world_war_2_is_active
-			NOT = { has_global_flag = world_stage_theater_poland_is_active_first }
 		}
 		
 		will_lead_to_war_with = HIR
@@ -983,32 +985,103 @@ focus_tree = {
 		
 		available = {
 			has_global_flag = world_stage_world_war_2_is_active
-			has_world_stage_power_ger_120 = yes
+			if = {
+				limit = {
+					has_global_flag = world_stage_theater_netherlands_is_active
+					has_global_flag = world_stage_theater_alsace_is_active
+				}
+				has_world_stage_power_ger_120 = yes
+			}
+			if = {
+				limit = {
+					NOT = { has_global_flag = world_stage_theater_netherlands_is_active }
+					has_global_flag = world_stage_theater_alsace_is_active
+				}
+				has_world_stage_power_ger_100 = yes
+			}
+			if = {
+				limit = {
+					has_global_flag = world_stage_theater_netherlands_is_active
+					NOT = { has_global_flag = world_stage_theater_alsace_is_active }
+				}
+				has_world_stage_power_ger_80 = yes
+			}
+			if = {
+				limit = {
+					NOT = {	has_global_flag = world_stage_theater_netherlands_is_active
+							has_global_flag = world_stage_theater_alsace_is_active }
+				}
+				has_world_stage_power_ger_120 = yes
+			}
 			theater_france_controlled_allies = yes
+			NOT = { has_global_flag = world_stage_theater_poland_is_active_first }
 		}
 		
 		bypass = {
-			theater_france_controlled_axis = yes
+			OR = {
+				theater_france_controlled_axis = yes
+				NOT = { has_global_flag = world_stage_france_exists }
+			}
 		}
 		
 		completion_reward = {
-			hidden_effect = { news_event = worldstage.24 }
+			custom_effect_tooltip = country_name_germany
+			if = {
+				limit = { NOT = { has_global_flag = netherlands_joined_ww2 } has_global_flag = netherlands_aligned_axis }
+				news_event = { id = worldstage.57 hours = 12 }
+				log = "REI_blitzkrieg:  NOT = { has_global_flag = netherlands_joined_ww2 } has_global_flag = netherlands_aligned_axis "
+			}
+			if = {
+				limit = { NOT = { has_global_flag = netherlands_joined_ww2 has_global_flag = netherlands_aligned_axis } }
+				news_event = { id = worldstage.58 hours = 12 }
+				log = "REI_blitzkrieg:   NOT = { has_global_flag = netherlands_joined_ww2 has_global_flag = netherlands_aligned_axis "
+			}
+			if = {
+				limit = { NOT = { has_global_flag = world_stage_theater_netherlands_is_active } }
+				log = "REI_blitzkrieg: NOT world_stage_theater_netherlands_is_active "
+				custom_effect_tooltip = world_stage_theater_netherlands_is_active_tt
+				set_global_flag = world_stage_theater_netherlands_is_active
+				set_global_flag = fra_send_forces_netherlands log = "set_global_flag = fra_send_forces_netherlands"
+				add_to_variable = {
+					global.GER_strength_netherlands = 40
+					tooltip = world_stage_deploy_power_netherlands
+				}
+				add_to_variable = {
+					global.GER_strength_netherlands_bonus = 40
+					tooltip = world_stage_bonus_power_netherlands
+				}
+			}
+			if = {
+				limit = { NOT = { has_global_flag = world_stage_theater_alsace_is_active } }
+				log = "REI_blitzkrieg: NOT = { has_global_flag = world_stage_theater_alsace_is_active"
+				custom_effect_tooltip = world_stage_theater_alsace_is_active_tt
+				set_global_flag = world_stage_theater_alsace_is_active
+				set_global_flag = fra_send_forces_alsace
+				add_to_variable = {
+					global.GER_strength_alsace = 20
+					tooltip = world_stage_deploy_power_alsace
+				}
+				add_to_variable = {
+					global.GER_strength_ardennes_bonus = 20
+					tooltip = world_stage_bonus_power_alsace
+				}
+			}
+			news_event = worldstage.24
 			custom_effect_tooltip = world_stage_theater_ardennes_is_active_tt
 			set_global_flag = world_stage_theater_ardennes_is_active
-			custom_effect_tooltip = country_name_germany
+			subtract_from_variable = { global.world_stage_power_ger = 60 }
 			add_to_variable = {
-				global.GER_strength_ardennes = 120
+				global.GER_strength_ardennes = 60
 				tooltip = world_stage_deploy_power_ardennes
 			}
-			subtract_from_variable = { global.world_stage_power_ger = 120 }
 			add_to_variable = {
-				global.GER_strength_ardennes_bonus = 120
+				global.GER_strength_ardennes_bonus = 60
 				tooltip = world_stage_bonus_power_ardennes
 			}
-			set_variable = { global.GER_strength_ardennes_final = 240 }
+			set_variable = { global.GER_strength_ardennes_final = 120 }
 			if = {
 				limit = { has_global_flag = phoney_war_rages_on }
-				news_event = worldstage.53
+				hidden_effect = { news_event = worldstage.53 }
 			}
 			if = {
 				limit = { NOT = { has_global_flag = italy_joined_ww2 } }
@@ -1037,7 +1110,6 @@ focus_tree = {
 		
 		available = {
 			has_global_flag = world_stage_world_war_2_is_active
-			NOT = { has_global_flag = world_stage_theater_poland_is_active_first }
 		}
 		
 		completion_reward = {
@@ -1079,6 +1151,7 @@ focus_tree = {
 				tooltip = has_world_stage_power_ger_150_tt
 				check_variable = { global.world_stage_power_ger > 149 }
 			}
+			NOT = { has_global_flag = world_stage_theater_poland_is_active_first }
 		}
 		
 		completion_reward = {
@@ -1188,6 +1261,7 @@ focus_tree = {
 					tooltip = world_stage_deploy_power_egypt
 				}
 			}
+			subtract_from_variable = { global.world_stage_power_ger = ger_forces_value }
 		}
 	}
 	
@@ -1248,6 +1322,10 @@ focus_tree = {
 			}
 		}
 		
+		bypass = {
+			hidden_trigger = { has_global_flag = sealion_allowed }
+		}
+		
 		completion_reward = {
 			if = {
 				limit = {
@@ -1256,13 +1334,13 @@ focus_tree = {
 				set_global_flag = world_stage_theater_sealion_is_active
 				custom_effect_tooltip = world_stage_theater_sealion_is_active_tt
 			} else = {
-				set_global_flag = sealion_allowed
 				custom_effect_tooltip = sealion_allowed_tt
 			}
 			add_to_variable = {
 				global.GER_strength_sealion = 60
 				tooltip = world_stage_deploy_power_sealion
 			}
+			set_global_flag = sealion_allowed
 			news_event = worldstage.56
 		}
 	}
