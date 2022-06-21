@@ -78,12 +78,18 @@ news_event = {
 	major = yes
 	
 	immediate = {
-		set_global_flag = ROC_won_mongolia
-		add_to_variable = { global.world_stage_power_chi = 5 }
-		if = {
-			limit = { has_global_flag = league_of_nations_exists }
-			set_variable = { global.theater_owner_mongolia = 3 }
-		} else = { global.theater_owner_mongolia = 6 }
+		hidden_effect = {
+			set_global_flag = ROC_won_mongolia
+			add_to_variable = { global.world_stage_power_chi = 5 }
+			if = {
+				limit = { has_global_flag = league_of_nations_exists }
+				set_variable = { global.theater_owner_mongolia = 3 }
+			} else = { global.theater_owner_mongolia = 6 }
+			if = {
+				limit = { has_global_flag = world_stage_world_war_2_is_active }
+				news_event = { id = worldstage.59 days = 1 random = 3 }
+			}
+		}
 	}
 	
 	option = {
@@ -130,7 +136,15 @@ news_event = {
 news_event = {
 	id = worldstage.3
 	title = worldstage.3.t
-	desc = worldstage.3.d 
+	desc = {
+		text = worldstage.3.d_no_ww2
+		trigger = { NOT = { has_global_flag = world_stage_world_war_2_is_active } }
+	}
+	desc = {
+		text = worldstage.3.d_has_ww2
+		trigger = { has_global_flag = world_stage_world_war_2_is_active }
+	}
+		
 	picture = GFX_news_great_depression_over
 
 	is_triggered_only = yes
@@ -138,15 +152,21 @@ news_event = {
 	major = yes
 	
 	immediate = {
-		add_to_variable = { global.world_stage_power_sov = 5 }
-		set_global_flag = SOV_won_mongolia
-		if = {
-			limit = {
-				NOT = { has_global_flag = SOV_expelled_from_lon }
-				has_global_flag = league_of_nations_exists
+		hidden_effect = {
+			add_to_variable = { global.world_stage_power_sov = 5 }
+			set_global_flag = SOV_won_mongolia
+			if = {
+				limit = {
+					NOT = { has_global_flag = SOV_expelled_from_lon }
+					has_global_flag = league_of_nations_exists
+				}
+				set_variable = { global.theater_owner_mongolia = 5 }
+			} else = { global.theater_owner_mongolia = 2 }
+			if = {
+				limit = { has_global_flag = world_stage_world_war_2_is_active }
+				news_event = { id = worldstage.59 days = 1 random = 3 }
 			}
-			set_variable = { global.theater_owner_mongolia = 5 }
-		} else = { global.theater_owner_mongolia = 2 }
+		}
 	}
 	
 	option = {
@@ -164,11 +184,28 @@ news_event = {
 		name = worldstage.3.komin
 		trigger = {
 			has_government = communism
+			NOT = { tag = FER }
 		}
 		effect_tooltip = {
 			custom_effect_tooltip = CHI_strength_trickleback_tt
 			custom_effect_tooltip = SOV_strength_trickleback_tt
 			add_world_stage_power_sov_5 = yes
+		}
+	}
+	option = {
+		name = worldstage.3.komin_fer
+		trigger = {
+			has_government = communism
+			NOT = { tag = FER }
+		}
+		effect_tooltip = {
+			custom_effect_tooltip = CHI_strength_trickleback_tt
+			custom_effect_tooltip = SOV_strength_trickleback_tt
+			add_world_stage_power_sov_5 = yes
+			if = {
+				limit = { country_exists = ROC country_exists = FER }
+				ROC = { declare_war_on = { target = FER type = annex_everything } }
+			}
 		}
 	}
 	option = {
@@ -2853,22 +2890,22 @@ news_event = {
 		set_variable = { global.theater_owner_belarus = 2 }
 		set_variable = { global.theater_owner_siberia = 2 }
 		if = {
-			limit = { check_variable = global.world_stage_coalition_net = 1 }		# HIR player should have a choice here
+			limit = { check_variable = { global.world_stage_coalition_net = 1 }	}	# HIR player should have a choice here
 			set_variable = { global.theater_owner_netherlands = 1 }
 			set_variable = { global.theater_owner_indies = 1 }
 		}
 		if = {
-			limit = { check_variable = global.world_stage_coalition_net = 3 }
+			limit = { check_variable = { global.world_stage_coalition_net = 3 } }
 			set_variable = { global.theater_owner_netherlands = 3 }
 			set_variable = { global.theater_owner_indies = 3 }
 		}
 		if = {
-			limit = { check_variable = global.world_stage_coalition_net = 0 }
+			limit = { check_variable = { global.world_stage_coalition_net = 0 } }
 			set_variable = { global.theater_owner_netherlands = 4 }
 			set_variable = { global.theater_owner_indies = 4 }
 		}
 		if = {
-			limit = { check_variable = global.world_stage_coalition_roc = 1 }		# ROC player should have a choice here
+			limit = { check_variable = { global.world_stage_coalition_chi = 1 } }		# ROC player should have a choice here
 			set_variable = { global.theater_owner_china = 1 }
 			set_variable = { global.theater_owner_tibet = 1 }
 			set_variable = { global.theater_owner_guanxi = 1 }
@@ -2878,7 +2915,7 @@ news_event = {
 			}
 		}
 		if = {
-			limit = { check_variable = global.world_stage_coalition_roc = 2 }
+			limit = { check_variable = { global.world_stage_coalition_chi = 2 } }
 			set_variable = { global.theater_owner_china = 2 }
 			set_variable = { global.theater_owner_tibet = 2 }
 			set_variable = { global.theater_owner_guanxi = 2 }
@@ -2888,7 +2925,7 @@ news_event = {
 			}
 		}
 		if = {
-			limit = { check_variable = global.world_stage_coalition_roc = 3 }
+			limit = { check_variable = { global.world_stage_coalition_chi = 3 } }
 			set_variable = { global.theater_owner_china = 3 }
 			set_variable = { global.theater_owner_tibet = 3 }
 			set_variable = { global.theater_owner_guanxi = 3 }
@@ -2898,7 +2935,7 @@ news_event = {
 			}
 		}
 		if = {
-			limit = { check_variable = global.world_stage_coalition_roc = 4 }
+			limit = { check_variable = { global.world_stage_coalition_chi = 4 } }
 			set_variable = { global.theater_owner_china = 4 }
 			set_variable = { global.theater_owner_tibet = 4 }
 			set_variable = { global.theater_owner_guanxi = 4 }
@@ -3085,13 +3122,12 @@ news_event = {
 					REI = { add_to_faction = HIR }
 				} else = {
 					if = {
-						limt = {
-							NOT = {
-								any_country = { is_faction_leader = yes has_world_stage_coalition_axis = yes NOT = { has_global_flag = league_of_nations_exists } has_global_flag = world_stage_world_war_2_is_active }
-							}
+						limit = { any_country = { is_faction_leader = yes has_world_stage_coalition_axis = yes NOT = { has_global_flag = league_of_nations_exists } has_global_flag = world_stage_world_war_2_is_active } }
+						random_country = {
+							limit = { is_faction_leader = yes has_world_stage_coalition_axis = yes }
+							add_to_faction = HIR
 						}
-						create_faction = "Axis"
-					}
+					} else = { HIR = { create_faction = "Axis" } }
 				}
 			}
 		}
@@ -3147,7 +3183,7 @@ news_event = {
 						KOB = { add_to_faction = HIR }
 					} else = {
 						if = {
-							limt = {
+							limit = {
 								any_country = { is_faction_leader = yes has_world_stage_coalition_allies = yes NOT = { has_global_flag = league_of_nations_exists } has_global_flag = world_stage_world_war_2_is_active }
 							}
 							random_country = {
@@ -3179,6 +3215,166 @@ news_event = {
 	}
 	option = {
 		name = worldstage.58.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
+	}
+}
+
+# China Joins the War PRO AXIS
+news_event = {
+	id = worldstage.59
+	title = worldstage.59.t
+	desc = {
+		text = worldstage.59.d_siberia
+		trigger = { has_global_flag = ROC_won_mongolia }
+	}
+	desc = {
+		text = worldstage.59.d_mongolia
+		trigger = { has_global_flag = SOV_won_mongolia }
+	}
+	desc = {
+		text = worldstage.59.d_india
+		trigger = { NOT = { has_global_flag = SOV_won_mongolia has_global_flag = CHI_won_mongolia } }
+	}
+	picture = GFX_news_great_depression_over
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		set_global_flag = china_joined_ww2
+		set_temp_variable = { global.theater_owner_china = 3 }	# probably redundant but running the code twice is free
+		set_temp_variable = { global.theater_owner_guanxi = 3 }
+		set_temp_variable = { global.theater_owner_tibet = 3 }
+		hidden_effect = {
+			if = {
+				limit = { country_exists = ROC }
+				if = {
+					limit = { REI = { is_faction_leader = yes has_world_stage_coalition_axis = yes } }
+					REI = { add_to_faction = ROC }
+				} else = {
+					if = {
+						limit = { any_country = { is_faction_leader = yes has_world_stage_coalition_axis = yes NOT = { has_global_flag = league_of_nations_exists } has_global_flag = world_stage_world_war_2_is_active } }
+						random_country = {
+							limit = { is_faction_leader = yes has_world_stage_coalition_axis = yes }
+							add_to_faction = ROC
+						}
+					} else = { ROC = { create_faction = "Axis" } }
+				}
+			}
+			if = {
+				limit = { has_global_flag = ROC_won_mongolia }				# is mongolia is under china's influence, an attack on siberia will be launched from there
+				set_temp_variable = { global.theater_owner_mongolia = 3 }	# probably redundant but running the code twice is free
+				set_global_flag = world_stage_theater_siberia_is_active
+				set_temp_variable = { chi_forces_value = global.world_stage_power_chi }
+				set_temp_variable = { sov_forces_value = global.world_stage_power_chi }
+				divide_temp_variable = { chi_forces_value = 5 }
+				divide_temp_variable = { sov_forces_value = 5 }
+				add_to_variable = { global.CHI_strength_siberia = chi_forces_value }
+				add_to_variable = { global.AXIS_locals_siberia = 3 }
+				add_to_variable = { global.SOV_strength_siberia = sov_forces_value }
+				add_to_variable = { global.ALLIES_locals_siberia = 1 }
+			}
+			if = {
+				limit = { has_global_flag = SOV_won_mongolia }				# is mongolia is under russias's influence, china will attack it
+				set_temp_variable = { global.theater_owner_mongolia = 2 }	# probably redundant but running the code twice is free
+				set_global_flag = world_stage_theater_mongolia_is_active
+				set_temp_variable = { chi_forces_value = global.world_stage_power_chi }
+				set_temp_variable = { sov_forces_value = global.world_stage_power_chi }
+				divide_temp_variable = { chi_forces_value = 4 }
+				divide_temp_variable = { sov_forces_value = 5 }
+				add_to_variable = { global.CHI_strength_mongolia = chi_forces_value }
+				add_to_variable = { global.AXIS_locals_mongolia = 1 }
+				add_to_variable = { global.SOV_strength_mongolia = sov_forces_value }
+				add_to_variable = { global.ALLIES_locals_mongolia = 3 }
+			}
+			set_global_flag = world_stage_theater_bengal_is_active # attacks india, regardless of situation in mongolia
+			add_to_variable = { global.CHI_strength_india = chi_forces_value }
+			if = {
+				limit = { country_exists = ROC country_exists = FER }
+				ROC = { declare_war_on = { target = FER type = annex_everything } }
+			}
+		}
+	}
+	
+	option = {
+		name = worldstage.59.axis
+		trigger = { has_world_stage_coalition_axis = yes NOT = { tag = ROC } }
+		effect_tooltip = {
+			if = {
+				limit = { country_exists = ROC country_exists = FER }
+				ROC = { declare_war_on = { target = FER type = annex_everything } }
+			}
+		}
+	}
+	option = {
+		name = worldstage.59.axis_roc
+		trigger = { has_world_stage_coalition_axis = yes tag = ROC }
+		effect_tooltip = {
+			if = {
+				limit = { country_exists = ROC country_exists = FER }
+				ROC = { declare_war_on = { target = FER type = annex_everything } }
+			}
+		}
+	}
+	option = {
+		name = worldstage.59.komin
+		trigger = { has_world_stage_coalition_komintern = yes }
+		effect_tooltip = {
+			if = {
+				limit = { country_exists = ROC country_exists = FER }
+				ROC = { declare_war_on = { target = FER type = annex_everything } }
+			}
+		}
+	}
+	option = {
+		name = worldstage.59.allies
+		trigger = { has_world_stage_coalition_allies = yes }
+		effect_tooltip = {
+			if = {
+				limit = { country_exists = ROC country_exists = FER }
+				ROC = { declare_war_on = { target = FER type = annex_everything } }
+			}
+		}
+	}
+	option = {
+		name = worldstage.59.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
+		effect_tooltip = {
+			if = {
+				limit = { country_exists = ROC country_exists = FER }
+				ROC = { declare_war_on = { target = FER type = annex_everything } }
+			}
+		}
+	}
+}
+
+# China Joins the War AGAINST AXIS
+news_event = {
+	id = worldstage.60
+	title = worldstage.60.t
+	desc = worldstage.60.d
+	
+	immediate = { set_global_flag = china_joined_ww2 }
+	
+	option = {
+		name = worldstage.59.roc
+		trigger = { tag = ROC }
+	}
+	option = {
+		name = worldstage.60.axis
+		trigger = { has_world_stage_coalition_axis = yes }
+	}
+	option = {
+		name = worldstage.60.komin
+		trigger = { has_world_stage_coalition_komintern = yes NOT = { tag = ROC } }
+	}
+	option = {
+		name = worldstage.60.allies
+		trigger = { has_world_stage_coalition_allies = yes NOT = { tag = ROC } }
+	}
+	option = {
+		name = worldstage.60.other
 		trigger = { has_world_stage_coalition_unaligned = yes }
 	}
 }
