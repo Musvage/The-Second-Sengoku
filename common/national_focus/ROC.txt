@@ -44,7 +44,7 @@ focus_tree = {
 		prerequisite = { focus = ROC_temporary_provisions }
 		
 		relative_position_id = ROC_temporary_provisions
-		x = -10
+		x = -12
 		y = 1
 		cost = 10
 		
@@ -67,7 +67,7 @@ focus_tree = {
 		prerequisite = { focus = ROC_whampoa_clique }
 		
 		relative_position_id = ROC_whampoa_clique
-		x = -2
+		x = -3
 		y = 1
 		cost = 10
 		
@@ -287,7 +287,7 @@ focus_tree = {
 		
 		relative_position_id = ROC_antikominternpakt
 		x = 0
-		y = 2
+		y = 1
 		cost = 10
 		
 		available_if_capitulated = yes
@@ -374,7 +374,7 @@ focus_tree = {
 		prerequisite = { focus = ROC_antikominternpakt }
 		
 		relative_position_id = ROC_antikominternpakt
-		x = 1
+		x = 3
 		y = 1
 		cost = 10
 		
@@ -384,8 +384,10 @@ focus_tree = {
 			factor = 10
 		}
 		
+		bypass = { has_global_flag = SOV_won_mongolia }
+		
 		available = {
-			NOT = { has_global_flag = world_stage_flag_mongolia }
+			NOT = { has_global_flag = SOV_won_mongolia }
 			has_world_stage_power_chi_40 = yes
 			OR = {
 				AND = {
@@ -413,22 +415,138 @@ focus_tree = {
 		}
 	 
 		completion_reward = {
-			set_global_flag = world_stage_theater_mongolia_is_active_first	# this actually starts the conflict
-			custom_effect_tooltip = world_stage_theater_mongolia_is_active_first_tt
-			country_event = worldstage.1
-			add_named_threat = { 
-				threat = 1
-				name = ROC_threat_aid_mongolia
+			set_global_flag = CHI_won_mongolia
+			country_event = worldstage.2
+			add_world_stage_power_chi_5 = yes
+		}
+	}
+	
+	focus = {
+		id = ROC_east_indies
+		icon = GFX_focus_ROC_liberate_east_indies
+		search_filters = {  }
+		
+		prerequisite = { focus = ROC_aid_mongolia }
+		
+		relative_position_id = ROC_aid_mongolia
+		x = 1
+		y = 1
+		cost = 10
+		
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		available = {
+			NOT = {
+				is_in_faction_with = HIR
 			}
-			custom_effect_tooltip = theater_name_mongolia	# deploys 5 power to mongolia
-			add_to_variable = {
-				global.CHI_strength_mongolia = 5
-				tooltip = world_stage_add_local_power
+		}
+	 
+		completion_reward = {
+			# attack off map Dutch holdings
+		}
+	}
+	
+	focus = {
+		id = ROC_philipines
+		icon = GFX_focus_ROC_liberate_philipines
+		search_filters = {  }
+		
+		prerequisite = { focus = ROC_aid_mongolia }
+		
+		relative_position_id = ROC_aid_mongolia
+		x = -1
+		y = 1
+		cost = 10
+		
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		available = {
+			has_global_flag = world_stage_world_war_2_is_active
+			NOT = {
+				is_in_faction_with = AMC
+				is_in_faction_with = OKI
 			}
-			add_to_variable = { global.world_stage_power_chi = -5 }
+		}
+	 
+		completion_reward = {
+			news_event = worldstage.63
+			if = {
+				limit = { NOT = { has_global_flag = usa_joinned_ww2 } }
+				news_event = { id = worldstage.64 days = 1 random = 24 }
+				custom_effect_tooltip = usa_will_join_ww2
+				set_global_flag = usa_joinned_ww2
+			}
+			set_global_flag = world_stage_theater_philipines_is_active
+			custom_effect_tooltip = world_stage_theater_philipines_is_active_tt
+		}
+	}
+	
+	focus = {
+		id = ROC_siberian_offensive
+		icon = GFX_focus_ROC_aid_mongolia
+		search_filters = {  }
+		
+		prerequisite = { focus = ROC_aid_mongolia }
+		
+		relative_position_id = ROC_aid_mongolia
+		x = 0
+		y = 2
+		cost = 10
+		
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		available = {
+			has_global_flag = world_stage_world_war_2_is_active
+			has_global_flag = russia_joined_ww2
+			has_world_stage_power_chi_40 = yes
+			OR = {
+				custom_trigger_tooltip = {
+					has_global_flag = world_stage_theater_siberia_is_active
+					tooltip = world_stage_theater_siberia_is_active
+				}
+				NOT = {
+					custom_trigger_tooltip = {
+						tooltip = owner_siberia_not_axis
+						check_variable = { global.theater_owner_siberia = 3 }
+					}
+				}
+			}
+		}
+	 
+		completion_reward = {
+			news_event = worldstage.61
+			add_doctrine_cost_reduction = {
+				name = land_doc_bonus
+				cost_reduction = 0.2
+				uses = 1
+				category = land_doctrine
+			}
 			add_to_variable = {
-				global.CHI_strength_mongolia_bonus = 5
-				tooltip = world_stage_add_local_bonus
+				tooltip = world_stage_bonus_power_siberia
+				global.AXIS_strength_mongolia_bonus = 40 
+			}
+			set_temp_variable = { sov_forces_value = global.world_stage_power_chi }
+			divide_temp_variable = { sov_forces_value = 5 }
+			add_to_variable = { global.CHI_strength_siberia = 40 tooltip = world_stage_deploy_power_siberia }
+			add_to_variable = { global.AXIS_locals_siberia = 3 }
+			add_to_variable = { global.SOV_strength_siberia = sov_forces_value }
+			add_to_variable = { global.ALLIES_locals_siberia = 1 }
+			if = {
+				limit = { NOT = { has_global_flag = world_stage_theater_siberia_is_active } }
+				set_global_flag = world_stage_theater_siberia_is_active
+				custom_effect_tooltip = world_stage_theater_siberia_is_active_tt
 			}
 		}
 	}
@@ -727,7 +845,7 @@ focus_tree = {
 		prerequisite = { focus = ROC_traditionalism_alt }
 		
 		relative_position_id = ROC_traditionalism_alt
-		x = -1
+		x = 0
 		y = 1
 		cost = 10
 		
@@ -750,8 +868,8 @@ focus_tree = {
 		prerequisite = { focus = ROC_traditionalism_alt }
 		
 		relative_position_id = ROC_traditionalism_alt
-		x = 1
-		y = 1
+		x = -1
+		y = 2
 		cost = 10
 		
 		available_if_capitulated = yes
@@ -1024,65 +1142,6 @@ focus_tree = {
 				threat = 1
 				name = ROC_threat_denounce_treaties
 			}
-		}
-	}
-	
-	focus = {
-		id = ROC_east_indies
-		icon = GFX_focus_ROC_liberate_east_indies
-		search_filters = {  }
-		
-		prerequisite = { focus = ROC_denounce_treaties }
-		
-		relative_position_id = ROC_denounce_treaties
-		x = -1
-		y = 1
-		cost = 10
-		
-		available_if_capitulated = yes
-		
-		ai_will_do = {
-			factor = 10
-		}
-		
-		available = {
-			NOT = {
-				is_in_faction_with = HIR
-			}
-		}
-	 
-		completion_reward = {
-			# attack off map Dutch holdings
-		}
-	}
-	
-	focus = {
-		id = ROC_philipines
-		icon = GFX_focus_ROC_liberate_philipines
-		search_filters = {  }
-		
-		prerequisite = { focus = ROC_denounce_treaties }
-		
-		relative_position_id = ROC_denounce_treaties
-		x = 1
-		y = 1
-		cost = 10
-		
-		available_if_capitulated = yes
-		
-		ai_will_do = {
-			factor = 10
-		}
-		
-		available = {
-			NOT = {
-				is_in_faction_with = AMC
-				is_in_faction_with = OKI
-			}
-		}
-	 
-		completion_reward = {
-			# attack off map American holdings
 		}
 	}
 	

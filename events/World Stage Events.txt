@@ -70,27 +70,12 @@ news_event = {
 news_event = {
 	id = worldstage.2
 	title = worldstage.2.t
-	desc = worldstage.2.d 
+	desc = worldstage.2.d
 	picture = GFX_news_great_depression_over
 
 	is_triggered_only = yes
 
 	major = yes
-	
-	immediate = {
-		hidden_effect = {
-			set_global_flag = ROC_won_mongolia
-			add_to_variable = { global.world_stage_power_chi = 5 }
-			if = {
-				limit = { has_global_flag = league_of_nations_exists }
-				set_variable = { global.theater_owner_mongolia = 3 }
-			} else = { global.theater_owner_mongolia = 6 }
-			if = {
-				limit = { has_global_flag = world_stage_world_war_2_is_active }
-				news_event = { id = worldstage.59 days = 1 random = 3 }
-			}
-		}
-	}
 	
 	option = {
 		name = worldstage.2.axis
@@ -98,8 +83,6 @@ news_event = {
 			OR = { has_government = fascism tag = ROC }
 		}
 		effect_tooltip = {
-			custom_effect_tooltip = CHI_strength_trickleback_tt
-			custom_effect_tooltip = SOV_strength_trickleback_tt
 			add_world_stage_power_chi_5 = yes
 		}
 	}
@@ -109,8 +92,6 @@ news_event = {
 			OR = { has_government = communism tag = FER }
 		}
 		effect_tooltip = {
-			custom_effect_tooltip = CHI_strength_trickleback_tt
-			custom_effect_tooltip = SOV_strength_trickleback_tt
 			add_world_stage_power_chi_5 = yes
 		}
 	}
@@ -125,8 +106,6 @@ news_event = {
 			}
 		}
 		effect_tooltip = {
-			custom_effect_tooltip = CHI_strength_trickleback_tt
-			custom_effect_tooltip = SOV_strength_trickleback_tt
 			add_world_stage_power_chi_5 = yes
 		}
 	}
@@ -136,14 +115,7 @@ news_event = {
 news_event = {
 	id = worldstage.3
 	title = worldstage.3.t
-	desc = {
-		text = worldstage.3.d_no_ww2
-		trigger = { NOT = { has_global_flag = world_stage_world_war_2_is_active } }
-	}
-	desc = {
-		text = worldstage.3.d_has_ww2
-		trigger = { has_global_flag = world_stage_world_war_2_is_active }
-	}
+	desc = worldstage.2.d
 		
 	picture = GFX_news_great_depression_over
 
@@ -151,32 +123,12 @@ news_event = {
 
 	major = yes
 	
-	immediate = {
-		hidden_effect = {
-			add_to_variable = { global.world_stage_power_sov = 5 }
-			set_global_flag = SOV_won_mongolia
-			if = {
-				limit = {
-					NOT = { has_global_flag = SOV_expelled_from_lon }
-					has_global_flag = league_of_nations_exists
-				}
-				set_variable = { global.theater_owner_mongolia = 5 }
-			} else = { global.theater_owner_mongolia = 2 }
-			if = {
-				limit = { has_global_flag = world_stage_world_war_2_is_active }
-				news_event = { id = worldstage.59 days = 1 random = 3 }
-			}
-		}
-	}
-	
 	option = {
 		name = worldstage.3.axis
 		trigger = {
 			has_government = fascism
 		}
 		effect_tooltip = {
-			custom_effect_tooltip = CHI_strength_trickleback_tt
-			custom_effect_tooltip = SOV_strength_trickleback_tt
 			add_world_stage_power_sov_5 = yes
 		}
 	}
@@ -184,28 +136,9 @@ news_event = {
 		name = worldstage.3.komin
 		trigger = {
 			has_government = communism
-			NOT = { tag = FER }
 		}
 		effect_tooltip = {
-			custom_effect_tooltip = CHI_strength_trickleback_tt
-			custom_effect_tooltip = SOV_strength_trickleback_tt
 			add_world_stage_power_sov_5 = yes
-		}
-	}
-	option = {
-		name = worldstage.3.komin_fer
-		trigger = {
-			has_government = communism
-			NOT = { tag = FER }
-		}
-		effect_tooltip = {
-			custom_effect_tooltip = CHI_strength_trickleback_tt
-			custom_effect_tooltip = SOV_strength_trickleback_tt
-			add_world_stage_power_sov_5 = yes
-			if = {
-				limit = { country_exists = ROC country_exists = FER }
-				ROC = { declare_war_on = { target = FER type = annex_everything } }
-			}
 		}
 	}
 	option = {
@@ -217,8 +150,6 @@ news_event = {
 			}
 		}
 		effect_tooltip = {
-			custom_effect_tooltip = CHI_strength_trickleback_tt
-			custom_effect_tooltip = SOV_strength_trickleback_tt
 			add_world_stage_power_sov_5 = yes
 		}
 	}
@@ -3262,34 +3193,17 @@ news_event = {
 					} else = { ROC = { create_faction = "Axis" } }
 				}
 			}
-			if = {
-				limit = { has_global_flag = ROC_won_mongolia }				# is mongolia is under china's influence, an attack on siberia will be launched from there
-				set_temp_variable = { global.theater_owner_mongolia = 3 }	# probably redundant but running the code twice is free
-				set_global_flag = world_stage_theater_siberia_is_active
-				set_temp_variable = { chi_forces_value = global.world_stage_power_chi }
-				set_temp_variable = { sov_forces_value = global.world_stage_power_chi }
-				divide_temp_variable = { chi_forces_value = 5 }
-				divide_temp_variable = { sov_forces_value = 5 }
-				add_to_variable = { global.CHI_strength_siberia = chi_forces_value }
-				add_to_variable = { global.AXIS_locals_siberia = 3 }
-				add_to_variable = { global.SOV_strength_siberia = sov_forces_value }
-				add_to_variable = { global.ALLIES_locals_siberia = 1 }
-			}
-			if = {
-				limit = { has_global_flag = SOV_won_mongolia }				# is mongolia is under russias's influence, china will attack it
-				set_temp_variable = { global.theater_owner_mongolia = 2 }	# probably redundant but running the code twice is free
-				set_global_flag = world_stage_theater_mongolia_is_active
-				set_temp_variable = { chi_forces_value = global.world_stage_power_chi }
-				set_temp_variable = { sov_forces_value = global.world_stage_power_chi }
-				divide_temp_variable = { chi_forces_value = 4 }
-				divide_temp_variable = { sov_forces_value = 5 }
-				add_to_variable = { global.CHI_strength_mongolia = chi_forces_value }
-				add_to_variable = { global.AXIS_locals_mongolia = 1 }
-				add_to_variable = { global.SOV_strength_mongolia = sov_forces_value }
-				add_to_variable = { global.ALLIES_locals_mongolia = 3 }
-			}
+			set_temp_variable = { chi_forces_value = global.world_stage_power_chi }
+			divide_temp_variable = { chi_forces_value = 4}
+			round_temp_variable = chi_forces_value
+			add_to_variable = { global.CHI_strength_bengal = chi_forces_value }
+			subtract_from_variable = { global.world_stage_power_chi = chi_forces_value }
+			set_temp_variable = { eng_forces_value = global.world_stage_power_eng }
+			divide_temp_variable = { eng_forces_value = 10 }
+			round_temp_variable = eng_force_value
+			add_to_variable = { global.ENG_strength_bengal = eng_forces_value }
+			subtract_from_variable = { global.world_stage_power_eng = eng_forces_value }
 			set_global_flag = world_stage_theater_bengal_is_active # attacks india, regardless of situation in mongolia
-			add_to_variable = { global.CHI_strength_india = chi_forces_value }
 			if = {
 				limit = { country_exists = ROC country_exists = FER }
 				ROC = { declare_war_on = { target = FER type = annex_everything } }
@@ -3305,6 +3219,7 @@ news_event = {
 				limit = { country_exists = ROC country_exists = FER }
 				ROC = { declare_war_on = { target = FER type = annex_everything } }
 			}
+			custom_effect_tooltip = world_stage_theater_bengal_is_active_tt
 		}
 	}
 	option = {
@@ -3315,6 +3230,7 @@ news_event = {
 				limit = { country_exists = ROC country_exists = FER }
 				ROC = { declare_war_on = { target = FER type = annex_everything } }
 			}
+			custom_effect_tooltip = world_stage_theater_bengal_is_active_tt
 		}
 	}
 	option = {
@@ -3325,6 +3241,7 @@ news_event = {
 				limit = { country_exists = ROC country_exists = FER }
 				ROC = { declare_war_on = { target = FER type = annex_everything } }
 			}
+			custom_effect_tooltip = world_stage_theater_bengal_is_active_tt
 		}
 	}
 	option = {
@@ -3335,6 +3252,7 @@ news_event = {
 				limit = { country_exists = ROC country_exists = FER }
 				ROC = { declare_war_on = { target = FER type = annex_everything } }
 			}
+			custom_effect_tooltip = world_stage_theater_bengal_is_active_tt
 		}
 	}
 	option = {
@@ -3345,6 +3263,7 @@ news_event = {
 				limit = { country_exists = ROC country_exists = FER }
 				ROC = { declare_war_on = { target = FER type = annex_everything } }
 			}
+			custom_effect_tooltip = world_stage_theater_bengal_is_active_tt
 		}
 	}
 }
@@ -3376,6 +3295,174 @@ news_event = {
 	option = {
 		name = worldstage.60.other
 		trigger = { has_world_stage_coalition_unaligned = yes }
+	}
+}
+
+# China Invades Siberia
+news_event = {
+	id = worldstage.61
+	title = worldstage.61.t
+	desc = worldstage.61.d
+	
+	option = {
+		name = worldstage.61.axis
+		trigger = { has_world_stage_coalition_axis = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_china
+			add_to_variable = { placeholder_var = 40 tooltip = world_stage_bonus_power_siberia }
+		}
+	}
+	option = {
+		name = worldstage.61.komin
+		trigger = { has_world_stage_coalition_komintern = yes NOT = { tag = ROC } }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_china
+			add_to_variable = { placeholder_var = 40 tooltip = world_stage_bonus_power_siberia }
+		}
+	}
+	option = {
+		name = worldstage.61.allies
+		trigger = { has_world_stage_coalition_allies = yes NOT = { tag = ROC } }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_china
+			add_to_variable = { placeholder_var = 40 tooltip = world_stage_bonus_power_siberia }
+		}
+	}
+	option = {
+		name = worldstage.61.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_china
+			add_to_variable = { placeholder_var = 40 tooltip = world_stage_bonus_power_siberia }
+		}
+	}
+}
+
+# USSR invades Inner Mongolia
+news_event = {
+	id = worldstage.62
+	title = worldstage.62.t
+	desc = worldstage.62.d
+	
+	option = {
+		name = worldstage.62.axis
+		trigger = { has_world_stage_coalition_axis = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_russia
+			add_to_variable = { placeholder_var = 40 tooltip = world_stage_bonus_power_tibet }
+		}
+	}
+	option = {
+		name = worldstage.62.komin
+		trigger = { has_world_stage_coalition_komintern = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_russia
+			add_to_variable = { placeholder_var = 40 tooltip = world_stage_bonus_power_tibet }
+		}
+	}
+	option = {
+		name = worldstage.62.allies
+		trigger = { has_world_stage_coalition_allies = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_russia
+			add_to_variable = { placeholder_var = 40 tooltip = world_stage_bonus_power_tibet }
+		}
+	}
+	option = {
+		name = worldstage.62.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_russia
+			add_to_variable = { placeholder_var = 40 tooltip = world_stage_bonus_power_tibet }
+		}
+	}
+}
+
+# China invades philipines
+news_event = {
+	id = worldstage.63
+	title = worldstage.63.t
+	desc = worldstage.63.d
+	
+	option = {
+		name = worldstage.63.axis
+		trigger = { has_world_stage_coalition_axis = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_china
+			add_to_variable = { placeholder_var = 40 tooltip = world_stage_bonus_power_philipines }
+		}
+	}
+	option = {
+		name = worldstage.63.komin
+		trigger = { has_world_stage_coalition_komintern = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_china
+			add_to_variable = { placeholder_var = 40 tooltip = world_stage_bonus_power_philipines }
+		}
+	}
+	option = {
+		name = worldstage.63.allies
+		trigger = { has_world_stage_coalition_allies = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_china
+			add_to_variable = { placeholder_var = 40 tooltip = world_stage_bonus_power_philipines }
+		}
+	}
+	option = {
+		name = worldstage.63.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_china
+			add_to_variable = { placeholder_var = 30 tooltip = world_stage_bonus_power_philipines }
+		}
+	}
+}
+
+# USA JOINS THE WAR
+news_event = {
+	id = worldstage.64
+	title = worldstage.64.t
+	desc = worldstage.64.d
+	
+	immediate = {
+		set_variable = { global.world_stage_coalition_usa = 1 }
+		AMC = { set_variable = { world_stage_coalition = 1 } }
+		if = {
+			limit = { OKI = { check_variable = { world_stage_metropolis = 5 } } }
+			OKI = { set_variable = { world_stage_coalition = 1 } }
+		}
+	}
+	option = {
+		name = worldstage.64.axis
+		trigger = { has_world_stage_coalition_axis = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_usa
+			custom_effect_tooltip = usa_will_join_ww2
+		}
+	}
+	option = {
+		name = worldstage.64.komin
+		trigger = { has_world_stage_coalition_komintern = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_usa
+			custom_effect_tooltip = usa_will_join_ww2_good
+		}
+	}
+	option = {
+		name = worldstage.64.allies
+		trigger = { has_world_stage_coalition_allies = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_usa
+			custom_effect_tooltip = usa_will_join_ww2_good
+		}
+	}
+	option = {
+		name = worldstage.64.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_usa
+			custom_effect_tooltip = usa_will_join_ww2_good
+		}
 	}
 }
 
