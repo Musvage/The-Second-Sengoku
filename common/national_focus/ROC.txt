@@ -29,7 +29,6 @@ focus_tree = {
 		
 		completion_reward = {
 			add_ideas = ROC_idea_security_state
-			clr_country_flag = allow_lo_pan_branch		### FOR DEBUG, REMOVE LATER
 		}
 	}
 	
@@ -440,13 +439,35 @@ focus_tree = {
 		}
 		
 		available = {
+			has_world_stage_power_chi_20 = yes
+			has_global_flag = world_stage_world_war_2_is_active
+			has_global_flag = netherlands_joined_ww2
 			NOT = {
 				is_in_faction_with = HIR
+				custom_trigger_tooltip = {
+					tooltip = netherlands_is_not_axis_trigger
+					check_variable = { global.world_stage_coalition_net = 3 }
+				}
 			}
+			
 		}
 	 
 		completion_reward = {
-			# attack off map Dutch holdings
+			news_event = worldstage.63
+			add_to_variable = {
+				global.CHI_strength_philipines = 20
+				tooltip = world_stage_deploy_power_philipines
+			}
+			add_to_variable = {
+				global.AXIS_strength_philipines_bonus = 20
+				tooltip = world_stage_bonus_power_philipines
+			}
+			set_global_flag = world_stage_theater_philipines_is_active
+			custom_effect_tooltip = world_stage_theater_philipines_is_active_tt
+			add_named_threat = {
+				threat = 10
+				name = ROC_threat_east_indies
+			}
 		}
 	}
 	
@@ -469,6 +490,7 @@ focus_tree = {
 		}
 		
 		available = {
+			has_world_stage_power_chi_20 = yes
 			has_global_flag = world_stage_world_war_2_is_active
 			NOT = {
 				is_in_faction_with = AMC
@@ -479,18 +501,30 @@ focus_tree = {
 		completion_reward = {
 			news_event = worldstage.63
 			if = {
-				limit = { NOT = { has_global_flag = usa_joinned_ww2 } }
+				limit = { NOT = { has_global_flag = usa_joined_ww2 } }
 				hidden_effect = { news_event = { id = worldstage.64 days = 1 random = 24 } }
 				custom_effect_tooltip = usa_will_join_ww2
-				set_global_flag = usa_joinned_ww2
+				set_global_flag = usa_joined_ww2
+			}
+			add_to_variable = {
+				global.CHI_strength_philipines = 20
+				tooltip = world_stage_deploy_power_philipines
+			}
+			add_to_variable = {
+				global.AXIS_strength_philipines_bonus = 20
+				tooltip = world_stage_bonus_power_philipines
 			}
 			set_global_flag = world_stage_theater_philipines_is_active
 			custom_effect_tooltip = world_stage_theater_philipines_is_active_tt
+			add_named_threat = {
+				threat = 10
+				name = ROC_threat_philipines
+			}
 		}
 	}
 	
 	focus = {
-		id = ROC_siberian_offensive
+		id = ROC_siberian_offensive			# Northern Offensive
 		icon = GFX_focus_ROC_aid_mongolia
 		search_filters = {  }
 		
@@ -512,14 +546,40 @@ focus_tree = {
 			has_global_flag = russia_joined_ww2
 			has_world_stage_power_chi_40 = yes
 			OR = {
-				custom_trigger_tooltip = {
-					has_global_flag = world_stage_theater_siberia_is_active
-					tooltip = world_stage_theater_siberia_is_active
-				}
-				NOT = {
+				AND = {
+					OR = {
+						custom_trigger_tooltip = {
+							has_global_flag = world_stage_theater_siberia_is_active
+							tooltip = world_stage_theater_siberia_is_active
+						}
+						NOT = {
+							custom_trigger_tooltip = {
+								tooltip = owner_siberia_not_axis
+								check_variable = { global.theater_owner_siberia = 3 }
+							}
+						}
+					}
 					custom_trigger_tooltip = {
-						tooltip = owner_siberia_not_axis
-						check_variable = { global.theater_owner_siberia = 3 }
+						tooltip = owner_mongolia_axis
+						check_variable = { global.theater_owner_mongolia = 3 }
+					}
+				}
+				AND = {
+					OR = {
+						custom_trigger_tooltip = {
+							has_global_flag = world_stage_theater_mongolia_is_active
+							tooltip = world_stage_theater_mongolia_is_active
+						}
+						NOT = {
+							custom_trigger_tooltip = {
+								tooltip = owner_mongolia_not_axis
+								check_variable = { global.theater_owner_mongolia = 3 }
+							}
+						}
+					}
+					custom_trigger_tooltip = {
+						tooltip = owner_tibet_axis
+						check_variable = { global.theater_owner_tibet = 3 }
 					}
 				}
 			}
@@ -529,21 +589,42 @@ focus_tree = {
 			hidden_effect = { news_event = worldstage.61 }
 			set_temp_variable = { sov_forces_value = global.world_stage_power_chi }
 			divide_temp_variable = { sov_forces_value = 5 }
-			add_to_variable = { global.CHI_strength_siberia = 40 tooltip = world_stage_deploy_power_siberia }
-			add_to_variable = { global.AXIS_locals_siberia = 3 }
-			add_to_variable = { global.SOV_strength_siberia = sov_forces_value }
-			add_to_variable = { global.ALLIES_locals_siberia = 1 }
-			add_to_variable = {
-				tooltip = world_stage_bonus_power_siberia
-				global.AXIS_strength_mongolia_bonus = 40 
-			}
 			if = {
-				limit = { NOT = { has_global_flag = world_stage_theater_siberia_is_active } }
-				set_global_flag = world_stage_theater_siberia_is_active
-				custom_effect_tooltip = world_stage_theater_siberia_is_active_tt
+				limit = { check_variable = { global.theater_owner_mongolia = 3 } }	# has mongolia, attacks siberia
+				add_to_variable = { global.CHI_strength_siberia = 40 tooltip = world_stage_deploy_power_siberia }
+				add_to_variable = { global.AXIS_locals_siberia = 3 }
+				add_to_variable = { global.SOV_strength_siberia = sov_forces_value }
+				add_to_variable = { global.ALLIES_locals_siberia = 1 }
+				add_to_variable = {
+					tooltip = world_stage_bonus_power_siberia
+					global.AXIS_strength_siberia_bonus = 40 
+				}
+				if = {
+					limit = { NOT = { has_global_flag = world_stage_theater_siberia_is_active } }
+					set_global_flag = world_stage_theater_siberia_is_active
+					custom_effect_tooltip = world_stage_theater_siberia_is_active_tt
+				}
+				add_named_threat = {
+					threat = 5
+					name = ROC_threat_siberia_offensive
+				}
+			} else = {	# do not have mongolia, attack it instead
+				add_to_variable = { global.CHI_strength_mongolia = 40 tooltip = world_stage_deploy_power_mongolia }
+				add_to_variable = { global.AXIS_locals_mongolia = 1 }
+				add_to_variable = { global.SOV_strength_mongolia = sov_forces_value }
+				add_to_variable = { global.ALLIES_locals_mongolia = 1 }
+				add_to_variable = {
+					tooltip = world_stage_bonus_power_mongolia
+					global.AXIS_strength_mongolia_bonus = 40 
+				}
+				if = {
+					limit = { NOT = { has_global_flag = world_stage_theater_mongolia_is_active } }
+					set_global_flag = world_stage_theater_mongolia_is_active
+					custom_effect_tooltip = world_stage_theater_mongolia_is_active_tt
+				}
 			}
 			custom_effect_tooltip = siberia_offensive_allowed
-			set_country_flag = can_play_siberia set_country_flag = can_play_urals set_country_flag = can_play_russia
+			set_country_flag = can_play_mongolia set_country_flag = can_play_siberia set_country_flag = can_play_urals set_country_flag = can_play_russia
 		}
 	}
 	
@@ -1977,7 +2058,7 @@ focus_tree = {
 		prerequisite = { focus = ROC_manchu_nationalism }
 		
 		relative_position_id = ROC_rescue_puyi
-		x = -1
+		x = -2
 		y = 1
 		cost = 10
 		
@@ -2140,8 +2221,8 @@ focus_tree = {
 		prerequisite = { focus = ROC_full_manchu }
 		
 		relative_position_id = ROC_full_manchu
-		x = -1
-		y = 2
+		x = -2
+		y = 1
 		cost = 10
 		
 		available = {
@@ -2210,8 +2291,8 @@ focus_tree = {
 		prerequisite = { focus = ROC_full_manchu }
 		
 		relative_position_id = ROC_full_manchu
-		x = 1
-		y = 2
+		x = 2
+		y = 1
 		cost = 10
 		
 		available = {
@@ -2322,12 +2403,12 @@ focus_tree = {
 	focus = {
 		id = ROC_boy_scouts
 		icon = GFX_focus_ROC_boy_scouts
-		search_filters = {  }
+		search_filters = { FOCUS_FILTER_MANPOWER }
 		
-		prerequisite = { focus = ROC_full_manchu }
+		prerequisite = { focus = ROC_manchu_nationalism }
 		
-		relative_position_id = ROC_full_manchu
-		x = 0
+		relative_position_id = ROC_manchu_nationalism
+		x = 3
 		y = 1
 		cost = 10
 		
@@ -2353,13 +2434,13 @@ focus_tree = {
 	focus = {
 		id = ROC_hoankyoku	# Hoankyoku
 		icon = GFX_focus_generic_expand_police_forces	### MISSING GFX! (or not)
-		search_filters = {  }
+		search_filters = { FOCUS_FILTER_SPY }
 		
 		prerequisite = { focus = ROC_boy_scouts }
 		
 		relative_position_id = ROC_boy_scouts
 		x = 0
-		y = 2
+		y = 1
 		cost = 10
 		
 		available = {
@@ -2396,11 +2477,111 @@ focus_tree = {
 					add_ideas = ROC_xianyu
 				} else = { add_political_power = 200 }
 			}
-			ROC_xianyu = {
-				swap_ruler_traits = {
-					remove = security_chief_head_of_intelligence_woman_2
-					add = security_chief_head_of_intelligence_woman_3
+			add_trait = {
+				 character = ROC_xianyu
+				 slot = security_chief
+				 trait = security_chief_head_of_intelligence_woman_3
+			}
+			hidden_effect = {
+				remove_trait = {
+					 character = ROC_xianyu
+					 slot = security_chief
+					 trait = security_chief_head_of_intelligence_woman_3
 				}
+			}
+		}
+	}
+	
+	focus = {
+		id = ROC_folk_religion
+		icon = GFX_focus_ROC_folk_religion
+		search_filters = { FOCUS_FILTER_RELIGION FOCUS_FILTER_STABILITY }
+		
+		prerequisite = { focus = ROC_concordia_association focus = ROC_purge_concordia }
+		
+		relative_position_id = ROC_purge_concordia
+		x = 1
+		y = 1
+		cost = 10
+		
+		available = {
+			has_religion_5 = yes
+		}
+		
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		completion_reward = {
+			add_ideas = ROC_idea_folk_religion
+			add_stability = 0.05
+		}
+	}
+	
+	focus = {
+		id = ROC_reinstate_nobility
+		icon = GFX_focus_ROC_nobility
+		search_filters = { FOCUS_FILTER_RELIGION FOCUS_FILTER_STABILITY }
+		
+		prerequisite = { focus = ROC_full_manchu }
+		
+		relative_position_id = ROC_full_manchu
+		x = 0
+		y = 1
+		cost = 10
+		
+		available = {
+			has_government = autocracy
+		}
+		
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		completion_reward = {
+			add_political_power = 150
+			add_popularity = {
+				ideology = autocracy
+				popularity = 0.05
+			}
+		}
+	}
+	
+	focus = {
+		id = ROC_mandate_of_heaven
+		icon = GFX_focus_ROC_mandate_of_heaven
+		search_filters = { FOCUS_FILTER_RELIGION FOCUS_FILTER_STABILITY }
+		
+		prerequisite = { focus = ROC_reinstate_nobility }
+		
+		relative_position_id = ROC_reinstate_nobility
+		x = 0
+		y = 1
+		cost = 10
+		
+		available = {
+			has_government = autocracy
+		}
+		
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		completion_reward = {
+			if = {
+				limit = {
+					has_country_leader = {
+						id = 5765	# Puyi
+						ruling_only = yes
+					}
+				}
+				add_country_leader_trait = ROC_mandate_of_heaven
 			}
 		}
 	}

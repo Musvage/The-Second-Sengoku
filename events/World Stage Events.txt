@@ -77,6 +77,25 @@ news_event = {
 
 	major = yes
 	
+	immediate = {
+		if = {
+			limit = { has_global_flag = league_of_nations_exists NOT = { has_global_flag = china_aligned_axis } }
+			set_variable = { global.theater_owner_mongolia = 5 }
+		}
+		if = {
+			limit = { has_global_flag = league_of_nations_exists has_global_flag = china_aligned_axis }
+			set_variable = { global.theater_owner_mongolia = 6 }
+		}
+		if = {
+			limit = { NOT = { has_global_flag = league_of_nations_exists has_global_flag = china_aligned_axis } }
+			set_variable = { global.theater_owner_mongolia = 4 }
+		}
+		if = {
+			limit = { NOT = { has_global_flag = league_of_nations_exists } has_global_flag = china_aligned_axis }
+			set_variable = { global.theater_owner_mongolia = 3 }
+		}
+	}
+	
 	option = {
 		name = worldstage.2.axis
 		trigger = {
@@ -122,6 +141,17 @@ news_event = {
 	is_triggered_only = yes
 
 	major = yes
+	
+	immediate = {
+		if = {
+			limit = { OR = { has_global_flag = SOV_expelled_from_lon NOT = { has_global_flag = league_of_nations_exists } } }
+			set_variable = { global.theater_owner_mongolia = 2 }
+		}
+		if = {
+			limit = { has_global_flag = league_of_nations_exists NOT = { has_global_flag = SOV_expelled_from_lon } }
+			set_variable = { global.theater_owner_mongolia = 5 }
+		}
+	}
 	
 	option = {
 		name = worldstage.3.axis
@@ -3173,6 +3203,7 @@ news_event = {
 	major = yes
 	
 	immediate = {
+		log = "event worldstage.59: CHINA JOINS WAR with axis"
 		set_global_flag = china_joined_ww2
 		set_temp_variable = { global.theater_owner_china = 3 }	# probably redundant but running the code twice is free
 		set_temp_variable = { global.theater_owner_guanxi = 3 }
@@ -3227,7 +3258,7 @@ news_event = {
 		trigger = { has_world_stage_coalition_axis = yes tag = ROC }
 		effect_tooltip = {
 			if = {
-				limit = { country_exists = ROC country_exists = FER }
+				limit = { country_exists = ROC country_exists = FER has_global_flag = russia_joined_ww2 }
 				ROC = { declare_war_on = { target = FER type = annex_everything } }
 			}
 			custom_effect_tooltip = world_stage_theater_bengal_is_active_tt
@@ -3274,11 +3305,21 @@ news_event = {
 	title = worldstage.60.t
 	desc = worldstage.60.d
 	
-	immediate = { set_global_flag = china_joined_ww2 }
+	major = yes
+	
+	is_triggered_only = yes
+	
+	immediate = { set_global_flag = china_joined_ww2 log = "event worldstage.60: CHINA JOINS THE WAR agains axis" }
 	
 	option = {
-		name = worldstage.59.roc
+		name = worldstage.60.roc
 		trigger = { tag = ROC }
+		effect_tooltip = {
+			if = {
+				limit = { country_exists = ROC country_exists = REI }
+				ROC = { declare_war_on = { target = REI type = annex_everything } }
+			}
+		}
 	}
 	option = {
 		name = worldstage.60.axis
@@ -3304,12 +3345,25 @@ news_event = {
 	title = worldstage.61.t
 	desc = worldstage.61.d
 	
+	major = yes
+	
+	is_triggered_only = yes
+	
+	immediate = { log = "event worldstage.61: CHINA INVADES SIBERIA" }
+	
 	option = {
 		name = worldstage.61.axis
 		trigger = { has_world_stage_coalition_axis = yes }
 		effect_tooltip = {
 			custom_effect_tooltip = country_name_china
 			add_to_variable = { placeholder_var = 40 tooltip = world_stage_bonus_power_siberia }
+		}
+		effect_tooltip = {
+			if = {
+				limit = { tag = ROC country_exists = FER }
+				ROC = { declare_war_on = { target = FER type = annex_everything } }
+			}
+			custom_effect_tooltip = world_stage_theater_bengal_is_active_tt
 		}
 	}
 	option = {
@@ -3343,6 +3397,12 @@ news_event = {
 	id = worldstage.62
 	title = worldstage.62.t
 	desc = worldstage.62.d
+	
+	major = yes
+	
+	is_triggered_only = yes
+	
+	immediate = { log = "event worldstage.62: USSR INVADES INNER MONGOLIA" }
 	
 	option = {
 		name = worldstage.62.axis
@@ -3383,6 +3443,11 @@ news_event = {
 	id = worldstage.63
 	title = worldstage.63.t
 	desc = worldstage.63.d
+	major = yes
+	
+	is_triggered_only = yes
+	
+	immediate = { log = "event worldstage.63: CHINA INVADES PHILIPINES" }
 	
 	option = {
 		name = worldstage.63.axis
@@ -3413,7 +3478,7 @@ news_event = {
 		trigger = { has_world_stage_coalition_unaligned = yes }
 		effect_tooltip = {
 			custom_effect_tooltip = country_name_china
-			add_to_variable = { placeholder_var = 30 tooltip = world_stage_bonus_power_philipines }
+			add_to_variable = { placeholder_var = 40 tooltip = world_stage_bonus_power_philipines }
 		}
 	}
 }
@@ -3424,7 +3489,12 @@ news_event = {
 	title = worldstage.64.t
 	desc = worldstage.64.d
 	
+	major = yes
+	
+	is_triggered_only = yes
+	
 	immediate = {
+		log = "event worldstage.64: USA JOINS THE WAR"
 		set_variable = { global.world_stage_coalition_usa = 1 }
 		AMC = { set_variable = { world_stage_coalition = 1 } }
 		if = {
@@ -3463,6 +3533,51 @@ news_event = {
 		effect_tooltip = {
 			custom_effect_tooltip = country_name_usa
 			custom_effect_tooltip = usa_will_join_ww2_good
+		}
+	}
+}
+
+# China invades East Indies
+news_event = {
+	id = worldstage.65
+	title = worldstage.65.t
+	desc = worldstage.65.d
+	major = yes
+	
+	is_triggered_only = yes
+	
+	immediate = { log = "event worldstage.65: CHINA INVADES INDONESIA" }
+	
+	option = {
+		name = worldstage.65.axis
+		trigger = { has_world_stage_coalition_axis = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_china
+			add_to_variable = { placeholder_var = 20 tooltip = world_stage_bonus_power_indies }
+		}
+	}
+	option = {
+		name = worldstage.65.komin
+		trigger = { has_world_stage_coalition_komintern = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_china
+			add_to_variable = { placeholder_var = 20 tooltip = world_stage_bonus_power_indies }
+		}
+	}
+	option = {
+		name = worldstage.65.allies
+		trigger = { has_world_stage_coalition_allies = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_china
+			add_to_variable = { placeholder_var = 20 tooltip = world_stage_bonus_power_indies }
+		}
+	}
+	option = {
+		name = worldstage.65.other
+		trigger = { has_world_stage_coalition_unaligned = yes }
+		effect_tooltip = {
+			custom_effect_tooltip = country_name_china
+			add_to_variable = { placeholder_var = 20 tooltip = world_stage_bonus_power_indies }
 		}
 	}
 }
