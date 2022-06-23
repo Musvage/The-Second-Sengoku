@@ -15,6 +15,18 @@ unification_get_score = {
 	if = { limit = { controls_state = 99 } add_to_variable = { country_unification_score = 5 } }	# Osaka
 	if = { limit = { controls_state = 140 } add_to_variable = { country_unification_score = 5 } }	# Nagasaki
 	if = { limit = { controls_state = 254 } add_to_variable = { country_unification_score = 5 } }	# Yawatahama
+		# important cities held by trade powers that back your claims
+	if = {
+		limit = { has_idea = REI_idea_prefered_partner }
+		if = { limit = { REI = { controls_state = 29 } } add_to_variable = { country_unification_score = 10 } }	# Edo
+		if = { limit = { REI = { controls_state = 32 } } add_to_variable = { country_unification_score = 10 } }	# Tokyo
+		if = { limit = { REI = { controls_state = 21 } } add_to_variable = { country_unification_score = 5 } }	# Chiba
+		if = { limit = { REI = { controls_state = 16 } } add_to_variable = { country_unification_score = 5 } }	# Hirado
+		if = { limit = { REI = { controls_state = 27 } } add_to_variable = { country_unification_score = 5 } }	# Kobe
+		if = { limit = { REI = { controls_state = 99 } } add_to_variable = { country_unification_score = 5 } }	# Osaka
+		if = { limit = { REI = { controls_state = 140 } } add_to_variable = { country_unification_score = 5 } }	# Nagasaki
+		if = { limit = { REI = { controls_state = 254 } } add_to_variable = { country_unification_score = 5 } }	# Yawatahama
+	}
 	# calculate multiplier
 	set_temp_variable = { country_unification_score_multiplier = 1 }
 	if = { limit = { is_puppet = yes } add_to_temp_variable = { country_unification_score_multiplier = -0.25 } }
@@ -34,6 +46,16 @@ unification_count_states_southern_japan = {
 		limit = { has_state_flag = state_is_southern_japan }
 		CONTROLLER = { add_to_variable = { number_of_states_controlled_southern_japan = 1 } log = "controller is [THIS.GetName]" }
 	}
+	set_temp_variable = { beneficiary_tag = THIS.id }
+	if = {
+		limit = { has_idea = REI_idea_prefered_partner }
+		REI = {
+			every_controlled_state = {
+				limit = { has_state_flag = state_is_southern_japan }
+				var:beneficiary_tag = { add_to_variable = { number_of_states_controlled_southern_japan = 1 } log = "controller is [REI.GetName], counts towars [THIS.GetName]" }
+			}
+		}
+	}
 	log = "[ROOT.GetName] controls [?number_of_states_controlled_southern_japan] states in Southern Japan"
 }
 
@@ -42,6 +64,16 @@ unification_count_states_central_japan = {
 	every_controlled_state = {
 		limit = { has_state_flag = state_is_central_japan }
 		CONTROLLER = { add_to_variable = { number_of_states_controlled_central_japan = 1 } log = "controller is [THIS.GetName]" }
+	}
+	set_temp_variable = { beneficiary_tag = THIS.id }
+	if = {
+		limit = { has_idea = REI_idea_prefered_partner }
+		REI = {
+			every_controlled_state = {
+				limit = { has_state_flag = state_is_central_japan }
+				var:beneficiary_tag = { add_to_variable = { number_of_states_controlled_southern_japan = 1 } log = "controller is [REI.GetName], counts towars [THIS.GetName]" }
+			}
+		}
 	}
 	log = "[ROOT.GetName] controls [?number_of_states_controlled_central_japan] states in Central Japan"
 }
@@ -52,6 +84,16 @@ unification_count_states_northern_japan = {
 		limit = { has_state_flag = state_is_northern_japan }
 		CONTROLLER = { add_to_variable = { number_of_states_controlled_northern_japan = 1 } log = "controller is [THIS.GetName]" }
 	}
+	set_temp_variable = { beneficiary_tag = THIS.id }
+	if = {
+		limit = { has_idea = REI_idea_prefered_partner }
+		REI = {
+			every_controlled_state = {
+				limit = { has_state_flag = state_is_northern_japan }
+				var:beneficiary_tag = { add_to_variable = { number_of_states_controlled_southern_japan = 1 } log = "controller is [REI.GetName], counts towars [THIS.GetName]" }
+			}
+		}
+	}
 	log = "[ROOT.GetName] controls [?number_of_states_controlled_northern_japan] states in Northern Japan"
 }
 
@@ -61,7 +103,8 @@ unification_count_total_required_states_japan = {
 		if = {
 			limit = {
 				OR = { has_state_flag = state_is_northern_japan has_state_flag = state_is_central_japan has_state_flag = state_is_southern_japan }
-				NOT = { owner = { OR = { tag = AMC tag = OSA tag = REI tag = KOB tag = PRT tag = OKI tag = HIR } has_country_flag = is_not_japan } }
+				#NOT = { owner = { OR = { tag = AMC tag = OSA tag = REI tag = KOB tag = PRT tag = OKI tag = HIR } } }
+				NOT = { owner = { has_country_flag = is_not_japan } }	# if Ezo declares independence, its states are not required
 			}
 			add_to_variable = { number_of_total_states_japan = 1 }
 		}

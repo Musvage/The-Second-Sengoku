@@ -41,6 +41,11 @@ focus_tree = {
 		relative_position_id = REI_luds_manifesto
 		x = 7
 		y = 0
+		offset = {
+			x = 1
+			y = 0
+			trigger = { has_global_flag = religion_cthulhu_allowed }
+		}
 
 		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WAR_SUPPORT}
 
@@ -493,6 +498,11 @@ focus_tree = {
 		relative_position_id = REI_military_dictatorship
 		x = 3
 		y = 1
+		offset = {
+			x = -1
+			y = 1
+			trigger = { has_global_flag = religion_cthulhu_allowed }
+		}
 
 		completion_reward = {
 			add_political_power = 150
@@ -1313,7 +1323,8 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			add_world_stage_power_ger_2 = yes
+			army_experience = 25
+			add_to_variable = { global.AXIS_strength_normandy_bonus = 50 tooltip = world_stage_bonus_power_normandy }
 		}
 	}
 	
@@ -1388,6 +1399,10 @@ focus_tree = {
 		
 		available_if_capitulated = yes
 		
+		allow_branch = {
+			always = no
+		}
+		
 		ai_will_do = {
 			factor = 10
 		}
@@ -1409,7 +1424,7 @@ focus_tree = {
 		prerequisite = { focus = REI_barbarossa }
 		
 		relative_position_id = REI_barbarossa
-		x = 1
+		x = 0
 		y = 1
 		cost = 10
 		
@@ -1456,7 +1471,9 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			add_world_stage_power_ger_2 = yes
+			add_to_variable = { global.AXIS_strength_germany_bonus = 50 tooltip = world_stage_bonus_power_germany }
+			add_to_variable = { global.AXIS_strength_westphalia_bonus = 50 tooltip = world_stage_bonus_power_westphalia }
+			army_experience = 25
 		}
 	}
 	
@@ -1619,7 +1636,7 @@ focus_tree = {
 	focus = {
 		id = REI_reichskommissariats
 		icon = GFX_focus_REI_reichskommissariat
-		search_filters = { FOCUS_FILTER_WORLD }
+		search_filters = { FOCUS_FILTER_WORLD FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = REI_home_infrastructure }
 		prerequisite = { focus = REI_attack_poland }
@@ -1640,12 +1657,8 @@ focus_tree = {
 				remove_idea = REI_idea_generalkommissariat
 				add_idea = REI_idea_reichskommissariat
 			}
-			add_tech_bonus = {
-				name = excavation_tech_bonus
-				bonus = 1.0
-				uses = 1
-				category = excavation_tech
-			}
+			add_world_stage_power_ger_10 = yes
+			add_political_power = 100
 		}
 	}
 	
@@ -1706,6 +1719,7 @@ focus_tree = {
 		id = REI_volkswagen
 		icon = GFX_
 		search_filters = { FOCUS_FILTER_RESEARCH }
+		dynamic = yes
 		
 		prerequisite = { focus = REI_home_industry }
 		
@@ -1776,6 +1790,12 @@ focus_tree = {
 		y = 1
 		cost = 10
 		
+		offset = {
+			x = 1
+			y = 0
+			trigger = { has_global_flag = religion_cthulhu_allowed }
+		}
+		
 		available_if_capitulated = yes
 		
 		ai_will_do = {
@@ -1795,9 +1815,9 @@ focus_tree = {
 		mutually_exclusive = { focus = REI_ss_administration focus = REI_civilian_administration }
 		prerequisite = { focus = REI_state_of_affairs }
 		
-		relative_position_id = REI_state_of_affairs
-		x = 0
-		y = 1
+		relative_position_id = REI_civilian_administration
+		x = 2
+		y = 0
 		cost = 10
 		
 		available_if_capitulated = yes
@@ -1819,9 +1839,9 @@ focus_tree = {
 		mutually_exclusive = { focus = REI_wehrmacht_administration focus = REI_civilian_administration }
 		prerequisite = { focus = REI_state_of_affairs }
 		
-		relative_position_id = REI_state_of_affairs
+		relative_position_id = REI_wehrmacht_administration
 		x = 2
-		y = 1
+		y = 0
 		cost = 10
 		
 		available_if_capitulated = yes
@@ -1907,7 +1927,21 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			
+			custom_effect_tooltip = PRO_trade_japan_tt
+			every_other_country = {
+				limit = {
+					NOT = { tag = OSA tag = HIR tag = KOB tag = REI tag = FER tag = JOS tag = AMC tag = OKI tag = PRT tag = GAN }
+				}
+				hidden_effect = { add_ideas = REI_idea_trade_bonus_hidden }
+				add_opinion_modifier = {
+					target = REI
+					modifier = REI_diplomatic_overtures
+				}
+				add_opinion_modifier = {
+					target = REI
+					modifier = REI_diplomatic_overtures_trade
+				}
+			}
 		}
 	}
 	
@@ -1931,7 +1965,40 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			
+			# event for SHI
+			SHI = {
+				add_opinion_modifier = {
+					target = REI
+					modifier = REI_prefered_partner
+				}
+				add_opinion_modifier = {
+					target = REI
+					modifier = REI_prefered_partner_opinion_trade
+				}
+				add_ideas = REI_idea_prefered_partner
+			}
+			hidden_effect = {
+				add_opinion_modifier = {
+					target = SHI
+					modifier = REI_prefered_partner
+				}
+				add_opinion_modifier = {
+					target = SHI
+					modifier = REI_prefered_partner_trade
+				}
+				add_ai_strategy = {
+					type = alliance
+					id = SHI
+					value = 200
+				}
+				SHI = {
+					add_ai_strategy = {
+						type = alliance
+						id = REI
+						value = 200
+					}
+				}
+			}
 		}
 	}
 	
@@ -1943,10 +2010,15 @@ focus_tree = {
 		prerequisite = { focus = REI_state_of_affairs }
 		prerequisite = { focus = REI_reinforce_garrison }
 		
-		relative_position_id = REI_state_of_affairs
-		x = 5
+		relative_position_id = REI_reinforce_garrison
+		x = 0
 		y = 1
 		cost = 10
+		offset = {
+			x = 0
+			y = 1
+			trigger = { has_global_flag = religion_cthulhu_allowed }
+		}
 		
 		available_if_capitulated = yes
 		
@@ -2184,6 +2256,10 @@ focus_tree = {
 		}
 	}
 	
+	### CTHULHU BRANCH
+	#Call of Cthulhu: changes religion
+	#Nyarlathotep: + research
+	#Dagon: navy bonuses
 }
 #FOCUS_FILTER_SPY
 #FOCUS_FILTER_ANNEXATION
