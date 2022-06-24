@@ -1,0 +1,972 @@
+world_stage_ai_ger = {
+	if = {
+		limit = { NOT = { country_exists = REI } }
+		random_list = {
+			1 = {
+				# do focuses
+				if = {	# anschluss
+					limit = { date > 1938.03.13 NOT = { has_global_flag = REI_anschluss_completed } }
+					clr_global_flag = REI_ai_made_a_move
+					add_world_stage_power_ger_20 = yes
+					add_named_threat = { 
+						threat = 10
+						name = REI_threat_anschluss
+					}
+					set_variable = { global.worldstage_europe_map_frame = 2 }
+					if = {
+						limit = { has_global_flag = league_of_nations_exists }
+						set_variable = { global.theater_owner_austria = 6 }
+					} else = { set_variable = { global.theater_owner_austria = 3 } }
+					add_to_variable = { global.tc_base_yawatahama_steel = 2 }
+					check_trade_cities = yes
+					set_global_flag = REI_ai_made_a_move
+					set_global_flag = REI_anschluss_completed
+				}
+				if = {	# ribentrop molotov
+					limit = { date > 1939.08.23 NOT = { has_global_flag = REI_molotov_ribbentrop } }
+					clr_global_flag = REI_ai_made_a_move
+					add_named_threat = {
+						threat = -5
+						name = REI_threat_molotov_ribbentrop
+					}
+					set_global_flag = GER_SOV_pact_enabled
+					set_global_flag = REI_ai_made_a_move
+					set_global_flag = REI_molotov_ribbentrop_completed
+				}
+				if = {	# czechoslovakia
+					limit = { date > 1938.09.30 NOT = { has_global_flag = REI_sudetenland_completed } }
+					clr_global_flag = REI_ai_made_a_move
+					add_named_threat = { 
+						threat = 15
+						name = REI_threat_sudetenland
+					}
+					add_world_stage_power_ger_15 = yes
+					set_variable = { global.worldstage_europe_map_frame = 3 }
+					add_to_variable = { global.tc_base_yawatahama_steel = 4 }
+					add_to_variable = { global.tc_base_yawatahama_oil = 2 }
+					set_global_flag = REI_ai_made_a_move
+					set_global_flag = REI_sudetenland_completed
+				}
+				if = {	# poland
+					limit = { date > 1938.01.01 NOT = { has_global_flag = REI_attack_poland_completed } }
+					clr_global_flag = REI_ai_made_a_move
+					news_event = worldstage.15
+					if = {
+						limit = { has_global_flag = GER_SOV_pact_enabled }
+						news_event = { id = worldstage.16 days = 7 random_days  = 10 }
+					}
+					news_event = { id = worldstage.55 hours = 24 random = 24 }
+					add_named_threat = { 
+						threat = 25
+						name = REI_threat_attack_poland
+					}
+					add_to_variable = { global.GER_strength_poland = 60	}
+					subtract_from_variable = { global.world_stage_power_ger = 60 }
+					add_to_variable = { global.GER_strength_poland_bonus = 30 }
+					set_global_flag = world_stage_theater_poland_is_active_first
+					set_global_flag = world_stage_world_war_2_is_active
+					set_variable = { global.AXIS_strength_poland_final = global.GER_strength_poland }
+					add_to_variable = { global.AXIS_strength_poland_final = global.GER_strength_poland_bonus }
+					set_variable = { global.ALLIES_strength_poland_final = global.ALLIES_locals_poland }
+					add_to_variable = { global.ALLIES_strength_poland_final = global.ALLIES_strength_poland_bonus }
+					set_global_flag = REI_ai_made_a_move
+					set_global_flag = REI_attack_poland_completed
+				}
+				if = {	# blitzkrieg
+					limit = { date > 1940.04.10 NOT = { has_global_flag = REI_blitzkrieg_completed } }
+					clr_global_flag = REI_ai_made_a_move
+					if = {
+						limit = { NOT = { has_global_flag = netherlands_joined_ww2 } has_global_flag = netherlands_aligned_axis }
+						news_event = { id = worldstage.57 hours = 12 }
+					}
+					if = {
+						limit = { NOT = { has_global_flag = netherlands_joined_ww2 has_global_flag = netherlands_aligned_axis } }
+						news_event = { id = worldstage.58 hours = 12 }
+					}
+					if = {
+						limit = { NOT = { has_global_flag = world_stage_theater_netherlands_is_active } }
+						set_global_flag = world_stage_theater_netherlands_is_active
+						set_global_flag = fra_send_forces_netherlands log = "set_global_flag = fra_send_forces_netherlands"
+						add_to_variable = { global.GER_strength_netherlands = 40 }
+						add_to_variable = { global.GER_strength_netherlands_bonus = 40 }
+					}
+					if = {
+						limit = { NOT = { has_global_flag = world_stage_theater_alsace_is_active } }
+						set_global_flag = world_stage_theater_alsace_is_active
+						set_global_flag = fra_send_forces_alsace
+						add_to_variable = { global.GER_strength_alsace = 20 }
+						add_to_variable = { global.GER_strength_ardennes_bonus = 20 }
+					}
+					news_event = worldstage.24
+					set_global_flag = world_stage_theater_ardennes_is_active
+					subtract_from_variable = { global.world_stage_power_ger = 60 }
+					add_to_variable = { global.GER_strength_ardennes = 60 }
+					add_to_variable = { global.GER_strength_ardennes_bonus = 60 }
+					set_variable = { global.GER_strength_ardennes_final = 120 }
+					if = {
+						limit = { has_global_flag = phoney_war_rages_on }
+						news_event = worldstage.53
+					}
+					if = {
+						limit = { NOT = { has_global_flag = italy_joined_ww2 } }
+						news_event = { id = worldstage.48 days = 6 random_days = 8 }
+					}
+					if = {
+						limit = { check_variable = { global.world_stage_coalition_chi = 3 } NOT = { has_global_flag = china_joined_ww2 } }
+						news_event = { id = worldstage.59 days = 1 random_days = 6 }
+					}
+					set_global_flag = REI_ai_made_a_move
+					set_global_flag = REI_blitzkrieg_completed
+				}
+				if = {	# sealion
+					limit = { date > 1941.01.01 NOT = { has_global_flag = REI_sea_lion_completed }
+						has_global_flag = world_stage_world_war_2_is_active
+						check_variable = { global.theater_owner_france = 3 }
+						NOT = { check_variable = { global.theater_owner_england = 3 } }
+						check_variable = { global.world_stage_power_ger > 59 }
+					}
+					clr_global_flag = REI_ai_made_a_move
+					if = {
+						limit = {
+							NOT = { has_global_flag = world_stage_theater_normandy_is_active }
+						}
+						set_global_flag = world_stage_theater_sealion_is_active
+					}
+					add_to_variable = { global.GER_strength_sealion = 60 }
+					set_global_flag = sealion_allowed
+					news_event = worldstage.56
+					set_global_flag = REI_ai_made_a_move
+					set_global_flag = REI_sea_lion_completed
+				}
+				if = {	# barbarossa
+					limit = { date > 1941.06.22 NOT = { has_global_flag = REI_barbarossa_completed }
+						check_variable = { global.world_stage_power_ger > 149 }
+						NOT = { has_global_flag = world_stage_theater_poland_is_active_first }
+					}
+					clr_global_flag = REI_ai_made_a_move
+					set_temp_variable = { ger_forces_value = global.world_stage_power_ger }
+					multiply_temp_variable = { ger_forces_value = 0.75 }
+					round_temp_variable = ger_forces_value
+					clamp_temp_variable = { var = ger_forces_value min = 150 max = 999 }
+					add_named_threat = { 
+						threat = 25
+						name = REI_threat_barbarossa
+					}
+					if = {
+						limit = { has_global_flag = GER_SOV_pact_enabled }
+						clr_global_flag = GER_SOV_pact_enabled
+						news_event = worldstage.33
+						set_global_flag = world_stage_theater_poland_is_active_second
+						add_to_variable = { global.GER_strength_poland = ger_forces_value }
+						subtract_from_variable = { global.world_stage_power_ger = ger_forces_value }
+						add_to_variable = { global.GER_strength_poland_bonus = 150 }
+						set_variable = { global.GER_strength_poland_final = global.GER_strength_poland }
+						add_to_variable = { global.GER_strength_poland_final = global.GER_strength_poland_bonus }
+					} else = {
+						news_event = worldstage.34
+						set_global_flag = world_stage_theater_belarus_is_active
+						custom_effect_tooltip = world_stage_theater_belarus_is_active_tt
+						custom_effect_tooltip = REI_attack_russia_tt
+						add_to_variable = { global.GER_strength_belarus = ger_forces_value }
+						subtract_from_variable = { global.world_stage_power_ger = ger_forces_value }
+						add_to_variable = {	global.GER_strength_belarus_bonus = 150	}
+						set_variable = { global.GER_strength_poland_final = global.GER_strength_belarus }
+						add_to_variable = { global.GER_strength_poland_final = global.GER_strength_poland_belarus }
+					}
+					set_global_flag = world_stage_world_war_2_is_active
+					set_global_flag = russia_joined_ww2
+					set_country_flag = can_play_belarus set_country_flag = can_play_smolensk set_country_flag = can_play_russia
+					if = {
+						limit = { check_variable = { global.world_stage_coalition_chi = 3 } NOT = { has_global_flag = china_joined_ww2 } }
+						news_event = { id = worldstage.59 days = 1 random_days = 6 }
+					}
+					set_global_flag = REI_ai_made_a_move
+					set_global_flag = REI_barbarossa_completed
+				}
+			}
+			4 = { } # dont do focuses 80% of time
+		}
+		# decisions
+		if = {
+			limit = { has_global_flag = { flag = REI_ai_made_a_move days > 5} check_variable = { global.world_stage_power_ger > 0 } has_global_flag = world_stage_germany_exists has_global_flag = world_stage_world_war_2_is_active }
+			clr_global_flag = REI_ai_made_a_move
+			random_list = {
+				15 = { }	# do nothing
+				1 = {	add_to_variable = { global.GER_strength_alsace = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alsace_is_active } } }
+				1 = {	add_to_variable = { global.AXIS_strength_alsace_bonus= 15  }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_westphalia_is_active } } }
+				1 = {	add_to_variable = { global.GER_strength_westphalia = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_westphalia_is_active } } }
+				1 = {	add_to_variable = { global.AXIS_strength_westphalia_bonus= 15  }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_westphalia_is_active } } }
+				1 = {	add_to_variable = { global.GER_strength_france = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_france_is_active } } }
+				1 = {	add_to_variable = { global.AXIS_strength_france_bonus= 15  }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_france_is_active } } }
+				1 = {	add_to_variable = { global.GER_strength_germany = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_germany_is_active } } }
+				1 = {	add_to_variable = { global.AXIS_strength_germany_bonus= 15  }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_germany_is_active } } }
+				1 = {	add_to_variable = { global.GER_strength_poland = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_poland_is_active } } }
+				1 = {	add_to_variable = { global.AXIS_strength_poland_bonus= 15  }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_poland_is_active } } }
+				1 = {	add_to_variable = { global.GER_strength_belarus = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_belarus_is_active } } }
+				1 = {	add_to_variable = { global.AXIS_strength_belarus_bonus= 15  }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_belarus_is_active } } }
+				1 = {	add_to_variable = { global.GER_strength_smolensk = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_smolensk_is_active } } }
+				1 = {	add_to_variable = { global.AXIS_strength_smolensk_bonus= 15  }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_smolensk_is_active } } }
+				1 = {	add_to_variable = { global.GER_strength_russia = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_russia_is_active } } }
+				1 = {	add_to_variable = { global.AXIS_strength_russia_bonus= 15  }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_russia_is_active } } }
+				1 = {	add_to_variable = { global.GER_strength_norway = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_norway_is_active } } }
+				1 = {	add_to_variable = { global.AXIS_strength_norway_bonus= 15  }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_norway_is_active } } }
+				1 = {	add_to_variable = { global.GER_strength_lybia = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_lybia_is_active } } }
+				1 = {	add_to_variable = { global.AXIS_strength_lybia_bonus= 15  }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_lybia_is_active } } }
+				1 = {	add_to_variable = { global.GER_strength_egypt = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_egypt_is_active } } }
+				1 = {	add_to_variable = { global.AXIS_strength_egypt_bonus= 15  }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_egypt_is_active } } }
+				1 = {	add_to_variable = { global.GER_strength_alpes = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alpes_is_active } } }
+				1 = {	add_to_variable = { global.AXIS_strength_alpes_bonus= 15  }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alpes_is_active } } }
+				1 = {	add_to_variable = { global.GER_strength_sicily = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_sicily_is_active } } }
+				1 = {	add_to_variable = { global.AXIS_strength_sicily_bonus= 15  }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_sicily_is_active } } }
+				1 = {	add_to_variable = { global.GER_strength_italy = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_italy_is_active } } }
+				1 = {	add_to_variable = { global.AXIS_strength_italy_bonus= 15  }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_italy_is_active } } }
+				1 = {	add_to_variable = { global.GER_strength_siberia = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_siberia_is_active } } }
+				1 = {	add_to_variable = { global.AXIS_strength_siberia_bonus= 15  }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_siberia_is_active } } }
+				1 = {	add_to_variable = { global.GER_strength_mongolia = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_mongolia_is_active } } }
+				1 = {	add_to_variable = { global.AXIS_strength_mongolia_bonus= 15  }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_mongolia_is_active } } }
+				1 = {	add_to_variable = { global.GER_strength_tibet = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_tibet_is_active } } }
+				1 = {	add_to_variable = { global.AXIS_strength_tibet_bonus= 15  }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_tibet_is_active } } }
+				1 = {	add_to_variable = { global.GER_strength_bengal = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_bengal_is_active } } }
+				1 = {	add_to_variable = { global.AXIS_strength_bengal_bonus= 15  }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_bengal_is_active } } }
+				1 = {	add_to_variable = { global.GER_strength_india = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_india_is_active } } }
+				1 = {	add_to_variable = { global.AXIS_strength_india_bonus= 15  }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_india_is_active } } }
+				1 = {	add_to_variable = { global.GER_strength_china = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_china_is_active } } }
+				1 = {	add_to_variable = { global.AXIS_strength_china_bonus= 15  }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_china_is_active } } }
+				1 = {	add_to_variable = { global.GER_strength_netherlands = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_netherlands_is_active } } }
+				1 = {	add_to_variable = { global.AXIS_strength_netherlands_bonus= 15  }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_netherlands_is_active } } }
+				1 = {	add_to_variable = { global.GER_strength_normandy = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_normandy_is_active } } }
+				1 = {	add_to_variable = { global.AXIS_strength_normandy_bonus= 15  }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_normandy_is_active } } }
+				1 = {	add_to_variable = { global.GER_strength_sealion = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_sealion_is_active } } }
+				1 = {	add_to_variable = { global.AXIS_strength_sealion_bonus= 15  }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_sealion_is_active } } }
+				1 = {	add_to_variable = { global.GER_strength_urals = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_urals_is_active } } }
+				1 = {	add_to_variable = { global.AXIS_strength_urals_bonus= 15  }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_urals_is_active } } }
+				1 = {	add_to_variable = { global.GER_strength_guanxi = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_guanxi_is_active } } }
+				1 = {	add_to_variable = { global.AXIS_strength_guanxi_bonus= 15  }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_guanxi_is_active } } }
+				1 = {	add_to_variable = { global.GER_strength_alpes = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alpes_is_active } } }
+				1 = {	add_to_variable = { global.AXIS_strength_alpes_bonus= 15  }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alpes_is_active } } }
+				1 = {	add_to_variable = { global.GER_strength_austria = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_austria_is_active } } }
+				1 = {	add_to_variable = { global.AXIS_strength_austria_bonus= 15  }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_austria_is_active } } }
+				1 = {	add_to_variable = { global.GER_strength_england = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_england_is_active } } }
+				1 = {	add_to_variable = { global.AXIS_strength_england_bonus= 15  }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_england_is_active } } }
+			}
+			set_global_flag = REI_ai_made_a_move
+		}
+	}
+}
+world_stage_ai_fra = {
+	if = {
+		limit = { NOT = { country_exists = KOB } }
+		# focuses
+		# decisions
+		if = {
+			limit = { has_global_flag = { flag = KOB_ai_made_a_move days > 5} check_variable = { global.world_stage_power_fra > 0 } has_global_flag = world_stage_france_exists has_global_flag = world_stage_world_war_2_is_active }
+			clr_global_flag = KOB_ai_made_a_move
+			random_list = {
+				15 = { }	# do nothing
+				1 = {	add_to_variable = { global.FRA_strength_alsace = 5 } subtract_from_variable = { global.world_stage_power_fra = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alsace_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_alsace_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_westphalia_is_active } } }
+				1 = {	add_to_variable = { global.FRA_strength_westphalia = 5 } subtract_from_variable = { global.world_stage_power_fra = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_westphalia_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_westphalia_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_westphalia_is_active } } }
+				1 = {	add_to_variable = { global.FRA_strength_france = 5 } subtract_from_variable = { global.world_stage_power_fra = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_france_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_france_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_france_is_active } } }
+				1 = {	add_to_variable = { global.FRA_strength_framany = 5 } subtract_from_variable = { global.world_stage_power_fra = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_framany_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_framany_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_framany_is_active } } }
+				1 = {	add_to_variable = { global.FRA_strength_poland = 5 } subtract_from_variable = { global.world_stage_power_fra = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_poland_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_poland_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_poland_is_active } } }
+				1 = {	add_to_variable = { global.FRA_strength_belarus = 5 } subtract_from_variable = { global.world_stage_power_fra = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_belarus_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_belarus_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_belarus_is_active } } }
+				1 = {	add_to_variable = { global.FRA_strength_smolensk = 5 } subtract_from_variable = { global.world_stage_power_fra = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_smolensk_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_smolensk_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_smolensk_is_active } } }
+				1 = {	add_to_variable = { global.FRA_strength_russia = 5 } subtract_from_variable = { global.world_stage_power_fra = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_russia_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_russia_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_russia_is_active } } }
+				1 = {	add_to_variable = { global.FRA_strength_norway = 5 } subtract_from_variable = { global.world_stage_power_fra = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_norway_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_norway_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_norway_is_active } } }
+				1 = {	add_to_variable = { global.FRA_strength_lybia = 5 } subtract_from_variable = { global.world_stage_power_fra = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_lybia_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_lybia_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_lybia_is_active } } }
+				1 = {	add_to_variable = { global.FRA_strength_egypt = 5 } subtract_from_variable = { global.world_stage_power_fra = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_egypt_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_egypt_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_egypt_is_active } } }
+				1 = {	add_to_variable = { global.FRA_strength_alpes = 5 } subtract_from_variable = { global.world_stage_power_fra = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alpes_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_alpes_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alpes_is_active } } }
+				1 = {	add_to_variable = { global.FRA_strength_sicily = 5 } subtract_from_variable = { global.world_stage_power_fra = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_sicily_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_sicily_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_sicily_is_active } } }
+				1 = {	add_to_variable = { global.FRA_strength_italy = 5 } subtract_from_variable = { global.world_stage_power_fra = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_italy_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_italy_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_italy_is_active } } }
+				1 = {	add_to_variable = { global.FRA_strength_siberia = 5 } subtract_from_variable = { global.world_stage_power_fra = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_siberia_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_siberia_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_siberia_is_active } } }
+				1 = {	add_to_variable = { global.FRA_strength_mongolia = 5 } subtract_from_variable = { global.world_stage_power_fra = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_mongolia_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_mongolia_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_mongolia_is_active } } }
+				1 = {	add_to_variable = { global.FRA_strength_tibet = 5 } subtract_from_variable = { global.world_stage_power_fra = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_tibet_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_tibet_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_tibet_is_active } } }
+				1 = {	add_to_variable = { global.FRA_strength_bengal = 5 } subtract_from_variable = { global.world_stage_power_fra = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_bengal_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_bengal_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_bengal_is_active } } }
+				1 = {	add_to_variable = { global.FRA_strength_india = 5 } subtract_from_variable = { global.world_stage_power_fra = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_india_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_india_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_india_is_active } } }
+				1 = {	add_to_variable = { global.FRA_strength_china = 5 } subtract_from_variable = { global.world_stage_power_fra = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_china_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_china_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_china_is_active } } }
+				1 = {	add_to_variable = { global.FRA_strength_netherlands = 5 } subtract_from_variable = { global.world_stage_power_fra = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_netherlands_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_netherlands_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_netherlands_is_active } } }
+				1 = {	add_to_variable = { global.FRA_strength_normandy = 5 } subtract_from_variable = { global.world_stage_power_fra = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_normandy_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_normandy_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_normandy_is_active } } }
+				1 = {	add_to_variable = { global.FRA_strength_sealion = 5 } subtract_from_variable = { global.world_stage_power_fra = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_sealion_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_sealion_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_sealion_is_active } } }
+				1 = {	add_to_variable = { global.FRA_strength_urals = 5 } subtract_from_variable = { global.world_stage_power_fra = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_urals_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_urals_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_urals_is_active } } }
+				1 = {	add_to_variable = { global.FRA_strength_guanxi = 5 } subtract_from_variable = { global.world_stage_power_fra = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_guanxi_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_guanxi_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_guanxi_is_active } } }
+				1 = {	add_to_variable = { global.FRA_strength_alpes = 5 } subtract_from_variable = { global.world_stage_power_fra = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alpes_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_alpes_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alpes_is_active } } }
+				1 = {	add_to_variable = { global.FRA_strength_austria = 5 } subtract_from_variable = { global.world_stage_power_fra = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_austria_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_austria_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_austria_is_active } } }
+				1 = {	add_to_variable = { global.FRA_strength_england = 5 } subtract_from_variable = { global.world_stage_power_fra = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_england_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_england_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_england_is_active } } }
+			}
+			set_global_flag = KOB_ai_made_a_move
+		}
+	}
+}
+world_stage_ai_eng = {
+	if = {
+		limit = { NOT = { country_exists = OSA } }
+		# focuses
+		# decisions
+		if = {
+			limit = { has_global_flag = { flag = OSA_ai_made_a_move days > 5} check_variable = { global.world_stage_power_fra > 0 } has_global_flag = world_stage_england_exists has_global_flag = world_stage_world_war_2_is_active }
+			clr_global_flag = OSA_ai_made_a_move
+			random_list = {
+				15 = { }	# do nothing
+				1 = {	add_to_variable = { global.ENG_strength_alsace = 5 } subtract_from_variable = { global.world_stage_power_eng = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alsace_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_alsace_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_westphalia_is_active } } }
+				1 = {	add_to_variable = { global.ENG_strength_westphalia = 5 } subtract_from_variable = { global.world_stage_power_eng = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_westphalia_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_westphalia_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_westphalia_is_active } } }
+				1 = {	add_to_variable = { global.ENG_strength_france = 5 } subtract_from_variable = { global.world_stage_power_eng = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_france_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_france_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_france_is_active } } }
+				1 = {	add_to_variable = { global.ENG_strength_engmany = 5 } subtract_from_variable = { global.world_stage_power_eng = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_engmany_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_engmany_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_engmany_is_active } } }
+				1 = {	add_to_variable = { global.ENG_strength_poland = 5 } subtract_from_variable = { global.world_stage_power_eng = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_poland_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_poland_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_poland_is_active } } }
+				1 = {	add_to_variable = { global.ENG_strength_belarus = 5 } subtract_from_variable = { global.world_stage_power_eng = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_belarus_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_belarus_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_belarus_is_active } } }
+				1 = {	add_to_variable = { global.ENG_strength_smolensk = 5 } subtract_from_variable = { global.world_stage_power_eng = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_smolensk_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_smolensk_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_smolensk_is_active } } }
+				1 = {	add_to_variable = { global.ENG_strength_russia = 5 } subtract_from_variable = { global.world_stage_power_eng = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_russia_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_russia_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_russia_is_active } } }
+				1 = {	add_to_variable = { global.ENG_strength_norway = 5 } subtract_from_variable = { global.world_stage_power_eng = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_norway_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_norway_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_norway_is_active } } }
+				1 = {	add_to_variable = { global.ENG_strength_lybia = 5 } subtract_from_variable = { global.world_stage_power_eng = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_lybia_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_lybia_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_lybia_is_active } } }
+				1 = {	add_to_variable = { global.ENG_strength_egypt = 5 } subtract_from_variable = { global.world_stage_power_eng = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_egypt_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_egypt_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_egypt_is_active } } }
+				1 = {	add_to_variable = { global.ENG_strength_alpes = 5 } subtract_from_variable = { global.world_stage_power_eng = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alpes_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_alpes_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alpes_is_active } } }
+				1 = {	add_to_variable = { global.ENG_strength_sicily = 5 } subtract_from_variable = { global.world_stage_power_eng = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_sicily_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_sicily_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_sicily_is_active } } }
+				1 = {	add_to_variable = { global.ENG_strength_italy = 5 } subtract_from_variable = { global.world_stage_power_eng = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_italy_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_italy_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_italy_is_active } } }
+				1 = {	add_to_variable = { global.ENG_strength_siberia = 5 } subtract_from_variable = { global.world_stage_power_eng = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_siberia_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_siberia_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_siberia_is_active } } }
+				1 = {	add_to_variable = { global.ENG_strength_mongolia = 5 } subtract_from_variable = { global.world_stage_power_eng = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_mongolia_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_mongolia_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_mongolia_is_active } } }
+				1 = {	add_to_variable = { global.ENG_strength_tibet = 5 } subtract_from_variable = { global.world_stage_power_eng = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_tibet_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_tibet_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_tibet_is_active } } }
+				1 = {	add_to_variable = { global.ENG_strength_bengal = 5 } subtract_from_variable = { global.world_stage_power_eng = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_bengal_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_bengal_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_bengal_is_active } } }
+				1 = {	add_to_variable = { global.ENG_strength_india = 5 } subtract_from_variable = { global.world_stage_power_eng = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_india_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_india_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_india_is_active } } }
+				1 = {	add_to_variable = { global.ENG_strength_china = 5 } subtract_from_variable = { global.world_stage_power_eng = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_china_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_china_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_china_is_active } } }
+				1 = {	add_to_variable = { global.ENG_strength_netherlands = 5 } subtract_from_variable = { global.world_stage_power_eng = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_netherlands_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_netherlands_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_netherlands_is_active } } }
+				1 = {	add_to_variable = { global.ENG_strength_normandy = 5 } subtract_from_variable = { global.world_stage_power_eng = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_normandy_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_normandy_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_normandy_is_active } } }
+				1 = {	add_to_variable = { global.ENG_strength_sealion = 5 } subtract_from_variable = { global.world_stage_power_eng = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_sealion_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_sealion_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_sealion_is_active } } }
+				1 = {	add_to_variable = { global.ENG_strength_urals = 5 } subtract_from_variable = { global.world_stage_power_eng = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_urals_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_urals_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_urals_is_active } } }
+				1 = {	add_to_variable = { global.ENG_strength_guanxi = 5 } subtract_from_variable = { global.world_stage_power_eng = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_guanxi_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_guanxi_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_guanxi_is_active } } }
+				1 = {	add_to_variable = { global.ENG_strength_alpes = 5 } subtract_from_variable = { global.world_stage_power_eng = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alpes_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_alpes_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alpes_is_active } } }
+				1 = {	add_to_variable = { global.ENG_strength_austria = 5 } subtract_from_variable = { global.world_stage_power_eng = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_austria_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_austria_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_austria_is_active } } }
+				1 = {	add_to_variable = { global.ENG_strength_england = 5 } subtract_from_variable = { global.world_stage_power_eng = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_england_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_england_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_england_is_active } } }
+			}
+			set_global_flag = OSA_ai_made_a_move
+		}
+	}
+}
+world_stage_ai_sov = {
+	if = {
+		limit = { NOT = { country_exists = FER } }
+		# focuses
+		# decisions
+		if = {
+			limit = { has_global_flag = { flag = FER_ai_made_a_move days > 5} check_variable = { global.world_stage_power_sov > 0 } has_global_flag = world_stage_russia_exists has_global_flag = world_stage_world_war_2_is_active has_global_flag = russia_joined_ww2 }
+			clr_global_flag = FER_ai_made_a_move
+			random_list = {
+				15 = { }	# do nothing
+				1 = {	add_to_variable = { global.SOV_strength_alsace = 5 } subtract_from_variable = { global.world_stage_power_sov = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alsace_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_alsace_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_westphalia_is_active } } }
+				1 = {	add_to_variable = { global.SOV_strength_westphalia = 5 } subtract_from_variable = { global.world_stage_power_sov = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_westphalia_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_westphalia_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_westphalia_is_active } } }
+				1 = {	add_to_variable = { global.SOV_strength_france = 5 } subtract_from_variable = { global.world_stage_power_sov = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_france_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_france_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_france_is_active } } }
+				1 = {	add_to_variable = { global.SOV_strength_sovmany = 5 } subtract_from_variable = { global.world_stage_power_sov = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_sovmany_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_sovmany_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_sovmany_is_active } } }
+				1 = {	add_to_variable = { global.SOV_strength_poland = 5 } subtract_from_variable = { global.world_stage_power_sov = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_poland_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_poland_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_poland_is_active } } }
+				1 = {	add_to_variable = { global.SOV_strength_belarus = 5 } subtract_from_variable = { global.world_stage_power_sov = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_belarus_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_belarus_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_belarus_is_active } } }
+				1 = {	add_to_variable = { global.SOV_strength_smolensk = 5 } subtract_from_variable = { global.world_stage_power_sov = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_smolensk_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_smolensk_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_smolensk_is_active } } }
+				1 = {	add_to_variable = { global.SOV_strength_russia = 5 } subtract_from_variable = { global.world_stage_power_sov = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_russia_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_russia_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_russia_is_active } } }
+				1 = {	add_to_variable = { global.SOV_strength_norway = 5 } subtract_from_variable = { global.world_stage_power_sov = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_norway_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_norway_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_norway_is_active } } }
+				1 = {	add_to_variable = { global.SOV_strength_lybia = 5 } subtract_from_variable = { global.world_stage_power_sov = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_lybia_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_lybia_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_lybia_is_active } } }
+				1 = {	add_to_variable = { global.SOV_strength_egypt = 5 } subtract_from_variable = { global.world_stage_power_sov = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_egypt_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_egypt_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_egypt_is_active } } }
+				1 = {	add_to_variable = { global.SOV_strength_alpes = 5 } subtract_from_variable = { global.world_stage_power_sov = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alpes_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_alpes_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alpes_is_active } } }
+				1 = {	add_to_variable = { global.SOV_strength_sicily = 5 } subtract_from_variable = { global.world_stage_power_sov = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_sicily_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_sicily_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_sicily_is_active } } }
+				1 = {	add_to_variable = { global.SOV_strength_italy = 5 } subtract_from_variable = { global.world_stage_power_sov = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_italy_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_italy_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_italy_is_active } } }
+				1 = {	add_to_variable = { global.SOV_strength_siberia = 5 } subtract_from_variable = { global.world_stage_power_sov = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_siberia_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_siberia_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_siberia_is_active } } }
+				1 = {	add_to_variable = { global.SOV_strength_mongolia = 5 } subtract_from_variable = { global.world_stage_power_sov = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_mongolia_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_mongolia_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_mongolia_is_active } } }
+				1 = {	add_to_variable = { global.SOV_strength_tibet = 5 } subtract_from_variable = { global.world_stage_power_sov = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_tibet_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_tibet_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_tibet_is_active } } }
+				1 = {	add_to_variable = { global.SOV_strength_bengal = 5 } subtract_from_variable = { global.world_stage_power_sov = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_bengal_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_bengal_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_bengal_is_active } } }
+				1 = {	add_to_variable = { global.SOV_strength_india = 5 } subtract_from_variable = { global.world_stage_power_sov = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_india_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_india_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_india_is_active } } }
+				1 = {	add_to_variable = { global.SOV_strength_china = 5 } subtract_from_variable = { global.world_stage_power_sov = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_china_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_china_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_china_is_active } } }
+				1 = {	add_to_variable = { global.SOV_strength_netherlands = 5 } subtract_from_variable = { global.world_stage_power_sov = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_netherlands_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_netherlands_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_netherlands_is_active } } }
+				1 = {	add_to_variable = { global.SOV_strength_normandy = 5 } subtract_from_variable = { global.world_stage_power_sov = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_normandy_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_normandy_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_normandy_is_active } } }
+				1 = {	add_to_variable = { global.SOV_strength_sealion = 5 } subtract_from_variable = { global.world_stage_power_sov = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_sealion_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_sealion_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_sealion_is_active } } }
+				1 = {	add_to_variable = { global.SOV_strength_urals = 5 } subtract_from_variable = { global.world_stage_power_sov = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_urals_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_urals_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_urals_is_active } } }
+				1 = {	add_to_variable = { global.SOV_strength_guanxi = 5 } subtract_from_variable = { global.world_stage_power_sov = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_guanxi_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_guanxi_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_guanxi_is_active } } }
+				1 = {	add_to_variable = { global.SOV_strength_alpes = 5 } subtract_from_variable = { global.world_stage_power_sov = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alpes_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_alpes_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alpes_is_active } } }
+				1 = {	add_to_variable = { global.SOV_strength_austria = 5 } subtract_from_variable = { global.world_stage_power_sov = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_austria_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_austria_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_austria_is_active } } }
+				1 = {	add_to_variable = { global.SOV_strength_england = 5 } subtract_from_variable = { global.world_stage_power_sov = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_england_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_england_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_england_is_active } } }
+			}
+			set_global_flag = FER_ai_made_a_move
+		}
+	}
+}
+world_stage_ai_usa = {
+	if = {
+		limit = { NOT = { country_exists = AMC country_exists = OKI } }
+		# focuses
+		# decisions
+		if = {
+			limit = { has_global_flag = { flag = AMC_ai_made_a_move days > 5} check_variable = { global.world_stage_power_usa > 0 } has_global_flag = world_stage_usa_exists has_global_flag = world_stage_world_war_2_is_active has_global_flag = usa_joined_ww2 }
+			clr_global_flag = AMC_ai_made_a_move
+			random_list = {
+				15 = { }	# do nothing
+				1 = {	add_to_variable = { global.USA_strength_alsace = 5 } subtract_from_variable = { global.world_stage_power_usa = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alsace_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_alsace_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_westphalia_is_active } } }
+				1 = {	add_to_variable = { global.USA_strength_westphalia = 5 } subtract_from_variable = { global.world_stage_power_usa = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_westphalia_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_westphalia_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_westphalia_is_active } } }
+				1 = {	add_to_variable = { global.USA_strength_france = 5 } subtract_from_variable = { global.world_stage_power_usa = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_france_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_france_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_france_is_active } } }
+				1 = {	add_to_variable = { global.USA_strength_usamany = 5 } subtract_from_variable = { global.world_stage_power_usa = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_usamany_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_usamany_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_usamany_is_active } } }
+				1 = {	add_to_variable = { global.USA_strength_poland = 5 } subtract_from_variable = { global.world_stage_power_usa = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_poland_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_poland_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_poland_is_active } } }
+				1 = {	add_to_variable = { global.USA_strength_belarus = 5 } subtract_from_variable = { global.world_stage_power_usa = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_belarus_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_belarus_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_belarus_is_active } } }
+				1 = {	add_to_variable = { global.USA_strength_smolensk = 5 } subtract_from_variable = { global.world_stage_power_usa = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_smolensk_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_smolensk_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_smolensk_is_active } } }
+				1 = {	add_to_variable = { global.USA_strength_russia = 5 } subtract_from_variable = { global.world_stage_power_usa = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_russia_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_russia_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_russia_is_active } } }
+				1 = {	add_to_variable = { global.USA_strength_norway = 5 } subtract_from_variable = { global.world_stage_power_usa = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_norway_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_norway_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_norway_is_active } } }
+				1 = {	add_to_variable = { global.USA_strength_lybia = 5 } subtract_from_variable = { global.world_stage_power_usa = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_lybia_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_lybia_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_lybia_is_active } } }
+				1 = {	add_to_variable = { global.USA_strength_egypt = 5 } subtract_from_variable = { global.world_stage_power_usa = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_egypt_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_egypt_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_egypt_is_active } } }
+				1 = {	add_to_variable = { global.USA_strength_alpes = 5 } subtract_from_variable = { global.world_stage_power_usa = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alpes_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_alpes_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alpes_is_active } } }
+				1 = {	add_to_variable = { global.USA_strength_sicily = 5 } subtract_from_variable = { global.world_stage_power_usa = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_sicily_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_sicily_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_sicily_is_active } } }
+				1 = {	add_to_variable = { global.USA_strength_italy = 5 } subtract_from_variable = { global.world_stage_power_usa = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_italy_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_italy_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_italy_is_active } } }
+				1 = {	add_to_variable = { global.USA_strength_siberia = 5 } subtract_from_variable = { global.world_stage_power_usa = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_siberia_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_siberia_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_siberia_is_active } } }
+				1 = {	add_to_variable = { global.USA_strength_mongolia = 5 } subtract_from_variable = { global.world_stage_power_usa = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_mongolia_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_mongolia_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_mongolia_is_active } } }
+				1 = {	add_to_variable = { global.USA_strength_tibet = 5 } subtract_from_variable = { global.world_stage_power_usa = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_tibet_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_tibet_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_tibet_is_active } } }
+				1 = {	add_to_variable = { global.USA_strength_bengal = 5 } subtract_from_variable = { global.world_stage_power_usa = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_bengal_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_bengal_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_bengal_is_active } } }
+				1 = {	add_to_variable = { global.USA_strength_india = 5 } subtract_from_variable = { global.world_stage_power_usa = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_india_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_india_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_india_is_active } } }
+				1 = {	add_to_variable = { global.USA_strength_china = 5 } subtract_from_variable = { global.world_stage_power_usa = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_china_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_china_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_china_is_active } } }
+				1 = {	add_to_variable = { global.USA_strength_netherlands = 5 } subtract_from_variable = { global.world_stage_power_usa = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_netherlands_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_netherlands_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_netherlands_is_active } } }
+				1 = {	add_to_variable = { global.USA_strength_normandy = 5 } subtract_from_variable = { global.world_stage_power_usa = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_normandy_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_normandy_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_normandy_is_active } } }
+				1 = {	add_to_variable = { global.USA_strength_sealion = 5 } subtract_from_variable = { global.world_stage_power_usa = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_sealion_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_sealion_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_sealion_is_active } } }
+				1 = {	add_to_variable = { global.USA_strength_urals = 5 } subtract_from_variable = { global.world_stage_power_usa = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_urals_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_urals_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_urals_is_active } } }
+				1 = {	add_to_variable = { global.USA_strength_guanxi = 5 } subtract_from_variable = { global.world_stage_power_usa = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_guanxi_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_guanxi_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_guanxi_is_active } } }
+				1 = {	add_to_variable = { global.USA_strength_alpes = 5 } subtract_from_variable = { global.world_stage_power_usa = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alpes_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_alpes_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alpes_is_active } } }
+				1 = {	add_to_variable = { global.USA_strength_austria = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_austria_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_austria_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_austria_is_active } } }
+				1 = {	add_to_variable = { global.USA_strength_england = 5 } subtract_from_variable = { global.world_stage_power_ger = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_england_is_active } } }
+				1 = {	add_to_variable = { global.ALLIES_strength_england_bonus = 7.5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_england_is_active } } }
+			}
+			set_global_flag = AMC_ai_made_a_move
+		}
+	}
+}
+world_stage_ai_chi = {
+	if = {
+		limit = {
+			OR = {
+				NOT = { country_exists = ROC }
+				AND = {
+					ROC = {
+						exists = yes
+						NOT = { check_variable = { world_stage_metropolis = 8 } }
+					}
+				}
+			}
+		}
+		# focuses
+		# decisions
+		if = {
+			limit = { has_global_flag = { flag = ROC_ai_made_a_move days > 5} check_variable = { global.world_stage_power_chi > 0 } has_global_flag = world_stage_china_exists has_global_flag = world_stage_world_war_2_is_active has_global_flag = china_joined_ww2 }
+			clr_global_flag = ROC_ai_made_a_move
+			random_list = {
+				15 = { }	# do nothing
+				1 = {	add_to_variable = { global.CHI_strength_alsace = 5 } subtract_from_variable = { global.world_stage_power_chi = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alsace_is_active } } }
+				1 = {	add_to_variable = { global.CHI_strength_westphalia = 5 } subtract_from_variable = { global.world_stage_power_chi = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_westphalia_is_active } } }
+				1 = {	add_to_variable = { global.CHI_strength_france = 5 } subtract_from_variable = { global.world_stage_power_chi = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_france_is_active } } }
+				1 = {	add_to_variable = { global.CHI_strength_chimany = 5 } subtract_from_variable = { global.world_stage_power_chi = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_chimany_is_active } } }
+				1 = {	add_to_variable = { global.CHI_strength_poland = 5 } subtract_from_variable = { global.world_stage_power_chi = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_poland_is_active } } }
+				1 = {	add_to_variable = { global.CHI_strength_belarus = 5 } subtract_from_variable = { global.world_stage_power_chi = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_belarus_is_active } } }
+				1 = {	add_to_variable = { global.CHI_strength_smolensk = 5 } subtract_from_variable = { global.world_stage_power_chi = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_smolensk_is_active } } }
+				1 = {	add_to_variable = { global.CHI_strength_russia = 5 } subtract_from_variable = { global.world_stage_power_chi = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_russia_is_active } } }
+				1 = {	add_to_variable = { global.CHI_strength_norway = 5 } subtract_from_variable = { global.world_stage_power_chi = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_norway_is_active } } }
+				1 = {	add_to_variable = { global.CHI_strength_lybia = 5 } subtract_from_variable = { global.world_stage_power_chi = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_lybia_is_active } } }
+				1 = {	add_to_variable = { global.CHI_strength_egypt = 5 } subtract_from_variable = { global.world_stage_power_chi = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_egypt_is_active } } }
+				1 = {	add_to_variable = { global.CHI_strength_alpes = 5 } subtract_from_variable = { global.world_stage_power_chi = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alpes_is_active } } }
+				1 = {	add_to_variable = { global.CHI_strength_sicily = 5 } subtract_from_variable = { global.world_stage_power_chi = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_sicily_is_active } } }
+				1 = {	add_to_variable = { global.CHI_strength_italy = 5 } subtract_from_variable = { global.world_stage_power_chi = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_italy_is_active } } }
+				1 = {	add_to_variable = { global.CHI_strength_siberia = 5 } subtract_from_variable = { global.world_stage_power_chi = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_siberia_is_active } } }
+				1 = {	add_to_variable = { global.CHI_strength_mongolia = 5 } subtract_from_variable = { global.world_stage_power_chi = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_mongolia_is_active } } }
+				1 = {	add_to_variable = { global.CHI_strength_tibet = 5 } subtract_from_variable = { global.world_stage_power_chi = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_tibet_is_active } } }
+				1 = {	add_to_variable = { global.CHI_strength_bengal = 5 } subtract_from_variable = { global.world_stage_power_chi = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_bengal_is_active } } }
+				1 = {	add_to_variable = { global.CHI_strength_india = 5 } subtract_from_variable = { global.world_stage_power_chi = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_india_is_active } } }
+				1 = {	add_to_variable = { global.CHI_strength_china = 5 } subtract_from_variable = { global.world_stage_power_chi = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_china_is_active } } }
+				1 = {	add_to_variable = { global.CHI_strength_netherlands = 5 } subtract_from_variable = { global.world_stage_power_chi = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_netherlands_is_active } } }
+				1 = {	add_to_variable = { global.CHI_strength_normandy = 5 } subtract_from_variable = { global.world_stage_power_chi = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_normandy_is_active } } }
+				1 = {	add_to_variable = { global.CHI_strength_sealion = 5 } subtract_from_variable = { global.world_stage_power_chi = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_sealion_is_active } } }
+				1 = {	add_to_variable = { global.CHI_strength_urals = 5 } subtract_from_variable = { global.world_stage_power_chi = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_urals_is_active } } }
+				1 = {	add_to_variable = { global.CHI_strength_guanxi = 5 } subtract_from_variable = { global.world_stage_power_chi = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_guanxi_is_active } } }
+				1 = {	add_to_variable = { global.CHI_strength_alpes = 5 } subtract_from_variable = { global.world_stage_power_chi = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alpes_is_active } } }
+				1 = {	add_to_variable = { global.CHI_strength_austria = 5 } subtract_from_variable = { global.world_stage_power_chi = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_austria_is_active } } }
+				1 = {	add_to_variable = { global.CHI_strength_england = 5 } subtract_from_variable = { global.world_stage_power_chi = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_england_is_active } } }
+			}
+			set_global_flag = ROC_ai_made_a_move
+		}
+	}
+}
+world_stage_ai_net = {
+	if = {
+		limit = { NOT = { country_exists = HIR } }
+		# focuses
+		# decisions
+		if = {
+			limit = { has_global_flag = { flag = HIR_ai_made_a_move days > 5} check_variable = { global.world_stage_power_net > 0 } has_global_flag = world_stage_netherlands_exists has_global_flag = world_stage_world_war_2_is_active has_global_flag = netherlands_joined_ww2 }
+			clr_global_flag = HIR_ai_made_a_move
+			random_list = {
+				15 = { }	# do nothing
+				1 = {	add_to_variable = { global.NET_strength_alsace = 5 } subtract_from_variable = { global.world_stage_power_net = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alsace_is_active } } }
+				1 = {	add_to_variable = { global.NET_strength_westphalia = 5 } subtract_from_variable = { global.world_stage_power_net = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_westphalia_is_active } } }
+				1 = {	add_to_variable = { global.NET_strength_france = 5 } subtract_from_variable = { global.world_stage_power_net = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_france_is_active } } }
+				1 = {	add_to_variable = { global.NET_strength_netmany = 5 } subtract_from_variable = { global.world_stage_power_net = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_netmany_is_active } } }
+				1 = {	add_to_variable = { global.NET_strength_poland = 5 } subtract_from_variable = { global.world_stage_power_net = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_poland_is_active } } }
+				1 = {	add_to_variable = { global.NET_strength_belarus = 5 } subtract_from_variable = { global.world_stage_power_net = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_belarus_is_active } } }
+				1 = {	add_to_variable = { global.NET_strength_smolensk = 5 } subtract_from_variable = { global.world_stage_power_net = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_smolensk_is_active } } }
+				1 = {	add_to_variable = { global.NET_strength_russia = 5 } subtract_from_variable = { global.world_stage_power_net = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_russia_is_active } } }
+				1 = {	add_to_variable = { global.NET_strength_norway = 5 } subtract_from_variable = { global.world_stage_power_net = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_norway_is_active } } }
+				1 = {	add_to_variable = { global.NET_strength_lybia = 5 } subtract_from_variable = { global.world_stage_power_net = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_lybia_is_active } } }
+				1 = {	add_to_variable = { global.NET_strength_egypt = 5 } subtract_from_variable = { global.world_stage_power_net = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_egypt_is_active } } }
+				1 = {	add_to_variable = { global.NET_strength_alpes = 5 } subtract_from_variable = { global.world_stage_power_net = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alpes_is_active } } }
+				1 = {	add_to_variable = { global.NET_strength_sicily = 5 } subtract_from_variable = { global.world_stage_power_net = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_sicily_is_active } } }
+				1 = {	add_to_variable = { global.NET_strength_italy = 5 } subtract_from_variable = { global.world_stage_power_net = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_italy_is_active } } }
+				1 = {	add_to_variable = { global.NET_strength_siberia = 5 } subtract_from_variable = { global.world_stage_power_net = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_siberia_is_active } } }
+				1 = {	add_to_variable = { global.NET_strength_mongolia = 5 } subtract_from_variable = { global.world_stage_power_net = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_mongolia_is_active } } }
+				1 = {	add_to_variable = { global.NET_strength_tibet = 5 } subtract_from_variable = { global.world_stage_power_net = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_tibet_is_active } } }
+				1 = {	add_to_variable = { global.NET_strength_bengal = 5 } subtract_from_variable = { global.world_stage_power_net = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_bengal_is_active } } }
+				1 = {	add_to_variable = { global.NET_strength_india = 5 } subtract_from_variable = { global.world_stage_power_net = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_india_is_active } } }
+				1 = {	add_to_variable = { global.NET_strength_china = 5 } subtract_from_variable = { global.world_stage_power_net = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_china_is_active } } }
+				1 = {	add_to_variable = { global.NET_strength_netherlands = 5 } subtract_from_variable = { global.world_stage_power_net = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_netherlands_is_active } } }
+				1 = {	add_to_variable = { global.NET_strength_normandy = 5 } subtract_from_variable = { global.world_stage_power_net = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_normandy_is_active } } }
+				1 = {	add_to_variable = { global.NET_strength_sealion = 5 } subtract_from_variable = { global.world_stage_power_net = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_sealion_is_active } } }
+				1 = {	add_to_variable = { global.NET_strength_urals = 5 } subtract_from_variable = { global.world_stage_power_net = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_urals_is_active } } }
+				1 = {	add_to_variable = { global.NET_strength_guanxi = 5 } subtract_from_variable = { global.world_stage_power_net = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_guanxi_is_active } } }
+				1 = {	add_to_variable = { global.NET_strength_alpes = 5 } subtract_from_variable = { global.world_stage_power_net = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_alpes_is_active } } }
+				1 = {	add_to_variable = { global.NET_strength_austria = 5 } subtract_from_variable = { global.world_stage_power_net = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_austria_is_active } } }
+				1 = {	add_to_variable = { global.NET_strength_england = 5 } subtract_from_variable = { global.world_stage_power_net = 5 }
+						modifier = { factor = 0 NOT = { has_global_flag = world_stage_theater_england_is_active } } }
+			}
+			set_global_flag = HIR_ai_made_a_move
+		}
+	}
+}
+#world_stage_ai_prt = { # does not extist yet

@@ -658,6 +658,10 @@ resolve_threater_france = {
 		if = {
 			limit = { check_variable = { ALLIES_remaining_forces < AXIS_remaining_forces } }						# AXIS wins
 			news_event = worldstage_france.1
+			if = {
+				limit = { has_global_flag = world_stage_france_exists }
+				news_event = { id = worldstage_surrender.1 random = 6 }
+			}
 		} else = {																										# ALLIES wins
 			news_event = worldstage_france.2
 		}
@@ -776,6 +780,10 @@ resolve_threater_germany = {
 			news_event = worldstage_germany.1
 		} else = {																										# ALLIES wins
 			news_event = worldstage_germany.2
+			if = {
+				limit = { has_global_flag = world_stage_germany_exists }
+				news_event = { id = worldstage_surrender.3 random = 6 }
+			}
 		}
 		set_variable = { global.AXIS_strength_germany_bonus = 0 }														# clear strategic advantages when someone wins
 		set_variable = { global.ALLIES_strength_germany_bonus = 0 }
@@ -1241,6 +1249,10 @@ resolve_threater_russia = {
 		if = {
 			limit = { check_variable = { ALLIES_remaining_forces < AXIS_remaining_forces } }						# AXIS wins
 			news_event = worldstage_russia.1
+			if = {
+				limit = { has_global_flag = world_stage_russia_exists }
+				news_event = { id = worldstage_surrender.4 random = 6 }
+			}
 		} else = {																										# ALLIES wins
 			news_event = worldstage_russia.2
 		}
@@ -1939,6 +1951,10 @@ resolve_threater_italy = {
 			news_event = worldstage_italy.1
 		} else = {																										# ALLIES wins
 			news_event = worldstage_italy.2
+			if = {
+				limit = { has_global_flag = world_stage_italy_exists }
+				news_event = { id = worldstage_surrender.6 random = 6 }
+			}
 		}
 		set_variable = { global.AXIS_strength_italy_bonus = 0 }														# clear strategic advantages when someone wins
 		set_variable = { global.ALLIES_strength_italy_bonus = 0 }
@@ -2633,8 +2649,16 @@ resolve_threater_china = {
 		if = {
 			limit = { check_variable = { ALLIES_remaining_forces < AXIS_remaining_forces } }						# AXIS wins
 			news_event = worldstage_china.1
+			if = {
+				limit = { has_global_flag = world_stage_china_exists has_global_flag = china_aligned_allies }
+				news_event = { id = worldstage_surrender.2 random = 6 }
+			}
 		} else = {																										# ALLIES wins
 			news_event = worldstage_china.2
+			if = {
+				limit = { has_global_flag = world_stage_china_exists has_global_flag = china_aligned_axis }
+				news_event = { id = worldstage_surrender.2 random = 6 }
+			}
 		}
 		set_variable = { global.AXIS_strength_china_bonus = 0 }														# clear strategic advantages when someone wins
 		set_variable = { global.ALLIES_strength_china_bonus = 0 }
@@ -2994,3 +3018,129 @@ resolve_threater_sealion = {
 	}
 	set_variable = { global.theater_sealion_timer = 60 }																	# always restarts clock
 }	d_resolve_threater_sealion = { resolve_threater_sealion = yes }														# shortcut console command
+
+resolve_threater_netherlands = {
+	log = "resolve_threater_netherlands"
+	clamp_variable = { var = global.AXIS_number_netherlands min = 1 max = 10 }									# safety check to avoid divisions by zero
+	clamp_variable = { var = global.ALLIES_number_netherlands min = 1 max = 10 }								# safety check to avoid divisions by zero
+	set_temp_variable = { AXIS_remaining_forces = 0 }
+	set_temp_variable = { ALLIES_remaining_forces = 0 }
+	# get axis attack
+	randomize_temp_variable = {	var = axis_attack distribution = uniform min = 0.05 max = 0.2 }					# each side causes damage equal to [5;20]% of their final strength
+	multiply_temp_variable = { axis_attack = global.AXIS_strength_netherlands_final }
+	divide_temp_variable = { axis_attack = global.ALLIES_number_netherlands }										# damage is divided among enemies
+	clamp_temp_variable = { var = axis_attack min = 1 max = 999 } round_temp_variable = axis_attack											# it will rounded to minimum 1 damage for evey enemy
+	# get allies attack
+	randomize_temp_variable = {	var = allies_attack distribution = uniform min = 0.05 max = 0.2 }
+	multiply_temp_variable = { allies_attack = global.ALLIES_strength_netherlands_final }
+	divide_temp_variable = { allies_attack = global.AXIS_number_netherlands }
+	clamp_temp_variable = { var = allies_attack min = 1 max = 999 } round_temp_variable = allies_attack
+	# damage axis countries
+	if = {
+		limit = { check_variable = { global.GER_strength_netherlands > 0 } }
+		subtract_from_variable = { global.GER_strength_netherlands = allies_attack }
+		add_to_temp_variable = { AXIS_remaining_forces = global.GER_strength_netherlands }
+		clamp_variable = {var = global.GER_strength_netherlands min = 0 max = 999 }
+	}
+	if = {
+		limit = { china_is_axis = yes check_variable = { global.CHI_strength_netherlands > 0 } }
+		subtract_from_variable = { global.CHI_strength_netherlands = allies_attack }
+		add_to_temp_variable = { AXIS_remaining_forces = global.CHI_strength_netherlands }
+		clamp_variable = {var = global.CHI_strength_netherlands min = 0 max = 999 }
+	}
+	if = {
+		limit = { netherlands_is_axis = yes check_variable = { global.NET_strength_netherlands > 0 } }
+		subtract_from_variable = { global.NET_strength_netherlands = allies_attack }
+		add_to_temp_variable = { AXIS_remaining_forces = global.NET_strength_netherlands }
+		clamp_variable = {var = global.NET_strength_netherlands min = 0 max = 999 }
+	}
+	if = {
+		limit = { portugal_is_axis = yes check_variable = { global.PRT_strength_netherlands > 0 } }
+		subtract_from_variable = { global.PRT_strength_netherlands = allies_attack }
+		add_to_temp_variable = { AXIS_remaining_forces = global.PRT_strength_netherlands }
+		clamp_variable = {var = global.PRT_strength_netherlands min = 0 max = 999 }
+	}
+	if = {
+		limit = { check_variable = { global.AXIS_locals_netherlands > 0 } }
+		subtract_from_variable = { global.AXIS_locals_netherlands = allies_attack }
+		add_to_temp_variable = { AXIS_remaining_forces = global.AXIS_locals_netherlands }
+		clamp_variable = {var = global.AXIS_locals_netherlands min = 0 max = 999 }
+	}
+	# damage axis countries
+	if = {
+		limit = { france_is_allies = yes check_variable = { global.FRA_strength_netherlands > 0 } }
+		subtract_from_variable = { global.FRA_strength_netherlands = axis_attack }
+		add_to_temp_variable = { ALLIES_remaining_forces = global.FRA_strength_netherlands }
+		clamp_variable = {var = global.FRA_strength_netherlands min = 0 max = 999 }
+	}
+	if = {
+		limit = { england_is_allies = yes check_variable = { global.ENG_strength_netherlands > 0 } }
+		subtract_from_variable = { global.ENG_strength_netherlands = axis_attack }
+		add_to_temp_variable = { ALLIES_remaining_forces = global.ENG_strength_netherlands }
+		clamp_variable = {var = global.ENG_strength_netherlands min = 0 max = 999 }
+	}
+	if = {
+		limit = { netherlands_is_allies = yes check_variable = { global.NET_strength_netherlands > 0 } }
+		subtract_from_variable = { global.NET_strength_netherlands = axis_attack }
+		add_to_temp_variable = { ALLIES_remaining_forces = global.NET_strength_netherlands }
+		clamp_variable = {var = global.NET_strength_netherlands min = 0 max = 999 }
+	}
+	if = {
+		limit = { portugal_is_allies = yes check_variable = { global.PRT_strength_netherlands > 0 } }
+		subtract_from_variable = { global.PRT_strength_netherlands = axis_attack }
+		add_to_temp_variable = { ALLIES_remaining_forces = global.PRT_strength_netherlands }
+		clamp_variable = {var = global.PRT_strength_netherlands min = 0 max = 999 }
+	}
+	if = {
+		limit = { OR = { china_is_allies = yes china_is_komin = yes } check_variable = { global.CHI_strength_netherlands > 0 } }
+		subtract_from_variable = { global.CHI_strength_netherlands = axis_attack }
+		add_to_temp_variable = { ALLIES_remaining_forces = global.CHI_strength_netherlands }
+		clamp_variable = {var = global.CHI_strength_netherlands min = 0 max = 999 }
+	}
+	if = {
+		limit = { OR = { russia_is_allies = yes russia_is_komin = yes } check_variable = { global.SOV_strength_netherlands > 0 } }
+		subtract_from_variable = { global.SOV_strength_netherlands = axis_attack }
+		add_to_temp_variable = { ALLIES_remaining_forces = global.SOV_strength_netherlands }
+		 clamp_variable = {var = global.SOV_strength_netherlands min = 0 max = 999 }
+	}
+	if = {
+		limit = { usa_is_allies = yes check_variable = { global.USA_strength_netherlands > 0 } }
+		subtract_from_variable = { global.USA_strength_netherlands = axis_attack }
+		add_to_temp_variable = { ALLIES_remaining_forces = global.USA_strength_netherlands }
+		clamp_variable = {var = global.USA_strength_netherlands min = 0 max = 999 }
+	}
+	if = {
+		limit = { check_variable = { global.ALLIES_locals_netherlands > 0 } }
+		subtract_from_variable = { global.ALLIES_locals_netherlands = axis_attack }
+		add_to_temp_variable = { ALLIES_remaining_forces = global.ALLIES_locals_netherlands }
+		clamp_variable = {var = global.ALLIES_locals_netherlands min = 0 max = 999 }
+	}
+	# check for winners
+	if = {																												# someone wins
+		limit = { OR = { check_variable = { AXIS_remaining_forces < 1 } check_variable = { ALLIES_remaining_forces < 1 } } }
+		if = {
+			limit = { check_variable = { ALLIES_remaining_forces < AXIS_remaining_forces } }						# AXIS wins
+			news_event = worldstage_netherlands.1
+			if = {
+				limit = { has_global_flag = world_stage_netherlands_exists has_global_flag = netherlands_aligned_allies }
+				news_event = { id = worldstage_surrender.7 random = 6 }
+			}
+		} else = {																										# ALLIES wins
+			news_event = worldstage_netherlands.2
+			if = {
+				limit = { has_global_flag = world_stage_netherlands_exists has_global_flag = netherlands_aligned_axis }
+				news_event = { id = worldstage_surrender.7 random = 6 }
+			}
+			
+		}
+		set_variable = { global.AXIS_strength_netherlands_bonus = 0 }														# clear strategic advantages when someone wins
+		set_variable = { global.ALLIES_strength_netherlands_bonus = 0 }
+	} else = {																											# no one wins, theater continues
+		log = "no one wins netherlands"
+		divide_variable = { global.AXIS_strength_netherlands_bonus = 2 }														# halves strategic advantages
+		round_variable = global.AXIS_strength_netherlands_bonus 
+		divide_variable = { global.ALLIES_strength_netherlands_bonus = 2 }
+		round_variable = global.ALLIES_strength_netherlands_bonus 
+	}
+	set_variable = { global.theater_netherlands_timer = 60 }																	# always restarts clock
+}	d_resolve_threater_netherlands = { resolve_threater_netherlands = yes }														# shortcut console command
