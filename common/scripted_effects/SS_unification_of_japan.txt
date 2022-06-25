@@ -1,44 +1,34 @@
 unification_get_score = {
 	set_variable = { country_unification_score = 0 }
+	log = "[THIS.GetName] GET UNIFICATION SCORE ### !!! ### !!! "
 	# add linear modifiers
 	if = { limit = { unification_has_largest_army = yes } add_to_variable = { country_unification_score = 10 } }
 	if = { limit = { unification_has_largest_navy = yes } add_to_variable = { country_unification_score = 10 } }
 	if = { limit = { unification_has_largest_economy = yes } add_to_variable = { country_unification_score = 10 } }
 	if = { limit = { unification_has_largest_population = yes } add_to_variable = { country_unification_score = 10 } }
 	if = { limit = { unification_has_most_nukes = yes } add_to_variable = { country_unification_score = 10 } }
+	if = { limit = { has_idea = all_internationally_recognised } add_to_variable = { country_unification_score = 10 } log = "[THIS.GetName] is recognized" }
 		# holds important cities
-	if = { limit = { controls_state = 29 } add_to_variable = { country_unification_score = 10 } }	# Edo
-	if = { limit = { controls_state = 32 } add_to_variable = { country_unification_score = 10 } }	# Tokyo
-	if = { limit = { controls_state = 21 } add_to_variable = { country_unification_score = 5 } }	# Chiba
-	if = { limit = { controls_state = 16 } add_to_variable = { country_unification_score = 5 } }	# Hirado
-	if = { limit = { controls_state = 27 } add_to_variable = { country_unification_score = 5 } }	# Kobe
-	if = { limit = { controls_state = 99 } add_to_variable = { country_unification_score = 5 } }	# Osaka
-	if = { limit = { controls_state = 140 } add_to_variable = { country_unification_score = 5 } }	# Nagasaki
-	if = { limit = { controls_state = 254 } add_to_variable = { country_unification_score = 5 } }	# Yawatahama
-		# important cities held by trade powers that back your claims
-	if = {
-		limit = { has_idea = REI_idea_prefered_partner }
-		if = { limit = { REI = { controls_state = 29 } } add_to_variable = { country_unification_score = 10 } }	# Edo
-		if = { limit = { REI = { controls_state = 32 } } add_to_variable = { country_unification_score = 10 } }	# Tokyo
-		if = { limit = { REI = { controls_state = 21 } } add_to_variable = { country_unification_score = 5 } }	# Chiba
-		if = { limit = { REI = { controls_state = 16 } } add_to_variable = { country_unification_score = 5 } }	# Hirado
-		if = { limit = { REI = { controls_state = 27 } } add_to_variable = { country_unification_score = 5 } }	# Kobe
-		if = { limit = { REI = { controls_state = 99 } } add_to_variable = { country_unification_score = 5 } }	# Osaka
-		if = { limit = { REI = { controls_state = 140 } } add_to_variable = { country_unification_score = 5 } }	# Nagasaki
-		if = { limit = { REI = { controls_state = 254 } } add_to_variable = { country_unification_score = 5 } }	# Yawatahama
-	}
+	if = { limit = { unification_holds_edo = yes } add_to_variable = { country_unification_score = 10 } }			# Edo
+	if = { limit = { unification_holds_tokyo = yes }  add_to_variable = { country_unification_score = 10 } }		# Tokyo
+	if = { limit = { unification_holds_chiba = yes }  add_to_variable = { country_unification_score = 5 } }			# Chiba
+	if = { limit = { unification_holds_hirado = yes }  add_to_variable = { country_unification_score = 5 } }		# Hirado
+	if = { limit = { unification_holds_kobe = yes }  add_to_variable = { country_unification_score = 5 } }			# Kobe
+	if = { limit = { unification_holds_osaka = yes }  add_to_variable = { country_unification_score = 5 } }			# Osaka
+	if = { limit = { unification_holds_nagasaki = yes }  add_to_variable = { country_unification_score = 5 } }		# Nagasaki
+	if = { limit = { unification_holds_yawatahama = yes }  add_to_variable = { country_unification_score = 5 } }	# Yawatahama
 	# calculate multiplier
 	set_temp_variable = { country_unification_score_multiplier = 1 }
 	if = { limit = { is_puppet = yes } add_to_temp_variable = { country_unification_score_multiplier = -0.25 } }
-	if = { limit = { has_idea = all_internationally_recognised } add_to_temp_variable = { country_unification_score_multiplier = 0.25 } }
 	if = { limit = { has_idea = SS_lon_member_japan } add_to_temp_variable = { country_unification_score_multiplier = 0.25 } }
 	if = { limit = { is_in_faction = yes } add_to_temp_variable = { country_unification_score_multiplier = 0.25 } }
 	if = { limit = { is_faction_leader = yes } add_to_temp_variable = { country_unification_score_multiplier = 0.25 } }
-		# capitulated!
-	if = { limit = { has_capitulated = yes } set_temp_variable = { country_unification_score_multiplier = 0 } }
+#		# capitulated!
+#	if = { limit = { has_capitulated = yes } set_temp_variable = { country_unification_score_multiplier = 0 } }
 	# calculate final score
 	multiply_variable = { country_unification_score = country_unification_score_multiplier }
-}
+	log = "[THIS.GetName] unification score multiplier: [?country_unification_score_multiplier]"
+} d_unification_get_score = { unification_get_score = yes log ="unification_get_score" }
 
 unification_count_states_southern_japan = {
 	set_variable = { number_of_states_controlled_southern_japan = 0 }
@@ -57,7 +47,7 @@ unification_count_states_southern_japan = {
 		}
 	}
 	log = "[ROOT.GetName] controls [?number_of_states_controlled_southern_japan] states in Southern Japan"
-}
+} d_unification_count_states_southern_japan = { unification_count_states_southern_japan = yes log = "unification_count_states_southern_japan: [?unification_count_states_southern_japan]" }
 
 unification_count_states_central_japan = {
 	set_variable = { number_of_states_controlled_central_japan = 0 }
@@ -76,7 +66,7 @@ unification_count_states_central_japan = {
 		}
 	}
 	log = "[ROOT.GetName] controls [?number_of_states_controlled_central_japan] states in Central Japan"
-}
+} d_unification_count_states_central_japan = { unification_count_states_central_japan = yes log = "unification_count_states_central_japan" }
 
 unification_count_states_northern_japan = {
 	set_variable = { number_of_states_controlled_northern_japan = 0 }
@@ -95,7 +85,7 @@ unification_count_states_northern_japan = {
 		}
 	}
 	log = "[ROOT.GetName] controls [?number_of_states_controlled_northern_japan] states in Northern Japan"
-}
+} d_unification_count_states_northern_japan = { unification_count_states_northern_japan = yes log = "unification_count_states_northern_japan" }
 
 unification_count_total_required_states_japan = {
 	set_variable = { global.number_of_total_states_japan = 0 }
@@ -104,19 +94,128 @@ unification_count_total_required_states_japan = {
 			limit = {
 				OR = { has_state_flag = state_is_northern_japan has_state_flag = state_is_central_japan has_state_flag = state_is_southern_japan }
 				#NOT = { owner = { OR = { tag = AMC tag = OSA tag = REI tag = KOB tag = PRT tag = OKI tag = HIR } } }
-				NOT = { owner = { has_country_flag = is_not_japan } }	# if Ezo declares independence, its states are not required
+				#NOT = { owner = { has_country_flag = is_not_japan } }	# if Ezo declares independence, its states are not required
 			}
-			add_to_variable = { number_of_total_states_japan = 1 }
+			add_to_variable = { global.number_of_total_states_japan = 1 }
 		}
 	}
 	set_variable = { global.number_of_required_states_japan = global.number_of_total_states_japan }
-	multiply_variable = { global.number_of_required_states_japan = 0.75 }
+	multiply_variable = { global.number_of_required_states_japan = 0.666 }
 	round_variable = global.number_of_required_states_japan
-}
+} d_unification_count_total_required_states_japan = { unification_count_total_required_states_japan = yes log = "unification_count_total_required_states_japan: [?global.number_of_required_states_japan]" }
 
 unification_count_total_states = {
 	set_variable = { number_of_states_controlled_japan = 0 }
 	add_to_variable = { number_of_states_controlled_japan = number_of_states_controlled_southern_japan }
 	add_to_variable = { number_of_states_controlled_japan = number_of_states_controlled_central_japan }
 	add_to_variable = { number_of_states_controlled_japan = number_of_states_controlled_northern_japan }
+} d_unification_count_total_states = { unification_count_total_states = yes log = "unification_count_total_states: [?number_of_states_controlled_japan]" }
+
+get_all_unification_score_firsts = {
+	unification_get_first_recognition = yes
+	unification_get_first_score = yes
+	unification_get_first_navy = yes
+	unification_get_first_army = yes
+	unification_get_first_economy = yes
+	unification_get_first_population = yes
+	unification_get_first_mcnuke = yes
+}
+
+unification_get_first_score = {
+	random_country = {
+		limit = { unification_has_highest_score = yes }
+		set_variable = { global.unification_tag_score = THIS.id }
+	}
+	if = {
+		limit = { all_country = { unification_has_highest_score = no } }
+		clear_variable = global.unification_tag_score
+	}
+}
+
+unification_get_first_recognition = {
+	random_country = {
+		limit = { unification_cadidate = yes has_idea = all_internationally_recognised }
+		set_variable = { global.unification_tag_recognition = THIS.id }
+	}
+	if = {
+		limit = { all_country = { NOT = { has_idea = all_internationally_recognised } } }
+		clear_variable = global.unification_tag_recognition
+	}
+}
+
+
+unification_get_first_army = {
+	random_country = {
+		limit = { unification_has_largest_army = yes }
+		set_variable = { global.unification_tag_army = THIS.id }
+	}
+	if = {
+		limit = { all_country = { unification_has_largest_army = no } }
+		clear_variable = global.unification_tag_army
+	}
+}
+
+unification_get_first_navy = {
+	random_country = {
+		limit = { unification_has_largest_navy = yes }
+		set_variable = { global.unification_tag_navy = THIS.id }
+	}
+	if = {
+		limit = { all_country = { unification_has_largest_navy = no } }
+		clear_variable = global.unification_tag_navy
+	}
+}
+
+unification_get_first_economy = {
+	random_country = {
+		limit = { unification_has_largest_economy = yes }
+		set_variable = { global.unification_tag_economy = THIS.id }
+	}
+	if = {
+		limit = { all_country = { unification_has_largest_economy = no } }
+		clear_variable = global.unification_tag_economy
+	}
+}
+
+unification_get_first_population = {
+	random_country = {
+		limit = { unification_has_largest_population = yes }
+		set_variable = { global.unification_tag_population = THIS.id }
+	}
+	if = {
+		limit = { all_country = { unification_has_largest_population = no } }
+		clear_variable = global.unification_tag_population
+	}
+}
+
+unification_get_first_mcnuke = {
+	random_country = {
+		limit = { unification_has_most_nukes = yes }
+		set_variable = { global.unification_tag_mcnuke = THIS.id }
+	}
+	if = {
+		limit = { all_country = { unification_has_most_nukes = no } }
+		clear_variable = global.unification_tag_mcnuke
+	}
+}
+
+unification_get_highter_score = {
+	random_country = {
+		limit = { unification_has_highest_score = yes }
+		set_variable = { global.highest_unification_score = THIS.country_unification_score }
+	}
+}
+
+unification_set_shield_half = {
+	if = {
+		limit = { check_variable = { global.unification_shield_frame < 2 } }
+		set_variable = { global.unification_shield_frame = 2 }
+	}
+}
+
+unification_set_shield_full = {
+	if = {
+		limit = { check_variable = { global.unification_shield_frame < 3 } }
+		set_variable = { global.unification_shield_frame = 3 }
+	}
 }

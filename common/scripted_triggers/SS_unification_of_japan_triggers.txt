@@ -60,18 +60,6 @@ unification_has_largest_economy = {
 	}
 }
 
-unification_has_most_nukes = {
-	unification_candidate = yes
-	NOT = { check_variable = { num_of_nukes = 0 } }
-	NOT = {
-		any_other_country = {
-			unification_candidate = yes
-			NOT = { check_variable = { num_of_nukes = 0 } }
-			check_variable = { num_of_nukes > PREV.num_of_nukes }
-		}
-	}
-}
-
 unification_has_largest_population = {
 	unification_candidate = yes
 	check_variable = { country_japanese_population > 0 }
@@ -80,6 +68,31 @@ unification_has_largest_population = {
 			unification_candidate = yes
 			check_variable = { country_japanese_population > 0 }
 			check_variable = { country_japanese_population > PREV.country_japanese_population }
+		}
+	}
+}
+
+unification_nukes_available = {
+	any_country = {
+		unification_candidate = yes
+		has_tech = nukes
+	}
+}
+
+unification_has_any_nuke = {
+	any_country = {
+		unification_candidate = yes
+		NOT = { check_variable = { num_of_nukes = 0 } }
+	}
+}
+unification_has_most_nukes = {
+	unification_candidate = yes
+	NOT = { check_variable = { num_of_nukes = 0 } }
+	NOT = {
+		any_other_country = {
+			unification_candidate = yes
+			NOT = { check_variable = { num_of_nukes = 0 } }
+			check_variable = { num_of_nukes > PREV.num_of_nukes }
 		}
 	}
 }
@@ -121,6 +134,112 @@ unification_can_unify = {
 					compare = greater_than
 				}
 			}
+		}
+	}
+}
+
+can_unify_has_states = {
+	unification_candidate = yes
+	check_variable = { number_of_states_controlled_japan > global.number_of_required_states_japan }
+}
+
+can_unify_holds_edo_tokyo = {
+	unification_candidate = yes
+	OR = {
+		 controls_state = 29	# Edo
+		 controls_state = 32	# Tokyo
+	}
+}
+
+can_unify_no_challanger = {
+	unification_candidate = yes
+	NOT = {
+		any_other_country = {
+			hidden_trigger = { unification_candidate = yes }
+			OR = { controls_state = 29 controls_state = 32 }
+			# or is regional japan!	# <------------------------------------------------------------- here! look at me!
+			custom_trigger_tooltip = {
+				tooltip = "Does not have a higher unification score" # unification_of_japan_has_higher_score_tt	### FIX THIS TOOLTIP LATER (it is a double negative)
+				#check_variable = { country_unification_score > PREV.country_unification_score }
+				check_variable = {
+					var = country_unification_score
+					value = PREV.country_unification_score
+					compare = greater_than
+				}
+			}
+		}
+	}
+}
+
+unification_holds_edo = {
+	custom_trigger_tooltip = {
+		OR = {
+			tooltip = controls_edo
+			controls_state = 29	# Edo
+			AND = {	 has_idea = REI_idea_prefered_partner REI = { controls_state = 29 } }
+		}
+	}
+}
+unification_holds_tokyo = {
+	custom_trigger_tooltip = {
+		OR = {
+			tooltip = controls_tokyo
+			controls_state = 32	# Tokyo
+			AND = {	 has_idea = REI_idea_prefered_partner REI = { controls_state = 32 } }
+		}
+	}
+}
+unification_holds_chiba = {
+	custom_trigger_tooltip = {
+		OR = {
+			tooltip = controls_chiba
+			controls_state = 21	# Chiba
+			AND = {	 has_idea = REI_idea_prefered_partner REI = { controls_state = 21 } }
+		}
+	}
+}
+unification_holds_hirado = {
+	custom_trigger_tooltip = {
+		OR = {
+			tooltip = controls_hirado
+			controls_state = 16	# Hirado
+			AND = {	 has_idea = REI_idea_prefered_partner REI = { controls_state = 16 } }
+		}
+	}
+}
+unification_holds_kobe = {
+	custom_trigger_tooltip = {
+		OR = {
+			tooltip = controls_kobe
+			controls_state = 27	# Kobe
+			AND = {	 has_idea = REI_idea_prefered_partner REI = { controls_state = 27 } }
+		}
+	}
+}
+unification_holds_osaka = {
+	custom_trigger_tooltip = {
+		OR = {
+			tooltip = controls_osaka
+			controls_state = 99	# Osaka
+			AND = {	 has_idea = REI_idea_prefered_partner REI = { controls_state = 99 } }
+		}
+	}
+}
+unification_holds_nagasaki = {
+	custom_trigger_tooltip = {
+		OR = {
+			tooltip = controls_nagasaki
+			controls_state = 140	# Nagasaki
+			AND = {	 has_idea = REI_idea_prefered_partner REI = { controls_state = 140 } }
+		}
+	}
+}
+unification_holds_yawatahama = {
+	custom_trigger_tooltip = {
+		OR = {
+			tooltip = controls_yawatahama
+			controls_state = 254	# Yawatahama
+			AND = {	 has_idea = REI_idea_prefered_partner REI = { controls_state = 254 } }
 		}
 	}
 }
