@@ -527,7 +527,8 @@ on_actions = {
 				country_event = { id = startup_flavour.3 }
 			}
 			REI = {
-				country_event = ostasien.9
+				country_event = { id = ostasien.1 days = 335 random_days = 30 }
+				country_event = { id = ostasien.9 days = 2 random_days = 5 }
 			}
 			KOB = {
 				country_event = { id = dualleader.1 days = 4030 }
@@ -784,6 +785,26 @@ on_actions = {
 	}
 	
 	on_daily = {
+		effect = {
+			### PARTY POPULARITY BONUSES
+			if = {
+				limit = { has_dynamic_modifier = { modifier = PRO_modifier_ruling_party_popularity } }	# it uses a PRO modifier but can work for every one
+				set_temp_variable = { pop_bonus = party_popularity_100@ruling_party }
+				multiply_temp_variable = { pop_bonus = 0.00015 }										# attention to scale
+				if = {
+					limit = { has_idea_with_trait = party_popularity_war_support_bonus }
+					set_variable = { PRO_war_support_propaganda_bonus = pop_bonus }						# please dont mind the very specific variable names
+				} else = { set_variable = { PRO_war_support_propaganda_bonus = 0 } }
+				if = {
+					limit = { has_idea_with_trait = party_popularity_policial_power_bonus }
+					set_variable = { PRO_politica_power_ban_extremism_bonus = pop_bonus }
+				} else = { set_variable = { PRO_politica_power_ban_extremism_bonus = 0 } }
+				if = {
+					limit = { has_idea_with_trait = party_popularity_army_org_bonus }
+					set_variable = { PRO_organization_codes_of_conduct_bonus = pop_bonus }
+				} else = { set_variable = { PRO_organization_codes_of_conduct_bonus = 0 } }
+			}
+		}
 		effect = {
 			### COALITION STABILITY BONUS ###
 			if = {
