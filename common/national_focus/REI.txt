@@ -18,11 +18,6 @@ focus_tree = {
 
 		x = 5
 		y = 0
-		
-		#available = {
-		#	has_country_flag = REI_lud_dying_flag
-		#}
-
 
 		completion_reward = {
 			add_political_power = 150
@@ -60,7 +55,6 @@ focus_tree = {
 				relation = non_aggression_pact
 				active = no
 			}
-
 			SHI = {
 				diplomatic_relation = {
 					country = REI
@@ -68,7 +62,7 @@ focus_tree = {
 					active = no
 				}
 			}
-			add_war_support = 0.05
+			add_war_support = 0.1
 		}
 	}
 
@@ -86,16 +80,26 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_STABILITY }
 
 		completion_reward = {
-			SHI = {
-				
-				add_ai_strategy = {
-					type = alliance
-					id = REI
-					value = 200
+			SHI = { country_event = ostasien.2 }
+			custom_effect_tooltip = REI_matsuyama_pact_tt
+			effect_tooltip = {
+				SHI = {
+					give_military_access = REI
+					add_stability = 0.05
+					add_opinion_modifier = {
+						target = REI
+						modifier = REI_matsuyama_pact_opinion
+					}
 				}
-				country_event = ostasien.6
+				REI = {
+					give_military_access = SHI
+					add_stability = 0.05
+					add_opinion_modifier = {
+						target = SHI
+						modifier = REI_matsuyama_pact_opinion
+					}
+				}
 			}
-			add_stability = 0.05
 		}
 	}
 
@@ -110,10 +114,84 @@ focus_tree = {
 		x = 0
 		y = 1
 
+		
 		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		
+		available = {
+			IMS = {
+				exists = yes
+				is_puppet = no
+				NOT = { has_war_with = REI }
+			}
+		}
 
 		completion_reward = {
-			country_event = ostasien.7
+			country_event = ostasien.5
+			IMS = {
+				effect_tooltip = {
+					add_political_power = 150
+					add_equipment_to_stockpile = {
+						type = infantry_equipment_traditional
+						amount = 1000
+						producer = REI
+					}
+				}
+				add_opinion_modifier = {
+					target = REI
+					modifier = REI_defends_IMS_independence
+				}
+			}
+			add_named_threat = {
+				threat = 1
+				name = REI_threat_stand_with_seto
+			}
+			add_ai_strategy = {
+				type = protect
+				id = IMS
+				value = 100
+			}
+		}
+	}
+	
+	focus = {
+		id = REI_diffuse_IMS_crisis
+		icon = GFX_focus_REI_diffuse_seto_crisis
+		cost = 10
+
+		prerequisite = { focus = REI_matsuyama_pact }
+
+		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		
+		relative_position_id = REI_matsuyama_pact
+		x = 0
+		y = 1
+
+		available = {
+			IMS = {
+				exists = yes
+				is_puppet = no
+			}
+			SHI = {
+				exists = yes
+				is_puppet = no
+				NOT = { has_war_with = REI }
+			}
+			26 = { is_claimed_by = SHI }
+		}
+		
+		completion_reward = {
+			SHI = {
+				country_event = ostasien.6
+				effect_tooltip = { add_political_power = 150 }
+				add_opinion_modifier = {
+					target = REI
+					modifier = REI_opinion_back_SHI_on_seto
+				}
+			}
+			add_named_threat = {
+				threat = -1
+				name = REI_threat_diffuse_crisis
+			}
 		}
 	}
 	
@@ -180,26 +258,6 @@ focus_tree = {
 				equipment_variant = "Torpedoboot S-1 Class"
 				creator = REI
 				name = "S-72"
-			}
-		}
-	}
-	
-	focus = {
-		id = REI_diffuse_IMS_crisis
-		icon = GFX_focus_REI_diffuse_seto_crisis
-		cost = 10
-
-		prerequisite = { focus = REI_matsuyama_pact }
-
-		search_filters = { FOCUS_FILTER_DIPLOMACY }
-		
-		relative_position_id = REI_matsuyama_pact
-		x = 0
-		y = 1
-
-		completion_reward = {
-			SHI = {
-				country_event = ostasien.7
 			}
 		}
 	}
@@ -595,6 +653,8 @@ focus_tree = {
 		}
 		
 		completion_reward = {
+			hidden_effect = { news_event = ostasien.8 }
+			set_global_flag = REI_anschluss_completed
 			add_world_stage_power_ger_20 = yes
 			add_named_threat = { 
 				threat = 10
@@ -614,7 +674,7 @@ focus_tree = {
 	focus = {
 		id = REI_befriend_soviet_enemies
 		icon = GFX_focus_REI_anti_bolshevism
-		search_filters = {  }
+		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WAR_SUPPORT }
 		
 		mutually_exclusive = { focus = REI_molotov_ribbentrop }
 		prerequisite = { focus =  REI_anschluss}
@@ -635,6 +695,8 @@ focus_tree = {
 		}
 		
 		completion_reward = {
+			set_global_flag = REI_molotov_ribbentrop_completed			# for auto-pilot on REI-less world stage
+			add_war_support = 0.05
 			every_other_country = {
 				if = {
 					limit = { has_government = fascism }
@@ -690,6 +752,8 @@ focus_tree = {
 		}
 		
 		completion_reward = {
+			hidden_effect = { news_event = ostasien.11 }
+			set_global_flag = REI_molotov_ribbentrop_completed
 			add_named_threat = {
 				threat = -5
 				name = REI_threat_molotov_ribbentrop
@@ -840,6 +904,8 @@ focus_tree = {
 		}
 		
 		completion_reward = {
+			hidden_effect = { news_event = ostasien.8 }
+			set_global_flag = REI_sudetenland_completed
 			add_named_threat = { 
 				threat = 15
 				name = REI_threat_sudetenland
@@ -884,6 +950,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
+			set_global_flag = REI_attack_poland_completed
 			hidden_effect = {
 				news_event = worldstage.15
 				if = {
@@ -1066,6 +1133,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
+			set_global_flag = REI_blitzkrieg_completed
 			custom_effect_tooltip = country_name_germany
 			if = {
 				limit = { NOT = { has_global_flag = netherlands_joined_ww2 } has_global_flag = netherlands_aligned_axis }
@@ -1208,6 +1276,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
+			set_global_flag = REI_barbarossa_completed
 			set_temp_variable = { ger_forces_value = global.world_stage_power_ger }
 			multiply_temp_variable = { ger_forces_value = 0.75 }
 			round_temp_variable = ger_forces_value
@@ -1396,6 +1465,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
+			set_global_flag = REI_sea_lion_completed
 			if = {
 				limit = {
 					NOT = { has_global_flag = world_stage_theater_normandy_is_active }
@@ -1767,7 +1837,7 @@ focus_tree = {
 			add_tech_bonus = {
 				name = motorized_bonus
 				bonus = 1.0
-				technology = motorised_infantry
+				category = motorized_equipment
 			}
 			add_offsite_building = { type = arms_factory level = 1 }
 			add_world_stage_power_ger_2 = yes
@@ -1775,7 +1845,7 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = REI_wunderwaffe
+		id = REI_wonder_waffle
 		icon = GFX_focus_REI_wonder_waffle
 		search_filters = { FOCUS_FILTER_RESEARCH }
 		
@@ -1939,7 +2009,7 @@ focus_tree = {
 	focus = {
 		id = REI_help_japanese_strategy
 		icon = GFX_focus_REI_japanese_strategy
-		search_filters = {  }
+		search_filters = { FOCUS_FILTER_DIPLOMACY }
 		
 		mutually_exclusive = { focus = REI_help_shikoku_strategy }
 		prerequisite = { focus = REI_coopt_local_leaderships focus = REI_commandeer_industry }
@@ -1977,7 +2047,7 @@ focus_tree = {
 	focus = {
 		id = REI_help_shikoku_strategy
 		icon = GFX_focus_REI_bet_on_shikoku
-		search_filters = {  }
+		search_filters = { FOCUS_FILTER_DIPLOMACY }
 		
 		mutually_exclusive = { focus = REI_help_japanese_strategy }
 		prerequisite = { focus = REI_commandeer_industry focus = REI_coopt_local_leaderships }
@@ -2002,7 +2072,7 @@ focus_tree = {
 				}
 				add_opinion_modifier = {
 					target = REI
-					modifier = REI_prefered_partner_opinion_trade
+					modifier = REI_prefered_partner_trade
 				}
 				add_ideas = REI_idea_prefered_partner
 			}
@@ -2297,6 +2367,13 @@ focus_tree = {
 		y = 1
 		cost = 10
 		
+		available = {
+			if = {
+				limit = { NOT = { has_idea_with_trait = REI_crypto_archaeologist_cthulhu} }
+				has_idea_with_trait = REI_crypto_archaeologist
+			}
+		}
+		
 		allow_branch = {
 			has_global_flag = religion_cthulhu_allowed
 		}
@@ -2308,15 +2385,33 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			set_country_religion_7 = yes
-			custom_effect_tooltip = set_religion_cthulhu
+			hidden_effect = { news_event = ostasiencthulhu.2 }
+			set_religion_cthulhu = yes
+			hidden_effect = {
+				add_trait = {
+					 character = REI_rene_belloq
+					 slot = political_advisor
+					 trait = REI_crypto_archaeologist_cthulhu
+				}
+				remove_trait = {
+					 character = REI_rene_belloq
+					 slot = political_advisor
+					 trait = REI_crypto_archaeologist
+				}
+			}
+			REI_rene_belloq = {
+				custom_effect_tooltip = conversion_cthulhu_50_tt
+			}
+			REI_arnold_toht = {
+				promote_character = yes
+			}
 		}
 	}
 	
 	focus = {
 		id = REI_cult_of_cthulhu_a
 		icon = GFX_focus_REI_call_of_cthulhu2
-		search_filters = { FOCUS_FILTER_RELIGION }
+		search_filters = { FOCUS_FILTER_RELIGION FOCUS_FILTER_WAR_SUPPORT }
 		
 		prerequisite = { focus = REI_cult_of_cthulhu }
 		
@@ -2333,6 +2428,8 @@ focus_tree = {
 		
 		completion_reward = {
 			custom_effect_tooltip = cthulhu_conversion_tooltip
+			add_stability = -0.1
+			add_war_support = 0.1
 			hidden_effect = {
 				capital_scope = {
 					set_variable = { state_religion_buddhism = 0 }
@@ -2368,9 +2465,10 @@ focus_tree = {
 		
 		completion_reward = {
 			random_list = {
-				1 = { event = ostasiencthulhu.3 }	# research
-				1 = { event = ostasiencthulhu.4 }	# conversion spirit
-				1 = { event = ostasiencthulhu.5 }	# madness
+				1 = { news_event = ostasiencthulhu.3 }	# research
+				1 = { news_event = ostasiencthulhu.4 }	# conversion spirit
+				1 = { news_event = ostasiencthulhu.5 }	# madness
+				1 = { news_event = ostasiencthulhu.6 }	# dagonites
 			}
 		}
 	}
