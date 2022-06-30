@@ -1,66 +1,18 @@
-Operations  = {                             
-    #war_with_korea = {          
-    #    fire_only_once = yes	 
-    #     
-	#	allowed = { tag = FER }                
-    #     
-	#	available = {                                  
-    #     	has_war_with = JOS
-	#	}
-    #    activation = {                         
-	#     	tag = FER
-    #    }
-	#			 
-	#	visible = {                        
-    #      	tag = FER   
-    #    }
-	#	  
-	#	war_with_on_complete = JOS
-	#	war_with_on_timeout = JOS
-	#	  
-    #    is_good = no                         
-    #    selectable_mission = no              
-    #    days_mission_timeout = 1095   
-	#	  
-    #    timeout_effect = {        		  
-    #		country_event = { id = primorski.1 }  
-	#	 	183 = { set_demilitarized_zone = no }
-	#	 	184 = { set_demilitarized_zone = no }
-	#	 	185 = { set_demilitarized_zone = no }
-	#	 	168 = { set_demilitarized_zone = no }
-	#	 	169 = { set_demilitarized_zone = no }
-    #    }
-	#	  
-    #    complete_effect = {                  
-    #     	183 = { set_demilitarized_zone = no }
-	#	 	184 = { set_demilitarized_zone = no }
-	#	 	185 = { set_demilitarized_zone = no }
-	#	 	168 = { set_demilitarized_zone = no }
-	#	 	169 = { set_demilitarized_zone = no }
-    #    }
-    #}
-}
-
 fer_protests_for_independence_category = {
-	appease_the_protesters = {
-		days_remove = 7
-		days_re_enable = 2
+	fer_expand_civil_support = {
+		days_remove = 25
+		days_re_enable = 3
 		ai_will_do = {
 			base = 0
 			modifier = {
-				add = 10
-				check_variable = { FER_protests_level > 63 }
-				has_country_flag = FER_AI_social_democracy
-			}
-			modifier = {
-				add = 10
-				check_variable = { FER_protests_level > 82 }
-				has_country_flag = FER_AI_military_state
-			}
-			modifier = {
-				add = 10
-				check_variable = { FER_protests_level > 16 }
+				add = 50
 				has_country_flag = FER_AI_appease_people
+				check_variable = { FER_protests_level > 40 }
+			}
+			modifier = {
+				add = 50
+				has_country_flag = FER_AI_social_democracy
+				check_variable = { FER_protests_level > 65 }
 			}
 		}
 		available = {
@@ -79,28 +31,121 @@ fer_protests_for_independence_category = {
 		}
 		complete_effect = {
 			set_country_flag = FER_protests_actions
+			set_variable = { FER_protests_decrease = -1.0 }
+			custom_effect_tooltip = FER_protests_decrease_10_tt
+		}
+		modifier = {
+			political_power_factor = -0.1
 		}
 		remove_effect = {
-			custom_effect_tooltip = FER_appease_protesters_tt 
-			add_to_variable = { FER_protests_level = -6 }
+			clr_country_flag = FER_protests_actions
+			set_variable = { FER_protests_decrease = 0 }
+		}
+	}
+	fer_promise_of_changes = {
+		days_remove = 15
+		days_re_enable = 3
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = 70
+				has_country_flag = FER_AI_appease_people
+				check_variable = { FER_protests_level > 65 }
+			}
+			modifier = {
+				add = 70
+				has_country_flag = FER_AI_social_democracy
+				check_variable = { FER_protests_level > 65 }
+			}
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = FER_not_completed_focus_tt
+				NOT = {
+					has_country_flag = FER_path_chosen
+				}
+			}
+			NOT = {
+				custom_trigger_tooltip = {
+					tooltip = FER_protests_actions_tt
+					has_country_flag = FER_protests_actions
+				}
+			}
+		}
+		complete_effect = {
+			set_country_flag = FER_protests_actions
+			set_variable = { FER_protests_decrease = -1.5 }
+			custom_effect_tooltip = FER_protests_decrease_15_tt
+		}
+		modifier = {
+			political_power_factor = -0.1
+		}
+		remove_effect = {
+			clr_country_flag = FER_protests_actions
+			set_variable = { FER_protests_decrease = 0 }
+		}
+	}
+	fer_de_stalinisation_programms = {
+		days_remove = 30
+		fire_only_once = yes
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = 100
+				has_country_flag = FER_AI_appease_people
+				check_variable = { FER_protests_level > 75 }
+			}
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = FER_mutually_exclusive_with_article70_tt
+				NOT = {
+					has_country_flag = FER_special_protests_actions
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = FER_not_completed_focus_tt
+				NOT = {
+					has_country_flag = FER_path_chosen
+				}
+			}
+			NOT = {
+				custom_trigger_tooltip = {
+					tooltip = FER_protests_actions_tt
+					has_country_flag = FER_protests_actions
+				}
+			}
+		}
+		complete_effect = {
+			set_country_flag = FER_protests_actions
+			set_variable = { FER_protests_decrease = -2.0 }
+			custom_effect_tooltip = FER_protests_decrease_20_tt
+			set_variable = { FER_stalin_trust_special_value = -15 }
+			custom_effect_tooltip = FER_stalin_trust_decreased_tt
+		}
+		modifier = {
+			political_power_factor = -0.2
+		}
+		remove_effect = {
+			set_variable = { FER_protests_decrease = 0 }
 			clr_country_flag = FER_protests_actions
 		}
-		
 	}
-	strike_the_protesters = {
-		days_remove = 7
-		days_re_enable = 2
+	#======================================================#
+	fer_train_nkvd_guards = {
+		days_remove = 25
+		days_re_enable = 3
 		ai_will_do = {
 			base = 0
 			modifier = {
-				add = 10
-				check_variable = { FER_protests_level < 50 }
+				add = 50
 				has_country_flag = FER_AI_social_democracy
+				check_variable = { FER_protests_level < 35 }
 			}
 			modifier = {
-				add = 10
-				check_variable = { FER_protests_level < 75 }
+				add = 50
 				has_country_flag = FER_AI_military_state
+				check_variable = { FER_protests_level < 60 }
 			}
 		}
 		available = {
@@ -119,10 +164,101 @@ fer_protests_for_independence_category = {
 		}
 		complete_effect = {
 			set_country_flag = FER_protests_actions
+			set_variable = { FER_protests_decrease = 1.0 }
+			custom_effect_tooltip = FER_protests_increase_10_tt
+			add_manpower = 80000
 		}
 		remove_effect = {
-			custom_effect_tooltip = FER_strike_protesters_tt 
-			add_to_variable = { FER_protests_level = 6 }
+			clr_country_flag = FER_protests_actions
+			set_variable = { FER_protests_decrease = 0 }
+		}
+	}
+	fer_discredit_protests = {
+		days_remove = 15
+		days_re_enable = 3
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = 50
+				has_country_flag = FER_AI_social_democracy
+				check_variable = { FER_protests_level < 25 }
+			}
+			modifier = {
+				add = 50
+				has_country_flag = FER_AI_military_state
+				check_variable = { FER_protests_level < 50 }
+			}
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = FER_not_completed_focus_tt
+				NOT = {
+					has_country_flag = FER_path_chosen
+				}
+			}
+			NOT = {
+				custom_trigger_tooltip = {
+					tooltip = FER_protests_actions_tt
+					has_country_flag = FER_protests_actions
+				}
+			}
+		}
+		complete_effect = {
+			set_country_flag = FER_protests_actions
+			set_variable = { FER_protests_decrease = 1.5 }
+			custom_effect_tooltip = FER_protests_increase_15_tt
+		}
+		modifier = {
+			political_power_factor = 0.1
+		}
+		remove_effect = {
+			clr_country_flag = FER_protests_actions
+			set_variable = { FER_protests_decrease = 0 }
+		}
+	}
+	fer_empower_article70 = {
+		days_remove = 30
+		fire_only_once = yes
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = 100
+				has_country_flag = FER_AI_military_state
+				check_variable = { FER_protests_level < 25 }
+			}
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = FER_mutually_exclusive_with_destalinisation_tt
+				NOT = {
+					has_country_flag = FER_special_protests_actions
+				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = FER_not_completed_focus_tt
+				NOT = {
+					has_country_flag = FER_path_chosen
+				}
+			}
+			NOT = {
+				custom_trigger_tooltip = {
+					tooltip = FER_protests_actions_tt
+					has_country_flag = FER_protests_actions
+				}
+			}
+		}
+		complete_effect = {
+			set_country_flag = FER_protests_actions
+			set_variable = { FER_protests_decrease = 2.0 }
+			custom_effect_tooltip = FER_protests_increase_20_tt
+			set_variable = { FER_stalin_trust_special_value = 15 }
+			custom_effect_tooltip = FER_stalin_trust_increased_tt
+		}
+		modifier = {
+			political_power_factor = 0.2
+		}
+		remove_effect = {
+			set_variable = { FER_protests_decrease = 0 }
 			clr_country_flag = FER_protests_actions
 		}
 	}
