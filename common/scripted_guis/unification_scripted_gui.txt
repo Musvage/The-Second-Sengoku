@@ -75,11 +75,11 @@ scripted_gui = {
 			frame_score_you_leader_visible = { unification_has_highest_score = yes }
 			frame_score_you_visible = { unification_has_highest_score = no }
 			unification_south_button_click_enabled = { NOT = {  check_variable = { number_of_states_controlled_southern_japan < global.required_states_southern_japan } has_global_flag = south_japan_unified } }
-			unification_south_button_click_visible = { NOT = { has_global_flag = japan_is_united } }
+			unification_south_button_click_visible = { NOT = { has_global_flag = japan_is_united has_global_flag = south_japan_unified  } }
 			unification_central_button_click_enabled = { NOT = { check_variable = { number_of_states_controlled_central_japan < global.required_states_central_japan } has_global_flag = central_japan_unified } }
-			unification_central_button_click_visible = { NOT = { has_global_flag = japan_is_united } }
+			unification_central_button_click_visible = { NOT = { has_global_flag = japan_is_united has_global_flag = central_japan_unified  } }
 			unification_north_button_click_enabled = { NOT = { check_variable = { number_of_states_controlled_northern_japan < global.required_states_northern_japan } has_global_flag = north_japan_unified } }
-			unification_north_button_click_visible = { NOT = { has_global_flag = japan_is_united } }
+			unification_north_button_click_visible = { NOT = { has_global_flag = japan_is_united has_global_flag = north_japan_unified } }
 		}
 		
 		properties = {
@@ -141,96 +141,195 @@ scripted_gui = {
 				}
 			}
 			unification_south_button_click = {
-				set_global_flag = south_japan_unified
-				unification_set_shield_half = yes
-				# become south japan
-				every_country = {
-					limit = {
-						NOT = { tag = ROOT has_war_with = ROOT }
-						unification_candidate = yes
-						capital_scope = { has_state_flag = state_is_southern_japan }
+				if = {
+					limit = { NOT = { has_global_flag = south_japan_unified } }
+					set_global_flag = south_japan_unified
+					unification_set_shield_half = yes
+					# become south japan
+					every_country = {
+						limit = {
+							NOT = { tag = ROOT has_war_with = ROOT }
+							unification_candidate = yes
+							capital_scope = { has_state_flag = state_is_southern_japan }
+						}
+						country_event = { id = formablenations.11 hours = 6 random = 6 }
 					}
-					country_event = { id = formablenations.11 hours = 6 random = 6 }
-				}
-				every_country = {
-					limit = {
-						OR = {
-							tag = ROOT
-							has_war_with = ROOT
-							unification_candidate = no
-							NOT = { capital_scope = { has_state_flag = state_is_southern_japan } }
+					every_country = {
+						limit = {
+							OR = {
+								tag = ROOT
+								has_war_with = ROOT
+								unification_candidate = no
+								NOT = { capital_scope = { has_state_flag = state_is_southern_japan } }
+							}
+						}
+						news_event = formablenations.1	# cosmetic news
+					}
+					every_state = {
+						limit = {
+							has_state_flag = state_is_southern_japan
+							NOT = { is_core_of = ROOT }
+						}
+						add_claim_by = ROOT	#
+					}
+					every_other_country = {
+						limit = { unification_candidate = yes }
+						ai_strategy = {
+							type = antagonize
+							id = ROOT
+							value = 50
 						}
 					}
-					news_event = formablenations.1	# cosmetic news
-				}
-				every_state = {
-					limit = {
-						has_state_flag = state_is_southern_japan
-						NOT = { is_core_of = ROOT }
+					random_other_country = {
+						limit = {
+							unification_candidate = yes
+							NOT = {	has_country_flag = united_south_japan
+									has_country_flag = united_central_japan
+									has_country_flag = united_north_japan	}
+							has_army_size = { size > 25 }
+							NOT = { is_in_faction_with = ROOT }
+						}
+						log = "[THIS.GetName] is prefered opposition to [ROOT.GetName]"
+						every_other_country = {
+							limit = {
+								unification_candidate = yes
+								NOT = { tag = ROOT }
+							}
+							ai_strategy = {
+								type = befriend
+								id = PREV
+								value = 50
+							}
+						}
 					}
-					add_claim_by = ROOT	#
 				}
 			}
 			unification_central_button_click = {
-				set_global_flag = central_japan_unified
-				unification_set_shield_half = yes
-				# become central japan
-				every_country = {
-					limit = {
-						NOT = { tag = ROOT has_war_with = ROOT }
-						unification_candidate = yes
-						capital_scope = { has_state_flag = state_is_central_japan }
+				if = {
+					limit = { NOT = { has_global_flag = central_japan_unified } }
+					set_global_flag = central_japan_unified
+					unification_set_shield_half = yes
+					# become central japan
+					every_country = {
+						limit = {
+							NOT = { tag = ROOT has_war_with = ROOT }
+							unification_candidate = yes
+							capital_scope = { has_state_flag = state_is_central_japan }
+						}
+						country_event = { id = formablenations.21 hours = 6 random = 6 }
 					}
-					country_event = { id = formablenations.21 hours = 6 random = 6 }
-				}
-				every_country = {
-					limit = {
-						OR = {
-							tag = ROOT
-							has_war_with = ROOT
-							unification_candidate = no
-							NOT = { capital_scope = { has_state_flag = state_is_central_japan } }
+					every_country = {
+						limit = {
+							OR = {
+								tag = ROOT
+								has_war_with = ROOT
+								unification_candidate = no
+								NOT = { capital_scope = { has_state_flag = state_is_central_japan } }
+							}
+						}
+						news_event = formablenations.2	# cosmetic news
+					}
+					every_state = {
+						limit = {
+							has_state_flag = state_is_central_japan
+							NOT = { is_core_of = ROOT }
+						}
+						add_claim_by = ROOT	#
+					}
+					every_other_country = {
+						limit = { unification_candidate = yes }
+						ai_strategy = {
+							type = antagonize
+							id = ROOT
+							value = 50
 						}
 					}
-					news_event = formablenations.2	# cosmetic news
-				}
-				every_state = {
-					limit = {
-						has_state_flag = state_is_central_japan
-						NOT = { is_core_of = ROOT }
+					random_other_country = {
+						limit = {
+							unification_candidate = yes
+							NOT = {	has_country_flag = united_south_japan
+									has_country_flag = united_central_japan
+									has_country_flag = united_north_japan	}
+							has_army_size = { size > 25 }
+							NOT = { is_in_faction_with = ROOT }
+						}
+						log = "[THIS.GetName] is prefered opposition to [ROOT.GetName]"
+						every_other_country = {
+							limit = {
+								unification_candidate = yes
+								NOT = { tag = ROOT }
+							}
+							ai_strategy = {
+								type = befriend
+								id = PREV
+								value = 50
+							}
+						}
 					}
-					add_claim_by = ROOT	#
 				}
 			}
 			unification_north_button_click = {
-				set_global_flag = north_japan_unified
-				unification_set_shield_half = yes
-				# become north japan
-				every_country = {
-					limit = {
-						NOT = { tag = ROOT has_war_with = ROOT }
-						unification_candidate = yes
-						capital_scope = { has_state_flag = state_is_northern_japan }
+				if = {
+					limit = { NOT = { has_global_flag = north_japan_unified } }
+					set_global_flag = north_japan_unified
+					unification_set_shield_half = yes
+					# become north japan
+					every_country = {
+						limit = {
+							NOT = { tag = ROOT has_war_with = ROOT }
+							unification_candidate = yes
+							capital_scope = { has_state_flag = state_is_northern_japan }
+						}
+						country_event = { id = formablenations.31 hours = 6 random = 6 }
 					}
-					country_event = { id = formablenations.31 hours = 6 random = 6 }
-				}
-				every_country = {
-					limit = {
-						OR = {
-							tag = ROOT
-							has_war_with = ROOT
-							unification_candidate = no
-							NOT = { capital_scope = { has_state_flag = state_is_northern_japan } }
+					every_country = {
+						limit = {
+							OR = {
+								tag = ROOT
+								has_war_with = ROOT
+								unification_candidate = no
+								NOT = { capital_scope = { has_state_flag = state_is_northern_japan } }
+							}
+						}
+						news_event = formablenations.3	# cosmetic news
+					}
+					every_state = {
+						limit = {
+							has_state_flag = state_is_northern_japan
+							NOT = { is_core_of = ROOT }
+						}
+						add_claim_by = ROOT	#
+					}
+					every_other_country = {
+						limit = { unification_candidate = yes }
+						ai_strategy = {
+							type = antagonize
+							id = ROOT
+							value = 50
 						}
 					}
-					news_event = formablenations.3	# cosmetic news
-				}
-				every_state = {
-					limit = {
-						has_state_flag = state_is_northern_japan
-						NOT = { is_core_of = ROOT }
+					random_other_country = {
+						limit = {
+							unification_candidate = yes
+							NOT = {	has_country_flag = united_south_japan
+									has_country_flag = united_central_japan
+									has_country_flag = united_north_japan	}
+							has_army_size = { size > 25 }
+							NOT = { is_in_faction_with = ROOT }
+						}
+						log = "[THIS.GetName] is prefered opposition to [ROOT.GetName]"
+						every_other_country = {
+							limit = {
+								unification_candidate = yes
+								NOT = { tag = ROOT }
+							}
+							ai_strategy = {
+								type = befriend
+								id = PREV
+								value = 50
+							}
+						}
 					}
-					add_claim_by = ROOT	#
 				}
 			}
 		}
