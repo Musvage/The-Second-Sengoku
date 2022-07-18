@@ -204,6 +204,9 @@ focus_tree = {
 				ideology = neutrality
 			}
 			add_stability = -0.20
+			add_to_variable = { var = dd_stability_factor value = 0.10 }
+			add_to_variable = { var = dd_political_power_factor value = 0.20 }
+			add_to_variable = { var = dd_trade_laws_cost_factor value = 0.10 }
 		}
 	}
 	
@@ -303,6 +306,7 @@ focus_tree = {
 		completion_reward = {
 			add_ideas = CHU_Convince_people_to_fight
 			add_stability = -0.15
+			dual_leader_traits = yes
 		}
 	}
 
@@ -669,6 +673,9 @@ focus_tree = {
 				country_exists = KAN
 			}
 		}
+		bypass = {
+			
+		}
 		relative_position_id = CHU_war_goal_KAN
 		prerequisite = { focus = CHU_aggressive_policy focus = CHU_war_goal_KAN }
 		cost = 10
@@ -679,7 +686,7 @@ focus_tree = {
 
 		completion_reward = {
 			every_state = {
-			limit = { is_owned_by = KAN }
+			limit = { is_core_of = KAN }
 			add_core_of = CHU
 			}
 		}
@@ -844,6 +851,16 @@ focus_tree = {
 			factor = 1
 		}
 		completion_reward = {
+			if = {
+				limit = {
+					has_country_leader = {
+						name = "Tomoyuki Yamashita"
+						ruling_only = yes
+					 }					 
+					NOT = { has_trait = army_junta }
+				}
+				add_country_leader_trait = army_junta
+			}
 			add_country_leader_trait = national_hero
 		}
 	}
@@ -946,6 +963,16 @@ focus_tree = {
 		}
 
 		completion_reward = {
+			if = {
+				limit = {
+					has_country_leader = {
+						name = "Tomoyuki Yamashita"
+						ruling_only = yes
+					 }					 
+					NOT = { has_trait = army_junta }
+				}
+				add_country_leader_trait = army_junta
+			}
 			add_country_leader_trait = supreme_leader
 		}
 	}
@@ -1587,6 +1614,7 @@ focus_tree = {
 			}
 				}
 			}
+
 		}
 	}
 
@@ -1639,7 +1667,7 @@ focus_tree = {
 				KAN = { is_in_faction_with = ROOT }
 				SHO = { is_in_faction_with = ROOT }
 			}
-			NOT = { has_completed_focus = CHU_Create_New_Empire}
+			NOT = { has_completed_focus = CHU_Create_New_Empire }
 		}
 		relative_position_id = CHU_defend_monarchist_nations
 		available_if_capitulated = no
@@ -1664,6 +1692,7 @@ focus_tree = {
 				} }
 				annex_country = { target = SHO transfer_troops = yes }
 			}
+			custom_effect_tooltip = "If Kansai and Tokugawa are in the same faction as Chugoku, he can annex them."
 		}
 	}
 
@@ -1837,8 +1866,8 @@ focus_tree = {
 		y = 1
 		cost = 10
 		bypass = {
-			has_idea = finances_civilian
-			has_idea = nationalization_capital
+			has_idea = education_law_military
+			has_idea = welfare_law_none
 		}
 		relative_position_id = CHU_conserve_the_status_quo
 		available_if_capitulated = yes
@@ -1847,20 +1876,19 @@ focus_tree = {
 			factor = 1
 		}
 		completion_reward = {
-			hidden_effect = {
 				if = {
 					limit = {
-						NOT = { has_idea = finances_civilian }
+						NOT = { has_idea = education_law_military }
 					}
-					add_ideas = finances_civilian
+					add_ideas = education_law_military
 				}
 				if = {
 					limit = {
-						NOT = { has_idea = nationalization_capital }
+						NOT = { has_idea = welfare_law_none }
 					}
-					add_ideas = nationalization_capital
+					add_ideas = welfare_law_none
 				}
-			}
+				add_ideas = war_economy
 		}
 	}
 
@@ -4350,7 +4378,7 @@ focus_tree = {
 		available = {
 			OR = {
 				has_government = neutrality
-				NOT = {has_completed_focus = CHU_war_with_juntas}
+				NOT = { has_completed_focus = CHU_war_with_juntas }
 			}
 			OR = {
 				KYU = {
@@ -6406,6 +6434,7 @@ focus_tree = {
 				OSA = { country_event = { id = chugoku.14 } }
 				FER = { country_event = { id = chugoku.14 } }
 				AMC = { country_event = { id = chugoku.14 } }
+				HIR = { country_event = { id = chugoku.14 } }
 				SHI = { country_event = { id = chugoku.17 } }
 				KYU = { country_event = { id = chugoku.17 } }
 				KAN = { country_event = { id = chugoku.17 } }
@@ -6900,7 +6929,7 @@ focus_tree = {
 					}
 				}
 			}
-			
+			custom_effect_tooltip = "Chugoku will develop relationships with anyone who takes a friendly attitude towards him."
 		}
 	}
 
@@ -6966,6 +6995,8 @@ focus_tree = {
 					target = KYU
 				}
 			}
+
+			custom_effect_tooltip = "Chugoku will declare war on anyone who takes a hostile attitude towards him."
 		}
 	}
 
@@ -7032,6 +7063,7 @@ focus_tree = {
 					country_event = { id = generic.5 }
 				}
 			}
+			custom_effect_tooltip = "Chugoku will invite anyone who has a friendly attitude towards him to his faction."
 		}
 	}
 	
@@ -9126,13 +9158,20 @@ focus_tree = {
 		}
 		completion_reward = {
 			add_ideas = free_trade
+			if = {
+				limit = {
+					has_idea = free_trade
+				}
+				add_stability = 0.05
+				add_political_power = 100
+			}
 		}
 	}
 
 	#Focus for To Build Infrastructure
 	focus = {
 		id = CHU_to_build_infrastructure
-		icon = GFX_focus_CHU_clans_developt_infrustracture
+		icon = GFX_focus_FER_improve_equipment
 		x = 3
 		y = 1
 		cost = 5
@@ -9143,12 +9182,27 @@ focus_tree = {
 			factor = 1
 		}
 		completion_reward = {
-			116 = {
-				add_building_construction = {
-					type = infrastructure
-					level = 1					#changed from 2. add railroad
-					instant_build = yes
+			if = {
+				limit = {
+					116 = {
+						infrastructure < 5
+					}
 				}
+				116 = {
+					add_building_construction = {
+						type = infrastructure
+						level = 2
+						instant_build = yes
+					}
+				}
+			}
+			add_equipment_to_stockpile = {
+				type = train_equipment
+				amount = 15
+			}
+			add_equipment_to_stockpile = {
+				type = motorized_equipment
+				amount = 350
 			}
 		}
 	}
@@ -9166,32 +9220,60 @@ focus_tree = {
 			factor = 1
 		}
 		completion_reward = {
-			40 = {
-				add_building_construction = {
-					type = infrastructure
-					level = 1					#no infrastructure change. add railroad
-					instant_build = yes
+			if = {
+				limit = {
+					40 = {
+						infrastructure < 5
+					}
+				}
+				40 = {
+					add_building_construction = {
+						type = infrastructure
+						level = 2
+						instant_build = yes
+					}
 				}
 			}
-			115 = {
-				add_building_construction = {
-					type = infrastructure
-					level = 1					#no infrastructure change. add railroad
-					instant_build = yes
+			if = {
+				limit = {
+					115 = {
+						infrastructure < 5
+					}
+				}
+				115 = {
+					add_building_construction = {
+						type = infrastructure
+						level = 2
+						instant_build = yes
+					}
 				}
 			}
-			112 = {
-				add_building_construction = {
-					type = infrastructure
-					level = 1					#no infrastructure change. add railroad
-					instant_build = yes
+			if = {
+				limit = {
+					112 = {
+						infrastructure < 5
+					}
+				}
+				112 = {
+					add_building_construction = {
+						type = infrastructure
+						level = 2
+						instant_build = yes
+					}
 				}
 			}
-			125 = {
-				add_building_construction = {
-					type = infrastructure
-					level = 1					#no infrastructure change. add railroad
-					instant_build = yes
+			if = {
+				limit = {
+					125 = {
+						infrastructure < 5
+					}
+				}
+				125 = {
+					add_building_construction = {
+						type = infrastructure
+						level = 2
+						instant_build = yes
+					}
 				}
 			}
 		}
@@ -9211,32 +9293,60 @@ focus_tree = {
 			factor = 1
 		}
 		completion_reward = {
-			110 = {
-				add_building_construction = {
-					type = infrastructure
-					level = 1					#no infrastructure change. add railroad
-					instant_build = yes
+			if = {
+				limit = {
+					110 = {
+						infrastructure < 5
+					}
+				}
+				110 = {
+					add_building_construction = {
+						type = infrastructure
+						level = 2
+						instant_build = yes
+					}
 				}
 			}
-			123 = {
-				add_building_construction = {
-					type = infrastructure
-					level = 1					#no infrastructure change. add railroad
-					instant_build = yes
+			if = {
+				limit = {
+					123 = {
+						infrastructure < 5
+					}
+				}
+				123 = {
+					add_building_construction = {
+						type = infrastructure
+						level = 2
+						instant_build = yes
+					}
 				}
 			}
-			98 = {
-				add_building_construction = {
-					type = infrastructure
-					level = 1					#no infrastructure change. add railroad
-					instant_build = yes
+			if = {
+				limit = {
+					98 = {
+						infrastructure < 5
+					}
+				}
+				98 = {
+					add_building_construction = {
+						type = infrastructure
+						level = 2
+						instant_build = yes
+					}
 				}
 			}
-			103 = {
-				add_building_construction = {
-					type = infrastructure
-					level = 1					#no infrastructure change. add railroad
-					instant_build = yes
+			if = {
+				limit = {
+					103 = {
+						infrastructure < 5
+					}
+				}
+				103 = {
+					add_building_construction = {
+						type = infrastructure
+						level = 2
+						instant_build = yes
+					}
 				}
 			}
 		}
@@ -9255,32 +9365,60 @@ focus_tree = {
 			factor = 1
 		}
 		completion_reward = {
-			111 = {
-				add_building_construction = {
-					type = infrastructure
-					level = 1					#no infrastructure change. add railroad
-					instant_build = yes
+			if = {
+				limit = {
+					111 = {
+						infrastructure < 5
+					}
+				}
+				111 = {
+					add_building_construction = {
+						type = infrastructure
+						level = 2					#changed from 2. add railroad
+						instant_build = yes
+					}
 				}
 			}
-			117 = {
-				add_building_construction = {
-					type = infrastructure
-					level = 1					#no infrastructure change. add railroad
-					instant_build = yes
+			if = {
+				limit = {
+					117 = {
+						infrastructure < 5
+					}
+				}
+				117 = {
+					add_building_construction = {
+						type = infrastructure
+						level = 2					#changed from 2. add railroad
+						instant_build = yes
+					}
 				}
 			}
-			101 = {
-				add_building_construction = {
-					type = infrastructure
-					level = 1					#no infrastructure change. add railroad
-					instant_build = yes
+			if = {
+				limit = {
+					101 = {
+						infrastructure < 5
+					}
+				}
+				101 = {
+					add_building_construction = {
+						type = infrastructure
+						level = 2				#changed from 2. add railroad
+						instant_build = yes
+					}
 				}
 			}
-			138 = {
-				add_building_construction = {
-					type = infrastructure
-					level = 1					#no infrastructure change. add railroad
-					instant_build = yes
+			if = {
+				limit = {
+					138 = {
+						infrastructure < 5
+					}
+				}
+				138 = {
+					add_building_construction = {
+						type = infrastructure
+						level = 2					#changed from 2. add railroad
+						instant_build = yes
+					}
 				}
 			}
 		}
@@ -9299,32 +9437,60 @@ focus_tree = {
 			factor = 1
 		}
 		completion_reward = {
-			26 = {
-				add_building_construction = {
-					type = infrastructure
-					level = 1					#no infrastructure change. add railroad
-					instant_build = yes
+			if = {
+				limit = {
+					26 = {
+						infrastructure < 5
+					}
+				}
+				26 = {
+					add_building_construction = {
+						type = infrastructure
+						level = 2
+						instant_build = yes
+					}
 				}
 			}
-			23 = {
-				add_building_construction = {
-					type = infrastructure
-					level = 1					#no infrastructure change. add railroad
-					instant_build = yes
+			if = {
+				limit = {
+					23 = {
+						infrastructure < 5
+					}
+				}
+				23 = {
+					add_building_construction = {
+						type = infrastructure
+						level = 2
+						instant_build = yes
+					}
 				}
 			}
-			25 = {
-				add_building_construction = {
-					type = infrastructure
-					level = 1					#no infrastructure change. add railroad
-					instant_build = yes
+			if = {
+				limit = {
+					25 = {
+						infrastructure < 5
+					}
+				}
+				25 = {
+					add_building_construction = {
+						type = infrastructure
+						level = 2
+						instant_build = yes
+					}
 				}
 			}
-			12 = {
-				add_building_construction = {
-					type = infrastructure
-					level = 1					#no infrastructure change. add railroad
-					instant_build = yes
+			if = {
+				limit = {
+					12 = {
+						infrastructure < 5
+					}
+				}
+				12 = {
+					add_building_construction = {
+						type = infrastructure
+						level = 2
+						instant_build = yes
+					}
 				}
 			}
 		}
@@ -9400,10 +9566,10 @@ focus_tree = {
 				}
 			}
 			random_owned_controlled_state = {
-				add_extra_state_shared_building_slots = 1
+				add_extra_state_shared_building_slots = 2
 				add_building_construction = {
 					type = arms_factory
-					level = 1
+					level = 2
 					instant_build = yes
 				}
 			}
@@ -9455,6 +9621,14 @@ focus_tree = {
 					instant_build = yes
 				}
 			}
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 
@@ -9491,10 +9665,10 @@ focus_tree = {
 					include_locked = yes
 					}
 				}
-				add_extra_state_shared_building_slots = 1
+				add_extra_state_shared_building_slots = 2
 					add_building_construction = {
 					type = industrial_complex
-					level = 1
+					level = 2
 					instant_build = yes
 				}
 			}
@@ -9524,10 +9698,10 @@ focus_tree = {
 					include_locked = yes
 				}
 			}
-				add_extra_state_shared_building_slots = 1
+				add_extra_state_shared_building_slots = 2
 				add_building_construction = {
 				type = industrial_complex
-				level = 1
+				level = 2
 				instant_build = yes
 				}
 			}
@@ -9557,10 +9731,10 @@ focus_tree = {
 					include_locked = yes
 				}
 			}
-			add_extra_state_shared_building_slots = 1
+			add_extra_state_shared_building_slots = 2
 				add_building_construction = {
 				type = industrial_complex
-				level = 1
+				level = 2
 				instant_build = yes
 				}
 			}
@@ -9591,10 +9765,10 @@ focus_tree = {
 					include_locked = yes
 				}
 			}
-				add_extra_state_shared_building_slots = 1
+				add_extra_state_shared_building_slots = 2
 				add_building_construction = {
 				type = industrial_complex
-				level = 1
+				level = 2
 				instant_build = yes
 				}
 			}
@@ -10294,6 +10468,14 @@ focus_tree = {
 				add_building_construction = {
 					type = arms_factory
 					level = 2
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
 					instant_build = yes
 				}
 			}

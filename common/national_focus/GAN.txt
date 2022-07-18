@@ -1,0 +1,2537 @@
+focus_tree = {
+	id = GAN
+	country = { 
+		base = 0
+		modifier = {
+			add = 100
+			tag = GAN
+		}
+		modifier = {
+			is_debug = no
+			add = -999
+		}
+	}
+	continuous_focus_position = {
+		x = 1200
+		y = 810
+	}
+	########################
+	#  F O C U S  T R E E  #
+	########################
+	focus = {
+		id = GAN_home_in_danger
+		icon = GFX_GAN_home_in_danger
+		cost = 1
+		x = 0
+		y = 0
+		completion_reward = { 
+			add_political_power = 100
+			GAN = {
+				division_template = {
+					name = "Rifle-Division"
+					is_locked = no
+					division_names_group = KOR_INF_01
+					priority = 1
+					regiments = { 
+						infantry = {
+							x = 0
+							y = 0
+						}
+						infantry = {
+							x = 0
+							y = 1
+						}
+						infantry = {
+							x = 0
+							y = 2
+						}
+						infantry = {
+							x = 1
+							y = 0
+						}
+						infantry = {
+							x = 1
+							y = 1
+						}
+						infantry = {
+							x = 1
+							y = 2
+						}
+						artillery_brigade = {
+							x = 0
+							y = 3
+						}
+						artillery_brigade = {
+							x = 1
+							y = 3
+						}
+					}
+					support = {
+						recon = {
+							x = 0
+							y = 0
+						}
+						artillery = {
+							x = 0
+							y = 1
+						}
+					}
+				}
+			}
+			217 = {
+				create_unit = {
+					division = "name = \"Rifle-Division I\" division_template = \"Rifle-Division\" start_experience_factor = 0.25 start_equipment_factor = 1.0 start_manpower_factor = 1.0"
+					owner = GAN
+				}
+				create_unit = {
+					division = "name = \"Rifle-Division II\" division_template = \"Rifle-Division\" start_experience_factor = 0.25 start_equipment_factor = 1.0 start_manpower_factor = 1.0"
+					owner = GAN
+				}
+				create_unit = {
+					division = "name = \"Rifle-Division III\" division_template = \"Rifle-Division\" start_experience_factor = 0.25 start_equipment_factor = 1.0 start_manpower_factor = 1.0"
+					owner = GAN
+				}
+				create_unit = {
+					division = "name = \"Rifle-Division IV\" division_template = \"Rifle-Division\" start_experience_factor = 0.25 start_equipment_factor = 1.0 start_manpower_factor = 1.0"
+					owner = GAN
+				}
+				create_unit = {
+					division = "name = \"Rifle-Division V\" division_template = \"Rifle-Division\" start_experience_factor = 0.25 start_equipment_factor = 1.0 start_manpower_factor = 1.0"
+					owner = GAN
+				}
+				create_unit = {
+					division = "name = \"Rifle-Division VI\" division_template = \"Rifle-Division\" start_experience_factor = 0.25 start_equipment_factor = 1.0 start_manpower_factor = 1.0"
+					owner = GAN
+				}
+			}
+		}
+	}
+	################################
+	#  O B E D I E N C E  P A T H  #
+	################################
+	focus = {
+		id = GAN_accept_our_fate
+		icon = GFX_GAN_accept_our_fate
+		cost = 3
+		x = 3
+		y = 1
+		relative_position_id = GAN_home_in_danger
+		mutually_exclusive = {
+			focus = GAN_our_place_in_the_world
+		}
+		prerequisite = {
+			focus = GAN_home_in_danger
+		}
+		completion_reward = { 
+			add_ideas = GAN_fate_accepted_idea
+			custom_effect_tooltip = GAN_add_1_to_korea_tt
+			add_to_variable = { JOS_korean_influence = 1 }
+		}
+	}
+	focus = {
+		id = GAN_befriend_korea
+		icon = GFX_GAN_befriend_korea
+		cost = 5
+		x = 1
+		y = 1
+		relative_position_id = GAN_accept_our_fate
+		prerequisite = {
+			focus = GAN_accept_our_fate
+		}
+		completion_reward = { 
+			JOS = {
+				diplomatic_relation = {
+					country = GAN
+					relation = guarantee
+					active = yes
+				}
+			}
+			custom_effect_tooltip = GAN_add_2_to_korea_tt
+			add_to_variable = { JOS_korean_influence = 2 }
+		}
+	}
+	focus = {
+		id = GAN_prokorean_sentiments
+		icon = GFX_goal_anschluss
+		cost = 5
+		x = 2
+		y = 2
+		relative_position_id = GAN_accept_our_fate
+		prerequisite = {
+			focus = GAN_befriend_korea
+		}
+		completion_reward = { 
+			custom_effect_tooltip = GAN_add_3_to_korea_tt
+			add_to_variable = { JOS_korean_influence = 3 }
+		}
+	}
+	focus = {
+		id = GAN_our_home_their_home
+		icon = GFX_goal_anschluss
+		cost = 10
+		x = 2
+		y = 4
+		relative_position_id = GAN_accept_our_fate
+		bypass = {
+			has_war_with = JOS
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = GAN_focus_require_15_korea_tt
+				check_variable = { JOS_korean_influence > 14 }
+			}
+		}
+		prerequisite = {
+			focus = GAN_prokorean_sentiments
+		}
+		completion_reward = { 
+			remove_ideas = GAN_part_of_korean_sphere_idea
+			custom_effect_tooltip = GAN_end_korean_influence_tt
+			JOS = {
+				country_event = { id = gando.1 days = 2 }
+			}
+			custom_effect_tooltip = GAN_game_over_tt
+		}
+	}
+	focus = {
+		id = GAN_industry_to_transfer
+		icon = GFX_goal_generic_construct_civ_factory
+		cost = 5
+		x = 1
+		y = 3
+		relative_position_id = GAN_accept_our_fate
+		available = {
+			has_full_control_of_state = 217
+			has_full_control_of_state = 218
+		}
+		prerequisite = {
+			focus = GAN_prokorean_sentiments
+		}
+		completion_reward = { 
+			217 = {
+				if = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+			218 = {
+				if = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+		}
+	}
+	focus = {
+		id = GAN_korean_military_industry
+		icon = GFX_goal_generic_construct_mil_factory
+		cost = 5
+		x = 3
+		y = 3
+		relative_position_id = GAN_accept_our_fate
+		available = {
+			has_full_control_of_state = 217
+			has_full_control_of_state = 218
+		}
+		prerequisite = {
+			focus = GAN_prokorean_sentiments
+		}
+		completion_reward = { 
+			217 = {
+				if = {
+					limit = {
+						free_building_slots = {
+							building = arms_factory
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = arms_factory
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+			218 = {
+				if = {
+					limit = {
+						free_building_slots = {
+							building = arms_factory
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = arms_factory
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+		}
+	}
+	focus = {
+		id = GAN_under_wings_of_overlord
+		icon = GFX_goal_generic_intelligence_exchange
+		cost = 5
+		x = -1
+		y = 2
+		relative_position_id = GAN_accept_our_fate
+		available = {
+			has_full_control_of_state = 217
+			has_full_control_of_state = 218
+		}
+		prerequisite = {
+			focus = GAN_accept_our_fate
+		}
+		completion_reward = { 
+			217 = {
+				if = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = industrial_complex
+						level = 2
+						instant_build = yes
+					}
+				}
+				if = {
+					limit = {
+						free_building_slots = {
+							building = arms_factory
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = arms_factory
+						level = 2
+						instant_build = yes
+					}
+				}
+			}
+			218 = {
+				if = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = industrial_complex
+						level = 2
+						instant_build = yes
+					}
+				}
+				if = {
+					limit = {
+						free_building_slots = {
+							building = arms_factory
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = arms_factory
+						level = 2
+						instant_build = yes
+					}
+				}
+			}
+			add_political_power = -100
+			custom_effect_tooltip = GAN_add_2_to_korea_tt
+			add_to_variable = { JOS_korean_influence = 2 }
+		}
+	}
+	focus = {
+		id = GAN_region_development
+		icon = GFX_goal_generic_construct_civilian
+		cost = 5
+		x = 0
+		y = 2
+		relative_position_id = GAN_home_in_danger
+		available = {
+			has_full_control_of_state = 217
+			has_full_control_of_state = 218
+		}
+		prerequisite = {
+			focus = GAN_accept_our_fate
+			focus = GAN_our_place_in_the_world
+		}
+		completion_reward = { 
+			custom_effect_tooltip = GAN_unadd_1_to_korea_tt
+			subtract_from_variable = { JOS_korean_influence = 1 }
+			217 = {
+				if = {
+					limit = {
+						free_building_slots = {
+							building = infrastructure
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_building_construction = {
+						type = infrastructure
+						level = 2
+						instant_build = yes
+					}
+				}
+				if = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = industrial_complex
+						level = 2
+						instant_build = yes
+					}
+				}
+				if = {
+					limit = {
+						free_building_slots = {
+							building = arms_factory
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = arms_factory
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+			218 = {
+				if = {
+					limit = {
+						free_building_slots = {
+							building = infrastructure
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_building_construction = {
+						type = infrastructure
+						level = 2
+						instant_build = yes
+					}
+				}
+				if = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = industrial_complex
+						level = 2
+						instant_build = yes
+					}
+				}
+				if = {
+					limit = {
+						free_building_slots = {
+							building = arms_factory
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = arms_factory
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+			add_popularity = {
+				ideology = communism
+				popularity = 0.1
+			}
+		}
+	}
+	focus = {
+		id = GAN_find_use_for_our_lands
+		icon = GFX_focus_generic_industry_2
+		cost = 5
+		x = 0
+		y = 3
+		relative_position_id = GAN_home_in_danger
+		prerequisite = {
+			focus = GAN_region_development
+		}
+		completion_reward = { 
+			if = {
+				limit = {
+					NOT = {
+						has_completed_focus = GAN_under_wings_of_overlord
+						has_completed_focus = GAN_serve_protect
+						has_completed_focus = GAN_region_development
+					}
+				}
+				custom_effect_tooltip = GAN_no_effect_focus_add_tt
+			}
+			if = {
+				limit = {
+					NOT = {
+						OR = {
+							has_completed_focus = GAN_under_wings_of_overlord
+							has_completed_focus = GAN_serve_protect
+						}
+					}
+					has_completed_focus = GAN_region_development
+				}
+				random_list = {
+					20 = {
+						add_timed_idea = {
+							idea = GAN_industrialisation_idea
+							days = 180
+						}
+					}
+					80 = {
+						add_timed_idea = {
+							idea = GAN_rice_fields_expansion_idea
+							days = 180
+						}
+					}
+				}
+			}
+			if = {
+				limit = {
+					OR = {
+						has_completed_focus = GAN_under_wings_of_overlord
+						has_completed_focus = GAN_serve_protect
+					}
+					has_completed_focus = GAN_region_development
+				}
+				random_list = {
+					80 = {
+						add_timed_idea = {
+							idea = GAN_industrialisation_idea
+							days = 180
+						}
+					}
+					20 = {
+						add_timed_idea = {
+							idea = GAN_rice_fields_expansion_idea
+							days = 180
+						}
+					}
+				}
+			}
+		}
+	}
+	focus = {
+		id = GAN_foreign_investments
+		icon = GFX_goal_generic_intelligence_exchange
+		cost = 5
+		x = 0
+		y = 4
+		relative_position_id = GAN_home_in_danger
+		available = {
+			OR = {
+				ROC = {
+					has_opinion = {
+						target = GAN
+						value > 34
+					}
+				}
+				JOS = {
+					has_opinion = {
+						target = GAN
+						value > 34
+					}
+				}
+			}
+		}
+		prerequisite = {
+			focus = GAN_under_wings_of_overlord
+			focus = GAN_serve_protect
+		}
+		prerequisite = {
+			focus = GAN_find_use_for_our_lands
+		}
+		completion_reward = { 
+			add_timed_idea = {
+				idea = GAN_foreign_investments_idea
+				days = 180
+			}
+			if = {
+				limit = {
+					JOS = {
+						has_opinion = {
+							target = GAN
+							value > 34
+						}
+					}
+				}
+				custom_effect_tooltip = GAN_add_2_to_korea_tt
+				add_to_variable = { JOS_korean_influence = 2 }
+			}
+			if = {
+				limit = {
+					JOS = {
+						has_opinion = {
+							target = GAN
+							value < 35
+						}
+					}
+				}
+				custom_effect_tooltip = GAN_unadd_2_to_korea_tt
+				subtract_from_variable = { JOS_korean_influence = 2 }
+			}
+		}
+	}
+	focus = {
+		id = GAN_shared_science_investments
+		icon = GFX_focus_research
+		cost = 10
+		x = 0
+		y = 5
+		relative_position_id = GAN_home_in_danger
+		prerequisite = {
+			focus = GAN_foreign_investments
+		}
+		completion_reward = { 
+			add_research_slot = 1
+			add_timed_idea = {
+				idea = GAN_science_investments_idea
+				days = 120
+			}
+		}
+	}
+	#####################################################
+	#  H A P B A N G  R E J E C T I O N  S U B P A T H  #
+	#####################################################
+	focus = {
+		id = GAN_deal_with_rejection
+		icon = GFX_focus_generic_treaty
+		cost = 10
+		x = 4
+		y = 5
+		relative_position_id = GAN_accept_our_fate
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = GAN_got_rejection_hapbang_tt
+				has_country_flag = GAN_hapbang_rejected_flag
+			}
+		}
+		prerequisite = {
+			focus = GAN_our_home_their_home
+		}
+		completion_reward = { 
+			add_political_power = 120
+			if = {
+				limit = {
+					is_puppet_of = JOS
+				}
+				JOS = {
+					set_autonomy = {
+						target = GAN
+						autonomy_state = autonomy_colony
+					}
+				}
+			}
+		}
+	}
+	focus = {
+		id = GAN_stay_loyal
+		icon = GFX_goal_tripartite_pact
+		cost = 10
+		x = -1
+		y = 1
+		relative_position_id = GAN_deal_with_rejection
+		prerequisite = {
+			focus = GAN_deal_with_rejection
+		}
+		completion_reward = { 
+			diplomatic_relation = {
+				country = JOS
+				relation = non_aggression_pact
+			}
+		}
+	}
+	focus = {
+		id = GAN_northern_friend
+		icon = GFX_goal_generic_improve_relations
+		cost = 10
+		x = -1
+		y = 2
+		relative_position_id = GAN_deal_with_rejection
+		prerequisite = {
+			focus = GAN_stay_loyal
+		}
+		completion_reward = { 
+			ROC = {
+				country_event = gando.9
+			}
+		}
+	}
+	focus = {
+		id = GAN_economical_exchange
+		icon = GFX_goal_generic_intelligence_exchange
+		cost = 10
+		x = 1
+		y = 2
+		relative_position_id = GAN_deal_with_rejection
+		prerequisite = {
+			focus = GAN_stay_loyal
+		}
+		prerequisite = {
+			focus = GAN_aftermath
+		}
+		completion_reward = { 
+			if = {
+				limit = {
+					ROC = {
+						has_opinion = {
+							target = GAN
+							value > 24
+						}
+					}
+				}
+				add_timed_idea = {
+					idea = GAN_economical_exchange_2_idea
+					days = 180
+				}
+				custom_effect_tooltip = GAN_add_3_to_recovery_tt
+				add_to_variable = { GAN_recovery = 3 }
+			}
+			else = {
+				custom_effect_tooltip = GAN_roc_opinion_matter_tt
+				add_timed_idea = {
+					idea = GAN_economical_exchange_1_idea
+					days = 120
+				}
+				custom_effect_tooltip = GAN_add_2_to_recovery_tt
+				add_to_variable = { GAN_recovery = 2 }
+			}
+		}
+	}
+	focus = {
+		id = GAN_aftermath
+		icon = GFX_goal_generic_forceful_treaty
+		cost = 10
+		x = 2
+		y = 1
+		relative_position_id = GAN_deal_with_rejection
+		prerequisite = {
+			focus = GAN_deal_with_rejection
+		}
+		completion_reward = { 
+			add_timed_idea = {
+				idea = GAN_aftermath_idea
+				days = 120
+			}
+			custom_effect_tooltip = GAN_start_recovery_tt
+			set_variable = { GAN_recovery = 0 }
+		}
+	}
+	focus = {
+		id = GAN_recover_national_spirit
+		icon = GFX_focus_generic_concessions
+		cost = 10
+		x = 3
+		y = 2
+		relative_position_id = GAN_deal_with_rejection
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = GAN_require_recovery_5_tt
+				check_variable = { GAN_recovery > 4 }
+			}
+		}
+		prerequisite = {
+			focus = GAN_aftermath
+		}
+		completion_reward = { 
+			custom_effect_tooltip = GAN_add_3_to_recovery_tt
+			add_to_variable = { GAN_recovery = 3 }
+			remove_ideas = GAN_fate_accepted_idea
+		}
+	}
+	focus = {
+		id = GAN_national_army
+		icon = GFX_focus_generic_manpower
+		cost = 10
+		x = 3
+		y = 3
+		relative_position_id = GAN_deal_with_rejection
+		prerequisite = {
+			focus = GAN_recover_national_spirit
+		}
+		completion_reward = { 
+			army_experience = 25
+			add_ideas = GAN_national_army_idea
+			custom_effect_tooltip = GAN_add_1_to_recovery_tt
+			add_to_variable = { GAN_recovery = 1 }
+		}
+	}
+	focus = {
+		id = GAN_adopt_democracy
+		icon = GFX_focus_generic_treaty
+		cost = 10
+		x = 1
+		y = 3
+		relative_position_id = GAN_deal_with_rejection
+		prerequisite = {
+			focus = GAN_economical_exchange
+		}
+		completion_reward = { 
+			add_popularity = {
+				ideology = democratic
+				popularity = 0.15
+			}
+			custom_effect_tooltip = GAN_add_1_to_recovery_tt
+			add_to_variable = { GAN_recovery = 1 }
+		}
+	}
+	focus = {
+		id = GAN_free_republic
+		icon = GFX_goal_support_democracy
+		cost = 10
+		x = 2
+		y = 4
+		relative_position_id = GAN_deal_with_rejection
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = GAN_require_10_recovery_tt
+				check_variable = { GAN_recovery = 10 }
+			}
+			democratic > 0.4
+		}
+		prerequisite = {
+			focus = GAN_adopt_democracy
+		}
+		prerequisite = {
+			focus = GAN_aftermath
+		}
+		completion_reward = { 
+			custom_effect_tooltip = GAN_end_recovery_tt
+			set_politics = {
+				ruling_party = democratic
+			}
+		}
+	}
+	focus = {
+		id = GAN_coop_social_democracy
+		icon = GFX_goal_support_communism
+		cost = 10
+		x = 2
+		y = 5
+		relative_position_id = GAN_deal_with_rejection
+		prerequisite = {
+			focus = GAN_free_republic
+		}
+		completion_reward = { 
+			add_popularity = {
+				ideology = democratic_socialism
+				popularity = 0.1
+			}
+			add_ideas = GAN_coop_social_democracy_idea
+		}
+	}
+	######################################
+	#  I N D E P E N D E N C E  P A T H  #
+	######################################
+	focus = {
+		id = GAN_our_place_in_the_world
+		icon = GFX_GAN_our_place_in_the_world
+		cost = 3
+		x = -2
+		y = 1
+		relative_position_id = GAN_home_in_danger
+		mutually_exclusive = {
+			focus = GAN_accept_our_fate
+		}
+		prerequisite = {
+			focus = GAN_home_in_danger
+		}
+		completion_reward = { 
+			JOS = {
+				set_autonomy = {
+					target = GAN
+					autonomy_state = autonomy_colony
+				}
+			}
+			add_timed_idea = {
+				idea = GAN_our_place_in_the_world_idea
+				days = 720
+			}
+			custom_effect_tooltip = GAN_unadd_1_to_korea_tt
+			subtract_from_variable = { JOS_korean_influence = 1 }
+		}
+	}
+	focus = {
+		id = GAN_befriend_china
+		icon = GFX_GAN_befriend_china
+		cost = 5
+		x = -1
+		y = 1
+		relative_position_id = GAN_our_place_in_the_world
+		prerequisite = {
+			focus = GAN_our_place_in_the_world
+		}
+		completion_reward = { 
+			ROC = {
+				diplomatic_relation = {
+					country = GAN
+					relation = guarantee
+					active = yes
+				}
+			}
+			custom_effect_tooltip = GAN_unadd_2_to_korea_tt
+			subtract_from_variable = { JOS_korean_influence = 2 }
+		}
+	}
+	focus = {
+		id = GAN_serve_protect
+		icon = GFX_goal_generic_defence
+		cost = 5
+		x = 0
+		y = 2
+		relative_position_id = GAN_our_place_in_the_world
+		prerequisite = {
+			focus = GAN_befriend_china
+		}
+		completion_reward = { 
+			217 = {
+				if = {
+					limit = {
+						free_building_slots = {
+							building = arms_factory
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = arms_factory
+						level = 2
+						instant_build = yes
+					}
+				}
+			}
+			add_timed_idea = {
+				idea = GAN_serve_and_protect_idea
+				days = 270
+			}
+			custom_effect_tooltip = GAN_unadd_2_to_korea_tt
+			subtract_from_variable = { JOS_korean_influence = 2 }
+		}
+	}
+	focus = {
+		id = GAN_prepare_defense
+		icon = GFX_goal_generic_fortify_city
+		cost = 5
+		x = -2
+		y = 2
+		relative_position_id = GAN_our_place_in_the_world
+		prerequisite = {
+			focus = GAN_befriend_china
+		}
+		completion_reward = { 
+			army_experience = 10
+			217 = {
+				create_unit = {
+					division = "name = \"Rifle-Division VII\" division_template = \"Rifle-Division\" start_experience_factor = 0.2 start_equipment_factor = 1.0 start_manpower_factor = 1.0"
+					owner = GAN
+				}
+				create_unit = {
+					division = "name = \"Rifle-Division VIII\" division_template = \"Rifle-Division\" start_experience_factor = 0.2 start_equipment_factor = 1.0 start_manpower_factor = 1.0"
+					owner = GAN
+				}
+			}
+			add_timed_idea = {
+				idea = GAN_prepare_defense_idea
+				days = 540
+			}
+			custom_effect_tooltip = GAN_unadd_3_to_korea_tt
+			subtract_from_variable = { JOS_korean_influence = 3 }
+		}
+	}
+	focus = {
+		id = GAN_last_stand
+		icon = GFX_goal_generic_national_unity
+		cost = 10
+		x = -3
+		y = 4
+		relative_position_id = GAN_our_place_in_the_world
+		prerequisite = {
+			focus = GAN_prepare_defense
+		}
+		completion_reward = { 
+			add_timed_idea = {
+				idea = GAN_last_stand_idea
+				days = 240
+			}
+		}
+	}
+	focus = {
+		id = GAN_chinese_corps
+		icon = GFX_focus_prc_infiltration
+		cost = 5
+		x = -1
+		y = 3
+		relative_position_id = GAN_our_place_in_the_world
+		prerequisite = {
+			focus = GAN_serve_protect
+		}
+		completion_reward = { 
+			ROC = {
+				country_event = gando.3
+			}
+			army_experience = 20
+		}
+	}
+	focus = {
+		id = GAN_military_investments
+		icon = GFX_goal_generic_construct_mil_factory
+		cost = 10
+		x = 0
+		y = 4
+		relative_position_id = GAN_our_place_in_the_world
+		prerequisite = {
+			focus = GAN_chinese_corps
+		}
+		prerequisite = {
+			focus = GAN_foreign_investments
+		}
+		completion_reward = { 
+			army_experience = 10
+			add_timed_idea = {
+				idea = GAN_military_investments_idea
+				days = 120
+			}
+			217 = {
+				if = {
+					limit = {
+						free_building_slots = {
+							building = arms_factory
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = arms_factory
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+			218 = {
+				if = {
+					limit = {
+						free_building_slots = {
+							building = arms_factory
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = arms_factory
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+		}
+	}
+	focus = {
+		id = GAN_gando_national_army
+		icon = GFX_focus_generic_manpower
+		cost = 10
+		x = -2
+		y = 5
+		relative_position_id = GAN_our_place_in_the_world
+		prerequisite = {
+			focus = GAN_chinese_corps
+		}
+		completion_reward = { 
+			army_experience = 30
+			add_ideas = GAN_national_army_idea
+			217 = {
+				create_unit = {
+					division = "name = \"Rifle-Division IX\" division_template = \"Rifle-Division\" start_experience_factor = 0.2 start_equipment_factor = 1.0 start_manpower_factor = 1.0"
+					owner = GAN
+				}
+				create_unit = {
+					division = "name = \"Rifle-Division X\" division_template = \"Rifle-Division\" start_experience_factor = 0.2 start_equipment_factor = 1.0 start_manpower_factor = 1.0"
+					owner = GAN
+				}
+				create_unit = {
+					division = "name = \"Rifle-Division XI\" division_template = \"Rifle-Division\" start_experience_factor = 0.2 start_equipment_factor = 1.0 start_manpower_factor = 1.0"
+					owner = GAN
+				}
+				create_unit = {
+					division = "name = \"Rifle-Division XII\" division_template = \"Rifle-Division\" start_experience_factor = 0.2 start_equipment_factor = 1.0 start_manpower_factor = 1.0"
+					owner = GAN
+				}
+			}
+		}
+	}
+	#############################################
+	#  O W N  C O N S T I T U T I O N  P A T H  #
+	#############################################
+	focus = {
+		id = GAN_our_own_constitution
+		icon = GFX_goal_generic_national_unity
+		cost = 10
+		x = -5
+		y = 7
+		will_lead_to_war_with = JOS
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = GAN_focus_require_5_korea_tt
+				check_variable = { JOS_korean_influence < 6 }
+			}
+		}
+		prerequisite = {
+			focus = GAN_last_stand
+		}
+		prerequisite = {
+			focus = GAN_gando_national_army
+		}
+		completion_reward = { 
+			remove_ideas = GAN_part_of_korean_sphere_idea
+			add_ideas = GAN_constitution_idea
+			set_cosmetic_tag = GAN_TEMP
+			if = {
+				limit = {
+					is_puppet_of = JOS
+				}
+				JOS = {
+					set_autonomy = {
+						target = GAN
+						autonomy_state = autonomy_free
+						end_wars = no
+						end_civil_wars = no
+					}
+					country_event = { id = gando.6 days = 2 }
+				}
+			}
+			custom_effect_tooltip = GAN_end_korean_influence_tt
+			custom_effect_tooltip = GAN_parties_names_will_change_tt
+			hidden_effect = {
+				set_party_name = {
+					ideology = neutrality
+					long_name = GAN_constitutional_gov_party_long_name_neutrality
+					name = GAN_constitutional_gov_party_short_name_neutrality
+				}
+				set_party_name = {
+					ideology = autocracy
+					long_name = GAN_constitutional_gov_party_long_name_autocracy
+					name = GAN_constitutional_gov_party_short_name_autocracy
+				}
+				set_party_name = {
+					ideology = democratic_socialism
+					long_name = GAN_constitutional_gov_party_long_name_democratic_socialism
+					name = GAN_constitutional_gov_party_short_name_democratic_socialism
+				}
+				set_party_name = {
+					ideology = democratic
+					long_name = GAN_constitutional_gov_party_long_name_democratic
+					name = GAN_constitutional_gov_party_short_name_democratic
+				}
+				set_party_name = {
+					ideology = communism
+					long_name = GAN_constitutional_gov_party_long_name_communism
+					name = GAN_constitutional_gov_party_short_name_communism
+				}
+				set_party_name = {
+					ideology = fascism
+					long_name = GAN_constitutional_gov_party_long_name_fascism
+					name = GAN_constitutional_gov_party_short_name_fascism
+				}
+			}
+		}
+	}
+	focus = {
+		id = GAN_secure_new_state
+		icon = GFX_focus_generic_concessions
+		cost = 10
+		x = 0
+		y = 1
+		relative_position_id = GAN_our_own_constitution
+		prerequisite = {
+			focus = GAN_our_own_constitution
+		}
+		completion_reward = { 
+			add_political_power = 100
+		}
+	}
+	#########################################################
+	#  C O N T I N U E  M O N A R C H I S M  S U B P A T H  #
+	#########################################################
+	focus = {
+		id = GAN_continue_monarchism
+		icon = GFX_focus_generic_home_defense
+		cost = 10
+		x = -7
+		y = 2
+		relative_position_id = GAN_our_own_constitution
+		mutually_exclusive = {
+			focus = GAN_radical_methods
+		}
+		prerequisite = {
+			focus = GAN_secure_new_state
+		}
+		completion_reward = { 
+			add_popularity = {
+				ideology = autocracy
+				popularity = 0.2
+			}
+			add_ideas = GAN_monarchism_idea
+			set_cosmetic_tag = GAN
+		}
+	}
+	focus = {
+		id = GAN_constitutional_monarchy
+		icon = GFX_goal_tfv_strengthen_commonwealth_ties
+		cost = 10
+		x = -2
+		y = 1
+		relative_position_id = GAN_continue_monarchism
+		mutually_exclusive = {
+			focus = GAN_elect_an_emperor
+		}
+		prerequisite = {
+			focus = GAN_continue_monarchism
+		}
+		completion_reward = { 
+			swap_ideas = {
+				remove_idea = GAN_monarchism_idea
+				add_idea = GAN_monarchism_1_idea
+			}
+			if = {
+				limit = {
+					NOT = {
+						has_government = autocracy
+					}
+				}
+				set_politics = {
+					ruling_party = autocracy
+				}
+			}
+		}
+	}
+	focus = {
+		id = GAN_elect_an_emperor
+		icon = GFX_focus_generic_military_academy
+		cost = 10
+		x = 2
+		y = 1
+		relative_position_id = GAN_continue_monarchism
+		mutually_exclusive = {
+			focus = GAN_constitutional_monarchy
+		}
+		prerequisite = {
+			focus = GAN_continue_monarchism
+		}
+		completion_reward = { 
+			swap_ideas = {
+				remove_idea = GAN_monarchism_idea
+				add_idea = GAN_monarchism_2_idea
+			}
+			if = {
+				limit = {
+					NOT = {
+						has_government = neutrality
+					}
+				}
+				set_politics = {
+					ruling_party = neutrality
+				}
+			}
+		}
+	}
+	focus = {
+		id = GAN_empire_of_gando
+		icon = GFX_goal_generic_national_unity
+		cost = 10
+		x = 0
+		y = 2
+		relative_position_id = GAN_continue_monarchism
+		prerequisite = {
+			focus = GAN_constitutional_monarchy
+			focus = GAN_elect_an_emperor
+		}
+		completion_reward = { 
+			add_stability = 0.05
+			add_war_support = 0.1
+		}
+	}
+	focus = {
+		id = GAN_imperial_ambitions
+		icon = GFX_goal_generic_forceful_treaty
+		cost = 10
+		x = 2
+		y = 3
+		relative_position_id = GAN_continue_monarchism
+		prerequisite = {
+			focus = GAN_elect_an_emperor
+		}
+		completion_reward = { 
+			add_timed_idea = {
+				idea = GAN_rising_empire_idea
+				days = 180
+			}
+		}
+	}
+	focus = {
+		id = GAN_befriend_korea_2
+		icon = GFX_goal_generic_improve_relations
+		cost = 10
+		x = 0
+		y = 4
+		relative_position_id = GAN_continue_monarchism
+		mutually_exclusive = {
+			focus = GAN_betray_china
+		}
+		prerequisite = {
+			focus = GAN_imperial_ambitions
+			focus = GAN_western_threat
+		}
+		completion_reward = { 
+			JOS = {
+				country_event = gando.9
+			}
+		}
+	}
+	focus = {
+		id = GAN_betray_china
+		icon = GFX_goal_generic_war_with_comintern
+		cost = 10
+		x = 2
+		y = 4
+		will_lead_to_war_with = ROC
+		relative_position_id = GAN_continue_monarchism
+		mutually_exclusive = {
+			focus = GAN_befriend_korea_2
+		}
+		prerequisite = {
+			focus = GAN_imperial_ambitions
+		}
+		completion_reward = { 
+			declare_war_on = {
+				target = ROC
+			}
+			238 = {
+				add_claim_by = GAN
+			}
+			240 = {
+				add_claim_by = GAN
+			}
+			234 = {
+				add_claim_by = GAN
+			}
+			233 = {
+				add_claim_by = GAN
+			}
+			228 = {
+				add_claim_by = GAN
+			}
+			5 = {
+				add_claim_by = GAN
+			}
+			237 = {
+				add_claim_by = GAN
+			}
+			239 = {
+				add_claim_by = GAN
+			}
+			241 = {
+				add_claim_by = GAN
+			}
+			242 = {
+				add_claim_by = GAN
+			}
+		}
+	}
+	focus = {
+		id = GAN_imperial_order
+		icon = GFX_focus_generic_military_academy
+		cost = 10
+		x = 4
+		y = 4
+		relative_position_id = GAN_continue_monarchism
+		prerequisite = {
+			focus = GAN_imperial_ambitions
+		}
+		completion_reward = { 
+			add_timed_idea = {
+				idea = GAN_imperial_order_idea
+				days = 360
+			}
+		}
+	}
+	focus = {
+		id = GAN_claim_chosun_empire
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		x = 2
+		y = 5
+		will_lead_to_war_with = JOS
+		relative_position_id = GAN_continue_monarchism
+		prerequisite = {
+			focus = GAN_befriend_korea_2
+			focus = GAN_betray_china
+		}
+		prerequisite = {
+			focus = GAN_imperial_order
+		}
+		completion_reward = { 
+			set_cosmetic_tag = GAN_CHOSUN
+			declare_war_on = {
+				target = JOS
+			}
+			JOS = {
+				every_state = {
+					add_claim_by = GAN
+				}
+			}
+		}
+	}
+	focus = {
+		id = GAN_claims_on_vladivostok
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		x = 2
+		y = 6
+		will_lead_to_war_with = FER
+		relative_position_id = GAN_continue_monarchism
+		prerequisite = {
+			focus = GAN_claim_chosun_empire
+		}
+		completion_reward = { 
+			declare_war_on = {
+				target = FER
+			}
+			225 = {
+				add_claim_by = GAN
+			}
+			222 = {
+				add_claim_by = GAN
+			}
+			215 = {
+				add_claim_by = GAN
+			}
+			186 = {
+				add_claim_by = GAN
+			}
+			187 = {
+				add_claim_by = GAN
+			}
+			188 = {
+				add_claim_by = GAN
+			}
+			223 = {
+				add_claim_by = GAN
+			}
+			154 = {
+				add_claim_by = GAN
+			}
+			226 = {
+				add_claim_by = GAN
+			}
+			221 = {
+				add_claim_by = GAN
+			}
+		}
+	}
+	focus = {
+		id = GAN_western_threat
+		icon = GFX_goal_generic_war_with_comintern
+		cost = 10
+		x = -1
+		y = 3
+		relative_position_id = GAN_continue_monarchism
+		prerequisite = {
+			focus = GAN_constitutional_monarchy
+		}
+		completion_reward = { 
+			add_popularity = {
+				ideology = communism
+				popularity = -0.15
+			}
+		}
+	}
+	focus = {
+		id = GAN_anti_bolshevism
+		icon = GFX_goal_generic_alliance
+		cost = 10
+		x = -2
+		y = 5
+		relative_position_id = GAN_continue_monarchism
+		prerequisite = {
+			focus = GAN_western_threat
+		}
+		completion_reward = { 
+			create_faction = "Mankor Alliance"
+			if = {
+				limit = {
+					ROC = {
+						has_opinion = {
+							target = GAN
+							value < 29
+						}
+					}
+				}
+				custom_effect_tooltip = GAN_roc_opinion_matter_tt
+			}
+			if = {
+				limit = {
+					ROC = {
+						has_opinion = {
+							target = GAN
+							value > 29
+						}
+					}
+				}
+				add_to_faction = ROC
+			}
+		}
+	}
+	focus = {
+		id = GAN_chongjin_for_protection
+		icon = GFX_focus_generic_treaty
+		cost = 10
+		x = 0
+		y = 6
+		relative_position_id = GAN_continue_monarchism
+		prerequisite = {
+			focus = GAN_anti_bolshevism
+		}
+		prerequisite = {
+			focus = GAN_befriend_korea_2
+		}
+		completion_reward = { 
+			JOS = {
+				country_event = { id = gando.10 days = 1 }
+			}
+		}
+	}
+	focus = {
+		id = GAN_pre_emptive_war
+		icon = GFX_goal_generic_war_with_comintern
+		cost = 10
+		x = 0
+		y = 7
+		will_lead_to_war_with = FER
+		relative_position_id = GAN_continue_monarchism
+		prerequisite = {
+			focus = GAN_chongjin_for_protection
+		}
+		completion_reward = { 
+			declare_war_on = {
+				target = FER
+			}
+		}
+	}
+	#################################################
+	#  R A D I C A L  M E T H O D S  S U B P A T H  #
+	#################################################
+	focus = {
+		id = GAN_radical_methods
+		icon = GFX_goal_demand_sudetenland
+		cost = 10
+		x = 7
+		y = 2
+		relative_position_id = GAN_our_own_constitution
+		mutually_exclusive = {
+			focus = GAN_continue_monarchism
+		}
+		prerequisite = {
+			focus = GAN_secure_new_state
+		}
+		completion_reward = { 
+			set_cosmetic_tag = GAN
+			add_popularity = {
+				ideology = communism
+				popularity = 0.1
+			}
+			add_popularity = {
+				ideology = fascism
+				popularity = 0.1
+			}
+			add_ideas = GAN_radical_methods_0_idea
+		}
+	}
+	focus = {
+		id = GAN_kimi_ga_yo
+		icon = GFX_goal_support_fascism
+		cost = 10
+		x = -2
+		y = 1
+		relative_position_id = GAN_radical_methods
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = GAN_require_ethnic_superiority_tt
+				check_variable = { GAN_ethnic_korea > 69 }
+			}
+		}
+		mutually_exclusive = {
+			focus = GAN_gangseong_daguk
+		}
+		prerequisite = {
+			focus = GAN_radical_methods
+		}
+		completion_reward = { 
+			swap_ideas = {
+				remove_idea = GAN_radical_methods_0_idea
+				add_idea = GAN_radical_methods_1_idea
+			}
+		}
+	}
+	focus = {
+		id = GAN_gangseong_daguk
+		icon = GFX_goal_support_communism
+		cost = 10
+		x = 2
+		y = 1
+		relative_position_id = GAN_radical_methods
+		mutually_exclusive = {
+			focus = GAN_kimi_ga_yo
+		}
+		prerequisite = {
+			focus = GAN_radical_methods
+		}
+		completion_reward = { 
+			swap_ideas = {
+				remove_idea = GAN_radical_methods_0_idea
+				add_idea = GAN_radical_methods_2_idea
+			}
+		}
+	}
+	focus = {
+		id = GAN_rose_revolution
+		icon = GFX_goal_support_communism
+		cost = 10
+		x = 1
+		y = 2
+		relative_position_id = GAN_radical_methods
+		available = {
+			communism > 0.4
+		}
+		prerequisite = {
+			focus = GAN_gangseong_daguk
+		}
+		completion_reward = { 
+			set_politics = {
+				ruling_party = communism
+			}
+		}
+	}
+	focus = {
+		id = GAN_nation_under_one_flag
+		icon = GFX_goal_generic_national_unity
+		cost = 10
+		x = 0
+		y = 3
+		relative_position_id = GAN_radical_methods
+		prerequisite = {
+			focus = GAN_gangseong_daguk
+			focus = GAN_kimi_ga_yo
+		}
+		completion_reward = { 
+			add_stability = 0.1
+			add_war_support = 0.05
+			add_political_power = 50
+		}
+	}
+	focus = {
+		id = GAN_peoples_republic
+		icon = GFX_goal_support_communism
+		cost = 10
+		x = 2
+		y = 3
+		relative_position_id = GAN_radical_methods
+		prerequisite = {
+			focus = GAN_rose_revolution
+		}
+		completion_reward = { 
+			add_ideas = GAN_peoples_republic_idea
+			add_political_power = 50
+		}
+	}
+	focus = {
+		id = GAN_lone_socialism
+		icon = GFX_goal_support_fourth_int
+		cost = 10
+		x = 2
+		y = 4
+		relative_position_id = GAN_radical_methods
+		mutually_exclusive = {
+			focus = GAN_join_far_eastern_republic
+		}
+		prerequisite = {
+			focus = GAN_peoples_republic
+		}
+		completion_reward = { 
+			swap_ideas = {
+				remove_idea = GAN_radical_methods_2_idea
+				add_idea = GAN_radical_methods_3_idea
+			}
+		}
+	}
+	focus = {
+		id = GAN_join_far_eastern_republic
+		icon = GFX_goal_generic_improve_relations
+		cost = 10
+		x = 4
+		y = 4
+		relative_position_id = GAN_radical_methods
+		mutually_exclusive = {
+			focus = GAN_lone_socialism
+		}
+		prerequisite = {
+			focus = GAN_peoples_republic
+		}
+		completion_reward = { 
+			# TODO
+			#events
+		}
+	}
+	focus = {
+		id = GAN_unite_korean_workers
+		icon = GFX_goal_generic_intelligence_exchange
+		cost = 10
+		x = 2
+		y = 5
+		relative_position_id = GAN_radical_methods
+		prerequisite = {
+			focus = GAN_lone_socialism
+			focus = GAN_join_far_eastern_republic
+		}
+		completion_reward = { 
+			JOS = {
+				country_event = { id = gando.14 days = 2 }
+			}
+		}
+	}
+	focus = {
+		id = GAN_socialist_nation
+		icon = GFX_goal_support_fourth_int
+		cost = 10
+		x = 4
+		y = 5
+		relative_position_id = GAN_radical_methods
+		prerequisite = {
+			focus = GAN_lone_socialism
+			focus = GAN_join_far_eastern_republic
+		}
+		completion_reward = { 
+			if = {
+				limit = {
+					has_completed_focus = GAN_lone_socialism
+				}
+				swap_ideas = {
+					remove_idea = GAN_radical_methods_3_idea
+					add_idea = GAN_radical_methods_4_idea
+				}
+			}
+			else = {
+				swap_ideas = {
+					remove_idea = GAN_radical_methods_2_idea
+					add_idea = GAN_radical_methods_4_idea
+				}
+			}
+		}
+	}
+	focus = {
+		id = GAN_stab_china_in_the_back
+		icon = GFX_goal_generic_war_with_comintern
+		cost = 10
+		x = 0
+		y = 5
+		relative_position_id = GAN_radical_methods
+		prerequisite = {
+			focus = GAN_lone_socialism
+			focus = GAN_join_far_eastern_republic
+			focus = GAN_great_nation
+		}
+		completion_reward = { 
+			ROC = {
+				diplomatic_relation = {
+					country = GAN
+					relation = guarantee
+					active = no
+				}
+				country_event = gando.13
+			}
+		}
+	}
+	focus = {
+		id = GAN_chinese_revolution
+		icon = GFX_goal_generic_war_with_comintern
+		cost = 10
+		x = 2
+		y = 6
+		relative_position_id = GAN_radical_methods
+		will_lead_to_war_with = ROC
+		prerequisite = {
+			focus = GAN_stab_china_in_the_back
+			focus = GAN_unite_korean_workers
+		}
+		prerequisite = {
+			focus = GAN_socialist_nation
+		}
+		completion_reward = { 
+			declare_war_on = {
+				target = ROC
+			}
+		}
+	}
+	focus = {
+		id = GAN_united_socialist_states
+		icon = GFX_goal_tripartite_pact
+		cost = 10
+		x = 2
+		y = 7
+		relative_position_id = GAN_radical_methods
+		prerequisite = {
+			focus = GAN_chinese_revolution
+		}
+		completion_reward = { 
+			set_cosmetic_tag = GAN_GUSS
+		}
+	}
+	focus = {
+		id = GAN_rise_of_the_white_sun
+		icon = GFX_goal_support_fascism
+		cost = 10
+		x = -1
+		y = 2
+		relative_position_id = GAN_radical_methods
+		available = {
+			fascism > 0.4
+		}
+		prerequisite = {
+			focus = GAN_kimi_ga_yo
+		}
+		completion_reward = { 
+			set_politics = {
+				ruling_party = fascism
+			}
+		}
+	}
+	focus = {
+		id = GAN_cult_of_personality
+		icon = GFX_focus_generic_manpower
+		cost = 10
+		x = -2
+		y = 3
+		relative_position_id = GAN_radical_methods
+		prerequisite = {
+			focus = GAN_rise_of_the_white_sun
+		}
+		completion_reward = { 
+			add_political_power = 25
+			add_ideas = GAN_personality_cult_idea
+		}
+	}
+	focus = {
+		id = GAN_old_great_empire
+		icon = GFX_goal_generic_forceful_treaty
+		cost = 10
+		x = 0
+		y = 4
+		relative_position_id = GAN_radical_methods
+		prerequisite = {
+			focus = GAN_cult_of_personality
+		}
+		prerequisite = {
+			focus = GAN_nation_under_one_flag
+		}
+		completion_reward = { 
+			add_ideas = GAN_old_empire_restoration_idea
+		}
+	}
+	focus = {
+		id = GAN_great_nation
+		icon = GFX_goal_demand_sudetenland
+		cost = 10
+		x = -2
+		y = 4
+		relative_position_id = GAN_radical_methods
+		prerequisite = {
+			focus = GAN_cult_of_personality
+		}
+		completion_reward = { 
+			swap_ideas = {
+				remove_idea = GAN_radical_methods_1_idea
+				add_idea = GAN_radical_methods_5_idea
+			}
+		}
+	}
+	focus = {
+		id = GAN_war_with_old_friend
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		x = -1
+		y = 6
+		will_lead_to_war_with = ROC
+		relative_position_id = GAN_radical_methods
+		prerequisite = {
+			focus = GAN_great_nation
+		}
+		prerequisite = {
+			focus = GAN_stab_china_in_the_back
+		}
+		completion_reward = { 
+			declare_war_on = {
+				target = ROC
+			}
+		}
+	}
+	focus = {
+		id = GAN_claim_korea
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		x = -3
+		y = 5
+		will_lead_to_war_with = JOS
+		relative_position_id = GAN_radical_methods
+		prerequisite = {
+			focus = GAN_great_nation
+		}
+		completion_reward = { 
+			declare_war_on = {
+				target = JOS
+			}
+		}
+	}
+	focus = {
+		id = GAN_a_new_order
+		icon = GFX_goal_generic_forceful_treaty
+		cost = 10
+		x = -2
+		y = 7
+		relative_position_id = GAN_radical_methods
+		prerequisite = {
+			focus = GAN_claim_korea
+		}
+		prerequisite = {
+			focus = GAN_war_with_old_friend
+		}
+		completion_reward = { 
+			add_political_power = 150
+			swap_ideas = {
+				remove_idea = GAN_old_empire_restoration_idea
+				add_idea = GAN_old_empire_restoration_1_idea
+			}
+		}
+	}
+	#######################################
+	#  G O V  R E F O R M S  B R A N C H  #
+	#######################################
+	focus = {
+		id = GAN_government_reforms
+		icon = GFX_focus_generic_self_management
+		cost = 10
+		x = 0
+		y = 3
+		relative_position_id = GAN_our_own_constitution
+		available = {
+			OR = {
+				has_completed_focus = GAN_continue_monarchism
+				has_completed_focus = GAN_deal_with_rejection
+				has_completed_focus = GAN_radical_methods
+				has_completed_focus = GAN_impressive_victory
+			}
+		}
+		completion_reward = { 
+			add_stability = 0.05
+			add_political_power = 100
+		}
+	}
+	focus = {
+		id = GAN_ethnic_question
+		icon = GFX_focus_generic_military_academy
+		cost = 10
+		x = 0
+		y = 4
+		relative_position_id = GAN_our_own_constitution
+		prerequisite = {
+			focus = GAN_government_reforms
+		}
+		completion_reward = { 
+			custom_effect_tooltip = GAN_activate_ethnic_question_tt
+			add_ideas = GAN_ethnic_question_0_idea
+			hidden_effect = {
+				set_variable = { GAN_ethnic_korea = 65.4 }
+				set_variable = { GAN_ethnic_china = 34.6 }
+			}
+			set_country_flag = GAN_ethnic_question_flag
+		}
+	}
+	focus = {
+		id = GAN_asian_belgium
+		icon = GFX_goal_generic_national_unity
+		cost = 5
+		x = 0
+		y = 5
+		relative_position_id = GAN_our_own_constitution
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = GAN_require_ethnic_mission_tt
+				NOT = {
+					has_country_flag = GAN_ethnic_question_flag
+				}
+				has_completed_focus = GAN_ethnic_question
+			}
+		}
+		prerequisite = {
+			focus = GAN_ethnic_question
+		}
+		completion_reward = { 
+			custom_effect_tooltip = GAN_ethnic_question_result_affect_tt
+			add_dynamic_modifier = {
+				modifier = GAN_ethnic_question_solved_modifier
+				scope = GAN
+			}
+		}
+	}
+	focus = {
+		id = GAN_second_military_expansion
+		icon = GFX_goal_generic_construct_mil_factory
+		cost = 10
+		x = 2
+		y = 4
+		relative_position_id = GAN_our_own_constitution
+		prerequisite = {
+			focus = GAN_government_reforms
+		}
+		completion_reward = { 
+			add_tech_bonus = {
+				name = GAN_second_military_expansion
+				bonus = 0.75
+				uses = 2
+				category = infantry_tech
+			}
+			random_owned_controlled_state = {
+				if = {
+					limit = {
+						free_building_slots = {
+							building = arms_factory
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = arms_factory
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+			random_owned_controlled_state = {
+				if = {
+					limit = {
+						free_building_slots = {
+							building = arms_factory
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = arms_factory
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+		}
+	}
+	focus = {
+		id = GAN_expanded_trainings
+		icon = GFX_goal_generic_army_doctrines
+		cost = 10
+		x = 2
+		y = 5
+		relative_position_id = GAN_our_own_constitution
+		prerequisite = {
+			focus = GAN_second_military_expansion
+		}
+		completion_reward = { 
+			army_experience = 20
+			add_timed_idea = {
+				idea = GAN_expanded_trainings_idea
+				days = 240
+			}
+		}
+	}
+	focus = {
+		id = GAN_war_machine_expansion
+		icon = GFX_goal_generic_construct_military
+		cost = 10
+		x = 1
+		y = 6
+		relative_position_id = GAN_our_own_constitution
+		available = {
+			has_war_support > 0.5
+		}
+		prerequisite = {
+			focus = GAN_expanded_trainings
+		}
+		completion_reward = { 
+			army_experience = 5
+			add_ideas = war_economy
+		}
+	}
+	focus = {
+		id = GAN_equipment_spendings
+		icon = GFX_goal_generic_construct_mil_factory
+		cost = 10
+		x = 2
+		y = 8
+		relative_position_id = GAN_our_own_constitution
+		prerequisite = {
+			focus = GAN_war_machine_expansion
+		}
+		prerequisite = {
+			focus = GAN_economic_boom
+		}
+		completion_reward = { 
+			add_timed_idea = {
+				idea = GAN_equipment_spendings_idea
+				days = 180
+			}
+		}
+	}
+	focus = {
+		id = GAN_industrial_expansion
+		icon = GFX_focus_generic_industry_1
+		cost = 10
+		x = -2
+		y = 4
+		relative_position_id = GAN_our_own_constitution
+		prerequisite = {
+			focus = GAN_government_reforms
+		}
+		completion_reward = { 
+			add_tech_bonus = {
+				name = GAN_industrial_expansion
+				bonus = 0.75
+				uses = 2
+				category = industry
+			}
+			random_owned_controlled_state = {
+				if = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+			random_owned_controlled_state = {
+				if = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+		}
+	}
+	focus = {
+		id = GAN_improve_our_roads
+		icon = GFX_goal_generic_construct_infrastructure
+		cost = 10
+		x = -2
+		y = 5
+		relative_position_id = GAN_our_own_constitution
+		prerequisite = {
+			focus = GAN_industrial_expansion
+		}
+		completion_reward = { 
+			random_owned_controlled_state = {
+				if = {
+					limit = {
+						free_building_slots = {
+							building = infrastructure
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_building_construction = {
+						type = infrastructure
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+			random_owned_controlled_state = {
+				if = {
+					limit = {
+						free_building_slots = {
+							building = infrastructure
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_building_construction = {
+						type = infrastructure
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+		}
+	}
+	focus = {
+		id = GAN_heavy_industry
+		icon = GFX_focus_generic_industry_2
+		cost = 10
+		x = -1
+		y = 6
+		relative_position_id = GAN_our_own_constitution
+		prerequisite = {
+			focus = GAN_improve_our_roads
+		}
+		completion_reward = { 
+			random_owned_controlled_state = {
+				if = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 2
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = industrial_complex
+						level = 2
+						instant_build = yes
+					}
+				}
+			}
+			random_owned_controlled_state = {
+				if = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 2
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = industrial_complex
+						level = 2
+						instant_build = yes
+					}
+				}
+			}
+		}
+	}
+	focus = {
+		id = GAN_industrial_spendings
+		icon = GFX_focus_generic_industry_3
+		cost = 10
+		x = -2
+		y = 8
+		relative_position_id = GAN_our_own_constitution
+		prerequisite = {
+			focus = GAN_heavy_industry
+		}
+		prerequisite = {
+			focus = GAN_economic_boom
+		}
+		completion_reward = { 
+			add_timed_idea = {
+				idea = GAN_industrial_spendings_idea
+				days = 180
+			}
+		}
+	}
+	focus = {
+		id = GAN_economic_boom
+		icon = GFX_focus_research
+		cost = 10
+		x = 0
+		y = 7
+		relative_position_id = GAN_our_own_constitution
+		prerequisite = {
+			focus = GAN_heavy_industry
+			focus = GAN_war_machine_expansion
+		}
+		completion_reward = { 
+			add_research_slot = 1
+			add_timed_idea = {
+				idea = GAN_economic_boom_idea
+				days = 300
+			}
+		}
+	}
+	focus = {
+		id = GAN_a_new_science
+		icon = GFX_focus_research2
+		cost = 10
+		x = 0
+		y = 8
+		relative_position_id = GAN_our_own_constitution
+		prerequisite = {
+			focus = GAN_economic_boom
+		}
+		completion_reward = { 
+			add_tech_bonus = {
+				name = GAN_a_new_science
+				bonus = 1.0
+				uses = 2
+				category = nuclear
+			}
+		}
+	}
+	################################
+	#  W H A T  T H E  F  P A T H  #
+	################################
+	focus = {
+		id = GAN_sudden_turn_of_events
+		icon = GFX_focus_generic_treaty
+		cost = 10
+		x = -8
+		y = 0
+		available = {
+			has_country_flag = GAN_sudden_turn_of_events_flag
+		}
+		completion_reward = { 
+			
+		}
+	}
+	focus = {
+		id = GAN_impressive_victory
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		x = 0
+		y = 1
+		relative_position_id = GAN_sudden_turn_of_events
+		available = {
+			NOT = {
+				has_country_flag = GAN_sudden_turn_of_events_flag
+			}
+		}
+		prerequisite = {
+			focus = GAN_sudden_turn_of_events
+		}
+		completion_reward = { 
+			
+		}
+	}
+	focus = {
+		id = GAN_unltranationalism
+		icon = GFX_goal_support_fascism
+		cost = 10
+		x = -1
+		y = 2
+		relative_position_id = GAN_sudden_turn_of_events
+		prerequisite = {
+			focus = GAN_impressive_victory
+		}
+		completion_reward = { 
+			
+		}
+	}
+	focus = {
+		id = GAN_improve_national_spirit
+		icon = GFX_focus_generic_concessions
+		cost = 10
+		x = 1
+		y = 2
+		relative_position_id = GAN_sudden_turn_of_events
+		prerequisite = {
+			focus = GAN_impressive_victory
+		}
+		completion_reward = { 
+			
+		}
+	}
+	focus = {
+		id = GAN_a_new_era
+		icon = GFX_goal_generic_forceful_treaty
+		cost = 10
+		x = 0
+		y = 3
+		relative_position_id = GAN_sudden_turn_of_events
+		prerequisite = {
+			focus = GAN_unltranationalism
+		}
+		prerequisite = {
+			focus = GAN_improve_national_spirit
+		}
+		completion_reward = { 
+			
+		}
+	}
+	focus = {
+		id = GAN_great_ambitions
+		icon = GFX_focus_generic_military_academy
+		cost = 10
+		x = 1
+		y = 4
+		relative_position_id = GAN_sudden_turn_of_events
+		prerequisite = {
+			focus = GAN_improve_national_spirit
+		}
+		completion_reward = { 
+			
+		}
+	}
+	focus = {
+		id = GAN_white_sun_strike
+		icon = GFX_focus_generic_manpower
+		cost = 10
+		x = -1
+		y = 4
+		relative_position_id = GAN_sudden_turn_of_events
+		prerequisite = {
+			focus = GAN_unltranationalism
+		}
+		completion_reward = { 
+			
+		}
+	}
+	focus = {
+		id = GAN_revengeance
+		icon = GFX_goal_demand_sudetenland
+		cost = 10
+		x = -1
+		y = 5
+		relative_position_id = GAN_sudden_turn_of_events
+		prerequisite = {
+			focus = GAN_white_sun_strike
+		}
+		completion_reward = { 
+			
+		}
+	}
+	focus = {
+		id = GAN_end_far_eastern_republic
+		icon = GFX_goal_generic_war_with_comintern
+		cost = 10
+		x = 1
+		y = 5
+		relative_position_id = GAN_sudden_turn_of_events
+		prerequisite = {
+			focus = GAN_white_sun_strike
+		}
+		completion_reward = { 
+			
+		}
+	}
+	focus = {
+		id = GAN_strike_chine
+		icon = GFX_goal_generic_war_with_comintern
+		cost = 10
+		x = -2
+		y = 6
+		relative_position_id = GAN_sudden_turn_of_events
+		prerequisite = {
+			focus = GAN_white_sun_strike
+		}
+		completion_reward = { 
+			
+		}
+	}
+	focus = {
+		id = GAN_great_empire_white_sun
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		x = 0
+		y = 7
+		relative_position_id = GAN_sudden_turn_of_events
+		prerequisite = {
+			focus = GAN_revengeance
+		}
+		prerequisite = {
+			focus = GAN_end_far_eastern_republic
+		}
+		prerequisite = {
+			focus = GAN_strike_chine
+		}
+		completion_reward = { 
+			
+		}
+	}
+	focus = {
+		id = GAN_claim_tsushima_strait
+		icon = GFX_focus_hol_prepare_the_inundation_lines
+		cost = 10
+		x = 0
+		y = 8
+		relative_position_id = GAN_sudden_turn_of_events
+		prerequisite = {
+			focus = GAN_great_empire_white_sun
+		}
+		completion_reward = { 
+			
+		}
+	}
+}

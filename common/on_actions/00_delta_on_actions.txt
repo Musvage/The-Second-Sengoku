@@ -21,6 +21,15 @@ on_actions = {
 			set_variable = { FER_protests_event_frequency = 0 }
 			set_variable = { FER_nmth = 0 }
 
+			set_variable = { GAN_ethnic_korea = 0.0 }
+			set_variable = { GAN_ethnic_china = 0.0 }
+			set_variable = { GAN_bonus_value_GAN_korea = 0.0 }
+			set_variable = { GAN_bonus_value_GAN_china = 0.0 }
+			set_variable = { GAN_ethnic_calc_var_pos = 0.0 }
+			set_variable = { GAN_ethnic_calc_var_neg = 0.0 }
+
+			set_variable = { JOS_korean_influence = 0 }
+
 			FER = {
 				random_list = {
 					33 = {
@@ -31,6 +40,19 @@ on_actions = {
 					}
 					33 = {
 						set_country_flag = FER_AI_military_state
+					}
+				}
+			}
+			JOS = {
+				random_list = {
+					33 = {
+						set_country_flag = JOS_AI_reforms
+					}
+					33 = {
+						set_country_flag = JOS_AI_steady_course
+					}
+					33 = {
+						set_country_flag = JOS_AI_new_way
 					}
 				}
 			}
@@ -1245,6 +1267,182 @@ on_actions = {
 			
 		}
 	
+	}
+
+	on_daily_GAN = {
+
+		effect = {
+
+			set_variable = { GAN_bonus_value_GAN_korea = GAN_ethnic_korea }
+			set_variable = { GAN_bonus_value_GAN_china = GAN_ethnic_china }
+			divide_variable = { GAN_bonus_value_GAN_korea = 10 }
+			divide_variable = { GAN_bonus_value_GAN_china = 10 }
+
+			if = {
+				limit = {
+					check_variable = { GAN_ethnic_korea > 100 }
+				}
+				set_variable = { GAN_ethnic_korea = 100 }
+			}
+			if = {
+				limit = {
+					check_variable = { GAN_ethnic_korea < 0 }
+				}
+				set_variable = { GAN_ethnic_korea = 0 }
+			}
+			if = {
+				limit = {
+					check_variable = { GAN_ethnic_china > 100 }
+				}
+				set_variable = { GAN_ethnic_china = 100 }
+			}
+			if = {
+				limit = {
+					check_variable = { GAN_ethnic_china < 0 }
+				}
+				set_variable = { GAN_ethnic_china = 0 }
+			}
+			if = {
+				limit = {
+					check_variable = { GAN_ethnic_korea > GAN_ethnic_china }
+				}
+				set_variable = { GAN_ethnic_calc_var_pos = GAN_ethnic_korea }
+				add_to_variable = { GAN_ethnic_calc_var_pos = GAN_ethnic_china }
+				if = {
+					limit = {
+						check_variable = { GAN_ethnic_calc_var_pos > 100.0 }
+					}
+					set_temp_variable = { GAN_ethnic_temp_a = GAN_ethnic_calc_var_pos }
+					subtract_from_temp_variable = { GAN_ethnic_temp_a = 100.0 }
+					divide_temp_variable = { GAN_ethnic_temp_a = 2 }
+					subtract_from_variable = { GAN_ethnic_korea = GAN_ethnic_temp_a }
+					subtract_from_variable = { GAN_ethnic_china = GAN_ethnic_temp_a }
+				}
+				set_variable = { GAN_ethnic_calc_var_neg = GAN_ethnic_china }
+				add_to_variable = { GAN_ethnic_calc_var_neg = GAN_ethnic_korea }
+				if = {
+					limit = {
+						check_variable = { GAN_ethnic_calc_var_neg < 100.0 }
+					}
+					set_temp_variable = { GAN_ethnic_temp_b = GAN_ethnic_calc_var_neg }
+					subtract_from_temp_variable = { GAN_ethnic_temp_b = 100.0 }
+					divide_temp_variable = { GAN_ethnic_temp_b = -1 }
+					divide_temp_variable = { GAN_ethnic_temp_b = 2 }
+					add_to_variable = { GAN_ethnic_korea = GAN_ethnic_temp_b }
+					add_to_variable = { GAN_ethnic_china = GAN_ethnic_temp_b }
+				}
+			}
+			if = {
+				limit = {
+					has_country_flag = GAN_ethnic_question_flag
+				}
+				if = {
+					limit = {
+						check_variable = { GAN_ethnic_korea > 69.9 }
+					}
+					if = {
+						limit = {
+							has_idea = GAN_ethnic_question_0_idea
+						}
+						remove_ideas = GAN_ethnic_question_0_idea
+					}
+					if = {
+						limit = {
+							has_idea = GAN_ethnic_question_2_idea
+						}
+						remove_ideas = GAN_ethnic_question_2_idea
+					}
+					add_ideas = GAN_ethnic_question_1_idea
+				}
+				if = {
+					limit = {
+						check_variable = { GAN_ethnic_korea < 30.1 }
+					}
+					if = {
+						limit = {
+							has_idea = GAN_ethnic_question_0_idea
+						}
+						remove_ideas = GAN_ethnic_question_0_idea
+					}
+					if = {
+						limit = {
+							has_idea = GAN_ethnic_question_1_idea
+						}
+						remove_ideas = GAN_ethnic_question_1_idea
+					}
+					add_ideas = GAN_ethnic_question_2_idea
+				}
+				if = {
+					limit = {
+						check_variable = { GAN_ethnic_korea < 70.0 }
+						check_variable = { GAN_ethnic_korea > 30.0 }
+					}
+					if = {
+						limit = {
+							has_idea = GAN_ethnic_question_1_idea
+						}
+						remove_ideas = GAN_ethnic_question_1_idea
+					}
+					if = {
+						limit = {
+							has_idea = GAN_ethnic_question_2_idea
+						}
+						remove_ideas = GAN_ethnic_question_2_idea
+					}
+					add_ideas = GAN_ethnic_question_0_idea
+				}
+			}
+
+			if = {
+				limit = {
+					check_variable = { JOS_korean_influence > 20 }
+				}
+				set_variable = { JOS_korean_influence = 20 }
+			}
+			if = {
+				limit = {
+					check_variable = { JOS_korean_influence < 0 }
+				}
+				set_variable = { JOS_korean_influence = 0 }
+			}
+
+			if = {
+				limit = {
+					check_variable = { GAN_recovery > 20 }
+				}
+				set_variable = { GAN_recovery = 20 }
+			}
+			if = {
+				limit = {
+					check_variable = { GAN_recovery < 0 }
+				}
+				set_variable = { GAN_recovery = 0 }
+			}
+
+		}
+
+	}
+
+	on_monthly_GAN = {
+
+		effect = {
+
+			if = {
+				limit = {
+					has_idea = GAN_part_of_korean_sphere_idea
+				}
+				add_to_variable = { JOS_korean_influence = 1 }
+			}
+
+			if = {
+				limit = {
+					has_country_flag = GAN_sudden_turn_of_events_flag
+				}
+				add_to_variable = { GAN_sudden_events_months = 1 }
+			}
+
+		}
+
 	}
 
 }
