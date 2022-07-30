@@ -22,8 +22,15 @@ focus_tree = {
 		id = JOS_steady_course
 		icon = GFX_
 		cost = 5
-		x = -8
+		x = -14
 		y = 0
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = 100
+				has_country_flag = JOS_AI_steady_course
+			}
+		}
 		mutually_exclusive = {
 			focus = JOS_government_reforms
 			focus = JOS_third_way
@@ -31,6 +38,22 @@ focus_tree = {
 		completion_reward = { 
 			add_political_power = 75
 			custom_effect_tooltip = JOS_activate_monarchist_decisions_tt
+			add_dynamic_modifier = {
+				modifier = JOS_balance_powers_dynamic_modifier
+				tag = JOS
+			}
+			hidden_effect = {
+				set_variable = { JOS_AI_focus_count_A = 90 }
+				set_variable = { JOS_AI_focus_count_B = 90 }
+				random_list = {
+					50 = {
+						set_country_flag = JOS_AI_decentralisation
+					}
+					50 = {
+						set_country_flag = JOS_AI_centralisation
+					}
+				}
+			}
 		}
 	}
 	focus = {
@@ -39,6 +62,12 @@ focus_tree = {
 		cost = 10
 		x = -1
 		y = 1
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_steady_course
 		available = {
 			custom_trigger_tooltip = {
@@ -55,6 +84,9 @@ focus_tree = {
 		completion_reward = { 
 			add_political_power = 75
 			add_stability = 0.05
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -63,6 +95,12 @@ focus_tree = {
 		cost = 10
 		x = -2
 		y = 2
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_steady_course
 		available = {
 			custom_trigger_tooltip = {
@@ -74,7 +112,11 @@ focus_tree = {
 			focus = JOS_constitutional_reforms
 		}
 		completion_reward = { 
-			
+			add_political_power = 75
+			add_stability = 0.1
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -83,6 +125,12 @@ focus_tree = {
 		cost = 10
 		x = 1
 		y = 1
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_steady_course
 		available = {
 			custom_trigger_tooltip = {
@@ -99,6 +147,9 @@ focus_tree = {
 		completion_reward = { 
 			add_political_power = 75
 			add_war_support = 0.05
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -107,6 +158,12 @@ focus_tree = {
 		cost = 10
 		x = 2
 		y = 2
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_steady_course
 		available = {
 			custom_trigger_tooltip = {
@@ -118,22 +175,44 @@ focus_tree = {
 			focus = JOS_emperors_constitution
 		}
 		completion_reward = { 
-			
+			add_political_power = 75
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
-		id = JOS_leave_them_behind
+		id = JOS_nothing_ventured_nothing_gained
 		icon = GFX_
 		cost = 10
 		x = 0
 		y = 2
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_steady_course
 		prerequisite = {
 			focus = JOS_constitutional_reforms
 			focus = JOS_emperors_constitution
 		}
 		completion_reward = { 
-			
+			add_ideas = JOS_nothing_ventured_nothing_gained_0_idea
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+				clr_country_flag = JOS_AI_decentralisation
+				clr_country_flag = JOS_AI_centralisation
+				random_list = {
+					50 = {
+						set_country_flag = JOS_AI_decentralisation
+					}
+					50 = {
+						set_country_flag = JOS_AI_centralisation
+					}
+				}
+			}
 		}
 	}
 	focus = {
@@ -142,18 +221,37 @@ focus_tree = {
 		cost = 10
 		x = 0
 		y = 3
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_steady_course
 		available = {
 			custom_trigger_tooltip = {
 				tooltip = JOS_monarchist_decisions_has_ratio_royal_monarchy_6_4
 				check_variable = { JOS_centralisation_level > 5.99 }
 			}
+			GAN = {
+				AND = {
+					NOT = {
+						has_completed_focus = GAN_our_own_constitution
+						has_completed_focus = GAN_our_home_their_home
+					}
+				}
+			}
 		}
 		prerequisite = {
-			focus = JOS_leave_them_behind
+			focus = JOS_nothing_ventured_nothing_gained
 		}
 		completion_reward = { 
-			
+			GAN = {
+				country_event = { id = joseon.6 days = 2 }
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -162,6 +260,16 @@ focus_tree = {
 		cost = 10
 		x = -2
 		y = 3
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+			modifier = {
+				factor = 0
+				has_country_flag = JOS_AI_centralisation
+			}
+		}
 		relative_position_id = JOS_steady_course
 		bypass = {
 			has_completed_focus = JOS_future_in_eternity
@@ -173,10 +281,27 @@ focus_tree = {
 			}
 		}
 		prerequisite = {
-			focus = JOS_leave_them_behind
+			focus = JOS_nothing_ventured_nothing_gained
 		}
 		completion_reward = { 
+			swap_ideas = {
+				remove_idea = JOS_nothing_ventured_nothing_gained_0_idea
+				add_idea = JOS_nothing_ventured_nothing_gained_1_idea
+			}
 			custom_effect_tooltip = JOS_mutually_exclusive_focus_fie
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+				clr_country_flag = JOS_AI_decentralisation
+				clr_country_flag = JOS_AI_centralisation
+				random_list = {
+					50 = {
+						set_country_flag = JOS_AI_decentralisation
+					}
+					50 = {
+						set_country_flag = JOS_AI_centralisation
+					}
+				}
+			}
 		}
 	}
 	focus = {
@@ -185,6 +310,16 @@ focus_tree = {
 		cost = 10
 		x = -1
 		y = 4
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+			modifier = {
+				factor = 0
+				has_country_flag = JOS_AI_centralisation
+			}
+		}
 		relative_position_id = JOS_steady_course
 		bypass = {
 			has_completed_focus = JOS_imperial_order
@@ -199,7 +334,25 @@ focus_tree = {
 			focus = JOS_future_in_changes
 		}
 		completion_reward = { 
+			if = {
+				limit = {
+					has_idea = JOS_nothing_ventured_nothing_gained_3_idea
+				}
+				swap_ideas = {
+					remove_idea = JOS_nothing_ventured_nothing_gained_3_idea
+					add_idea = JOS_nothing_ventured_nothing_gained_6_idea
+				}
+			}
+			else = {
+				swap_ideas = {
+					remove_idea = JOS_nothing_ventured_nothing_gained_1_idea
+					add_idea = JOS_nothing_ventured_nothing_gained_2_idea
+				}
+			}
 			custom_effect_tooltip = JOS_mutually_exclusive_focus_impor
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -208,6 +361,12 @@ focus_tree = {
 		cost = 10
 		x = -2
 		y = 5
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_steady_course
 		available = {
 			custom_trigger_tooltip = {
@@ -222,7 +381,14 @@ focus_tree = {
 			focus = JOS_royal_dictatorship
 		}
 		completion_reward = { 
+			add_ideas = JOS_constitutional_monarchy_idea
 			custom_effect_tooltip = JOS_deactivate_monarchist_decisions_tt
+			remove_dynamic_modifier = {
+				modifier = JOS_balance_powers_dynamic_modifier
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -231,12 +397,24 @@ focus_tree = {
 		cost = 10
 		x = -1
 		y = 6
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_steady_course
 		prerequisite = {
 			focus = JOS_constitutional_monarchy
 		}
 		completion_reward = { 
-			
+			swap_ideas = {
+				remove_idea = JOS_constitutional_monarchy_idea
+				add_idea = JOS_constitutional_monarchy_1_idea
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -245,6 +423,16 @@ focus_tree = {
 		cost = 10
 		x = 2
 		y = 3
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+			modifier = {
+				factor = 0
+				has_country_flag = JOS_AI_decentralisation
+			}
+		}
 		relative_position_id = JOS_steady_course
 		bypass = {
 			has_completed_focus = JOS_future_in_changes
@@ -256,10 +444,27 @@ focus_tree = {
 			}
 		}
 		prerequisite = {
-			focus = JOS_leave_them_behind
+			focus = JOS_nothing_ventured_nothing_gained
 		}
 		completion_reward = { 
+			swap_ideas = {
+				remove_idea = JOS_nothing_ventured_nothing_gained_0_idea
+				add_idea = JOS_nothing_ventured_nothing_gained_3_idea
+			}
 			custom_effect_tooltip = JOS_mutually_exclusive_focus_fic
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+				clr_country_flag = JOS_AI_decentralisation
+				clr_country_flag = JOS_AI_centralisation
+				random_list = {
+					50 = {
+						set_country_flag = JOS_AI_decentralisation
+					}
+					50 = {
+						set_country_flag = JOS_AI_centralisation
+					}
+				}
+			}
 		}
 	}
 	focus = {
@@ -268,6 +473,16 @@ focus_tree = {
 		cost = 10
 		x = 1
 		y = 4
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+			modifier = {
+				factor = 0
+				has_country_flag = JOS_AI_decentralisation
+			}
+		}
 		relative_position_id = JOS_steady_course
 		bypass = {
 			has_completed_focus = JOS_individualism
@@ -282,7 +497,25 @@ focus_tree = {
 			focus = JOS_future_in_eternity
 		}
 		completion_reward = { 
+			if = {
+				limit = {
+					has_idea = JOS_nothing_ventured_nothing_gained_1_idea
+				}
+				swap_ideas = {
+					remove_idea = JOS_nothing_ventured_nothing_gained_1_idea
+					add_idea = JOS_nothing_ventured_nothing_gained_5_idea
+				}
+			}
+			else = {
+				swap_ideas = {
+					remove_idea = JOS_nothing_ventured_nothing_gained_3_idea
+					add_idea = JOS_nothing_ventured_nothing_gained_4_idea
+				}
+			}
 			custom_effect_tooltip = JOS_mutually_exclusive_focus_ind
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -291,6 +524,12 @@ focus_tree = {
 		cost = 10
 		x = 2
 		y = 5
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_steady_course
 		available = {
 			custom_trigger_tooltip = {
@@ -305,7 +544,14 @@ focus_tree = {
 			focus = JOS_constitutional_monarchy
 		}
 		completion_reward = { 
+			add_ideas = JOS_royal_dictatorship_idea
 			custom_effect_tooltip = JOS_deactivate_monarchist_decisions_tt
+			remove_dynamic_modifier = {
+				modifier = JOS_balance_powers_dynamic_modifier
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -314,12 +560,24 @@ focus_tree = {
 		cost = 10
 		x = 1
 		y = 6
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_steady_course
 		prerequisite = {
 			focus = JOS_royal_dictatorship
 		}
 		completion_reward = { 
-			
+			swap_ideas = {
+				remove_idea = JOS_royal_dictatorship_idea
+				add_idea = JOS_royal_dictatorship_1_idea
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -328,13 +586,22 @@ focus_tree = {
 		cost = 10
 		x = 0
 		y = 7
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_steady_course
 		prerequisite = {
 			focus = JOS_emperors_cult
 			focus = JOS_modern_monarchism
 		}
 		completion_reward = { 
-			
+			custom_effect_tooltip = JOS_foreign_policy_activate
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	###################################
@@ -346,6 +613,13 @@ focus_tree = {
 		cost = 5
 		x = 0
 		y = 0
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = 100
+				has_country_flag = JOS_AI_reforms
+			}
+		}
 		mutually_exclusive = {
 			focus = JOS_steady_course
 			focus = JOS_third_way
@@ -361,6 +635,10 @@ focus_tree = {
 				popularity = 0.25
 			}
 			add_ideas = JOS_government_reforms_idea
+			hidden_effect = {
+				set_variable = { JOS_AI_focus_count_A = 90 }
+				set_variable = { JOS_AI_focus_count_B = 90 }
+			}
 		}
 	}
 	focus = {
@@ -369,6 +647,12 @@ focus_tree = {
 		cost = 10
 		x = -1
 		y = 1
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_government_reforms
 		available = {
 			democratic > 0.45
@@ -389,6 +673,9 @@ focus_tree = {
 				elections_allowed = yes
 				election_frequency = 72
 			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -397,6 +684,12 @@ focus_tree = {
 		cost = 10
 		x = -2
 		y = 2
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_government_reforms
 		prerequisite = {
 			focus = JOS_a_look_in_democracy
@@ -428,6 +721,9 @@ focus_tree = {
 					}
 				}
 			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -436,6 +732,12 @@ focus_tree = {
 		cost = 10
 		x = -3
 		y = 3
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_government_reforms
 		prerequisite = {
 			focus = JOS_republics_constitution
@@ -443,6 +745,9 @@ focus_tree = {
 		completion_reward = { 
 			FER = {
 				custom_effect_tooltip = JOS_foreign_policy_antagonise_15
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
 			}
 		}
 	}
@@ -452,6 +757,12 @@ focus_tree = {
 		cost = 10
 		x = -2
 		y = 5
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_government_reforms
 		prerequisite = {
 			focus = JOS_republics_constitution
@@ -461,6 +772,9 @@ focus_tree = {
 		}
 		completion_reward = { 
 			add_ideas = JOS_democracy_achieved_idea
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -469,6 +783,12 @@ focus_tree = {
 		cost = 10
 		x = 1
 		y = 1
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_government_reforms
 		available = {
 			democratic_socialism > 0.45
@@ -489,6 +809,9 @@ focus_tree = {
 				elections_allowed = yes
 				election_frequency = 48
 			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -497,6 +820,12 @@ focus_tree = {
 		cost = 10
 		x = 3
 		y = 2
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_government_reforms
 		prerequisite = {
 			focus = JOS_social_republic
@@ -528,6 +857,9 @@ focus_tree = {
 					}
 				}
 			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -536,6 +868,12 @@ focus_tree = {
 		cost = 10
 		x = 4
 		y = 3
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_government_reforms
 		prerequisite = {
 			focus = JOS_social_constitution
@@ -547,6 +885,9 @@ focus_tree = {
 			FER = {
 				custom_effect_tooltip = JOS_foreign_policy_antagonise_10
 			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -555,6 +896,12 @@ focus_tree = {
 		cost = 10
 		x = 2
 		y = 3
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_government_reforms
 		prerequisite = {
 			focus = JOS_social_constitution
@@ -566,6 +913,9 @@ focus_tree = {
 			FER = {
 				custom_effect_tooltip = JOS_foreign_policy_support_15
 			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -574,6 +924,12 @@ focus_tree = {
 		cost = 10
 		x = 3
 		y = 4
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_government_reforms
 		prerequisite = {
 			focus = JOS_befriend_soviets
@@ -592,6 +948,9 @@ focus_tree = {
 					custom_effect_tooltip = JOS_foreign_policy_antagonise_5
 				}
 			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -600,6 +959,12 @@ focus_tree = {
 		cost = 10
 		x = 2
 		y = 5
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_government_reforms
 		prerequisite = {
 			focus = JOS_befriend_soviets
@@ -610,6 +975,9 @@ focus_tree = {
 		}
 		completion_reward = { 
 			add_ideas = JOS_socialism_achieved_idea
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -618,6 +986,12 @@ focus_tree = {
 		cost = 10
 		x = 0
 		y = 2
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_government_reforms
 		prerequisite = {
 			focus = JOS_a_look_in_democracy
@@ -661,6 +1035,9 @@ focus_tree = {
 					add_idea = JOS_government_reforms_social_democracy_3_idea
 				}
 			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -669,6 +1046,12 @@ focus_tree = {
 		cost = 10
 		x = 0
 		y = 3
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_government_reforms
 		prerequisite = {
 			focus = JOS_final_reforms
@@ -689,6 +1072,9 @@ focus_tree = {
 					days = 240
 				}
 			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -697,6 +1083,12 @@ focus_tree = {
 		cost = 10
 		x = 0
 		y = 4
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_government_reforms
 		prerequisite = {
 			focus = JOS_fresh_breath
@@ -704,6 +1096,9 @@ focus_tree = {
 		completion_reward = { 
 			ROC = {
 				custom_effect_tooltip = JOS_foreign_policy_support_10
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
 			}
 		}
 	}
@@ -713,13 +1108,27 @@ focus_tree = {
 		cost = 10
 		x = 0
 		y = 6
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_government_reforms
 		prerequisite = {
 			focus = JOS_korean_socialism
 			focus = JOS_land_of_truly_free
 		}
 		completion_reward = { 
+			11 = {
+				owner = {
+					country_event = { id = joseon.13 days = 2 }
+				}
+			}
 			custom_effect_tooltip = JOS_foreign_policy_activate
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	###############################
@@ -731,6 +1140,13 @@ focus_tree = {
 		cost = 5
 		x = 8
 		y = 0
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = 100
+				has_country_flag = JOS_AI_new_way
+			}
+		}
 		mutually_exclusive = {
 			focus = JOS_steady_course
 			focus = JOS_government_reforms
@@ -746,6 +1162,10 @@ focus_tree = {
 				ideology = communism
 				popularity = 0.25
 			}
+			hidden_effect = {
+				set_variable = { JOS_AI_focus_count_A = 100 }
+				set_variable = { JOS_AI_focus_count_B = 90 }
+			}
 		}
 	}
 	focus = {
@@ -754,6 +1174,12 @@ focus_tree = {
 		cost = 10
 		x = -1
 		y = 1
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_third_way
 		available = {
 			fascism > 0.45
@@ -772,6 +1198,9 @@ focus_tree = {
 			set_politics = {
 				ruling_party = fascism
 			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -780,12 +1209,21 @@ focus_tree = {
 		cost = 10
 		x = -2
 		y = 2
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_third_way
 		prerequisite = {
 			focus = JOS_white_sun_rising
 		}
 		completion_reward = { 
 			add_ideas = JOS_korea_above_all_idea
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -794,12 +1232,21 @@ focus_tree = {
 		cost = 10
 		x = -2
 		y = 5
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_third_way
 		prerequisite = {
 			focus = JOS_korea_above_all
 		}
 		completion_reward = { 
 			add_ideas = JOS_national_propaganda_idea
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -808,6 +1255,12 @@ focus_tree = {
 		cost = 10
 		x = -2
 		y = 6
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_third_way
 		prerequisite = {
 			focus = JOS_national_propaganda
@@ -815,6 +1268,9 @@ focus_tree = {
 		completion_reward = { 
 			FER = {
 				custom_effect_tooltip = JOS_foreign_policy_antagonise_15
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
 			}
 		}
 	}
@@ -824,6 +1280,12 @@ focus_tree = {
 		cost = 10
 		x = 1
 		y = 1
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_third_way
 		available = {
 			communism > 0.45
@@ -842,6 +1304,9 @@ focus_tree = {
 			set_politics = {
 				ruling_party = communism
 			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -850,12 +1315,21 @@ focus_tree = {
 		cost = 10
 		x = 2
 		y = 2
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_third_way
 		prerequisite = {
 			focus = JOS_march_revolution
 		}
 		completion_reward = { 
 			add_ideas = JOS_peoples_primacy_idea
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -864,12 +1338,21 @@ focus_tree = {
 		cost = 10
 		x = 2
 		y = 5
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_third_way
 		prerequisite = {
 			focus = JOS_peoples_primacy
 		}
 		completion_reward = { 
 			add_ideas = JOS_spirit_of_revolution_idea
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -878,6 +1361,12 @@ focus_tree = {
 		cost = 10
 		x = 2
 		y = 6
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_third_way
 		prerequisite = {
 			focus = JOS_spirit_of_revolution
@@ -885,6 +1374,9 @@ focus_tree = {
 		completion_reward = { 
 			FER = {
 				custom_effect_tooltip = JOS_foreign_policy_support_15
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
 			}
 		}
 	}
@@ -894,6 +1386,12 @@ focus_tree = {
 		cost = 10
 		x = 0
 		y = 6
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_third_way
 		prerequisite = {
 			focus = JOS_spirit_of_revolution
@@ -903,6 +1401,9 @@ focus_tree = {
 			ROC = {
 				custom_effect_tooltip = JOS_foreign_policy_support_5
 			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -911,6 +1412,12 @@ focus_tree = {
 		cost = 10
 		x = 0
 		y = 7
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_third_way
 		prerequisite = {
 			focus = JOS_soviet_friend
@@ -918,6 +1425,9 @@ focus_tree = {
 		}
 		completion_reward = { 
 			custom_effect_tooltip = JOS_foreign_policy_activate
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -926,6 +1436,12 @@ focus_tree = {
 		cost = 10
 		x = 0
 		y = 2
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_third_way
 		prerequisite = {
 			focus = JOS_march_revolution
@@ -934,6 +1450,9 @@ focus_tree = {
 		completion_reward = { 
 			add_ideas = war_economy
 			add_ideas = JOS_militarism_idea
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -942,6 +1461,12 @@ focus_tree = {
 		cost = 10
 		x = 1
 		y = 3
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_third_way
 		prerequisite = {
 			focus = JOS_militarism
@@ -973,6 +1498,9 @@ focus_tree = {
 					}
 				}
 			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -981,6 +1509,12 @@ focus_tree = {
 		cost = 10
 		x = -1
 		y = 3
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_third_way
 		prerequisite = {
 			focus = JOS_militarism
@@ -1012,6 +1546,9 @@ focus_tree = {
 					}
 				}
 			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
@@ -1020,6 +1557,12 @@ focus_tree = {
 		cost = 10
 		x = 0
 		y = 4
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
 		relative_position_id = JOS_third_way
 		available = {
 			GAN = {
@@ -1040,6 +1583,276 @@ focus_tree = {
 		completion_reward = { 
 			GAN = {
 				country_event = { id = joseon.6 days = 2 }
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	################################################
+	#  I N D U S T R Y  &  A R M Y  R E F O R M S  #
+	################################################
+	focus = {
+		id = JOS_light_industry_budget
+		icon = GFX_
+		cost = 10
+		x = -2
+		y = 0
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_B_priority
+			}
+		}
+		relative_position_id = JOS_economy_inprovment
+		completion_reward = { 
+			custom_effect_tooltip = JOS_will_activate_economy_policy_tt
+			add_tech_bonus = {
+				name = JOS_light_industry_budget
+				category = industry
+				bonus = 0.5
+				uses = 2
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_B = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_light_industrial_development
+		icon = GFX_
+		cost = 10
+		x = -3
+		y = 1
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_B_priority
+			}
+		}
+		relative_position_id = JOS_economy_inprovment
+		prerequisite = {
+			focus = JOS_light_industry_budget
+		}
+		completion_reward = { 
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_B = 10 }
+			}
+			add_tech_bonus = {
+				name = JOS_light_industrial_development
+				category = industry
+				ahead_reduction = 1.5
+				uses = 1
+			}
+		}
+	}
+	focus = {
+		id = JOS_heavy_industry_budget
+		icon = GFX_
+		cost = 10
+		x = -1
+		y = 2
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_B_priority
+			}
+		}
+		relative_position_id = JOS_economy_inprovment
+		prerequisite = {
+			focus = JOS_light_industrial_development
+		}
+		prerequisite = {
+			focus = JOS_economy_inprovment
+		}
+		completion_reward = { 
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_B = 10 }
+			}
+			add_tech_bonus = {
+				name = JOS_heavy_industry_budget
+				category = industry
+				bonus = 1
+				uses = 1
+			}
+			add_tech_bonus = {
+				name = JOS_heavy_industry_budget
+				category = electronics
+				bonus = 1
+				uses = 1
+			}
+		}
+	}
+	focus = {
+		id = JOS_heavy_industrial_development
+		icon = GFX_
+		cost = 10
+		x = 0
+		y = 3
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_B_priority
+			}
+		}
+		relative_position_id = JOS_economy_inprovment
+		prerequisite = {
+			focus = JOS_heavy_industry_budget
+		}
+		completion_reward = { 
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_B = 10 }
+			}
+			add_tech_bonus = {
+				name = JOS_heavy_industrial_development
+				category = industry
+				ahead_reduction = 1.0
+				uses = 1
+			}
+			add_tech_bonus = {
+				name = JOS_heavy_industrial_development
+				category = electronics
+				ahead_reduction = 1.0
+				uses = 1
+			}
+		}
+	}
+	focus = {
+		id = JOS_economy_inprovment
+		icon = GFX_
+		cost = 10
+		x = -7
+		y = 1
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_B_priority
+			}
+		}
+		completion_reward = { 
+			add_political_power = 100
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_B = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_military_budget
+		icon = GFX_
+		cost = 10
+		x = 2
+		y = 0
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_B_priority
+			}
+		}
+		relative_position_id = JOS_economy_inprovment
+		completion_reward = { 
+			custom_effect_tooltip = JOS_will_activate_economy_policy_tt
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_B = 10 }
+			}
+			add_tech_bonus = {
+				name = JOS_military_budget
+				category = infantry_tech
+				bonus = 0.75
+				uses = 2
+			}
+			army_experience = 10
+		}
+	}
+	focus = {
+		id = JOS_rules_of_war
+		icon = GFX_
+		cost = 10
+		x = 1
+		y = 1
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_B_priority
+			}
+		}
+		relative_position_id = JOS_economy_inprovment
+		prerequisite = {
+			focus = JOS_economy_inprovment
+		}
+		prerequisite = {
+			focus = JOS_military_budget
+		}
+		completion_reward = { 
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_B = 10 }
+			}
+			add_doctrine_cost_reduction = {
+				name = JOS_rules_of_war
+				category = land_doctrine
+				cost_reduction = 0.2
+				uses = 1
+			}
+			army_experience = 15
+		}
+	}
+	focus = {
+		id = JOS_improve_tactics
+		icon = GFX_
+		cost = 10
+		x = 3
+		y = 1
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_B_priority
+			}
+		}
+		relative_position_id = JOS_economy_inprovment
+		prerequisite = {
+			focus = JOS_military_budget
+		}
+		completion_reward = { 
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_B = 10 }
+			}
+			add_doctrine_cost_reduction = {
+				name = JOS_improve_tactics
+				category = land_doctrine
+				cost_reduction = 0.2
+				uses = 1
+			}
+			army_experience = 15
+		}
+	}
+	focus = {
+		id = JOS_give_war_a_chance
+		icon = GFX_
+		cost = 10
+		x = 2
+		y = 2
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_B_priority
+			}
+		}
+		relative_position_id = JOS_economy_inprovment
+		prerequisite = {
+			focus = JOS_improve_tactics
+		}
+		prerequisite = {
+			focus = JOS_rules_of_war
+		}
+		completion_reward = { 
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_B = 10 }
+			}
+			army_experience = 30
+			add_doctrine_cost_reduction = {
+				name = JOS_give_war_a_chance
+				category = land_doctrine
+				cost_reduction = 0.2
+				uses = 2
 			}
 		}
 	}
