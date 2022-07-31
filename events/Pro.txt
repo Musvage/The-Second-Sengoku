@@ -89,6 +89,7 @@ country_event = { #1936 elections 1 tour
 		add_political_power = 50
 	}
 }
+
 country_event = { #1936 elections 2 tour
 	id = pro.24
 	title = pro.24.t
@@ -151,6 +152,7 @@ country_event = { #1936 elections final tour
 	desc = pro.25.desc
 
 	is_triggered_only = yes
+	
 	major = no
 
 	option = {
@@ -201,66 +203,99 @@ country_event = { #1936 elections final tour
 		add_political_power = 50
 	}
 }
-country_event = { #1936 elections (Winner/Coup)
+
+country_event = { #1936 elections (Winner/Coup) HIDDEN EVENT, CHOSSES CORRECT EVENT
 	id = pro.26
 	title = pro.26.t
 	desc = pro.26.desc
 
 	is_triggered_only = yes
+	
 	major = no
+	
+	hidden = yes
 
-	option = {
-		name = pro.26.a
-		trigger = {
-			democratic > democratic_socialism
-			NOT = {
-				democratic < 0.45
+	is_triggered_only = yes
+	
+	major = no
+	
+	hidden = yes
+
+	immediate = {
+		remove_country_leader_trait = lack_legitimacy_democratic
+		if = {
+			limit = {
+				OR = { democratic > 0.45 democratic_socialism > 0.45 }
 			}
-		}
-		ai_chance = {
-			base = 0
-			modifier = {
-				add = 10
-				has_country_flag = PRO_AI_conservative_path
+			if = {
+				limit = { democratic > var:party_popularity@democratic_socialism }
+				country_event = pro.27
+			} else = {	# soc dem > dem
+				country_event = pro.28
 			}
+		} else = {	# no majority
+			country_event = pro.29
 		}
-		custom_effect_tooltip = PRO_democratic_won_tt
-		set_country_flag = PRO_dem_won
-	}
-	option = {
-		name = pro.26.b
-		trigger = {
-			democratic_socialism > democratic
-			NOT = {
-				democratic_socialism < 0.45
-			}
-		}
-		ai_chance = {
-			base = 0
-			modifier = {
-				add = 10
-				has_country_flag = PRO_AI_social_democracy_path
-			}
-		}
-		custom_effect_tooltip = PRO_democratic_socialism_won_tt
-		set_country_flag = PRO_demsoc_won
-	}
-	option = {
-		name = pro.26.c
-		trigger = {
-			democratic < 0.45
-			democratic_socialism < 0.45
-		}
-		ai_chance = {
-			base = 0
-			modifier = {
-				add = 10
-				has_country_flag = PRO_AI_coup_path
-			}
-		}
-		complete_national_focus = PRO_assassination_of_the_prime_minister
 	}
 }
+
+country_event = { #1936: dems win
+	id = pro.27
+	title = pro.27.t
+	desc = pro.27.desc
+
+	is_triggered_only = yes
+	
+	major = no
+	
+	immediate = { hidden_effect = {
+		complete_national_focus = PRO_conservative_majority
+	} }
+
+	option = {
+		name = pro.27.a
+		custom_effect_tooltip = PRO_democratic_won_tt
+	}
+}
+
+country_event = { #1936: soc dems win
+	id = pro.28
+	title = pro.28.t
+	desc = pro.28.desc
+
+	is_triggered_only = yes
+	
+	major = no
+	
+	immediate = { hidden_effect = {
+		complete_national_focus = PRO_social_democratic_majority
+	}}
+
+	option = {
+		name = pro.28.a
+		custom_effect_tooltip = PRO_democratic_socialism_won_tt
+	}
+}
+
+country_event = { #1936: ninguém vai ganhar e ninguém vai perder, vai todo mundo perder
+	id = pro.29
+	title = pro.29.t
+	desc = pro.29.desc
+
+	is_triggered_only = yes
+	
+	major = no
+	
+	immediate = { hidden_effect = {
+		complete_national_focus = PRO_assassination_of_the_prime_minister
+	}}
+
+	option = {
+		name = pro.29.a
+		custom_effect_tooltip = pro.29.tt
+	}
+}
+
 ######################
 # 1936 Elections	#### EVENT DEPRICATED
 country_event = {
@@ -1189,7 +1224,6 @@ news_event = {	# MODUS VIVENDI - TOH refuses
 			}
 		}
 	}
-	
 }
 
 news_event = {	# Takahashi Torekio is assassinated

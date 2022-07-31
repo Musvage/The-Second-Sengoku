@@ -42,44 +42,25 @@
 		ai_will_do = {
 			factor = 10
 		}
-		cancel_if_invalid = yes
+		
+		cancel_if_invalid = no
+		
 		completion_reward = {
-			#set_cosmetic_tag = PRO_republic
-			#hidden_effect = {
-			#	country_event = { id = pro.101 days = 5 }
-			#	set_country_flag = PRO_1936_election_completed
-			#}
-			#activate_decision = PRO_election_timer
-			effect_tooltip = {
-				country_event = pro.23
-			}
+			custom_effect_tooltip = PRO_1936_elections_tt
 			hidden_effect = {
 				clr_country_flag = PRO_ongoing_elections
-				if = {
-					limit = {
-						has_country_flag = PRO_demsoc_won
-					}
-					complete_national_focus = PRO_social_democratic_majority
-					clr_country_flag = PRO_demsoc_won
-				}
-				if = {
-					limit = {
-						has_country_flag = PRO_dem_won
-					}
-					complete_national_focus = PRO_conservative_majority
-					clr_country_flag = PRO_dem_won
-				}
 				clr_country_flag = PRO_AI_conservative_path
 				clr_country_flag = PRO_AI_social_democracy_path
 				clr_country_flag = PRO_AI_coup_path
+				country_event = { id = pro.26 }	# hidden event
 			}
 		}
+		
 		select_effect = {
 			set_country_flag = PRO_ongoing_elections
-			country_event = { id = pro.23 days = 10 }
+			country_event = { id = pro.23 }
 			country_event = { id = pro.24 days = 30 }
 			country_event = { id = pro.25 days = 50 }
-			country_event = { id = pro.26 days = 65 }
 
 			#AI
 			random_list = {
@@ -145,15 +126,20 @@
 			set_country_flag = PRO_assassination_of_the_prime_minister_completed
 			kill_ideology_leader = democratic
 			hidden_effect = {
-				create_country_leader = {
-					name = "National Diet"
-					desc = "POLITICS_DIET_DESC"
-					picture = "Portrait_PRO_National_Diet.dds"
-					expire = "1965.1.1"
-					ideology = liberalism
-					traits = {
-						lack_legitimacy_democratic
-					}
+				#create_country_leader = {
+				#	name = "National Diet"
+				#	desc = "POLITICS_DIET_DESC"
+				#	picture = "Portrait_PRO_National_Diet.dds"
+				#	expire = "1965.1.1"
+				#	ideology = liberalism
+				#	traits = {
+				#		lack_legitimacy_democratic
+				#	}
+				#}
+				PRO_national_diet = { promote_character = yes }
+				if = {
+					limit = { has_completed_focus = PRO_1936_elections }
+					uncomplete_national_focus = { focus = PRO_1936_elections }
 				}
 			}
 	    }
@@ -177,11 +163,10 @@
 		available_if_capitulated = yes
 		
 		available = {
-			NOT = { has_country_flag = PRO_1936_election_completed }
-		}
-		
-		bypass = {
-			has_country_flag = PRO_1936_election_completed_conservative_victory
+			has_country_leader = {
+				character = PRO_wakatsuki_reijiro
+				ruling_only = yes
+			}
 		}
 		
 		ai_will_do = {
@@ -193,9 +178,10 @@
 		}
 		
 		completion_reward = {
-			custom_effect_tooltip = upon_selecting_focus
-			effect_tooltip = {
-				add_timed_idea = { idea = PRO_idea_conservative_campaign days = 35 }
+			add_trait = {
+				trait = PRO_legitimate_mandate
+				character = PRO_wakatsuki_reijiro
+				ideology = dssubtype
 			}
 		}
 	}
@@ -487,7 +473,10 @@
 		available_if_capitulated = yes
 		
 		available = {
-			NOT = { has_country_flag = PRO_1936_election_completed }
+			has_country_leader = {
+				character = PRO_mosaburo_suzuki
+				ruling_only = yes
+			}
 		}
 		
 		bypass = {
@@ -498,14 +487,11 @@
 			factor = 5
 		}
 		
-		select_effect = {
-			add_timed_idea = { idea = PRO_idea_socdem_campaign days = 35 }
-		}
-		
 		completion_reward = {
-			custom_effect_tooltip = upon_selecting_focus
-			effect_tooltip = {
-				add_timed_idea = { idea = PRO_idea_socdem_campaign days = 35 }
+			add_trait = {
+				trait = PRO_legitimate_mandate
+				character = PRO_mosaburo_suzuki
+				ideology = dssubtype
 			}
 		}
 	}
