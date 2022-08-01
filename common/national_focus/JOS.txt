@@ -7,42 +7,625 @@ focus_tree = {
 			tag = JOS
 		}
 	}
+	continuous_focus_position = {
+		x = 350
+		y = -400
+	}
 	########################
 	#  F O C U S  T R E E  #
 	########################
+
+	#######################################
+	#  S T E A D Y  C O U R S E  P A T H  #
+	#######################################
 	focus = {
 		id = JOS_steady_course
-		icon = GFX_
+		icon = GFX_goal_generic_demand_territory
 		cost = 5
-		x = 0
+		x = -14
 		y = 0
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = 100
+				has_country_flag = JOS_AI_steady_course
+			}
+		}
 		mutually_exclusive = {
 			focus = JOS_government_reforms
-			focus = JOS_a_new_course
+			focus = JOS_third_way
 		}
 		completion_reward = { 
-			add_popularity = {
-				ideology = autocracy
-				popularity = 0.15
-			}
-			add_political_power = 150
+			add_political_power = 75
 			custom_effect_tooltip = JOS_activate_monarchist_decisions_tt
+			add_dynamic_modifier = {
+				modifier = JOS_balance_powers_dynamic_modifier
+				tag = JOS
+			}
 			hidden_effect = {
-				# TODO
+				set_variable = { JOS_AI_focus_count_A = 90 }
+				set_variable = { JOS_AI_focus_count_B = 90 }
+				random_list = {
+					50 = {
+						set_country_flag = JOS_AI_decentralisation
+					}
+					50 = {
+						set_country_flag = JOS_AI_centralisation
+					}
+				}
 			}
 		}
 	}
 	focus = {
-		id = JOS_government_reforms
-		icon = GFX_
-		cost = 5
-		x = -6
-		y = 0
-		mutually_exclusive = {
+		id = JOS_constitutional_reforms
+		icon = GFX_focus_generic_home_defense
+		cost = 10
+		x = -1
+		y = 1
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_steady_course
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = JOS_monarchist_decisions_has_ratio_const_monarchy_7_3
+				check_variable = { JOS_decentralisation_level > 7.99 }
+			}
+		}
+		prerequisite = {
 			focus = JOS_steady_course
-			focus = JOS_a_new_course
+		}
+		mutually_exclusive = {
+			focus = JOS_emperors_constitution
 		}
 		completion_reward = { 
+			add_political_power = 75
+			add_stability = 0.05
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_manse_hangukin
+		icon = GFX_goal_generic_political_pressure
+		cost = 10
+		x = -2
+		y = 2
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_steady_course
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = JOS_monarchist_decisions_has_ratio_const_monarchy_5_5
+				check_variable = { JOS_decentralisation_level > 4.99 }
+			}
+		}
+		prerequisite = {
+			focus = JOS_constitutional_reforms
+		}
+		completion_reward = { 
+			add_political_power = 75
+			add_stability = 0.1
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_emperors_constitution
+		icon = GFX_focus_generic_home_defense
+		cost = 10
+		x = 1
+		y = 1
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_steady_course
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = JOS_monarchist_decisions_has_ratio_royal_monarchy_7_3
+				check_variable = { JOS_centralisation_level > 7.99 }
+			}
+		}
+		prerequisite = {
+			focus = JOS_steady_course
+		}
+		mutually_exclusive = {
+			focus = JOS_constitutional_reforms
+		}
+		completion_reward = { 
+			add_political_power = 75
+			add_war_support = 0.05
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_hwangje_manse
+		icon = GFX_goal_generic_political_pressure
+		cost = 10
+		x = 2
+		y = 2
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_steady_course
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = JOS_monarchist_decisions_has_ratio_royal_monarchy_5_5
+				check_variable = { JOS_centralisation_level > 4.99 }
+			}
+		}
+		prerequisite = {
+			focus = JOS_emperors_constitution
+		}
+		completion_reward = { 
+			add_political_power = 75
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_nothing_ventured_nothing_gained
+		icon = GFX_focus_generic_treaty
+		cost = 10
+		x = 0
+		y = 2
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_steady_course
+		prerequisite = {
+			focus = JOS_constitutional_reforms
+			focus = JOS_emperors_constitution
+		}
+		completion_reward = { 
+			add_ideas = JOS_nothing_ventured_nothing_gained_0_idea
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+				clr_country_flag = JOS_AI_decentralisation
+				clr_country_flag = JOS_AI_centralisation
+				random_list = {
+					50 = {
+						set_country_flag = JOS_AI_decentralisation
+					}
+					50 = {
+						set_country_flag = JOS_AI_centralisation
+					}
+				}
+			}
+		}
+	}
+	focus = {
+		id = JOS_annex_gando
+		icon = GFX_goal_anschluss
+		cost = 10
+		x = 0
+		y = 3
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_steady_course
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = JOS_monarchist_decisions_has_ratio_royal_monarchy_6_4
+				check_variable = { JOS_centralisation_level > 5.99 }
+			}
+			GAN = {
+				AND = {
+					NOT = {
+						has_completed_focus = GAN_our_own_constitution
+						has_completed_focus = GAN_our_home_their_home
+					}
+				}
+			}
+		}
+		prerequisite = {
+			focus = JOS_nothing_ventured_nothing_gained
+		}
+		completion_reward = { 
+			GAN = {
+				country_event = { id = joseon.6 days = 2 }
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_future_in_changes
+		icon = GFX_goal_generic_propaganda
+		cost = 10
+		x = -2
+		y = 3
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+			modifier = {
+				factor = 0
+				has_country_flag = JOS_AI_centralisation
+			}
+		}
+		relative_position_id = JOS_steady_course
+		bypass = {
+			has_completed_focus = JOS_future_in_eternity
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = JOS_monarchist_decisions_has_ratio_const_monarchy_5_5
+				check_variable = { JOS_decentralisation_level > 4.99 }
+			}
+		}
+		prerequisite = {
+			focus = JOS_nothing_ventured_nothing_gained
+		}
+		completion_reward = { 
+			swap_ideas = {
+				remove_idea = JOS_nothing_ventured_nothing_gained_0_idea
+				add_idea = JOS_nothing_ventured_nothing_gained_1_idea
+			}
+			custom_effect_tooltip = JOS_mutually_exclusive_focus_fie
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+				clr_country_flag = JOS_AI_decentralisation
+				clr_country_flag = JOS_AI_centralisation
+				random_list = {
+					50 = {
+						set_country_flag = JOS_AI_decentralisation
+					}
+					50 = {
+						set_country_flag = JOS_AI_centralisation
+					}
+				}
+			}
+		}
+	}
+	focus = {
+		id = JOS_individualism
+		icon = GFX_goal_generic_defence
+		cost = 10
+		x = -1
+		y = 4
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+			modifier = {
+				factor = 0
+				has_country_flag = JOS_AI_centralisation
+			}
+		}
+		relative_position_id = JOS_steady_course
+		bypass = {
+			has_completed_focus = JOS_imperial_order
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = JOS_monarchist_decisions_has_ratio_const_monarchy_7_3
+				check_variable = { JOS_decentralisation_level > 6.99 }
+			}
+		}
+		prerequisite = {
+			focus = JOS_future_in_changes
+		}
+		completion_reward = { 
+			if = {
+				limit = {
+					has_idea = JOS_nothing_ventured_nothing_gained_3_idea
+				}
+				swap_ideas = {
+					remove_idea = JOS_nothing_ventured_nothing_gained_3_idea
+					add_idea = JOS_nothing_ventured_nothing_gained_6_idea
+				}
+			}
+			else = {
+				swap_ideas = {
+					remove_idea = JOS_nothing_ventured_nothing_gained_1_idea
+					add_idea = JOS_nothing_ventured_nothing_gained_2_idea
+				}
+			}
+			custom_effect_tooltip = JOS_mutually_exclusive_focus_impor
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_constitutional_monarchy
+		icon = GFX_goal_tfv_strengthen_commonwealth_ties
+		cost = 10
+		x = -2
+		y = 5
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_steady_course
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = JOS_monarchist_decisions_has_ratio_const_monarchy_9_1
+				check_variable = { JOS_decentralisation_level > 8.99 }
+			}
+		}
+		prerequisite = {
+			focus = JOS_individualism
+		}
+		mutually_exclusive = {
+			focus = JOS_royal_dictatorship
+		}
+		completion_reward = { 
+			add_ideas = JOS_constitutional_monarchy_idea
+			custom_effect_tooltip = JOS_deactivate_monarchist_decisions_tt
+			remove_dynamic_modifier = {
+				modifier = JOS_balance_powers_dynamic_modifier
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_modern_monarchism
+		icon = GFX_goal_generic_neutrality_focus
+		cost = 10
+		x = -1
+		y = 6
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_steady_course
+		prerequisite = {
+			focus = JOS_constitutional_monarchy
+		}
+		completion_reward = { 
+			swap_ideas = {
+				remove_idea = JOS_constitutional_monarchy_idea
+				add_idea = JOS_constitutional_monarchy_1_idea
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_future_in_eternity
+		icon = GFX_goal_generic_propaganda
+		cost = 10
+		x = 2
+		y = 3
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+			modifier = {
+				factor = 0
+				has_country_flag = JOS_AI_decentralisation
+			}
+		}
+		relative_position_id = JOS_steady_course
+		bypass = {
+			has_completed_focus = JOS_future_in_changes
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = JOS_monarchist_decisions_has_ratio_royal_monarchy_5_5
+				check_variable = { JOS_centralisation_level > 4.99 }
+			}
+		}
+		prerequisite = {
+			focus = JOS_nothing_ventured_nothing_gained
+		}
+		completion_reward = { 
+			swap_ideas = {
+				remove_idea = JOS_nothing_ventured_nothing_gained_0_idea
+				add_idea = JOS_nothing_ventured_nothing_gained_3_idea
+			}
+			custom_effect_tooltip = JOS_mutually_exclusive_focus_fic
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+				clr_country_flag = JOS_AI_decentralisation
+				clr_country_flag = JOS_AI_centralisation
+				random_list = {
+					50 = {
+						set_country_flag = JOS_AI_decentralisation
+					}
+					50 = {
+						set_country_flag = JOS_AI_centralisation
+					}
+				}
+			}
+		}
+	}
+	focus = {
+		id = JOS_imperial_order
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		x = 1
+		y = 4
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+			modifier = {
+				factor = 0
+				has_country_flag = JOS_AI_decentralisation
+			}
+		}
+		relative_position_id = JOS_steady_course
+		bypass = {
+			has_completed_focus = JOS_individualism
+		}
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = JOS_monarchist_decisions_has_ratio_royal_monarchy_7_3
+				check_variable = { JOS_centralisation_level > 6.99 }
+			}
+		}
+		prerequisite = {
+			focus = JOS_future_in_eternity
+		}
+		completion_reward = { 
+			if = {
+				limit = {
+					has_idea = JOS_nothing_ventured_nothing_gained_1_idea
+				}
+				swap_ideas = {
+					remove_idea = JOS_nothing_ventured_nothing_gained_1_idea
+					add_idea = JOS_nothing_ventured_nothing_gained_5_idea
+				}
+			}
+			else = {
+				swap_ideas = {
+					remove_idea = JOS_nothing_ventured_nothing_gained_3_idea
+					add_idea = JOS_nothing_ventured_nothing_gained_4_idea
+				}
+			}
+			custom_effect_tooltip = JOS_mutually_exclusive_focus_ind
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_royal_dictatorship
+		icon = GFX_goal_tfv_strengthen_commonwealth_ties
+		cost = 10
+		x = 2
+		y = 5
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_steady_course
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = JOS_monarchist_decisions_has_ratio_royal_monarchy_9_1
+				check_variable = { JOS_centralisation_level > 8.99 }
+			}
+		}
+		prerequisite = {
+			focus = JOS_imperial_order
+		}
+		mutually_exclusive = {
+			focus = JOS_constitutional_monarchy
+		}
+		completion_reward = { 
+			add_ideas = JOS_royal_dictatorship_idea
+			custom_effect_tooltip = JOS_deactivate_monarchist_decisions_tt
+			remove_dynamic_modifier = {
+				modifier = JOS_balance_powers_dynamic_modifier
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_emperors_cult
+		icon = GFX_goal_generic_neutrality_focus
+		cost = 10
+		x = 1
+		y = 6
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_steady_course
+		prerequisite = {
+			focus = JOS_royal_dictatorship
+		}
+		completion_reward = { 
+			swap_ideas = {
+				remove_idea = JOS_royal_dictatorship_idea
+				add_idea = JOS_royal_dictatorship_1_idea
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_establish_foreign_policy
+		icon = GFX_goal_generic_improve_relations
+		cost = 10
+		x = 0
+		y = 7
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_steady_course
+		prerequisite = {
+			focus = JOS_emperors_cult
+			focus = JOS_modern_monarchism
+		}
+		completion_reward = { 
+			custom_effect_tooltip = JOS_foreign_policy_activate
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	###################################
+	#  G O V  R E F O R M S  P A T H  #
+	###################################
+	focus = {
+		id = JOS_government_reforms
+		icon = GFX_goal_generic_national_unity
+		cost = 5
+		x = 0
+		y = 0
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = 100
+				has_country_flag = JOS_AI_reforms
+			}
+		}
+		mutually_exclusive = {
+			focus = JOS_steady_course
+			focus = JOS_third_way
+		}
+		completion_reward = { 
+			add_political_power = 150
 			add_popularity = {
 				ideology = democratic
 				popularity = 0.25
@@ -51,24 +634,526 @@ focus_tree = {
 				ideology = democratic_socialism
 				popularity = 0.25
 			}
-			add_political_power = 150
-			add_timed_idea = {
-				idea = JOS_government_reforms_idea
-				days = 180
+			add_ideas = JOS_government_reforms_idea
+			hidden_effect = {
+				set_variable = { JOS_AI_focus_count_A = 90 }
+				set_variable = { JOS_AI_focus_count_B = 90 }
 			}
 		}
 	}
 	focus = {
-		id = JOS_a_new_course
-		icon = GFX_
+		id = JOS_a_look_in_democracy
+		icon = GFX_goal_support_democracy
+		cost = 10
+		x = -1
+		y = 1
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_government_reforms
+		available = {
+			democratic > 0.45
+		}
+		prerequisite = {
+			focus = JOS_government_reforms
+		}
+		mutually_exclusive = {
+			focus = JOS_social_republic
+		}
+		completion_reward = { 
+			swap_ideas = {
+				remove_idea = JOS_government_reforms_idea
+				add_idea = JOS_government_reforms_democracy_1_idea
+			}
+			set_politics = {
+				ruling_party = democratic
+				elections_allowed = yes
+				election_frequency = 72
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_republics_constitution
+		icon = GFX_goal_support_democracy
+		cost = 10
+		x = -2
+		y = 2
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_government_reforms
+		prerequisite = {
+			focus = JOS_a_look_in_democracy
+		}
+		completion_reward = { 
+			if = {
+				limit = {
+					has_idea = JOS_government_reforms_democracy_2_idea
+				}
+				swap_ideas = {
+					remove_idea = JOS_government_reforms_democracy_2_idea
+					add_idea = JOS_government_reforms_democracy_3_idea
+				}
+			}
+			if = {
+				limit = {
+					has_idea = JOS_government_reforms_democracy_1_idea
+				}
+				swap_ideas = {
+					remove_idea = JOS_government_reforms_democracy_1_idea
+					add_idea = JOS_government_reforms_democracy_2_idea
+				}
+			}
+			else = {
+				effect_tooltip = {
+					swap_ideas = {
+						remove_idea = JOS_government_reforms_democracy_1_idea
+						add_idea = JOS_government_reforms_democracy_2_idea
+					}
+				}
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_threat_in_the_east
+		icon = GFX_goal_anti_comintern_pact
+		cost = 10
+		x = -3
+		y = 3
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_government_reforms
+		prerequisite = {
+			focus = JOS_republics_constitution
+		}
+		completion_reward = { 
+			FER = {
+				custom_effect_tooltip = JOS_foreign_policy_antagonise_15
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_land_of_truly_free
+		icon = GFX_goal_support_democracy
+		cost = 10
+		x = -2
+		y = 5
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_government_reforms
+		prerequisite = {
+			focus = JOS_republics_constitution
+		}
+		prerequisite = {
+			focus = JOS_fresh_breath
+		}
+		completion_reward = { 
+			add_ideas = JOS_democracy_achieved_idea
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_social_republic
+		icon = GFX_goal_support_communism
+		cost = 10
+		x = 1
+		y = 1
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_government_reforms
+		available = {
+			democratic_socialism > 0.45
+		}
+		prerequisite = {
+			focus = JOS_government_reforms
+		}
+		mutually_exclusive = {
+			focus = JOS_a_look_in_democracy
+		}
+		completion_reward = { 
+			swap_ideas = {
+				remove_idea = JOS_government_reforms_idea
+				add_idea = JOS_government_reforms_social_democracy_1_idea
+			}
+			set_politics = {
+				ruling_party = democratic_socialism
+				elections_allowed = yes
+				election_frequency = 48
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_social_constitution
+		icon = GFX_goal_support_communism
+		cost = 10
+		x = 3
+		y = 2
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_government_reforms
+		prerequisite = {
+			focus = JOS_social_republic
+		}
+		completion_reward = { 
+			if = {
+				limit = {
+					has_idea = JOS_government_reforms_social_democracy_2_idea
+				}
+				swap_ideas = {
+					remove_idea = JOS_government_reforms_social_democracy_2_idea
+					add_idea = JOS_government_reforms_social_democracy_3_idea
+				}
+			}
+			if = {
+				limit = {
+					has_idea = JOS_government_reforms_social_democracy_1_idea
+				}
+				swap_ideas = {
+					remove_idea = JOS_government_reforms_social_democracy_1_idea
+					add_idea = JOS_government_reforms_social_democracy_2_idea
+				}
+			}
+			else = {
+				effect_tooltip = {
+					swap_ideas = {
+						remove_idea = JOS_government_reforms_social_democracy_1_idea
+						add_idea = JOS_government_reforms_social_democracy_2_idea
+					}
+				}
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_deny_soviet_ideals
+		icon = GFX_goal_anti_comintern_pact
+		cost = 10
+		x = 4
+		y = 3
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_government_reforms
+		prerequisite = {
+			focus = JOS_social_constitution
+		}
+		mutually_exclusive = {
+			focus = JOS_befriend_soviets
+		}
+		completion_reward = { 
+			FER = {
+				custom_effect_tooltip = JOS_foreign_policy_antagonise_10
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_befriend_soviets
+		icon = GFX_goal_generic_major_alliance
+		cost = 10
+		x = 2
+		y = 3
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_government_reforms
+		prerequisite = {
+			focus = JOS_social_constitution
+		}
+		mutually_exclusive = {
+			focus = JOS_deny_soviet_ideals
+		}
+		completion_reward = { 
+			FER = {
+				custom_effect_tooltip = JOS_foreign_policy_support_15
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_deal_with_gando
+		icon = GFX_goal_anschluss
+		cost = 10
+		x = 3
+		y = 4
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_government_reforms
+		prerequisite = {
+			focus = JOS_befriend_soviets
+			focus = JOS_deny_soviet_ideals
+			focus = JOS_fresh_breath
+		}
+		completion_reward = { 
+			GAN = {
+				if = {
+					limit = {
+						has_completed_focus = GAN_our_place_in_the_world
+					}
+					custom_effect_tooltip = JOS_foreign_policy_support_15
+				}
+				else = {
+					custom_effect_tooltip = JOS_foreign_policy_antagonise_5
+				}
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_korean_socialism
+		icon = GFX_goal_support_communism
+		cost = 10
+		x = 2
+		y = 5
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_government_reforms
+		prerequisite = {
+			focus = JOS_befriend_soviets
+			focus = JOS_deny_soviet_ideals
+		}
+		prerequisite = {
+			focus = JOS_deal_with_gando
+		}
+		completion_reward = { 
+			add_ideas = JOS_socialism_achieved_idea
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_final_reforms
+		icon = GFX_goal_generic_improve_relations
+		cost = 10
+		x = 0
+		y = 2
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_government_reforms
+		prerequisite = {
+			focus = JOS_a_look_in_democracy
+			focus = JOS_social_republic
+		}
+		completion_reward = { 
+			add_political_power = 100
+			if = {
+				limit = {
+					has_idea = JOS_government_reforms_democracy_1_idea
+				}
+				swap_ideas = {
+					remove_idea = JOS_government_reforms_democracy_1_idea
+					add_idea = JOS_government_reforms_democracy_2_idea
+				}
+			}
+			if = {
+				limit = {
+					has_idea = JOS_government_reforms_democracy_2_idea
+				}
+				swap_ideas = {
+					remove_idea = JOS_government_reforms_democracy_2_idea
+					add_idea = JOS_government_reforms_democracy_3_idea
+				}
+			}
+			if = {
+				limit = {
+					has_idea = JOS_government_reforms_social_democracy_1_idea
+				}
+				swap_ideas = {
+					remove_idea = JOS_government_reforms_social_democracy_1_idea
+					add_idea = JOS_government_reforms_social_democracy_2_idea
+				}
+			}
+			if = {
+				limit = {
+					has_idea = JOS_government_reforms_social_democracy_2_idea
+				}
+				swap_ideas = {
+					remove_idea = JOS_government_reforms_social_democracy_2_idea
+					add_idea = JOS_government_reforms_social_democracy_3_idea
+				}
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_fresh_breath
+		icon = GFX_goal_generic_propaganda
+		cost = 10
+		x = 0
+		y = 3
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_government_reforms
+		prerequisite = {
+			focus = JOS_final_reforms
+		}
+		completion_reward = { 
+			if = {
+				limit = {
+					has_government = democratic_socialism
+				}
+				add_timed_idea = {
+					idea = JOS_fresh_breath_social_democratic_idea
+					days = 240
+				}
+			}
+			else = {
+				add_timed_idea = {
+					idea = JOS_fresh_breath_democratic_idea
+					days = 240
+				}
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_befriend_china
+		icon = GFX_goal_generic_major_alliance
+		cost = 10
+		x = 0
+		y = 4
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_government_reforms
+		prerequisite = {
+			focus = JOS_fresh_breath
+		}
+		completion_reward = { 
+			ROC = {
+				custom_effect_tooltip = JOS_foreign_policy_support_10
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_tsushima_for_protection
+		icon = GFX_focus_hol_prepare_the_inundation_lines
+		cost = 10
+		x = 0
+		y = 6
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_government_reforms
+		prerequisite = {
+			focus = JOS_korean_socialism
+			focus = JOS_land_of_truly_free
+		}
+		completion_reward = { 
+			11 = {
+				owner = {
+					country_event = { id = joseon.13 days = 2 }
+				}
+			}
+			custom_effect_tooltip = JOS_foreign_policy_activate
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	###############################
+	#  T H I R D  W A Y  P A T H  #
+	###############################
+	focus = {
+		id = JOS_third_way
+		icon = GFX_goal_generic_forceful_treaty
 		cost = 5
-		x = 6
+		x = 8
 		y = 0
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = 100
+				has_country_flag = JOS_AI_new_way
+			}
+		}
 		mutually_exclusive = {
 			focus = JOS_steady_course
 			focus = JOS_government_reforms
 		}
 		completion_reward = { 
+			add_political_power = 150
+			add_ideas = JOS_third_way_idea
 			add_popularity = {
 				ideology = fascism
 				popularity = 0.25
@@ -77,1029 +1162,699 @@ focus_tree = {
 				ideology = communism
 				popularity = 0.25
 			}
-			add_political_power = 150
-			add_timed_idea = {
-				idea = JOS_a_new_course_idea
-				days = 180
-			}
-		}
-	}
-	##############################
-	#  S t e a d y  C o u r s e  #
-	##############################
-	focus = {
-		id = JOS_modern_monarchism
-		icon = GFX_
-		cost = 10
-		x = -1
-		y = 1
-		relative_position_id = JOS_steady_course
-		mutually_exclusive = {
-			focus = JOS_cult_of_emperor
-		}
-		prerequisite = {
-			focus = JOS_steady_course
-		}
-		completion_reward = { 
-			# TODO
-			add_ideas = JOS_modern_monarchism_idea
-			#add ideas
-			#add mechanic related stuff
-		}
-	}
-	focus = {
-		id = JOS_cult_of_emperor
-		icon = GFX_
-		cost = 10
-		x = 1
-		y = 1
-		relative_position_id = JOS_steady_course
-		mutually_exclusive = {
-			focus = JOS_modern_monarchism
-		}
-		prerequisite = {
-			focus = JOS_steady_course
-		}
-		completion_reward = { 
-			# TODO
-			add_ideas = JOS_emperor_cult_idea
-			#add ideas
-			#add mechanic related stuff
-		}
-	}
-	focus = {
-		id = JOS_secure_gando
-		icon = GFX_
-		cost = 10
-		x = 0
-		y = 2
-		will_lead_to_war_with = GAN
-		relative_position_id = JOS_steady_course
-		prerequisite = {
-			focus = JOS_modern_monarchism
-			focus = JOS_cult_of_emperor
-		}
-		completion_reward = { 
-			# TODO
-			#add event for GAN
-			#add news event for annexation
-			GAN = {
-				country_event = joseon.6
-			}
-			add_threat = 2
-		}
-	}
-	focus = {
-		id = JOS_china_non_agression
-		icon = GFX_
-		cost = 10
-		x = -1
-		y = 3
-		relative_position_id = JOS_steady_course
-		prerequisite = {
-			focus = JOS_secure_gando
-		}
-		completion_reward = { 
-			ROC = {
-				country_event = { days = 2 id = joseon.10 }
+			hidden_effect = {
+				set_variable = { JOS_AI_focus_count_A = 100 }
+				set_variable = { JOS_AI_focus_count_B = 90 }
 			}
 		}
 	}
 	focus = {
-		id = JOS_secure_soviet_border
-		icon = GFX_
+		id = JOS_white_sun_rising
+		icon = GFX_goal_support_fascism
 		cost = 10
-		x = 1
-		y = 3
-		relative_position_id = JOS_steady_course
-		prerequisite = {
-			focus = JOS_secure_gando
-		}
-		completion_reward = { 
-			185 = {
-				if = {
-					limitt = {
-						is_controlled_by = ROOT
-					}
-					custom_effect_tooltip = JOS_anti_soviet_wall_tt
-					hidden_effect = {
-						add_building_construction = {
-							type = bunker
-							level = 2
-							province = 1047
-							instant_build = yes
-						}
-						add_building_construction = {
-							type = bunker
-							level = 2
-							province = 5571
-							instant_build = yes
-						}
-						add_building_construction = {
-							type = bunker
-							level = 2
-							province = 3208
-							instant_build = yes
-						}
-						add_building_construction = {
-							type = bunker
-							level = 2
-							province = 3124
-							instant_build = yes
-						}
-						add_building_construction = {
-							type = bunker
-							level = 2
-							province = 9288
-							instant_build = yes
-						}
-						add_building_construction = {
-							type = bunker
-							level = 2
-							province = 9255
-							instant_build = yes
-						}
-						add_building_construction = {
-							type = bunker
-							level = 2
-							province = 2139
-							instant_build = yes
-						}
-						add_building_construction = {
-							type = bunker
-							level = 2
-							province = 3110
-							instant_build = yes
-						}
-						add_building_construction = {
-							type = bunker
-							level = 2
-							province = 4758
-							instant_build = yes
-						}
-					}
-				}
+		x = -1
+		y = 1
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
 			}
-			# TODO
-			#add mechanic related stuff
 		}
-	}
-	focus = {
-		id = JOS_militarism
-		icon = GFX_
-		cost = 10
-		x = 0
-		y = 4
-		relative_position_id = JOS_steady_course
-		prerequisite = { focus = JOS_china_non_agression }
-		prerequisite = { focus = JOS_secure_soviet_border }
-		completion_reward = { 
-			add_ideas = war_economy
-			# TODO
-			#add ideas
-			#add mechanic related stuff
-		}
-	}
-	focus = {
-		id = JOS_emperors_constitution
-		icon = GFX_
-		cost = 10
-		x = 2
-		y = 2
-		relative_position_id = JOS_steady_course
-		prerequisite = { focus = JOS_cult_of_emperor }
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_hwangje_manse
-		icon = GFX_
-		cost = 10
-		x = 2
-		y = 4
-		relative_position_id = JOS_steady_course
-		prerequisite = { focus = JOS_emperors_constitution }
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_order_of_the_emperor
-		icon = GFX_
-		cost = 10
-		x = 2
-		y = 5
-		relative_position_id = JOS_steady_course
-		prerequisite = { focus = JOS_hwangje_manse }
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_constitutional_reforms
-		icon = GFX_
-		cost = 10
-		x = -2
-		y = 2
-		relative_position_id = JOS_steady_course
-		prerequisite = { focus = JOS_modern_monarchism }
-		completion_reward = { 
-			# TODO
-			#add ideas
-		}
-	}
-	focus = {
-		id = JOS_manse_hangukin
-		icon = GFX_
-		cost = 10
-		x = -2
-		y = 4
-		relative_position_id = JOS_steady_course
-		prerequisite = { focus = JOS_constitutional_reforms }
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_supreme_monarchy
-		icon = GFX_
-		cost = 10
-		x = -2
-		y = 5
-		relative_position_id = JOS_steady_course
-		prerequisite = { focus = JOS_manse_hangukin }
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_high_korea
-		icon = GFX_
-		cost = 10
-		x = 0
-		y = 6
-		relative_position_id = JOS_steady_course
-		prerequisite = {
-			focus = JOS_supreme_monarchy
-			focus = JOS_order_of_the_emperor
+		relative_position_id = JOS_third_way
+		available = {
+			fascism > 0.45
 		}
 		prerequisite = {
-			focus = JOS_militarism
+			focus = JOS_third_way
 		}
-		completion_reward = { 
-			
-		}
-	}
-	###################
-	#  R e f o r m s  #
-	###################
-	focus = {
-		id = JOS_a_free_empire
-		icon = GFX_
-		cost = 10
-		x = 1
-		y = 1
-		relative_position_id = JOS_government_reforms
-		mutually_exclusive = {
-			focus = JOS_social_republic
-		}
-		prerequisite = {
-			focus = JOS_government_reforms
-		}
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_social_republic
-		icon = GFX_
-		cost = 10
-		x = -1
-		y = 1
-		relative_position_id = JOS_government_reforms
-		mutually_exclusive = {
-			focus = JOS_a_free_empire
-		}
-		prerequisite = {
-			focus = JOS_government_reforms
-		}
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_fresh_breath
-		icon = GFX_
-		cost = 10
-		x = 0
-		y = 2
-		relative_position_id = JOS_government_reforms
-		prerequisite = {
-			focus = JOS_a_free_empire
-			focus = JOS_social_republic
-		}
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_deal_with_gando
-		icon = GFX_
-		cost = 10
-		x = 1
-		y = 3
-		relative_position_id = JOS_government_reforms
-		prerequisite = {
-			focus = JOS_fresh_breath
-		}
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_befriend_china
-		icon = GFX_
-		cost = 10
-		x = -1
-		y = 3
-		relative_position_id = JOS_government_reforms
-		prerequisite = {
-			focus = JOS_fresh_breath
-		}
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_prepare_defense_lines
-		icon = GFX_
-		cost = 10
-		x = 0
-		y = 4
-		relative_position_id = JOS_government_reforms
-		prerequisite = { focus = JOS_befriend_china }
-		prerequisite = { focus = JOS_deal_with_gando }
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_republic_constitution
-		icon = GFX_
-		cost = 10
-		x = 2
-		y = 2
-		relative_position_id = JOS_government_reforms
-		prerequisite = {
-			focus = JOS_a_free_empire
-		}
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_friends_in_west
-		icon = GFX_
-		cost = 10
-		x = 2
-		y = 4
-		relative_position_id = JOS_government_reforms
-		prerequisite = {
-			focus = JOS_republic_constitution
-		}
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_social_constitution
-		icon = GFX_
-		cost = 10
-		x = -2
-		y = 2
-		relative_position_id = JOS_government_reforms
-		prerequisite = {
-			focus = JOS_social_republic
-		}
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_befriend_soviet_neighbour
-		icon = GFX_
-		cost = 10
-		x = -2
-		y = 4
-		relative_position_id = JOS_government_reforms
-		prerequisite = {
-			focus = JOS_social_constitution
-		}
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_korean_socialism
-		icon = GFX_
-		cost = 10
-		x = -1
-		y = 5
-		relative_position_id = JOS_government_reforms
-		prerequisite = { focus = JOS_befriend_soviet_neighbour }
-		prerequisite = { focus = JOS_prepare_defense_lines }
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_korean_democracy
-		icon = GFX_
-		cost = 10
-		x = 1
-		y = 5
-		relative_position_id = JOS_government_reforms
-		prerequisite = { focus = JOS_friends_in_west }
-		prerequisite = { focus = JOS_prepare_defense_lines }
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_stable_life
-		icon = GFX_
-		cost = 10
-		x = 0
-		y = 6
-		relative_position_id = JOS_government_reforms
-		prerequisite = { 
-			focus = JOS_korean_democracy
-			focus = JOS_korean_socialism
-		}
-		completion_reward = { 
-			
-		}
-	}
-	###########################
-	#  A  N e w  C o u r s e  #
-	###########################
-	focus = {
-		id = JOS_march_revolution
-		icon = GFX_
-		cost = 10
-		x = 1
-		y = 1
-		relative_position_id = JOS_a_new_course
-		mutually_exclusive = {
-			focus = JOS_rising_of_white_sun
-		}
-		prerequisite = {
-			focus = JOS_a_new_course
-		}
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_rising_of_white_sun
-		icon = GFX_
-		cost = 10
-		x = -1
-		y = 1
-		relative_position_id = JOS_a_new_course
 		mutually_exclusive = {
 			focus = JOS_march_revolution
 		}
-		prerequisite = {
-			focus = JOS_a_new_course
-		}
 		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_gando_hapbang
-		icon = GFX_
-		cost = 10
-		x = 0
-		y = 2
-		will_lead_to_war_with = GAN
-		relative_position_id = JOS_a_new_course
-		prerequisite = {
-			focus = JOS_rising_of_white_sun
-			focus = JOS_march_revolution
-		}
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_train_military
-		icon = GFX_
-		cost = 10
-		x = -1
-		y = 3
-		relative_position_id = JOS_a_new_course
-		prerequisite = {
-			focus = JOS_gando_hapbang
-		}
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_prepare_for_war
-		icon = GFX_
-		cost = 10
-		x = 1
-		y = 3
-		relative_position_id = JOS_a_new_course
-		prerequisite = {
-			focus = JOS_gando_hapbang
-		}
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_national_army
-		icon = GFX_
-		cost = 10
-		x = 0
-		y = 4
-		relative_position_id = JOS_a_new_course
-		prerequisite = { focus = JOS_train_military }
-		prerequisite = { focus = JOS_prepare_for_war }
-		completion_reward = { 
-			
+			swap_ideas = {
+				remove_idea = JOS_third_way_idea
+				add_idea = JOS_third_way_fascism_1_idea
+			}
+			set_politics = {
+				ruling_party = fascism
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
 		id = JOS_korea_above_all
-		icon = GFX_
+		icon = GFX_goal_support_fascism
 		cost = 10
 		x = -2
 		y = 2
-		relative_position_id = JOS_a_new_course
-		prerequisite = { 
-			focus = JOS_rising_of_white_sun
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_third_way
+		prerequisite = {
+			focus = JOS_white_sun_rising
 		}
 		completion_reward = { 
-			
+			add_ideas = JOS_korea_above_all_idea
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
 		id = JOS_national_propaganda
-		icon = GFX_
+		icon = GFX_goal_support_fascism
 		cost = 10
 		x = -2
-		y = 4
-		relative_position_id = JOS_a_new_course
-		prerequisite = { 
+		y = 5
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_third_way
+		prerequisite = {
 			focus = JOS_korea_above_all
 		}
 		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_peoples_primacy
-		icon = GFX_
-		cost = 10
-		x = 2
-		y = 2
-		relative_position_id = JOS_a_new_course
-		prerequisite = { 
-			focus = JOS_march_revolution
-		}
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_national_revolution
-		icon = GFX_
-		cost = 10
-		x = 2
-		y = 4
-		relative_position_id = JOS_a_new_course
-		prerequisite = { 
-			focus = JOS_peoples_primacy
-		}
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_soviet_friend
-		icon = GFX_
-		cost = 10
-		x = 2
-		y = 5
-		relative_position_id = JOS_a_new_course
-		prerequisite = { focus = JOS_national_revolution }
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_chinese_enemy
-		icon = GFX_
-		cost = 10
-		x = 0
-		y = 5
-		relative_position_id = JOS_a_new_course
-		prerequisite = { 
-			focus = JOS_national_propaganda
-			focus = JOS_national_revolution
-		}
-		prerequisite = { focus = JOS_national_army }
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_our_best_home
-		icon = GFX_
-		cost = 10
-		x = 0
-		y = 6
-		relative_position_id = JOS_a_new_course
-		prerequisite = { 
-			focus = JOS_chinese_enemy
-			focus = JOS_soviet_friend
-			focus = JOS_soviet_enemy
-		}
-		completion_reward = { 
-			
+			add_ideas = JOS_national_propaganda_idea
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
 		id = JOS_soviet_enemy
-		icon = GFX_
+		icon = GFX_goal_anti_comintern_pact
 		cost = 10
 		x = -2
-		y = 5
-		relative_position_id = JOS_a_new_course
-		prerequisite = { 
+		y = 6
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_third_way
+		prerequisite = {
 			focus = JOS_national_propaganda
 		}
 		completion_reward = { 
-			
-		}
-	}
-	######################################
-	#  C i v i l i a n  I n d u s t r y  #
-	######################################
-	focus = {
-		id = JOS_expand_civilian_industry
-		icon = GFX_
-		cost = 10
-		x = -12
-		y = 0
-		completion_reward = { 
-			
+			FER = {
+				custom_effect_tooltip = JOS_foreign_policy_antagonise_15
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
-		id = JOS_industry_investments
-		icon = GFX_
-		cost = 10
-		x = -1
-		y = 1
-		relative_position_id = JOS_expand_civilian_industry
-		prerequisite = {
-			focus = JOS_expand_civilian_industry
-		}
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_industry_expansion
-		icon = GFX_
-		cost = 10
-		x = -2
-		y = 2
-		relative_position_id = JOS_expand_civilian_industry
-		prerequisite = {
-			focus = JOS_industry_investments
-		}
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_industry_expansion_2
-		icon = GFX_
-		cost = 10
-		x = 0
-		y = 2
-		relative_position_id = JOS_expand_civilian_industry
-		prerequisite = {
-			focus = JOS_industry_investments
-			focus = JOS_industry_buildup
-		}
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_industry_investments_2
-		icon = GFX_
-		cost = 10
-		x = -1
-		y = 3
-		relative_position_id = JOS_expand_civilian_industry
-		prerequisite = { focus = JOS_industry_expansion }
-		prerequisite = { focus = JOS_industry_expansion_2 }
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_industry_buildup
-		icon = GFX_
+		id = JOS_march_revolution
+		icon = GFX_goal_support_communism
 		cost = 10
 		x = 1
 		y = 1
-		relative_position_id = JOS_expand_civilian_industry
-		prerequisite = { focus = JOS_expand_civilian_industry }
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_third_way
+		available = {
+			communism > 0.45
+		}
+		prerequisite = {
+			focus = JOS_third_way
+		}
+		mutually_exclusive = {
+			focus = JOS_white_sun_rising
+		}
 		completion_reward = { 
-			
+			swap_ideas = {
+				remove_idea = JOS_third_way_idea
+				add_idea = JOS_third_way_communism_1_idea
+			}
+			set_politics = {
+				ruling_party = communism
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
-		id = JOS_industry_expansion_3
-		icon = GFX_
+		id = JOS_peoples_primacy
+		icon = GFX_goal_support_communism
 		cost = 10
 		x = 2
 		y = 2
-		relative_position_id = JOS_expand_civilian_industry
-		prerequisite = { focus = JOS_industry_buildup }
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_third_way
+		prerequisite = {
+			focus = JOS_march_revolution
+		}
 		completion_reward = { 
-			
+			add_ideas = JOS_peoples_primacy_idea
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
-		id = JOS_industry_buildup_2
-		icon = GFX_
+		id = JOS_spirit_of_revolution
+		icon = GFX_goal_support_communism
+		cost = 10
+		x = 2
+		y = 5
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_third_way
+		prerequisite = {
+			focus = JOS_peoples_primacy
+		}
+		completion_reward = { 
+			add_ideas = JOS_spirit_of_revolution_idea
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_soviet_friend
+		icon = GFX_goal_generic_major_alliance
+		cost = 10
+		x = 2
+		y = 6
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_third_way
+		prerequisite = {
+			focus = JOS_spirit_of_revolution
+		}
+		completion_reward = { 
+			FER = {
+				custom_effect_tooltip = JOS_foreign_policy_support_15
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_chinese_friend
+		icon = GFX_goal_generic_major_alliance
+		cost = 10
+		x = 0
+		y = 6
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_third_way
+		prerequisite = {
+			focus = JOS_spirit_of_revolution
+			focus = JOS_national_propaganda
+		}
+		completion_reward = { 
+			ROC = {
+				custom_effect_tooltip = JOS_foreign_policy_support_5
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_influence_in_japan
+		icon = GFX_goal_generic_improve_relations
+		cost = 10
+		x = 0
+		y = 7
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_third_way
+		prerequisite = {
+			focus = JOS_soviet_friend
+			focus = JOS_soviet_enemy
+		}
+		completion_reward = { 
+			custom_effect_tooltip = JOS_foreign_policy_activate
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_militarism
+		icon = GFX_goal_generic_political_pressure
+		cost = 10
+		x = 0
+		y = 2
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_third_way
+		prerequisite = {
+			focus = JOS_march_revolution
+			focus = JOS_white_sun_rising
+		}
+		completion_reward = { 
+			add_ideas = war_economy
+			add_ideas = JOS_militarism_idea
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_prepare_for_war
+		icon = GFX_goal_generic_major_war
 		cost = 10
 		x = 1
 		y = 3
-		relative_position_id = JOS_expand_civilian_industry
-		prerequisite = { focus = JOS_industry_expansion_2 }
-		prerequisite = { focus = JOS_industry_expansion_3 }
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_third_way
+		prerequisite = {
+			focus = JOS_militarism
+		}
 		completion_reward = { 
-			
+			if = {
+				limit = {
+					has_idea = JOS_militarism_idea
+				}
+				swap_ideas = {
+					remove_idea = JOS_militarism_idea
+					add_idea = JOS_militarism_1_idea
+				}
+			}
+			if = {
+				limit = {
+					has_idea = JOS_militarism_1_idea
+				}
+				swap_ideas = {
+					remove_idea = JOS_militarism_1_idea
+					add_idea = JOS_militarism_2_idea
+				}
+			}
+			else = {
+				effect_tooltip = {
+					swap_ideas = {
+						remove_idea = JOS_militarism_1_idea
+						add_idea = JOS_militarism_2_idea
+					}
+				}
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	focus = {
-		id = JOS_korean_industrial_progress
-		icon = GFX_
+		id = JOS_train_military
+		icon = GFX_goal_generic_propaganda
+		cost = 10
+		x = -1
+		y = 3
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
+		}
+		relative_position_id = JOS_third_way
+		prerequisite = {
+			focus = JOS_militarism
+		}
+		completion_reward = { 
+			if = {
+				limit = {
+					has_idea = JOS_militarism_idea
+				}
+				swap_ideas = {
+					remove_idea = JOS_militarism_idea
+					add_idea = JOS_militarism_1_idea
+				}
+			}
+			if = {
+				limit = {
+					has_idea = JOS_militarism_1_idea
+				}
+				swap_ideas = {
+					remove_idea = JOS_militarism_1_idea
+					add_idea = JOS_militarism_2_idea
+				}
+			}
+			else = {
+				effect_tooltip = {
+					swap_ideas = {
+						remove_idea = JOS_militarism_idea
+						add_idea = JOS_militarism_1_idea
+					}
+				}
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_hapbang_gando
+		icon = GFX_goal_anschluss
 		cost = 10
 		x = 0
 		y = 4
-		relative_position_id = JOS_expand_civilian_industry
-		prerequisite = { focus = JOS_industry_buildup_2 }
-		prerequisite = { focus = JOS_industry_investments_2 }
-		completion_reward = { 
-			
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_A_priority
+			}
 		}
-	}
-	######################################
-	#  M i l i t a r y  I n d u s t r y  #
-	######################################
-	focus = {
-		id = JOS_expand_military_industry
-		icon = GFX_
-		cost = 10
-		x = 12
-		y = 0
-		completion_reward = { 
-			
+		relative_position_id = JOS_third_way
+		available = {
+			GAN = {
+				AND = {
+					NOT = {
+						has_completed_focus = GAN_our_own_constitution
+						has_completed_focus = GAN_our_home_their_home
+					}
+				}
+			}
 		}
-	}
-	focus = {
-		id = JOS_military_investments
-		icon = GFX_
-		cost = 10
-		x = -1
-		y = 1
-		relative_position_id = JOS_expand_military_industry
 		prerequisite = {
-			focus = JOS_expand_military_industry
+			focus = JOS_train_military
+		}
+		prerequisite = {
+			focus = JOS_prepare_for_war
 		}
 		completion_reward = { 
-			
+			GAN = {
+				country_event = { id = joseon.6 days = 2 }
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_A = 10 }
+			}
 		}
 	}
+	################################################
+	#  I N D U S T R Y  &  A R M Y  R E F O R M S  #
+	################################################
 	focus = {
-		id = JOS_military_expansion
-		icon = GFX_
+		id = JOS_light_industry_budget
+		icon = GFX_focus_generic_industry_1
 		cost = 10
 		x = -2
-		y = 2
-		relative_position_id = JOS_expand_military_industry
-		prerequisite = {
-			focus = JOS_military_investments
+		y = 0
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_B_priority
+			}
 		}
+		relative_position_id = JOS_economy_inprovment
 		completion_reward = { 
-			
+			custom_effect_tooltip = JOS_will_activate_economy_policy_tt
+			add_tech_bonus = {
+				name = JOS_light_industry_budget
+				category = industry
+				bonus = 0.5
+				uses = 2
+			}
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_B = 10 }
+			}
 		}
 	}
 	focus = {
-		id = JOS_military_expansion_2
-		icon = GFX_
+		id = JOS_light_industrial_development
+		icon = GFX_goal_generic_construct_civilian
 		cost = 10
-		x = 0
-		y = 2
-		relative_position_id = JOS_expand_military_industry
+		x = -3
+		y = 1
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_B_priority
+			}
+		}
+		relative_position_id = JOS_economy_inprovment
 		prerequisite = {
-			focus = JOS_military_investments
-			focus = JOS_military_buildup
+			focus = JOS_light_industry_budget
 		}
 		completion_reward = { 
-			
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_B = 10 }
+			}
+			add_tech_bonus = {
+				name = JOS_light_industrial_development
+				category = industry
+				ahead_reduction = 1.5
+				uses = 1
+			}
 		}
 	}
 	focus = {
-		id = JOS_military_investments_2
-		icon = GFX_
+		id = JOS_heavy_industry_budget
+		icon = GFX_focus_generic_industry_2
 		cost = 10
 		x = -1
-		y = 3
-		relative_position_id = JOS_expand_military_industry
-		prerequisite = { focus = JOS_military_expansion }
-		prerequisite = { focus = JOS_military_expansion_2 }
+		y = 2
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_B_priority
+			}
+		}
+		relative_position_id = JOS_economy_inprovment
+		prerequisite = {
+			focus = JOS_light_industrial_development
+		}
+		prerequisite = {
+			focus = JOS_economy_inprovment
+		}
 		completion_reward = { 
-			
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_B = 10 }
+			}
+			add_tech_bonus = {
+				name = JOS_heavy_industry_budget
+				category = industry
+				bonus = 1
+				uses = 1
+			}
+			add_tech_bonus = {
+				name = JOS_heavy_industry_budget
+				category = electronics
+				bonus = 1
+				uses = 1
+			}
 		}
 	}
 	focus = {
-		id = JOS_military_buildup
-		icon = GFX_
+		id = JOS_heavy_industrial_development
+		icon = GFX_focus_generic_industry_3
+		cost = 10
+		x = 0
+		y = 3
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_B_priority
+			}
+		}
+		relative_position_id = JOS_economy_inprovment
+		prerequisite = {
+			focus = JOS_heavy_industry_budget
+		}
+		completion_reward = { 
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_B = 10 }
+			}
+			add_tech_bonus = {
+				name = JOS_heavy_industrial_development
+				category = industry
+				ahead_reduction = 1.0
+				uses = 1
+			}
+			add_tech_bonus = {
+				name = JOS_heavy_industrial_development
+				category = electronics
+				ahead_reduction = 1.0
+				uses = 1
+			}
+			add_research_slot = 1
+		}
+	}
+	focus = {
+		id = JOS_economy_inprovment
+		icon = GFX_goal_generic_intelligence_exchange
+		cost = 10
+		x = -7
+		y = 1
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_B_priority
+			}
+		}
+		completion_reward = { 
+			add_political_power = 100
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_B = 10 }
+			}
+		}
+	}
+	focus = {
+		id = JOS_military_budget
+		icon = GFX_goal_generic_construct_mil_factory
+		cost = 10
+		x = 2
+		y = 0
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_B_priority
+			}
+		}
+		relative_position_id = JOS_economy_inprovment
+		completion_reward = { 
+			custom_effect_tooltip = JOS_will_activate_economy_policy_tt
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_B = 10 }
+			}
+			add_tech_bonus = {
+				name = JOS_military_budget
+				category = infantry_tech
+				bonus = 0.75
+				uses = 2
+			}
+			army_experience = 10
+		}
+	}
+	focus = {
+		id = JOS_rules_of_war
+		icon = GFX_goal_generic_army_doctrines
 		cost = 10
 		x = 1
 		y = 1
-		relative_position_id = JOS_expand_military_industry
-		prerequisite = { focus = JOS_expand_military_industry }
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_B_priority
+			}
+		}
+		relative_position_id = JOS_economy_inprovment
+		prerequisite = {
+			focus = JOS_economy_inprovment
+		}
+		prerequisite = {
+			focus = JOS_military_budget
+		}
 		completion_reward = { 
-			
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_B = 10 }
+			}
+			add_doctrine_cost_reduction = {
+				name = JOS_rules_of_war
+				category = land_doctrine
+				cost_reduction = 0.2
+				uses = 1
+			}
+			army_experience = 15
 		}
 	}
 	focus = {
-		id = JOS_military_expansion_3
-		icon = GFX_
+		id = JOS_improve_tactics
+		icon = GFX_focus_prc_infiltration
+		cost = 10
+		x = 3
+		y = 1
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_B_priority
+			}
+		}
+		relative_position_id = JOS_economy_inprovment
+		prerequisite = {
+			focus = JOS_military_budget
+		}
+		completion_reward = { 
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_B = 10 }
+			}
+			add_doctrine_cost_reduction = {
+				name = JOS_improve_tactics
+				category = land_doctrine
+				cost_reduction = 0.2
+				uses = 1
+			}
+			army_experience = 15
+		}
+	}
+	focus = {
+		id = JOS_give_war_a_chance
+		icon = GFX_goal_generic_major_war
 		cost = 10
 		x = 2
 		y = 2
-		relative_position_id = JOS_expand_military_industry
-		prerequisite = { focus = JOS_military_buildup }
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:JOS_AI_focus_count_B_priority
+			}
+		}
+		relative_position_id = JOS_economy_inprovment
+		prerequisite = {
+			focus = JOS_improve_tactics
+		}
+		prerequisite = {
+			focus = JOS_rules_of_war
+		}
 		completion_reward = { 
-			
+			hidden_effect = {
+				subtract_from_variable = { JOS_AI_focus_count_B = 10 }
+			}
+			army_experience = 30
+			add_doctrine_cost_reduction = {
+				name = JOS_give_war_a_chance
+				category = land_doctrine
+				cost_reduction = 0.2
+				uses = 2
+			}
 		}
 	}
-	focus = {
-		id = JOS_military_buildup_2
-		icon = GFX_
-		cost = 10
-		x = 1
-		y = 3
-		relative_position_id = JOS_expand_military_industry
-		prerequisite = { focus = JOS_military_expansion_2 }
-		prerequisite = { focus = JOS_military_expansion_3 }
-		completion_reward = { 
-			
-		}
-	}
-	focus = {
-		id = JOS_korean_military_industry_progress
-		icon = GFX_
-		cost = 10
-		x = 0
-		y = 4
-		relative_position_id = JOS_expand_military_industry
-		prerequisite = { focus = JOS_military_buildup_2 }
-		prerequisite = { focus = JOS_military_investments_2 }
-		completion_reward = { 
-			
-		}
-	}
-	#############################################
-	#  P o l i t i c a l  P a t h s  M e r g e  #
-	#############################################
-	#focus = {
-	#	id = JOS_korean_special_way
-	#	icon = GFX_
-	#	cost = 10
-	#	x = -4
-	#	y = 3
-	#	relative_position_id = JOS_steady_course
-	#	prerequisite = { 
-	#		focus = JOS_republic_constitution
-	#		focus = JOS_constitutional_reforms
-	#	}
-	#	completion_reward = { 
-	#		
-	#	}
-	#}
-	#focus = {
-	#	id = JOS_west_learning
-	#	icon = GFX_
-	#	cost = 10
-	#	x = -5
-	#	y = 5
-	#	relative_position_id = JOS_steady_course
-	#	prerequisite = { focus = JOS_korean_special_way }
-	#	prerequisite = { focus = JOS_friends_in_west }
-	#	completion_reward = { 
-	#		
-	#	}
-	#}
-	#focus = {
-	#	id = JOS_self_building
-	#	icon = GFX_
-	#	cost = 10
-	#	x = -3
-	#	y = 5
-	#	relative_position_id = JOS_steady_course
-	#	prerequisite = { focus = JOS_korean_special_way }
-	#	prerequisite = { focus = JOS_manse_hangukin }
-	#	completion_reward = { 
-	#		
-	#	}
-	#}
-	#focus = {
-	#	id = JOS_ban_communist_party
-	#	icon = GFX_
-	#	cost = 10
-	#	x = -4
-	#	y = 6
-	#	relative_position_id = JOS_steady_course
-	#	prerequisite = {
-	#		focus = JOS_west_learning
-	#		focus = JOS_self_building
-	#	}
-	#	completion_reward = { 
-	#		
-	#	}
-	#}
-	##############################################
-	#focus = {
-	#	id = JOS_social_democracy
-	#	icon = GFX_
-	#	cost = 10
-	#	x = -4
-	#	y = 3
-	#	relative_position_id = JOS_government_reforms
-	#	prerequisite = { 
-	#		focus = JOS_social_constitution
-	#		focus = JOS_industry_expansion_3
-	#	}
-	#	completion_reward = { 
-	#		
-	#	}
-	#}
-	#focus = {
-	#	id = JOS_soviet_learning
-	#	icon = GFX_
-	#	cost = 10
-	#	x = -3
-	#	y = 5
-	#	relative_position_id = JOS_government_reforms
-	#	prerequisite = { focus = JOS_social_democracy }
-	#	prerequisite = { focus = JOS_befriend_soviet_neighbour }
-	#	completion_reward = { 
-	#		
-	#	}
-	#}
-	#focus = {
-	#	id = JOS_own_socialism
-	#	icon = GFX_
-	#	cost = 10
-	#	x = -5
-	#	y = 5
-	#	relative_position_id = JOS_government_reforms
-	#	prerequisite = { focus = JOS_social_democracy }
-	#	completion_reward = { 
-	#		
-	#	}
-	#}
-	#focus = {
-	#	id = JOS_ban_imperialism
-	#	icon = GFX_
-	#	cost = 10
-	#	x = -4
-	#	y = 6
-	#	relative_position_id = JOS_government_reforms
-	#	prerequisite = {
-	#		focus = JOS_own_socialism
-	#		focus = JOS_soviet_learning
-	#	}
-	#	completion_reward = { 
-	#		
-	#	}
-	#}
 }
