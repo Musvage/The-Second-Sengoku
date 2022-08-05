@@ -713,14 +713,28 @@ on_actions = {
 					limit = {
 						NOT = {
 							has_completed_focus = FER_start_reforms
+							has_completed_focus = FER_take_actions
 							has_country_flag = FER_path_chosen
 						}
 					}
 					complete_national_focus = FER_start_reforms
+					complete_national_focus = FER_take_actions
 					complete_national_focus = FER_request_moscow_help
 				}
 				if = {
 					limit = {
+						has_completed_focus = FER_take_actions
+						NOT = {
+							has_completed_focus = FER_start_reforms
+							has_country_flag = FER_path_chosen
+						}
+					}
+					complete_national_focus = FER_request_moscow_help
+					complete_national_focus = FER_start_reforms
+				}
+				if = {
+					limit = {
+						has_completed_focus = FER_take_actions
 						has_completed_focus = FER_start_reforms
 						NOT = {
 							has_country_flag = FER_path_chosen
@@ -2108,6 +2122,174 @@ on_actions = {
 					}
 					set_variable = { GAN_AI_focus_count_A_priority = 0 }
 					set_variable = { GAN_AI_focus_count_B_priority = 0 }
+				}
+			}
+
+		}
+
+	}
+
+	on_weekly_FER = {
+
+		effect = {
+
+			set_temp_variable = { FER_AI_focus_count_A_temp = FER_AI_focus_count_A }
+			set_temp_variable = { FER_AI_focus_count_B_temp = FER_AI_focus_count_B }
+			if = {
+				limit = {
+					check_variable = { FER_AI_focus_count_A_temp = FER_AI_focus_count_B_temp }
+					NOT = {
+						check_variable = { FER_AI_focus_count_A_temp = 0 }
+						check_variable = { FER_AI_focus_count_B_temp = 0 }
+					}
+				}
+				random_list = {
+					50 = {
+						set_variable = { FER_AI_focus_count_A_priority = 1 }
+						set_variable = { FER_AI_focus_count_B_priority = 0 }
+					}
+					50 = {
+						set_variable = { FER_AI_focus_count_B_priority = 1 }
+						set_variable = { FER_AI_focus_count_A_priority = 0 }
+					}
+				}
+			}
+			if = {
+				limit = {
+					check_variable = { FER_AI_focus_count_A_temp > FER_AI_focus_count_B_temp }
+				}
+				divide_temp_variable = { FER_AI_focus_count_A_temp = 1.3 }
+				set_temp_variable = { FER_AI_focus_count_A_temp_2 = FER_AI_focus_count_A_temp }
+				if = {
+					limit = {
+						check_variable = { FER_AI_focus_count_A_temp_2 > FER_AI_focus_count_B }
+						NOT = {
+							check_variable = { FER_AI_focus_count_A_temp = 0 }
+							check_variable = { FER_AI_focus_count_B_temp = 0 }
+						}
+					}
+					random_list = {
+						80 = {
+							set_variable = { FER_AI_focus_count_A_priority = 1 }
+							set_variable = { FER_AI_focus_count_B_priority = 0 }
+						}
+						20 = {
+							set_variable = { FER_AI_focus_count_A_priority = 0 }
+							set_variable = { FER_AI_focus_count_B_priority = 1 }
+						}
+					}
+				}
+				if = {
+					limit = {
+						check_variable = { FER_AI_focus_count_A_temp_2 < FER_AI_focus_count_B }
+						NOT = {
+							check_variable = { FER_AI_focus_count_A_temp = 0 }
+							check_variable = { FER_AI_focus_count_B_temp = 0 }
+						}
+					}
+					random_list = {
+						80 = {
+							set_variable = { FER_AI_focus_count_A_priority = 0 }
+							set_variable = { FER_AI_focus_count_B_priority = 1 }
+						}
+						20 = {
+							set_variable = { FER_AI_focus_count_A_priority = 1 }
+							set_variable = { FER_AI_focus_count_B_priority = 0 }
+						}
+					}
+				}
+				if = {
+					limit = {
+						check_variable = { FER_AI_focus_count_A_temp_2 > FER_AI_focus_count_B }
+						check_variable = { FER_AI_focus_count_B_temp = 0 }
+					}
+					set_variable = { FER_AI_focus_count_A_priority = 1 }
+					set_variable = { FER_AI_focus_count_B_priority = 0 }
+				}
+				if = {
+					limit = {
+						check_variable = { FER_AI_focus_count_A_temp_2 < FER_AI_focus_count_B }
+						check_variable = { FER_AI_focus_count_A_temp = 0 }
+					}
+					set_variable = { FER_AI_focus_count_A_priority = 0 }
+					set_variable = { FER_AI_focus_count_B_priority = 1 }
+				}
+				if = {
+					limit = {
+						check_variable = { FER_AI_focus_count_B_temp = 0 }
+						check_variable = { FER_AI_focus_count_A_temp = 0 }
+					}
+					set_variable = { FER_AI_focus_count_A_priority = 0 }
+					set_variable = { FER_AI_focus_count_B_priority = 0 }
+				}
+			}
+			if = {
+				limit = {
+					check_variable = { FER_AI_focus_count_A_temp < FER_AI_focus_count_B_temp }
+				}
+				divide_temp_variable = { FER_AI_focus_count_B_temp = 1.3 }
+				set_temp_variable = { FER_AI_focus_count_B_temp_2 = FER_AI_focus_count_B_temp }
+				if = {
+					limit = {
+						check_variable = { FER_AI_focus_count_B_temp_2 > FER_AI_focus_count_A }
+						NOT = {
+							check_variable = { FER_AI_focus_count_A_temp = 0 }
+							check_variable = { FER_AI_focus_count_B_temp = 0 }
+						}
+					}
+					random_list = {
+						80 = {
+							set_variable = { FER_AI_focus_count_B_priority = 1 }
+							set_variable = { FER_AI_focus_count_A_priority = 0 }
+						}
+						20 = {
+							set_variable = { FER_AI_focus_count_B_priority = 0 }
+							set_variable = { FER_AI_focus_count_A_priority = 1 }
+						}
+					}
+				}
+				if = {
+					limit = {
+						check_variable = { FER_AI_focus_count_B_temp_2 < FER_AI_focus_count_A }
+						NOT = {
+							check_variable = { FER_AI_focus_count_A_temp = 0 }
+							check_variable = { FER_AI_focus_count_B_temp = 0 }
+						}
+					}
+					random_list = {
+						80 = {
+							set_variable = { FER_AI_focus_count_B_priority = 0 }
+							set_variable = { FER_AI_focus_count_A_priority = 1 }
+						}
+						20 = {
+							set_variable = { FER_AI_focus_count_B_priority = 1 }
+							set_variable = { FER_AI_focus_count_A_priority = 0 }
+						}
+					}
+				}
+				if = {
+					limit = {
+						check_variable = { FER_AI_focus_count_B_temp_2 > FER_AI_focus_count_A }
+						check_variable = { FER_AI_focus_count_B_temp = 0 }
+					}
+					set_variable = { FER_AI_focus_count_B_priority = 1 }
+					set_variable = { FER_AI_focus_count_A_priority = 0 }
+				}
+				if = {
+					limit = {
+						check_variable = { FER_AI_focus_count_B_temp_2 < FER_AI_focus_count_A }
+						check_variable = { FER_AI_focus_count_B_temp = 0 }
+					}
+					set_variable = { FER_AI_focus_count_B_priority = 0 }
+					set_variable = { FER_AI_focus_count_A_priority = 1 }
+				}
+				if = {
+					limit = {
+						check_variable = { FER_AI_focus_count_B_temp = 0 }
+						check_variable = { FER_AI_focus_count_A_temp = 0 }
+					}
+					set_variable = { FER_AI_focus_count_A_priority = 0 }
+					set_variable = { FER_AI_focus_count_B_priority = 0 }
 				}
 			}
 

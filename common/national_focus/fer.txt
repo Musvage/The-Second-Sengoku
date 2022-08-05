@@ -27,11 +27,11 @@ focus_tree = {
 	#Focuses available at start
 
 	focus = {
-		id = FER_start_reforms
-		icon = GFX_focus_FER_start_reforms
+		id = FER_take_actions
+		icon = GFX_goal_generic_forceful_treaty
 		cost = 5
 		x = 13
-		y = -1
+		y = 1
 		ai_will_do = {
 			base = 100
 		}
@@ -45,16 +45,73 @@ focus_tree = {
 		available = {
 		}
 		completion_reward = {
-			add_political_power = 150
-			hidden_effect = {
-				random_list = {
-					65 = {
-						set_country_flag = FER_AI_industry_priority
-					}
-					35 = {
-						set_country_flag = FER_AI_army_priority
-					}
+			add_political_power = 75
+		}
+	}
+	focus = {
+		id = FER_end_white_movement_in_ezo
+		icon = GFX_goal_generic_demand_territory
+		cost = 10
+		x = 12
+		y = 2
+		ai_will_do = {
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
+			modifier = {
+				add = 20
+				strength_ratio = {
+					tag = WIT
+					ratio > 1.3
 				}
+			}
+		}
+		will_lead_to_war_with = WIT
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		bypass = {
+		}
+		prerequisite = {
+			focus = FER_take_actions
+		}
+		available = {
+			WIT = {
+				exists = yes
+			}
+		}
+		completion_reward = {
+			declare_war_on = {
+				target = WIT
+				type = annex_everything
+			}
+		}
+	}
+	focus = {
+		id = FER_start_reforms
+		icon = GFX_focus_FER_start_reforms
+		cost = 5
+		x = 13
+		y = 4
+		ai_will_do = {
+			base = 100
+		}
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		bypass = {
+			custom_trigger_tooltip = {
+				tooltip = FER_will_bypass_when_protests_tt
+				check_variable = { FER_protests_level > 99 }
+			}
+		}
+		prerequisite = {
+			focus = FER_take_actions
+		}
+		available = {
+		}
+		completion_reward = {
+			add_political_power = 75
+			hidden_effect = {
+				set_variable = { FER_AI_focus_count_A = 90 }
+				set_variable = { FER_AI_focus_count_B = 140 }
 			}
 			country_event = primorski.24
 		}
@@ -65,11 +122,16 @@ focus_tree = {
 		icon = GFX_focus_FER_help_spain
 		cost = 5
 		x = 10
-		y = 0
+		y = 2
 		ai_will_do = {
-			base = 100
+			base = 50
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
-		prerequisite = { focus = FER_start_reforms }
+		prerequisite = { 
+			focus = FER_take_actions
+		}
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		available = {
             has_global_flag = world_stage_theater_spanish_cw_is_active
@@ -99,23 +161,24 @@ focus_tree = {
 		id = FER_find_solution_social_democracy
 		icon = GFX_focus_FER_find_solution_social_democracy
 		cost = 10
-		x = 4
+		x = -9
 		y = 1
 		ai_will_do = {
 			base = 0
 			modifier = {
-				add = 50
+				add = 100
 				has_country_flag = FER_AI_social_democracy
 			}
 			modifier = {
-				add = -50
+				add = -100
 				has_country_flag = FER_AI_appease_people
 			}
 			modifier = {
-				add = -50
+				add = -100
 				has_country_flag = FER_AI_military_state
 			}
 		}
+		relative_position_id = FER_start_reforms
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		prerequisite = {
 			focus = FER_start_reforms
@@ -169,6 +232,9 @@ focus_tree = {
 				add_political_power = -50
 				add_stability = -0.02
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_A = 10 }
+			}
 		}
 	}
 
@@ -176,23 +242,24 @@ focus_tree = {
 		id = FER_appease_the_people
 		icon = GFX_focus_FER_appease_the_people
 		cost = 10
-		x = 13
+		x = 0
 		y = 1
 		ai_will_do = {
 			base = 0
 			modifier = {
-				add = -50
+				add = -100
 				has_country_flag = FER_AI_social_democracy
 			}
 			modifier = {
-				add = 50
+				add = 100
 				has_country_flag = FER_AI_appease_people
 			}
 			modifier = {
-				add = -50
+				add = -100
 				has_country_flag = FER_AI_military_state
 			}
 		}
+		relative_position_id = FER_start_reforms
 		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
 		prerequisite = {
 			focus = FER_start_reforms
@@ -240,6 +307,9 @@ focus_tree = {
 				add_political_power = -50
 				add_stability = -0.02
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_A = 10 }
+			}
 		}
 	}
 
@@ -250,23 +320,24 @@ focus_tree = {
 		id = FER_request_moscow_help
 		icon = GFX_focus_FER_request_moscow_help
 		cost = 10
-		x = 19
+		x = 6
 		y = 1
 		ai_will_do = {
 			base = 0
 			modifier = {
-				add = -50
+				add = -100
 				has_country_flag = FER_AI_social_democracy
 			}
 			modifier = {
-				add = -50
+				add = -100
 				has_country_flag = FER_AI_appease_people
 			}
 			modifier = {
-				add = 50
+				add = 100
 				has_country_flag = FER_AI_military_state
 			}
 		}
+		relative_position_id = FER_start_reforms
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		prerequisite = {
 			focus = FER_start_reforms
@@ -314,6 +385,9 @@ focus_tree = {
 			#}
 			add_political_power = -50
 			add_stability = -0.02
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_A = 10 }
+			}
 		}
 	}
 	
@@ -321,11 +395,15 @@ focus_tree = {
 		id = FER_suppress_the_protests
 		icon = GFX_focus_FER_suppress_the_protests
 		cost = 5
-		x = 18
-		y = 2
+		x = -1
+		y = 1
 		ai_will_do = {
-			base = 90
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_request_moscow_help
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		prerequisite = {
 			focus = FER_request_moscow_help
@@ -337,6 +415,9 @@ focus_tree = {
 				idea = FER_suppress_protests_idea
 				days = 50
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_A = 10 }
+			}
 		}
 	}
 
@@ -344,10 +425,14 @@ focus_tree = {
 		id = FER_establish_military_state
 		icon = GFX_focus_FER_establish_military_state
 		cost = 5
-		x = 20
-		y = 2
+		x = 1
+		y = 1
+		relative_position_id = FER_request_moscow_help
 		ai_will_do = {
-			base = 90
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
 		search_filters = { FOCUS_FILTER_WAR_SUPPORT }
 		prerequisite = {
@@ -359,6 +444,9 @@ focus_tree = {
 			add_war_support = 0.1
 			custom_effect_tooltip = FER_stalin_trust_reduce_5_tt
 			add_to_variable = { FER_stalin_trust = -5 }
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_A = 10 }
+			}
 		}
 	}
 
@@ -366,11 +454,15 @@ focus_tree = {
 		id = FER_purge_traitors
 		icon = GFX_focus_FER_purge_traitors
 		cost = 10
-		x = 19
-		y = 3
+		x = 0
+		y = 2
 		ai_will_do = {
-			base = 80
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_request_moscow_help
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		prerequisite = { focus = FER_suppress_the_protests }
 		prerequisite = { focus = FER_establish_military_state }
@@ -384,6 +476,9 @@ focus_tree = {
 			add_stability = 0.05
 			custom_effect_tooltip = FER_stalin_trust_increase_10_tt
 			add_to_variable = { FER_stalin_trust = 10 }
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_A = 10 }
+			}
 		}
 	}
 
@@ -391,11 +486,15 @@ focus_tree = {
 		id = FER_true_path_of_stalinism
 		icon = GFX_focus_FER_true_path_of_stalinism
 		cost = 10
-		x = 19
-		y = 4
+		x = 0
+		y = 3
 		ai_will_do = {
-			base = 70
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_request_moscow_help
 		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
 		prerequisite = { focus = FER_purge_traitors }
 		available = {
@@ -409,6 +508,9 @@ focus_tree = {
 			add_stability = 0.1
 			custom_effect_tooltip = FER_stalin_trust_increase_15_tt
 			add_to_variable = { FER_stalin_trust = 15 }
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_A = 10 }
+			}
 		}
 	}
 
@@ -416,11 +518,15 @@ focus_tree = {
 		id = FER_one_man_policy
 		icon = GFX_focus_FER_one_man_policy
 		cost = 10
-		x = 18
-		y = 5
+		x = -1
+		y = 4
 		ai_will_do = {
-			base = 60
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_request_moscow_help
 		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
 		prerequisite = { focus = FER_true_path_of_stalinism }
 		available = {
@@ -430,6 +536,9 @@ focus_tree = {
 			add_stability = 0.05
 			custom_effect_tooltip = FER_stalin_trust_reduce_10_tt
 			add_to_variable = { FER_stalin_trust = -10 }
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_A = 10 }
+			}
 		}
 	}
 
@@ -437,11 +546,15 @@ focus_tree = {
 		id = FER_soviet_order
 		icon = GFX_focus_FER_soviet_order
 		cost = 10
-		x = 20
-		y = 5
+		x = 1
+		y = 4
 		ai_will_do = {
-			base = 60
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_request_moscow_help
 		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_POLITICAL }
 		prerequisite = { focus = FER_true_path_of_stalinism }
 		available = {
@@ -465,6 +578,9 @@ focus_tree = {
 			}
 			custom_effect_tooltip = FER_stalin_trust_increase_10_tt
 			add_to_variable = { FER_stalin_trust = 10 }
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_A = 10 }
+			}
 		}
 	}
 
@@ -472,11 +588,15 @@ focus_tree = {
 		id = FER_standart_stalinist_state
 		icon = GFX_focus_FER_standart_stalinist_state
 		cost = 10
-		x = 19
-		y = 6
+		x = 0
+		y = 5
 		ai_will_do = {
-			base = 50
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_request_moscow_help
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		prerequisite = { 
 			focus = FER_one_man_policy
@@ -492,6 +612,20 @@ focus_tree = {
 			remove_ideas = FER_weak_administration_idea
 			custom_effect_tooltip = FER_stalin_trust_increase_15_tt
 			add_to_variable = { FER_stalin_trust = 15 }
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_A = 10 }
+			}
+			hidden_effect = {
+				random_list = {
+					25 = {
+						set_country_flag = FER_AI_korea_coup
+					}
+					75 = {
+						set_country_flag = FER_AI_korea_war
+					}
+				}
+				add_to_variable = { FER_AI_focus_count_A = 40 }
+			}
 		}
 	}
 
@@ -499,11 +633,15 @@ focus_tree = {
 		id = FER_supreme_soviet_republic
 		icon = GFX_focus_FER_supreme_soviet_republic
 		cost = 10
-		x = 19
-		y = 8
+		x = 0
+		y = 6
 		ai_will_do = {
-			base = 100
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_request_moscow_help
 		search_filters = { FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_STABILITY }
 		prerequisite = { focus = FER_standart_stalinist_state }
 		cancel_if_invalid = no
@@ -521,14 +659,7 @@ focus_tree = {
 
 			clr_country_flag = FER_AI_military_state
 			hidden_effect = {
-				random_list = {
-					25 = {
-						set_country_flag = FER_AI_korea_coup
-					}
-					75 = {
-						set_country_flag = FER_AI_korea_war
-					}
-				}
+				subtract_from_variable = { FER_AI_focus_count_A = 10 }
 			}
 		}
 	}
@@ -540,11 +671,15 @@ focus_tree = {
 		id = FER_independent_communism
 		icon = GFX_focus_FER_independent_communism
 		cost = 10
-		x = 4
-		y = 2
+		x = 0
+		y = 1
 		ai_will_do = {
-			base = 90
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_find_solution_social_democracy
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		prerequisite = {
 			focus = FER_find_solution_social_democracy
@@ -562,6 +697,9 @@ focus_tree = {
 			}
 			custom_effect_tooltip = FER_stalin_trust_reduce_15_tt
 			add_to_variable = { FER_stalin_trust = -15 }
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_A = 10 }
+			}
 		}
 	}
 
@@ -569,11 +707,15 @@ focus_tree = {
 		id = FER_workers_republic
 		icon = GFX_focus_FER_workers_republic
 		cost = 10
-		x = 3
-		y = 3
+		x = -1
+		y = 2
 		ai_will_do = {
-			base = 80
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_find_solution_social_democracy
 		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_INDUSTRY }
 		prerequisite = { focus = FER_independent_communism }
 		available = {
@@ -616,6 +758,9 @@ focus_tree = {
 			}
 			custom_effect_tooltip = FER_stalin_trust_reduce_5_tt
 			add_to_variable = { FER_stalin_trust = -5 }
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_A = 10 }
+			}
 		}
 	}
 
@@ -623,11 +768,15 @@ focus_tree = {
 		id = FER_multicommunist_party
 		icon = GFX_focus_FER_multicommunist_party
 		cost = 10
-		x = 2
-		y = 4
+		x = -2
+		y = 3
 		ai_will_do = {
-			base = 70
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_find_solution_social_democracy
 		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
 		prerequisite = { focus = FER_workers_republic }
 		available = {
@@ -636,6 +785,9 @@ focus_tree = {
 			add_ideas = FER_multicommunist_party_idea
 			custom_effect_tooltip = FER_stalin_trust_reduce_10_tt
 			add_to_variable = { FER_stalin_trust = -10 }
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_A = 10 }
+			}
 		}
 	}
 
@@ -643,11 +795,15 @@ focus_tree = {
 		id = FER_far_eastern_soviet_science
 		icon = GFX_focus_FER_far_eastern_soviet_science
 		cost = 10
-		x = 4
-		y = 4
+		x = 0
+		y = 3
 		ai_will_do = {
-			base = 70
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_find_solution_social_democracy
 		search_filters = { FOCUS_FILTER_RESEARCH }
 		prerequisite = { focus = FER_workers_republic }
 		available = {
@@ -657,6 +813,9 @@ focus_tree = {
 				idea = FER_far_eastern_soviet_science_idea
 				days = 240
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_A = 10 }
+			}
 		}
 	}
 
@@ -664,11 +823,15 @@ focus_tree = {
 		id = FER_people_primacy
 		icon = GFX_focus_FER_people_primacy
 		cost = 10
-		x = 3
-		y = 5
+		x = -1
+		y = 4
 		ai_will_do = {
-			base = 60
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_find_solution_social_democracy
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		prerequisite = { focus = FER_multicommunist_party }
 		prerequisite = { focus = FER_far_eastern_soviet_science }
@@ -685,6 +848,20 @@ focus_tree = {
 			}
 			custom_effect_tooltip = FER_stalin_trust_increase_5_tt
 			add_to_variable = { FER_stalin_trust = 5 }
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_A = 10 }
+			}
+			hidden_effect = {
+				random_list = {
+					75 = {
+						set_country_flag = FER_AI_korea_coup
+					}
+					25 = {
+						set_country_flag = FER_AI_korea_war
+					}
+				}
+				add_to_variable = { FER_AI_focus_count_A = 40 }
+			}
 		}
 	}
 
@@ -692,11 +869,15 @@ focus_tree = {
 		id = FER_standart_communist_scienece
 		icon = GFX_focus_FER_standart_communist_scienece
 		cost = 10
-		x = 2
-		y = 6
+		x = -2
+		y = 5
 		ai_will_do = {
-			base = 50
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_find_solution_social_democracy
 		search_filters = { FOCUS_FILTER_RESEARCH }
 		prerequisite = { focus = FER_people_primacy }
 		available = {
@@ -705,6 +886,9 @@ focus_tree = {
 			add_ideas = FER_standart_communist_science_idea
 			custom_effect_tooltip = FER_stalin_trust_increase_10_tt
 			add_to_variable = { FER_stalin_trust = 10 }
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_A = 10 }
+			}
 		}
 	}
 
@@ -712,11 +896,15 @@ focus_tree = {
 		id = FER_agreement_with_soviets
 		icon = GFX_focus_FER_agreement_with_soviets
 		cost = 10
-		x = 4
-		y = 6
+		x = 0
+		y = 5
 		ai_will_do = {
-			base = 60
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_find_solution_social_democracy
 		search_filters = { FOCUS_FILTER_DIPLOMACY }
 		prerequisite = { focus = FER_people_primacy }
 		cancel_if_invalid = no
@@ -729,6 +917,9 @@ focus_tree = {
 		completion_reward = {
 			custom_effect_tooltip = FER_stalin_trust_end_tt
 			clr_country_flag = FER_active_stalin_trust_flag
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_A = 10 }
+			}
 		}
 	}
 
@@ -736,11 +927,15 @@ focus_tree = {
 		id = FER_supreme_social_democracy
 		icon = GFX_focus_FER_supreme_social_democracy
 		cost = 10
-		x = 3
-		y = 8
+		x = -1
+		y = 6
 		ai_will_do = {
-			base = 100
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_find_solution_social_democracy
 		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY FOCUS_FILTER_WAR_SUPPORT }
 		prerequisite = { focus = FER_standart_communist_scienece }
 		prerequisite = { focus = FER_agreement_with_soviets }
@@ -750,17 +945,9 @@ focus_tree = {
 			add_political_power = 100
 			add_stability = 0.1
 			add_war_support = 0.05
-
 			clr_country_flag = FER_AI_social_democracy
 			hidden_effect = {
-				random_list = {
-					75 = {
-						set_country_flag = FER_AI_korea_coup
-					}
-					25 = {
-						set_country_flag = FER_AI_korea_war
-					}
-				}
+				subtract_from_variable = { FER_AI_focus_count_A = 10 }
 			}
 		}
 	}
@@ -772,11 +959,15 @@ focus_tree = {
 		id = FER_true_soviet_path
 		icon = GFX_focus_FER_true_soviet_path
 		cost = 10
-		x = 14
-		y = 2
+		x = 1
+		y = 1
 		ai_will_do = {
-			base = 90
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_appease_the_people
 		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
 		prerequisite = {
 			focus = FER_appease_the_people
@@ -788,6 +979,9 @@ focus_tree = {
 			add_political_power = 100
 			custom_effect_tooltip = FER_stalin_trust_increase_10_tt
 			add_to_variable = { FER_stalin_trust = 10 }
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_A = 10 }
+			}
 		}
 	}
 
@@ -795,11 +989,15 @@ focus_tree = {
 		id = FER_socialist_party
 		icon = GFX_focus_FER_socialist_party
 		cost = 10
-		x = 15
-		y = 3
+		x = 2
+		y = 2
 		ai_will_do = {
-			base = 85
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_appease_the_people
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		prerequisite = { focus = FER_true_soviet_path }
 		available = {
@@ -811,6 +1009,9 @@ focus_tree = {
 			}
 			custom_effect_tooltip = FER_stalin_trust_increase_5_tt
 			add_to_variable = { FER_stalin_trust = 5 }
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_A = 10 }
+			}
 		}
 	}
 
@@ -818,11 +1019,15 @@ focus_tree = {
 		id = FER_by_steps_of_the_father
 		icon = GFX_focus_FER_by_steps_of_the_father
 		cost = 10
-		x = 15
-		y = 4
+		x = 2
+		y = 3
 		ai_will_do = {
-			base = 80
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_appease_the_people
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		prerequisite = { focus = FER_socialist_party }
 		available = {
@@ -834,6 +1039,9 @@ focus_tree = {
 			}
 			custom_effect_tooltip = FER_stalin_trust_increase_10_tt
 			add_to_variable = { FER_stalin_trust = 10 }
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_A = 10 }
+			}
 		}
 	}
 
@@ -841,11 +1049,15 @@ focus_tree = {
 		id = FER_shared_soviet_science
 		icon = GFX_focus_FER_shared_soviet_science
 		cost = 10
-		x = 14
-		y = 5
+		x = 1
+		y = 4
 		ai_will_do = {
-			base = 75
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_appease_the_people
 		search_filters = { FOCUS_FILTER_RESEARCH }
 		prerequisite = { focus = FER_by_steps_of_the_father }
 		available = {
@@ -854,6 +1066,9 @@ focus_tree = {
 			add_ideas = FER_shared_soviet_science_idea
 			custom_effect_tooltip = FER_stalin_trust_increase_5_tt
 			add_to_variable = { FER_stalin_trust = 5 }
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_A = 10 }
+			}
 		}
 	}
 
@@ -861,11 +1076,15 @@ focus_tree = {
 		id = FER_collectivism
 		icon = GFX_focus_FER_collectivism
 		cost = 10
-		x = 16
-		y = 5
+		x = 3
+		y = 4
 		ai_will_do = {
-			base = 70
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_appease_the_people
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		prerequisite = { focus = FER_by_steps_of_the_father }
 		available = {
@@ -887,6 +1106,9 @@ focus_tree = {
 					instant_build = yes
 				}
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_A = 10 }
+			}
 		}
 	}
 
@@ -894,11 +1116,15 @@ focus_tree = {
 		id = FER_standart_soviet_republic
 		icon = GFX_focus_FER_standart_soviet_republic
 		cost = 10
-		x = 15
-		y = 6
+		x = 2
+		y = 5
 		ai_will_do = {
-			base = 60
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_appease_the_people
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		prerequisite = { 
 			focus = FER_shared_soviet_science
@@ -908,9 +1134,22 @@ focus_tree = {
 		}
 		completion_reward = {
 			remove_ideas = FER_weak_administration_idea
-
 			custom_effect_tooltip = FER_stalin_trust_increase_10_tt
 			add_to_variable = { FER_stalin_trust = 10 }
+			hidden_effect = {
+				random_list = {
+					50 = {
+						set_country_flag = FER_AI_korea_coup
+					}
+					50 = {
+						set_country_flag = FER_AI_korea_war
+					}
+				}
+				add_to_variable = { FER_AI_focus_count_A = 40 }
+			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_A = 10 }
+			}
 		}
 	}
 
@@ -918,11 +1157,15 @@ focus_tree = {
 		id = FER_soviet_propaganda
 		icon = GFX_focus_FER_soviet_propaganda
 		cost = 10
-		x = 15
-		y = 7
+		x = 2
+		y = 6
 		ai_will_do = {
-			base = 50
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_appease_the_people
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		prerequisite = { 
 			focus = FER_standart_soviet_republic
@@ -933,6 +1176,9 @@ focus_tree = {
 			country_event = primorski.9
 			custom_effect_tooltip = FER_stalin_trust_increase_15_tt
 			add_to_variable = { FER_stalin_trust = 15 }
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_A = 10 }
+			}
 		}
 	}
 
@@ -940,11 +1186,15 @@ focus_tree = {
 		id = FER_start_integration_campaign
 		icon = GFX_focus_FER_start_integration_campaign
 		cost = 20
-		x = 15
-		y = 8
+		x = 2
+		y = 7
 		ai_will_do = {
-			base = 100
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_appease_the_people
 		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_WORLD }
 		prerequisite = { 
 			focus = FER_soviet_propaganda
@@ -962,17 +1212,9 @@ focus_tree = {
 			country_event = primorski.10
 			custom_effect_tooltip = FER_stalin_trust_end_tt
 			clr_country_flag = FER_active_stalin_trust_flag
-
 			clr_country_flag = FER_AI_appease_people
 			hidden_effect = {
-				random_list = {
-					50 = {
-						set_country_flag = FER_AI_korea_coup
-					}
-					50 = {
-						set_country_flag = FER_AI_korea_war
-					}
-				}
+				subtract_from_variable = { FER_AI_focus_count_A = 10 }
 			}
 		}
 	}
@@ -984,24 +1226,28 @@ focus_tree = {
 		id = FER_nkvd_contact_korean_communists
 		icon = GFX_goal_generic_intelligence_exchange
 		cost = 10
-		x = 16
-		y = 9
+		x = 15
+		y = 2
 		ai_will_do = {
 			base = 0
 			modifier = {
-				add = 70
+				add = 10
 				has_country_flag = FER_AI_korea_coup
+			}
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
 			}
 		}
 		prerequisite = { 
-			focus = FER_start_integration_campaign
-			focus = FER_supreme_social_democracy
-			focus = FER_supreme_soviet_republic
+			focus = FER_take_actions
 		}
 		mutually_exclusive = {
 			focus = FER_prepare_for_korean_war
 		}
 		available = {
+			NOT = {
+				has_idea = FER_weak_administration_idea
+			}
 		}
 		completion_reward = {
 			if = {
@@ -1022,19 +1268,23 @@ focus_tree = {
 				set_variable = { FER_korea_influence = 0 }
 				set_variable = { FER_korea_influence_max = 60 }
 			}
+			country_event = primorski.20
 		}
-		country_event = primorski.20
 	}
 
 	focus = {
 		id = FER_share_communist_experience
 		icon = GFX_focus_prc_proclaim_the_peoples_republic
 		cost = 10
-		x = 15
-		y = 10
+		x = -1
+		y = 1
 		ai_will_do = {
-			base = 60
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_nkvd_contact_korean_communists
 		prerequisite = { 
 			focus = FER_nkvd_contact_korean_communists
 		}
@@ -1057,11 +1307,15 @@ focus_tree = {
 		id = FER_korean_weak_points
 		icon = GFX_focus_usa_focus_on_asia
 		cost = 10
-		x = 17
-		y = 10
+		x = 1
+		y = 1
 		ai_will_do = {
-			base = 60
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_nkvd_contact_korean_communists
 		prerequisite = { 
 			focus = FER_nkvd_contact_korean_communists
 			focus = FER_prepare_for_korean_war
@@ -1095,11 +1349,15 @@ focus_tree = {
 		id = FER_help_korean_workers
 		icon = GFX_focus_YUG_pan_slavic_congress
 		cost = 10
-		x = 16
-		y = 11
+		x = 0
+		y = 2
 		ai_will_do = {
-			base = 60
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_nkvd_contact_korean_communists
 		prerequisite = { 
 			focus = FER_share_communist_experience
 			focus = FER_korean_weak_points
@@ -1167,24 +1425,29 @@ focus_tree = {
 		id = FER_prepare_for_korean_war
 		icon = GFX_goal_generic_position_armies
 		cost = 10
-		x = 18
-		y = 9
+		x = 2
+		y = 0
 		ai_will_do = {
 			base = 0
 			modifier = {
-				add = 70
+				add = 10
 				has_country_flag = FER_AI_korea_war
 			}
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_nkvd_contact_korean_communists
 		prerequisite = { 
-			focus = FER_start_integration_campaign
-			focus = FER_supreme_social_democracy
-			focus = FER_supreme_soviet_republic
+			focus = FER_take_actions
 		}
 		mutually_exclusive = {
 			focus = FER_nkvd_contact_korean_communists
 		}
 		available = {
+			NOT = {
+				has_idea = FER_weak_administration_idea
+			}
 		}
 		completion_reward = {
 			add_political_power = 75
@@ -1196,11 +1459,15 @@ focus_tree = {
 		id = FER_soviet_military
 		icon = GFX_focus_SOV_builder_of_the_red_army
 		cost = 10
-		x = 19
-		y = 10
+		x = 1
+		y = 1
 		ai_will_do = {
-			base = 60
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_prepare_for_korean_war
 		prerequisite = { 
 			focus = FER_prepare_for_korean_war
 		}
@@ -1215,11 +1482,15 @@ focus_tree = {
 		id = FER_war_with_korea
 		icon = GFX_focus_SOV_the_glory_of_the_red_army_communism
 		cost = 10
-		x = 18
-		y = 11
+		x = 0
+		y = 2
 		ai_will_do = {
-			base = 60
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_prepare_for_korean_war
 		prerequisite = { 
 			focus = FER_soviet_military
 			focus = FER_korean_weak_points
@@ -1254,12 +1525,11 @@ focus_tree = {
 		icon = GFX_goal_generic_construction
 		cost = 5
 		x = 7
-		y = 3
+		y = 6
 		ai_will_do = {
-			base = 20
+			base = 0
 			modifier = {
-				add = 50
-				has_country_flag = FER_AI_industry_priority
+				add = var:FER_AI_focus_count_B_priority
 			}
 		}
 		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_RESEARCH }
@@ -1272,6 +1542,9 @@ focus_tree = {
 				uses = 2
 				category = industry
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -1279,16 +1552,15 @@ focus_tree = {
 		id = FER_light_industry
 		icon = GFX_focus_FER_light_industry
 		cost = 5
-		x = 6
-		y = 4
+		x = -1
+		y = 1
+		relative_position_id = FER_four_year_plan
 		ai_will_do = {
-			base = 20
+			base = 0
 			modifier = {
-				add = 50
-				has_country_flag = FER_AI_industry_priority
+				add = var:FER_AI_focus_count_B_priority
 			}
 		}
-		#relative_position_id = FER_four_year_plan
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		prerequisite = { focus = FER_four_year_plan }
 		available = {
@@ -1323,6 +1595,9 @@ focus_tree = {
 					level = 2
 					instant_build = yes
 				}
+			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
 			}
 		}
 	}
@@ -1331,13 +1606,13 @@ focus_tree = {
 		id = FER_light_infrastructure_development
 		icon = GFX_focus_FER_light_infrastructure_development
 		cost = 5
-		x = 8
-		y = 4
+		x = 1
+		y = 1
+		relative_position_id = FER_four_year_plan
 		ai_will_do = {
-			base = 20
+			base = 0
 			modifier = {
-				add = 50
-				has_country_flag = FER_AI_industry_priority
+				add = var:FER_AI_focus_count_B_priority
 			}
 		}
 		search_filters = { FOCUS_FILTER_INDUSTRY }
@@ -1373,6 +1648,9 @@ focus_tree = {
 					instant_build = yes
 				}
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -1380,15 +1658,15 @@ focus_tree = {
 		id = FER_heavy_infrastructure_development
 		icon = GFX_focus_FER_heavy_infrastructure_development
 		cost = 10
-		x = 8
-		y = 5
+		x = 1
+		y = 2
 		ai_will_do = {
-			base = 10
+			base = 0
 			modifier = {
-				add = 50
-				has_country_flag = FER_AI_industry_priority
+				add = var:FER_AI_focus_count_B_priority
 			}
 		}
+		relative_position_id = FER_four_year_plan
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		prerequisite = { focus = FER_light_infrastructure_development }
 		available = {
@@ -1450,6 +1728,9 @@ focus_tree = {
 					instant_build = yes
 				}
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -1457,15 +1738,15 @@ focus_tree = {
 		id = FER_heavy_industry
 		icon = GFX_focus_FER_heavy_industry
 		cost = 10
-		x = 6
-		y = 5
+		x = -1
+		y = 2
 		ai_will_do = {
-			base = 15
+			base = 0
 			modifier = {
-				add = 50
-				has_country_flag = FER_AI_industry_priority
+				add = var:FER_AI_focus_count_B_priority
 			}
 		}
+		relative_position_id = FER_four_year_plan
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		prerequisite = { focus = FER_light_industry }
 		available = {
@@ -1501,6 +1782,9 @@ focus_tree = {
 					instant_build = yes
 				}
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -1508,15 +1792,15 @@ focus_tree = {
 		id = FER_final_industrial_reforms
 		icon = GFX_focus_FER_final_industrial_reforms
 		cost = 10
-		x = 7
-		y = 6
+		x = 0
+		y = 3
 		ai_will_do = {
-			base = 20
+			base = 0
 			modifier = {
-				add = 50
-				has_country_flag = FER_AI_industry_priority
+				add = var:FER_AI_focus_count_B_priority
 			}
 		}
+		relative_position_id = FER_four_year_plan
 		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_RESEARCH }
 		prerequisite = { focus = FER_heavy_infrastructure_development }
 		prerequisite = { focus = FER_heavy_industry }
@@ -1546,6 +1830,9 @@ focus_tree = {
 					set_country_flag = FER_AI_army_priority
 				}
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -1553,15 +1840,15 @@ focus_tree = {
 		id = FER_military_reforms
 		icon = GFX_focus_FER_military_reforms
 		cost = 5
-		x = 11
-		y = 3
+		x = 4
+		y = 0
 		ai_will_do = {
-			base = 20
+			base = 0
 			modifier = {
-				add = 50
-				has_country_flag = FER_AI_army_priority
+				add = var:FER_AI_focus_count_B_priority
 			}
 		}
+		relative_position_id = FER_four_year_plan
 		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_RESEARCH FOCUS_FILTER_ARMY_XP }
 		available = {
 		}
@@ -1573,6 +1860,9 @@ focus_tree = {
 				uses = 3
 				category = land_doctrine
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -1580,15 +1870,15 @@ focus_tree = {
 		id = FER_improve_equipment
 		icon = GFX_focus_FER_improve_equipment
 		cost = 5
-		x = 10
-		y = 4
+		x = -1
+		y = 1
 		ai_will_do = {
-			base = 15
+			base = 0
 			modifier = {
-				add = 50
-				has_country_flag = FER_AI_army_priority
+				add = var:FER_AI_focus_count_B_priority
 			}
 		}
+		relative_position_id = FER_military_reforms
 		search_filters = { FOCUS_FILTER_EQUIPMENT FOCUS_FILTER_RESEARCH }
 		prerequisite = {
 			focus = FER_military_reforms
@@ -1614,6 +1904,9 @@ focus_tree = {
 				uses = 2
 				category = land_equipment_category
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -1621,15 +1914,15 @@ focus_tree = {
 		id = FER_military_industry_expansion
 		icon = GFX_focus_FER_military_industry_expansion
 		cost = 10
-		x = 10
-		y = 5
+		x = -1
+		y = 2
 		ai_will_do = {
-			base = 15
+			base = 0
 			modifier = {
-				add = 50
-				has_country_flag = FER_AI_army_priority
+				add = var:FER_AI_focus_count_B_priority
 			}
 		}
+		relative_position_id = FER_military_reforms
 		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_INDUSTRY }
 		prerequisite = {
 			focus = FER_improve_equipment
@@ -1667,6 +1960,9 @@ focus_tree = {
 					instant_build = yes
 				}
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -1674,15 +1970,15 @@ focus_tree = {
 		id = FER_improve_tactics
 		icon = GFX_focus_FER_improve_tactics
 		cost = 5
-		x = 12
-		y = 4
+		x = 1
+		y = 1
 		ai_will_do = {
-			base = 20
+			base = 0
 			modifier = {
-				add = 50
-				has_country_flag = FER_AI_army_priority
+				add = var:FER_AI_focus_count_B_priority
 			}
 		}
+		relative_position_id = FER_military_reforms
 		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_RESEARCH FOCUS_FILTER_ARMY_XP }
 		prerequisite = {
 			focus = FER_military_reforms
@@ -1697,6 +1993,9 @@ focus_tree = {
 				uses = 2
 				category = land_doctrine
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -1704,15 +2003,15 @@ focus_tree = {
 		id = FER_expanded_trainings
 		icon = GFX_focus_FER_expanded_trainings
 		cost = 10
-		x = 12
-		y = 5
+		x = 1
+		y = 2
 		ai_will_do = {
-			base = 10
+			base = 0
 			modifier = {
-				add = 50
-				has_country_flag = FER_AI_army_priority
+				add = var:FER_AI_focus_count_B_priority
 			}
 		}
+		relative_position_id = FER_military_reforms
 		search_filters = { FOCUS_FILTER_MILITARY }
 		prerequisite = {
 			focus = FER_improve_tactics
@@ -1724,6 +2023,9 @@ focus_tree = {
 				idea = FER_expanded_trainings_idea
 				days = 360
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -1731,15 +2033,15 @@ focus_tree = {
 		id = FER_supreme_soviet_military
 		icon = GFX_focus_FER_supreme_soviet_military
 		cost = 10
-		x = 11
-		y = 6
+		x = 0
+		y = 3
 		ai_will_do = {
-			base = 20
+			base = 0
 			modifier = {
-				add = 50
-				has_country_flag = FER_AI_army_priority
+				add = var:FER_AI_focus_count_B_priority
 			}
 		}
+		relative_position_id = FER_military_reforms
 		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_INDUSTRY FOCUS_FILTER_ARMY_XP }
 		prerequisite = { focus = FER_military_industry_expansion }
 		prerequisite = { focus = FER_expanded_trainings }
@@ -1795,6 +2097,9 @@ focus_tree = {
 					set_country_flag = FER_AI_industry_priority
 				}
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -1802,11 +2107,15 @@ focus_tree = {
 		id = FER_war_economy
 		icon = GFX_focus_FER_war_economy
 		cost = 10
-		x = 10
-		y = 7
+		x = -1
+		y = 4
 		ai_will_do = {
-			base = 100
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_B_priority
+			}
 		}
+		relative_position_id = FER_military_reforms
 		search_filters = { FOCUS_FILTER_MILITARY }
 		prerequisite = { 
 			focus = FER_final_industrial_reforms
@@ -1819,6 +2128,9 @@ focus_tree = {
 		}
 		completion_reward = {
 			add_ideas = war_economy
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -1826,11 +2138,15 @@ focus_tree = {
 		id = FER_science_spendings
 		icon = GFX_focus_FER_science_spendings
 		cost = 10
-		x = 8
-		y = 7
+		x = 1
+		y = 4
 		ai_will_do = {
-			base = 50
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_B_priority
+			}
 		}
+		relative_position_id = FER_four_year_plan
 		search_filters = { FOCUS_FILTER_RESEARCH }
 		prerequisite = { 
 			focus = FER_final_industrial_reforms
@@ -1844,6 +2160,9 @@ focus_tree = {
 				idea = FER_science_spendings_idea
 				days = 360
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -1854,7 +2173,16 @@ focus_tree = {
 		x = 33
 		y = 1
 		ai_will_do = {
-			base = 20
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_B_priority
+			}
+			modifier = {
+				factor = 0
+				NOT = {
+					has_completed_focus = FER_german_soviet_treaty
+				}
+			}
 		}
 		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_RESEARCH FOCUS_FILTER_ARMY_XP }
 		available = {
@@ -1867,6 +2195,9 @@ focus_tree = {
 				uses = 1
 				category = naval_doctrine
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -1877,7 +2208,10 @@ focus_tree = {
 		x = 32
 		y = 2
 		ai_will_do = {
-			base = 20
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_B_priority
+			}
 		}
 		prerequisite = {
 			focus = FER_navy_reforms
@@ -1892,6 +2226,9 @@ focus_tree = {
 				uses = 2
 				category = naval_equipment
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -1902,7 +2239,10 @@ focus_tree = {
 		x = 32
 		y = 3
 		ai_will_do = {
-			base = 20
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_B_priority
+			}
 		}
 		prerequisite = {
 			focus = FER_improve_ship_models
@@ -1941,6 +2281,9 @@ focus_tree = {
 					instant_build = yes
 				}
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -1951,7 +2294,10 @@ focus_tree = {
 		x = 34
 		y = 2
 		ai_will_do = {
-			base = 20
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_B_priority
+			}
 		}
 		prerequisite = {
 			focus = FER_navy_reforms
@@ -1964,6 +2310,9 @@ focus_tree = {
 				idea = FER_wave_spirit_idea
 				days = 240
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -1974,7 +2323,10 @@ focus_tree = {
 		x = 34
 		y = 3
 		ai_will_do = {
-			base = 20
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_B_priority
+			}
 		}
 		prerequisite = {
 			focus = FER_waves_spirit
@@ -1990,6 +2342,9 @@ focus_tree = {
 				uses = 2
 				category = naval_doctrine
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -2000,7 +2355,10 @@ focus_tree = {
 		x = 33
 		y = 4
 		ai_will_do = {
-			base = 20
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_B_priority
+			}
 		}
 		prerequisite = {
 			focus = FER_expand_dockyards
@@ -2022,6 +2380,9 @@ focus_tree = {
 			remove_ideas = FER_weak_navy_idea
 			add_ideas = FER_supreme_navy_idea
 			country_event = primorski.30
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -2032,7 +2393,16 @@ focus_tree = {
 		x = 29
 		y = 1
 		ai_will_do = {
-			base = 20
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_B_priority
+			}
+			modifier = {
+				factor = 0
+				NOT = {
+					has_completed_focus = FER_german_soviet_treaty
+				}
+			}
 		}
 		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_RESEARCH FOCUS_FILTER_ARMY_XP }
 		available = {
@@ -2045,6 +2415,9 @@ focus_tree = {
 				uses = 1
 				category = air_doctrine
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -2055,7 +2428,10 @@ focus_tree = {
 		x = 28
 		y = 2
 		ai_will_do = {
-			base = 20
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_B_priority
+			}
 		}
 		prerequisite = {
 			focus = FER_air_reforms
@@ -2070,6 +2446,9 @@ focus_tree = {
 				uses = 2
 				category = air_equipment
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -2080,7 +2459,10 @@ focus_tree = {
 		x = 28
 		y = 3
 		ai_will_do = {
-			base = 20
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_B_priority
+			}
 		}
 		prerequisite = {
 			focus = FER_modern_planes_production
@@ -2131,6 +2513,9 @@ focus_tree = {
 					instant_build = yes
 				}
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -2141,7 +2526,10 @@ focus_tree = {
 		x = 30
 		y = 2
 		ai_will_do = {
-			base = 20
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_B_priority
+			}
 		}
 		prerequisite = {
 			focus = FER_air_reforms
@@ -2154,6 +2542,9 @@ focus_tree = {
 				idea = FER_train_new_heights_idea
 				days = 240
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -2164,7 +2555,10 @@ focus_tree = {
 		x = 30
 		y = 3
 		ai_will_do = {
-			base = 20
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_B_priority
+			}
 		}
 		prerequisite = {
 			focus = FER_train_new_heights
@@ -2180,6 +2574,9 @@ focus_tree = {
 				uses = 2
 				category = air_doctrine
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -2190,10 +2587,9 @@ focus_tree = {
 		x = 29
 		y = 4
 		ai_will_do = {
-			base = 20
+			base = 0
 			modifier = {
-				add = 50
-				has_country_flag = FER_AI_army_priority
+				add = var:FER_AI_focus_count_B_priority
 			}
 		}
 		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_INDUSTRY FOCUS_FILTER_ARMY_XP }
@@ -2237,6 +2633,9 @@ focus_tree = {
 				}
 			}
 			country_event = primorski.29
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -2247,7 +2646,12 @@ focus_tree = {
 		x = 24
 		y = 1
 		ai_will_do = {
-			base = 45
+			base = 0
+			modifier = {
+				add = 100
+				has_completed_focus = FER_science_spendings
+				has_completed_focus = FER_war_economy
+			}
 		}
 		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_RESEARCH FOCUS_FILTER_DIPLOMACY }
 		available = {
@@ -2259,6 +2663,9 @@ focus_tree = {
 					id = primorski.6 
 					days = 1
 				}
+			}
+			hidden_effect = {
+				add_to_variable = { FER_AI_focus_count_B = 190 }
 			}
 		}
 	}
@@ -2308,6 +2715,9 @@ focus_tree = {
 				uses = 1
 				category = cat_light_armor
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -2329,6 +2739,9 @@ focus_tree = {
 		completion_reward = {
 			custom_effect_tooltip = FER_light_mass_production_tt
 			set_country_flag = FER_ltp
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -2354,6 +2767,9 @@ focus_tree = {
 				uses = 1
 				category = cat_medium_armor
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -2375,6 +2791,9 @@ focus_tree = {
 		completion_reward = {
 			custom_effect_tooltip = FER_medium_mass_production_tt
 			set_country_flag = FER_mtp
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -2400,6 +2819,9 @@ focus_tree = {
 				uses = 1
 				category = cat_heavy_armor
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -2421,6 +2843,9 @@ focus_tree = {
 		completion_reward = {
 			custom_effect_tooltip = FER_heavy_mass_production_tt
 			set_country_flag = FER_htp
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -2520,6 +2945,9 @@ focus_tree = {
 				}
 				custom_effect_tooltip = FER_mass_production_tt_nothing
 			}
+			hidden_effect = {
+				subtract_from_variable = { FER_AI_focus_count_B = 10 }
+			}
 		}
 	}
 
@@ -2530,16 +2958,17 @@ focus_tree = {
 		id = FER_soviet_expansion_in_europe
 		icon = GFX_focus_FER_soviet_expansion_in_europe
 		cost = 10
-		x = 10
-		y = 9
+		x = 8
+		y = 2
 		ai_will_do = {
-			base = 40
+			base = 50
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
 		search_filters = { FOCUS_FILTER_WORLD FOCUS_FILTER_DIPLOMACY }
 		prerequisite = { 
-			focus = FER_supreme_social_democracy
-			focus = FER_start_integration_campaign
-			focus = FER_supreme_soviet_republic
+			focus = FER_take_actions
 		}
 		available = {
 			#custom_trigger_tooltip = {
@@ -2560,6 +2989,9 @@ focus_tree = {
 		}
 		completion_reward = {
 			country_event = primorski.11
+			hidden_effect = {
+				add_to_variable = { FER_AI_focus_count_A = 60 }
+			}
 		}
 	}
 
@@ -2567,11 +2999,15 @@ focus_tree = {
 		id = FER_pressure_fins
 		icon = GFX_goal_generic_dangerous_deal
 		cost = 5
-		x = 8
-		y = 10
+		x = -1
+		y = 1
 		ai_will_do = {
-			base = 40
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_soviet_expansion_in_europe
 		search_filters = { FOCUS_FILTER_WORLD FOCUS_FILTER_DIPLOMACY }
 		prerequisite = { 
 			focus = FER_soviet_expansion_in_europe
@@ -2586,11 +3022,15 @@ focus_tree = {
 		id = FER_soviet_finnish_war
 		icon = GFX_goal_generic_war_with_comintern
 		cost = 10
-		x = 8
-		y = 12
+		x = -1
+		y = 2
 		ai_will_do = {
-			base = 100
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_soviet_expansion_in_europe
 		search_filters = { FOCUS_FILTER_WORLD FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WAR_SUPPORT }
 		prerequisite = { 
 			focus = FER_pressure_fins
@@ -2663,11 +3103,15 @@ focus_tree = {
 		id = FER_soviet_diplomacy_in_baltic
 		icon = GFX_goal_generic_intelligence_exchange
 		cost = 5
-		x = 10
-		y = 10
+		x = 1
+		y = 1
 		ai_will_do = {
-			base = 35
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_soviet_expansion_in_europe
 		search_filters = { FOCUS_FILTER_WORLD FOCUS_FILTER_DIPLOMACY }
 		prerequisite = { 
 			focus = FER_soviet_expansion_in_europe
@@ -2682,11 +3126,15 @@ focus_tree = {
 		id = FER_annex_batlic_states
 		icon = GFX_goal_generic_forceful_treaty
 		cost = 10
-		x = 10
-		y = 12
+		x = 1
+		y = 2
 		ai_will_do = {
-			base = 90
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_soviet_expansion_in_europe
 		search_filters = { FOCUS_FILTER_WORLD FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WAR_SUPPORT }
 		prerequisite = { 
 			focus = FER_soviet_diplomacy_in_baltic
@@ -2725,11 +3173,15 @@ focus_tree = {
 		id = FER_pressure_romania
 		icon = GFX_goal_generic_dangerous_deal
 		cost = 5
-		x = 12
-		y = 10
+		x = 3
+		y = 1
 		ai_will_do = {
-			base = 30
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_soviet_expansion_in_europe
 		search_filters = { FOCUS_FILTER_WORLD FOCUS_FILTER_DIPLOMACY }
 		prerequisite = { 
 			focus = FER_soviet_expansion_in_europe
@@ -2744,11 +3196,15 @@ focus_tree = {
 		id = FER_demand_bessarabia
 		icon = GFX_focus_GRE_stage_an_incident_in_the_bosporus
 		cost = 10
-		x = 12
-		y = 12
+		x = 3
+		y = 2
 		ai_will_do = {
-			base = 80
+			base = 0
+			modifier = {
+				add = var:FER_AI_focus_count_A_priority
+			}
 		}
+		relative_position_id = FER_soviet_expansion_in_europe
 		search_filters = { FOCUS_FILTER_WORLD FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WAR_SUPPORT }
 		prerequisite = { 
 			focus = FER_pressure_romania
