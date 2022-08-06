@@ -20,6 +20,8 @@ on_actions = {
 
 			set_variable = { FER_protests_event_frequency = 0 }
 			set_variable = { FER_nmth = 0 }
+			set_variable = { FER_stalin_trust_event_frequency = 0 }
+			set_variable = { FER_stalin_trust_nmth = 0 }
 
 			set_variable = { GAN_ethnic_korea = 0.0 }
 			set_variable = { GAN_ethnic_china = 0.0 }
@@ -246,6 +248,24 @@ on_actions = {
 					check_variable = { FER_protests_event_frequency < 0 }
 				}
 				set_variable = { FER_protests_event_frequency = 0 }
+			}
+
+			set_temp_variable = { FER_temp_calc_trust = FER_stalin_trust }
+			add_to_temp_variable = { FER_temp_calc_trust = 10 }
+			set_variable = { FER_stalin_trust_nmth = FER_temp_calc_trust }
+			set_variable = { FER_stalin_trust_event_frequency = 100 }
+			subtract_from_variable = { FER_stalin_trust_event_frequency = FER_stalin_trust_nmth }
+			if = {
+				limit = {
+					check_variable = { FER_stalin_trust_nmth < 10 }
+				}
+				set_variable = { FER_stalin_trust_nmth = 10 }
+			}
+			if = {
+				limit = {
+					check_variable = { FER_stalin_trust_nmth > 90 }
+				}
+				set_variable = { FER_stalin_trust_nmth = 90 }
 			}
 		
 		}
@@ -595,10 +615,49 @@ on_actions = {
 
 	}
 	
+	on_monthly_FER = {
+
+		effect = {
+
+			###						   	   ###
+			# FER Stalin Trust Random Events #
+			### 					       ###
+			if = {
+				limit = {
+					has_country_flag = FER_active_stalin_trust_flag
+				}
+				random_list = {
+					FER_stalin_trust_event_frequency = {
+						FER = {
+							country_event = primorski.33
+						}
+					}
+					FER_stalin_trust_nmth = {
+						random_list = {
+							50 = {
+								FER = {
+									country_event = primorski.34
+								}
+							}
+							50 = {
+								
+							}
+						}
+					}
+				}
+			}
+
+		}
+
+	}
+
 	on_weekly_FER = {
 
 		effect = {
 
+			###						   ###
+			# FER Protests Random Events #
+			### 					   ###
 			if = {
 				limit = {
 					NOT = {
