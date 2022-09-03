@@ -47,29 +47,87 @@ on_actions = {
 
 			set_variable = { JOS_korean_influence = 0 }
 
-			FER = {
-				random_list = {
-					33 = {
-						set_country_flag = FER_AI_social_democracy
+			if = {
+				limit = {
+					has_game_rule = {
+						rule = FER_ai_behaviour
+						option = RANDOM
 					}
-					33 = {
-						set_country_flag = FER_AI_appease_people
-					}
-					33 = {
-						set_country_flag = FER_AI_military_state
+				}
+				FER = {
+					random_list = {
+						33 = {
+							set_country_flag = FER_AI_social_democracy
+						}
+						33 = {
+							set_country_flag = FER_AI_appease_people
+						}
+						33 = {
+							set_country_flag = FER_AI_military_state
+						}
 					}
 				}
 			}
-			JOS = {
-				random_list = {
-					33 = {
-						set_country_flag = JOS_AI_reforms
+			if = {
+				limit = {
+					has_game_rule = {
+						rule = FER_ai_behaviour
+						option = DEFAULT
 					}
-					33 = {
-						set_country_flag = JOS_AI_steady_course
+				}
+				FER = {
+					random_list = {
+						25 = {
+							set_country_flag = FER_AI_social_democracy
+						}
+						50 = {
+							set_country_flag = FER_AI_appease_people
+						}
+						25 = {
+							set_country_flag = FER_AI_military_state
+						}
 					}
-					33 = {
-						set_country_flag = JOS_AI_new_way
+				}
+			}
+			if = {
+				limit = {
+					has_game_rule = {
+						rule = JOS_ai_behaviour
+						option = RANDOM
+					}
+				}
+				JOS = {
+					random_list = {
+						33 = {
+							set_country_flag = JOS_AI_reforms
+						}
+						33 = {
+							set_country_flag = JOS_AI_steady_course
+						}
+						33 = {
+							set_country_flag = JOS_AI_new_way
+						}
+					}
+				}
+			}
+			if = {
+				limit = {
+					has_game_rule = {
+						rule = JOS_ai_behaviour
+						option = DEFAULT
+					}
+				}
+				JOS = {
+					random_list = {
+						50 = {
+							set_country_flag = JOS_AI_reforms
+						}
+						25 = {
+							set_country_flag = JOS_AI_steady_course
+						}
+						25 = {
+							set_country_flag = JOS_AI_new_way
+						}
 					}
 				}
 			}
@@ -81,6 +139,10 @@ on_actions = {
 			set_variable = { SHI_koku_strengh = 0 }
 			set_variable = { SHI_tase_strengh = 0 }
 			set_variable = { SHI_toho_strengh = 0 }
+
+			add_to_array = { array = HAItags value = FER.id }
+			add_to_array = { array = HAItags value = GAN.id }
+			add_to_array = { array = HAItags value = JOS.id }
 
 		}
 
@@ -1852,503 +1914,180 @@ on_actions = {
 
 	}
 
-	on_weekly_JOS = {
+	on_weekly = {
 
 		effect = {
 
-			set_temp_variable = { JOS_AI_focus_count_A_temp = JOS_AI_focus_count_A }
-			set_temp_variable = { JOS_AI_focus_count_B_temp = JOS_AI_focus_count_B }
+			clear_array = HAItags
+			add_to_array = { array = HAItags value = FER.id }
+			add_to_array = { array = HAItags value = GAN.id }
+			add_to_array = { array = HAItags value = JOS.id }
 			if = {
 				limit = {
-					check_variable = { JOS_AI_focus_count_A_temp = JOS_AI_focus_count_B_temp }
-					NOT = {
-						check_variable = { JOS_AI_focus_count_A_temp = 0 }
-						check_variable = { JOS_AI_focus_count_B_temp = 0 }
+					is_in_array = { HAItags = ROOT.id }
+					has_game_rule = {
+						rule = Human_AI
+						option = HAI_ENABLED
 					}
 				}
-				random_list = {
-					50 = {
-						set_variable = { JOS_AI_focus_count_A_priority = 1 }
-						set_variable = { JOS_AI_focus_count_B_priority = 0 }
-					}
-					50 = {
-						set_variable = { JOS_AI_focus_count_B_priority = 1 }
-						set_variable = { JOS_AI_focus_count_A_priority = 0 }
-					}
-				}
-			}
-			if = {
-				limit = {
-					check_variable = { JOS_AI_focus_count_A_temp > JOS_AI_focus_count_B_temp }
-				}
-				divide_temp_variable = { JOS_AI_focus_count_A_temp = 1.3 }
-				set_temp_variable = { JOS_AI_focus_count_A_temp_2 = JOS_AI_focus_count_A_temp }
+				set_temp_variable = { ROOT.AI_focus_count_A_temp = ROOT.AI_focus_count_A }
+				set_temp_variable = { ROOT.AI_focus_count_B_temp = ROOT.AI_focus_count_B }
 				if = {
 					limit = {
-						check_variable = { JOS_AI_focus_count_A_temp_2 > JOS_AI_focus_count_B }
+						check_variable = { ROOT.AI_focus_count_A_temp = ROOT.AI_focus_count_B_temp }
 						NOT = {
-							check_variable = { JOS_AI_focus_count_A_temp = 0 }
-							check_variable = { JOS_AI_focus_count_B_temp = 0 }
+							check_variable = { ROOT.AI_focus_count_A_temp = 0 }
+							check_variable = { ROOT.AI_focus_count_B_temp = 0 }
 						}
 					}
 					random_list = {
-						80 = {
-							set_variable = { JOS_AI_focus_count_A_priority = 1 }
-							set_variable = { JOS_AI_focus_count_B_priority = 0 }
+						50 = {
+							set_variable = { ROOT.AI_focus_count_A_priority = 1 }
+							set_variable = { ROOT.AI_focus_count_B_priority = 0 }
 						}
-						20 = {
-							set_variable = { JOS_AI_focus_count_A_priority = 0 }
-							set_variable = { JOS_AI_focus_count_B_priority = 1 }
-						}
-					}
-				}
-				if = {
-					limit = {
-						check_variable = { JOS_AI_focus_count_A_temp_2 < JOS_AI_focus_count_B }
-						NOT = {
-							check_variable = { JOS_AI_focus_count_A_temp = 0 }
-							check_variable = { JOS_AI_focus_count_B_temp = 0 }
-						}
-					}
-					random_list = {
-						80 = {
-							set_variable = { JOS_AI_focus_count_A_priority = 0 }
-							set_variable = { JOS_AI_focus_count_B_priority = 1 }
-						}
-						20 = {
-							set_variable = { JOS_AI_focus_count_A_priority = 1 }
-							set_variable = { JOS_AI_focus_count_B_priority = 0 }
+						50 = {
+							set_variable = { ROOT.AI_focus_count_B_priority = 1 }
+							set_variable = { ROOT.AI_focus_count_A_priority = 0 }
 						}
 					}
 				}
 				if = {
 					limit = {
-						check_variable = { JOS_AI_focus_count_A_temp_2 > JOS_AI_focus_count_B }
-						check_variable = { JOS_AI_focus_count_B_temp = 0 }
+						check_variable = { ROOT.AI_focus_count_A_temp > ROOT.AI_focus_count_B_temp }
 					}
-					set_variable = { JOS_AI_focus_count_A_priority = 1 }
-					set_variable = { JOS_AI_focus_count_B_priority = 0 }
-				}
-				if = {
-					limit = {
-						check_variable = { JOS_AI_focus_count_A_temp_2 < JOS_AI_focus_count_B }
-						check_variable = { JOS_AI_focus_count_A_temp = 0 }
-					}
-					set_variable = { JOS_AI_focus_count_A_priority = 0 }
-					set_variable = { JOS_AI_focus_count_B_priority = 1 }
-				}
-				if = {
-					limit = {
-						check_variable = { JOS_AI_focus_count_B_temp = 0 }
-						check_variable = { JOS_AI_focus_count_A_temp = 0 }
-					}
-					set_variable = { JOS_AI_focus_count_A_priority = 0 }
-					set_variable = { JOS_AI_focus_count_B_priority = 0 }
-				}
-			}
-			if = {
-				limit = {
-					check_variable = { JOS_AI_focus_count_A_temp < JOS_AI_focus_count_B_temp }
-				}
-				divide_temp_variable = { JOS_AI_focus_count_B_temp = 1.3 }
-				set_temp_variable = { JOS_AI_focus_count_B_temp_2 = JOS_AI_focus_count_B_temp }
-				if = {
-					limit = {
-						check_variable = { JOS_AI_focus_count_B_temp_2 > JOS_AI_focus_count_A }
-						NOT = {
-							check_variable = { JOS_AI_focus_count_A_temp = 0 }
-							check_variable = { JOS_AI_focus_count_B_temp = 0 }
+					divide_temp_variable = { ROOT.AI_focus_count_A_temp = 1.3 }
+					set_temp_variable = { ROOT.AI_focus_count_A_temp_2 = ROOT.AI_focus_count_A_temp }
+					if = {
+						limit = {
+							check_variable = { ROOT.AI_focus_count_A_temp_2 > ROOT.AI_focus_count_B }
+							NOT = {
+								check_variable = { ROOT.AI_focus_count_A_temp = 0 }
+								check_variable = { ROOT.AI_focus_count_B_temp = 0 }
+							}
+						}
+						random_list = {
+							80 = {
+								set_variable = { ROOT.AI_focus_count_A_priority = 1 }
+								set_variable = { ROOT.AI_focus_count_B_priority = 0 }
+							}
+							20 = {
+								set_variable = { ROOT.AI_focus_count_A_priority = 0 }
+								set_variable = { ROOT.AI_focus_count_B_priority = 1 }
+							}
 						}
 					}
-					random_list = {
-						80 = {
-							set_variable = { JOS_AI_focus_count_B_priority = 1 }
-							set_variable = { JOS_AI_focus_count_A_priority = 0 }
+					if = {
+						limit = {
+							check_variable = { ROOT.AI_focus_count_A_temp_2 < ROOT.AI_focus_count_B }
+							NOT = {
+								check_variable = { ROOT.AI_focus_count_A_temp = 0 }
+								check_variable = { ROOT.AI_focus_count_B_temp = 0 }
+							}
 						}
-						20 = {
-							set_variable = { JOS_AI_focus_count_B_priority = 0 }
-							set_variable = { JOS_AI_focus_count_A_priority = 1 }
-						}
-					}
-				}
-				if = {
-					limit = {
-						check_variable = { JOS_AI_focus_count_B_temp_2 < JOS_AI_focus_count_A }
-						NOT = {
-							check_variable = { JOS_AI_focus_count_A_temp = 0 }
-							check_variable = { JOS_AI_focus_count_B_temp = 0 }
-						}
-					}
-					random_list = {
-						80 = {
-							set_variable = { JOS_AI_focus_count_B_priority = 0 }
-							set_variable = { JOS_AI_focus_count_A_priority = 1 }
-						}
-						20 = {
-							set_variable = { JOS_AI_focus_count_B_priority = 1 }
-							set_variable = { JOS_AI_focus_count_A_priority = 0 }
+						random_list = {
+							80 = {
+								set_variable = { ROOT.AI_focus_count_A_priority = 0 }
+								set_variable = { ROOT.AI_focus_count_B_priority = 1 }
+							}
+							20 = {
+								set_variable = { ROOT.AI_focus_count_A_priority = 1 }
+								set_variable = { ROOT.AI_focus_count_B_priority = 0 }
+							}
 						}
 					}
-				}
-				if = {
-					limit = {
-						check_variable = { JOS_AI_focus_count_B_temp_2 > JOS_AI_focus_count_A }
-						check_variable = { JOS_AI_focus_count_B_temp = 0 }
-					}
-					set_variable = { JOS_AI_focus_count_B_priority = 1 }
-					set_variable = { JOS_AI_focus_count_A_priority = 0 }
-				}
-				if = {
-					limit = {
-						check_variable = { JOS_AI_focus_count_B_temp_2 < JOS_AI_focus_count_A }
-						check_variable = { JOS_AI_focus_count_B_temp = 0 }
-					}
-					set_variable = { JOS_AI_focus_count_B_priority = 0 }
-					set_variable = { JOS_AI_focus_count_A_priority = 1 }
-				}
-				if = {
-					limit = {
-						check_variable = { JOS_AI_focus_count_B_temp = 0 }
-						check_variable = { JOS_AI_focus_count_A_temp = 0 }
-					}
-					set_variable = { JOS_AI_focus_count_A_priority = 0 }
-					set_variable = { JOS_AI_focus_count_B_priority = 0 }
-				}
-			}
-
-		}
-
-	}
-
-	on_weekly_GAN = {
-
-		effect = {
-
-			set_temp_variable = { GAN_AI_focus_count_A_temp = GAN_AI_focus_count_A }
-			set_temp_variable = { GAN_AI_focus_count_B_temp = GAN_AI_focus_count_B }
-			if = {
-				limit = {
-					check_variable = { GAN_AI_focus_count_A_temp = GAN_AI_focus_count_B_temp }
-					NOT = {
-						check_variable = { GAN_AI_focus_count_A_temp = 0 }
-						check_variable = { GAN_AI_focus_count_B_temp = 0 }
-					}
-				}
-				random_list = {
-					50 = {
-						set_variable = { GAN_AI_focus_count_A_priority = 1 }
-						set_variable = { GAN_AI_focus_count_B_priority = 0 }
-					}
-					50 = {
-						set_variable = { GAN_AI_focus_count_B_priority = 1 }
-						set_variable = { GAN_AI_focus_count_A_priority = 0 }
-					}
-				}
-			}
-			if = {
-				limit = {
-					check_variable = { GAN_AI_focus_count_A_temp > GAN_AI_focus_count_B_temp }
-				}
-				divide_temp_variable = { GAN_AI_focus_count_A_temp = 1.3 }
-				set_temp_variable = { GAN_AI_focus_count_A_temp_2 = GAN_AI_focus_count_A_temp }
-				if = {
-					limit = {
-						check_variable = { GAN_AI_focus_count_A_temp_2 > GAN_AI_focus_count_B }
-						NOT = {
-							check_variable = { GAN_AI_focus_count_A_temp = 0 }
-							check_variable = { GAN_AI_focus_count_B_temp = 0 }
+					if = {
+						limit = {
+							check_variable = { ROOT.AI_focus_count_A_temp_2 > ROOT.AI_focus_count_B }
+							check_variable = { ROOT.AI_focus_count_B_temp = 0 }
 						}
+						set_variable = { ROOT.AI_focus_count_A_priority = 1 }
+						set_variable = { ROOT.AI_focus_count_B_priority = 0 }
 					}
-					random_list = {
-						80 = {
-							set_variable = { GAN_AI_focus_count_A_priority = 1 }
-							set_variable = { GAN_AI_focus_count_B_priority = 0 }
+					if = {
+						limit = {
+							check_variable = { ROOT.AI_focus_count_A_temp_2 < ROOT.AI_focus_count_B }
+							check_variable = { ROOT.AI_focus_count_A_temp = 0 }
 						}
-						20 = {
-							set_variable = { GAN_AI_focus_count_A_priority = 0 }
-							set_variable = { GAN_AI_focus_count_B_priority = 1 }
+						set_variable = { ROOT.AI_focus_count_A_priority = 0 }
+						set_variable = { ROOT.AI_focus_count_B_priority = 1 }
+					}
+					if = {
+						limit = {
+							check_variable = { ROOT.AI_focus_count_B_temp = 0 }
+							check_variable = { ROOT.AI_focus_count_A_temp = 0 }
 						}
+						set_variable = { ROOT.AI_focus_count_A_priority = 0 }
+						set_variable = { ROOT.AI_focus_count_B_priority = 0 }
 					}
 				}
 				if = {
 					limit = {
-						check_variable = { GAN_AI_focus_count_A_temp_2 < GAN_AI_focus_count_B }
-						NOT = {
-							check_variable = { GAN_AI_focus_count_A_temp = 0 }
-							check_variable = { GAN_AI_focus_count_B_temp = 0 }
+						check_variable = { ROOT.AI_focus_count_A_temp < ROOT.AI_focus_count_B_temp }
+					}
+					divide_temp_variable = { ROOT.AI_focus_count_B_temp = 1.3 }
+					set_temp_variable = { ROOT.AI_focus_count_B_temp_2 = ROOT.AI_focus_count_B_temp }
+					if = {
+						limit = {
+							check_variable = { ROOT.AI_focus_count_B_temp_2 > ROOT.AI_focus_count_A }
+							NOT = {
+								check_variable = { ROOT.AI_focus_count_A_temp = 0 }
+								check_variable = { ROOT.AI_focus_count_B_temp = 0 }
+							}
+						}
+						random_list = {
+							80 = {
+								set_variable = { ROOT.AI_focus_count_B_priority = 1 }
+								set_variable = { ROOT.AI_focus_count_A_priority = 0 }
+							}
+							20 = {
+								set_variable = { ROOT.AI_focus_count_B_priority = 0 }
+								set_variable = { ROOT.AI_focus_count_A_priority = 1 }
+							}
 						}
 					}
-					random_list = {
-						80 = {
-							set_variable = { GAN_AI_focus_count_A_priority = 0 }
-							set_variable = { GAN_AI_focus_count_B_priority = 1 }
+					if = {
+						limit = {
+							check_variable = { ROOT.AI_focus_count_B_temp_2 < ROOT.AI_focus_count_A }
+							NOT = {
+								check_variable = { ROOT.AI_focus_count_A_temp = 0 }
+								check_variable = { ROOT.AI_focus_count_B_temp = 0 }
+							}
 						}
-						20 = {
-							set_variable = { GAN_AI_focus_count_A_priority = 1 }
-							set_variable = { GAN_AI_focus_count_B_priority = 0 }
-						}
-					}
-				}
-				if = {
-					limit = {
-						check_variable = { GAN_AI_focus_count_A_temp_2 > GAN_AI_focus_count_B }
-						check_variable = { GAN_AI_focus_count_B_temp = 0 }
-					}
-					set_variable = { GAN_AI_focus_count_A_priority = 1 }
-					set_variable = { GAN_AI_focus_count_B_priority = 0 }
-				}
-				if = {
-					limit = {
-						check_variable = { GAN_AI_focus_count_A_temp_2 < GAN_AI_focus_count_B }
-						check_variable = { GAN_AI_focus_count_A_temp = 0 }
-					}
-					set_variable = { GAN_AI_focus_count_A_priority = 0 }
-					set_variable = { GAN_AI_focus_count_B_priority = 1 }
-				}
-				if = {
-					limit = {
-						check_variable = { GAN_AI_focus_count_B_temp = 0 }
-						check_variable = { GAN_AI_focus_count_A_temp = 0 }
-					}
-					set_variable = { GAN_AI_focus_count_A_priority = 0 }
-					set_variable = { GAN_AI_focus_count_B_priority = 0 }
-				}
-			}
-			if = {
-				limit = {
-					check_variable = { GAN_AI_focus_count_A_temp < GAN_AI_focus_count_B_temp }
-				}
-				divide_temp_variable = { GAN_AI_focus_count_B_temp = 1.3 }
-				set_temp_variable = { GAN_AI_focus_count_B_temp_2 = GAN_AI_focus_count_B_temp }
-				if = {
-					limit = {
-						check_variable = { GAN_AI_focus_count_B_temp_2 > GAN_AI_focus_count_A }
-						NOT = {
-							check_variable = { GAN_AI_focus_count_A_temp = 0 }
-							check_variable = { GAN_AI_focus_count_B_temp = 0 }
+						random_list = {
+							80 = {
+								set_variable = { ROOT.AI_focus_count_B_priority = 0 }
+								set_variable = { ROOT.AI_focus_count_A_priority = 1 }
+							}
+							20 = {
+								set_variable = { ROOT.AI_focus_count_B_priority = 1 }
+								set_variable = { ROOT.AI_focus_count_A_priority = 0 }
+							}
 						}
 					}
-					random_list = {
-						80 = {
-							set_variable = { GAN_AI_focus_count_B_priority = 1 }
-							set_variable = { GAN_AI_focus_count_A_priority = 0 }
+					if = {
+						limit = {
+							check_variable = { ROOT.AI_focus_count_B_temp_2 > ROOT.AI_focus_count_A }
+							check_variable = { ROOT.AI_focus_count_B_temp = 0 }
 						}
-						20 = {
-							set_variable = { GAN_AI_focus_count_B_priority = 0 }
-							set_variable = { GAN_AI_focus_count_A_priority = 1 }
+						set_variable = { ROOT.AI_focus_count_B_priority = 1 }
+						set_variable = { ROOT.AI_focus_count_A_priority = 0 }
+					}
+					if = {
+						limit = {
+							check_variable = { ROOT.AI_focus_count_B_temp_2 < ROOT.AI_focus_count_A }
+							check_variable = { ROOT.AI_focus_count_B_temp = 0 }
 						}
+						set_variable = { ROOT.AI_focus_count_B_priority = 0 }
+						set_variable = { ROOT.AI_focus_count_A_priority = 1 }
 					}
-				}
-				if = {
-					limit = {
-						check_variable = { GAN_AI_focus_count_B_temp_2 < GAN_AI_focus_count_A }
-						NOT = {
-							check_variable = { GAN_AI_focus_count_A_temp = 0 }
-							check_variable = { GAN_AI_focus_count_B_temp = 0 }
+					if = {
+						limit = {
+							check_variable = { ROOT.AI_focus_count_B_temp = 0 }
+							check_variable = { ROOT.AI_focus_count_A_temp = 0 }
 						}
+						set_variable = { ROOT.AI_focus_count_A_priority = 0 }
+						set_variable = { ROOT.AI_focus_count_B_priority = 0 }
 					}
-					random_list = {
-						80 = {
-							set_variable = { GAN_AI_focus_count_B_priority = 0 }
-							set_variable = { GAN_AI_focus_count_A_priority = 1 }
-						}
-						20 = {
-							set_variable = { GAN_AI_focus_count_B_priority = 1 }
-							set_variable = { GAN_AI_focus_count_A_priority = 0 }
-						}
-					}
-				}
-				if = {
-					limit = {
-						check_variable = { GAN_AI_focus_count_B_temp_2 > GAN_AI_focus_count_A }
-						check_variable = { GAN_AI_focus_count_B_temp = 0 }
-					}
-					set_variable = { GAN_AI_focus_count_B_priority = 1 }
-					set_variable = { GAN_AI_focus_count_A_priority = 0 }
-				}
-				if = {
-					limit = {
-						check_variable = { GAN_AI_focus_count_B_temp_2 < GAN_AI_focus_count_A }
-						check_variable = { GAN_AI_focus_count_B_temp = 0 }
-					}
-					set_variable = { GAN_AI_focus_count_B_priority = 0 }
-					set_variable = { GAN_AI_focus_count_A_priority = 1 }
-				}
-				if = {
-					limit = {
-						check_variable = { GAN_AI_focus_count_B_temp = 0 }
-						check_variable = { GAN_AI_focus_count_A_temp = 0 }
-					}
-					set_variable = { GAN_AI_focus_count_A_priority = 0 }
-					set_variable = { GAN_AI_focus_count_B_priority = 0 }
-				}
-			}
-
-		}
-
-	}
-
-	on_weekly_FER = {
-
-		effect = {
-
-			set_temp_variable = { FER_AI_focus_count_A_temp = FER_AI_focus_count_A }
-			set_temp_variable = { FER_AI_focus_count_B_temp = FER_AI_focus_count_B }
-			if = {
-				limit = {
-					check_variable = { FER_AI_focus_count_A_temp = FER_AI_focus_count_B_temp }
-					NOT = {
-						check_variable = { FER_AI_focus_count_A_temp = 0 }
-						check_variable = { FER_AI_focus_count_B_temp = 0 }
-					}
-				}
-				random_list = {
-					50 = {
-						set_variable = { FER_AI_focus_count_A_priority = 1 }
-						set_variable = { FER_AI_focus_count_B_priority = 0 }
-					}
-					50 = {
-						set_variable = { FER_AI_focus_count_B_priority = 1 }
-						set_variable = { FER_AI_focus_count_A_priority = 0 }
-					}
-				}
-			}
-			if = {
-				limit = {
-					check_variable = { FER_AI_focus_count_A_temp > FER_AI_focus_count_B_temp }
-				}
-				divide_temp_variable = { FER_AI_focus_count_A_temp = 1.3 }
-				set_temp_variable = { FER_AI_focus_count_A_temp_2 = FER_AI_focus_count_A_temp }
-				if = {
-					limit = {
-						check_variable = { FER_AI_focus_count_A_temp_2 > FER_AI_focus_count_B }
-						NOT = {
-							check_variable = { FER_AI_focus_count_A_temp = 0 }
-							check_variable = { FER_AI_focus_count_B_temp = 0 }
-						}
-					}
-					random_list = {
-						80 = {
-							set_variable = { FER_AI_focus_count_A_priority = 1 }
-							set_variable = { FER_AI_focus_count_B_priority = 0 }
-						}
-						20 = {
-							set_variable = { FER_AI_focus_count_A_priority = 0 }
-							set_variable = { FER_AI_focus_count_B_priority = 1 }
-						}
-					}
-				}
-				if = {
-					limit = {
-						check_variable = { FER_AI_focus_count_A_temp_2 < FER_AI_focus_count_B }
-						NOT = {
-							check_variable = { FER_AI_focus_count_A_temp = 0 }
-							check_variable = { FER_AI_focus_count_B_temp = 0 }
-						}
-					}
-					random_list = {
-						80 = {
-							set_variable = { FER_AI_focus_count_A_priority = 0 }
-							set_variable = { FER_AI_focus_count_B_priority = 1 }
-						}
-						20 = {
-							set_variable = { FER_AI_focus_count_A_priority = 1 }
-							set_variable = { FER_AI_focus_count_B_priority = 0 }
-						}
-					}
-				}
-				if = {
-					limit = {
-						check_variable = { FER_AI_focus_count_A_temp_2 > FER_AI_focus_count_B }
-						check_variable = { FER_AI_focus_count_B_temp = 0 }
-					}
-					set_variable = { FER_AI_focus_count_A_priority = 1 }
-					set_variable = { FER_AI_focus_count_B_priority = 0 }
-				}
-				if = {
-					limit = {
-						check_variable = { FER_AI_focus_count_A_temp_2 < FER_AI_focus_count_B }
-						check_variable = { FER_AI_focus_count_A_temp = 0 }
-					}
-					set_variable = { FER_AI_focus_count_A_priority = 0 }
-					set_variable = { FER_AI_focus_count_B_priority = 1 }
-				}
-				if = {
-					limit = {
-						check_variable = { FER_AI_focus_count_B_temp = 0 }
-						check_variable = { FER_AI_focus_count_A_temp = 0 }
-					}
-					set_variable = { FER_AI_focus_count_A_priority = 0 }
-					set_variable = { FER_AI_focus_count_B_priority = 0 }
-				}
-			}
-			if = {
-				limit = {
-					check_variable = { FER_AI_focus_count_A_temp < FER_AI_focus_count_B_temp }
-				}
-				divide_temp_variable = { FER_AI_focus_count_B_temp = 1.3 }
-				set_temp_variable = { FER_AI_focus_count_B_temp_2 = FER_AI_focus_count_B_temp }
-				if = {
-					limit = {
-						check_variable = { FER_AI_focus_count_B_temp_2 > FER_AI_focus_count_A }
-						NOT = {
-							check_variable = { FER_AI_focus_count_A_temp = 0 }
-							check_variable = { FER_AI_focus_count_B_temp = 0 }
-						}
-					}
-					random_list = {
-						80 = {
-							set_variable = { FER_AI_focus_count_B_priority = 1 }
-							set_variable = { FER_AI_focus_count_A_priority = 0 }
-						}
-						20 = {
-							set_variable = { FER_AI_focus_count_B_priority = 0 }
-							set_variable = { FER_AI_focus_count_A_priority = 1 }
-						}
-					}
-				}
-				if = {
-					limit = {
-						check_variable = { FER_AI_focus_count_B_temp_2 < FER_AI_focus_count_A }
-						NOT = {
-							check_variable = { FER_AI_focus_count_A_temp = 0 }
-							check_variable = { FER_AI_focus_count_B_temp = 0 }
-						}
-					}
-					random_list = {
-						80 = {
-							set_variable = { FER_AI_focus_count_B_priority = 0 }
-							set_variable = { FER_AI_focus_count_A_priority = 1 }
-						}
-						20 = {
-							set_variable = { FER_AI_focus_count_B_priority = 1 }
-							set_variable = { FER_AI_focus_count_A_priority = 0 }
-						}
-					}
-				}
-				if = {
-					limit = {
-						check_variable = { FER_AI_focus_count_B_temp_2 > FER_AI_focus_count_A }
-						check_variable = { FER_AI_focus_count_B_temp = 0 }
-					}
-					set_variable = { FER_AI_focus_count_B_priority = 1 }
-					set_variable = { FER_AI_focus_count_A_priority = 0 }
-				}
-				if = {
-					limit = {
-						check_variable = { FER_AI_focus_count_B_temp_2 < FER_AI_focus_count_A }
-						check_variable = { FER_AI_focus_count_B_temp = 0 }
-					}
-					set_variable = { FER_AI_focus_count_B_priority = 0 }
-					set_variable = { FER_AI_focus_count_A_priority = 1 }
-				}
-				if = {
-					limit = {
-						check_variable = { FER_AI_focus_count_B_temp = 0 }
-						check_variable = { FER_AI_focus_count_A_temp = 0 }
-					}
-					set_variable = { FER_AI_focus_count_A_priority = 0 }
-					set_variable = { FER_AI_focus_count_B_priority = 0 }
 				}
 			}
 

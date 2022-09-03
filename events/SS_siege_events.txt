@@ -2,6 +2,647 @@
 add_namespace = capture
 add_namespace = relieve
 
+# Fengtian surrenders (siege progress reached 100%)
+news_event = {
+	id = surrender.5
+	title = surrender.5.t
+	desc = surrender.5.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			ROOT = {
+				delete_unit = { 
+					state = 5
+					disband = no #will no refund equipment and manpower
+				}
+				if = {
+					limit = { has_variable  = siege_war_support }
+					add_to_variable = { siege_war_support = -0.1 }
+				} else = {
+					set_variable = { siege_war_support = -0.1 }
+				}
+				if = {
+					limit = {
+						any_enemy_country = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 9464
+								controls_province = 6534
+								controls_province = 9434
+								controls_province = 5797
+								controls_province = 9465
+								controls_province = 2687
+								controls_province = 9495
+								controls_province = 9506
+								controls_province = 6842
+							}
+						}
+					}
+					random_enemy_country = {
+						limit = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 9464
+								controls_province = 6534
+								controls_province = 9434
+								controls_province = 5797
+								controls_province = 9465
+								controls_province = 2687
+								controls_province = 9495
+								controls_province = 9506
+								controls_province = 6842
+							}
+						}
+						set_state_controller = 5
+					}
+				} else = {
+					random_enemy_country = {
+						limit = {
+							OR = {
+								controls_province = 9464
+								controls_province = 6534
+								controls_province = 9434
+								controls_province = 5797
+								controls_province = 9465
+								controls_province = 2687
+								controls_province = 9495
+								controls_province = 9506
+								controls_province = 6842
+							}
+						}
+						set_state_controller = 5
+					}
+				}
+			}
+		}
+	}
+	
+	option = {	# DEFENDER
+		name = surrender.5.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = surrender.5.b
+		trigger = {
+			OR = {
+				OR = {
+					controls_province = 9464
+					any_allied_country = { controls_province = 9464 }
+				}
+				OR = {
+					controls_province = 6534
+					any_allied_country = { controls_province = 6534 }
+				}
+				OR = {
+					controls_province = 9434
+					any_allied_country = { controls_province = 9434 }
+				}
+				OR = {
+					controls_province = 5797
+					any_allied_country = { controls_province = 5797 }
+				}
+				OR = {
+					controls_province = 9465
+					any_allied_country = { controls_province = 9465 }
+				}
+				OR = {
+					controls_province = 2687
+					any_allied_country = { controls_province = 2687 }
+				}
+				OR = {
+					controls_province = 9495
+					any_allied_country = { controls_province = 9495 }
+				}
+				OR = {
+					controls_province = 9506
+					any_allied_country = { controls_province = 9506 }
+				}
+				OR = {
+					controls_province = 6842
+					any_allied_country = { controls_province = 6842 }
+				}
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = surrender.5.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Fengtian is taken (siege progress did not reach 100%)
+news_event = {
+	id = capture.5
+	title = capture.5.t
+	desc = capture.5.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = capture.5.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = capture.5.b
+		trigger = {
+			OR = {
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = capture.5.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Fengtian is relieved (siege progress did not reach 100%)
+news_event = {
+	id = relieve.5
+	title = relieve.5.t
+	desc = relieve.5.d
+	picture = GFX_news_siege_relieve_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = relieve.5.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+	}
+	option = {	# ATTACKER
+		name = relieve.5.b
+		trigger = {
+			has_war_with = ROOT
+		}
+	}
+	option = {	# NEUTRAL
+		name = relieve.5.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+	}
+}
+
+# Chiba surrenders (siege progress reached 100%)
+news_event = {
+	id = surrender.21
+	title = surrender.21.t
+	desc = surrender.21.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			ROOT = {
+				delete_unit = { 
+					state = 21
+					disband = no #will no refund equipment and manpower
+				}
+				if = {
+					limit = { has_variable  = siege_war_support }
+					add_to_variable = { siege_war_support = -0.1 }
+				} else = {
+					set_variable = { siege_war_support = -0.1 }
+				}
+				if = {
+					limit = {
+						any_enemy_country = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 6220
+								controls_province = 6227
+								controls_province = 3632
+								controls_province = 4805
+								controls_province = 4028
+								controls_province = 3046
+							}
+						}
+					}
+					random_enemy_country = {
+						limit = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 6220
+								controls_province = 6227
+								controls_province = 3632
+								controls_province = 4805
+								controls_province = 4028
+								controls_province = 3046
+							}
+						}
+						set_state_controller = 21
+					}
+				} else = {
+					random_enemy_country = {
+						limit = {
+							OR = {
+								controls_province = 6220
+								controls_province = 6227
+								controls_province = 3632
+								controls_province = 4805
+								controls_province = 4028
+								controls_province = 3046
+							}
+						}
+						set_state_controller = 21
+					}
+				}
+			}
+		}
+	}
+	
+	option = {	# DEFENDER
+		name = surrender.21.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = surrender.21.b
+		trigger = {
+			OR = {
+				OR = {
+					controls_province = 6220
+					any_allied_country = { controls_province = 6220 }
+				}
+				OR = {
+					controls_province = 6227
+					any_allied_country = { controls_province = 6227 }
+				}
+				OR = {
+					controls_province = 3632
+					any_allied_country = { controls_province = 3632 }
+				}
+				OR = {
+					controls_province = 4805
+					any_allied_country = { controls_province = 4805 }
+				}
+				OR = {
+					controls_province = 4028
+					any_allied_country = { controls_province = 4028 }
+				}
+				OR = {
+					controls_province = 3046
+					any_allied_country = { controls_province = 3046 }
+				}
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = surrender.21.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Chiba is taken (siege progress did not reach 100%)
+news_event = {
+	id = capture.21
+	title = capture.21.t
+	desc = capture.21.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = capture.21.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = capture.21.b
+		trigger = {
+			OR = {
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = capture.21.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Chiba is relieved (siege progress did not reach 100%)
+news_event = {
+	id = relieve.21
+	title = relieve.21.t
+	desc = relieve.21.d
+	picture = GFX_news_siege_relieve_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = relieve.21.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+	}
+	option = {	# ATTACKER
+		name = relieve.21.b
+		trigger = {
+			has_war_with = ROOT
+		}
+	}
+	option = {	# NEUTRAL
+		name = relieve.21.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+	}
+}
+
+# Kobe surrenders (siege progress reached 100%)
+news_event = {
+	id = surrender.27
+	title = surrender.27.t
+	desc = surrender.27.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			ROOT = {
+				delete_unit = { 
+					state = 27
+					disband = no #will no refund equipment and manpower
+				}
+				if = {
+					limit = { has_variable  = siege_war_support }
+					add_to_variable = { siege_war_support = -0.1 }
+				} else = {
+					set_variable = { siege_war_support = -0.1 }
+				}
+				if = {
+					limit = {
+						any_enemy_country = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 11371
+								controls_province = 5543
+								controls_province = 11349
+								controls_province = 4095
+								controls_province = 11350
+							}
+						}
+					}
+					random_enemy_country = {
+						limit = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 11371
+								controls_province = 5543
+								controls_province = 11349
+								controls_province = 4095
+								controls_province = 11350
+							}
+						}
+						set_state_controller = 27
+					}
+				} else = {
+					random_enemy_country = {
+						limit = {
+							OR = {
+								controls_province = 11371
+								controls_province = 5543
+								controls_province = 11349
+								controls_province = 4095
+								controls_province = 11350
+							}
+						}
+						set_state_controller = 27
+					}
+				}
+			}
+		}
+	}
+	
+	option = {	# DEFENDER
+		name = surrender.27.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = surrender.27.b
+		trigger = {
+			OR = {
+				OR = {
+					controls_province = 11371
+					any_allied_country = { controls_province = 11371 }
+				}
+				OR = {
+					controls_province = 5543
+					any_allied_country = { controls_province = 5543 }
+				}
+				OR = {
+					controls_province = 11349
+					any_allied_country = { controls_province = 11349 }
+				}
+				OR = {
+					controls_province = 4095
+					any_allied_country = { controls_province = 4095 }
+				}
+				OR = {
+					controls_province = 11350
+					any_allied_country = { controls_province = 11350 }
+				}
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = surrender.27.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Kobe is taken (siege progress did not reach 100%)
+news_event = {
+	id = capture.27
+	title = capture.27.t
+	desc = capture.27.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = capture.27.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = capture.27.b
+		trigger = {
+			OR = {
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = capture.27.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Kobe is relieved (siege progress did not reach 100%)
+news_event = {
+	id = relieve.27
+	title = relieve.27.t
+	desc = relieve.27.d
+	picture = GFX_news_siege_relieve_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = relieve.27.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+	}
+	option = {	# ATTACKER
+		name = relieve.27.b
+		trigger = {
+			has_war_with = ROOT
+		}
+	}
+	option = {	# NEUTRAL
+		name = relieve.27.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+	}
+}
+
 # Edo surrenders (siege progress reached 100%)
 news_event = {
 	id = surrender.29
@@ -31,12 +672,14 @@ news_event = {
 						any_enemy_country = {
 							is_faction_leader = yes
 							OR = {
-								controls_province = 1658
-								controls_province = 1342
-								controls_province = 932
-								controls_province = 770
-								controls_province = 3703
-								controls_province = 53
+								controls_province = 6397
+								controls_province = 301
+								controls_province = 5884
+								controls_province = 3509
+								controls_province = 10928
+								controls_province = 10931
+								controls_province = 6656
+								controls_province = 6887
 							}
 						}
 					}
@@ -44,12 +687,14 @@ news_event = {
 						limit = {
 							is_faction_leader = yes
 							OR = {
-								controls_province = 1658
-								controls_province = 1342
-								controls_province = 932
-								controls_province = 770
-								controls_province = 3703
-								controls_province = 53
+								controls_province = 6397
+								controls_province = 301
+								controls_province = 5884
+								controls_province = 3509
+								controls_province = 10928
+								controls_province = 10931
+								controls_province = 6656
+								controls_province = 6887
 							}
 						}
 						set_state_controller = 29
@@ -58,12 +703,14 @@ news_event = {
 					random_enemy_country = {
 						limit = {
 							OR = {
-								controls_province = 1658
-								controls_province = 1342
-								controls_province = 932
-								controls_province = 770
-								controls_province = 3703
-								controls_province = 53
+								controls_province = 6397
+								controls_province = 301
+								controls_province = 5884
+								controls_province = 3509
+								controls_province = 10928
+								controls_province = 10931
+								controls_province = 6656
+								controls_province = 6887
 							}
 						}
 						set_state_controller = 29
@@ -88,28 +735,36 @@ news_event = {
 		trigger = {
 			OR = {
 				OR = {
-					controls_province = 1658
-					any_allied_country = { controls_province = 1658 }
+					controls_province = 6397
+					any_allied_country = { controls_province = 6397 }
 				}
 				OR = {
-					controls_province = 1342
-					any_allied_country = { controls_province = 1342 }
+					controls_province = 301
+					any_allied_country = { controls_province = 301 }
 				}
 				OR = {
-					controls_province = 932
-					any_allied_country = { controls_province = 932 }
+					controls_province = 5884
+					any_allied_country = { controls_province = 5884 }
 				}
 				OR = {
-					controls_province = 770
-					any_allied_country = { controls_province = 770 }
+					controls_province = 3509
+					any_allied_country = { controls_province = 3509 }
 				}
 				OR = {
-					controls_province = 3703
-					any_allied_country = { controls_province = 3703 }
+					controls_province = 10928
+					any_allied_country = { controls_province = 10928 }
 				}
 				OR = {
-					controls_province = 53
-					any_allied_country = { controls_province = 53 }
+					controls_province = 10931
+					any_allied_country = { controls_province = 10931 }
+				}
+				OR = {
+					controls_province = 6656
+					any_allied_country = { controls_province = 6656 }
+				}
+				OR = {
+					controls_province = 6887
+					any_allied_country = { controls_province = 6887 }
 				}
 			}
 		}
@@ -201,6 +856,2173 @@ news_event = {
 	}
 	option = {	# NEUTRAL
 		name = relieve.29.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+	}
+}
+
+# Kyoto surrenders (siege progress reached 100%)
+news_event = {
+	id = surrender.32
+	title = surrender.32.t
+	desc = surrender.32.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			ROOT = {
+				delete_unit = { 
+					state = 32
+					disband = no #w ill no refund equipment and manpower
+				}
+				if = {
+					limit = { has_variable  = siege_war_support }
+					add_to_variable = { siege_war_support = -0.1 }
+				} else = {
+					set_variable = { siege_war_support = -0.1 }
+				}
+				if = {
+					limit = {
+						any_enemy_country = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 6056
+								controls_province = 7032
+								controls_province = 11201
+								controls_province = 719
+								controls_province = 11256
+								controls_province = 11302
+								controls_province = 5522
+								controls_province = 1604
+							}
+						}
+					}
+					random_enemy_country = {
+						limit = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 6056
+								controls_province = 7032
+								controls_province = 11201
+								controls_province = 719
+								controls_province = 11256
+								controls_province = 11302
+								controls_province = 5522
+								controls_province = 1604
+							}
+						}
+						set_state_controller = 32
+					}
+				} else = {
+					random_enemy_country = {
+						limit = {
+							OR = {
+								controls_province = 6056
+								controls_province = 7032
+								controls_province = 11201
+								controls_province = 719
+								controls_province = 11256
+								controls_province = 11302
+								controls_province = 5522
+								controls_province = 1604
+							}
+						}
+						set_state_controller = 32
+					}
+				}
+			}
+		}
+	}
+	
+	option = {	# DEFENDER
+		name = surrender.32.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = surrender.32.b
+		trigger = {
+			OR = {
+				OR = {
+					controls_province = 6056
+					any_allied_country = { controls_province = 6056 }
+				}
+				OR = {
+					controls_province = 7032
+					any_allied_country = { controls_province = 7032 }
+				}
+				OR = {
+					controls_province = 11201
+					any_allied_country = { controls_province = 11201 }
+				}
+				OR = {
+					controls_province = 719
+					any_allied_country = { controls_province = 719 }
+				}
+				OR = {
+					controls_province = 11256
+					any_allied_country = { controls_province = 11256 }
+				}
+				OR = {
+					controls_province = 11302
+					any_allied_country = { controls_province = 11302 }
+				}
+				OR = {
+					controls_province = 5522
+					any_allied_country = { controls_province = 5522 }
+				}
+				OR = {
+					controls_province = 1604
+					any_allied_country = { controls_province = 1604 }
+				}
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = surrender.32.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Kyoto is taken (siege progress did not reach 100%)
+news_event = {
+	id = capture.32
+	title = capture.32.t
+	desc = capture.32.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = capture.32.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = capture.32.b
+		trigger = {
+			OR = {
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = capture.32.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Kyoto is relieved (siege progress did not reach 100%)
+news_event = {
+	id = relieve.32
+	title = relieve.32.t
+	desc = relieve.32.d
+	picture = GFX_news_siege_relieve_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = relieve.32.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+	}
+	option = {	# ATTACKER
+		name = relieve.32.b
+		trigger = {
+			has_war_with = ROOT
+		}
+	}
+	option = {	# NEUTRAL
+		name = relieve.32.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+	}
+}
+
+# Osaka surrenders (siege progress reached 100%)
+news_event = {
+	id = surrender.99
+	title = surrender.99.t
+	desc = surrender.99.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			ROOT = {
+				delete_unit = { 
+					state = 99
+					disband = no #w ill no refund equipment and manpower
+				}
+				if = {
+					limit = { has_variable  = siege_war_support }
+					add_to_variable = { siege_war_support = -0.1 }
+				} else = {
+					set_variable = { siege_war_support = -0.1 }
+				}
+				if = {
+					limit = {
+						any_enemy_country = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 11355
+								controls_province = 6472
+								controls_province = 11331
+								controls_province = 2447
+								controls_province = 11374
+								controls_province = 11397
+							}
+						}
+					}
+					random_enemy_country = {
+						limit = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 11355
+								controls_province = 6472
+								controls_province = 11331
+								controls_province = 2447
+								controls_province = 11374
+								controls_province = 11397
+							}
+						}
+						set_state_controller = 99
+					}
+				} else = {
+					random_enemy_country = {
+						limit = {
+							OR = {
+								controls_province = 11355
+								controls_province = 6472
+								controls_province = 11331
+								controls_province = 2447
+								controls_province = 11374
+								controls_province = 11397
+							}
+						}
+						set_state_controller = 99
+					}
+				}
+			}
+		}
+	}
+	
+	option = {	# DEFENDER
+		name = surrender.99.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = surrender.99.b
+		trigger = {
+			OR = {
+				OR = {
+					controls_province = 11355
+					any_allied_country = { controls_province = 11355 }
+				}
+				OR = {
+					controls_province = 6472
+					any_allied_country = { controls_province = 6472 }
+				}
+				OR = {
+					controls_province = 11331
+					any_allied_country = { controls_province = 11331 }
+				}
+				OR = {
+					controls_province = 2447
+					any_allied_country = { controls_province = 2447 }
+				}
+				OR = {
+					controls_province = 11374
+					any_allied_country = { controls_province = 11374 }
+				}
+				OR = {
+					controls_province = 11397
+					any_allied_country = { controls_province = 11397 }
+				}
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = surrender.99.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Osaka is taken (siege progress did not reach 100%)
+news_event = {
+	id = capture.99
+	title = capture.99.t
+	desc = capture.99.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = capture.99.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = capture.99.b
+		trigger = {
+			OR = {
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = capture.99.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Osaka is relieved (siege progress did not reach 100%)
+news_event = {
+	id = relieve.99
+	title = relieve.99.t
+	desc = relieve.99.d
+	picture = GFX_news_siege_relieve_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = relieve.99.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+	}
+	option = {	# ATTACKER
+		name = relieve.99.b
+		trigger = {
+			has_war_with = ROOT
+		}
+	}
+	option = {	# NEUTRAL
+		name = relieve.99.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+	}
+}
+
+# Nagasaki surrenders (siege progress reached 100%)
+news_event = {
+	id = surrender.140
+	title = surrender.140.t
+	desc = surrender.140.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			ROOT = {
+				delete_unit = { 
+					state = 140
+					disband = no #w ill no refund equipment and manpower
+				}
+				if = {
+					limit = { has_variable  = siege_war_support }
+					add_to_variable = { siege_war_support = -0.1 }
+				} else = {
+					set_variable = { siege_war_support = -0.1 }
+				}
+				if = {
+					limit = {
+						any_enemy_country = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 1437
+								controls_province = 11650
+								controls_province = 5344
+							}
+						}
+					}
+					random_enemy_country = {
+						limit = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 1437
+								controls_province = 11650
+								controls_province = 5344
+							}
+						}
+						set_state_controller = 140
+					}
+				} else = {
+					random_enemy_country = {
+						limit = {
+							OR = {
+								controls_province = 1437
+								controls_province = 11650
+								controls_province = 5344
+							}
+						}
+						set_state_controller = 140
+					}
+				}
+			}
+		}
+	}
+	
+	option = {	# DEFENDER
+		name = surrender.140.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = surrender.140.b
+		trigger = {
+			OR = {
+				OR = {
+					controls_province = 1437
+					any_allied_country = { controls_province = 1437 }
+				}
+				OR = {
+					controls_province = 11650
+					any_allied_country = { controls_province = 11650 }
+				}
+				OR = {
+					controls_province = 5344
+					any_allied_country = { controls_province = 5344 }
+				}
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = surrender.140.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Nagasaki is taken (siege progress did not reach 100%)
+news_event = {
+	id = capture.140
+	title = capture.140.t
+	desc = capture.140.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = capture.140.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = capture.140.b
+		trigger = {
+			OR = {
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = capture.140.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Nagasaki is relieved (siege progress did not reach 100%)
+news_event = {
+	id = relieve.140
+	title = relieve.140.t
+	desc = relieve.140.d
+	picture = GFX_news_siege_relieve_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = relieve.140.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+	}
+	option = {	# ATTACKER
+		name = relieve.140.b
+		trigger = {
+			has_war_with = ROOT
+		}
+	}
+	option = {	# NEUTRAL
+		name = relieve.140.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+	}
+}
+
+# Hanseong surrenders (siege progress reached 100%)
+news_event = {
+	id = surrender.178
+	title = surrender.178.t
+	desc = surrender.178.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			ROOT = {
+				delete_unit = { 
+					state = 178
+					disband = no #w ill no refund equipment and manpower
+				}
+				if = {
+					limit = { has_variable  = siege_war_support }
+					add_to_variable = { siege_war_support = -0.1 }
+				} else = {
+					set_variable = { siege_war_support = -0.1 }
+				}
+				if = {
+					limit = {
+						any_enemy_country = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 3659
+								controls_province = 1322
+								controls_province = 6087
+								controls_province = 5247
+								controls_province = 10387
+								controls_province = 4318
+								controls_province = 2358
+								controls_province = 10442
+								controls_province = 1384
+								controls_province = 6703
+							}
+						}
+					}
+					random_enemy_country = {
+						limit = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 3659
+								controls_province = 1322
+								controls_province = 6087
+								controls_province = 5247
+								controls_province = 10387
+								controls_province = 4318
+								controls_province = 2358
+								controls_province = 10442
+								controls_province = 1384
+								controls_province = 6703
+							}
+						}
+						set_state_controller = 178
+					}
+				} else = {
+					random_enemy_country = {
+						limit = {
+							OR = {
+								controls_province = 3659
+								controls_province = 1322
+								controls_province = 6087
+								controls_province = 5247
+								controls_province = 10387
+								controls_province = 4318
+								controls_province = 2358
+								controls_province = 10442
+								controls_province = 1384
+								controls_province = 6703
+							}
+						}
+						set_state_controller = 178
+					}
+				}
+			}
+		}
+	}
+	
+	option = {	# DEFENDER
+		name = surrender.178.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = surrender.178.b
+		trigger = {
+			OR = {
+				OR = {
+					controls_province = 3659
+					any_allied_country = { controls_province = 3659 }
+				}
+				OR = {
+					controls_province = 1322
+					any_allied_country = { controls_province = 1322 }
+				}
+				OR = {
+					controls_province = 6087
+					any_allied_country = { controls_province = 6087 }
+				}
+				OR = {
+					controls_province = 5247
+					any_allied_country = { controls_province = 5247 }
+				}
+				OR = {
+					controls_province = 10387
+					any_allied_country = { controls_province = 10387 }
+				}
+				OR = {
+					controls_province = 4318
+					any_allied_country = { controls_province = 4318 }
+				}
+				OR = {
+					controls_province = 2358
+					any_allied_country = { controls_province = 2358 }
+				}
+				OR = {
+					controls_province = 10442
+					any_allied_country = { controls_province = 10442 }
+				}
+				OR = {
+					controls_province = 1384
+					any_allied_country = { controls_province = 1384 }
+				}
+				OR = {
+					controls_province = 6703
+					any_allied_country = { controls_province = 6703 }
+				}
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = surrender.178.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Hanseong is taken (siege progress did not reach 100%)
+news_event = {
+	id = capture.178
+	title = capture.178.t
+	desc = capture.178.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = capture.178.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = capture.178.b
+		trigger = {
+			OR = {
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = capture.178.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Hanseong is relieved (siege progress did not reach 100%)
+news_event = {
+	id = relieve.178
+	title = relieve.178.t
+	desc = relieve.178.d
+	picture = GFX_news_siege_relieve_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = relieve.178.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+	}
+	option = {	# ATTACKER
+		name = relieve.178.b
+		trigger = {
+			has_war_with = ROOT
+		}
+	}
+	option = {	# NEUTRAL
+		name = relieve.178.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+	}
+}
+
+# Pyongyang surrenders (siege progress reached 100%)
+news_event = {
+	id = surrender.182
+	title = surrender.182.t
+	desc = surrender.182.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			ROOT = {
+				delete_unit = { 
+					state = 182
+					disband = no #w ill no refund equipment and manpower
+				}
+				if = {
+					limit = { has_variable  = siege_war_support }
+					add_to_variable = { siege_war_support = -0.1 }
+				} else = {
+					set_variable = { siege_war_support = -0.1 }
+				}
+				if = {
+					limit = {
+						any_enemy_country = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 1006
+								controls_province = 10053
+								controls_province = 10048
+								controls_province = 671
+								controls_province = 4275
+								controls_province = 6500
+								controls_province = 6886
+								controls_province = 6907
+							}
+						}
+					}
+					random_enemy_country = {
+						limit = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 1006
+								controls_province = 10053
+								controls_province = 10048
+								controls_province = 671
+								controls_province = 4275
+								controls_province = 6500
+								controls_province = 6886
+								controls_province = 6907
+							}
+						}
+						set_state_controller = 182
+					}
+				} else = {
+					random_enemy_country = {
+						limit = {
+							OR = {
+								controls_province = 1006
+								controls_province = 10053
+								controls_province = 10048
+								controls_province = 671
+								controls_province = 4275
+								controls_province = 6500
+								controls_province = 6886
+								controls_province = 6907
+							}
+						}
+						set_state_controller = 182
+					}
+				}
+			}
+		}
+	}
+	
+	option = {	# DEFENDER
+		name = surrender.182.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = surrender.182.b
+		trigger = {
+			OR = {
+				OR = {
+					controls_province = 1006
+					any_allied_country = { controls_province = 1006 }
+				}
+				OR = {
+					controls_province = 10053
+					any_allied_country = { controls_province = 10053 }
+				}
+				OR = {
+					controls_province = 10048
+					any_allied_country = { controls_province = 10048 }
+				}
+				OR = {
+					controls_province = 671
+					any_allied_country = { controls_province = 671 }
+				}
+				OR = {
+					controls_province = 4275
+					any_allied_country = { controls_province = 4275 }
+				}
+				OR = {
+					controls_province = 6500
+					any_allied_country = { controls_province = 6500 }
+				}
+				OR = {
+					controls_province = 6886
+					any_allied_country = { controls_province = 6886 }
+				}
+				OR = {
+					controls_province = 6907
+					any_allied_country = { controls_province = 6907 }
+				}
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = surrender.182.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Pyongyang is taken (siege progress did not reach 100%)
+news_event = {
+	id = capture.182
+	title = capture.182.t
+	desc = capture.182.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = capture.182.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = capture.182.b
+		trigger = {
+			OR = {
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = capture.182.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Pyongyang is relieved (siege progress did not reach 100%)
+news_event = {
+	id = relieve.182
+	title = relieve.182.t
+	desc = relieve.182.d
+	picture = GFX_news_siege_relieve_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = relieve.182.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+	}
+	option = {	# ATTACKER
+		name = relieve.182.b
+		trigger = {
+			has_war_with = ROOT
+		}
+	}
+	option = {	# NEUTRAL
+		name = relieve.182.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+	}
+}
+
+# Busan surrenders (siege progress reached 100%)
+news_event = {
+	id = surrender.189
+	title = surrender.189.t
+	desc = surrender.189.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			ROOT = {
+				delete_unit = { 
+					state = 189
+					disband = no #w ill no refund equipment and manpower
+				}
+				if = {
+					limit = { has_variable  = siege_war_support }
+					add_to_variable = { siege_war_support = -0.1 }
+				} else = {
+					set_variable = { siege_war_support = -0.1 }
+				}
+				if = {
+					limit = {
+						any_enemy_country = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 3291
+								controls_province = 11145
+								controls_province = 2674
+								controls_province = 3156
+							}
+						}
+					}
+					random_enemy_country = {
+						limit = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 3291
+								controls_province = 11145
+								controls_province = 2674
+								controls_province = 3156
+							}
+						}
+						set_state_controller = 189
+					}
+				} else = {
+					random_enemy_country = {
+						limit = {
+							OR = {
+								controls_province = 3291
+								controls_province = 11145
+								controls_province = 2674
+								controls_province = 3156
+							}
+						}
+						set_state_controller = 189
+					}
+				}
+			}
+		}
+	}
+	
+	option = {	# DEFENDER
+		name = surrender.189.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = surrender.189.b
+		trigger = {
+			OR = {
+				OR = {
+					controls_province = 3291
+					any_allied_country = { controls_province = 3291 }
+				}
+				OR = {
+					controls_province = 11145
+					any_allied_country = { controls_province = 11145 }
+				}
+				OR = {
+					controls_province = 2674
+					any_allied_country = { controls_province = 2674 }
+				}
+				OR = {
+					controls_province = 3156
+					any_allied_country = { controls_province = 3156 }
+				}
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = surrender.189.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Busan is taken (siege progress did not reach 100%)
+news_event = {
+	id = capture.189
+	title = capture.189.t
+	desc = capture.189.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = capture.189.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = capture.189.b
+		trigger = {
+			OR = {
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = capture.189.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Busan is relieved (siege progress did not reach 100%)
+news_event = {
+	id = relieve.189
+	title = relieve.189.t
+	desc = relieve.189.d
+	picture = GFX_news_siege_relieve_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = relieve.189.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+	}
+	option = {	# ATTACKER
+		name = relieve.189.b
+		trigger = {
+			has_war_with = ROOT
+		}
+	}
+	option = {	# NEUTRAL
+		name = relieve.189.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+	}
+}
+
+# Gwangju surrenders (siege progress reached 100%)
+news_event = {
+	id = surrender.192
+	title = surrender.192.t
+	desc = surrender.192.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			ROOT = {
+				delete_unit = { 
+					state = 192
+					disband = no #w ill no refund equipment and manpower
+				}
+				if = {
+					limit = { has_variable  = siege_war_support }
+					add_to_variable = { siege_war_support = -0.1 }
+				} else = {
+					set_variable = { siege_war_support = -0.1 }
+				}
+				if = {
+					limit = {
+						any_enemy_country = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 4920
+								controls_province = 1436
+								controls_province = 11166
+								controls_province = 1311
+								controls_province = 11178
+								controls_province = 3996
+								controls_province = 11233
+								controls_province = 4341
+							}
+						}
+					}
+					random_enemy_country = {
+						limit = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 4920
+								controls_province = 1436
+								controls_province = 11166
+								controls_province = 1311
+								controls_province = 11178
+								controls_province = 3996
+								controls_province = 11233
+								controls_province = 4341
+							}
+						}
+						set_state_controller = 192
+					}
+				} else = {
+					random_enemy_country = {
+						limit = {
+							OR = {
+								controls_province = 4920
+								controls_province = 1436
+								controls_province = 11166
+								controls_province = 1311
+								controls_province = 11178
+								controls_province = 3996
+								controls_province = 11233
+								controls_province = 4341
+							}
+						}
+						set_state_controller = 192
+					}
+				}
+			}
+		}
+	}
+	
+	option = {	# DEFENDER
+		name = surrender.192.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = surrender.192.b
+		trigger = {
+			OR = {
+				OR = {
+					controls_province = 4920
+					any_allied_country = { controls_province = 4920 }
+				}
+				OR = {
+					controls_province = 1436
+					any_allied_country = { controls_province = 1436 }
+				}
+				OR = {
+					controls_province = 11166
+					any_allied_country = { controls_province = 11166 }
+				}
+				OR = {
+					controls_province = 1311
+					any_allied_country = { controls_province = 1311 }
+				}
+				OR = {
+					controls_province = 11178
+					any_allied_country = { controls_province = 11178 }
+				}
+				OR = {
+					controls_province = 3996
+					any_allied_country = { controls_province = 3996 }
+				}
+				OR = {
+					controls_province = 11233
+					any_allied_country = { controls_province = 11233 }
+				}
+				OR = {
+					controls_province = 4341
+					any_allied_country = { controls_province = 4341 }
+				}
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = surrender.192.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Gwangju is taken (siege progress did not reach 100%)
+news_event = {
+	id = capture.192
+	title = capture.192.t
+	desc = capture.192.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = capture.192.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = capture.192.b
+		trigger = {
+			OR = {
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = capture.192.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Gwangju is relieved (siege progress did not reach 100%)
+news_event = {
+	id = relieve.192
+	title = relieve.192.t
+	desc = relieve.192.d
+	picture = GFX_news_siege_relieve_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = relieve.192.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+	}
+	option = {	# ATTACKER
+		name = relieve.192.b
+		trigger = {
+			has_war_with = ROOT
+		}
+	}
+	option = {	# NEUTRAL
+		name = relieve.192.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+	}
+}
+
+# Hiroshima surrenders (siege progress reached 100%)
+news_event = {
+	id = surrender.198
+	title = surrender.198.t
+	desc = surrender.198.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			ROOT = {
+				delete_unit = { 
+					state = 198
+					disband = no #w ill no refund equipment and manpower
+				}
+				if = {
+					limit = { has_variable  = siege_war_support }
+					add_to_variable = { siege_war_support = -0.1 }
+				} else = {
+					set_variable = { siege_war_support = -0.1 }
+				}
+				if = {
+					limit = {
+						any_enemy_country = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 2024
+								controls_province = 11441
+								controls_province = 11431
+								controls_province = 5045
+								controls_province = 11421
+								controls_province = 11399
+								controls_province = 11423
+								controls_province = 5309
+								controls_province = 7012
+								controls_province = 5535
+							}
+						}
+					}
+					random_enemy_country = {
+						limit = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 2024
+								controls_province = 11441
+								controls_province = 11431
+								controls_province = 5045
+								controls_province = 11421
+								controls_province = 11399
+								controls_province = 11423
+								controls_province = 5309
+								controls_province = 7012
+								controls_province = 5535
+							}
+						}
+						set_state_controller = 198
+					}
+				} else = {
+					random_enemy_country = {
+						limit = {
+							OR = {
+								controls_province = 2024
+								controls_province = 11441
+								controls_province = 11431
+								controls_province = 5045
+								controls_province = 11421
+								controls_province = 11399
+								controls_province = 11423
+								controls_province = 5309
+								controls_province = 7012
+								controls_province = 5535
+							}
+						}
+						set_state_controller = 198
+					}
+				}
+			}
+		}
+	}
+	
+	option = {	# DEFENDER
+		name = surrender.198.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = surrender.198.b
+		trigger = {
+			OR = {
+				OR = {
+					controls_province = 2024
+					any_allied_country = { controls_province = 2024 }
+				}
+				OR = {
+					controls_province = 11441
+					any_allied_country = { controls_province = 11441 }
+				}
+				OR = {
+					controls_province = 11431
+					any_allied_country = { controls_province = 11431 }
+				}
+				OR = {
+					controls_province = 5045
+					any_allied_country = { controls_province = 5045 }
+				}
+				OR = {
+					controls_province = 11421
+					any_allied_country = { controls_province = 11421 }
+				}
+				OR = {
+					controls_province = 11399
+					any_allied_country = { controls_province = 11399 }
+				}
+				OR = {
+					controls_province = 11423
+					any_allied_country = { controls_province = 11423 }
+				}
+				OR = {
+					controls_province = 5309
+					any_allied_country = { controls_province = 5309 }
+				}
+				OR = {
+					controls_province = 7012
+					any_allied_country = { controls_province = 7012 }
+				}
+				OR = {
+					controls_province = 5535
+					any_allied_country = { controls_province = 5535 }
+				}
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = surrender.198.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Hiroshima is taken (siege progress did not reach 100%)
+news_event = {
+	id = capture.198
+	title = capture.198.t
+	desc = capture.198.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = capture.198.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = capture.198.b
+		trigger = {
+			OR = {
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = capture.198.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Hiroshima is relieved (siege progress did not reach 100%)
+news_event = {
+	id = relieve.198
+	title = relieve.198.t
+	desc = relieve.198.d
+	picture = GFX_news_siege_relieve_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = relieve.198.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+	}
+	option = {	# ATTACKER
+		name = relieve.198.b
+		trigger = {
+			has_war_with = ROOT
+		}
+	}
+	option = {	# NEUTRAL
+		name = relieve.198.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+	}
+}
+
+# Fukuoka surrenders (siege progress reached 100%)
+news_event = {
+	id = surrender.202
+	title = surrender.202.t
+	desc = surrender.202.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			ROOT = {
+				delete_unit = { 
+					state = 202
+					disband = no #w ill no refund equipment and manpower
+				}
+				if = {
+					limit = { has_variable  = siege_war_support }
+					add_to_variable = { siege_war_support = -0.1 }
+				} else = {
+					set_variable = { siege_war_support = -0.1 }
+				}
+				if = {
+					limit = {
+						any_enemy_country = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 1619
+								controls_province = 6676
+								controls_province = 1862
+								controls_province = 11584
+								controls_province = 2026
+								controls_province = 6009
+								controls_province = 4630
+								controls_province = 11548
+							}
+						}
+					}
+					random_enemy_country = {
+						limit = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 1619
+								controls_province = 6676
+								controls_province = 1862
+								controls_province = 11584
+								controls_province = 2026
+								controls_province = 6009
+								controls_province = 4630
+								controls_province = 11548
+							}
+						}
+						set_state_controller = 202
+					}
+				} else = {
+					random_enemy_country = {
+						limit = {
+							OR = {
+								controls_province = 1619
+								controls_province = 6676
+								controls_province = 1862
+								controls_province = 11584
+								controls_province = 2026
+								controls_province = 6009
+								controls_province = 4630
+								controls_province = 11548
+							}
+						}
+						set_state_controller = 202
+					}
+				}
+			}
+		}
+	}
+	
+	option = {	# DEFENDER
+		name = surrender.202.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = surrender.202.b
+		trigger = {
+			OR = {
+				OR = {
+					controls_province = 1619
+					any_allied_country = { controls_province = 1619 }
+				}
+				OR = {
+					controls_province = 6676
+					any_allied_country = { controls_province = 6676 }
+				}
+				OR = {
+					controls_province = 1862
+					any_allied_country = { controls_province = 1862 }
+				}
+				OR = {
+					controls_province = 11584
+					any_allied_country = { controls_province = 11584 }
+				}
+				OR = {
+					controls_province = 2026
+					any_allied_country = { controls_province = 2026 }
+				}
+				OR = {
+					controls_province = 6009
+					any_allied_country = { controls_province = 6009 }
+				}
+				OR = {
+					controls_province = 4630
+					any_allied_country = { controls_province = 4630 }
+				}
+				OR = {
+					controls_province = 11548
+					any_allied_country = { controls_province = 11548 }
+				}
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = surrender.202.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Fukuoka is taken (siege progress did not reach 100%)
+news_event = {
+	id = capture.202
+	title = capture.202.t
+	desc = capture.202.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = capture.202.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = capture.202.b
+		trigger = {
+			OR = {
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = capture.202.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Fukuoka is relieved (siege progress did not reach 100%)
+news_event = {
+	id = relieve.202
+	title = relieve.202.t
+	desc = relieve.202.d
+	picture = GFX_news_siege_relieve_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = relieve.202.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+	}
+	option = {	# ATTACKER
+		name = relieve.202.b
+		trigger = {
+			has_war_with = ROOT
+		}
+	}
+	option = {	# NEUTRAL
+		name = relieve.202.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+	}
+}
+
+# Matsuyama surrenders (siege progress reached 100%)
+news_event = {
+	id = surrender.207
+	title = surrender.207.t
+	desc = surrender.207.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			ROOT = {
+				delete_unit = { 
+					state = 207
+					disband = no #w ill no refund equipment and manpower
+				}
+				if = {
+					limit = { has_variable  = siege_war_support }
+					add_to_variable = { siege_war_support = -0.1 }
+				} else = {
+					set_variable = { siege_war_support = -0.1 }
+				}
+				if = {
+					limit = {
+						any_enemy_country = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 11536
+								controls_province = 3467
+								controls_province = 3385
+								controls_province = 4623
+								controls_province = 7134
+								controls_province = 5323
+							}
+						}
+					}
+					random_enemy_country = {
+						limit = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 11536
+								controls_province = 3467
+								controls_province = 3385
+								controls_province = 4623
+								controls_province = 7134
+								controls_province = 5323
+							}
+						}
+						set_state_controller = 207
+					}
+				} else = {
+					random_enemy_country = {
+						limit = {
+							OR = {
+								controls_province = 11536
+								controls_province = 3467
+								controls_province = 3385
+								controls_province = 4623
+								controls_province = 7134
+								controls_province = 5323
+							}
+						}
+						set_state_controller = 207
+					}
+				}
+			}
+		}
+	}
+	
+	option = {	# DEFENDER
+		name = surrender.207.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = surrender.207.b
+		trigger = {
+			OR = {
+				OR = {
+					controls_province = 11536
+					any_allied_country = { controls_province = 11536 }
+				}
+				OR = {
+					controls_province = 3467
+					any_allied_country = { controls_province = 3467 }
+				}
+				OR = {
+					controls_province = 3385
+					any_allied_country = { controls_province = 3385 }
+				}
+				OR = {
+					controls_province = 4623
+					any_allied_country = { controls_province = 4623 }
+				}
+				OR = {
+					controls_province = 7134
+					any_allied_country = { controls_province = 7134 }
+				}
+				OR = {
+					controls_province = 5323
+					any_allied_country = { controls_province = 5323 }
+				}
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = surrender.207.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Matsuyama is taken (siege progress did not reach 100%)
+news_event = {
+	id = capture.207
+	title = capture.207.t
+	desc = capture.207.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = capture.207.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = capture.207.b
+		trigger = {
+			OR = {
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = capture.207.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Matsuyama is relieved (siege progress did not reach 100%)
+news_event = {
+	id = relieve.207
+	title = relieve.207.t
+	desc = relieve.207.d
+	picture = GFX_news_siege_relieve_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = relieve.207.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+	}
+	option = {	# ATTACKER
+		name = relieve.207.b
+		trigger = {
+			has_war_with = ROOT
+		}
+	}
+	option = {	# NEUTRAL
+		name = relieve.207.c
 		trigger = {
 			NOT = {
 				tag = ROOT
@@ -417,6 +3239,786 @@ news_event = {
 	}
 	option = {	# NEUTRAL
 		name = relieve.211.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+	}
+}
+
+# Sendai surrenders (siege progress reached 100%)
+news_event = {
+	id = surrender.213
+	title = surrender.213.t
+	desc = surrender.213.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			ROOT = {
+				delete_unit = { 
+					state = 213
+					disband = no #w ill no refund equipment and manpower
+				}
+				if = {
+					limit = { has_variable  = siege_war_support }
+					add_to_variable = { siege_war_support = -0.1 }
+				} else = {
+					set_variable = { siege_war_support = -0.1 }
+				}
+				if = {
+					limit = {
+						any_enemy_country = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 10268
+								controls_province = 3972
+								controls_province = 10233
+								controls_province = 10221
+								controls_province = 1001
+								controls_province = 5656
+							}
+						}
+					}
+					random_enemy_country = {
+						limit = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 10268
+								controls_province = 3972
+								controls_province = 10233
+								controls_province = 10221
+								controls_province = 1001
+								controls_province = 5656
+							}
+						}
+						set_state_controller = 213
+					}
+				} else = {
+					random_enemy_country = {
+						limit = {
+							OR = {
+								controls_province = 10268
+								controls_province = 3972
+								controls_province = 10233
+								controls_province = 10221
+								controls_province = 1001
+								controls_province = 5656
+							}
+						}
+						set_state_controller = 213
+					}
+				}
+			}
+		}
+	}
+	
+	option = {	# DEFENDER
+		name = surrender.213.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = surrender.213.b
+		trigger = {
+			OR = {
+				OR = {
+					controls_province = 10268
+					any_allied_country = { controls_province = 10268 }
+				}
+				OR = {
+					controls_province = 3972
+					any_allied_country = { controls_province = 3972 }
+				}
+				OR = {
+					controls_province = 10233
+					any_allied_country = { controls_province = 10233 }
+				}
+				OR = {
+					controls_province = 10221
+					any_allied_country = { controls_province = 10221 }
+				}
+				OR = {
+					controls_province = 1001
+					any_allied_country = { controls_province = 1001 }
+				}
+				OR = {
+					controls_province = 5656
+					any_allied_country = { controls_province = 5656 }
+				}
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = surrender.213.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Sendai is taken (siege progress did not reach 100%)
+news_event = {
+	id = capture.213
+	title = capture.213.t
+	desc = capture.213.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = capture.213.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = capture.213.b
+		trigger = {
+			OR = {
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = capture.213.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Sendai is relieved (siege progress did not reach 100%)
+news_event = {
+	id = relieve.213
+	title = relieve.213.t
+	desc = relieve.213.d
+	picture = GFX_news_siege_relieve_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = relieve.213.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+	}
+	option = {	# ATTACKER
+		name = relieve.213.b
+		trigger = {
+			has_war_with = ROOT
+		}
+	}
+	option = {	# NEUTRAL
+		name = relieve.213.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+	}
+}
+
+# Hakodate surrenders (siege progress reached 100%)
+news_event = {
+	id = surrender.214
+	title = surrender.214.t
+	desc = surrender.214.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			ROOT = {
+				delete_unit = { 
+					state = 214
+					disband = no #w ill no refund equipment and manpower
+				}
+				if = {
+					limit = { has_variable  = siege_war_support }
+					add_to_variable = { siege_war_support = -0.1 }
+				} else = {
+					set_variable = { siege_war_support = -0.1 }
+				}
+				if = {
+					limit = {
+						any_enemy_country = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 9454
+								controls_province = 9444
+								controls_province = 9442
+								controls_province = 9458
+								controls_province = 5019
+							}
+						}
+					}
+					random_enemy_country = {
+						limit = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 9454
+								controls_province = 9444
+								controls_province = 9442
+								controls_province = 9458
+								controls_province = 5019
+							}
+						}
+						set_state_controller = 214
+					}
+				} else = {
+					random_enemy_country = {
+						limit = {
+							OR = {
+								controls_province = 9454
+								controls_province = 9444
+								controls_province = 9442
+								controls_province = 9458
+								controls_province = 5019
+							}
+						}
+						set_state_controller = 214
+					}
+				}
+			}
+		}
+	}
+	
+	option = {	# DEFENDER
+		name = surrender.214.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = surrender.214.b
+		trigger = {
+			OR = {
+				OR = {
+					controls_province = 9454
+					any_allied_country = { controls_province = 9454 }
+				}
+				OR = {
+					controls_province = 9444
+					any_allied_country = { controls_province = 9444 }
+				}
+				OR = {
+					controls_province = 9442
+					any_allied_country = { controls_province = 9442 }
+				}
+				OR = {
+					controls_province = 9458
+					any_allied_country = { controls_province = 9458 }
+				}
+				OR = {
+					controls_province = 5019
+					any_allied_country = { controls_province = 5019 }
+				}
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = surrender.214.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Hakodate is taken (siege progress did not reach 100%)
+news_event = {
+	id = capture.214
+	title = capture.214.t
+	desc = capture.214.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = capture.214.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = capture.214.b
+		trigger = {
+			OR = {
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = capture.214.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Hakodate is relieved (siege progress did not reach 100%)
+news_event = {
+	id = relieve.214
+	title = relieve.214.t
+	desc = relieve.214.d
+	picture = GFX_news_siege_relieve_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = relieve.214.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+	}
+	option = {	# ATTACKER
+		name = relieve.214.b
+		trigger = {
+			has_war_with = ROOT
+		}
+	}
+	option = {	# NEUTRAL
+		name = relieve.214.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+	}
+}
+
+# Vladivostok surrenders (siege progress reached 100%)
+news_event = {
+	id = surrender.215
+	title = surrender.215.t
+	desc = surrender.215.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			ROOT = {
+				delete_unit = { 
+					state = 215
+					disband = no #w ill no refund equipment and manpower
+				}
+				if = {
+					limit = { has_variable  = siege_war_support }
+					add_to_variable = { siege_war_support = -0.1 }
+				} else = {
+					set_variable = { siege_war_support = -0.1 }
+				}
+				if = {
+					limit = {
+						any_enemy_country = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 9091
+								controls_province = 9123
+							}
+						}
+					}
+					random_enemy_country = {
+						limit = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 9091
+								controls_province = 9123
+							}
+						}
+						set_state_controller = 215
+					}
+				} else = {
+					random_enemy_country = {
+						limit = {
+							OR = {
+								controls_province = 9091
+								controls_province = 9123
+							}
+						}
+						set_state_controller = 215
+					}
+				}
+			}
+		}
+	}
+	
+	option = {	# DEFENDER
+		name = surrender.215.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = surrender.215.b
+		trigger = {
+			OR = {
+				OR = {
+					controls_province = 9091
+					any_allied_country = { controls_province = 9091 }
+				}
+				OR = {
+					controls_province = 9123
+					any_allied_country = { controls_province = 9123 }
+				}
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = surrender.215.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Vladivostok is taken (siege progress did not reach 100%)
+news_event = {
+	id = capture.215
+	title = capture.215.t
+	desc = capture.215.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = capture.215.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = capture.215.b
+		trigger = {
+			OR = {
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = capture.215.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Vladivostok is relieved (siege progress did not reach 100%)
+news_event = {
+	id = relieve.215
+	title = relieve.215.t
+	desc = relieve.215.d
+	picture = GFX_news_siege_relieve_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = relieve.215.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+	}
+	option = {	# ATTACKER
+		name = relieve.215.b
+		trigger = {
+			has_war_with = ROOT
+		}
+	}
+	option = {	# NEUTRAL
+		name = relieve.215.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+	}
+}
+
+# Yawatahama surrenders (siege progress reached 100%)
+news_event = {
+	id = surrender.254
+	title = surrender.254.t
+	desc = surrender.254.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			ROOT = {
+				delete_unit = { 
+					state = 254
+					disband = no #w ill no refund equipment and manpower
+				}
+				if = {
+					limit = { has_variable  = siege_war_support }
+					add_to_variable = { siege_war_support = -0.1 }
+				} else = {
+					set_variable = { siege_war_support = -0.1 }
+				}
+				if = {
+					limit = {
+						any_enemy_country = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 11568
+								controls_province = 11556
+								controls_province = 11577
+							}
+						}
+					}
+					random_enemy_country = {
+						limit = {
+							is_faction_leader = yes
+							OR = {
+								controls_province = 11568
+								controls_province = 11556
+								controls_province = 11577
+							}
+						}
+						set_state_controller = 254
+					}
+				} else = {
+					random_enemy_country = {
+						limit = {
+							OR = {
+								controls_province = 11568
+								controls_province = 11556
+								controls_province = 11577
+							}
+						}
+						set_state_controller = 254
+					}
+				}
+			}
+		}
+	}
+	
+	option = {	# DEFENDER
+		name = surrender.254.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = surrender.254.b
+		trigger = {
+			OR = {
+				OR = {
+					controls_province = 11568
+					any_allied_country = { controls_province = 11568 }
+				}
+				OR = {
+					controls_province = 11556
+					any_allied_country = { controls_province = 11556 }
+				}
+				OR = {
+					controls_province = 11577
+					any_allied_country = { controls_province = 11577 }
+				}
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = surrender.254.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				has_war_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Yawatahama is taken (siege progress did not reach 100%)
+news_event = {
+	id = capture.254
+	title = capture.254.t
+	desc = capture.254.d
+	picture = GFX_news_siege_surrender_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = capture.254.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# ATTACKER
+		name = capture.254.b
+		trigger = {
+			OR = {
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+	option = {	# NEUTRAL
+		name = capture.254.c
+		trigger = {
+			NOT = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+				tag = ROOT.PREV
+				is_in_faction_with = ROOT.PREV
+			}
+		}
+		ROOT = { effect_tooltip = { add_war_support = -0.1 } }
+	}
+}
+
+# Yawatahama is relieved (siege progress did not reach 100%)
+news_event = {
+	id = relieve.254
+	title = relieve.254.t
+	desc = relieve.254.d
+	picture = GFX_news_siege_relieve_1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# DEFNDER
+		name = relieve.254.a
+		trigger = {
+			OR = {
+				tag = ROOT
+				is_in_faction_with = ROOT
+			}
+		}
+	}
+	option = {	# ATTACKER
+		name = relieve.254.b
+		trigger = {
+			has_war_with = ROOT
+		}
+	}
+	option = {	# NEUTRAL
+		name = relieve.254.c
 		trigger = {
 			NOT = {
 				tag = ROOT
