@@ -63,6 +63,7 @@ scripted_gui = {
 			worldstage_open_button_click = {
 				set_variable = { show_SS_worldstage = 0 }
 				set_variable = { current_theater = 0 }
+				clear_alternative_theater = yes	# this bit may be redundant but we'll run it here just for safety
 			}
 		}
 
@@ -354,7 +355,7 @@ scripted_gui = {
 		parent_window_token = politics_tab
 		dirty = show_SS_worldstage
 		
-		visible = { NOT = { check_variable = { current_theater = 0 } } }
+		visible = { NOT = { check_variable = { current_theater = 0 } has_country_flag = view_alternative_theater_display } }
 		
 		properties = {
 			world_stage_theater_map = {
@@ -369,7 +370,7 @@ scripted_gui = {
 		}
 		
 		effects = {
-			button_close_theater_click = { set_variable = { current_theater = 0 } }
+			button_close_theater_click = { set_variable = { current_theater = 0 } clear_alternative_theater = yes }
 			worldstage_go_to_connection_1_click = {
 				var:current_theater = {
 					log = "test"
@@ -386,6 +387,7 @@ scripted_gui = {
 						}
 					}
 				}
+				switch_theater_displayed = yes
 			}
 			worldstage_go_to_connection_2_click = {
 				var:current_theater = {
@@ -403,6 +405,7 @@ scripted_gui = {
 						}
 					}
 				}
+				switch_theater_displayed = yes
 			}
 			worldstage_go_to_connection_3_click = {
 				var:current_theater = {
@@ -420,6 +423,86 @@ scripted_gui = {
 						}
 					}
 				}
+				switch_theater_displayed = yes
+			}
+		}
+	}
+	
+	SS_worldstage_theater_alternative = {
+		context_type = player_context
+		window_name = "SS_worldstage_container_theater_alternative"
+		parent_window_token = politics_tab
+		dirty = show_SS_worldstage
+		
+		visible = { NOT = { check_variable = { current_theater = 0 } } has_country_flag = view_alternative_theater_display }
+		
+		properties = {
+			world_stage_theater_map = {
+				image = "[THIS.WorldStageGetMapGfx]"
+			}
+		}
+		
+		triggers = {
+			worldstage_go_to_connection_1_visible = { always = yes }
+			worldstage_go_to_connection_2_visible = { if = { check_variable = { number_of_connections_displayed > 1 } } }
+			worldstage_go_to_connection_3_visible = { if = { check_variable = { number_of_connections_displayed > 2 } } }
+		}
+		
+		effects = {
+			button_close_theater_click = { set_variable = { current_theater = 0 } clear_alternative_theater = yes }
+			worldstage_go_to_connection_1_click = {
+				var:current_theater = {
+					log = "test"
+					for_each_loop = {
+						array = connects_to
+						value = my_value
+						index = my_index
+						break = 1
+						#effects
+						if = {
+							limit = { check_variable = { my_index = 0 } }
+							set_variable = { ROOT.current_theater = my_value }
+							log = "go to teather [?my_value]"
+						}
+					}
+				}
+				switch_theater_displayed = yes
+			}
+			worldstage_go_to_connection_2_click = {
+				var:current_theater = {
+					log = "test"
+					for_each_loop = {
+						array = connects_to
+						value = my_value
+						index = my_index
+						break = 2
+						#effects
+						if = {
+							limit = { check_variable = { my_index = 1 } }
+							set_variable = { ROOT.current_theater = my_value }
+							log = "go to teather [?my_value]"
+						}
+					}
+				}
+				switch_theater_displayed = yes
+			}
+			worldstage_go_to_connection_3_click = {
+				var:current_theater = {
+					log = "test"
+					for_each_loop = {
+						array = connects_to
+						value = my_value
+						index = my_index
+						break = 3
+						#effects
+						if = {
+							limit = { check_variable = { my_index = 2 } }
+							set_variable = { ROOT.current_theater = my_value }
+							log = "go to teather [?my_value]"
+						}
+					}
+				}
+				switch_theater_displayed = yes
 			}
 		}
 	}
@@ -440,7 +523,7 @@ scripted_gui = {
 		}
 	}
 	
-	SS_worldstage_notification_off= {
+	SS_worldstage_notification_off = {
 		context_type = player_context
 		window_name = "SS_worldstage_notification_off"
 		parent_window_token = politics_tab
