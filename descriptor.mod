@@ -45,5 +45,6 @@ tags={
 	"Utilities"
 }
 picture="Thumbnail.png"
-version="0.0"
+version="1.0"
 supported_version="1.11.*"
+remote_file_id="2826603870"
