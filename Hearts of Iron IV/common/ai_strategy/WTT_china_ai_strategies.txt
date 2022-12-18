@@ -16,11 +16,18 @@ WTT_add_infiltration_save_equipment = {
 			has_completed_focus = PRC_infiltration
 			has_completed_focus = PRC_anti_japanese_expedition
 		}
+
 	}
 	abort = {
 		OR = {
 			has_war_with = event_target:WTT_current_china_leader
 			NOT = { country_exists = event_target:WTT_current_china_leader }
+			AND = {
+				has_war = yes
+				any_enemy_country = {
+					is_major = yes
+				}
+			}
 		}
 	}
 	
@@ -40,9 +47,17 @@ WTT_remove_infiltration_save_equipment = {
 		}
 	}
 	abort = {
-		any_country = {
-			has_completed_focus = PRC_infiltration
-			has_war_with = ROOT
+		OR = {
+			any_country = {
+				has_completed_focus = PRC_infiltration
+				has_war_with = ROOT
+			}
+			AND = {
+				has_war = yes
+				any_enemy_country = {
+					is_major = yes
+				}
+			}
 		}
 	}
 	ai_strategy = {
@@ -115,6 +130,41 @@ SOV_dont_waste_volunteers_to_chinese_minors = {
 	ai_strategy = {
 		type = send_volunteers_desire
 		id = "YUN"
+		value = -100
+	
+	}
+}
+SOV_only_bother_with_volunteers_if_chi_losing = {
+	enable = {
+		tag = SOV
+		date < 1941.1.1
+		CHI = { surrender_progress < 0.4 }
+	}
+	abort = {
+		OR ={
+			date > 1941.1.1
+			CHI = { surrender_progress > 0.3 }
+		}
+	}
+	
+	ai_strategy = {
+		type = send_volunteers_desire
+		id = "YUN"
+		value = -100
+	}
+	ai_strategy = {
+		type = send_volunteers_desire
+		id = "XSM"
+		value = -100
+	}
+	ai_strategy = {
+		type = send_volunteers_desire
+		id = "SHX"
+		value = -100
+	}
+	ai_strategy = {
+		type = send_volunteers_desire
+		id = "CHI"
 		value = -100
 	}
 }
