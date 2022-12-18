@@ -1,0 +1,352 @@
+last_date = "1945.1.1"
+
+tests = {
+
+    germany_defeats_france = {
+
+         success = {
+             date > "1939.1.1"
+             date < "1941.1.1"
+             FRA = { has_capitulated = yes }
+         }
+
+         fail = {
+             date > "1941.1.1"
+         }
+    }
+	
+	germany_at_war_with_poland = {
+
+        success = {
+            GER = { has_war_with = POL }
+        }
+    }
+	
+	germany_defeats_poland = {
+
+         success = {
+             date > "1939.1.1"
+             date < "1941.1.1"
+             POL = {   
+				OR = { 
+					has_capitulated = yes 
+					exists = no
+				}
+			 }
+         }
+
+         fail = {
+             date > "1941.1.1"
+         }
+    }
+	
+	germany_design_garrison = {
+
+         success = {
+             date > "1939.1.1"
+             date < "1945.1.1"
+             GER = { ai_has_role_template = garrison }
+         }
+
+         fail = {
+             date > "1945.1.1"
+         }
+    }
+	
+	germany_design_anti_tank = {
+
+         success = {
+             date > "1939.1.1"
+             date < "1955.1.1"
+             GER = { ai_has_role_template = anti_armor }
+         }
+
+         fail = {
+             date > "1955.1.1"
+         }
+    }
+	
+	germany_fields_garrison = {
+
+         success = {
+             date > "1939.1.1"
+             date < "1945.1.1"
+             GER = { ai_has_role_division = garrison }
+         }
+
+         fail = {
+             date > "1941.1.1"
+         }
+    }
+
+    germany_avoids_war_with_switzerland = {
+        success = {
+            date > 1942.1.1
+            GER = {   
+				OR = { 
+					has_capitulated = yes 
+					exists = no
+				}
+			}
+        }
+
+        fail = {
+            date < 1942.1.1
+            GER = { has_war_with = SWI }
+        }
+    }
+
+    germany_at_war_with_luxembourg = {
+
+        success = {
+            GER = { has_war_with = LUX }
+        }
+    }
+
+    germany_at_war_with_belgium = {
+
+        success = {
+            GER = { has_war_with = BEL }
+        }
+    }
+
+    germany_at_war_with_netherlands = {
+
+        success = {
+            GER = { has_war_with = HOL }
+        }
+    }
+
+    germany_at_war_with_denmark = {
+
+        success = {
+            GER = { has_war_with = DEN }
+        }
+    }
+
+    germany_at_war_with_norway = {
+        success = {
+            GER = { has_war_with = NOR }
+        }
+    }
+
+    germany_at_war_with_soviet_union = {
+
+        success = {
+            GER = { has_war_with = SOV }
+        }
+
+        fail = {
+             date > "1942.1.1"
+        }
+    }
+
+    germany_capitulated = {
+        acceptable_fail_rate = 1.0
+
+        fail = {
+            GER = {  
+				OR = { 
+					has_capitulated = yes 
+					exists = no
+                    is_subject = yes
+				}
+			}
+        }
+        success = {
+             date > "1950.1.1"
+        }
+    }
+    soviet_capitulated = {
+        acceptable_fail_rate = 1.0
+        
+        fail = {
+            SOV = {  
+                OR = { 
+                    has_capitulated = yes 
+                    exists = no
+                    is_subject = yes
+                }
+            }
+        }
+        success = {
+             date > "1950.1.1"
+        }
+    }
+
+    GER_kicking_in_the_rotten_door = {
+
+        success = {
+            date < "1944.1.1"
+            SOV = {  
+                surrender_progress > 0.10
+            }
+        }
+
+        fail = {
+             date > "1944.1.1"
+        }
+    }
+
+    GER_soviet_has_fallen_too_early = {
+
+        success = {
+            date > "1945.1.1"                
+        }
+
+        fail = {
+             date < "1945.1.1"
+             SOV = {  
+                OR = { 
+                    has_capitulated = yes 
+                    exists = no
+                }
+            }
+        }
+    }
+
+
+    germany_develops_nukes = {
+         success = {
+             GER = { num_of_nukes > 0 }
+         }
+    }
+
+    maginot_line_not_cleaned_up_shortly_after_france_falls = {
+        acceptable_fail_rate = 0.25
+
+        success = {
+            date > "1941.1.1"
+        }
+
+        fail = {
+             date < "1941.1.1"
+             FRA = {
+                OR = {
+                    has_capitulated = yes
+                    exists = no
+                }
+                days_since_capitulated > 21
+            }
+            28 = { # alasce-lorraine
+                CONTROLLER = {
+                    NOT = {
+                        is_in_faction_with = GER
+                    }
+                }
+            }
+        }
+    }
+
+    maginot_line_not_cleaned_up_long_after_france_falls = {
+        success = {
+            date > "1941.1.1"
+        }
+
+        fail = {
+             date < "1941.1.1"
+             FRA = {
+                OR = {
+                    has_capitulated = yes
+                    exists = no
+                }
+                days_since_capitulated > 56
+            }
+            28 = { # alasce-lorraine
+                CONTROLLER = {
+                    NOT = {
+                        is_in_faction_with = GER
+                    }
+                }
+            }
+        }
+    }
+
+    # We expect that Germany controls northern France.
+    # If some other ally controls this area instead, something
+    # went wrong and will probably mess up the Soviet war.
+    maginot_line_controlled_by_german_ally_after_france_falls = {
+        success = {
+            date > "1941.1.1"
+        }
+
+        fail = {
+             date < "1941.1.1"
+             FRA = {
+                OR = {
+                    has_capitulated = yes
+                    exists = no
+                }
+            }
+            28 = { # alasce-lorraine
+                CONTROLLER = {
+                    NOT = {
+                        tag = GER
+                    }
+                    is_in_faction_with = GER
+                }
+            }
+        }
+    }
+
+    # TODO Drikus this will need updating later 
+    spain_not_in_axis_early = {
+        success = {
+            has_global_flag = scw_over
+            date > "1945.1.1"
+            any_country = {
+                original_tag = SPR
+                has_government = fascism
+                exists = yes
+
+                # they got rid of idea then we dont care
+                NOT = { has_idea = SPA_recovering_from_civil_war }
+            }
+        }
+
+        fail = {
+            has_global_flag = scw_over
+            date < "1945.1.1"
+            any_country = {
+                original_tag = SPR
+                has_government = fascism
+                exists = yes
+
+                has_idea = SPA_recovering_from_civil_war
+                is_in_faction_with = GER
+            }
+        }
+    }
+
+
+    france_doesnt_have_an_uprising = {
+        success = {
+            date > "1944.1.1"
+        }
+
+        fail = {
+            GER = {
+                core_resistance = {
+                    occupied_country_tag = FRA
+                    value > 85
+                }
+            }
+        }
+    }
+
+    poland_doesnt_have_an_uprising = {
+        success = {
+            date > "1944.1.1"
+        }
+
+        fail = {
+            GER = {
+                core_resistance = {
+                    occupied_country_tag = POL
+                    value > 85
+                }
+            }            
+        }
+    }
+    
+}

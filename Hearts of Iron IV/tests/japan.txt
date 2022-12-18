@@ -1,0 +1,139 @@
+last_date = "1945.1.1"
+
+tests = {
+
+	japan_design_garrison = {
+
+         success = {
+             date > "1939.1.1"
+             date < "1945.1.1"
+             JAP = { ai_has_role_template = garrison }
+         }
+
+         fail = {
+             date > "1941.1.1"
+         }
+    }
+		
+    japan_starts_early_war_with_china = {
+
+        success = {
+            JAP = { has_war_with = CHI }
+        }
+
+        fail = {
+             date > "1939.1.1"
+        }
+    }
+
+	japan_at_war_with_uk = {
+
+        success = {
+            JAP = { has_war_with = ENG }
+        }
+    }
+
+    japan_capitulated = {
+
+        success = {
+            JAP = { 
+			OR = { 
+					has_capitulated = yes 
+					exists = no
+				}
+			}
+        }
+    }
+
+    JAP_invaded_DEI = {
+        acceptable_fail_rate = 0.5
+        success = {
+            JAP = {
+                has_war_with = "INS"
+            }
+            "INS" = {
+                any_owned_state = {
+                    is_controlled_by = JAP
+                }
+            }
+        }
+        fail = {
+            date > "1943.6.6"
+        }
+    }
+
+    JAP_casualties_are_ok = {
+        acceptable_fail_rate = 0.1
+        success = {
+            date > "1940.1.1"
+            JAP = {
+                casualties < 1500000
+            }
+        }
+        fail = {
+            date < "1940.1.2"
+            JAP = {
+                casualties > 1500000
+            }
+        }
+    }
+
+    china_deafeated_by_japan = {
+        acceptable_fail_rate = 0.5
+
+        success = {
+            date > "1936.1.1"
+            date < "1948.6.6"
+            CHI = {  
+                OR = { 
+                    has_capitulated = yes 
+                    exists = no
+                    is_subject_of = JAP
+                }
+            }
+        }
+
+        fail = {
+            date > "1948.6.6"
+        }
+    }
+
+    china_deafeated_by_japan_too_easily = {
+        acceptable_fail_rate = 0.1        
+        success = {
+            date > "1940.1.1"
+        }
+
+         fail = {
+             date > "1936.1.1"
+             date < "1940.1.1"
+             CHI = {  
+                OR = { 
+                    has_capitulated = yes 
+                    exists = no
+                    is_subject_of = JAP
+                }
+            }
+        }
+    }
+
+
+    USA_invaded_JAP_homeland_too_early = {
+        success = {
+            date > "1943.1.1"
+        }
+        fail = {
+            date < "1943.1.1"   
+            JAP = {
+                has_war_with = USA
+            }
+            JAP = {
+                any_owned_state = {
+                    is_island_state = no
+                    is_controlled_by = USA
+                }
+            }
+        }
+    }
+
+}

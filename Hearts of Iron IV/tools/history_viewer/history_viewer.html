@@ -1,0 +1,1813 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="UTF-8" />
+
+    <style>
+        html {
+            height: 100%;
+        }
+        
+        #body {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+        }
+        
+        div.heatmap {
+            width: 1408;
+            height: 512;
+            background-size: contain;
+            padding: 0;
+        }
+        
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 25px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+        }
+        
+        .slider:hover {
+            opacity: 1;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            background: #4CAF50;
+            cursor: pointer;
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            background: #4CAF50;
+            cursor: pointer;
+        }
+		
+		
+        .slider_small {
+            -webkit-appearance: none;
+            width: 100px;
+            height: 10px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+        }
+        
+        .slider_small:hover {
+            opacity: 1;
+        }
+        
+        .slider_small::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 10px;
+            height: 10px;
+            background: #4CAF50;
+            cursor: pointer;
+        }
+        
+        .slider_small::-moz-range-thumb {
+            width: 10px;
+            height: 10px;
+            background: #4CAF50;
+            cursor: pointer;
+        }
+		/* Absolute Center Spinner */
+		.loading {
+		  position: fixed;
+		  z-index: 999;
+		  height: 2em;
+		  width: 2em;
+		  overflow: show;
+		  margin: auto;
+		  top: 0;
+		  left: 0;
+		  bottom: 0;
+		  right: 0;
+		}
+
+		/* Transparent Overlay */
+		.loading:before {
+		  content: '';
+		  display: block;
+		  position: fixed;
+		  top: 0;
+		  left: 0;
+		  width: 100%;
+		  height: 100%;
+			background: radial-gradient(rgba(20, 20, 20,.8), rgba(0, 0, 0, .8));
+
+		  background: -webkit-radial-gradient(rgba(20, 20, 20,.8), rgba(0, 0, 0,.8));
+		}
+
+		/* :not(:required) hides these rules from IE9 and below */
+		.loading:not(:required) {
+		  /* hide "loading..." text */
+		  font: 0/0 a;
+		  color: transparent;
+		  text-shadow: none;
+		  background-color: transparent;
+		  border: 0;
+		}
+
+		.loading:not(:required):after {
+		  content: '';
+		  display: block;
+		  font-size: 10px;
+		  width: 1em;
+		  height: 1em;
+		  margin-top: -0.5em;
+		  -webkit-animation: spinner 1500ms infinite linear;
+		  -moz-animation: spinner 1500ms infinite linear;
+		  -ms-animation: spinner 1500ms infinite linear;
+		  -o-animation: spinner 1500ms infinite linear;
+		  animation: spinner 1500ms infinite linear;
+		  border-radius: 0.5em;
+		  -webkit-box-shadow: rgba(255,255,255, 0.75) 1.5em 0 0 0, rgba(255,255,255, 0.75) 1.1em 1.1em 0 0, rgba(255,255,255, 0.75) 0 1.5em 0 0, rgba(255,255,255, 0.75) -1.1em 1.1em 0 0, rgba(255,255,255, 0.75) -1.5em 0 0 0, rgba(255,255,255, 0.75) -1.1em -1.1em 0 0, rgba(255,255,255, 0.75) 0 -1.5em 0 0, rgba(255,255,255, 0.75) 1.1em -1.1em 0 0;
+		box-shadow: rgba(255,255,255, 0.75) 1.5em 0 0 0, rgba(255,255,255, 0.75) 1.1em 1.1em 0 0, rgba(255,255,255, 0.75) 0 1.5em 0 0, rgba(255,255,255, 0.75) -1.1em 1.1em 0 0, rgba(255,255,255, 0.75) -1.5em 0 0 0, rgba(255,255,255, 0.75) -1.1em -1.1em 0 0, rgba(255,255,255, 0.75) 0 -1.5em 0 0, rgba(255,255,255, 0.75) 1.1em -1.1em 0 0;
+		}
+
+		/* Animation */
+
+		@-webkit-keyframes spinner {
+		  0% {
+			-webkit-transform: rotate(0deg);
+			-moz-transform: rotate(0deg);
+			-ms-transform: rotate(0deg);
+			-o-transform: rotate(0deg);
+			transform: rotate(0deg);
+		  }
+		  100% {
+			-webkit-transform: rotate(360deg);
+			-moz-transform: rotate(360deg);
+			-ms-transform: rotate(360deg);
+			-o-transform: rotate(360deg);
+			transform: rotate(360deg);
+		  }
+		}
+		@-moz-keyframes spinner {
+		  0% {
+			-webkit-transform: rotate(0deg);
+			-moz-transform: rotate(0deg);
+			-ms-transform: rotate(0deg);
+			-o-transform: rotate(0deg);
+			transform: rotate(0deg);
+		  }
+		  100% {
+			-webkit-transform: rotate(360deg);
+			-moz-transform: rotate(360deg);
+			-ms-transform: rotate(360deg);
+			-o-transform: rotate(360deg);
+			transform: rotate(360deg);
+		  }
+		}
+		@-o-keyframes spinner {
+		  0% {
+			-webkit-transform: rotate(0deg);
+			-moz-transform: rotate(0deg);
+			-ms-transform: rotate(0deg);
+			-o-transform: rotate(0deg);
+			transform: rotate(0deg);
+		  }
+		  100% {
+			-webkit-transform: rotate(360deg);
+			-moz-transform: rotate(360deg);
+			-ms-transform: rotate(360deg);
+			-o-transform: rotate(360deg);
+			transform: rotate(360deg);
+		  }
+		}
+		@keyframes spinner {
+		  0% {
+			-webkit-transform: rotate(0deg);
+			-moz-transform: rotate(0deg);
+			-ms-transform: rotate(0deg);
+			-o-transform: rotate(0deg);
+			transform: rotate(0deg);
+		  }
+		  100% {
+			-webkit-transform: rotate(360deg);
+			-moz-transform: rotate(360deg);
+			-ms-transform: rotate(360deg);
+			-o-transform: rotate(360deg);
+			transform: rotate(360deg);
+		  }
+		}
+    </style>
+    <script type="text/javascript" src="jszip.min.js"></script>
+    <script type="text/javascript" src="heatmap.min.js"></script>
+
+    <script>
+        var heatmapInstance = 0;
+
+        var jsons = [];
+        var count = 0;
+        var current = -1;
+
+        var scale = 4.0;
+
+        var jsons = []
+        var canvasses = []
+
+        var toLoad = 0;
+
+        var diplomacyTag = null;
+
+        var canvas = 0;
+        var context = 0;
+
+        var selecting = false;
+        var selected = false;
+
+        var clickLoc = null;
+		var maxPath = 100;
+		
+		var logTags = [];
+		
+		var provs = [];
+		var colorArray = ['#FF6633', '#FFB399', '#FF33FF', '#FFFF99', '#00B3E6', 
+		  '#E6B333', '#3366E6', '#999966', '#99FF99', '#B34D4D',
+		  '#80B300', '#809900', '#E6B3B3', '#6680B3', '#66991A', 
+		  '#FF99E6', '#CCFF1A', '#FF1A66', '#E6331A', '#33FFCC',
+		  '#66994D', '#B366CC', '#4D8000', '#B33300', '#CC80CC', 
+		  '#66664D', '#991AFF', '#E666FF', '#4DB3FF', '#1AB399',
+		  '#E666B3', '#33991A', '#CC9999', '#B3B31A', '#00E680', 
+		  '#4D8066', '#809980', '#E6FF80', '#1AFF33', '#999933',
+		  '#FF3380', '#CCCC00', '#66E64D', '#4D80CC', '#9900B3', 
+		  '#E64D66', '#4DB380', '#FF4D4D', '#99E6E6', '#6666FF'];
+		  
+        function AddLoad() 
+		{
+            toLoad++;
+        }
+
+        function SubLoad() 
+		{
+            toLoad--;
+            if (toLoad == 0) 
+			{
+                console.log("all loaded");
+                buildAll();
+                build(count - 1);
+            }
+        }
+
+        function loadImage(zip, t, file) 
+		{
+            f = zip.file(file);
+            if (f == null) 
+			{
+                return;
+            }
+
+            AddLoad();
+
+            f.async("arraybuffer")
+                .then(function(content) 
+					{
+
+                        console.log("loaded image " + file);
+
+                        var buffer = new Uint8Array(content);
+                        var blob = new Blob([buffer.buffer]);
+                        var img = new Image;
+                        img.onload = function() 
+						{
+
+                            var buffer = document.createElement('canvas');
+                            buffer.width = img.width;
+                            buffer.height = img.height;
+
+                            var ctxbuffer = buffer.getContext('2d');
+
+                            ctxbuffer.drawImage(img, 0, 0);
+
+                            canvasses[t] = buffer;
+                            SubLoad();
+                        }
+                        img.onerror = function() 
+						{
+                            console.log("err");
+                            SubLoad();
+                        }
+                        img.src = URL.createObjectURL(blob);
+
+                    },
+                    function(e) 
+					{
+                        console.log("Error reading " + file.name + " : " + e.message);
+                        SubLoad();
+                    });
+        }
+
+		var serial = false;
+		
+        function loadJson(zip, t) 
+		{
+            var f = zip.file(t + ".txt");
+            if (f == null) return;
+            AddLoad();
+            f.async("string")
+                .then(function(content) 
+					{
+                        console.log("loaded json " + t);
+
+                        jsons[t] = JSON.parse(content);
+						
+						var provList = jsons[t]["provs"];
+						for ( var val in provList )
+						{
+							provs[ parseInt( val ) ] = provList[ val ];
+						}
+						
+						
+                        count++;
+
+                        var imageFile = jsons[t]["map_file"];
+                        loadImage(zip, t, imageFile);
+                        if (serial) loadJson(zip, t + 1);
+
+                        SubLoad();
+                    },
+                    function(e) 
+					{
+                        console.log("Error reading " + file.name + " : " + e.message);
+                        SubLoad();
+                    });
+        }
+
+        function loadAll(response) 
+		{
+            var zip = new JSZip();
+
+			document.getElementById("loadingContainer").style.visibility = "visible";
+            jsons = []
+            canvasses = []
+			count = 0;
+            current = -1;
+            toLoad = 0;
+            diplomacyTag = null;
+            selected = false;
+            selecting = false;
+
+            zip.loadAsync(response).then(function(zip) 
+			{
+				if (serial )
+				{
+					loadJson(zip, 0);
+				}
+				else
+				{
+					var t = 0;
+					while ( zip.file( t + ".txt" ) )
+					{
+						loadJson(zip, t);
+						t++;
+					}
+				}
+            });
+        }
+
+        function dropHandler(ev) 
+		{
+            ev.preventDefault();
+
+            if (ev.dataTransfer.items) 
+			{
+                for (var i = 0; i < ev.dataTransfer.items.length; i++) 
+				{
+                    if (ev.dataTransfer.items[i].kind === 'file') 
+					{
+                        var file = ev.dataTransfer.items[i].getAsFile();
+                        loadAll(file);
+                        break;
+                    }
+                }
+            } 
+			else 
+			{
+                // Use DataTransfer interface to access the file(s)
+                for (var i = 0; i < ev.dataTransfer.files.length; i++) 
+				{
+                    loadAll(ev.dataTransfer.files[i]);
+                    break;
+                }
+            }
+        }
+
+        function clamp(num, min, max) 
+		{
+            return num <= min ? min : num >= max ? max : num;
+        }
+
+        function clearSelectedCountries() 
+		{
+            var chk_arr = document.getElementsByName("selectedCountries");
+            for (k = 0; k < chk_arr.length; k++) 
+			{
+                chk_arr[k].checked = false;
+            }
+            var chk_arr = document.getElementsByName("selectedTags");
+            for (k = 0; k < chk_arr.length; k++) 
+			{
+                chk_arr[k].checked = false;
+            }
+            var chk_arr = document.getElementsByName("selectedTypes");
+            for (k = 0; k < chk_arr.length; k++) 
+			{
+                chk_arr[k].checked = false;
+            }
+            var chk_arr = document.getElementsByName("selectedOther");
+            for (k = 0; k < chk_arr.length; k++) 
+			{
+                chk_arr[k].checked = false;
+            }
+            var chk_arr = document.getElementsByName("resistanceRadio");
+            for (k = 0; k < chk_arr.length; k++) 
+			{
+                chk_arr[k].checked = false;
+            }
+            checkChange();
+        }
+		function convertCoor( provId )
+		{
+			var x = Math.floor( provs[provId][0] / scale);
+			var y = Math.floor((selectionCanvas.height - provs[provId][1] / scale));
+			x = clamp(x, 0, selectionCanvas.width - 1);
+			y = clamp(y, 0, selectionCanvas.height - 1);
+			
+			return { x, y };
+		}
+		
+		function AddMoveLine( coor, coor2, w, color )
+		{
+			guiCanvasContext.beginPath();
+			var xDist = Math.abs( coor.x - coor2.x );
+			if ( xDist < guiCanvas.width / 2 )
+			{
+				guiCanvasContext.moveTo(coor.x, coor.y);
+				guiCanvasContext.lineTo(coor2.x, coor2.y);
+			}
+			else
+			{
+				if ( coor2.x > coor.x )
+				{
+					guiCanvasContext.moveTo(coor.x, coor.y);
+					guiCanvasContext.lineTo(coor2.x - guiCanvas.width, coor2.y);
+					
+					guiCanvasContext.moveTo(coor.x + guiCanvas.width, coor.y);
+					guiCanvasContext.lineTo(coor2.x, coor2.y);
+				}
+				else
+				{
+					guiCanvasContext.moveTo(coor.x, coor.y);
+					guiCanvasContext.lineTo(coor2.x + guiCanvas.width, coor2.y);
+					
+					guiCanvasContext.moveTo(coor.x - guiCanvas.width, coor.y);
+					guiCanvasContext.lineTo(coor2.x, coor2.y);
+				}
+			}
+			
+			if ( color )
+			{
+				guiCanvasContext.lineWidth = w + 2;
+				guiCanvasContext.strokeStyle = "black";
+				guiCanvasContext.stroke();
+			}
+			guiCanvasContext.lineWidth = w;
+			guiCanvasContext.strokeStyle = color ? color : "black";
+			guiCanvasContext.stroke();
+		}
+        function showSelectedInfo( showAll ) 
+		{
+            document.getElementById("info").innerHTML = ""
+            var chk_arr = document.getElementsByName("selectedCountries");
+            var countries = jsons[current]["countries"];
+
+            var anySelected = false;
+			
+			var addedLawColor = [];
+			var addedLawColorIndex = [];
+			var addedLawColorCount = 0;
+			
+            for (k = 0; k < chk_arr.length; k++) 
+			{
+                if (chk_arr[k].checked) 
+				{
+                    anySelected = true;
+                }
+            }
+			var numDays = jsons[current][ "num_days" ];
+			if ( !numDays )
+			{
+				numDays = 30;
+			}
+			
+            guiCanvasContext.clearRect(0, 0, guiCanvas.width, guiCanvas.height);
+            for (k = 0; k < chk_arr.length; k++) 
+			{
+                if (chk_arr[k].checked || (anySelected == false && chk_arr[k].value == diplomacyTag ) ) 
+				{
+                    var armyCount = 0;
+                    var country = countries[chk_arr[k].value];
+					
+                    var armies = country["armies"];
+                    for (var val in armies) 
+					{
+						var coor = convertCoor( armies[val] );
+                        if ( showAll || selectionCanvasContext.getImageData(coor.x, coor.y, 1, 1).data[0] > 0) 
+						{
+                            armyCount++;
+                        }
+                    }
+
+                    var navyCount = 0;
+                    var addedNavies = [];
+                    var navies = country["navies"];
+                    for (var val in navies) 
+					{
+						var coor = convertCoor( navies[ val ][ 0 ] );
+                        if (showAll || selectionCanvasContext.getImageData(coor.x, coor.y, 1, 1).data[0] > 0) 
+						{
+                            if (addedNavies[navies[val][2]] == null) 
+							{
+                                addedNavies[navies[val][2]] = true;
+                                navyCount++;
+                            }
+                        }
+                    }
+
+                    var addedNavyMissions = [];
+                    var addedNavyMissionsCounts = [];
+                    var navyMissionNames = ["HOLD", "PATROL", "STRIKE_FORCE", "CONVOY_RAIDING", "CONVOY_ESCORT", "MINES_PLANTING", "MINES_SWEEPING", "TRAINING", "RESERVE_FLEET", "NAVAL_INVASION_SUPPORT"];
+
+                    var navalMissions = country["naval_missions"];
+                    for (var val in navalMissions) 
+					{
+						var coor = convertCoor( navalMissions[ val ][ 0 ] );
+                        if (showAll || selectionCanvasContext.getImageData(coor.x, coor.y, 1, 1).data[0] > 0) 
+						{
+                            if (addedNavyMissions[navalMissions[val][2]] == null) 
+							{
+                                addedNavyMissions[navalMissions[val][2]] = true;
+
+                                if (addedNavyMissionsCounts[navalMissions[val][2]] == null) 
+								{
+                                    addedNavyMissionsCounts[navalMissions[val][2]] = 1;
+                                } 
+								else 
+								{
+                                    addedNavyMissionsCounts[navalMissions[val][2]]++;
+                                }
+
+                                if (addedNavies[navalMissions[val][2]] == null) 
+								{
+                                    addedNavies[navalMissions[val][2]] = true;
+                                    navyCount++;
+                                }
+                            }
+                        }
+                    }
+
+                    var addedAirMissionsCounts = [];
+                    var airMissionNames = ["AIR_SUPERIORITY", "CAS", "INTERCEPTION", "STRATEGIC_BOMBER", "NAVAL_BOMBER", "DROP_NUKE", "PARADROP", "NAVAL_KAMIKAZE", "PORT_STRIKE", "AIR_SUPPLY", "TRAINING", "NAVAL_MINES_PLANTING", "NAVAL_MINES_SWEEPING"];
+
+                    var airMissions = country["air_missions"];
+                    for (var val in airMissions) 
+					{
+						var coor = convertCoor( airMissions[ val ][ 0 ] );
+                        if (showAll || selectionCanvasContext.getImageData(coor.x, coor.y, 1, 1).data[0] > 0) 
+						{
+                            if (addedAirMissionsCounts[airMissions[val][2]] == null) 
+							{
+                                addedAirMissionsCounts[airMissions[val][2]] = airMissions[val][2];
+                            } 
+							else 
+							{
+                                addedAirMissionsCounts[airMissions[val][2]] += airMissions[val][2];
+                            }
+                        }
+                    }
+					var totalDigIn = 0.0;
+					var totalMaxDigIn = 0.0;
+					
+					var totalCombats = 0.0;
+					var totalAttackers = 0.0;
+					var totalDefenders = 0.0;
+					var totalUnits = 0.0;
+					var totalUnitPath = 0.0;
+					
+					var pathClamp = getDataSliderValue( "pathRange" ) * maxPath;
+					
+					var provinceDump = country["province_data"];
+					if ( provinceDump )
+					{
+						for (var val in provinceDump) 
+						{
+							var coor = convertCoor( provinceDump[ val ]["pos"] );
+							if ( showAll || selectionCanvasContext.getImageData(coor.x, coor.y, 1, 1).data[0] > 0)
+							{
+								var entry = provinceDump[ val ];
+								
+								for ( val2 in entry[ "dig_in_ratios" ] )
+								{
+									var digIn = entry[ "dig_in_ratios" ][val2];
+									totalDigIn += digIn[ 0 ] / 100.0;
+									totalMaxDigIn += digIn[ 1 ];
+								}
+								
+								if (entry[ "num_in_combat" ])
+								{
+									totalCombats += entry[ "num_in_combat" ];
+								}
+								if (entry[ "num_attacking" ])
+								{
+									totalAttackers += entry[ "num_attacking" ];
+								}
+								if (entry[ "num_defending" ])
+								{
+									totalDefenders += entry[ "num_defending" ];
+								}
+								if (entry[ "num_units" ])
+								{
+									totalUnits += entry[ "num_units" ];
+								}
+								
+								for ( val2 in entry[ "move_data" ] )
+								{
+									totalUnitPath += entry[ "move_data" ][ val2 ][ 1 ];
+								}
+							
+								if ( chk_arr[k].checked && document.getElementById("showPathLine").checked )
+								{
+									if (document.getElementById("showPath").checked )
+									{
+										for ( val2 in provinceDump[ val ][ "move_data" ] )
+										{
+											if ( provinceDump[ val ][ "move_data" ][ val2 ][ 1 ] >= pathClamp )
+											{
+												var coor2 = convertCoor( provinceDump[ val ][ "move_data" ][ val2 ][ 0 ] );
+												AddMoveLine( coor, coor2, 1);
+											}
+										}
+									}
+								}
+							}
+							
+							if ( chk_arr[k].checked && document.getElementById("showPathLine").checked && document.getElementById("showPathEnd").checked )
+							{
+								if (document.getElementById("showPathEnd").checked )
+								{
+									for ( val2 in provinceDump[ val ][ "move_data" ] )
+									{
+										var coor = convertCoor( provinceDump[ val ][ "pos" ] );
+										if ( provinceDump[ val ][ "move_data" ][ val2 ][ 1 ] >= pathClamp )
+										{
+											var coor2 = convertCoor( provinceDump[ val ][ "move_data" ][ val2 ][ 0 ] );
+											if (selectionCanvasContext.getImageData(coor2.x, coor2.y, 1, 1).data[0] > 0)
+											{
+												AddMoveLine( coor, coor2, 1);
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					totalCombats /= numDays;
+					totalAttackers /= numDays;
+					totalDefenders /= numDays;
+					totalUnits /= numDays;
+					totalUnitPath /= numDays;
+
+
+                    var str = country["name"];
+					str += "<br/>  Army Count : " + armyCount;
+					
+					if ( totalMaxDigIn > 0.0 )
+					{
+						str += "<br/>  &nbsp&nbspAvg Dig In: " + ( totalDigIn / totalMaxDigIn ).toFixed( 2 );
+					}
+					if ( totalUnits > 0 )
+					{
+						str += "<br/>  &nbsp&nbspTotal Combats: " +  totalCombats.toFixed( 1 ) + " ( ratio: " + (totalCombats / totalUnits).toFixed( 2 ) + ")";
+						str += "<br/>  &nbsp&nbspTotal Attacker: " +  totalAttackers.toFixed( 1 ) + " ( ratio: " + (totalAttackers / totalUnits).toFixed( 2 ) + ")";
+						str += "<br/>  &nbsp&nbspTotal Defender: " +  totalDefenders.toFixed( 1 ) + " ( ratio: " + (totalDefenders / totalUnits).toFixed( 2 ) + ")";
+						str += "<br/>  &nbsp&nbspPath: " +  totalUnitPath.toFixed( 1 ) + " ( ratio: " + (totalUnitPath / totalUnits).toFixed( 2 ) + ")";
+					}
+					
+					
+					if ( country["resistance_data"] )
+					{
+						var totalResistance = 0;
+						var totalResistanceTarget = 0;
+						var totalCompliance = 0;
+						var totalGarrisonRatio = 0;
+						var totalEqRatio = 0;
+						var totalManpowerRatio = 0;
+						var lawCount = [];
+						var totalCount = 0;
+						for ( var val2 in country["resistance_data"] )
+						{
+							var data = country["resistance_data"][ val2 ];
+							var coor = convertCoor( val2 );
+							
+							if ( chk_arr[k].checked && ( showAll || selectionCanvasContext.getImageData(coor.x, coor.y, 1, 1).data[0] > 0 ) )
+							{
+								totalCount = totalCount + 1;
+								totalResistance += data["resistance"];
+								totalResistanceTarget += data["resistance_target"];
+								totalCompliance += data["compliance"];
+								totalGarrisonRatio += data[ "garrison_ratio" ];
+								totalEqRatio += data[ "eq_ratio" ];
+								totalManpowerRatio += data[ "manpower_ratio" ];
+								
+								if ( lawCount[ data["law"] ] == undefined )
+								{
+									lawCount[ data["law"] ] = 1;
+									addedLawColor[ data[ "law" ] ] = colorArray[ addedLawColorCount ];
+									addedLawColorIndex[ data[ "law" ] ] = addedLawColorCount;
+									addedLawColorCount = addedLawColorCount + 1;
+								}
+								else
+								{
+									lawCount[ data["law"] ] = lawCount[ data["law"] ] + 1;
+								}
+							}
+						}
+						
+						if ( totalCount > 0 )
+						{
+							str += "<br/>"
+							str += "<br/>  &nbsp&nbspAvg. Resistance: " + ( totalResistance / totalCount ).toFixed( 2 );
+							str += "<br/>  &nbsp&nbspAvg. Compliance: " + ( totalCompliance / totalCount).toFixed( 2 );
+							str += "<br/>  &nbsp&nbspAvg. Resistance Target: " + ( totalResistanceTarget / totalCount).toFixed( 2 );
+							str += "<br/>  &nbsp&nbspAvg. Garrison/Man/Eq Ratio: " + ( totalGarrisonRatio / totalCount).toFixed( 2 ) + "/" + ( totalManpowerRatio / totalCount).toFixed( 2 ) + "/" + ( totalEqRatio / totalCount).toFixed( 2 );
+							for ( var val2 in lawCount )
+							{
+								str += "<br/>  <font color='" + addedLawColor[ val2 ] + "' >"+ addedLawColorIndex[ val2 ] + " " + val2 + ": " + lawCount[ val2 ] + "</font>";
+							}
+							str += "<br/>"
+						}
+					}
+					
+					if ( country["resistance_data"] && chk_arr[k].checked 
+						&& ( document.getElementById("showResistance").checked 
+							|| document.getElementById("showCompliance").checked
+							|| document.getElementById("showResistanceTarget").checked 
+							|| document.getElementById("lawColor").checked
+							|| document.getElementById("garrisonRatio").checked
+							|| document.getElementById("manpowerRatio").checked
+							|| document.getElementById("eqRatio").checked )
+							)
+					{
+						for ( var val2 in country["resistance_data"] )
+						{
+							var data = country["resistance_data"][ val2 ];
+							var coor = convertCoor( val2 );
+							
+							var r = 0.0;
+							var g = 0.0;
+							var b = 0.0;
+							var color = undefined;
+							if (document.getElementById("showResistance").checked )
+							{
+								r = data[ "resistance" ] * 255.0 / 100;
+								g = 255 - r;
+							}
+							else if (document.getElementById("showCompliance").checked )
+							{
+								b = data[ "compliance" ] * 255.0 / 100;
+							}
+							else if ( document.getElementById("showResistanceTarget").checked )
+							{
+								r = data[ "resistance_target" ] * 255.0 / 100;
+								g = 255 - r;
+							}
+							else if ( document.getElementById("lawColor").checked )
+							{
+								color = addedLawColor[ data[ "law" ] ];
+							}
+							else if ( document.getElementById("garrisonRatio").checked )
+							{
+								g = data[ "garrison_ratio" ] * 255.0;
+								r = 255 - g;
+							}
+							else if ( document.getElementById("manpowerRatio").checked )
+							{
+								g = data[ "manpower_ratio" ] * 255.0;
+								r = 255 - g;
+							}
+							else if ( document.getElementById("eqRatio").checked )
+							{
+								g = data[ "eq_ratio" ] * 255.0;
+								r = 255 - g;
+							}
+							
+							var size = 3;
+							if ( document.getElementById("lawColor").checked == false )
+							{
+								guiCanvasContext.beginPath();
+								guiCanvasContext.arc(coor.x, coor.y, 4, 0, 2 * Math.PI);
+								guiCanvasContext.fillStyle = "black"
+								guiCanvasContext.fill();
+							}
+							else
+							{
+								size = 5;
+							}
+							guiCanvasContext.beginPath();
+							guiCanvasContext.arc(coor.x, coor.y, size, 0, 2 * Math.PI);
+							if ( color )
+								guiCanvasContext.fillStyle = color;
+							else
+								guiCanvasContext.fillStyle = "rgb(" + r + ", "+ g +", " + b + " )";
+							
+							guiCanvasContext.fill();
+							
+							if ( document.getElementById("lawColor").checked )
+							{
+								guiCanvasContext.font = "12px Arial";
+								guiCanvasContext.fillStyle = "black";
+								guiCanvasContext.fillText( addedLawColorIndex[ data[ "law" ] ], coor.x-3, coor.y+4);
+							}
+						}
+					}
+					
+					var orderDump = country["order_data"];
+					if ( orderDump )
+					{
+						var totalInOrders = 0;
+						var totalAtBorder = 0;
+						var totalDistanceToBorder = 0;
+						var totalInNavalTransfer = 0;
+						var totalOrder = 0;
+						
+						for (var val in orderDump ) 
+						{
+							var entry = orderDump[ val ];
+							var show = showAll ? true : false;
+							if (show == false )
+							{
+								for ( var val2 in entry["path_data"] )
+								{
+									var coor = convertCoor( entry["path_data"][val2] );
+									show = selectionCanvasContext.getImageData(coor.x, coor.y, 1, 1).data[0] > 0;
+									if ( show ) break;
+								}
+							}
+							
+							if ( show )
+							{
+								++totalOrder;
+								var orderDays = entry["num_days"];
+								if (entry["num_units"])
+								{
+									totalInOrders += entry["num_units"] / orderDays;
+								}
+								if (entry["num_units_at_front"])
+								{
+									totalAtBorder += entry["num_units_at_front"] / orderDays;
+								}
+								if (entry["total_unit_distance_to_front"])
+								{
+									totalDistanceToBorder += entry["total_unit_distance_to_front"] / orderDays;
+								}
+								if (entry["num_units_in_naval_transfer"])
+								{
+									totalInNavalTransfer += entry["num_units_in_naval_transfer"] / orderDays;
+								}
+							}
+							
+							var frontVisible = false;
+							if ( chk_arr[k].checked && document.getElementById("showFrontOrders").checked && entry["type"] == 2 )
+							{
+								frontVisible = true;
+								var prevCoor = undefined;
+								for ( var val2 in entry["path_data"] )
+								{
+									var coor = convertCoor( entry["path_data"][ val2 ] );
+									if ( prevCoor == undefined )
+									{
+										prevCoor = coor
+									}
+									else
+									{
+										AddMoveLine( prevCoor, coor, 2, colorArray[ val % colorArray.length ] );
+										prevCoor = coor;
+									}
+								}
+							}
+							
+							if ( chk_arr[k].checked && document.getElementById("showInvasionOrders").checked && entry["type"] == 3 )
+							{
+								frontVisible = true;
+								var prevCoor = undefined;
+								for ( var val2 in entry["path_data"] )
+								{
+									var coor = convertCoor( entry["path_data"][ val2 ] );
+									if ( prevCoor == undefined )
+									{
+										prevCoor = coor
+									}
+									else
+									{
+										AddMoveLine( prevCoor, coor, 2, colorArray[ val % colorArray.length ] );
+										prevCoor = coor;
+									}
+								}
+							}
+							
+							if ( chk_arr[k].checked && document.getElementById("showGarrisonOrders").checked && entry["type"] == 5 )
+							{
+								frontVisible = true;
+								var prevCoor = undefined;
+								for ( var val2 in entry["path_data"] )
+								{
+									var coor = convertCoor( entry["path_data"][ val2 ] );
+									
+									guiCanvasContext.beginPath();
+									guiCanvasContext.arc(coor.x, coor.y, 5, 0, 2 * Math.PI);
+									guiCanvasContext.fillStyle = "black"
+									guiCanvasContext.fill();
+									guiCanvasContext.beginPath();
+									guiCanvasContext.arc(coor.x, coor.y, 3, 0, 2 * Math.PI);
+									guiCanvasContext.fillStyle = colorArray[ val % colorArray.length ];
+									guiCanvasContext.fill();
+								}
+							}
+							
+							if ( frontVisible && show && showAll != true )
+							{
+								var prevCoor = undefined;
+								for ( var val2 in entry["move_data"] )
+								{
+									var coor = convertCoor( entry["move_data"][ val2 ] );
+									
+									guiCanvasContext.beginPath();
+									guiCanvasContext.arc(coor.x, coor.y, 3, 0, 2 * Math.PI);
+									guiCanvasContext.fillStyle = "black"
+									guiCanvasContext.fill();
+									guiCanvasContext.beginPath();
+									guiCanvasContext.arc(coor.x, coor.y, 2, 0, 2 * Math.PI);
+									guiCanvasContext.fillStyle = "yellow"
+									guiCanvasContext.fill();
+								}
+							}
+						}
+						
+						if ( totalOrder > 0 )
+						{
+							str += "<br/>  Total Orders: " +  totalOrder.toFixed(0);
+							str += "<br/>  &nbsp&nbspTotal Units: " +  totalInOrders.toFixed(1);
+							str += "<br/>  &nbsp&nbspTotal at Front: " +  totalAtBorder.toFixed(1);
+							str += "<br/>  &nbsp&nbspTotal in Naval Transfer: " + totalInNavalTransfer.toFixed(1);
+							if ( totalInOrders > totalAtBorder )
+							{
+								str += "<br/>  &nbsp&nbspAvg Dist to Front: " + ( totalDistanceToBorder / ( totalInOrders - totalAtBorder)).toFixed(2);
+							}
+						}
+					}
+					
+					
+                    str += "<br/>  Navy Count : " + navyCount
+                    for (var t in addedNavyMissionsCounts) 
+					{
+                        str += "<br/>    &nbsp&nbsp" + navyMissionNames[t] + " : " + addedNavyMissionsCounts[t];
+                    }
+                    str += "<br/>  Air Missions"
+                    for (var t in addedAirMissionsCounts) 
+					{
+                        var name = "";
+                        var i = 1;
+                        var n = 0;
+                        while (i <= t) 
+						{
+                            if (i & t) 
+							{
+                                name = airMissionNames[n] + " " + name;
+                            }
+                            i *= 2;
+                            ++n;
+                        }
+                        str += "<br/>    &nbsp&nbsp" + name + ": " + addedAirMissionsCounts[t];
+                    }
+					
+
+                    document.getElementById("info").innerHTML += chk_arr[k].value + "<br/>" + str + "<br/><br/>";
+					
+                }
+            }
+		}
+
+        function dragOverHandler(ev) 
+		{
+            ev.preventDefault();
+        }
+
+        function relMouseCoords(currentElement, event) 
+		{
+            var totalOffsetX = 0;
+            var totalOffsetY = 0;
+            var canvasX = 0;
+            var canvasY = 0;
+
+            do {
+                totalOffsetX += currentElement.offsetLeft - currentElement.scrollLeft;
+                totalOffsetY += currentElement.offsetTop - currentElement.scrollTop;
+            }
+            while (currentElement = currentElement.offsetParent)
+
+            canvasX = event.pageX - totalOffsetX;
+            canvasY = event.pageY - totalOffsetY;
+
+            return {
+                x: canvasX,
+                y: canvasY
+            }
+        }
+		function getDataSliderValue( name )
+		{
+            var slider = document.getElementById(name);
+			return slider.value / slider.max;
+		}
+		
+        function loaded( ev ) 
+		{
+            var url = new URL(window.location.href);
+            var query_string = url.search;
+            var search_params = new URLSearchParams(query_string);
+            var zipPath = search_params.get('zip');
+            if (zipPath) 
+			{
+                var request = new XMLHttpRequest();
+                request.open("GET", zipPath);
+                request.responseType = "blob";
+                request.onload = function() 
+				{
+                    var response = this.response;
+                    loadAll(response);
+                }
+                request.send();
+            }
+
+            heatmapInstance = h337.create({
+                // only container is required, the rest will be defaults
+                container: document.querySelector('.heatmap')
+            });
+
+            canvas = document.getElementById("heatmapCanvas");
+            context = canvas.getContext("2d");
+
+            selectionCanvas = document.getElementById("selectionCanvas");
+            selectionCanvasContext = selectionCanvas.getContext("2d");
+			
+            guiCanvas = document.getElementById("guiCanvas");
+            guiCanvasContext = guiCanvas.getContext("2d");
+
+            var heatmapDiv = document.getElementById("heatmapDiv");
+            heatmapDiv.addEventListener("mousedown", function(event) 
+			{
+                selecting = true;
+                selected = false;
+                clickLoc = relMouseCoords(this, event);
+            }, false);
+            heatmapDiv.addEventListener("mousemove", function(event) 
+			{
+                if (selecting) 
+				{
+                    var eventLocation = relMouseCoords(this, event);
+
+                    var add = clickLoc == null;
+                    if (add == false) 
+					{
+                        var diff = Math.abs(eventLocation.x - clickLoc.x) + Math.abs(eventLocation.y - clickLoc.y);
+                        add = diff >= 8;
+                    }
+                    if (add) 
+					{
+                        selected = true;
+                        selectionCanvasContext.beginPath();
+                        selectionCanvasContext.arc(eventLocation.x, eventLocation.y, event.ctrlKey ? 2 : 9, 0, 2 * Math.PI);
+                        selectionCanvasContext.fillStyle = "Fuchsia";
+                        selectionCanvasContext.fill();
+                    }
+                }
+            }, false);
+            heatmapDiv.addEventListener("mouseup", function(event) 
+			{
+                selecting = false;
+            }, false);
+
+            heatmapDiv.addEventListener("click", function(event) 
+			{
+                if (selected) 
+				{
+                    selected = false;
+                    showSelectedInfo();
+                    selectionCanvasContext.clearRect(0, 0, selectionCanvas.width, selectionCanvas.height);
+                    return;
+                }
+                if (current == -1) return;
+                var eventLocation = relMouseCoords(this, event);
+                var pixelData = canvasses[current].getContext('2d').getImageData(eventLocation.x, eventLocation.y, 1, 1).data;
+
+                var selectedTag = null;
+                var countries = jsons[current]["countries"];
+                for (tag in countries) 
+				{
+                    var country = countries[tag];
+                    if (country.exists == false) continue;
+                    var color = country["color"];
+                    if (color[0] == pixelData[0] && color[1] == pixelData[1] && color[2] == pixelData[2]) 
+					{
+                        selectedTag = tag;
+                        break;
+                    }
+                }
+
+                if (event.shiftKey) 
+				{
+                    if (selectedTag != null) 
+					{
+                        document.getElementById(selectedTag + "_check").checked = !document.getElementById(selectedTag + "_check").checked;
+                    }
+                } 
+				else if (event.ctrlKey) 
+				{
+					var chk_arr = document.getElementsByName("selectedCountries");
+					for (k = 0; k < chk_arr.length; k++) 
+					{
+						chk_arr[k].checked = false;
+					}
+                    if (selectedTag != null) 
+					{
+                        document.getElementById(selectedTag + "_check").checked = true;
+                    }
+                } 
+				else 
+				{
+                    if (diplomacyTag == selectedTag) 
+					{
+                        diplomacyTag = null;
+                    } 
+					else 
+					{
+                        diplomacyTag = selectedTag;
+                    }
+                }
+                checkChange();
+            }, false);
+
+        }
+
+        ////
+        function buildAll() 
+		{
+            var slider = document.getElementById("myRange");
+
+			document.getElementById("loadingContainer").style.visibility = "hidden";
+			
+            slider.setAttribute("min", 0);
+            slider.setAttribute("max", count - 1);
+            slider.oninput = null;
+			slider.value = count - 1;
+            slider.oninput = function() 
+			{
+                build(this.value);
+            }
+
+            var allCountries = [];
+            for (var t = 0; t < count; ++t) 
+			{
+                var countries = jsons[t]["countries"];
+                for (var tag in countries) 
+				{
+                    allCountries[tag] = Math.max(allCountries[tag] ? allCountries[tag] : 0, countries[tag]["armies"] ? countries[tag]["armies"].length : 0);
+                }
+				
+				var logs = jsons[t]["logs"];
+				for ( var val in logs )
+				{
+					var log = logs[ val ];
+					var tag = log.split("|")[ 0 ];
+					if ( tag != undefined && logTags.includes( tag ) == false )
+					{
+						logTags.push( tag );
+					}
+				}
+				
+            }
+
+			logTags.sort();
+			
+			var tagList = document.getElementById("logtagsdiv");
+            tagList.innerHTML = ""
+            for (var i = 0; i < logTags.length; ++i) 
+			{
+                tagList.innerHTML += '<input type="checkbox" id = "' + logTags[i] + '_check" name="selectedTags" value="' + logTags[i] + '" onchange="updateLogs()"> ' + logTags[i] + '<br>';
+            }
+
+            var allCountriesToSort = [];
+            for (var tag in allCountries) 
+			{
+                allCountriesToSort.push([tag, allCountries[tag]]);
+            }
+            allCountriesToSort.sort( function(a, b) 
+			{
+                return b[1] - a[1]
+            });
+
+            var tagList = document.getElementById("tagList");
+            tagList.innerHTML = ""
+            for (var i = 0; i < allCountriesToSort.length; ++i) 
+			{
+                tagList.innerHTML += '<input type="checkbox" id = "' + allCountriesToSort[i][0] + '_check" name="selectedCountries" value="' + allCountriesToSort[i][0] + '" onchange="checkChange()"> ' + allCountriesToSort[i][0] + '<br>';
+            }
+        }
+
+        function checkChange() 
+		{
+            if (current >= 0) 
+			{
+                build(current);
+            }
+        }
+
+        function getColor(c) 
+		{
+            return c[0] * 256 * 256 + c[1] * 256 + c[2];
+        }
+
+        function drawDiplomacy(t) 
+		{
+            var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+            var data = imageData.data;
+
+            var colors = [];
+
+            var countries = jsons[t]["countries"];
+            var country = countries[diplomacyTag];
+
+            for (var i in country["potential_enemies"]) 
+			{
+				if ( countries[country["potential_enemies"][i]]["exists"] == false )
+				{
+					continue;
+				}
+                var c = getColor(countries[country["potential_enemies"][i]]["color"]);
+                colors[c] = [255, 255, 30];
+            }
+
+            for (var i in country["allies"]) 
+			{
+				if ( countries[country["allies"][i]]["exists"] == false )
+				{
+					continue;
+				}
+                var c = getColor(countries[country["allies"][i]]["color"]);
+                colors[c] = [30, 200, 250];
+            }
+
+            for (var i in country["enemies"]) 
+			{
+				if ( countries[country["enemies"][i]]["exists"] == false )
+				{
+					continue;
+				}
+                var c = getColor(countries[country["enemies"][i]]["color"]);
+                colors[c] = [235, 20, 0];
+            }
+
+            var c = getColor(country["color"]);
+            colors[c] = [30, 250, 50];
+
+            // water
+            colors[36 * 256 * 256 + 44 * 256 + 139] = [36, 44, 139];
+
+            for (var i = 0; i < data.length; i += 4) 
+			{
+                var t = data[i] * 256 * 256 + data[i + 1] * 256 + data[i + 2];
+                var c = colors[t];
+                if (c) 
+				{
+                    data[i] = c[0];
+                    data[i + 1] = c[1];
+                    data[i + 2] = c[2];
+                } 
+				else 
+				{
+                    data[i] = 150;
+                    data[i + 1] = 150;
+                    data[i + 2] = 150;
+                }
+            }
+
+            context.putImageData(imageData, 0, 0);
+        }
+		
+		function addLogs(json, selectedCountries, selectedTags)
+		{
+			var str = "";
+			var logs = json["logs"];
+			if ( logs == undefined ) return str;
+			
+			var search = document.getElementById("searchText").value.toLowerCase();
+			for (var i in logs) 
+			{
+				var log = logs[ i ];
+				if ( search != "" && log.toLowerCase().includes(search) == false )
+				{
+					continue;
+				}
+				
+				var s = log.split("|");
+				if ( s.length >= 3 )
+				{
+					if ( selectedCountries.length > 0 && selectedCountries.includes(s[1]) == false )
+					{
+						continue;
+					}
+					if ( selectedTags.length > 0 && selectedTags.includes(s[0]) == false )
+					{
+						continue;
+					}
+				}
+				
+				str = str + log + "<br>"
+			}
+			
+			return str;
+		}
+		
+		function updateLogs()
+		{
+			if ( current < 0 || count <= 0 ) return;
+			
+			var selectedCountries = []
+            var chk_arr = document.getElementsByName("selectedCountries");
+            for (k = 0; k < chk_arr.length; k++) 
+			{
+				if ( chk_arr[k].checked )
+				{
+					selectedCountries.push(chk_arr[k].value);
+				}
+            }
+			
+			var selectedTags = []
+            var chk_arr = document.getElementsByName("selectedTags");
+            for (k = 0; k < chk_arr.length; k++) 
+			{
+				if ( chk_arr[k].checked )
+				{
+					selectedTags.push(chk_arr[k].value);
+				}
+            }
+			
+			var showOnlyMonth = document.getElementById("showOnlyMonth").checked;
+			var showLogs = document.getElementById("showLogs").checked;
+			var Count = 0;
+			var str = "";
+			if ( showOnlyMonth )
+			{
+				var json = jsons[current];
+				if (showLogs)
+				{
+					str = str + addLogs( json, selectedCountries, selectedTags );
+				}
+				var logs = json["logs"];
+				if ( logs != undefined )
+				{
+					Count += logs.length;
+				}
+			}
+			else
+			{
+				for ( i = 0; i < count; ++i )
+				{
+					var json = jsons[i];
+					if (showLogs)
+					{
+						str = str + addLogs( json, selectedCountries, selectedTags );
+					}
+					var logs = json["logs"];
+					if ( logs != undefined )
+					{
+						Count += logs.length;
+					}
+				}
+			}
+			
+			if (showLogs)
+			{
+				document.getElementById("logs").innerHTML = str;
+				document.getElementById("logtable").style.display = "block";
+			}
+			else
+			{
+				document.getElementById("logtable").style.display = "none";
+			}
+			
+			document.getElementById("logTitle").innerHTML = "Show Logs (" + Count + ")";
+		}
+        function build(t) 
+		{
+            current = t;
+            var points = [];
+            var max = 0;
+            var len = 300;
+
+            var json = jsons[t];
+
+            context.drawImage(canvasses[t], 0, 0, canvas.width, canvas.height);
+
+            if (diplomacyTag != null) 
+			{
+                drawDiplomacy(t);
+            }
+
+            selectionCanvasContext.clearRect(0, 0, selectionCanvas.width, selectionCanvas.height);
+
+            var height = json["map_height"];
+            var width = json["map_width"];
+
+            document.getElementById("date").innerHTML = json["date"];
+
+            var chk_arr = document.getElementsByName("selectedCountries");
+            var chk_types = document.getElementsByName("selectedTypes");
+
+			var digInClamp = getDataSliderValue( "digInRange" );
+			var pathClamp = getDataSliderValue( "pathRange" ) * maxPath;
+			
+            var countries = json["countries"];
+			
+			var totalDigIn = 0;
+			var totalDigInPassed = 0;
+			
+            for (k = 0; k < chk_arr.length; k++) 
+			{
+                if (chk_arr[k].checked ) 
+				{
+                    var country = countries[chk_arr[k].value];
+                    for (n = 0; n < chk_types.length; n++) 
+					{
+                        if ( chk_types[n].checked ) 
+						{
+                            var dots = country[chk_types[n].value];
+
+                            for (var val in dots) 
+							{
+								var provId = dots[val];
+								if (Array.isArray( provId ) )
+								{
+									provId = provId[ 0 ];
+								}
+								var coor = convertCoor( provId );
+                                var point = {
+                                    x: coor.x,
+                                    y: coor.y,
+                                    value: 10,
+                                    radius: 6
+                                };
+                                points.push(point);
+                            }
+                        }
+                    }
+			
+					var destToDraw = [];
+					
+					for( var t in country["province_data"] )
+					{
+						var entry = country["province_data"][ t ];
+						var pos = convertCoor( entry["pos"] );
+						
+						if ( document.getElementById("showCombats").checked )
+						{
+							var numCombats = entry["num_in_combat"];
+							if ( numCombats > 0 )
+							{
+								var point = {
+									x: pos.x,
+									y: pos.y,
+									value: numCombats,
+									radius: 6
+								};
+								points.push(point);
+							
+							}
+						}
+						if ( document.getElementById("showAttacks").checked )
+						{
+							var numAttacker = entry["num_attacking"];
+							if ( numAttacker > 0 )
+							{
+								var point = {
+									x: pos.x,
+									y: pos.y,
+									value: numAttacker,
+									radius: 6
+								};
+								points.push(point);
+							
+							}
+						}
+						
+						if ( document.getElementById("showDefends").checked )
+						{
+							var numDefender = entry["num_defending"];
+							if ( numDefender > 0 )
+							{
+								var point = {
+									x: pos.x,
+									y: pos.y,
+									value: numDefender,
+									radius: 6
+								};
+								points.push(point);
+							}
+						}
+						
+						if ( document.getElementById("showDigIn").checked )
+						{
+							for ( val2 in entry[ "dig_in_ratios" ] )
+							{
+								var digIn = entry[ "dig_in_ratios" ][ val2 ];
+								var ratio = digIn[ 0 ] / 100.0;
+								totalDigIn += digIn[ 1 ];
+								if ( ratio >= digInClamp )
+								{
+									var point = {
+										x: pos.x,
+										y: pos.y,
+										value: 10.0,
+										radius: 4
+									};
+									
+									points.push(point);
+									++totalDigInPassed;
+								}
+							}
+						}
+						
+						if ( document.getElementById("showPath").checked )
+						{
+							var totalUnitPath = 0;
+							var anyAbove = false;
+							for ( val2 in entry[ "move_data" ] )
+							{
+								var pathData = entry[ "move_data" ][ val2 ];
+								totalUnitPath += pathData[1];
+								if ( pathData[2] >= pathClamp )
+								{
+									anyAbove = true;
+								}
+							}
+							if ( anyAbove )
+							{
+								var point = {
+									x: pos.x,
+									y: pos.y,
+									value: 20,
+									radius: 5
+								};
+								points.push(point);
+							}
+						}
+						
+						if ( document.getElementById("showPathEnd").checked )
+						{
+							var anyAbove = false;
+							for ( val2 in entry[ "move_data" ] )
+							{
+								var pathData = entry[ "move_data" ][ val2 ];
+								if ( pathData[1] >= pathClamp )
+								{
+									var pos2 = convertCoor( pathData[ 0 ] );
+									var point = {
+										x: pos2.x,
+										y: pos2.y,
+										value: 20,
+										radius: 5
+									};
+									
+									points.push(point);
+								}
+							}
+						}
+					}
+                
+					for ( var val2 in destToDraw )
+					{
+						var pos2 = convertCoor( destToDraw[ val2 ] );
+						var point = {
+							x: pos2.x,
+							y: pos2.y,
+							value: 20,
+							radius: 4
+						};
+						
+						points.push(point);
+					}
+				}
+            }
+			
+			var numDays = jsons[current][ "num_days" ];
+			if ( !numDays )
+			{
+				numDays = 30;
+			}
+			
+			
+			totalDigIn /= numDays;
+			totalDigInPassed /= numDays;
+			
+			document.getElementById("digInInfo").innerHTML = "%" + ( digInClamp * 100 ).toFixed( 0 ) + " " + ( totalDigInPassed.toFixed( 0 ) + "/" + totalDigIn.toFixed( 0 ) ) ;
+			document.getElementById("pathInfo").innerHTML = ( pathClamp ).toFixed( 0 );
+			
+			
+            var point = {
+                x: 0,
+                y: 0,
+                value: 15,
+                radius: 10
+            };
+            for (var i = 0; i < 10; ++i) 
+			{
+                points.push(point);
+            }
+
+            var data = {
+                max: 1,
+                data: points
+            };
+
+            heatmapInstance.setData(data);
+
+
+            showSelectedInfo(true);
+			
+			updateLogs();
+        }
+		
+		var LastText = "";
+		function searchTextChecker()
+		{
+			var search = document.getElementById("searchText").value;
+			if ( search != LastText )
+			{
+				LastText = search;
+				updateLogs();
+			}
+		}
+		setInterval( searchTextChecker, 100 );
+    </script>
+
+</head>
+
+<body ondrop="dropHandler(event);" ondragover="dragOverHandler(event);" bgcolor="white" onload="loaded(event)">
+	<div id="loadingContainer" class="loading" style="visibility:hidden">Loading&#8230;</div>
+
+    <div class="heatmap" id="heatmapDiv">
+        <canvas id="heatmapCanvas" width="1408" height="512"></canvas>
+        <canvas id="selectionCanvas" width="1408" height="512" style="position: absolute; left: 0; top: 0; z-index: 1;"></canvas>
+        <canvas id="guiCanvas" width="1408" height="512" style="position: absolute; left: 0; top: 0; z-index: 2;"></canvas>
+
+    </div>
+
+    <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+    <br>
+    <table>
+        <th align="left" style="width:150px" >
+			<div id="date"></div>
+		</th>
+        <th align="left" style="width:200px" >
+			<input type="checkbox" id="showLogs" value="SOV" onchange="updateLogs()"><text id="logTitle">Show Logs</text>
+		</th>
+        <th align="left" style="width:200px" >
+			<input type="text" id="searchText"><br>
+		</th>
+        <th align="left" style="width:400px" >
+			<input type="checkbox" id="showOnlyMonth" value="SOV" onchange="updateLogs()" checked = true ><text id="logTitle">Show Only Current Month</text>
+		</th>
+	</table>
+    <table id="logtable" >
+        <th align="left" style="width:910px" >
+			<div id="logs" style="overflow-y:scroll;max-height:200px;min-height:200px;max-width:900px"></div>
+		</th>
+        <th align="left" style="width:210px" >
+			<div id="logtagsdiv" style="overflow-y:scroll;max-height:200px;min-height:200px;max-width:200px"></div>
+		</th>
+	</table>
+
+    <button onclick="clearSelectedCountries()">Clear ticked</button>
+
+    <table style="width:100%">
+
+        <th id="tagList" align="left" valign="top" style="width:20%">
+            <input type="checkbox" name="selectedCountries" value="GER" onchange="checkChange()" checked=true> GER
+            <br>
+            <input type="checkbox" name="selectedCountries" value="SOV" onchange="checkChange()"> SOV
+            <br>
+            <input type="checkbox" name="selectedCountries" value="POL" onchange="checkChange()"> POL
+            <br>
+            <input type="checkbox" name="selectedCountries" value="ITA" onchange="checkChange()"> ITA
+            <br>
+            <input type="checkbox" name="selectedCountries" value="JAP" onchange="checkChange()"> JAP
+            <br>
+            <input type="checkbox" name="selectedCountries" value="CHI" onchange="checkChange()"> CHI
+            <br>
+            <input type="checkbox" name="selectedCountries" value="USA" onchange="checkChange()"> USA
+            <br>
+            <input type="checkbox" name="selectedCountries" value="ENG" onchange="checkChange()"> ENG
+            <br>
+        </th>
+
+        <th align="left" valign="top" style="width:20%">
+            <input type="checkbox" name="selectedTypes" value="armies" onchange="checkChange()" id="armiesId" checked="true" > Armies
+            <br>
+            <input type="checkbox" name="selectedTypes" value="navies" onchange="checkChange()"> Navies
+            <br>
+            <input type="checkbox" name="selectedTypes" value="naval_missions" onchange="checkChange()"> Naval Missions
+            <br>
+            <input type="checkbox" name="selectedTypes" value="air_missions" onchange="checkChange()"> Air Missions
+            <br>
+			<br>
+            <input type="checkbox" name="selectedOther" id="showCombats" onchange="checkChange()"> Combats
+			<br>
+            <input type="checkbox" name="selectedOther" id="showAttacks" onchange="checkChange()"> Attacks
+			<br>
+            <input type="checkbox" name="selectedOther" id="showDefends" onchange="checkChange()"> Defenses
+            <br>
+		</th>
+        <th align="left" valign="top" style="width:20%">
+			<input type="checkbox" name="selectedOther" id="showDigIn" onchange="checkChange()"> Dig In Ratio
+			<br>
+			&nbsp&nbsp<input type="range" min="0" max="1000" value="100" class="slider_small" id="digInRange" oninput="checkChange()"><font id="digInInfo" title="Minimum dig in percentage to show"></font>
+            <br>
+            <input type="checkbox" name="selectedOther" id="showPathEnd" onchange="checkChange()"> Path End
+            <br>
+            <input type="checkbox" name="selectedOther" id="showPath" onchange="checkChange()" checked=true > Path Start
+            <br>
+			&nbsp&nbsp<input type="range" min="0" max="1000" value="300" class="slider_small" id="pathRange" oninput="checkChange()"><font id="pathInfo" title="Minimum path size to show"></font>
+			<br>
+            &nbsp&nbsp<input type="checkbox" name="selectedOther"  id="showPathLine" onchange="checkChange()"> Draw Lines
+            <br>
+            <input type="checkbox" name="selectedOther" id="showFrontOrders" onchange="checkChange()"> Front Orders
+            <br>
+            <input type="checkbox" name="selectedOther" id="showGarrisonOrders" onchange="checkChange()"> Garrison Orders
+            <br>
+            <input type="checkbox" name="selectedOther" id="showInvasionOrders" onchange="checkChange()"> Invasion Orders
+            <br>
+            <br>
+			
+			<font style="font-weight: normal">
+			&bull; Click a country to see its diplomacy state.<br>
+			&bull; Shift + Click or use checkboxes at left to toggle a country's unit visibility & country details.<br>
+			&bull; Control + Click or use checkboxes at left to enable a country's unit visibility & country details and disable rest.<br>
+			&bull; Use checkboxes at top to toggle what type of units will be visible for selected countries.<br>
+			&bull; Draw on map using left mouse button to show country details for that portion of map. Hold control for drawing smaller circles.<br>
+			</font>
+        </th>
+
+        <th align="left" valign="top" style="width:20%">
+            <input type="radio" name="resistanceRadio" id="noneChecked" onchange="checkChange()" checked=true > None
+            <br>
+			<input type="radio" name="resistanceRadio" id="showResistance" onchange="checkChange()" > Show Resistance
+			<br>
+            <input type="radio" name="resistanceRadio" id="showCompliance" onchange="checkChange()"> Show Compliance
+            <br>
+            <input type="radio" name="resistanceRadio" id="showResistanceTarget" onchange="checkChange()" > Show Resistance Target
+            <br>
+            <input type="radio" name="resistanceRadio" id="lawColor" onchange="checkChange()" > Selected Laws
+            <br>
+            <input type="radio" name="resistanceRadio" id="garrisonRatio" onchange="checkChange()" > GarrisonStr
+            <br>
+            <input type="radio" name="resistanceRadio" id="manpowerRatio" onchange="checkChange()" > ManpowerRatio
+            <br>
+            <input type="radio" name="resistanceRadio" id="eqRatio" onchange="checkChange()" > EqRatio
+            <br>
+		</th>
+        <th id="info" align="left" valign="top" style="width:40%">
+
+        </th>
+
+    </table>
+
+</body>
+
+</html>

@@ -1,4 +1,5 @@
 political_actions = {
+
 	
 	targeted_race_for_the_bomb = {
 
@@ -67,6 +68,14 @@ political_actions = {
 
 		available = {
 			has_stability < 1.0
+			if = {
+				limit = {
+					tag = SPR
+				}
+				NOT = {
+					has_idea = SPR_political_violence
+				}
+			}
 		}
 
 		visible = {
@@ -96,6 +105,11 @@ political_actions = {
 				add = 1
 				has_stability < 0.6
 			}
+			modifier = {
+				factor = 0
+				original_tag = SPR
+				NOT = { has_global_flag = spanish_civil_war }
+			}
 		}
 	}
 
@@ -107,6 +121,14 @@ political_actions = {
 			has_war = no
 			has_war_support > 0.2
 			has_stability < 1.0
+			if = {
+				limit = {
+					tag = SPR
+				}
+				NOT = {
+					has_idea = SPR_political_violence
+				}
+			}
 		}
 
 		visible = {
@@ -141,6 +163,11 @@ political_actions = {
 				add = 1
 				has_stability < 0.4
 			}
+			modifier = {
+				factor = 0
+				original_tag = SPR
+				NOT = { has_global_flag = spanish_civil_war }
+			}
 		}
 	}
 }
@@ -152,7 +179,7 @@ economy_decisions = {
 		icon = generic_construction
 
 		allowed = {
-			NOT = { OR = { tag = GER tag = FRA } }
+			NOT = { OR = { original_tag = GER original_tag = FRA } }
 		}
 
 		cost = 50
@@ -220,6 +247,12 @@ economy_decisions = {
 					}
 				}
 			}
+			if = {
+				limit = {
+					has_idea = FRA_protected_by_the_maginot_line
+				}
+				remove_ideas = FRA_protected_by_the_maginot_line
+			}
 		}
 	}		
 }
@@ -235,6 +268,22 @@ propaganda_efforts = {
 			threat > 0.5
 			has_war_support < 0.5
 			has_offensive_war = no
+			if = {
+				limit = {
+					tag = SPR
+					has_dlc = "La Resistance"
+				}
+				NOT = {
+					has_idea = SPR_political_violence
+				}
+			}
+			if = {
+				limit = {
+					original_tag = SPR
+					has_dlc = "La Resistance"
+				}
+				has_global_flag = scw_over
+			}
 		}
 
 		visible = {
@@ -284,6 +333,32 @@ propaganda_efforts = {
 						is_neighbor_of = ROOT
 					}
 					has_offensive_war = yes
+				}
+			}
+			if = {
+				limit = {
+					tag = SPR
+					has_dlc = "La Resistance"
+				}
+				NOT = {
+					has_idea = SPR_political_violence
+				}
+			}
+			if = {
+				limit = {
+					original_tag = SPR
+					has_dlc = "La Resistance"
+				}
+				has_global_flag = scw_over
+			}
+			
+			# lower the cost for neighbors
+			if = {
+				limit = {
+					FROM = {
+						is_neighbor_of = ROOT
+					}
+					set_temp_variable = { war_propaganda_cost = 50 }
 				}
 			}
 		}
@@ -346,14 +421,6 @@ propaganda_efforts = {
 							}
 						}
 					}
-				}
-			}
-			if = {
-				limit = {
-					FROM = {
-						is_neighbor_of = ROOT
-					}
-					set_temp_variable = { war_propaganda_cost = 50 }
 				}
 			}
 		}
@@ -926,8 +993,7 @@ operations = {
 		visible = {
 			has_war = yes
 			NOT = { has_global_flag = SUEZ_CANAL_BLOCKED }
-			any_state = {
-				is_controlled_by = ROOT
+			any_controlled_state = {
 				OR = {
 					region = 28
 					region = 128
@@ -1059,8 +1125,7 @@ operations = {
 		visible = {
 			has_war = yes
 			NOT = { has_global_flag = PANAMA_CANAL_BLOCKED }
-			any_state = {
-				is_controlled_by = ROOT
+			any_controlled_state = {
 				OR = {
 					region = 34
 					region = 124
@@ -1489,6 +1554,7 @@ war_measures = {
         }
         visible = {
             has_war = yes
+            NOT = { tag = SPC }
         }
 
         fire_only_once = no
@@ -1599,6 +1665,12 @@ foreign_politics = {
         	NOT = { has_war_with = FROM }
         	any_enemy_country = {
 				has_attache_from = FROM
+			}
+			NOT = {
+				AND = {
+					original_tag = SPR
+					has_completed_focus = SPR_regional_defense_council_of_aragon
+				}
 			}
 		}
 
@@ -1895,10 +1967,9 @@ foreign_support = {
 					}
 				}
 			}
-			any_country = {
+			any_other_country = {
 				check_variable = { CHI_burma_road_current_level > 0 }
 				NOT = { is_in_faction_with = ROOT }
-				NOT = { tag = ROOT }
 			}
 		}
 
@@ -2243,10 +2314,9 @@ foreign_support = {
 					}
 				}
 			}
-			any_country = {
+			any_other_country = {
 				check_variable = { CHI_ledo_road_current_level > 0 }
 				NOT = { is_in_faction_with = ROOT }
-				NOT = { tag = ROOT }
 			}
 		}
 
@@ -2583,10 +2653,9 @@ foreign_support = {
 					}
 				}
 			}
- 			any_country = {
+ 			any_other_country = {
  				check_variable = { CHI_the_hump_current_level > 0 }
  				NOT = { is_in_faction_with = ROOT }
- 				NOT = { tag = ROOT }
  			}
  		}
 
@@ -2884,10 +2953,9 @@ foreign_support = {
 					}
 				}
 			}
-			any_country = {
+			any_other_country = {
 				check_variable = { CHI_hanoi_route_current_level > 0 }
 				NOT = { is_in_faction_with = ROOT }
-				NOT = { tag = ROOT }
 			}
 		}
 

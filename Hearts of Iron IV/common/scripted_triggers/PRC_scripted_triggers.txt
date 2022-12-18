@@ -29,9 +29,10 @@ PRC_can_increase_infiltration_in_state = {
 PRC_uprising_is_available = {
 	custom_trigger_tooltip = {
 		tooltip = PRC_uprising_is_available
-		any_state = {
-			is_controlled_by = event_target:WTT_current_china_leader
-				PRC_is_infiltrated_by_PREV = yes
+		event_target:WTT_current_china_leader = {
+			any_controlled_state = {
+				PRC_is_infiltrated_by_ROOT = yes
+			}
 		}
 	}
 }
@@ -39,6 +40,13 @@ PRC_uprising_is_available = {
 PRC_is_infiltrated_by_PREV = {
 	has_state_flag = {
 		flag = PRC_infiltration_@PREV
+		value > 0
+	}
+}
+
+PRC_is_infiltrated_by_ROOT = {
+	has_state_flag = {
+		flag = PRC_infiltration_@ROOT
 		value > 0
 	}
 }
@@ -247,6 +255,20 @@ PRC_all_anti_japan_infiltration_discovered = {
 	}
 	715 = {
 		has_state_flag = discovered_infiltration
+		PRC_is_infiltrated_by_PREV = yes
+	}
+}
+
+PRC_japanese_state_available_for_infiltration_trigger = {
+	OR = {
+		CONTROLLER = {
+			NOT = { has_war_with = ROOT }
+			OR = {
+				original_tag = MAN
+				original_tag = MEN
+				original_tag = JAP
+			}
+		}
 		PRC_is_infiltrated_by_PREV = yes
 	}
 }
