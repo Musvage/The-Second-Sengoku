@@ -1,8 +1,8 @@
 NDefines_Graphics = {
 
 NWiki = {
-	BASE_URL = "http://www.hoi4wiki.com/",
-	FORUM_URL = "http://forum.paradoxplaza.com/forum/index.php?link-forums/hearts-of-iron-iv.847/"
+	BASE_URL = "https://hoi4.paradoxwikis.com/Hearts_of_Iron_4_Wiki",
+	FORUM_URL = "https://forum.paradoxplaza.com/forum/index.php?forums/hearts-of-iron-iv.844/"
 },
 
 NMapMode = {
@@ -1002,8 +1002,8 @@ NFrontend = {
 	MP_OPTIONS_LOOK_Y = 0.0,	
 	MP_OPTIONS_LOOK_Z = 1519.0,
 	
-	
-	
+	SOCIALVIEW_CONTEXT_MENU_BUTTON_OFFSET = 10,
+	SOCIALVIEW_CONTEXT_MENU_MARGIN = 2,
 },	
 
 NSound = {
