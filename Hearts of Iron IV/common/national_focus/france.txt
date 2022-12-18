@@ -70,7 +70,7 @@
 		available = {
 			any_owned_state = {
 				is_core_of = ROOT
-				infrastructure < 9
+				infrastructure < 4
 			}
 		}
 		
@@ -87,12 +87,12 @@
 			random_owned_state = {
 				limit = { 
 					is_core_of = ROOT 
-					infrastructure < 9
+					infrastructure < 4
 					not = { has_state_flag = FRA_autoroutes_target }
 				}
 				add_building_construction = {
 					type = infrastructure
-					level = 2
+					level = 1
 					instant_build = yes
 				}
 				set_state_flag = FRA_autoroutes_target
@@ -100,12 +100,12 @@
 			random_owned_state = {
 				limit = { 
 					is_core_of = ROOT 
-					infrastructure < 9
+					infrastructure < 4
 					not = { has_state_flag = FRA_autoroutes_target }
 				}
 				add_building_construction = {
 					type = infrastructure
-					level = 2
+					level = 1
 					instant_build = yes
 				}
 				set_state_flag = FRA_autoroutes_target
@@ -113,12 +113,12 @@
 			random_owned_state = {
 				limit = { 
 					is_core_of = ROOT 
-					infrastructure < 9
+					infrastructure < 4
 					not = { has_state_flag = FRA_autoroutes_target }
 				}
 				add_building_construction = {
 					type = infrastructure
-					level = 2
+					level = 1
 					instant_build = yes
 				}
 				set_state_flag = FRA_autoroutes_target
@@ -126,12 +126,12 @@
 			random_owned_state = {
 				limit = { 
 					is_core_of = ROOT 
-					infrastructure < 9
+					infrastructure < 4
 					not = { has_state_flag = FRA_autoroutes_target }
 				}
 				add_building_construction = {
 					type = infrastructure
-					level = 2
+					level = 1
 					instant_build = yes
 				}
 				set_state_flag = FRA_autoroutes_target
@@ -315,6 +315,7 @@
 						has_state_flag = FRA_colonial_industry_target
 					}
 				}
+				add_extra_state_shared_building_slots = 2
 				add_building_construction = {
 					type = arms_factory
 					level = 2
@@ -334,6 +335,7 @@
 						has_state_flag = FRA_colonial_industry_target
 					}
 				}
+				add_extra_state_shared_building_slots = 2 #States already got 2 building slots and 2 civs in previous focuses, so let's just add 2 more slots and mils here
 				add_building_construction = {
 					type = arms_factory
 					level = 2
@@ -824,6 +826,7 @@
 					is_controlled_by = ROOT
 					is_core_of = ROOT
 				}
+				add_extra_state_shared_building_slots = 2
 				add_building_construction = {
 					type = arms_factory
 					level = 2
@@ -835,6 +838,7 @@
 					is_controlled_by = ROOT
 					is_core_of = ROOT
 				}
+				add_extra_state_shared_building_slots = 2
 				add_building_construction = {
 					type = arms_factory
 					level = 2
@@ -927,11 +931,11 @@
 		available_if_capitulated = no
 		search_filters = { FOCUS_FILTER_RESEARCH }
 		completion_reward = {
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = FRA_methodical_battle
 				category = land_doctrine
 				uses = 2
-				bonus = 2
+				cost_reduction = 0.65
 			}
 		}
 	}
@@ -1079,8 +1083,16 @@
 		}
 
 		available = {
-			has_tech = basic_heavy_tank
-			has_tech = basic_medium_tank
+			OR = {
+				AND = {
+					has_tech = basic_heavy_tank
+					has_tech = basic_medium_tank
+				}
+				AND = {
+					has_tech = basic_heavy_tank_chassis
+					has_tech = basic_medium_tank_chassis
+				}
+			}
 		}
 		
 		bypass = {
@@ -1111,14 +1123,31 @@
 					engineer = { x = 0 y = 2 }
 				}
 			}
-			capital_scope = {
-				create_unit = {
-					division = "name = \"1re Division Cuirassée\" division_template = \"Division Cuirassée\" start_experience_factor = 0.7"  
-					owner = ROOT
+			if = {
+				limit = {
+					has_dlc = "No Step Back"
 				}
-				create_unit = {
-					division = "name = \"2me Division Cuirassée\" division_template = \"Division Cuirassée\" start_experience_factor = 0.7"  
-					owner = ROOT
+				capital_scope = {
+					create_unit = {
+						division = "name = \"1re Division Cuirassée\" division_template = \"Division Cuirassée\" start_experience_factor = 0.7 force_equipment_variants = { heavy_tank_chassis_0 = { creator = \"FRA\" version_name = \"Char B1\"} }"  
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"2me Division Cuirassée\" division_template = \"Division Cuirassée\" start_experience_factor = 0.7 force_equipment_variants = { heavy_tank_chassis_0 = { creator = \"FRA\" version_name = \"Char B1\"} }"  
+						owner = ROOT
+					}
+				}
+			}
+			else = {
+				capital_scope = {
+					create_unit = {
+						division = "name = \"1re Division Cuirassée\" division_template = \"Division Cuirassée\" start_experience_factor = 0.7"  
+						owner = ROOT
+					}
+					create_unit = {
+						division = "name = \"2me Division Cuirassée\" division_template = \"Division Cuirassée\" start_experience_factor = 0.7"  
+						owner = ROOT
+					}
 				}
 			}
 		}
@@ -1431,11 +1460,11 @@
 		available_if_capitulated = no
 		search_filters = { FOCUS_FILTER_RESEARCH }
 		completion_reward = {
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = FRA_air_ground_cooperation
 				category = air_doctrine
 				uses = 2
-				bonus = 1
+				cost_reduction = 0.5
 			}
 		}
 	}
@@ -1496,9 +1525,9 @@
 		completion_reward = {
 			remove_ideas = FRA_victors_of_wwi
 			army_experience = 10
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = FRA_army_reform
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 2
 				category = land_doctrine
 			}
@@ -1540,16 +1569,17 @@
 
 		search_filters = { FOCUS_FILTER_POLITICAL  }
 		completion_reward = {
-			create_country_leader = {
-				name = "Léon Blum"
-				desc = "POLITICS_ÉDOUARD_DALADIER_DESC"
-				picture = GFX_portrait_fra_leon_blum
-				expire = "1965.1.1"
-				ideology = socialism
-				traits = {
-					reluctant_interventionist
-					stout_defender
+			add_country_leader_role = {
+				character = FRA_leon_blum
+				country_leader = {
+					expire = "1965.1.1"
+					ideology = socialism
+					traits = {
+						reluctant_interventionist
+						stout_defender
+					}
 				}
+				promote_leader = yes
 			}
 			set_country_flag = { flag = FRA_popular_front_cooldown value = 1 days = 360 } #fires strike event if labour laws not reformed in time
 		}
@@ -1790,6 +1820,7 @@
 						include_locked = yes
 					}
 				}
+				add_extra_state_shared_building_slots = 2
 				add_building_construction = {
 					type = industrial_complex
 					level = 2
@@ -1997,6 +2028,17 @@
 		available_if_capitulated = no
 
 		completion_reward = {
+			promote_character  = FRA_rene_nicod
+			add_trait = {
+				character = FRA_rene_nicod
+				ideology = marxism
+				trait = reluctant_veteran
+			}
+			set_party_name = {
+				ideology = communism
+				long_name = FRA_union_populaire_long
+				name = FRA_union_populaire
+			}
 			if = {
 				limit = {
 					NOT = {
@@ -2136,8 +2178,10 @@
 						original_tag = SLO
 						original_tag = MNT
 						original_tag = BOS
+						original_tag = HRZ
 						original_tag = MAC
 						original_tag = CRO
+						original_tag = TRA
 					}
 					exists = yes
 					is_in_faction = no
@@ -2515,6 +2559,17 @@
 		available_if_capitulated = no
 
 		completion_reward = {
+			promote_character = FRA_rene_nicod
+			add_trait = {
+				character = FRA_rene_nicod
+				ideology = marxism
+				trait = proletariat_internationalist
+			}
+			set_party_name = {
+				ideology = communism
+				long_name = FRA_union_populaire_long
+				name = FRA_union_populaire
+			}
 			set_rule = { can_create_factions = yes }
 			create_faction = FRA_communist_faction
 			create_operative_leader = {
@@ -2612,17 +2667,19 @@
 		available_if_capitulated = no
 
 		completion_reward = {
-			
-			every_other_country = {
-				limit = {
-					original_tag = SPR
-					not = { has_government = communism }
-				}
-				ROOT = {
-					create_wargoal = {
-						target = PREV
-						type = topple_government
-						expire = 0
+			custom_effect_tooltip = FRA_carry_the_revolution_west_tt
+			hidden_effect = {
+				every_other_country = {
+					limit = {
+						original_tag = SPR
+						not = { has_government = communism }
+					}
+					ROOT = {
+						create_wargoal = {
+							target = PREV
+							type = topple_government
+							expire = 0
+						}
 					}
 				}
 			}
@@ -4148,6 +4205,7 @@
 				has_government = democratic
 			}
 			NOT = { has_war_with = ENG }
+			is_in_faction = no
 		}
 		bypass = {
 			is_in_faction_with = ENG
@@ -4239,6 +4297,7 @@
 
 		available = {
 			is_subject = no
+			is_in_faction = no
 		}
 		
 		bypass = {
@@ -4284,6 +4343,10 @@
 			}
 			268 = {
 				is_owned_or_subject_trigger = yes
+			}
+			ITA = {
+				owns_state = 550
+				owns_state = 559
 			}
 		}
 		
@@ -4331,6 +4394,10 @@
 				}
 				exists = yes
 			}
+			ITA = {
+				owns_state = 550
+				owns_state = 559
+			}
 			has_country_flag = lar_france_stresa_front_italy_agreed
 		}
 		
@@ -4356,6 +4423,7 @@
 		}
 		relative_position_id = FRA_france_leads
 		cost = 10
+		dynamic = yes 
 
 		ai_will_do = {
 			factor = 1
@@ -4365,6 +4433,7 @@
 			is_subject = no
 			SOV = {
 				exists = yes
+				NOT = { has_government = fascism }
 				NOT = {
 					has_war_with = ROOT
 				}
@@ -5364,7 +5433,15 @@
 		available = {
 			any_other_country = {
 				original_tag = SPR
-				has_government = ROOT
+				OR = {
+					has_government = ROOT
+					AND = {
+						has_country_leader = { character = SPA_francisco_franco }
+						ROOT = {
+							has_government = fascism
+						}
+					}
+				}
 			}
 			if = {
 				limit = {
@@ -5395,7 +5472,13 @@
 			random_other_country = { 
 				limit = {
 					original_tag = SPR
-					has_government = ROOT
+					OR = {
+						has_government = ROOT
+						has_country_leader = { character = SPA_francisco_franco ruling_only = yes }
+						NOT = {
+							has_global_flag = spanish_civil_war #to make the focus show an effect before the SCW breaks out
+						}
+					}
 				}
 				if = {
 					limit = {
@@ -5745,6 +5828,7 @@
 		available = {
 			GER = {
 				has_government = ROOT
+				NOT = { has_war_with = ROOT }
 			}
 			OR = { 
 				is_subject = no
@@ -7919,6 +8003,7 @@
 			21 = {
 				if = {
 					limit = { is_controlled_by = ROOT }
+					add_extra_state_shared_building_slots = 2
 					add_building_construction = {
 						type = dockyard
 						level = 2
@@ -7930,6 +8015,7 @@
 			14 = {
 				if = {
 					limit = { is_controlled_by = ROOT }
+					add_extra_state_shared_building_slots = 2
 					add_building_construction = {
 						type = dockyard
 						level = 2
@@ -8019,6 +8105,7 @@
 			459 = {
 				if = {
 					limit = { is_controlled_by = ROOT }
+					add_extra_state_shared_building_slots = 2
 					add_building_construction = {
 						type = dockyard
 						level = 2
@@ -8030,6 +8117,7 @@
 			272 = {
 				if = {
 					limit = { is_controlled_by = ROOT }
+					add_extra_state_shared_building_slots = 2
 					add_building_construction = {
 						type = dockyard
 						level = 2
@@ -8041,6 +8129,7 @@
 			286 = {
 				if = {
 					limit = { is_controlled_by = ROOT }
+					add_extra_state_shared_building_slots = 2
 					add_building_construction = {
 						type = dockyard
 						level = 2
@@ -8071,6 +8160,7 @@
 					is_coastal = yes
 					is_controlled_by = ROOT
 				}
+				add_extra_state_shared_building_slots = 2
 				add_building_construction = {
 					type = dockyard
 					level = 3
@@ -8368,9 +8458,9 @@
 
 		completion_reward = {
 
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = FRA_naval_doctrine
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 2
 				category = naval_doctrine
 			}
@@ -8550,9 +8640,9 @@
 		completion_reward = {
 			air_experience = 50
 
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = FRA_air_doctrine
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 2
 				category = air_doctrine
 			}

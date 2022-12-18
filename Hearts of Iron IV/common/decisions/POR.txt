@@ -322,14 +322,22 @@ POR_arms_purchases = {
 		cost = 0
 
 		ai_will_do = {
-			base = 50
+			base = 10
 			modifier = {
-				factor = 100
-				OR = {
-					ENG = { has_government = ROOT }
-					AND = {
-						NOT = { ENG = { has_government = fascism } }
-						NOT = { has_government = fascism }
+				factor = 5
+				ENG = { has_government = ROOT }
+				NOT = { has_government = fascism }
+			}
+			modifier = {
+				factor = 0
+				has_country_flag = POR_ships_purchase_timer
+			}
+			modifier = {
+				factor = 0
+				has_government = fascism
+				ENG = { 
+					NOT = { 
+						has_government = fascism 	 
 					}
 				}
 			}
@@ -352,6 +360,11 @@ POR_arms_purchases = {
 				country_event = { id = lar_portugal_purchase_ships.1 }
 			}
 			set_country_flag = POR_ships_purchase_in_progress_flag
+			set_country_flag = {
+  				flag = POR_ships_purchase_timer
+    			days = 180
+    			value = 1
+			}
 		}
 	}
 
@@ -372,10 +385,14 @@ POR_arms_purchases = {
 		cost = 0
 
 		ai_will_do = {
-			base = 50
+			base = 10
 			modifier = {
-				factor = 100
+				factor = 5
 				ITA = { has_government = ROOT }
+			}
+			modifier = {
+				factor = 0
+				has_country_flag = POR_ships_purchase_timer
 			}
 		}
 		
@@ -396,6 +413,11 @@ POR_arms_purchases = {
 				country_event = { id = lar_portugal_purchase_ships.1 }
 			}
 			set_country_flag = POR_ships_purchase_in_progress_flag
+			set_country_flag = {
+  				flag = POR_ships_purchase_timer
+    			days = 180
+    			value = 1
+			}
 		}
 	}
 
@@ -1935,6 +1957,13 @@ POR_iberian_summit = {
 	POR_iberian_summit_pro_axis = {
 		icon = eng_trade_unions_support
 
+		allowed = {
+			OR = {
+				original_tag = POR
+				tag = SPA
+			}
+		}
+
 		available = {		
 			POR = { has_war = no }
 			SPA = { has_war = no }
@@ -1942,8 +1971,8 @@ POR_iberian_summit = {
 		}
 
 		visible = {
-			tag = POR
 			NOT = { has_global_flag = POR_iberian_summit_pro_axis_flag }
+			country_exists = POR
 			POR = { 
 				is_in_faction = no
 				has_completed_focus = POR_iberian_summit
@@ -1951,7 +1980,7 @@ POR_iberian_summit = {
 				NOT = { has_government = democratic }
 			}
 			country_exists = SPA
-			SPA = { 
+			SPA = {
 				is_in_faction = no
 				OR = {
 					has_completed_focus = SPA_the_phalanx_ascendant
@@ -2018,54 +2047,53 @@ POR_iberian_summit = {
 	POR_iberian_summit_pro_allies = {
 		icon = eng_trade_unions_support
 
-		available = {
+		allowed = {
+			OR = {
+				original_tag = POR
+				tag = SPA
+				tag = SPD
+			}
+		}
+
+		available = {		
 			POR = { has_war = no }
-			if = { 
-				limit = { country_exists = SPD } 
-				SPD = { has_war = no }
+			if = {
+				limit = {
+					country_exists = SPA #This is the prio
+				}
+				SPA = { has_war = no }
 			}
 			else = {
-				SPA = { has_war = no }
+				SPD = { has_war = no }
 			}
 			NOT = { has_global_flag = POR_iberian_summit_in_progress_flag }
 		}
 
 		visible = {
 			NOT = { has_global_flag = POR_iberian_summit_pro_allies_flag }
+			country_exists = POR
 			POR = {
 				is_in_faction = no
 				has_completed_focus = POR_iberian_summit
 				NOT = { has_government = fascism }
 				NOT = { has_government = communism }
 			}
-			OR = {
-				AND = {
-					tag = POR
-					OR = {
-						AND = {
-							country_exists = SPD
-							SPD = {
-								is_in_faction = no
-								has_completed_focus = SPR_maintain_the_second_republic
-								has_government = democratic
-							}
-						}
-						AND = {
-							country_exists = SPA
-							SPA = {
-								is_in_faction = no
-								has_completed_focus = SPA_unify_the_nationalist_front
-								NOT = { has_completed_focus = SPA_the_iberian_pact }
-							}
-						}
-					}
+			if = {
+				limit = {
+					country_exists = SPA #This is the prio
 				}
-				AND = {
-					tag = SPD
+				SPA = {
+					is_in_faction = no
+					has_completed_focus = SPA_unify_the_nationalist_front
+					NOT = { has_completed_focus = SPA_the_iberian_pact }
+				}
+			}
+			else = {
+				country_exists = SPD
+				SPD = {
 					is_in_faction = no
 					has_completed_focus = SPR_maintain_the_second_republic
 					has_government = democratic
-					country_exists = POR
 				}
 			}
 			ENG = { 
@@ -2427,9 +2455,11 @@ POR_prospect_for_resources = {
 
 		}
 
-		highlight_state_targets = {
+		highlight_states = {
+ highlight_state_targets = {
 			state = 112
-		}
+		} 
+}
 
 		available = {
 			has_completed_focus = POR_extraction_industries
@@ -2481,9 +2511,11 @@ POR_prospect_for_resources = {
 
 		}
 
-		highlight_state_targets = {
+		highlight_states = {
+ highlight_state_targets = {
 			state = 795
-		}
+		} 
+}
 
 		available = {
 			has_completed_focus = POR_extraction_industries

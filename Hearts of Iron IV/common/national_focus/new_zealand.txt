@@ -133,9 +133,9 @@
 
 		completion_reward = {
 			navy_experience = 25
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = NZL_form_the_rnzn
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 2
 				category = naval_doctrine
 			}
@@ -534,9 +534,9 @@
 					instant_build = yes
 				}
 			}
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = NZL_form_the_rnzaf
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 1
 				category = air_doctrine
 			}
@@ -558,9 +558,9 @@
 				}
 				set_state_flag = NZL_expand_the_nzpaf_AB
 			}
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = NZL_form_the_rnzaf
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 1
 				category = air_doctrine
 			}
@@ -1359,9 +1359,9 @@
 
 		completion_reward = {
 			army_experience = 25
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = NZL_army_reforms
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 1
 				category = land_doctrine
 			}
@@ -1428,7 +1428,10 @@
 		}
 
 		bypass = {
-
+			OR = {
+				has_tech = basic_light_tank
+				has_tech = basic_light_tank_chassis
+			}
 		}
 
 		cancel_if_invalid = yes
@@ -1438,11 +1441,24 @@
 
 		completion_reward = {
 			add_ideas = NZL_bob_semple_tank
-			add_tech_bonus = {
-				name = NZL_bob_semple_tank
-				bonus = 1.0
-				uses = 1
-				technology = basic_light_tank
+			if = {
+				limit = {
+					NOT = { has_dlc = "No Step Back" }
+				}
+				add_tech_bonus = {
+					name = NZL_bob_semple_tank
+					bonus = 1.0
+					uses = 1
+					technology = basic_light_tank
+				}
+			}
+			else = {
+				add_tech_bonus = {
+					name = NZL_bob_semple_tank
+					bonus = 1.0
+					uses = 1
+					technology = basic_light_tank_chassis
+				}
 			}
 		}
 	}
@@ -1694,12 +1710,26 @@
 		search_filters = { FOCUS_FILTER_RESEARCH }
 
 		completion_reward = {
-			add_tech_bonus = {
-				name = NZL_big_bob_tank
-				ahead_reduction = 2
-				bonus = 1.0
-				uses = 1
-				technology = super_heavy_tank
+			if = {
+				limit = {
+					NOT = { has_dlc = "No Step Back" }
+				}
+				add_tech_bonus = {
+					name = NZL_big_bob_tank
+					ahead_reduction = 2
+					bonus = 1.0
+					uses = 1
+					technology = super_heavy_tank
+				}
+			}
+			else = {
+				add_tech_bonus = {
+					name = NZL_big_bob_tank
+					ahead_reduction = 2
+					bonus = 1.0
+					uses = 1
+					technology = super_heavy_tank_chassis
+				}
 			}
 		}
 	}
@@ -2319,10 +2349,7 @@
 		available = {
 			is_subject = no
 			has_government = communism
-			SOV = {
-				has_capitulated = no
-				is_subject = no
-			}
+			SOV_comintern_joinable = yes 
 			NOT = { has_country_flag = britain_enforced_our_loyalty }
 		}
 
@@ -2355,6 +2382,7 @@
 
 		available = {
 			has_government = communism
+			SOV = { has_government = communism }
 			is_subject = no
 			is_in_faction_with = SOV
 			NOT = { has_country_flag = britain_enforced_our_loyalty }

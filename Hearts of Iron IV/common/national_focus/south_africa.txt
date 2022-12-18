@@ -1019,7 +1019,7 @@
         search_filters = { FOCUS_FILTER_POLITICAL }
 
 		complete_tooltip = {
-			set_capital = 541
+			set_capital = { state = 541 }
 			start_civil_war = {
 				ruling_party = fascism
 				ideology = democratic
@@ -1033,7 +1033,7 @@
 		completion_reward = {
 			custom_effect_tooltip = SAF_civil_war_tt
 			hidden_effect = {
-				set_capital = 541
+				set_capital = { state = 541 }
 				start_civil_war = {
 					ruling_party = fascism
 					ideology = democratic
@@ -1493,12 +1493,12 @@
 		completion_reward = {
 			add_political_power = 120
 			add_popularity = {	
-						ideology = communism
-						popularity = 0.5
-					}
+				ideology = communism
+				popularity = 0.15
+			}
 			hidden_effect = {
-			news_event = { hours = 6 id = news.263 }
-					}
+				news_event = { hours = 6 id = news.263 }
+			}
 		}
 	}
 	focus = {
@@ -1751,8 +1751,7 @@
 		}
 
 		available = {
-			NOT = { has_war_with = SOV }
-			SOV = { is_puppet = no }
+			SOV_comintern_joinable = yes 
 			is_subject = no
 			NOT = { has_country_flag = britain_enforced_our_loyalty }
 		}
@@ -1840,15 +1839,15 @@
 
 		completion_reward = {
 			add_ideas = SAF_soviet_advisers
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SAF_invite_soviet_advisers
-				bonus = 1.0
+				cost_reduction = 0.25
 				uses = 2
 				category = cat_mass_assault
 			}
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SAF_invite_soviet_advisers
-				bonus = 0.5
+				cost_reduction = 0.5
 				uses = 2
 				category = land_doctrine
 			}
@@ -1916,13 +1915,26 @@
 			FRA = {
 				has_capitulated = yes
 				exists = yes #otherwise Franco-British union might screw things up
-				NOT = { has_government = communism }
+			}
+			543 = {
+				controller = { 
+					NOT = { has_government = communism }					
+				}
+			}
+			543 = {
+				controller = { 
+					NOT = { has_war_with = SAF }				
+				}
 			}
 			NOT = { has_country_flag = britain_enforced_our_loyalty }
 		}
 		
 		bypass = {
-
+			543 = {
+				controller = { 
+					has_war_with = SAF					
+				}
+			}
 		}
 
 		cancel_if_invalid = yes
@@ -1935,9 +1947,11 @@
 		}
 
 		completion_reward = {
-			FRA = {
-				custom_effect_tooltip = needs_approval
+			543 = {
+				controller = {
+					custom_effect_tooltip = needs_approval
 					country_event = { id = tfv_south_africa.30 hours = 12 }
+				}
 			}
 			hidden_effect = {
 				news_event = { id = news.265 }
@@ -1972,35 +1986,11 @@
 		continue_if_invalid = no
 		available_if_capitulated = no
 
-		complete_tooltip = {
-			random_state = {
-				limit = {
-					has_state_flag = SAF_south_african_railways_Inf
-				}
-				add_building_construction = {
-					type = infrastructure
-					level = 3
-					instant_build = yes
-				}
-			}
-		}
         search_filters = { FOCUS_FILTER_INDUSTRY }
 
 		completion_reward = {
-			random_owned_controlled_state = {
-				limit = {
-					free_building_slots = {
-						building = infrastructure
-						size > 2
-					}
-				}
-				add_building_construction = {
-					type = infrastructure
-					level = 3
-					instant_build = yes
-				}
-				set_state_flag = SAF_south_african_railways_Inf
-			}
+			custom_effect_tooltip = available_designer
+			show_ideas_tooltip = SAF_south_african_railways
 		}
 	}
 
@@ -2146,7 +2136,17 @@
 				}
 				add_building_construction = {
 					type = infrastructure
-					level = 3
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_state = {
+				limit = {
+					has_state_flag = SAF_infrastructure_effort_Inf2
+				}
+				add_building_construction = {
+					type = infrastructure
+					level = 1
 					instant_build = yes
 				}
 			}
@@ -2157,15 +2157,30 @@
 				limit = {
 					free_building_slots = {
 						building = infrastructure
-						size > 2
+						size > 0
 					}
 				}
 				add_building_construction = {
 					type = infrastructure
-					level = 3
+					level = 1
 					instant_build = yes
 				}
 				set_state_flag = SAF_infrastructure_effort_Inf
+				random_neighbor_state = { # done like this to prevent double selection of previous state
+					limit = {
+						is_controlled_by = ROOT
+						free_building_slots = {
+							building = infrastructure
+							size > 0
+						}
+					}
+					add_building_construction = {
+						type = infrastructure
+						level = 1
+						instant_build = yes
+					}
+					set_state_flag = SAF_infrastructure_effort_Inf2
+				}
 			}
 		}
 	}
@@ -2536,9 +2551,9 @@
 
 		completion_reward = {
 			army_experience = 10
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SAF_special_service_battalion
-				bonus = 1.0
+				cost_reduction = 0.25
 				uses = 1
 				category = land_doctrine
 			}
@@ -2652,9 +2667,9 @@
 
 		completion_reward = {
 			army_experience = 10
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SAF__south_african_military_college
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 1
 				category = land_doctrine
 			}
@@ -2928,9 +2943,9 @@
 					instant_build = yes
 				}
 			}
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SAF_commit_to_the_five_year_plan
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 1
 				category = air_doctrine
 			}
@@ -2952,9 +2967,9 @@
 				}
 				set_state_flag = SAF_commit_to_the_five_year_plan_AB
 			}
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SAF_commit_to_the_five_year_plan
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 1
 				category = air_doctrine
 			}
@@ -3071,9 +3086,9 @@
 
 		completion_reward = {
 			air_experience = 25
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SAF_perfect_the_cab_rank_technique
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 1
 				category = cat_battlefield_support
 			}
@@ -3183,9 +3198,9 @@
 
 		completion_reward = {
 			air_experience = 35
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SAF_retain_experienced_pilots
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 1
 				category = air_doctrine
 			}
@@ -3257,9 +3272,9 @@
 				}
 				set_state_flag = SAF_seaward_defence_force_DY
 			}			
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SAF_seaward_defence_force
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 1
 				category = naval_doctrine
 			}
@@ -3295,9 +3310,9 @@
         search_filters = { FOCUS_FILTER_RESEARCH }
 
 		completion_reward = {
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SAF_protect_the_trade
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 1
 				category = convoy_defense_tree
 			}
@@ -3337,9 +3352,9 @@
         search_filters = { FOCUS_FILTER_RESEARCH }
 
 		completion_reward = {
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SAF_disrupt_the_trade
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 1
 				category = cat_trade_interdiction
 			}
@@ -3541,9 +3556,9 @@
         search_filters = { FOCUS_FILTER_RESEARCH }
 
 		completion_reward = {
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SAF_prepare_overseas_offensive
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 1
 				category = convoy_defense_tree
 			}

@@ -238,18 +238,7 @@
 				}
 			}
 			remove_ideas = JAP_the_unthinkable_option
-			set_capital = 532
-			start_civil_war = {
-				ruling_party = communism
-				ideology = ROOT
-				size = 0.8
-				capital = 282
-				states = { 282 533 536 555 529 530 528 526 524 645 648 646 647 684 633 609 745 527 525 }
-				keep_unit_leaders = {
-					750 751 752
-				}
-			}
-			custom_effect_tooltip = cast_the_die_TT
+			set_capital = { state = 532 }
 			if = {
 				limit = {
 					MEN = { is_subject_of = ROOT }
@@ -271,6 +260,18 @@
 				}
 				MAN = { remove_ideas = MAN_kwantung_veto }
 			}
+			start_civil_war = {
+				ruling_party = communism
+				ideology = ROOT
+				size = 0.5	#This was too much for AI
+				capital = 282
+				states = { 282 533 536 555 529 530 528 526 524 645 648 646 647 684 633 609 745 527 525 }
+				keep_unit_leaders = {
+					750 751 752
+				}
+			}
+			custom_effect_tooltip = cast_the_die_TT
+			
 			hidden_effect = {
 				division_template = { name = "Japanese People's Regiment" division_names_group = JAP_INF_01 is_locked = yes regiments = { infantry = { x = 0 y = 0 } infantry = { x = 1 y = 0 } infantry = { x = 2 y = 0 } } }
 				532 = {
@@ -568,8 +569,7 @@
 		available = {
 			has_government = communism
 			is_subject = no
-			NOT = { has_war_with = SOV }
-			NOT = { is_in_faction_with = SOV }
+			SOV_comintern_joinable = yes 
 		}
 
 		bypass = {
@@ -1284,9 +1284,9 @@
 
 		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_ANNEXATION }
 		completion_reward = {
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = JAP_strike_south_doctrine
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 2
 				category = naval_doctrine	
 			}
@@ -1301,6 +1301,7 @@
 		x = 0
 		y = 2
 		relative_position_id = JAP_strike_south_doctrine
+		dynamic = yes  
 
 		cost = 10
 
@@ -2049,7 +2050,10 @@
 		}
 
 		available = {
-			528 = { is_fully_controlled_by = ROOT }
+			any_controlled_state = {
+				is_core_of = ROOT
+				synthetic_refinery < 3
+			}
 		}
 
 		bypass = {
@@ -2063,7 +2067,17 @@
 
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		completion_reward = {
-			528 = {
+			random_owned_controlled_state = {
+				limit = {
+					is_core_of = ROOT
+					synthetic_refinery < 3
+					free_building_slots = { #less than 24 unlocked slots
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				prioritize = { 528 }
 				add_extra_state_shared_building_slots = 1
 				add_building_construction = {
 					type = synthetic_refinery
@@ -2622,6 +2636,7 @@
 		x = 1
 		y = 1
 		relative_position_id = JAP_modern_shogunate
+		dynamic = yes  
 
 		cost = 10
 
@@ -2643,9 +2658,9 @@
 
 		search_filters = { FOCUS_FILTER_ANNEXATION }
 		completion_reward = {
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = JAP_prepare_for_war_with_the_soviet_union
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 1
 				category = land_doctrine	
 			}
@@ -2811,9 +2826,9 @@
 				}
 			}
 			MAN = {
-				add_tech_bonus = {
+				add_doctrine_cost_reduction = {
 					name = JAP_build_up_the_manchurian_army
-					bonus = 1.0
+					cost_reduction = 0.5
 					uses = 2
 					category = land_doctrine	
 				}
@@ -3111,7 +3126,15 @@
 				type = annex_everything
 				expire = 0
 			}
-			unlock_decision_tooltip = JAP_war_with_soviet_union
+			IF = {
+				limit = {
+					ROOT = { is_in_faction_with = GER }
+					GER = { has_completed_focus = GER_mol_rib_pact }
+					GER = { NOT = { has_war_with = SOV } }
+					NOT = { has_war_with = SOV }
+				}
+				unlock_decision_tooltip = JAP_war_with_soviet_union
+			}
 			if = {
 				limit = {
 					has_country_leader = { id = 700 ruling_only = yes }
@@ -3760,10 +3783,21 @@
 
 
 		completion_reward = {
-			SOV = { add_opinion_modifier = { target = ROOT modifier = JAP_anti_communist_bulwark } }
-			PRC = { add_opinion_modifier = { target = ROOT modifier = JAP_anti_communist_bulwark } }
-			add_opinion_modifier = { target = SOV modifier = JAP_anti_communist_bulwark }
-			add_opinion_modifier = { target = PRC modifier = JAP_anti_communist_bulwark }
+			every_other_country = {
+				limit = { 
+					OR = {
+						is_major = yes 
+						tag = PRC
+					}
+					has_government = communism
+				}
+				add_opinion_modifier = { target = ROOT modifier = JAP_anti_communist_bulwark }
+				ROOT = { add_opinion_modifier = { target = PREV modifier = JAP_anti_communist_bulwark } }
+			}
+			# SOV = { add_opinion_modifier = { target = ROOT modifier = JAP_anti_communist_bulwark } }
+			# PRC = { add_opinion_modifier = { target = ROOT modifier = JAP_anti_communist_bulwark } }
+			# add_opinion_modifier = { target = SOV modifier = JAP_anti_communist_bulwark }
+			# add_opinion_modifier = { target = PRC modifier = JAP_anti_communist_bulwark }
 		}
 	}
 
@@ -4191,7 +4225,10 @@
 		}
 
 		available = {
-			MAN = { is_subject_of = ROOT }
+			MAN = { 
+				is_subject_of = ROOT 
+				controls_state = 716
+			}
 		}
 
 		bypass = {
@@ -4203,64 +4240,32 @@
 		available_if_capitulated = no
 
 		search_filters = { FOCUS_FILTER_INDUSTRY }
-		complete_tooltip = {
-			MAN = {			
-				random_state = {
-					limit = {
-						has_state_flag = JAP_expand_manchurian_railways_Inf1
-					}
-					add_building_construction = {
-						type = infrastructure
-						level = 1
-						instant_build = yes
-					}
-				}
-				random_state = {
-					limit = {
-						has_state_flag = JAP_expand_manchurian_railways_Inf2
-					}
-					add_building_construction = {
-						type = infrastructure
-						level = 2
-						instant_build = yes
-					}
-				}
-			}
-		}
 
 		completion_reward = {
 			MAN = {
-				random_owned_controlled_state = {
+				if = {
 					limit = {
-						is_fully_controlled_by = PREV						
-						free_building_slots = {
-							building = infrastructure
-							size > 0
-							include_locked = yes
+						controls_state = 716
+					}
+					build_railway = { #Mukden-Korean border
+						path = {
+							11771 9885 3895 3839 3970 6981
 						}
 					}
-					add_building_construction = {
-						type = infrastructure
-						level = 1
-						instant_build = yes
+					build_railway = { #Mukden - Dalian
+						path = {
+							11771 987 9781 11764 964 3783 6851 1150
+						}
 					}
-					set_state_flag = JAP_expand_manchurian_railways_Inf1
 				}
-				random_owned_controlled_state = {
+				if = {
 					limit = {
-						is_fully_controlled_by = PREV						
-						free_building_slots = {
-							building = infrastructure
-							size > 1
-							include_locked = yes
-						}
+						controls_state = 716
+						controls_state = 610
 					}
-					add_building_construction = {
-						type = infrastructure
-						level = 2
-						instant_build = yes
+					build_railway = { #Mukden - Chinese border
+						path = { 11771 6951 11815 9835 6837 11886 3900 }
 					}
-					set_state_flag = JAP_expand_manchurian_railways_Inf2
 				}
 			}
 		}
@@ -5193,9 +5198,9 @@
 
 		search_filters = { FOCUS_FILTER_RESEARCH }
 		completion_reward = {
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = JAP_carrier_warfare_experiments
-				bonus = 1.00
+				cost_reduction = 0.25
 				uses = 2
 				category = cat_base_strike
 			}

@@ -186,7 +186,7 @@
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		complete_tooltip = {
 			every_state = {
-				limit = { has_state_flag = GER_industrial_effort_2_2IC }
+				limit = { has_state_flag = MAN_invite_japanese_settlers_2IC }
 				add_extra_state_shared_building_slots = 1
 				add_building_construction = {
 					type = industrial_complex
@@ -674,43 +674,48 @@
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		completion_reward = {
 			if = {
-				limit = { 716 = { is_fully_controlled_by = ROOT } }
-				716 = {
-					add_building_construction = {
-						type = infrastructure
-						level = 1
-						instant_build = yes
+					limit = {
+						controls_state = 716
+					}
+					build_railway = { #Mukden-Korean border
+						path = {
+							11771 9885 3895 3839 3970 6981
+						}
+					}
+					build_railway = { #Mukden - Dalian
+						path = {
+							11771 987 9781 11764 964 3783
+						}
+					}
+				}
+			if = {
+				limit = { 
+					328 = { is_fully_controlled_by = ROOT } 
+					controls_state = 715
+					controls_state = 716
+				}
+				build_railway = {
+					path = { #Mukden - Hsinking - Harbin
+						11771 11808 916 4642 4572 4503 7652 10433
 					}
 				}
 			}
 			if = {
-				limit = { 328 = { is_fully_controlled_by = ROOT } }
-				328 = {
-					add_building_construction = {
-						type = infrastructure
-						level = 1
-						instant_build = yes
-					}
-				} 
+				limit = {
+					controls_state = 716
+					controls_state = 610
+				}
+				build_railway = { #Mukden - Chinese border
+					path = { 11771 6951 11815 9835 6837 11886 3900 }
+				}
 			}
 			if = {
-				limit = { 610 = { is_fully_controlled_by = ROOT } }
-				610 = {
-					add_building_construction = {
-						type = infrastructure
-						level = 1
-						instant_build = yes
-					}
-				} 
-			}
-			if = {
-				limit = { 717 = { is_fully_controlled_by = ROOT } }
-				717 = {
-					add_building_construction = {
-						type = infrastructure
-						level = 1
-						instant_build = yes
-					}
+				limit = {
+					controls_state = 714
+					controls_state = 715
+				}
+				build_railway = { #Mukden - central Manchuria
+					path = { 11771 846 9831 930 4633 4561 4506 7582 10433 }
 				}
 			}
 		}
@@ -1051,9 +1056,9 @@
 		search_filters = { FOCUS_FILTER_RESEARCH }
 		completion_reward = {
 			remove_ideas = MAN_kwantung_veto
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = MAN_alliance_with_the_kwantung_army
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 1
 				category = land_doctrine
 			}
@@ -1864,7 +1869,7 @@
 
 		search_filters = { FOCUS_FILTER_ANNEXATION }
 		completion_reward = {
-			hidden_effect = { OVERLORD = { save_event_target_as = overlord_target } }
+			hidden_effect = { set_variable = { MAN_independence_target = OVERLORD } } #We're using a variable here because the saved event target becomes invalidated deep in ScopedEventTarget
 			OVERLORD = { set_autonomy = { target = ROOT autonomy_state = autonomy_free } }
 			effect_tooltip = {		
 				if = {
@@ -1881,12 +1886,12 @@
 			hidden_effect = {
 				if = {
 					limit = {
-						is_in_faction_with = event_target:overlord_target
+						is_in_faction_with = var:MAN_independence_target
 					}
 					leave_faction = yes
 				}
 				declare_war_on = {
-					target = event_target:overlord_target
+					target = var:MAN_independence_target 
 					type = puppet_wargoal_focus
 				}
 			}
@@ -2001,7 +2006,7 @@
 		}
 
 		completion_reward = {
-			set_capital = 608
+			set_capital = { state = 608 }
 			MAN_low_legitimacy_level_down = yes
 		}
 	}

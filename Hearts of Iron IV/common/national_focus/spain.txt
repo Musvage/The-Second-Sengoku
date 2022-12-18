@@ -35,6 +35,10 @@ focus_tree = {
 			trigger = {
 				has_global_flag = spanish_civil_war
 				has_completed_focus = SPA_a_great_spain
+				has_game_rule = {
+					rule = obsolete_focus_branches_visibility
+					option = HIDE
+				}
 			}
 		}
 		offset = {
@@ -43,6 +47,10 @@ focus_tree = {
 			trigger = {
 				has_global_flag = spanish_civil_war
 				has_completed_focus = SPR_the_popular_front
+				has_game_rule = {
+					rule = obsolete_focus_branches_visibility
+					option = HIDE
+				}
 			}
 		}
 	}
@@ -70,13 +78,21 @@ focus_tree = {
 		mutually_exclusive = { focus = SPR_the_popular_front }
 
 		allow_branch = {
-			OR = {
-				NOT = {
-					has_global_flag = spanish_civil_war
+			if = {
+				limit = {
+					has_game_rule = {
+						rule = obsolete_focus_branches_visibility
+						option = HIDE
+					}
 				}
-				AND = {
-					NOT = { has_completed_focus = SPR_the_popular_front }
-					has_global_flag = spanish_civil_war
+				OR = {
+					NOT = {
+						has_global_flag = spanish_civil_war
+					}
+					AND = {
+						NOT = { has_completed_focus = SPR_the_popular_front }
+						has_global_flag = spanish_civil_war
+					}
 				}
 			}
 		}
@@ -91,6 +107,10 @@ focus_tree = {
 			trigger = {
 				has_completed_focus = SPA_a_great_spain
 				has_global_flag = spanish_civil_war
+				has_game_rule = {
+					rule = obsolete_focus_branches_visibility
+					option = HIDE
+				}
 			}
 		}
 		cost = 5
@@ -141,6 +161,10 @@ focus_tree = {
 			trigger = {
 				has_completed_focus = SPA_a_great_spain
 				has_global_flag = spanish_civil_war
+				has_game_rule = {
+					rule = obsolete_focus_branches_visibility
+					option = HIDE
+				}
 			}
 		}
 		relative_position_id = SPA_a_great_spain
@@ -306,6 +330,7 @@ focus_tree = {
 		search_filters = {FOCUS_FILTER_POLITICAL}
 		completion_reward = {
 			add_political_power = 60
+			set_global_flag = SPR_sin_paquito
 		}
 	}
 
@@ -358,13 +383,21 @@ focus_tree = {
 		mutually_exclusive = { focus = SPA_a_great_spain }
 		cancel_if_invalid = yes
 		allow_branch = {
-			OR = {
-				NOT = {
-					has_global_flag = spanish_civil_war
+			if = {
+				limit = {
+					has_game_rule = {
+						rule = obsolete_focus_branches_visibility
+						option = HIDE
+					}
 				}
-				AND = {
-					NOT = { has_completed_focus = SPA_a_great_spain }
-					has_global_flag = spanish_civil_war
+				OR = {
+					NOT = {
+						has_global_flag = spanish_civil_war
+					}
+					AND = {
+						NOT = { has_completed_focus = SPA_a_great_spain }
+						has_global_flag = spanish_civil_war
+					}
 				}
 			}
 		}
@@ -378,6 +411,10 @@ focus_tree = {
 			trigger = {
 				has_completed_focus = SPR_the_popular_front
 				has_global_flag = spanish_civil_war
+				has_game_rule = {
+					rule = obsolete_focus_branches_visibility
+					option = HIDE
+				}
 			}
 		}
 		cost = 5
@@ -428,6 +465,10 @@ focus_tree = {
 			trigger = {
 				has_completed_focus = SPR_the_popular_front
 				has_global_flag = spanish_civil_war
+				has_game_rule = {
+					rule = obsolete_focus_branches_visibility
+					option = HIDE
+				}
 			}
 		}
 		relative_position_id = SPR_the_popular_front
@@ -475,6 +516,10 @@ focus_tree = {
 			trigger = {
 				has_completed_focus = SPR_the_popular_front
 				has_global_flag = spanish_civil_war
+				has_game_rule = {
+					rule = obsolete_focus_branches_visibility
+					option = HIDE
+				}
 			}
 		}
 		relative_position_id = SPR_the_popular_front
@@ -1049,15 +1094,15 @@ focus_tree = {
 		available_if_capitulated = yes
 		search_filters = {FOCUS_FILTER_RESEARCH}
 		completion_reward = {
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SPA_doctrinal_advancements
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 1
 				category = land_doctrine
 			}
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SPA_doctrinal_advancements
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 1
 				category = air_doctrine
 			}
@@ -1143,7 +1188,7 @@ focus_tree = {
 
 		completion_reward = {
 			custom_effect_tooltip = available_political_advisor
-			show_ideas_tooltip = SPA_jose_antonio_primo_de_rivera
+			show_ideas_tooltip = SPR_SPA_jose_antonio_primo_de_rivera
 		}
 	}
 
@@ -1253,30 +1298,24 @@ focus_tree = {
 				limit = {
 					has_government = neutrality
 				}
-				hidden_effect = {
-					kill_country_leader = yes
-					kill_ideology_leader = fascism
-				}
-				create_country_leader = {
-					name = "Emilio Mola"
-					desc = "POLITICS_EMILIO_MOLA_DESC"
-					picture = "GFX_portrait_emilio_mola"
-					expire = "1965.1.1"
-					ideology = despotism
-					traits = {
-						the_director
-					}
-				}
-				hidden_effect = {
-					create_country_leader = {
-						name = "Emilio Mola"
-						desc = "POLITICS_EMILIO_MOLA_DESC"
-						picture = "GFX_portrait_emilio_mola"
+				add_country_leader_role = {
+					character = SPA_emilio_mola
+					country_leader = {
+						ideology = despotism
+						traits = { the_director }
 						expire = "1965.1.1"
-						ideology = falangism
-						traits = {
-							the_director
+					}
+					promote_leader = yes 
+				}
+				hidden_effect = {
+					add_country_leader_role = {
+						character = SPA_emilio_mola
+						country_leader = {
+							ideology = falangism
+							traits = { the_director }
+							expire = "1965.1.1"
 						}
+						promote_leader = yes 
 					}
 				}
 			}
@@ -1284,30 +1323,24 @@ focus_tree = {
 				limit = {
 					has_government = fascism
 				}
-				hidden_effect = {
-					kill_country_leader = yes
-					kill_ideology_leader = neutrality
-				}
-				create_country_leader = {
-					name = "Emilio Mola"
-					desc = "POLITICS_EMILIO_MOLA_DESC"
-					picture = "GFX_portrait_emilio_mola"
-					expire = "1965.1.1"
-					ideology = falangism
-					traits = {
-						the_director
-					}
-				}
-				hidden_effect = {
-					create_country_leader = {
-						name = "Emilio Mola"
-						desc = "POLITICS_EMILIO_MOLA_DESC"
-						picture = "GFX_portrait_emilio_mola"
+				add_country_leader_role = {
+					character = SPA_emilio_mola
+					country_leader = {
+						ideology = falangism
+						traits = { the_director }
 						expire = "1965.1.1"
-						ideology = despotism
-						traits = {
-							the_director
+					}
+					promote_leader = yes 
+				}
+				hidden_effect = {
+					add_country_leader_role = {
+						character = SPA_emilio_mola
+						country_leader = {
+							ideology = despotism
+							traits = { the_director }
+							expire = "1965.1.1"
 						}
+						promote_leader = yes 
 					}
 				}
 			}
@@ -1603,18 +1636,14 @@ focus_tree = {
 			hidden_effect = {
 				drop_cosmetic_tag = yes
 				set_cosmetic_tag = SPA_spanish_empire
-				kill_country_leader = yes
-				kill_ideology_leader = neutrality
-			}
-			create_country_leader = {
-				name = "José Antonio Primo de Rivera"
-				desc = "POLITICS_JOSE_ANTONIO_PRIMO_DE_RIVERA_DESC"
-				picture = "GFX_portrait_SPA_jose_antonio_primo_de_rivera"
-				expire = "1965.1.1"
-				ideology = falangism
-				traits = {
-					sins_of_the_father
+				SPA_emilio_mola = {
+					remove_country_leader_role = { ideology = despotism }
+					remove_country_leader_role = { ideology = falangism }
 				}
+			}
+			promote_character = {
+			  character = SPA_jose_antonio_primo_de_rivera
+			  ideology = falangism
 			}
 		}
 	}
@@ -1907,9 +1936,9 @@ focus_tree = {
 				category = cl_tech
 				category = ca_tech
 			}
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SPA_commerce_protection
-				bonus = 1
+				cost_reduction = 0.5
 				uses = 2
 				category = convoy_defense_tree
 			}
@@ -1943,7 +1972,7 @@ focus_tree = {
 		available = {
 			has_full_control_of_state = 290
 			has_country_leader = {
-				name = "José Antonio Primo de Rivera"
+				character = SPA_jose_antonio_primo_de_rivera
 				ruling_only = yes
 			}
 		}
@@ -2505,9 +2534,9 @@ focus_tree = {
 		search_filters = {FOCUS_FILTER_RESEARCH}
 		completion_reward = {
 			army_experience = 25
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SPA_the_army_of_africa_model
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 2
 				category = land_doctrine
 			}
@@ -2584,9 +2613,9 @@ focus_tree = {
 		search_filters = {FOCUS_FILTER_RESEARCH}
 		completion_reward = {
 			air_experience = 50
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SPA_expand_the_air_branch
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 1
 				category = air_doctrine
 			}
@@ -2804,10 +2833,9 @@ focus_tree = {
 			has_full_control_of_state = 176
 			has_full_control_of_state = 792
 			has_full_control_of_state = 41
-			any_country = {
-				is_in_faction_with = ROOT
-				has_government = fascism
+			any_allied_country = {
 				is_major = yes
+				has_government = fascism
 			}
 		}
 		bypass = {
@@ -2826,68 +2854,61 @@ focus_tree = {
 			custom_effect_tooltip = SPA_facilitate_pyrenees_freight_transports_tt
 			hidden_effect = {
 				793 = {
-					if = {
-						limit = { is_controlled_by = ROOT }
-						add_building_construction = {
-							type = infrastructure
-							level = 10
-							instant_build = yes
-						}
+					add_building_construction = {
+						type = infrastructure
+						level = 5
+						instant_build = yes
 					}
 				}
 				794 = {
-					if = {
-						limit = { is_controlled_by = ROOT }
-
-						add_building_construction = {
-							type = infrastructure
-							level = 10
-							instant_build = yes
-						}
+					add_building_construction = {
+						type = infrastructure
+						level = 5
+						instant_build = yes
 					}
 				}
 				165 = {
-					if = {
-						limit = { is_controlled_by = ROOT }
-
-						add_building_construction = {
-							type = infrastructure
-							level = 10
-							instant_build = yes
-						}
+					add_building_construction = {
+						type = infrastructure
+						level = 5
+						instant_build = yes
 					}
 				}
 				176 = {
-					if = {
-						limit = { is_controlled_by = ROOT }
-
-						add_building_construction = {
-							type = infrastructure
-							level = 10
-							instant_build = yes
-						}
+					add_building_construction = {
+						type = infrastructure
+						level = 5
+						instant_build = yes
 					}
 				}
 				792 = {
-					if = {
-						limit = { is_controlled_by = ROOT }
-
-						add_building_construction = {
-							type = infrastructure
-							level = 10
-							instant_build = yes
-						}
+					add_building_construction = {
+						type = infrastructure
+						level = 5
+						instant_build = yes
 					}
 				}
 				41 = {
-					if = {
-						limit = { is_controlled_by = ROOT }
-						add_building_construction = {
-							type = infrastructure
-							level = 10
-							instant_build = yes
-						}
+					add_building_construction = {
+						type = infrastructure
+						level = 5
+						instant_build = yes
 					}
+				}
+			}
+			build_railway = { #Madrid - Zaragoza - Pyrinnes
+				path = {
+					3938 9767 6993 9785 11766 813 3816 9813 11821 915
+				}
+			}
+			build_railway = { #Zaragoza - Barcelona - French Border
+				path = {
+					3816 3954 13223 6966 6812 9764 854 9824 
+				}
+			}
+			build_railway = { #Madrid - Valladolid - Burgos - Bilbao - French Border
+				path = {
+					3938 3794 9800 9846 11825 6936 903 885 11852 13233 740 6756
 				}
 			}
 		}
@@ -2896,11 +2917,16 @@ focus_tree = {
 	focus = {
 		id = SPA_improve_cross_country_railways
 		available = {
-			any_country = {
-				is_in_faction_with = ROOT
-				has_government = fascism
+			any_allied_country = {
 				is_major = yes
+				has_government = fascism
 			}
+			has_full_control_of_state = 169
+			has_full_control_of_state = 789
+			has_full_control_of_state = 175
+			has_full_control_of_state = 170
+			has_full_control_of_state = 173
+			has_full_control_of_state = 168
 		}
 		bypass = {
 		}
@@ -2915,23 +2941,19 @@ focus_tree = {
 		available_if_capitulated = yes
 		search_filters = {FOCUS_FILTER_INDUSTRY}
 		completion_reward = {
-			every_owned_state = {
-				limit = {
-					is_controlled_by = ROOT
-					is_core_of = ROOT
-					NOT = {
-						state = 793
-						state = 794
-						state = 165
-						state = 176
-						state = 792
-						state = 41
-					}
+			build_railway = { #Madrid - Crodoba - Sevilla
+				path = {
+					3938 13224 13229 6800 6832 6948 3810 3871 875 1178 7183
 				}
-				add_building_construction = {
-					type = infrastructure
-					level = 1
-					instant_build = yes
+			}
+			build_railway = { #Madrid - Granada
+				path = {
+					13229 9778 9828 12083 4095 1176
+				}
+			}
+			build_railway = { #Madrid - Murcia - Valencia
+				path = {
+					3938 6914 9757 942 832 9903 1093 10024 4098 9889 6959 6906
 				}
 			}
 		}
@@ -3548,25 +3570,23 @@ focus_tree = {
 				kill_country_leader = yes
 				kill_ideology_leader = fascism
 			}
-			create_country_leader = {
-				name = "Francisco Franco"
-				desc = "POLITICS_FRANCISCO_FRANCO_DESC"
-				picture = "GFX_portrait_spain_francisco_franco"
-				expire = "1965.1.1"
-				ideology = despotism
-				traits = {
-					caudillo_1
+			add_country_leader_role = {
+				character = "SPA_francisco_franco"
+				country_leader = {
+				  ideology=despotism
+				  traits = { caudillo_1 }
+				  expire="1965.1.1"
 				}
+				promote_leader = yes
 			}
-			create_country_leader = {
-				name = "Francisco Franco"
-				desc = "POLITICS_FRANCISCO_FRANCO_DESC"
-				picture = "GFX_portrait_spain_francisco_franco"
-				expire = "1965.1.1"
-				ideology = fascism_ideology
-				traits = {
-					caudillo_1
+			add_country_leader_role = {
+				character = "SPA_francisco_franco"
+				country_leader = {
+				  ideology=fascism_ideology
+				  traits = { caudillo_1 }
+				  expire="1965.1.1"
 				}
+				promote_leader = yes
 			}
 		}
 	}
@@ -4773,7 +4793,7 @@ focus_tree = {
 		id = SPA_dictator_for_life
 		available = {
 			has_country_leader = {
-				name = "Francisco Franco"
+				character = SPA_francisco_franco
 				ruling_only = yes
 			}
 		}
@@ -4792,39 +4812,36 @@ focus_tree = {
 		search_filters = {FOCUS_FILTER_STABILITY}
 		completion_reward = {
 			add_stability = 0.05
-			remove_country_leader_trait = caudillo_1
-			add_country_leader_trait = caudillo_2
+			swap_ruler_traits = { remove = caudillo_1 add = caudillo_2 }
 			hidden_effect = {
 				if = {
 					limit = {
 						has_government = neutrality
 					}
-					retire_ideology_leader = fascism
-					create_country_leader = {
-						name = "Francisco Franco"
-						desc = "POLITICS_FRANCISCO_FRANCO_DESC"
-						picture = "GFX_portrait_spain_francisco_franco_old"
-						expire = "1965.1.1"
+					remove_trait = {
+						character = SPA_francisco_franco
 						ideology = fascism_ideology
-						traits = {
-							caudillo_2
-						}
+						trait = caudillo_1
+					}
+					add_trait = {
+						character = SPA_francisco_franco
+						ideology = fascism_ideology
+						trait = caudillo_2
 					}
 				}
 				if = {
 					limit = {
 						has_government = fascism
 					}
-					retire_ideology_leader = neutrality
-					create_country_leader = {
-						name = "Francisco Franco"
-						desc = "POLITICS_FRANCISCO_FRANCO_DESC"
-						picture = "GFX_portrait_spain_francisco_franco_old"
-						expire = "1965.1.1"
+					remove_trait = {
+						character = SPA_francisco_franco
 						ideology = despotism
-						traits = {
-							caudillo_2
-						}
+						trait = caudillo_1
+					}
+					add_trait = {
+						character = SPA_francisco_franco
+						ideology = despotism
+						trait = caudillo_2
 					}
 				}
 			}
@@ -5551,9 +5568,9 @@ focus_tree = {
 		available_if_capitulated = yes
 		search_filters = {FOCUS_FILTER_RESEARCH}
 		completion_reward = {
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SPA_contact_the_union_militar_espanola
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 1
 				category = land_doctrine
 			}
@@ -5633,9 +5650,9 @@ focus_tree = {
 		available_if_capitulated = yes
 		search_filters = {FOCUS_FILTER_RESEARCH}
 		completion_reward = {
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SPA_the_war_in_the_north
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 2
 				category = land_doctrine
 			}
@@ -5669,20 +5686,14 @@ focus_tree = {
 			}
 			790 = {
 				clr_state_flag = SPR_unplanned_offensive_flag
-				remove_province_modifier = {
-					static_modifiers = { unplanned_offensive }
-					province = {
-						all_provinces = yes
-					}
+				remove_dynamic_modifier = {
+					modifier = unplanned_offensive
 				}
 			}
 			792 = {
 				clr_state_flag = SPR_unplanned_offensive_flag
-				remove_province_modifier = {
-					static_modifiers = { unplanned_offensive }
-					province = {
-						all_provinces = yes
-					}
+				remove_dynamic_modifier = {
+					modifier = unplanned_offensive
 				}
 			}
 		}
@@ -5798,9 +5809,9 @@ focus_tree = {
 		completion_reward = {
 			set_country_flag = { flag = SPA_the_crusade_against_democracy_timer_flag value = 1 days = 69 }
 			add_ideas = SPA_crusade_against_democracy_1
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SPA_the_crusade_against_democracy
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 1
 				category = land_doctrine
 			}
@@ -6131,9 +6142,9 @@ focus_tree = {
 		search_filters = {FOCUS_FILTER_RESEARCH}
 		completion_reward = {
 			air_experience = 25
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SPA_the_third_dimension_of_warfare
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 2
 				category = air_doctrine
 			}
@@ -6981,9 +6992,9 @@ focus_tree = {
 				category = cl_tech
 				category = ca_tech
 			}
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SPA_imperial_security
-				bonus = 1
+				cost_reduction = 0.5
 				uses = 1
 				category = naval_doctrine
 			}
@@ -7792,7 +7803,7 @@ focus_tree = {
 					}
 					create_field_marshal = {
 						name = "José Rovira"
-						portrait_path = "gfx/leaders/Europe/Portrait_Europe_Generic_land_5.dds"
+						portrait_path = GFX_portrait_Jose_Rovira
 						traits = { infantry_officer politically_connected }
 						skill = 3
 					    attack_skill = 2
@@ -7802,7 +7813,7 @@ focus_tree = {
 					}
 					create_corps_commander = {
 						name = "Carmel Rosa Baserba"
-						portrait_path = "gfx/leaders/Europe/Portrait_Europe_Generic_land_1.dds"
+						portrait_path = GFX_portrait_Carmel_Rosa_Baserba
 						traits = { trait_cautious infantry_officer }
 						skill = 3
 					    attack_skill = 2
@@ -7812,7 +7823,7 @@ focus_tree = {
 					}
 					create_corps_commander = {
 						name = "Luis Rastrollo"
-						portrait_path = "gfx/leaders/Europe/Portrait_Europe_Generic_land_19.dds"
+						portrait_path = GFX_portrait_Luis_Rastrollo
 						traits = { politically_connected }
 						skill = 1
 					    attack_skill = 1
@@ -8114,9 +8125,9 @@ focus_tree = {
 		search_filters = {FOCUS_FILTER_RESEARCH}
 		completion_reward = {
 			remove_ideas = SPR_disbanded_army_2
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SPR_communal_military_strategies
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 2
 				category = land_doctrine
 			}
@@ -8246,6 +8257,10 @@ focus_tree = {
 			random_owned_controlled_state = {
 				limit = {
 					is_core_of = ROOT
+					free_building_slots = {
+						building = infrastructure
+						size > 1
+					}
 				}
 				set_state_flag = SPR_improve_military_infrastructure_1inf
 				add_building_construction = {
@@ -8258,6 +8273,10 @@ focus_tree = {
 				limit = {
 					is_core_of = ROOT
 					NOT = { has_state_flag = SPR_improve_military_infrastructure_1inf }
+					free_building_slots = {
+						building = infrastructure
+						size > 1
+					}
 				}
 				set_state_flag = SPR_improve_military_infrastructure_1inf
 				add_building_construction = {
@@ -8270,6 +8289,10 @@ focus_tree = {
 				limit = {
 					is_core_of = ROOT
 					NOT = { has_state_flag = SPR_improve_military_infrastructure_1inf }
+					free_building_slots = {
+						building = infrastructure
+						size > 1
+					}
 				}
 				set_state_flag = SPR_improve_military_infrastructure_1inf
 				add_building_construction = {
@@ -8282,6 +8305,10 @@ focus_tree = {
 				limit = {
 					is_core_of = ROOT
 					NOT = { has_state_flag = SPR_improve_military_infrastructure_1inf }
+					free_building_slots = {
+						building = infrastructure
+						size > 1
+					}
 				}
 				set_state_flag = SPR_improve_military_infrastructure_1inf
 				add_building_construction = {
@@ -8704,9 +8731,9 @@ focus_tree = {
 		available_if_capitulated = yes
 		search_filters = {FOCUS_FILTER_RESEARCH}
 		completion_reward = {
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SPA_doctrinal_advancements
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 1
 				category = land_doctrine
 			}
@@ -9489,9 +9516,9 @@ focus_tree = {
 				uses = 1
 				category = ss_tech
 			}
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SPR_the_peoples_fleet
-				bonus = 1
+				cost_reduction = 0.5
 				uses = 1
 				category = submarine_doctrine
 			}
@@ -9778,9 +9805,9 @@ focus_tree = {
 				uses = 1
 				category = motorized_equipment
 			}
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SPR_the_spanish_red_army
-				bonus = 1
+				cost_reduction = 0.5
 				uses = 1
 				category = land_doctrine
 			}
@@ -10338,15 +10365,15 @@ focus_tree = {
 		available_if_capitulated = yes
 		search_filters = {FOCUS_FILTER_RESEARCH}
 		completion_reward = {
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SPA_doctrinal_advancements
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 2
 				category = land_doctrine
 			}
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SPA_doctrinal_advancements
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 1
 				category = air_doctrine
 			}
@@ -10371,9 +10398,9 @@ focus_tree = {
 		search_filters = {FOCUS_FILTER_RESEARCH}
 		completion_reward = {
 			remove_ideas = SPR_disbanded_army_2
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SPA_doctrinal_advancements
-				bonus = 1.0
+				cost_reduction = 0.5
 				uses = 2
 				category = land_doctrine
 			}
@@ -10686,31 +10713,42 @@ focus_tree = {
 				limit = {
 					MEX = {
 						has_country_leader = {
-						    name = "Leon Trotsky"
-						    ruling_only = yes
+							character = SOV_lev_trotsky
+							ruling_only = yes
 						}
 					}
 				}
 				create_wargoal = {
-				    type = puppet_wargoal_focus
-				    target = MEX
-				    expire = 0
+					type = puppet_wargoal_focus
+					target = MEX
+					expire = 0
 				}
 			}
 			if = {
 				limit = {
-					SOV = {
-						has_country_leader = {
-						    name = "Joseph Stalin"
-						    ruling_only = yes
+					any_country = {
+						original_tag = SOV
+						has_government = communism
+						NOT = { has_completed_focus = SOV_the_right_opposition }
+					}
+				}
+				hidden_effect = {
+					every_other_country = {
+						limit = {
+							original_tag = SOV
+							has_government = communism
+							NOT = { has_completed_focus = SOV_the_right_opposition }
+						}
+						ROOT = {
+							create_wargoal = {
+								type = puppet_wargoal_focus
+								target = PREV
+								expire = 0
+							}
 						}
 					}
 				}
-				create_wargoal = {
-				    type = puppet_wargoal_focus
-				    target = SOV
-				    expire = 0
-				}
+				custom_effect_tooltip = SPR_against_trotskyism_and_stalinism_tt
 			}
 		}
 	}
@@ -11741,9 +11779,9 @@ focus_tree = {
 				uses = 1
 				category = infantry_weapons
 			}
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SPR_the_popular_army
-				bonus = 1
+				cost_reduction = 0.5
 				uses = 1
 				category = land_doctrine
 			}
@@ -12061,6 +12099,7 @@ focus_tree = {
 	focus = {
 		id = SPR_those_who_would_not_help_us
 		available = {
+			NOT = { is_subject_of = SOU }
 		}
 		bypass = {
 		}
@@ -12208,6 +12247,7 @@ focus_tree = {
 				has_war_with = GER
 				has_war_with = ITA
 			}
+			NOT = { is_subject_of = SOU }
 		}
 		bypass = {
 		}
@@ -12258,6 +12298,7 @@ focus_tree = {
 	focus = {
 		id = SPR_deal_with_the_devil
 		available = {
+			NOT = { is_subject_of = SOU }
 		}
 		bypass = {
 		}
@@ -12300,6 +12341,7 @@ focus_tree = {
 						has_non_aggression_pact_with = ITA
 					}
 				}
+				NOT = { is_subject_of = SOU }
 			}
 		}
 		bypass = {
@@ -12706,9 +12748,9 @@ focus_tree = {
 
 		completion_reward = {
 			army_experience = 15
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SPR_engineering_advances
-				bonus = 1
+				cost_reduction = 0.5
 				uses = 2
 				category = land_doctrine
 			}
@@ -12882,9 +12924,9 @@ focus_tree = {
 
 		completion_reward = {
 			navy_experience = 50
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SPR_navy_modernization
-				bonus = 1
+				cost_reduction = 0.5
 				uses = 3
 				category = naval_doctrine
 			}
@@ -12924,9 +12966,9 @@ focus_tree = {
 
 		completion_reward = {
 			add_war_support = 0.1
-			add_tech_bonus = {
+			add_doctrine_cost_reduction = {
 				name = SPR_engineering_advances
-				bonus = 1
+				cost_reduction = 0.5
 				uses = 1
 				category = land_doctrine
 			}

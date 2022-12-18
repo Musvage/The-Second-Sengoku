@@ -11,63 +11,67 @@
 # influence
 
 spanish_civil_war_GER_expatriate = {
+	allowed = {
+		NOT = { has_dlc = "La Resistance" }
+	}
 	enable = {
 		GER = { has_completed_focus = GER_expatriate_the_communists }
 		NOT = { has_government = fascism }
 		SPR = { has_civil_war = yes }
-		NOT = { has_dlc = "La Resistance" }
 		NOT = { has_global_flag = scw_over }
 	}
-	
-	abort = {	
+
+	abort = {
 		OR = {
 			SPR = { has_civil_war = no }
 			has_global_flag = scw_over
 		}
 	}
-	
+
 	ai_strategy = {
 		type = befriend
-		id = "SPR"			
+		id = "SPR"
 		value = 100
-	}	
+	}
 }
 
 spanish_civil_war_GER_expatriate_resistance = {
+	allowed = { has_dlc = "La Resistance" }
 	enable = {
 		GER = { has_completed_focus = GER_expatriate_the_communists }
 		NOT = { has_government = fascism }
 		SPD = { has_civil_war = yes }
-		has_dlc = "La Resistance"
 		NOT = { has_global_flag = scw_over }
 	}
-	
-	abort = {	
+
+	abort = {
 		OR = {
 			SPD = { has_civil_war = no }
 			has_global_flag = scw_over
 		}
 	}
-	
+
 	ai_strategy = {
 		type = befriend
-		id = "SPD"			
+		id = "SPD"
 		value = 100
-	}	
+	}
 }
 
 # make italy and germany want to send stuff to the fascist side of SCW
 ITA_and_GER_help_SPA_win_civil_war = {
-	reversed = yes
+	allowed = {
+		NOT = { has_dlc = "La Resistance" }
+		OR = {
+			original_tag = GER
+			original_tag = ITA
+		}
+	}
 	enable = {
 		date < 1939.1.1
-		country_exists = SPR
-		SPR = {
-			has_government = fascism
-		}
-		has_government = fascism
 		SPR = { has_civil_war = yes }
-		NOT = { has_dlc = "La Resistance" }
+		country_exists = SPA
+		has_government = fascism
 		NOT = { has_global_flag = scw_over }
 	}
 	abort = {
@@ -78,65 +82,94 @@ ITA_and_GER_help_SPA_win_civil_war = {
 			has_global_flag = scw_over
 		}
 	}
-	
+
 	ai_strategy = {
 		type = send_volunteers_desire
-		id = SPR
+		id = SPA
 		value = 50
 	}
+}
 
+# make ussr want to send stuff to the communist side of SCW
+SOV_help_SPD_win_civil_war = {
+	allowed = {
+		NOT = { has_dlc = "La Resistance" }
+		original_tag = SOV
+	}
+	enable = {
+		date < 1939.1.1
+		SPR = { has_civil_war = yes }
+		country_exists = SPD
+		has_government = communism
+		NOT = { has_global_flag = scw_over }
+	}
+	abort = {
+		OR = {
+			date > 1939.1.1
+			NOT = { has_government = communism }
+			SPR = { has_civil_war = no }
+			has_global_flag = scw_over
+		}
+	}
+
+	ai_strategy = {
+		type = send_volunteers_desire
+		id = SPD
+		value = 50
+	}
 }
 
 # Make nobody want to ally Spain during the civil war.
 spanish_civil_war_ally_nobody = {
+	allowed = { has_dlc = "La Resistance" }
+
 	enable = {
 		SPR_scw_in_progress = yes
 		NOT = {
 			original_tag = SPR
 		}
-		has_dlc = "La Resistance"
 	}
 	abort = {
 		has_global_flag = scw_over
 	}
-	
+
 	ai_strategy = {
 		type = alliance
 		id = SPD
-		value = -200
+		value = -2000
 	}
 	ai_strategy = {
 		type = alliance
 		id = SPA
-		value = -200
+		value = -2000
 	}
 	ai_strategy = {
 		type = alliance
 		id = SPB
-		value = -200
+		value = -2000
 	}
 	ai_strategy = {
 		type = alliance
 		id = SPC
-		value = -200
+		value = -2000
 	}
 }
 
 # Make countries less likely to support Carlist Spain
 spanish_civil_war_isolate_carlists = {
+	allowed = { has_dlc = "La Resistance" }
 	enable = {
 		country_exists = SPB
 		SPR_scw_in_progress = yes
 		NOT = {
 			original_tag = SPR
 		}
-		has_dlc = "La Resistance"
 		NOT = { has_government = neutrality }
 	}
 	abort = {
 		has_global_flag = scw_over
 	}
-	
+
 	ai_strategy = {
 		type = ignore
 		id = SPB
@@ -176,19 +209,20 @@ spanish_civil_war_isolate_carlists = {
 
 # Make nobody want to ally Anarchist Spain
 spanish_civil_war_isolate_anarchists = {
+
+	allowed = { has_dlc = "La Resistance" }
 	enable = {
 		country_exists = SPC
 		SPC = { has_completed_focus = SPR_regional_defense_council_of_aragon }
 		NOT = {
 			tag = SPC
 		}
-		has_dlc = "La Resistance"
 	}
 
 	abort = {
 		has_global_flag = scw_over
 	}
-	
+
 	ai_strategy = {
 		type = ignore
 		id = SPC
@@ -228,6 +262,9 @@ spanish_civil_war_isolate_anarchists = {
 
 # Make MEX/SOV not want to ally POUM Spain
 spanish_civil_war_isolate_POUM = {
+	allowed = {
+		has_dlc = "La Resistance"
+	}
 	enable = {
 		country_exists = SPC
 		SPC = { has_completed_focus = SPR_the_anti_fascist_workers_revolution }
@@ -237,24 +274,23 @@ spanish_civil_war_isolate_POUM = {
 			AND = {
 				tag = MEX
 				has_country_leader = {
- 					name = "Leon Trotsky"
+ 					character = MEX_leon_trotsky
  				}
 			}
 			AND = {
 				is_in_faction_with = MEX
 				MEX = {
 					has_country_leader = {
- 						name = "Leon Trotsky"
+ 						character = MEX_leon_trotsky
  					}
  				}
 			}
 		}
-		has_dlc = "La Resistance"
 	}
 
 	abort = {
 	}
-	
+
 	ai_strategy = {
 		type = ignore
 		id = SPC
@@ -304,7 +340,7 @@ spanish_civil_war_isolate_POUM = {
 #	}
 #
 #	reversed = yes
-#	
+#
 #	ai_strategy = {
 #		type = alliance
 #		id = SPC
@@ -344,19 +380,21 @@ spanish_civil_war_isolate_POUM = {
 
 # Make other countries be unwilling to ally Anarchist Spain
 spanish_civil_war_defriend_anarchists = {
+	allowed = {
+		has_dlc = "La Resistance"
+	}
 	enable = {
 		country_exists = SPC
 		SPC = { has_completed_focus = SPR_regional_defense_council_of_aragon }
 		NOT = {
 			original_tag = SPR
 		}
-		has_dlc = "La Resistance"
 		has_global_flag = scw_over
 	}
 	abort = {
 		is_subject_of = SPC
 	}
-	
+
 	ai_strategy = {
 		type = alliance
 		id = SPC
@@ -391,13 +429,15 @@ spanish_civil_war_defriend_anarchists = {
 
 # Make other countries be concerned about Anarchist Spain
 spanish_civil_war_contain_anarchists = {
+	allowed = {
+		has_dlc = "La Resistance"
+	}
 	enable = {
 		country_exists = SPC
 		SPC = { has_completed_focus = SPR_regional_defense_council_of_aragon }
 		NOT = {
 			original_tag = SPR
 		}
-		has_dlc = "La Resistance"
 		has_global_flag = scw_over
 		capital_scope = {
 			any_state = {
@@ -412,7 +452,7 @@ spanish_civil_war_contain_anarchists = {
 	abort = {
 		is_subject_of = SPC
 	}
-	
+
 	ai_strategy = {
 		type = contain
 		id = SPC
@@ -422,13 +462,14 @@ spanish_civil_war_contain_anarchists = {
 
 # Make other countries be hostile to Anarchist Spain
 spanish_civil_war_exterminate_anarchists = {
+
+	allowed = { has_dlc = "La Resistance" }
 	enable = {
 		country_exists = SPC
 		SPC = { has_completed_focus = SPR_regional_defense_council_of_aragon }
 		NOT = {
 			original_tag = SPR
 		}
-		has_dlc = "La Resistance"
 		has_global_flag = scw_over
 		capital_scope = {
 			any_state = {
@@ -447,7 +488,7 @@ spanish_civil_war_exterminate_anarchists = {
 			has_war_with = SPC
 		}
 	}
-	
+
 	ai_strategy = {
 		type = antagonize
 		id = SPC
@@ -467,6 +508,7 @@ spanish_civil_war_exterminate_anarchists = {
 
 # Make other Major countries be very hostile to Anarchist Spain
 spanish_civil_war_really_exterminate_anarchists = {
+	allowed = { has_dlc = "La Resistance" }
 	enable = {
 		is_major = yes
 		NOT = {
@@ -480,7 +522,6 @@ spanish_civil_war_really_exterminate_anarchists = {
 		NOT = {
 			original_tag = SPR
 		}
-		has_dlc = "La Resistance"
 		has_global_flag = scw_over
 		capital_scope = {
 			any_state = {
@@ -499,7 +540,7 @@ spanish_civil_war_really_exterminate_anarchists = {
 			has_war_with = SPC
 		}
 	}
-	
+
 	ai_strategy = {
 		type = antagonize
 		id = SPC
@@ -521,20 +562,20 @@ SPR_dont_attack_at_startup_of_civil_war = {
 	allowed = {
 		original_tag = SPR
 	}
-	
+
 	enable = {
 		has_global_flag = SPR_civil_war_startup
 	}
-	
+
 	abort_when_not_enabled = yes
-	
+
 	ai_strategy = {
 		type = front_control
 
 		country_trigger = {
 			original_tag = SPR
 		}
-		
+
 		execute_order = no
 		manual_attack = no
 	}
@@ -542,21 +583,23 @@ SPR_dont_attack_at_startup_of_civil_war = {
 
 # Prevent Nationalist Spain to join any faction on historical mode
 nationalist_spain_allies_nobody_on_historical = {
+	allowed = {
+		tag = SPA
+		has_dlc = "La Resistance"
+	}
 	enable = {
 		has_global_flag = scw_over
-		has_dlc = "La Resistance"
-		tag = SPA
 		OR = {
 			AND = {
 				is_historical_focus_on = yes
 				has_game_rule = {
-					rule = SPR_ai_behavior 
+					rule = SPR_ai_behavior
 					option = DEFAULT
 				}
 			}
 			has_country_flag = SPR_AI_RANDOM_NATIONALIST_HISTORICAL
 			has_game_rule = {
-				rule = SPR_ai_behavior 
+				rule = SPR_ai_behavior
 				option = NATIONALIST_HISTORICAL
 			}
 		}
@@ -569,7 +612,7 @@ nationalist_spain_allies_nobody_on_historical = {
 			ENG = { NOT = { has_government = democratic } }
 		}
 	}
-	
+
 	ai_strategy = {
 		type = alliance
 		id = GER

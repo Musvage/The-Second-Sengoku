@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<title>Default</title>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport"
+     content="width=device-width, initial-scale=1, user-scalable=yes">
+<style>
+  /* Keep the same alignment for the small and large window sizes */
+  *{
+	margin:0; 
+	padding:0; 
+  }
+
+  /* Show video controls on video hover */
+  video:hover ~ #controls{
+	opacity: 100%;
+  }
+
+  #controls{
+	position: absolute;
+	bottom:41%;
+	width: 59%;
+	left:-.25%;
+	background: rgb(0,0,0);
+	background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.44019614681810226) 74%, rgba(0,0,0,0) 100%);
+	opacity: 0%;
+  }
+
+  #controls:hover{
+	opacity: 100%;
+  }
+
+  #buttonPlayPause, #buttonFullScreen{
+	margin: auto 2% 5px 2%;
+	color:	#fff;
+	border: none;
+	width: 4vw;
+	height: 4vw;
+	background-color: rgba(0.5, 0.5, 0.5, 0);
+	border-radius: 50px;
+	font-size: medium;
+	transition: ease 0.1s;
+	text-align: center;
+	vertical-align: middle;
+}
+
+  #buttonPlayPause:hover, #buttonFullScreen:hover{
+	background-color: rgba(0.5, 0.5, 0.5, 0.75);
+  }
+
+  #buttonPlayPause:focus, #buttonFullScreen:focus{
+	outline: none;
+  }
+
+  #progress-bar{
+	width: 76.75%;
+	margin-bottom: 5px;
+	color: #fff;
+	height: 5px;
+	border: none;
+	background: #c3c3c3;
+  }
+    
+  #progress-bar[value]::-webkit-progress-value {
+	background-color: #c3c3c3;
+	border-radius: 10px;
+  }
+</style>
+</head>
+<body>
+<video
+	id ="video"
+	width="475"
+	onclick='playPauseVideo();'
+	preload="auto"
+	disablePictureInPicture
+	loop autoplay muted >
+</video>
+
+<div id="controls">
+	<button id="buttonPlayPause" class="play" title="play" onclick="playPauseVideo();">&#x23F5;</button>
+	<progress id="progress-bar" min="0" max="100" value="0">0% played</progress>
+	<button id="buttonFullScreen" class="fullscreen" title="toggle full screen">&#x26F6;</button>
+</div>
+
+<script language="JavaScript">
+	document.getElementById("video").src = path;
+	var ctrls = window.location.search.substring(1).split('&');
+	var path = ctrls[0]
+	document.getElementById("video").src = path;
+
+	/* 
+	 * PlayPause button 
+	*/
+	var buttonPlayPause = document.getElementById('buttonPlayPause');
+
+	video.addEventListener('play', function() {
+		changeButton(buttonPlayPause, '&#x23F8;');
+	}, false);
+  
+	video.addEventListener('pause', function() {
+		changeButton(buttonPlayPause, '&#x23F5;');
+	}, false);
+
+	function playPauseVideo() {
+		if (video.paused) {
+			changeButton(buttonPlayPause, '&#x23F8;');
+			video.play();
+		}
+		else {
+			changeButton(buttonPlayPause, '&#x23F5;');
+			video.pause();
+		}
+    }
+
+	function changeButton(button, value) {
+		button.title = value;
+		button.innerHTML = value;
+		button.className = value;
+  	}
+
+	/* 
+	 * Progress bar 
+	*/
+	var progressBar  = document.getElementById('progress-bar');
+	video.addEventListener('timeupdate', updateProgressBar, false);
+
+	progressBar.addEventListener("click", seek);
+
+	function seek(e) {
+		var percent = e.offsetX / this.offsetWidth;
+		video.currentTime = percent * video.duration;
+		e.target.value = Math.floor(percent / 100);
+		e.target.innerHTML = progressBar.value + '% played';
+	}
+
+	function updateProgressBar() {
+		var percentage = Math.floor((100 / video.duration) * video.currentTime);
+		progressBar.value = percentage;
+		progressBar.innerHTML = percentage + '% played';
+	}
+
+	/* 
+	 * Fullscreen 
+	*/
+	fullscreenButton = document.getElementById('buttonFullScreen');
+
+	state = false
+	var isFullScreen = function() {
+	   return !!state;
+	}
+
+	var videoContainer = document.getElementById('video');
+	var controlsContainer = document.getElementById('controls');
+
+	var handleFullscreen = function() {
+		if (isFullScreen()) {
+			videoContainer.width = 475;
+			document.title='No Fullscreen';
+			controlsContainer.style.width = "59%";
+			controlsContainer.style.bottom = "41%";
+			progressBar.style.width = "76.75%";
+		}
+		else {
+			videoContainer.width = 794;
+			document.title='Fullscreen';
+			controlsContainer.style.width = "99%";
+			controlsContainer.style.bottom = "1%";
+			progressBar.style.width = "82.5%";
+		}
+
+		state = !state;
+	}
+
+	if (ctrls.slice(1).includes("allowsizetoggle")) {
+		fullscreenButton.addEventListener('click', handleFullscreen);
+		videoContainer.addEventListener('dblclick', handleFullscreen);
+	}
+	else {
+		fullscreenButton.style.display = "none"
+	}
+
+	if (ctrls.slice(1).includes("fullscreen")) {
+		handleFullscreen();
+	}
+</script>
+</body>
+</html>

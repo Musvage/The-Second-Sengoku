@@ -111,6 +111,9 @@ shared_focus = {
 		NOT = {
 			has_war_with = GER
 		}
+		GER = {
+			has_capitulated = no
+		}
 		NOT = { has_global_flag = falkenhausen_recalled }
 	}
 
@@ -175,9 +178,7 @@ shared_focus = {
 		custom_trigger_tooltip = { 
 			tooltip = falkenhausen_tt
 			any_other_country = {
-				any_army_leader = {
-					has_id = 603
-				}
+				has_completed_focus = CHI_give_falkenhausen_citizenship
 			}	
 		}
 	}
@@ -188,18 +189,8 @@ shared_focus = {
 
 	completion_reward = {
 		custom_effect_tooltip = available_chief_of_army
-		show_ideas_tooltip = CHI_alexander_von_falkenhausen
-		create_corps_commander = {
-			name = "Alexander von Falkenhausen"
-			gfx = GFX_portrait_chi_alexander_von_falkenhausen
-			skill = 3
-			attack_skill = 2
-			defense_skill = 2
-			planning_skill = 3
-			logistics_skill = 3
-			id = 603
-			traits = { infantry_officer }
-		}
+		show_ideas_tooltip = CHI_alexander_von_falkenhausen_army_chief
+		show_unit_leaders_tooltip = CHI_alexander_von_falkenhausen
 	}
 }
 
@@ -281,9 +272,9 @@ shared_focus = {
 
 	completion_reward = {
 		add_ideas = CHI_wargaming_division
-		add_tech_bonus = {
+		add_doctrine_cost_reduction = {
 			name = CHI_wargaming_division
-			bonus = 1.0
+			cost_reduction = 0.5
 			uses = 1
 			category = land_doctrine
 		}
@@ -371,26 +362,55 @@ shared_focus = {
 
 	completion_reward = {
 		custom_effect_tooltip = CHI_purchase_tanks_tt
-		hidden_effect = {
+		hidden_effect = { 
 			if = {
 				limit = {
-					not = {
-						has_tech = gwtank
+					NOT = {
+						has_dlc = "No Step Back"
 					}
 				}
-				set_technology = { gwtank = 1 }
-			}
-			if = {
-				limit = {
-					has_completed_focus = CHI_closer_ties_with_germany
+				if = {
+					limit = {
+						not = {
+							has_tech = gwtank
+						}
+					}
+					set_technology = { gwtank = 1 }
 				}
-				add_equipment_to_stockpile = { type = light_tank_equipment_1 amount = 100 producer = GER }
-			}
-			if = {
-				limit = {
-					has_completed_focus = CHI_rapprochement_with_soviet_union
+				if = {
+					limit = {
+						has_completed_focus = CHI_closer_ties_with_germany
+					}
+					add_equipment_to_stockpile = { type = light_tank_equipment_1 amount = 100 producer = GER }
 				}
-				add_equipment_to_stockpile = { type = light_tank_equipment_1 amount = 100 producer = SOV }
+				if = {
+					limit = {
+						has_completed_focus = CHI_rapprochement_with_soviet_union
+					}
+					add_equipment_to_stockpile = { type = light_tank_equipment_1 amount = 100 producer = SOV }
+				}
+			}
+			else = {
+				if = {
+					limit = {
+						not = {
+							has_tech = gwtank_chassis
+						}
+					}
+					set_technology = { gwtank_chassis = 1 }
+				}
+				if = {
+					limit = {
+						has_completed_focus = CHI_closer_ties_with_germany
+					}
+					add_equipment_to_stockpile = { type = light_tank_chassis_1 amount = 100 producer = GER  variant_name = "Panzer I Ausf. A"} 
+				}
+				if = {
+					limit = {
+						has_completed_focus = CHI_rapprochement_with_soviet_union
+					}
+					add_equipment_to_stockpile = { type = light_tank_chassis_1 amount = 100 producer = SOV variant_name = "T-26TU mod. 1933" }
+				}
 			}
 		}
 	}
@@ -714,15 +734,61 @@ shared_focus = {
 					}
 				}
 			}
-			capital_scope = {
-				create_unit = {
-					division = "name = \"200. Mechanised Division\" division_template = \"Experimental Mechanised Division\" start_experience_factor = 1.0" 
-					owner = ROOT
+			if = {
+				limit = { NOT = { has_dlc = "No Step Back" } }
+				if = {
+					limit = {
+						has_completed_focus = CHI_closer_ties_with_germany 
+					}
+					capital_scope = {
+						create_unit = {
+							division = "name = \"200. Mechanised Division\" division_template = \"Experimental Mechanised Division\" start_experience_factor = 1.0 force_equipment_variants = { light_tank_equipment_1 = { creator = \"GER\" } }" 
+							owner = ROOT
+						}
+					}
+				}
+				if = {
+					limit = {
+						has_completed_focus = CHI_rapprochement_with_soviet_union
+					}
+					capital_scope = {
+						create_unit = {
+							division = "name = \"200. Mechanised Division\" division_template = \"Experimental Mechanised Division\" start_experience_factor = 1.0 force_equipment_variants = { light_tank_equipment_1 = { creator = \"SOV\" } }" 
+							owner = ROOT
+						}
+					}
+				}
+			}
+			else = {
+				if = {
+					limit = {
+						has_completed_focus = CHI_closer_ties_with_germany 
+					}
+					capital_scope = {
+						create_unit = {
+							division = "name = \"200. Mechanised Division\" division_template = \"Experimental Mechanised Division\" start_experience_factor = 1.0 force_equipment_variants = { light_tank_chassis_1 = { creator = \"GER\" version_name = \"Panzer I Ausf. A\"} }" 
+							owner = ROOT
+						}
+					}
+				}
+				if = {
+					limit = {
+						has_completed_focus = CHI_rapprochement_with_soviet_union
+					}
+					capital_scope = {
+						create_unit = {
+							division = "name = \"200. Mechanised Division\" division_template = \"Experimental Mechanised Division\" start_experience_factor = 1.0 force_equipment_variants = { light_tank_chassis_1 = { creator = \"SOV\" version_name = \"T-26TU mod. 1933\"} }" 
+							owner = ROOT
+						}
+					}
 				}
 			}			
 		}
 	}
 }
+
+
+
 
 shared_focus = {
 	id = CHI_combined_arms_warfare
@@ -806,7 +872,7 @@ shared_focus = {
 			category = armor
 		}
 		custom_effect_tooltip = available_designer
-		show_ideas_tooltip = morozov_design_bureau
+		show_ideas_tooltip = SOV_morozov_design_bureau
 	}
 }
 
@@ -869,6 +935,7 @@ shared_focus = {
 	}
 
 	available = {
+		SOV = { has_government = communism }
 		OR = {
 			has_government = neutrality
 			SOV = { has_government = ROOT }
@@ -876,6 +943,9 @@ shared_focus = {
 		}
 		not = {
 			has_War_with = SOV
+		}
+		SOV = {
+			has_capitulated = no
 		}
 	}
 
@@ -1075,6 +1145,9 @@ shared_focus = {
 		}
 		not = {
 			has_war_with = FRA
+		}
+		FRA = {
+			has_capitulated = no
 		}
 	}
 
@@ -1900,13 +1973,17 @@ shared_focus = {
 		if = {
 			limit = {
 				330 = { is_owned_and_controlled_by = MON }
+				817 = { is_owned_and_controlled_by = MON }
+				818 = { is_owned_and_controlled_by = MON }
+				819 = { is_owned_and_controlled_by = MON }
+				820 = { is_owned_and_controlled_by = MON }
 			}
 			ROOT = {
 				create_wargoal = {
 					type = take_state_focus
 					target = MON
 					expire = 0
-					generator = { 330 }
+					generator = { 330 817 818 819 820 }
 				}
 			}
 		}
@@ -2257,12 +2334,15 @@ shared_focus = {
 					controls_state = 741
 				}
 			}
-			ROOT = {
-				create_wargoal = {
-					type = take_state_focus
-					target = PREV
-					expire = 0
-					generator = { 671 670 286 741 } #TODO_WTT_CODE - ignore states that are not owned or controlled by country
+			custom_effect_tooltip = CHI_overlordship_over_indochina_tt
+			hidden_effect = {
+				ROOT = {
+					create_wargoal = {
+						type = take_state_focus
+						target = PREV
+						expire = 0
+						generator = { 671 670 286 741 } #TODO_WTT_CODE - ignore states that are not owned or controlled by country
+					}
 				}
 			}
 		}
@@ -2418,6 +2498,9 @@ shared_focus = {
 		}
 		not = {
 			has_War_with = ENG
+		}
+		ENG = {
+			has_capitulated = no
 		}
 	}
 
@@ -3000,6 +3083,12 @@ shared_focus = {
 			has_government = neutrality
 			USA = { has_government = ROOT }
 		}
+		USA = {
+			has_capitulated = no
+			NOT = {
+				has_War_with = ROOT
+			}
+		}
 	}
 
 	bypass = {
@@ -3075,7 +3164,7 @@ shared_focus = {
 
 	completion_reward = {
 		custom_effect_tooltip = available_theorist
-		show_ideas_tooltip = CHI_claire_lee_chennault_air_theorist
+		show_ideas_tooltip = CHI_claire_lee_chennault_theorist
 		custom_effect_tooltip = available_chief_of_airforce
 		show_ideas_tooltip = CHI_claire_lee_chennault_air_chief
 	}
@@ -3477,6 +3566,9 @@ shared_focus = {
 		}
 		NOT = { has_wargoal_against = JAP }
 		NOT = { has_war_with = JAP }
+		JAP = {
+			has_capitulated = no
+		}
 	}
 
 	bypass = {
