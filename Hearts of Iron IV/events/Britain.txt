@@ -484,7 +484,7 @@ country_event = {
 				limit = {
 					ITA = {
 						OR = {
-							NOT = { has_completed_focus = ITA_yugoslavia_friend }						
+							NOT = { has_completed_focus = ITA_balkan_ambition }
 							is_in_faction_with = GER
 							exists = no
 						}
@@ -498,7 +498,7 @@ country_event = {
 			if = {
 				limit = { 
 					ITA = {
-						has_completed_focus = ITA_yugoslavia_friend
+						has_completed_focus = ITA_balkan_ambition
 						NOT = { is_in_faction_with = GER }
 						NOT = { has_war_with = YUG }
 					}
@@ -539,7 +539,7 @@ country_event = {
 				create_wargoal = {
 					type = take_state_focus
 					target = YUG
-					generator = { 102 }
+					generator = { 853 102 }
 				}
 			}
 		}
@@ -950,5 +950,177 @@ country_event = {
 			}
 			set_state_flag = shadow_scheme_2AF
 		}
+    }
+}
+
+#Operation Fork ultimatum
+country_event = {
+    id = britain.25
+    title = britain.25.t
+    desc = britain.25.desc
+    picture = GFX_report_event_generic_sign_treaty2
+ 
+    is_triggered_only = yes
+
+    #fold. join the allies
+    option = {
+        name = britain.25.a
+        trigger = {
+        	FROM = { is_faction_leader = yes }
+        }
+        FROM = { 
+        	add_to_faction = ROOT
+        	country_event = { id = generic.6 days = 1 }  
+        }
+
+        ai_chance = {
+        	base = 5
+        	modifier = {
+        		is_historical_focus_on = yes
+        		factor = 10
+        	}
+        }
+    }
+
+    #seek axis help
+    option = {
+        name = britain.25.b
+        trigger = {
+        	any_other_country = {
+        		is_faction_leader = yes
+    			has_war_with = ROOT.FROM
+        	}
+        }
+        if = {
+        	limit = {
+        		GER = { 
+    				has_war_with = FROM
+					is_faction_leader = yes
+        		}
+        	}
+        	GER = {	country_event = { id = britain.26 days = 1} }
+        }
+        else = {
+        	random_other_country = {
+        		limit = {
+        			has_war_with = FROM
+    				is_faction_leader = yes
+        		}
+    			country_event = { id = britain.26 days = 1} 
+        	}
+        }
+
+    	FROM = {
+    		create_wargoal = {
+				target = PREV
+				type = puppet_wargoal_focus
+			}
+    	}
+        set_country_flag = rejected_fork_demand 
+    	
+    	ai_chance = {
+    		base = 5
+    		modifier = {
+    			is_historical_focus_on = yes
+    			factor = 0
+    		}
+    	}
+    }
+
+    #go at it alone
+    option = {
+        name = britain.25.c
+
+        set_country_flag = rejected_fork_demand 
+		effect_tooltip = {
+        	FROM = {
+		        create_wargoal = {
+        			target = PREV
+        			type = puppet_wargoal_focus
+        		}
+        		country_event = { id = britain.27 }
+        	}
+    	}
+        FROM = { country_event = { id = britain.27 days = 1 } }
+
+        ai_chance = {
+        	base = 0.5
+        	modifier = {
+        		is_historical_focus_on = yes
+        		factor = 0
+        	}
+        }
+    }
+}
+
+#Iceland seeks protection
+country_event = {
+    id = britain.26
+    title = britain.26.t
+    desc = britain.26.desc
+    picture = GFX_report_event_generic_read_write
+ 
+    is_triggered_only = yes
+
+
+    #accept
+    option = {
+        name = britain.26.a
+
+    	add_to_faction = FROM 
+    	FROM = { country_event = { id = generic.3 days = 1 } }
+    	ai_chance = {
+    		base = 3
+    		modifier = {
+    			is_historical_focus_on = yes
+    			add = -1
+    		}
+
+    		modifier = {
+    			FROM = {
+    				is_ai = no
+    			}
+    			add = 10
+    		}
+
+    		modifier = {
+    			FRA = {
+    				has_capitulated = no
+    			}
+    			POL = {
+    				has_capitulated = no
+    			}
+    			factor = 0
+    		}
+    	}
+    }
+
+    #deny
+    option = {
+		name = britain.26.b
+		FROM = { country_event = { id = generic.4 days = 1 } }
+		ai_chance = {
+			base = 1
+		}
+    }
+}
+
+#rejected fork
+country_event = {
+    id = britain.27
+    title = britain.27.t
+    desc = britain.27.desc
+    picture = GFX_report_event_generic_read_write
+ 
+    is_triggered_only = yes
+
+
+    #accept
+    option = {
+        name = britain.27.a
+        create_wargoal = {
+        	target = FROM
+        	type = puppet_wargoal_focus
+        }
     }
 }

@@ -612,6 +612,7 @@ on_actions = {
 					release = MRT
 				}
 				ITA = {
+					release = ETH #For 1939 bookmark
 					release = LBA
 					release = ERI
 					release = SOM
@@ -679,11 +680,7 @@ on_actions = {
 					release = EQG
 					release = MRT
 				}
-				ITA = {
-					white_peace = {
-						tag = ETH
-					}
-				}
+				ITA = { ITA_peace_out_eth_on_startup_effect = yes }
 				MOR = {
 					transfer_state = 290
 					transfer_state = 783
@@ -1306,6 +1303,7 @@ on_actions = {
 				#Kingdom of Naples
 				117 = { add_core_of = CAT }
 				156 = { add_core_of = CAT }
+				849 = { add_core_of = CAT }
 			}
 			if = {
 				limit = {
@@ -1358,6 +1356,7 @@ on_actions = {
 				19 = { add_core_of = FRA }
 				20 = { add_core_of = FRA }
 				21 = { add_core_of = FRA }
+				851 = { add_core_of = FRA }
 				22 = { add_core_of = FRA }
 				25 = { add_core_of = FRA }
 				26 = { add_core_of = FRA }
@@ -1374,9 +1373,12 @@ on_actions = {
 					}
 				}
 				764 = {
-					remove_core_of = SER
+					remove_core_of = YUG
 				}
 				736 = {
+					remove_core_of = YUG
+				}
+				852 = {
 					remove_core_of = YUG
 				}
 				YUG = {
@@ -1394,9 +1396,9 @@ on_actions = {
 				SER = {
 					change_tag_from = YUG
 				}
-				SER = {
-					country_event = DOD_yugoslavia.166
-				}
+				#SER = {
+				#	country_event = DOD_yugoslavia.166 # MM: Commented since it is a NON-EXISTENT EVENT
+				#}
 				CRO = {
 					set_political_party = {
 						ideology = democratic
@@ -1481,6 +1483,7 @@ on_actions = {
 					release = UDM
 					release = MEL
 					release = CHU
+					release = KHA
 					# retire_country_leader = yes
                     set_cosmetic_tag = SOV_russia
                     set_global_flag = SOV_became_russia
@@ -1497,6 +1500,181 @@ on_actions = {
 					release = BAN
 					release = PAK
 					release = BRM
+				}
+			}
+			if = {
+				limit = {
+					has_game_rule = {
+						rule = eth_fragmentation_status
+						option = ETH_FRAGMENTED
+					}
+				}
+				ETH = {
+					release = AFA
+					release = TIG
+					release = QEM
+					release = BEG
+					release = GBA
+					release = SID
+					release = HAR
+					release = ORO
+					transfer_units_fraction = {
+						target = AFA
+						size = 0.15
+					}
+					transfer_units_fraction = {
+						target = TIG
+						size = 0.1
+					}
+					transfer_units_fraction = {
+						target = QEM
+						size = 0.1
+					}
+					transfer_units_fraction = {
+						target = BEG
+						size = 0.1
+					}
+					transfer_units_fraction = {
+						target = GBA
+						size = 0.1
+					}
+					transfer_units_fraction = {
+						target = SID
+						size = 0.1
+					}
+					transfer_units_fraction = {
+						target = HAR
+						size = 0.15
+					}
+					transfer_units_fraction = {
+						target = ORO
+						size = 0.2
+					}
+				}
+				ITA_peace_out_eth_on_startup_effect = yes
+			}
+			if = {
+				limit = {
+					has_game_rule = {
+						rule = ita_fragmentation_status
+						option = ITA_FRAGMENTED
+					}
+				}
+				ITA = {
+					delete_unit_template_and_units = {
+						division_template = "Camicie Nere"
+					}
+					delete_unit_template_and_units = {
+						division_template = "Divisione Coloniale"
+					}
+					delete_unit_template_and_units = {
+						division_template = "Banda Indigena Irregolare"
+					}
+					delete_unit_template_and_units = {
+						division_template = "Truppe Irregolari a Cavallo"
+					}
+					delete_unit_template_and_units = {
+						division_template = "Divisione Ascari Libica"
+					}
+					delete_unit_template_and_units = {
+						division_template = "Divisione Ascari Eritrea"
+					}
+					delete_unit_template_and_units = {
+						division_template = "Divisione Ascari Somala"
+					}
+					delete_unit_template_and_units = {
+						division_template = "Banda Irregolare Libica"
+					}
+					delete_unit_template_and_units = {
+						division_template = "Banda Irregolare Eritrea"
+					}
+					delete_unit_template_and_units = {
+						division_template = "Banda Irregolare Somala"
+					}
+
+					release = LBV
+					release = PAP
+					release = TOS
+					release = SPM
+					release = TTS
+					
+					transfer_units_fraction = {
+						target = LBV
+						size = 0.1
+					}
+					transfer_units_fraction = {
+						target = PAP
+						size = 0.1
+					}
+					transfer_units_fraction = {
+						target = TOS
+						size = 0.1
+					}
+					transfer_units_fraction = {
+						target = SPM
+						size = 0.1
+					}
+					#transfer_units_fraction = {
+					#	target = TTS
+					#	size = 0.2
+					#}
+
+					release = GRE #Last one so that ITA still has states during the transfer_units process, otherwise it will fail. But below we need to teleport armies from GRE to TTS
+
+				}
+
+				TTS =  {
+					change_tag_from = ITA
+				}
+				TTS = {
+					annex_country = {
+						target = ITA
+						transfer_troops = yes
+					}
+
+					164 = { #RHODES - Italian state that get's transferred to GRE with ITA fragmentation rule (above)
+						teleport_armies = { # Unfortunately navies won't be transferred, they will have to sail back home :(
+							limit = {
+								tag = TTS
+							}
+							to_state_array = TTS.owned_controlled_states
+						}
+					}
+				}
+
+				if = {
+					limit = {
+						NOT = {
+							has_game_rule = {
+								rule = africa_colonization_status
+								option = AFRICA_DECOLONIZED
+							}
+						}
+					}
+					TTS = { load_oob = ITA_1936_african_oob_for_fragmentation }
+				}
+
+				if = {
+					limit = {
+						NOT = {
+							has_game_rule = {
+								rule = eth_fragmentation_status
+								option = ETH_FRAGMENTED
+							}
+						}
+						NOT = {
+							has_game_rule = {
+								rule = africa_colonization_status
+								option = AFRICA_DECOLONIZED
+							}
+						}
+					}
+					TTS = {
+						declare_war_on = {
+							target = ETH
+							type = annex_everything
+						}
+					}
 				}
 			}
 		}

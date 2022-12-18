@@ -211,6 +211,35 @@ DIPLOMACY_RELEASE_NATION_ENABLE_TRIGGER = {
 					option = PEACE_ONLY
 				}
 			}
+			has_dlc = "By Blood Alone"
+			original_tag = ETH
+		}
+		custom_trigger_tooltip = {
+			tooltip = RULE_ALLOW_RELEASE_NATIONS_NOT_ETHIOPIA_TOOLTIP
+			NOT = { FROM = { tag = SOM } }
+			NOT = { FROM = { tag = HAR } }
+			NOT = { FROM = { tag = TIG } }
+			NOT = { FROM = { tag = AFA } }
+			NOT = { FROM = { tag = BEG } }
+			NOT = { FROM = { tag = GBA } }
+			NOT = { FROM = { tag = SID } }
+			NOT = { FROM = { tag = ORO } }
+			NOT = { FROM = { tag = QEM } }
+			NOT = { FROM = { tag = ERI } }
+		}
+	}
+	if = {
+		limit = {
+			OR = {
+				has_game_rule = {
+					rule = allow_release_nations
+					option = FREE
+				}
+				has_game_rule = {
+					rule = allow_release_nations
+					option = PEACE_ONLY
+				}
+			}
 			OR = {
 				original_tag = ROM
 				original_tag = HUN
@@ -323,10 +352,77 @@ DIPLOMACY_RELEASE_NATION_ENABLE_TRIGGER = {
 			}
 			has_dlc = "Death or Dishonor"
 			original_tag = ITA
+			FROM = { tag = YUG }
 		}
 		custom_trigger_tooltip = {
 			tooltip = RULE_ALLOW_RELEASE_NATIONS_NOT_ITALY_TOOLTIP
 			NOT = { FROM = { tag = YUG } }
+		}
+	}
+	if = {
+		limit = {
+			OR = {
+				has_game_rule = {
+					rule = allow_release_nations
+					option = FREE
+				}
+				has_game_rule = {
+					rule = allow_release_nations
+					option = PEACE_ONLY
+				}
+			}
+			original_tag = ITA
+			OR = {
+				FROM = { tag = ETH }
+				FROM = { tag = HAR }
+				FROM = { tag = TIG }
+				FROM = { tag = AFA }
+				FROM = { tag = BEG }
+				FROM = { tag = GBA }
+				FROM = { tag = SID }
+				FROM = { tag = ORO }
+				FROM = { tag = QEM }
+			}
+		}
+		custom_trigger_tooltip = {
+			tooltip = RULE_ALLOW_RELEASE_NATIONS_NOT_ETHIOPIA_COMPLIANCE_TOOLTIP
+			NOT = { FROM = { tag = ETH } }
+			NOT = { FROM = { tag = HAR } }
+			NOT = { FROM = { tag = TIG } }
+			NOT = { FROM = { tag = AFA } }
+			NOT = { FROM = { tag = BEG } }
+			NOT = { FROM = { tag = GBA } }
+			NOT = { FROM = { tag = SID } }
+			NOT = { FROM = { tag = ORO } }
+			NOT = { FROM = { tag = QEM } }
+			NOT = {
+				all_of_scopes = {
+					array = ITA_initial_ethiopian_states
+					compliance > 70
+				}
+			}
+		}
+	}
+	if = {
+		limit = {
+			OR = {
+				has_game_rule = {
+					rule = allow_release_nations
+					option = FREE
+				}
+				has_game_rule = {
+					rule = allow_release_nations
+					option = PEACE_ONLY
+				}
+			}
+			has_dlc = "By Blood Alone"
+			original_tag = ITA
+			FROM = { tag = PAP }
+			has_completed_focus = ITA_seek_papal_support
+		}
+		custom_trigger_tooltip = {
+			tooltip = RULE_ALLOW_RELEASE_NATIONS_ITALY_PAP_TOOLTIP
+			NOT = { FROM = { tag = PAP } }
 		}
 	}
 	if = {
@@ -1049,6 +1145,14 @@ DIPLOMACY_SEND_VOLUNTEERS_ENABLE_TRIGGER = {
 					tag = SPC
 					has_completed_focus = SPR_regional_defense_council_of_aragon
 				}
+				NOT = { 
+					AND = {
+						tag = ETH 
+						ETH = {
+							has_completed_focus = ETH_support_spain
+						}
+					}
+				}
 			}
 			custom_trigger_tooltip = {
 				tooltip = RULE_VOLUNTEERS_NOT_ANARCHISTS_TT
@@ -1072,6 +1176,14 @@ DIPLOMACY_SEND_VOLUNTEERS_ENABLE_TRIGGER = {
 				FROM = {
 					tag = SPC
 					has_completed_focus = SPR_regional_defense_council_of_aragon
+				}
+				NOT = { 
+					AND = {
+						tag = ETH 
+						ETH = {
+							has_completed_focus = ETH_support_spain
+						}
+					}
 				}
 			}
 			custom_trigger_tooltip = {
@@ -1353,6 +1465,16 @@ DIPLOMACY_SEND_VOLUNTEERS_ENABLE_TRIGGER = {
 				}
 			}
 		}
+		#else_if = { #Can only send Volunteers to Ethiopia while having the National Spirit to do so)
+		#	limit = {
+		#		has_dlc = "By Blood Alone"
+		#		has_idea = ETH_support_for_ethiopia_idea
+		#	}
+		#	custom_trigger_tooltip = {
+		#		tooltip = RULE_VOLUNTEERS_ETHIOPIA_ONLY_ONE_TT
+		#		FROM = { tag = ETH } 
+		#	}
+		#}
 		else = {
 			always = yes
 		}
@@ -1371,6 +1493,14 @@ DIPLOMACY_SEND_VOLUNTEERS_ENABLE_TRIGGER = {
 		if = {
 			limit = {
 				NOT = { tag = SPC }
+				NOT = { 
+					AND = {
+						tag = ETH 
+						ETH = {
+							has_completed_focus = ETH_support_spain
+						}
+					}
+				}
 				FROM = {
 					tag = SPC
 					has_completed_focus = SPR_regional_defense_council_of_aragon
@@ -1391,6 +1521,129 @@ DIPLOMACY_SEND_VOLUNTEERS_ENABLE_TRIGGER = {
 		}
 		custom_trigger_tooltip = {
 			tooltip = RULE_VOLUNTEERS_BLOCKED_TT
+			always = no
+		}
+	}
+}
+
+game_weight_can_add_fascist = {
+	GER = {
+		AND = {
+			OR = {
+				check_variable = { fascist_game_weight < democratic_game_weight }
+				check_variable = { fascist_game_weight = democratic_game_weight }
+			}
+		}
+		AND = {
+			OR = {
+				check_variable = { fascist_game_weight < unaligned_game_weight }
+				check_variable = { fascist_game_weight = unaligned_game_weight }
+			}
+		}
+		AND = {
+			OR = {
+				check_variable = { fascist_game_weight < communist_game_weight }
+				check_variable = { fascist_game_weight = communist_game_weight }
+			}
+		}
+	}
+}
+
+game_weight_can_add_democratic = {
+	GER = {
+		AND = {
+			OR = {
+				check_variable = { democratic_game_weight < fascist_game_weight }
+				check_variable = { democratic_game_weight = fascist_game_weight }
+			}
+		}
+		AND = {
+			OR = {
+				check_variable = { democratic_game_weight < unaligned_game_weight }
+				check_variable = { democratic_game_weight = unaligned_game_weight }
+			}
+		}
+		AND = {
+			OR = {
+				check_variable = { democratic_game_weight < communist_game_weight }
+				check_variable = { democratic_game_weight = communist_game_weight }
+			}
+		}
+	}
+}
+
+game_weight_can_add_unaligned = {
+	GER = {
+		AND = {
+			OR = {
+				check_variable = { unaligned_game_weight < fascist_game_weight }
+				check_variable = { unaligned_game_weight = fascist_game_weight }
+			}
+		}
+		AND = {
+			OR = {
+				check_variable = { unaligned_game_weight < democratic_game_weight }
+				check_variable = { unaligned_game_weight = democratic_game_weight }
+			}
+		}
+		AND = {
+			OR = {
+				check_variable = { unaligned_game_weight < communist_game_weight }
+				check_variable = { unaligned_game_weight = communist_game_weight }
+			}
+		}
+	}
+}
+
+game_weight_can_add_communist = {
+	GER = {
+		AND = {
+			OR = {
+				check_variable = { communist_game_weight < fascist_game_weight }
+				check_variable = { communist_game_weight = fascist_game_weight }
+			}
+		}
+		AND = {
+			OR = {
+				check_variable = { communist_game_weight < democratic_game_weight }
+				check_variable = { communist_game_weight = democratic_game_weight }
+			}
+		}
+		AND = {
+			OR = {
+				check_variable = { communist_game_weight < unaligned_game_weight }
+				check_variable = { communist_game_weight = unaligned_game_weight }
+			}
+		}
+	}
+}
+
+DIPLOMACY_JOIN_ALLY_ENABLE_TRIGGER = {
+	if = { # TODO_TA make more generic trigger
+		limit = {
+			NOT = { has_global_flag = ethiopia_recognized_flag }
+			FROM = {
+				tag = ETH 
+			}
+			
+		}
+		custom_trigger_tooltip = {
+			tooltip = LON_NON_INTERFERENCE_RESOLUTION_JOIN
+			always = no
+		}
+	}
+}
+DIPLOMACY_CALL_ALLY_ENABLE_TRIGGER = {
+	if = { # TODO_TA make more generic trigger
+		limit = {
+			NOT = { has_global_flag = ethiopia_recognized_flag }
+			ROOT = {
+				tag = ETH
+			}
+			
+		}
+		custom_trigger_tooltip = {
+			tooltip = LON_NON_INTERFERENCE_RESOLUTION_CALL
 			always = no
 		}
 	}

@@ -15,8 +15,42 @@ country_event = {
 	
 	option = {
 		name = italy.1.a
+
 		annex_country = { target = ALB }
 		add_named_threat = { threat = 2 name = ITA_albania_war_goal }
+
+		#BBA
+		# The king is an idea
+		if = { #TODO_Manu: Handle this via News Event?
+			limit = {
+				has_idea = vittorio_emanuele
+			}
+			swap_ideas = {
+				remove_idea = vittorio_emanuele
+				add_idea = vittorio_emanuele_king_of_albania
+			}
+		}
+		else_if = {
+			limit = {
+				has_idea = vittorio_emanuele_emperor_of_ethiopia
+			}
+			swap_ideas = {
+				remove_idea = vittorio_emanuele_emperor_of_ethiopia
+				add_idea = vittorio_emanuele_albania_ethiopia
+			}
+		}
+
+		if = {
+			limit = {
+				has_character = ITA_vittorio_emanuele_iii
+			}
+			ITA_vittorio_emanuele_iii = { add_country_leader_trait = king_of_albania }
+			
+			hidden_effect = {
+				ITA_vittorio_emanuele_iii = { set_character_flag = ITA_king_of_albania_flag } #Used to add the NS of the king back after having removed it (Christian Democracy)
+			}
+		}
+
 		USA = {
 			set_country_flag = { flag = USA_albania_window days = 60 value = 1 }
 		}
@@ -40,7 +74,7 @@ country_event = {
 		create_wargoal = {
 			type = take_state_focus
 			target = ALB
-			generator = { 44 }
+			generator = { 44 805 }
 		}
 		hidden_effect = {
 			country_event = { days = 1 id = news.23 }
@@ -68,16 +102,26 @@ country_event = {
 						OR = {
 							is_major = yes
 							tag = YUG
+							original_tag = BUL
 						}
-						NOT = { tag = ITA }
+						NOT = { tag = FROM }
 						OR = {
 							has_guaranteed = ROOT
-							is_in_faction_with = ROOT
+							AND = {
+								is_in_faction_with = ROOT
+								OR = {
+									NOT = { is_in_faction_with = FROM }
+									AND = {
+										is_in_faction_with = FROM
+										FROM = { is_faction_leader = no }
+									}
+								}
+							}
 						}
 					}
 					AND = {
 						is_subject = yes
-						NOT = { is_subject_of = ITA }
+						NOT = { is_subject_of = FROM }
 					}
 				}
 			}
@@ -85,15 +129,16 @@ country_event = {
 				factor = 0.5
 				OR = {
 					has_government = communism
-					has_government = fascism #glorious Albania will never yield!
+					has_government = fascism #glorious Albania will never yield! #Actually, there is nothing glorious to be found in fascism ;)
 				}
 			}
 			modifier = {
 				factor = 5
-				is_subject_of = ITA
+				is_subject_of = FROM
 			}
 		}
-		ITA = {
+		
+		FROM = {
 			country_event = { days = 1 id = italy.1 }
 		}
 		custom_effect_tooltip = GAME_OVER_TT
@@ -106,28 +151,14 @@ country_event = {
 				factor = 0
 				OR = {
 					AND = {
-						is_in_faction_with = ITA
-						ITA = { is_faction_leader = yes }
-					}
-					AND = {
-						any_other_country = {
-							OR = {
-								is_major = yes
-								tag = YUG
-							}
-							NOT = { tag = ITA }
-							OR = {
-								has_guaranteed = ROOT
-								is_in_faction_with = ROOT
-							}
-						}
-						is_historical_focus_on = yes
+						is_in_faction_with = FROM
+						FROM = { is_faction_leader = yes }
 					}
 					AND = {
 						is_in_faction = no 
 						NOT = {
 							any_other_country = {
-								NOT = { tag = ITA }
+								NOT = { tag = FROM }
 								has_guaranteed = ROOT
 							} 
 						}
@@ -137,15 +168,15 @@ country_event = {
 			modifier = {
 				add = 100
 				is_in_faction = yes
-				NOT = { is_in_faction_with = ITA }
+				NOT = { is_in_faction_with = FROM }
 			}
 			modifier = {
 				add = 100
 				is_subject = yes
-				NOT = { is_subject_of = ITA }
+				NOT = { is_subject_of = FROM }
 			}
 		}
-		ITA = {
+		FROM = {
 			effect_tooltip = {
 				create_wargoal = {
 					type = take_state_focus
@@ -476,21 +507,21 @@ country_event = {
 	desc = { 
 		text = italy.13.d_dalmatia_montenegro
 		trigger = {
-			has_completed_focus = ITA_slovenia_dalmatia_claims
+			has_completed_focus = ITA_balkan_ambition
 			owns_state = 44
 		}
 	}
 	desc = { 
 		text = italy.13.d_dalmatia
 		trigger = {
-			has_completed_focus = ITA_slovenia_dalmatia_claims
+			has_completed_focus = ITA_balkan_ambition
 			NOT = { owns_state = 44 }
 		}
 	}
 	desc = { 
 		text = italy.13.d_montenegro
 		trigger = {
-			NOT = { has_completed_focus = ITA_slovenia_dalmatia_claims }
+			NOT = { has_completed_focus = ITA_balkan_ambition }
 			owns_state = 44
 		}
 	}
@@ -502,7 +533,7 @@ country_event = {
 	option = {
 		name = italy.13.a
 		if = {
-			limit = { has_completed_focus = ITA_slovenia_dalmatia_claims }
+			limit = { has_completed_focus = ITA_balkan_ambition }
 			ITA = { transfer_state = 103 }
 		}
 		if = {

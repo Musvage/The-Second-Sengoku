@@ -87,7 +87,7 @@
 		search_filters = { FOCUS_FILTER_RESEARCH }
 
 		completion_reward = {
-			army_experience = 5
+			army_experience = 25
 			add_doctrine_cost_reduction = {
 				name = AST_additional_militia_training
 				cost_reduction = 0.5
@@ -162,7 +162,7 @@
 		search_filters = { FOCUS_FILTER_RESEARCH }
 
 		completion_reward = {
-			army_experience = 5
+			army_experience = 50
 			add_doctrine_cost_reduction = {
 				name = AST_promote_reservists
 				cost_reduction = 0.5
@@ -248,7 +248,7 @@
 		search_filters = { FOCUS_FILTER_RESEARCH }
 
 		completion_reward = {
-			army_experience = 5
+			army_experience = 50
 			add_doctrine_cost_reduction = {
 				name = AST_hmas_assault
 				cost_reduction = 0.5
@@ -517,7 +517,7 @@
 		search_filters = { FOCUS_FILTER_RESEARCH  }
 
 		completion_reward = {
-			army_experience = 5
+			army_experience = 50
 			add_doctrine_cost_reduction = {
 				name = AST_introduce_unconventional_warfare
 				cost_reduction = 0.5
@@ -531,7 +531,7 @@
 		id = AST_z_special_unit
 		icon = GFX_goal_generic_amphibious_assault
 		prerequisite = { focus = AST_introduce_unconventional_warfare }
-		x = -1
+		x = -2
 		y = 6
 		relative_position_id = AST_additional_militia_training
 
@@ -569,7 +569,7 @@
 		id = AST_m_special_unit
 		icon = GFX_goal_generic_special_forces
 		prerequisite = { focus = AST_introduce_unconventional_warfare }
-		x = 1
+		x = 2
 		y = 6
 		relative_position_id = AST_additional_militia_training
 
@@ -602,6 +602,51 @@
 				technology = tech_recon2
 				technology = tech_recon3
 				technology = tech_recon4
+			}
+		}
+	}
+	
+	focus = {
+		id = AST_central_bureau
+		icon = GFX_goal_generic_radar
+		prerequisite = { focus = AST_introduce_unconventional_warfare }
+		x = 0
+		y = 1
+		relative_position_id = AST_introduce_unconventional_warfare
+
+		cost = 10
+
+		ai_will_do = {
+			factor = 1
+		}
+
+		available = {
+			is_in_faction_with = USA
+		}
+		
+		bypass = {
+
+		}
+
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = yes
+		search_filters = { FOCUS_FILTER_RESEARCH }
+
+		completion_reward = {
+			add_tech_bonus = {
+				name = AST_central_bureau
+				bonus = 1.0
+				ahead_reduction = 2
+				uses = 2
+				technology = tech_signal_company
+				technology = tech_signal_company2
+				technology = tech_signal_company3
+				technology = tech_signal_company4
+			}
+			if = {
+				limit = { has_dlc = "La Resistance" }
+				add_ideas = AST_central_bureau_idea
 			}
 		}
 	}
@@ -708,15 +753,35 @@
 		search_filters = { FOCUS_FILTER_RESEARCH  }
 
 		completion_reward = {
-			add_tech_bonus = {
-				name = AST_cac_boomerang
-				bonus = 1.0
-				ahead_reduction = 2
-				uses = 1
-				technology = early_fighter
-				technology = fighter1
-				technology = fighter2
-				technology = fighter3
+			if = {
+				limit = {
+					NOT = { has_dlc = "By Blood Alone" }
+				}
+				add_tech_bonus = {
+					name = AST_cac_boomerang
+					bonus = 1.0
+					ahead_reduction = 2
+					uses = 1
+					category = light_fighter
+				}
+			}
+			else = {
+				add_tech_bonus = {
+					name = AST_cac_boomerang
+					bonus = 0.75
+					uses = 1
+					category = light_fighter
+				}
+				create_equipment_variant = {
+					name = "CAC Boomerang" #
+					type = small_plane_airframe_1
+					modules = {
+						fixed_main_weapon_slot = light_mg_4x
+						fixed_auxiliary_weapon_slot_1 = aircraft_cannon_1_2x
+						engine_type_slot = engine_2_1x
+						special_type_slot_1 = drop_tanks
+					}
+				}	
 			}
 		}
 	}
@@ -771,7 +836,7 @@
 		completion_reward = {
 			air_experience = 25
 			random_owned_controlled_state = {
-				prioritize = { 521 520 }
+				prioritize = { 521 520 872}
 				limit = {
 					free_building_slots = {
 						building = air_base
@@ -822,19 +887,47 @@
 		search_filters = { FOCUS_FILTER_RESEARCH  }
 
 		completion_reward = {
-			add_tech_bonus = {
-				name = AST_cac_woomera
-				bonus = 3.0
-				uses = 1
-				category = cat_strategic_bomber
-				category = tactical_bomber
-				category = naval_air
+			if = {
+				limit = {
+					NOT = {
+						has_dlc = "By Blood Alone"
+					}
+				}
+				add_tech_bonus = {
+					name = AST_cac_woomera
+					bonus = 3.0
+					uses = 1
+					category = cat_strategic_bomber
+					category = tactical_bomber
+					category = naval_air
+				}
+				add_tech_bonus = {
+					name = AST_cac_woomera
+					bonus = 1.0
+					uses = 1
+					category = cat_strategic_bomber
+				}
 			}
-			add_tech_bonus = {
-				name = AST_cac_woomera
-				bonus = 1.0
-				uses = 1
-				category = cat_strategic_bomber
+			else = {
+				add_tech_bonus = {
+					name = AST_cac_woomera
+					bonus = 2
+					uses = 2
+					category = tactical_bomber
+					category = naval_air
+				}
+				create_equipment_variant = {
+					name = "CAC Woomera" #
+					type = medium_plane_airframe_1
+					modules = {
+						fixed_main_weapon_slot = medium_bomb_bay
+						fixed_auxiliary_weapon_slot_1 = aircraft_cannon_1_2x
+						fixed_auxiliary_weapon_slot_2 = torpedo_mounting
+						fixed_auxiliary_weapon_slot_3 = bomb_locks
+						engine_type_slot = engine_3_2x
+						special_type_slot_1 = lmg_defense_turret_2x
+					}
+				}
 			}
 		}
 	}
@@ -915,7 +1008,7 @@
 			if = {
 				limit = { has_tech = radio_detection }
 				random_owned_controlled_state = {
-					prioritize = { 521 }
+					prioritize = { 521 872 }
 					limit = {
 						is_in_home_area = yes
 						free_building_slots = {
@@ -973,7 +1066,7 @@
 					}
 					effect_tooltip = {
 						random_owned_controlled_state = {
-							prioritize = { 521 }
+							prioritize = { 521 872 }
 							limit = {
 								is_in_home_area = yes
 							}
@@ -998,7 +1091,7 @@
 						}
 					}
 					random_owned_controlled_state = {
-						prioritize = { 521 }
+						prioritize = { 521 872 }
 						limit = {
 							is_in_home_area = yes
 							free_building_slots = {
@@ -1345,7 +1438,7 @@
 		x = 11
 		y = 0
 
-		cost = 10
+		cost = 5
 
 		ai_will_do = {
 			factor = 1
@@ -1373,15 +1466,18 @@
 				limit = {
 					has_state_flag = AST_cockatoo_island_shipyards_DY
 				}
-				add_extra_state_shared_building_slots = 3
+				add_extra_state_shared_building_slots = 2
 				add_building_construction = {
 					type = dockyard
-					level = 3
+					level = 2
 					instant_build = yes
 				}
 			}
+			custom_effect_tooltip = available_designer
+			show_ideas_tooltip = Cockatoo_doe
 		}
 
+			
 		completion_reward = {
 			navy_experience = 25
 			random_owned_controlled_state = {
@@ -1390,28 +1486,101 @@
 					is_coastal = yes
 					free_building_slots = {
 						building = dockyard
-						size > 2
+						size > 1
 						include_locked = yes
 					}
 					NOT = { state = 674 }
 				}
-				add_extra_state_shared_building_slots = 3
+				add_extra_state_shared_building_slots = 2
 				add_building_construction = {
 					type = dockyard
-					level = 3
+					level = 2
 					instant_build = yes
 				}
 				set_state_flag = AST_cockatoo_island_shipyards_DY
 			}
+			custom_effect_tooltip = available_designer
+			show_ideas_tooltip = Cockatoo_doe
 		}
 	}
+	
+	focus = {
+		id = AST_kangaroo_point_shipyards
+		icon = GFX_goal_generic_construct_naval_dockyard
+		x = 2
+		y = 0
+		relative_position_id = AST_cockatoo_island_shipyards
+		cost = 5
 
+		ai_will_do = {
+			factor = 1
+		}
+
+		available = {
+			any_state = {
+				is_coastal = yes
+				is_controlled_by = ROOT
+			}
+		}
+		
+		bypass = {
+
+		}
+
+		cancel_if_invalid = yes
+		continue_if_invalid = no
+		available_if_capitulated = no
+		search_filters = {  FOCUS_FILTER_INDUSTRY }
+
+		complete_tooltip = {
+			navy_experience = 25
+			random_state = {
+				limit = {
+					has_state_flag = AST_kangaroo_point_shipyards_DY
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = dockyard
+					level = 2
+					instant_build = yes
+				}
+			}
+			custom_effect_tooltip = available_designer
+			show_ideas_tooltip = evans_deakin_co
+		}
+
+		completion_reward = {
+			navy_experience = 25
+			random_owned_controlled_state = {
+				prioritize = { 521 }
+				limit = {
+					is_coastal = yes
+					free_building_slots = {
+						building = dockyard
+						size > 1
+						include_locked = yes
+					}
+					NOT = { state = 674 }
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = dockyard
+					level = 2
+					instant_build = yes
+				}
+				set_state_flag = AST_kangaroo_point_shipyards_DY
+			}
+			custom_effect_tooltip = available_designer
+			show_ideas_tooltip = evans_deakin_co
+		}
+	}
+	
 	focus = {
 		id = AST_protect_overseas_commerce
 		icon = GFX_goal_generic_navy_doctrines_tactics
-		prerequisite = { focus = AST_cockatoo_island_shipyards }
+		prerequisite = { focus = AST_cockatoo_island_shipyards focus = AST_kangaroo_point_shipyards }
 		mutually_exclusive = { focus = AST_fly_the_jolly_roger }
-		x = -1
+		x = 0
 		y = 1
 		relative_position_id = AST_cockatoo_island_shipyards
 
@@ -1448,9 +1617,9 @@
 	focus = {
 		id = AST_fly_the_jolly_roger
 		icon = GFX_goal_generic_navy_submarine
-		prerequisite = { focus = AST_cockatoo_island_shipyards }
+		prerequisite = { focus = AST_cockatoo_island_shipyards focus = AST_kangaroo_point_shipyards }
 		mutually_exclusive = { focus = AST_protect_overseas_commerce }
-		x = 1
+		x = 2
 		y = 1
 		relative_position_id = AST_cockatoo_island_shipyards
 
@@ -1487,7 +1656,7 @@
 		id = AST_scrap_iron_flotilla
 		icon = GFX_goal_generic_navy_cruiser
 		prerequisite = { focus = AST_protect_overseas_commerce focus = AST_fly_the_jolly_roger }
-		x = -1
+		x = 0
 		y = 2
 		relative_position_id = AST_cockatoo_island_shipyards
 
@@ -1525,7 +1694,7 @@
 		id = AST_royal_australian_submarine_service
 		icon = GFX_goal_generic_wolf_pack
 		prerequisite = { focus = AST_protect_overseas_commerce focus = AST_fly_the_jolly_roger }
-		x = 1
+		x = 2
 		y = 2
 		relative_position_id = AST_cockatoo_island_shipyards
 
@@ -1563,7 +1732,7 @@
 		id = AST_naval_auxiliary_patrol
 		icon = GFX_goal_generic_fortify_city
 		prerequisite = { focus = AST_royal_australian_submarine_service focus = AST_scrap_iron_flotilla }
-		x = 0
+		x = 1
 		y = 3
 		relative_position_id = AST_cockatoo_island_shipyards
 
@@ -1595,7 +1764,7 @@
 		id = AST_cruisers
 		icon = GFX_goal_generic_navy_battleship
 		prerequisite = { focus = AST_naval_auxiliary_patrol }
-		x = -1
+		x = 0
 		y = 4
 		relative_position_id = AST_cockatoo_island_shipyards
 
@@ -1634,7 +1803,7 @@
 		id = AST_pacific_area_navy
 		icon = GFX_goal_generic_navy_doctrines_tactics
 		prerequisite = { focus = AST_naval_auxiliary_patrol }
-		x = 1
+		x = 2
 		y = 4
 		relative_position_id = AST_cockatoo_island_shipyards
 
@@ -1676,7 +1845,7 @@
 	focus = {
 		id = AST_standard_gauge_railway
 		icon = GFX_goal_generic_construct_infrastructure
-		x = 14
+		x = 16
 		y = 0
 
 		cost = 10
@@ -1762,6 +1931,7 @@
 			NOT = {
 				controls_state = 522
 				controls_state = 519
+				controls_state = 871
 			}
 		}
 
@@ -1773,6 +1943,40 @@
 		completion_reward = {
 			build_railway = {
 				path = { 1652 2157 10983 1526 10949 8200 10969 2191 12948 5197 8165 10927 8186 }
+			}
+
+			random_owned_state = {
+				limit = {
+					free_building_slots = {
+						building = infrastructure
+						size > 0
+						include_locked = yes
+					}
+					NOT = {state = 674}
+				}
+
+				add_building_construction = {
+					type = infrastructure
+					level = 1
+					instant_build = yes
+				}
+			}
+
+			random_owned_state = {
+				limit = {
+					free_building_slots = {
+						building = infrastructure
+						size > 0
+						include_locked = yes
+					}
+					NOT = {state = 674}
+				}
+
+				add_building_construction = {
+					type = infrastructure
+					level = 1
+					instant_build = yes
+				}
 			}
 		}
 	}
@@ -2091,6 +2295,8 @@
 				level = 2
 				path = { 7669 1431 12104 1454 }
 			}
+
+
 		}
 	}
 
@@ -2171,7 +2377,7 @@
 	focus = {
 		id = AST_establish_advisory_war_council
 		icon = GFX_goal_generic_demand_territory
-		x = 22
+		x = 24
 		y = 0
 
 		cost = 10
@@ -2849,7 +3055,7 @@
 		id = AST_support_the_policy_of_appeasement
 		icon = GFX_goal_generic_improve_relations
 		mutually_exclusive = { focus = AST_never_another_gallipoli }
-		x = 28
+		x = 30
 		y = 0
 
 		cost = 10
@@ -3337,7 +3543,7 @@
 		id = AST_never_another_gallipoli
 		icon = GFX_focus_AST_never_gallipoli
 		mutually_exclusive = { focus = AST_support_the_policy_of_appeasement }
-		x = 35
+		x = 37
 		y = 0
 
 		cost = 10

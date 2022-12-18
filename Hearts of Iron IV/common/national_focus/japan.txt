@@ -547,6 +547,12 @@
 				type = puppet_wargoal_focus
 				expire = 0
 			}
+			hidden_effect = {
+				set_country_flag = {
+					flag = JAP_dont_surrender_instantly_lock
+					days = 720
+				}
+			}
 		}
 	}
 
@@ -1529,6 +1535,34 @@
 					id = "INS"
 					value = 200
 				}
+
+				if = {
+					limit = {
+						INS = {
+							any_core_state = {
+								NOT = {
+									is_owned_and_controlled_by = INS
+								}
+							}
+						}
+					}
+
+					INS = { #I see what you are doing you cheeky exploiter
+						every_core_state = {
+							limit = {
+								NOT = { is_owned_and_controlled_by = PREV }
+							}
+
+							ROOT = {
+								create_wargoal = {
+									target = PREV.controller
+									type = annex_everything
+									expire = 0
+								}
+							}
+						}
+					}
+				}
 			}
 			if = {
 				limit = {
@@ -1808,32 +1842,44 @@
 		}
 
 		bypass = {
-			custom_trigger_tooltip = {
-				tooltip = JAP_sign_tripartite_pact_bypass_tt
-				OR = {
-					NOT = {
+			OR = {
+				custom_trigger_tooltip = {
+					tooltip = JAP_sign_tripartite_pact_bypass_tt
+					OR = {
+						NOT = {
+							any_country = {
+								original_tag = GER
+								has_government = fascism
+							}
+						}
 						any_country = {
 							original_tag = GER
 							has_government = fascism
+							has_war_with = ROOT
 						}
-					}
-					any_country = {
-						original_tag = GER
-						has_government = fascism
-						has_war_with = ROOT
-					}
-					NOT = {
+						NOT = {
+							any_country = {
+								original_tag = ITA
+								has_government = fascism
+							}
+						}
 						any_country = {
 							original_tag = ITA
 							has_government = fascism
-						}
-					}
-					any_country = {
-						original_tag = ITA
-						has_government = fascism
-						has_war_with = ROOT
+							has_war_with = ROOT
+						}	
 					}	
-				}	
+				}
+				AND = {
+					GER = {
+						has_government = fascism
+						has_war_with = ITA
+					}
+					ITA = {
+						has_government = fascism
+						has_war_with = GER
+					}
+				}
 			}
 		}
 
@@ -2113,7 +2159,7 @@
 		}
 
 		bypass = {
-
+			has_idea = tot_economic_mobilisation
 		}
 
 		cancel_if_invalid = yes
@@ -2355,6 +2401,7 @@
 		search_filters = { FOCUS_FILTER_MANPOWER }
 		completion_reward = {
 			add_ideas = spiritual_mobilization_idea
+			custom_effect_tooltip = peace_conference_spiritual_mob_modifier_japan
 		}
 	}
 
@@ -2436,8 +2483,17 @@
 		available_if_capitulated = no
 
 		completion_reward = {
-			custom_effect_tooltip = JAP_strengthen_the_divine_wind_effect
-			hidden_effect = { set_technology = { suicide_craft = 1 } }
+			if = {
+				limit = {
+					NOT = { has_dlc = "By Blood Alone" }
+				}
+				custom_effect_tooltip = JAP_strengthen_the_divine_wind_effect
+				hidden_effect = { set_technology = { suicide_craft = 1 } }
+			}
+			else = {
+				custom_effect_tooltip = JAP_strengthen_the_divine_wind_effect_bba
+				hidden_effect = { set_technology = { suicide_charge = 1 popup = no} }
+			}
 		}
 	}
 
@@ -4894,7 +4950,30 @@
 		search_filters = { FOCUS_FILTER_RESEARCH }
 		completion_reward = {
 			custom_effect_tooltip = JAP_the_zero_tt
-			hidden_effect = { set_technology = { cv_fighter2 = 1 } }
+			hidden_effect = { 
+				if = {
+					limit = {
+						NOT = {
+							has_dlc = "By Blood Alone"
+						}
+					}
+					set_technology = { cv_fighter2 = 1 } 
+				}
+				else = {
+					create_equipment_variant = {
+						name = "A6M Zero-Sen"
+						type = cv_small_plane_airframe_2
+						modules = {
+							fixed_main_weapon_slot = light_mg_2x
+							fixed_auxiliary_weapon_slot_1 = aircraft_cannon_1_2x
+							engine_type_slot = engine_3_1x
+							special_type_slot_1 = drop_tanks
+							special_type_slot_2 = fuel_tanks_small
+						}
+						icon = "GFX_JAP_cv_fighter2_medium"
+					}
+				}
+			}
 		}
 	}
 
