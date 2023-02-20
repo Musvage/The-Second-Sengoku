@@ -54,7 +54,8 @@ on_actions = {
 			#	set_global_flag = chemical_weapons_allowed_flag
 			#}
 			### COALITION STABILITY BONUS ###
-			every_country = {
+			every_possible_country = {
+				log = "FOR DEBUGGING: [THIS.GetName] add coalition modifier"	# can be disabled for release
 				add_dynamic_modifier = { modifier = coalition_stability_modifier }
 				if = {
 					limit = {
@@ -185,6 +186,15 @@ on_actions = {
 				check_trade_cities = yes
 				set_variable = { show_SS_trade = 0 }
 			}
+			### CLAN LADIES
+			every_possible_country = {
+				limit = { has_country_flag = is_clan }
+				random_character = {
+					limit = { can_be_country_leader = yes has_ideology_group = autocracy }
+					dual_leader_get_random_clan_lady = yes
+					log = "Adding [THIS.GetName]'s ([PREV.GetName]) wife: Lady [GetDualLeaderName]"
+				}
+			}
 			### TOTAL POPULATION & JAPANESE POPULATION ###
 			every_country = {
 				set_variable = { country_total_population = 0 }
@@ -208,7 +218,8 @@ on_actions = {
 			set_variable = { global.random_navy_trait = 0 }
 			random_country = { get_random_general_dna = yes }
 			### RELIGION SYSTEM 2.0 ###
-			random_country = {
+			every_possible_country = {
+				log = "FOR DEBUGGING: [THIS.GetName] set up religion"	# can be disabled for release
 				set_up_global_religion_variables = yes
 				state_religion_error_catcher = yes
 				set_variable = { show_SS_religion = 0 }
@@ -627,15 +638,116 @@ on_actions = {
 			#	add_political_power = 1
 			#	country_event = { id = options.1 }
 			#} DISABLED INITIAL OPTIONS
-			### TIMER ###
-			random_country = {
-				set_country_flag = timer_bearer
-				log = "long live the king: [THIS.GetName] is the timer bearer"
-			}
 		}
 	}
 	
 	on_weekly = {
+		effect = {
+			if = {
+				limit = { is_ai = yes }	### AI WEEKLY EFFECTS (THESE ARE DAILY FOR PLAYERS)
+				### UNIFICATION OF JAPAN ###
+				if = {
+					limit = { unification_candidate = yes }
+					unification_get_score = yes
+					unification_count_states_southern_japan = yes
+					unification_count_states_central_japan = yes
+					unification_count_states_northern_japan = yes
+					get_all_unification_score_firsts = yes
+					unification_count_total_states = yes
+					unification_get_highter_score = yes
+				}
+				### COALITION STABILITY BONUS ###
+				if = {
+					limit = { has_idea_with_trait = coalition_with_democratic NOT = { has_government = democratic } }
+					set_variable = { coalition_stability_bonus = party_popularity@democratic }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_democratic_socialism NOT = { has_government = democratic_socialism } }
+					set_variable = { coalition_stability_bonus = party_popularity@democratic_socialism }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_neutrality NOT = { has_government = neutrality } }
+					set_variable = { coalition_stability_bonus = party_popularity@neutrality}
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_autocracy NOT = { has_government = autocracy } }
+					set_variable = { coalition_stability_bonus = party_popularity@autocracy }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_fascism NOT = { has_government = fascism } }
+					set_variable = { coalition_stability_bonus = party_popularity@fascism }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_communism NOT = { has_government = communism } }
+					set_variable = { coalition_stability_bonus = party_popularity@communism }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_democratic_char NOT = { has_government = democratic } }
+					set_variable = { coalition_stability_bonus = party_popularity@democratic }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_democratic_socialism_char NOT = { has_government = democratic_socialism } }
+					set_variable = { coalition_stability_bonus = party_popularity@democratic_socialism }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_neutrality_char NOT = { has_government = neutrality } }
+					set_variable = { coalition_stability_bonus = party_popularity@neutrality}
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_autocracy_char NOT = { has_government = autocracy } }
+					set_variable = { coalition_stability_bonus = party_popularity@autocracy }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_fascism_char NOT = { has_government = fascism } }
+					set_variable = { coalition_stability_bonus = party_popularity@fascism }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_communism_char NOT = { has_government = communism } }
+					set_variable = { coalition_stability_bonus = party_popularity@communism }
+				}
+				multiply_variable = { coalition_stability_bonus = 0.15 }
+				if = {
+					limit = {
+						NOT = {
+							has_idea_with_trait = coalition_with_democratic
+							has_idea_with_trait = coalition_with_democratic_socialism
+							has_idea_with_trait = coalition_with_communism
+							has_idea_with_trait = coalition_with_neutrality
+							has_idea_with_trait = coalition_with_autocracy
+							has_idea_with_trait = coalition_with_fascism
+							has_idea_with_trait = coalition_with_democratic_char
+							has_idea_with_trait = coalition_with_democratic_socialism_char
+							has_idea_with_trait = coalition_with_communism_char
+							has_idea_with_trait = coalition_with_neutrality_char
+							has_idea_with_trait = coalition_with_autocracy_char
+							has_idea_with_trait = coalition_with_fascism_char
+						}
+					}
+					set_variable = { coalition_stability_bonus = 0 }
+				}
+				### DIVISION LIMIT SYSTEM	###
+				calculate_division_limit = yes
+				check_division_limit = yes
+				### PARTY POPULARITY BONUSES
+				if = {
+					limit = { has_dynamic_modifier = { modifier = PRO_modifier_ruling_party_popularity } }	# it uses a PRO modifier but can work for every one
+					set_temp_variable = { pop_bonus = party_popularity_100@ruling_party }
+					multiply_temp_variable = { pop_bonus = 0.00015 }										# attention to scale
+					if = {
+						limit = { has_idea_with_trait = party_popularity_war_support_bonus }
+						set_variable = { PRO_war_support_propaganda_bonus = pop_bonus }						# please dont mind the very specific variable names
+					} else = { set_variable = { PRO_war_support_propaganda_bonus = 0 } }
+					if = {
+						limit = { has_idea_with_trait = party_popularity_policial_power_bonus }
+						set_variable = { PRO_politica_power_ban_extremism_bonus = pop_bonus }
+					} else = { set_variable = { PRO_politica_power_ban_extremism_bonus = 0 } }
+					if = {
+						limit = { has_idea_with_trait = party_popularity_army_org_bonus }
+						set_variable = { PRO_organization_codes_of_conduct_bonus = pop_bonus }
+					} else = { set_variable = { PRO_organization_codes_of_conduct_bonus = 0 } }
+				}
+			}
+		}
 		effect = {
 			### TOTAL POPULATION & JAPANESE POPULATION ###
 			set_variable = { country_total_population = 0 }
@@ -646,39 +758,6 @@ on_actions = {
 					limit = { OR = { is_on_continent = europe is_on_continent = honshu is_on_continent = kyushu is_on_continent = hokkaido is_on_continent = shikoku } }
 					add_to_variable = { PREV.country_japanese_population = state_population_k }
 				}
-			}
-		}
-		effect = {
-			### UNIFICATION OF JAPAN ###
-			if = {
-				limit = { unification_candidate = yes }
-				unification_get_score = yes
-				unification_count_states_southern_japan = yes
-				unification_count_states_central_japan = yes
-				unification_count_states_northern_japan = yes
-				get_all_unification_score_firsts = yes
-				unification_count_total_states = yes
-				unification_get_highter_score = yes
-			}
-		}
-		effect = {
-			### COALITION STABILITY BONUS ###
-			if = {
-				limit = {
-					NOT = {
-						has_dynamic_modifier = { modifier = coalition_stability_modifier }
-					}
-				}
-				add_dynamic_modifier = { modifier = coalition_stability_modifier }
-			}
-		}
-		effect = {
-			### DIVISION LIMIT SYSTEM	###
-			if = {
-				limit = { NOT = { has_country_flag = has_division_limit_system } }
-				set_up_division_limit_system = yes
-			} else = {
-				calculate_division_limit = yes
 			}
 		}
 		effect = {
@@ -798,19 +877,12 @@ on_actions = {
 		}
 	}
 	
-	on_daily = {	### TIMER ### TIMER ### TIMER ### TIMER ### TIMER 
+	on_daily = {	### EXECTURE ON ONLY ONE COUNRTY A.K.A. "GLOBAL" ON DAILY ###
 		effect = {
 			if = {
-				limit = { NOT = { any_country = { has_country_flag = timer_bearer } } }
-				log = "the king is dead!"
-				random_country = { set_country_flag = timer_bearer }
-				log = "long live the king: [THIS.GetName] is the timer bearer"
-			}
-			if = {
-				limit = { has_country_flag = timer_bearer }
-				### ACTUAL TIMER STARTS HERE
+				limit = { controls_state = 1 }
+				log = "FOR DEBUGGING: [GetDatetext]"	# can be disabled for release
 				world_stage_activate_daily_state_effect = yes
-				#world_stage_daily_effect = yes			# REMOVE LATER # REMOVE LATER # REMOVE LATER # REMOVE LATER 
 				world_stage_ai_ger = yes			
 				world_stage_ai_fra = yes			
 				world_stage_ai_eng = yes			
@@ -818,136 +890,114 @@ on_actions = {
 				world_stage_ai_usa = yes			
 				world_stage_ai_chi = yes			
 				world_stage_ai_sov = yes			
-				# remove duplicated timer bearer
-				every_other_country = {
-					limit = { has_country_flag = timer_bearer }
-					clr_country_flag = timer_bearer
-					log = "there can be only one! (removed duplicated timer bearer)"
-				}
 			}
 		}
 	}
 	
 	on_daily = {
 		effect = {
-			### PARTY POPULARITY BONUSES
 			if = {
-				limit = { has_dynamic_modifier = { modifier = PRO_modifier_ruling_party_popularity } }	# it uses a PRO modifier but can work for every one
-				set_temp_variable = { pop_bonus = party_popularity_100@ruling_party }
-				multiply_temp_variable = { pop_bonus = 0.00015 }										# attention to scale
+				limit = { is_ai = no }	### PLAYER EFFECTS (THESE ARE WEEKLY FOR AI)
+				### UNIFICATION OF JAPAN ###
 				if = {
-					limit = { has_idea_with_trait = party_popularity_war_support_bonus }
-					set_variable = { PRO_war_support_propaganda_bonus = pop_bonus }						# please dont mind the very specific variable names
-				} else = { set_variable = { PRO_war_support_propaganda_bonus = 0 } }
-				if = {
-					limit = { has_idea_with_trait = party_popularity_policial_power_bonus }
-					set_variable = { PRO_politica_power_ban_extremism_bonus = pop_bonus }
-				} else = { set_variable = { PRO_politica_power_ban_extremism_bonus = 0 } }
-				if = {
-					limit = { has_idea_with_trait = party_popularity_army_org_bonus }
-					set_variable = { PRO_organization_codes_of_conduct_bonus = pop_bonus }
-				} else = { set_variable = { PRO_organization_codes_of_conduct_bonus = 0 } }
-			}
-		}
-		effect = {
-			### COALITION STABILITY BONUS ###
-			if = {
-				limit = { has_idea_with_trait = coalition_with_democratic NOT = { has_government = democratic } }
-				set_variable = { coalition_stability_bonus = party_popularity@democratic }
-			}
-			if = {
-				limit = { has_idea_with_trait = coalition_with_democratic_socialism NOT = { has_government = democratic_socialism } }
-				set_variable = { coalition_stability_bonus = party_popularity@democratic_socialism }
-			}
-			if = {
-				limit = { has_idea_with_trait = coalition_with_neutrality NOT = { has_government = neutrality } }
-				set_variable = { coalition_stability_bonus = party_popularity@neutrality}
-			}
-			if = {
-				limit = { has_idea_with_trait = coalition_with_autocracy NOT = { has_government = autocracy } }
-				set_variable = { coalition_stability_bonus = party_popularity@autocracy }
-			}
-			if = {
-				limit = { has_idea_with_trait = coalition_with_fascism NOT = { has_government = fascism } }
-				set_variable = { coalition_stability_bonus = party_popularity@fascism }
-			}
-			if = {
-				limit = { has_idea_with_trait = coalition_with_communism NOT = { has_government = communism } }
-				set_variable = { coalition_stability_bonus = party_popularity@communism }
-			}
-			if = {
-				limit = { has_idea_with_trait = coalition_with_democratic_char NOT = { has_government = democratic } }
-				set_variable = { coalition_stability_bonus = party_popularity@democratic }
-			}
-			if = {
-				limit = { has_idea_with_trait = coalition_with_democratic_socialism_char NOT = { has_government = democratic_socialism } }
-				set_variable = { coalition_stability_bonus = party_popularity@democratic_socialism }
-			}
-			if = {
-				limit = { has_idea_with_trait = coalition_with_neutrality_char NOT = { has_government = neutrality } }
-				set_variable = { coalition_stability_bonus = party_popularity@neutrality}
-			}
-			if = {
-				limit = { has_idea_with_trait = coalition_with_autocracy_char NOT = { has_government = autocracy } }
-				set_variable = { coalition_stability_bonus = party_popularity@autocracy }
-			}
-			if = {
-				limit = { has_idea_with_trait = coalition_with_fascism_char NOT = { has_government = fascism } }
-				set_variable = { coalition_stability_bonus = party_popularity@fascism }
-			}
-			if = {
-				limit = { has_idea_with_trait = coalition_with_communism_char NOT = { has_government = communism } }
-				set_variable = { coalition_stability_bonus = party_popularity@communism }
-			}
-			multiply_variable = { coalition_stability_bonus = 0.15 }
-			if = {
-				limit = {
-					NOT = {
-						has_idea_with_trait = coalition_with_democratic
-						has_idea_with_trait = coalition_with_democratic_socialism
-						has_idea_with_trait = coalition_with_communism
-						has_idea_with_trait = coalition_with_neutrality
-						has_idea_with_trait = coalition_with_autocracy
-						has_idea_with_trait = coalition_with_fascism
-						has_idea_with_trait = coalition_with_democratic_char
-						has_idea_with_trait = coalition_with_democratic_socialism_char
-						has_idea_with_trait = coalition_with_communism_char
-						has_idea_with_trait = coalition_with_neutrality_char
-						has_idea_with_trait = coalition_with_autocracy_char
-						has_idea_with_trait = coalition_with_fascism_char
-					}
+					limit = { unification_candidate = yes }
+					unification_get_score = yes
+					unification_count_states_southern_japan = yes
+					unification_count_states_central_japan = yes
+					unification_count_states_northern_japan = yes
+					get_all_unification_score_firsts = yes
+					unification_count_total_states = yes
+					unification_get_highter_score = yes
 				}
-				set_variable = { coalition_stability_bonus = 0 }
-			}
-			
-			#Making Beria Head of NKVD
-			#FER = {
-			#	if = {
-			#		limit = {
-			#			has_country_leader = {
-			#				ruling_only = yes
-			#				name = "Lavrenti Beria"
-			#			}
-			#			date > 1936.1.12
-			#			check_variable = { var = FER.dual_leader_first_title value = 19 compare = not_equals }
-			#		}
-			#		set_variable = { FER.dual_leader_first_title = 19 }
-			#		FER_lavrenti_beria = {
-			#			add_country_leader_role = {
-			#				country_leader={
-			#					traits={ FER_head_of_nkvd_beria }
-			#				}
-			#			}
-			#		}
-			#	}
-			#}
-		}
-		effect = {
-			# DIVISION LIMIT SYSTEM	# DIVISION LIMIT SYSTEM	# DIVISION LIMIT SYSTEM
-			every_country = {
+				### COALITION STABILITY BONUS ###
 				if = {
-					limit = { has_country_flag = has_division_limit_system }
-					check_division_limit = yes
+					limit = { has_idea_with_trait = coalition_with_democratic NOT = { has_government = democratic } }
+					set_variable = { coalition_stability_bonus = party_popularity@democratic }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_democratic_socialism NOT = { has_government = democratic_socialism } }
+					set_variable = { coalition_stability_bonus = party_popularity@democratic_socialism }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_neutrality NOT = { has_government = neutrality } }
+					set_variable = { coalition_stability_bonus = party_popularity@neutrality}
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_autocracy NOT = { has_government = autocracy } }
+					set_variable = { coalition_stability_bonus = party_popularity@autocracy }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_fascism NOT = { has_government = fascism } }
+					set_variable = { coalition_stability_bonus = party_popularity@fascism }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_communism NOT = { has_government = communism } }
+					set_variable = { coalition_stability_bonus = party_popularity@communism }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_democratic_char NOT = { has_government = democratic } }
+					set_variable = { coalition_stability_bonus = party_popularity@democratic }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_democratic_socialism_char NOT = { has_government = democratic_socialism } }
+					set_variable = { coalition_stability_bonus = party_popularity@democratic_socialism }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_neutrality_char NOT = { has_government = neutrality } }
+					set_variable = { coalition_stability_bonus = party_popularity@neutrality}
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_autocracy_char NOT = { has_government = autocracy } }
+					set_variable = { coalition_stability_bonus = party_popularity@autocracy }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_fascism_char NOT = { has_government = fascism } }
+					set_variable = { coalition_stability_bonus = party_popularity@fascism }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_communism_char NOT = { has_government = communism } }
+					set_variable = { coalition_stability_bonus = party_popularity@communism }
+				}
+				multiply_variable = { coalition_stability_bonus = 0.15 }
+				if = {
+					limit = {
+						NOT = {
+							has_idea_with_trait = coalition_with_democratic
+							has_idea_with_trait = coalition_with_democratic_socialism
+							has_idea_with_trait = coalition_with_communism
+							has_idea_with_trait = coalition_with_neutrality
+							has_idea_with_trait = coalition_with_autocracy
+							has_idea_with_trait = coalition_with_fascism
+							has_idea_with_trait = coalition_with_democratic_char
+							has_idea_with_trait = coalition_with_democratic_socialism_char
+							has_idea_with_trait = coalition_with_communism_char
+							has_idea_with_trait = coalition_with_neutrality_char
+							has_idea_with_trait = coalition_with_autocracy_char
+							has_idea_with_trait = coalition_with_fascism_char
+						}
+					}
+					set_variable = { coalition_stability_bonus = 0 }
+				}
+				### DIVISION LIMIT SYSTEM	###
+				calculate_division_limit = yes
+				check_division_limit = yes
+				### PARTY POPULARITY BONUSES
+				if = {
+					limit = { has_dynamic_modifier = { modifier = PRO_modifier_ruling_party_popularity } }	# it uses a PRO modifier but can work for every one
+					set_temp_variable = { pop_bonus = party_popularity_100@ruling_party }
+					multiply_temp_variable = { pop_bonus = 0.00015 }										# attention to scale
+					if = {
+						limit = { has_idea_with_trait = party_popularity_war_support_bonus }
+						set_variable = { PRO_war_support_propaganda_bonus = pop_bonus }						# please dont mind the very specific variable names
+					} else = { set_variable = { PRO_war_support_propaganda_bonus = 0 } }
+					if = {
+						limit = { has_idea_with_trait = party_popularity_policial_power_bonus }
+						set_variable = { PRO_politica_power_ban_extremism_bonus = pop_bonus }
+					} else = { set_variable = { PRO_politica_power_ban_extremism_bonus = 0 } }
+					if = {
+						limit = { has_idea_with_trait = party_popularity_army_org_bonus }
+						set_variable = { PRO_organization_codes_of_conduct_bonus = pop_bonus }
+					} else = { set_variable = { PRO_organization_codes_of_conduct_bonus = 0 } }
 				}
 			}
 		}
@@ -1149,13 +1199,7 @@ on_actions = {
 		### WORLD STAGE ###
 		effect = {
 			if = {
-				limit = { NOT = { any_country = { has_country_flag = timer_bearer } } }
-				log = "the king is dead!"
-				random_country = { set_country_flag = timer_bearer }
-				log = "long live the king: [THIS.GetName] is the timer bearer"
-			}
-			if = {
-				limit = { has_country_flag = timer_bearer }
+				limit = { controls_state = 1 }
 				### update generic doctrines
 				random_list = {
 					1 = { add_to_variable = { global.generic_doctrine_bonus_land = 0.1 } }		# updates land doctrine
