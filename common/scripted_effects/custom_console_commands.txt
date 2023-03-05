@@ -127,7 +127,7 @@ d_add_compliance_to_all_states = {
 	}
 }
 
-d_add_remove_compliance_from_all_states = {
+d_remove_compliance_from_all_states = {
 	every_controlled_state = {
 		limit = { NOT = { is_core_of = ROOT } }
 		add_compliance = -100
@@ -227,8 +227,6 @@ d_allow_cthulhu = {	# there is an equivalent on the SS_religion_effects.txt for 
 	
 }
 d_set_country_religion = {
-
-	#add_political_power = 111 
 	
 	find_highest_in_array = { 
 		array = args 
@@ -447,12 +445,12 @@ d_random_ladies_all_clans = {
 			limit = { has_country_flag = is_clan has_government = autocracy }
 			random_character = {
 				limit = { is_country_leader = yes }
-				if = { limit = { has_character_flag = secondary_leader_lady_1} clr_character_flag = secondary_leader_lady_1	}
-				if = { limit = { has_character_flag = secondary_leader_lady_2} clr_character_flag = secondary_leader_lady_2	}
-				if = { limit = { has_character_flag = secondary_leader_lady_3} clr_character_flag = secondary_leader_lady_3	}
-				if = { limit = { has_character_flag = secondary_leader_lady_4} clr_character_flag = secondary_leader_lady_4	}
-				if = { limit = { has_character_flag = secondary_leader_lady_5} clr_character_flag = secondary_leader_lady_5	}
-				if = { limit = { has_character_flag = secondary_leader_lady_6} clr_character_flag = secondary_leader_lady_6	}
+				if = { limit = { has_character_flag = dual_leader_id_lady_1} clr_character_flag = dual_leader_id_lady_1	}
+				if = { limit = { has_character_flag = dual_leader_id_lady_2} clr_character_flag = dual_leader_id_lady_2	}
+				if = { limit = { has_character_flag = dual_leader_id_lady_3} clr_character_flag = dual_leader_id_lady_3	}
+				if = { limit = { has_character_flag = dual_leader_id_lady_4} clr_character_flag = dual_leader_id_lady_4	}
+				if = { limit = { has_character_flag = dual_leader_id_lady_5} clr_character_flag = dual_leader_id_lady_5	}
+				if = { limit = { has_character_flag = dual_leader_id_lady_6} clr_character_flag = dual_leader_id_lady_6	}
 				dual_leader_get_random_clan_lady = yes
 			}
 		}
@@ -541,6 +539,19 @@ d_add_world_stage_power_all = {
 	add_to_variable = { global.world_stage_power_net = 25 }
 	add_to_variable = { global.world_stage_power_sov = 25 }
 	d_show_world_stage_power = yes
+}
+
+d_world_stage_set_theater_active = {
+
+	var:args^0 = {
+		if = {
+			limit = { has_variable = theater_owner }
+			set_state_flag = theater_is_active
+			log = "[args^0.GET_theater_name] ([?args^0]): set theater as active"
+		} else = {
+			log = "[args^0.GetName]([?args^0]) is not a proxy for the World Stage"
+		}
+	}
 }
 
 d_check_doctrine_level = {
@@ -687,4 +698,91 @@ d_cthulhu_boon_3 = {
 d_cthulhu_boon_4 = {
 	country_event = ostasiencthulhu.6
 	log = "event $ostasiencthulhu.6.t$"
+}
+
+### HELP
+
+d_help_ss = {
+	log = "spawn_troops"
+	log = "   spawn divisions on country, scales slightly with controlled states"
+	log = "spawn_trools_all"
+	log = "   spawn divisions on all countries, scales slightly with controlled states"
+	log = "add_compliance_to_all_states"
+	log = "   adds 100 compliance to all controlled states"
+	log = "remove_compliance_to_all_states"
+	log = "   removes 100 compliance to all controlled states"
+	log = "annex_all_southern_japan"
+	log = "	  annexes all states in southern Japan"
+	log = "annex_all_northern_japan"
+	log = "   annexes all states in northern Japan"
+	log = "annex_all_central_japan"
+	log = "   annexes all states in central Japan"
+	log = "get_religion_drift"
+	log = "   updates the country's religion drift"
+	log = "allow_cthulhu"
+	log = "   enables Cthulhu religion in the game and interface"
+	log = "set_country_religion [index]"
+	log = "   changes the country's religion according to index"
+	log = "set_country_religion_1"
+	log = "   changes country's religion to Buddhism"
+	log = "set_country_religion_2"
+	log = "   changes country's religion to Shintoism"
+	log = "set_country_religion_3"
+	log = "   changes country's religion to Christianity"
+	log = "set_country_religion_4"
+	log = "   changes country's religion to Taoism"
+	log = "set_country_religion_5"
+	log = "   changes country's religion to Confucianism"
+	log = "set_country_religion_6"
+	log = "   changes country's religion to Secularism"
+	log = "set_country_religion_7"
+	log = "   changes country's religion to Cthulhu"
+	log = "release_all_clans"
+	log = "   every country releases all independent clans"
+	log = "random_ladies_all_clans"
+	log = "   adds random secondary leaders to clans that are monarchies from the pool of clan ladies"
+	log = "PRO_can_choose_zaibatu_leader"
+	log = "   switches the ability of [PRO.GetName] to select Zaibatsu leaders"
+	log = "GER_SOV_pact"
+	log = "   switches on/off the Molotov-Ribbentrop Pact"
+	log = "check_coalition_triggers"
+	log = "   returns the country's coalition in the World Stage"
+	log = "show_world_stage_power"
+	log = "   returns the power of every country in the World Stage"
+	log = "add_world_stage_power_all"
+	log = "   adds 25 to every countries' power in the World Stage and return values"
+	log = "world_stage_set_theater_active [index]"
+	log = "   switches on/off the theater given by index, if the state is a proxy to the World Stage"
+	log = "check_doctrine_level"
+	log = "   returns the country's doctrine level"
+	log = "reset_metropolis"
+	log = "   resets the metropolis for every existing country with a metropolis to starting values, and return values"
+	log = "reset_coalitions"
+	log = "   resets the coalition for every existing country to starting values, and return values"
+	log = "reset_lon_member_relation_modifier"
+	log = "   adds relation modifiers ($lon_member_relation_modifier$) between all members of League of Nations"
+	log = "netherlands_aligned_axis"
+	log = "   sets global flag for Netherlands joining Axis"
+	log = "portugal_aligned_axis"
+	log = "  sets global flag for Portugal joining Axis"
+	log = "force_poland_surrender"
+	log = "   (depricated)"
+	log = "check_tags_allies"
+	log = "   returns every country that belongs to Allies in the World Stage"
+	log = "check_tags_komintern"
+	log = "   returns every country that belongs to Komintern in the World Stage"
+	log = "check_tags_axis"
+	log = "   returns every country that belongs to Axis in the World Stage"
+	log = "check_tags_unaligned"
+	log = "   returns every country that does not belong to a coalition in the World Stage"
+	log = "waaaagh"
+	log = "   (depricated) allows [REI.GetName], [KOB.GetName] and [OSA.GetName] to act on every theater in the World Stage"
+	log = "cthulhu_boon_1"
+	log = "   fires event ostasiencthulhu.3"
+	log = "cthulhu_boon_2"
+	log = "   fires event ostasiencthulhu.4"
+	log = "cthulhu_boon_3"
+	log = "   fires event ostasiencthulhu.5"
+	log = "cthulhu_boon_4"
+	log = "   fires event ostasiencthulhu.6"
 }
