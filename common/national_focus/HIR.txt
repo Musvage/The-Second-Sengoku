@@ -863,6 +863,13 @@ focus_tree = {
 				uses = 3
 				category = trade_interdiction_tree
 			}
+			navy_experience = 50
+			add_doctrine_cost_reduction = {
+				name = HOL_naval_heritage
+				cost_reduction = 0.5
+				uses = 2
+				category = naval_doctrine
+			}
 		}
 	}
 
@@ -980,6 +987,14 @@ focus_tree = {
 			add_equipment_to_stockpile = { type =  fighter_equipment_1 amount = 25 }
 			}
 			custom_effect_tooltip = unlock_fighter_1
+
+			add_doctrine_cost_reduction = {
+				name = HOL_aviatic_aspirations
+				cost_reduction = 0.5
+				uses = 2
+				category = air_doctrine
+			}
+			HOL_domestic_jet_engine_designs_level_up = yes
 		}
 	}
 
@@ -1087,6 +1102,32 @@ focus_tree = {
 					modifier = protest_action_strong
 				}
 			}
+			add_political_power = 200
+			set_temp_variable = {
+				var = ban_communism_var
+				value = party_popularity@communism
+			}
+			multiply_temp_variable = {
+				var = ban_communism_var
+				value = -1
+			}
+			add_popularity = {
+				ideology = communism
+				popularity = ban_communism_var
+			}
+			set_temp_variable = {
+				var = ban_fascism_var
+				value = party_popularity@fascism
+			}
+			multiply_temp_variable = {
+				var = ban_fascism_var
+				value = -1
+			}
+			add_popularity = {
+				ideology = fascism
+				popularity = ban_fascism_var
+			}
+			swap_ruler_traits = { remove = disdain_for_politicians_1 add = disdain_for_politicians_2 }
 		}
 	}
 
@@ -1448,7 +1489,7 @@ focus_tree = {
 		id = HIR_defend_air_force
 		icon = GFX_focus_generic_anti_air
 		x = 0
-		y = 1
+		y = 2
 		relative_position_id = HIR_defend_main_land
 		available_if_capitulated = yes
 		prerequisite = { focus = HIR_defend_main_land }
@@ -1476,7 +1517,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = HIR_defend_air_force
 		available_if_capitulated = yes
-		prerequisite = { focus = HIR_defend_air_force }
+		prerequisite = { focus = HIR_attack_democrats focus = HIR_defend_air_force }
 		cost = 10
 		available = {
 		}
@@ -1495,7 +1536,22 @@ focus_tree = {
 					}
 				}
 			}
-			
+			random_owned_controlled_state = {
+				limit = {
+					is_core_of = HIR
+					free_building_slots = {
+						building = dockyard
+						size > 1
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = dockyard
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 
@@ -2010,6 +2066,39 @@ focus_tree = {
 	}
 
 	focus = {
+		id = HIR_attack_democrats 
+		icon = GFX_focus_HIR_project_combined_colony 
+		x = -1
+		y = 1
+		relative_position_id = HIR_ruling_party_fascist
+		available_if_capitulated = yes
+		mutually_exclusive = { focus = HIR_join_new_ally }
+		prerequisite = { focus = HIR_ruling_party_comunist focus = HIR_ruling_party_fascist }
+		cost = 10
+		available = {
+			
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			add_war_support = 0.10
+			every_other_country = {
+				limit = {
+					has_government = democratic
+				}
+				HIR = {
+					create_wargoal = {
+						type = puppet_wargoal_focus
+						target = PREV
+						expire = 0
+					}
+				}
+			}
+		}
+	}
+
+	focus = {
 		id = HIR_communist_path
 		icon = GFX_focus_ger_great_red_menace
 		x = -1
@@ -2088,6 +2177,7 @@ focus_tree = {
 		y = 1
 		relative_position_id = HIR_ruling_party_comunist
 		available_if_capitulated = yes
+		mutually_exclusive = { focus = HIR_attack_democrats }
 		prerequisite = { focus = HIR_ruling_party_junta focus = HIR_ruling_party_fascist focus = HIR_ruling_party_comunist }
 		cost = 10
 		available = {
@@ -2308,7 +2398,7 @@ focus_tree = {
 		id = HIR_Deal_for_islands
 		icon = GFX_focus_HIR_Deal_for_islands
 		x = 1
-		y = 1
+		y = 2
 		cost = 10
 		available = {
 			has_completed_focus = HIR_ally_junta
@@ -2405,7 +2495,7 @@ focus_tree = {
 		id = HIR_request_support
 		icon = GFX_focus_HIR_request_support
 		x = -1
-		y = 1
+		y = 2
 		cost = 10
 		available = {
 			
@@ -2459,7 +2549,7 @@ focus_tree = {
 		id = HIR_unite_all_junta
 		icon = GFX_focus_HIR_united_junta
 		x = 3
-		y = 1
+		y = 2
 		relative_position_id = HIR_join_new_ally
 		available_if_capitulated = yes
 		prerequisite = { focus = HIR_join_new_ally focus = HIR_Relations_with_juntas }
@@ -2572,7 +2662,7 @@ focus_tree = {
 		id = HIR_new_colony_area
 		icon = GFX_focus_HIR_look_colonies
 		x = -4
-		y = 1
+		y = 2
 		cost = 10
 		available = {
 			NOT = {
