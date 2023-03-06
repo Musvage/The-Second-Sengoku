@@ -2263,7 +2263,7 @@ focus_tree = {
 		prerequisite = { focus = REI_local_industry }
 		
 		relative_position_id = REI_local_industry
-		x = 2
+		x = 3
 		y = 1
 		cost = 10
 		
@@ -2273,6 +2273,59 @@ focus_tree = {
 		
 		completion_reward = {
 			add_ideas = REI_idea_local_volunteers
+		}
+	}
+	
+	focus = {
+		id = REI_secret_police
+		icon = GFX_focus_REI_secret_police
+		search_filters = { FOCUS_FILTER_SPY }
+		
+		prerequisite = { focus = REI_local_industry }
+		
+		relative_position_id = REI_local_industry
+		x = 1
+		y = 1
+		cost = 10
+		
+		available_if_capitulated = yes
+		
+		ai_will_do = { factor = 5 modifier = { factor = 20 any_controlled_state = { NOT = { is_core_of = REI } } } }
+		
+		completion_reward = {
+			if = {
+				limit = {
+					has_dlc = "La Resistance"
+				}
+				add_ideas = REI_idea_secret_police_lar
+			} else = {
+				add_ideas = REI_idea_secret_police
+			}
+			custom_effect_tooltip = REI_secret_police_tt
+			hidden_effect = {
+				division_template = {
+					name = "Polizeiregiment"
+					division_names_group = REI_POLICE_01 ### CENSORED VERSION, UNCENSORED IS REI_POLICE_02
+					regiments = {
+						cavalry = { x = 0 y = 0 }
+						cavalry = { x = 0 y = 1 }
+						cavalry = { x = 0 y = 2 }
+						cavalry = { x = 1 y = 0 }
+						cavalry = { x = 1 y = 1 }
+						cavalry = { x = 1 y = 2 }
+					}
+					support = {
+						military_police = { x = 0 y = 0 }
+					}
+					priority = 0
+				}
+				#capital_scope = {
+				#	create_unit = {
+				#			division = "name = \"Polizeiregiment\" division_template = \"Polizeiregiment\" start_experience_factor = 0.33 start_equipment_factor = 1"
+				#			owner = ROOT
+				#	}
+				#}
+			}
 		}
 	}
 	
@@ -2333,10 +2386,10 @@ focus_tree = {
 		icon = GFX_focus_REI_modern_equipment
 		search_filters = { FOCUS_FILTER_RESEARCH }
 		
-		prerequisite = { focus = REI_local_volunteers }
+		prerequisite = { focus = REI_local_volunteers focus = REI_secret_police }
 		
-		relative_position_id = REI_local_volunteers
-		x = -1
+		relative_position_id = REI_secret_police
+		x = 0
 		y = 1
 		cost = 10
 		
@@ -2356,51 +2409,28 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = REI_secret_police
-		icon = GFX_focus_REI_secret_police
-		search_filters = { FOCUS_FILTER_SPY }
+		id = REI_sturmpioniere
+		icon = GFX_focus_REI_sappers
+		search_filters = { FOCUS_FILTER_RESEARCH }
 		
-		prerequisite = { focus = REI_local_volunteers }
+		prerequisite = { focus = REI_local_volunteers focus = REI_secret_police }
 		
 		relative_position_id = REI_local_volunteers
-		x = 1
+		x = 0
 		y = 1
 		cost = 10
 		
 		available_if_capitulated = yes
 		
-		ai_will_do = { factor = 5 modifier = { factor = 20 any_controlled_state = { NOT = { is_core_of = REI } } } }
+		ai_will_do = { factor = 5 }
 		
 		completion_reward = {
-			if = {
-				limit = {
-					has_dlc = "La Resistance"
-				}
-				add_ideas = REI_idea_secret_police_lar
-			} else = {
-				add_ideas = REI_idea_secret_police
-			}
-			custom_effect_tooltip = REI_secret_police_tt
-			hidden_effect = {
-				division_template = {
-					name = "Polizeiregiment"
-					division_names_group = REI_POLICE_01 ### CENSORED VERSION, UNCENSORED IS REI_POLICE_02
-					regiments = {
-						cavalry = { x = 0 y = 0 }
-						cavalry = { x = 0 y = 1 }
-						cavalry = { x = 0 y = 2 }
-					}
-					support = {
-						military_police = { x = 0 y = 0 }
-					}
-					priority = 0
-				}
-				#capital_scope = {
-				#	create_unit = {
-				#			division = "name = \"Polizeiregiment\" division_template = \"Polizeiregiment\" start_experience_factor = 0.33 start_equipment_factor = 1"
-				#			owner = ROOT
-				#	}
-				#}
+			add_tech_bonus = {
+				name = support_special_forces_bonus
+				bonus = 2.0
+				uses = 2
+				category = support_tech
+				category = cat_special_forces_generic
 			}
 		}
 	}
