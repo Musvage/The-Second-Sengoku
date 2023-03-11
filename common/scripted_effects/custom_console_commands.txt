@@ -590,18 +590,18 @@ d_check_doctrine_level = {
 }
 
 d_reset_metropolis = {
-	every_country = {
-		set_variable = { world_stage_metropolis = 1 }
-	}
+	REI = { set_variable = { world_stage_metropolis = 1 } }	# for these ones it should be enough to get them once in start-up, the redundancy here works as safety mechanism
 	OSA = { set_variable = { world_stage_metropolis = 2 } }
 	KOB = { set_variable = { world_stage_metropolis = 3 } }
 	FER = { set_variable = { world_stage_metropolis = 4 } }
 	AMC = { set_variable = { world_stage_metropolis = 5 } }	#
-	OKI = { set_variable = { world_stage_metropolis = 5 } }	# both are America
-	HIR = { set_variable = { world_stage_metropolis = 6 } }
-	PRT = { set_variable = { world_stage_metropolis = 7 } }
-	ROC = { set_variable = { world_stage_metropolis = 8 } }
-	REI = { set_variable = { world_stage_metropolis = 9 } }
+	OKI = { set_variable = { world_stage_metropolis = 5 } }	# both are America	(NOTE: possibility of OKI becoming independent and not being USA anymore should be considered here)
+	ROC = { set_variable = { world_stage_metropolis = 6 } }
+	HIR = { set_variable = { world_stage_metropolis = 7 } }
+	PRT = { set_variable = { world_stage_metropolis = 8 } }
+	#KIT = { set_variable = { world_stage_metropolis = 9 } }	# Italy, not implemented
+	PRO = { set_variable = { world_stage_metropolis = 10 } }	# Internationally recognized Japan
+	#SPR = { set_variable = { world_stage_metropolis = 11 } }	# Spain, not implemented
 	every_country = {
 		log = "[THIS.GetName]: metropolis = [?world_stage_metropolis]"
 	}
@@ -719,6 +719,21 @@ d_waaaagh = {
 	REI = {  set_country_flag = can_play_alsace set_country_flag = can_play_westphalia set_country_flag = can_play_france set_country_flag = can_play_england set_country_flag = can_play_germany set_country_flag = can_play_netherlands set_country_flag = can_play_alpes set_country_flag = can_play_austria set_country_flag = can_play_italy set_country_flag = can_play_sicily set_country_flag = can_play_poland set_country_flag = can_play_normandy set_country_flag = can_play_sealion }
 }
 
+d_show_proxy_info = {
+	if = {
+		limit = { has_variable = theater_owner }
+			log = "[THIS.GetName] is theater proxy for [THIS.GetTheaterName]"
+			log = "theater_owner: [?theater_owner]"
+			log = "theater_owner_coalition: [?theater_owner_coalition]"
+		}
+	if = {
+		limit = { has_variable = world_stage_metropolis }
+			log = "[THIS.GetName] is metropolis proxy for [THIS.GetMetropolisName]"
+			log = "world_stage_coalition: [?world_stage_coalition]"
+	}
+	if = { limit = { NOT = { has_variable = theater_owner has_variable = world_stage_metropolis } } log = "[THIS.GetName] is not proxy" }
+}
+
 ### } HELP
 
 d_help_ss = {
@@ -806,6 +821,12 @@ d_help_ss = {
 	log = "   returns every country that does not belong to a coalition in the World Stage"
 	log = "waaaagh"
 	log = "   (depricated) allows [REI.GetName], [KOB.GetName] and [OSA.GetName] to act on every theater in the World Stage"
+	log = "show_proxy_info"
+	log = "   returns whether or not the current state is a proxy for theater or metropolis and displays relevant information"
+	log = "world_stage_get_get_theater_info_from_metropolis"
+	log = "   imports to theater proxy all information from metropolis proxy, for all suitable states"
+	log = "world_stage_get_get_tag_info_from_metropolis"
+	log = "   imports to country all information from metropolis proxy, for all suitable states"
 	log = "unification_get_score"
 	log = "   returns the country's unification score"
 	log = "unification_count_states_southern_japan"
