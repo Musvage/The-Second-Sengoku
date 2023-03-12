@@ -55,7 +55,6 @@ on_actions = {
 			#}
 			### COALITION STABILITY BONUS ###
 			every_possible_country = {
-				log = "FOR DEBUGGING: [THIS.GetName] add coalition modifier"	# can be disabled for release
 				add_dynamic_modifier = { modifier = coalition_stability_modifier }
 				if = {
 					limit = {
@@ -194,7 +193,6 @@ on_actions = {
 				random_character = {
 					limit = { can_be_country_leader = yes has_ideology_group = autocracy }
 					dual_leader_get_random_clan_lady = yes
-					log = "Adding [THIS.GetName]'s ([PREV.GetName]) wife: Lady [GetDualLeaderName]"
 				}
 			}
 			### TOTAL POPULATION & JAPANESE POPULATION ###
@@ -221,7 +219,6 @@ on_actions = {
 			random_country = { get_random_general_dna = yes }
 			### RELIGION SYSTEM 2.0 ###
 			every_possible_country = {
-				log = "FOR DEBUGGING: [THIS.GetName] set up religion"	# can be disabled for release
 				set_up_global_religion_variables = yes
 				state_religion_error_catcher = yes
 				set_variable = { show_SS_religion = 0 }
@@ -280,7 +277,8 @@ on_actions = {
 			every_state = {
 				set_variable = { coring_progress = 0 }
 			}
-			### WORLD STAGE ###
+			### WORLD STAGE 2.0 ###
+			log = "FOR DEBUGGING: start setting up the World Stage 2.0"
 			# League of Nations members:
 			every_country = {
 				limit = { OR = { has_idea = SS_lon_member has_idea = SS_lon_member_japan } }
@@ -293,6 +291,7 @@ on_actions = {
 				}
 			}
 			every_country = { set_variable = { current_theater = 0 } }
+			#### OLD CODE: WILL BE REMOVED ------------------------------------------------------------------------------------
 			# Overall power
 			set_variable = { global.world_stage_power_usa = 100 }										### these are used for OFF-MAP effects, mostly for actual World Stage plays
 			set_variable = { global.world_stage_power_ger = 100 }										#
@@ -316,27 +315,14 @@ on_actions = {
 			every_country = {	set_variable = { world_stage_coalition = 4 }	}
 			OSA = { set_variable = { world_stage_coalition = 5 } }	# overwrite the general setting up	### these are used for ON-MAP effects, mostly UI stuff
 			KOB = { set_variable = { world_stage_coalition = 5 } }	# LoN, will become Allies later		#
-			HIR = { set_variable = { world_stage_coalition = 5 } }	# 4 = Non-Aligned					#
+			HIR = { set_variable = { world_stage_coalition = 5 } }	
 			PRT = { set_variable = { world_stage_coalition = 5 } }
-			AMC = { set_variable = { world_stage_coalition = 4 } }
+			AMC = { set_variable = { world_stage_coalition = 4 } }	# 4 = Non-Aligned					#
 			OKI = { set_variable = { world_stage_coalition = 4 } }
 			ROC = { set_variable = { world_stage_coalition = 5 } }
 			FER = { set_variable = { world_stage_coalition = 5 } }
 			REI = { set_variable = { world_stage_coalition = 6 } }	# pact of steel, will become axis later
 			PRO = { set_variable = { world_stage_coalition = 5 } }
-			every_country = {
-				set_variable = { world_stage_metropolis = 1 }	# 0 and 1 are not colony/territory
-			}
-			OSA = { set_variable = { world_stage_metropolis = 2 } }
-			KOB = { set_variable = { world_stage_metropolis = 3 } }
-			FER = { set_variable = { world_stage_metropolis = 4 } }
-			AMC = { set_variable = { world_stage_metropolis = 5 } }	#
-			OKI = { set_variable = { world_stage_metropolis = 5 } }	# both are America
-			HIR = { set_variable = { world_stage_metropolis = 6 } }
-			PRT = { set_variable = { world_stage_metropolis = 7 } }
-			ROC = { set_variable = { world_stage_metropolis = 8 } }
-			REI = { set_variable = { world_stage_metropolis = 9 } }	# uncensored: 10
-			PRO = { set_variable = { world_stage_metropolis = 11 } } # internationally recognised Japan: 11
 			random_country = { world_stage_get_coalitions = yes }	# local (non-european) countries can have the variable world_stage_coalition = [1,3] for triggers and world_stage_power = [0, inf]
 			# trickback strenghts
 			set_variable = { global.GER_strength_trickeback = 0 }		# after a round is finished in a theater, use this variable for localisation regarding how much power was saved by each side
@@ -347,6 +333,8 @@ on_actions = {
 			set_variable = { global.CHI_strength_trickeback = 0 }
 			set_variable = { global.PRT_strength_trickeback = 0 }
 			set_variable = { global.NET_strength_trickeback = 0 }
+			### OLD CODE ENDES HERE-----------------------------------------------------------------
+			### NEW CODE STARTS HERE
 			# initial flags/conditions
 			set_global_flag = world_stage_germany_exists
 			set_global_flag = world_stage_france_exists					# to-do: splits into _free and _vichy later (if all goes according to GER's plans)
@@ -361,37 +349,118 @@ on_actions = {
 			#set_global_flag = league_of_nations_exists					# must be set in history file otherwise the game will remove the SS_lon_member ideas (that require this flag) on startup
 			set_variable = { global.worldstage_europe_map_frame = 1 }	# initial frame for European map (it changes when Germany grabs more land before ww2)
 			set_variable = { global.worldstage_asia_map_frame = 1 }	# initial frame for Asian map (it changes if Manchuria becomes independent)
-			# owners, double as check states that hold theaters (the ones commented were depricated)
-			#1 = { set_variable = { theater_owner = 0 } }
-			2 = { set_variable = { theater_owner = 4 } }
-			3 = { set_variable = { theater_owner = 5 } }
-			#4 = { set_variable = { theater_owner = 5 } }
-			5 = { set_variable = { theater_owner = 5 } }
-			6 = { set_variable = { theater_owner = 6 } }
-			7 = { set_variable = { theater_owner = 6 } }
-			8 = { set_variable = { theater_owner = 5 } }
-			9 = { set_variable = { theater_owner = 5 } }
-			10 = { set_variable = { theater_owner = 5 } }
-			11 = { set_variable = { theater_owner = 5 } }
-			#12 = { set_variable = { theater_owner = 5 } }
-			#13 = { set_variable = { theater_owner = 5 } }
-			14 = { set_variable = { theater_owner = 6 } }
-			15 = { set_variable = { theater_owner = 5 } }
-			16 = { set_variable = { theater_owner = 5 } }
-			17 = { set_variable = { theater_owner = 5 } }
-			18 = { set_variable = { theater_owner = 5 } }
-			19 = { set_variable = { theater_owner = 5 } }
-			20 = { set_variable = { theater_owner = 5 } }
-			21 = { set_variable = { theater_owner = 4 } }
-			22 = { set_variable = { theater_owner = 5 } }
-			23 = { set_variable = { theater_owner = 6 } }
-			24 = { set_variable = { theater_owner = 6 } }
-			25 = { set_variable = { theater_owner = 6 } }
-			26 = { set_variable = { theater_owner = 5 } }
-			27 = { set_variable = { theater_owner = 5 } }
-			28 = { set_variable = { theater_owner = 5 } }
-			29 = { set_variable = { theater_owner = 5 } }
-			30 = { set_variable = { theater_owner = 5 } }
+			# PROXIES: states used as proxys for theaters and metropolises
+			# metropolis, double as check for states that hold metropolises
+			100 = { set_variable = { world_stage_metropolis = 0 } }		# No one/other
+			101 = { set_variable = { world_stage_metropolis = 1 } }		# Germany
+			102 = { set_variable = { world_stage_metropolis = 2 } }		# England
+			103 = { set_variable = { world_stage_metropolis = 3 } }		# France
+			104 = { set_variable = { world_stage_metropolis = 4 } }		# Soviet Union
+			105 = { set_variable = { world_stage_metropolis = 5 } }		# USA
+			106 = { set_variable = { world_stage_metropolis = 6 } }		# China
+			107 = { set_variable = { world_stage_metropolis = 7 } }		# Netherlands
+			108 = { set_variable = { world_stage_metropolis = 8 } }		# Portugal
+			109 = { set_variable = { world_stage_metropolis = 9 } }		# Italy (not implemented in game, works on world stage)
+			110 = { set_variable = { world_stage_metropolis = 10 } }	# Recognized Japan
+			#111 = { set_variable = { world_stage_metropolis = 11 } }	# Spain, not implemented
+			# coalition (no zero index to match number of frames for an icon)
+			100 = { set_variable = { world_stage_coalition = 4 } }	# Non-Aligned
+			101 = { set_variable = { world_stage_coalition = 6 } }	# Pact of Steel
+			102 = { set_variable = { world_stage_coalition = 5 } }	# League of Nation
+			103 = { set_variable = { world_stage_coalition = 5 } }	# League of Nation
+			104 = { set_variable = { world_stage_coalition = 5 } }	# League of Nation
+			105 = { set_variable = { world_stage_coalition = 4 } }	# Non-Aligned
+			106 = { set_variable = { world_stage_coalition = 5 } }	# League of Nation
+			107 = { set_variable = { world_stage_coalition = 5 } }	# League of Nation
+			109 = { set_variable = { world_stage_coalition = 6 } }	# Pact of Steel
+			110 = { set_variable = { world_stage_coalition = 5 } }	# League of Nation
+			#111 = { set_variable = { world_stage_coalition = 5 } }	# League of Nation
+			# overall power
+			101 = { set_variable = { world_stage_power = 100 } }
+			102 = { set_variable = { world_stage_power = 75 } }
+			103 = { set_variable = { world_stage_power = 75 } }
+			104 = { set_variable = { world_stage_power = 100 } }
+			105 = { set_variable = { world_stage_power = 100 } }
+			106 = { set_variable = { world_stage_power = 25 } }
+			107 = { set_variable = { world_stage_power = 25 } }
+			108 = { set_variable = { world_stage_power = 5 } }
+			109 = { set_variable = { world_stage_power = 0 } }
+			110 = { set_variable = { world_stage_power = 0 } }
+			#111 = { set_variable = { world_stage_power = 0 } }
+			# setting equivalent variables for tags (names of varibles must match!)
+			log = "FOR DEBUGGING: world_stage_get_get_tag_info_from_metropolis"
+			world_stage_get_get_tag_info_from_metropolis = yes
+			every_possible_country = {
+				set_variable = { world_stage_metropolis = 0 }
+				set_variable = { world_stage_coalition = 4 }
+				set_variable = { world_stage_power = 0 }
+			}
+			REI = { set_variable = { world_stage_metropolis = 1 } }	# for these ones it should be enough to get them once in start-up, the redundancy here works as safety mechanism
+			OSA = { set_variable = { world_stage_metropolis = 2 } }
+			KOB = { set_variable = { world_stage_metropolis = 3 } }
+			FER = { set_variable = { world_stage_metropolis = 4 } }
+			AMC = { set_variable = { world_stage_metropolis = 5 } }	#
+			OKI = { set_variable = { world_stage_metropolis = 5 } }	# both are America	(NOTE: possibility of OKI becoming independent and not being USA anymore should be considered here)
+			ROC = { set_variable = { world_stage_metropolis = 6 } }
+			HIR = { set_variable = { world_stage_metropolis = 7 } }
+			PRT = { set_variable = { world_stage_metropolis = 8 } }
+			#KIT = { set_variable = { world_stage_metropolis = 9 } }	# Italy, not implemented
+			PRO = { set_variable = { world_stage_metropolis = 10 } }	# Internationally recognized Japan
+			#SPR = { set_variable = { world_stage_metropolis = 11 } }	# Spain, not implemented
+			# now imports variables from metropolis
+			every_country = {
+				limit = { check_variable = { world_stage_metropolis > 0 } }
+				set_temp_variable = { proxy_metropolis = world_stage_metropolis }
+				add_to_temp_variable = { proxy_metropolis = 100 }
+				var:proxy_metropolis = {
+					set_variable = { PREV.world_stage_power = world_stage_power }
+					set_variable = { PREV.world_stage_coalition = world_stage_coalition }
+					log = "[PREV.GetMetropolisName] (proxy: [THIS.GetName])"
+				}
+				world_stage_get_country_icon = yes
+				log = "world_stage_metropolis: [?world_stage_metropolis]"
+				log = "world_stage_coalition: [?world_stage_coalition]"
+				log = "world_stage_power: [?world_stage_power]"
+				log = "world_stage_icon: [?world_stage_icon]"
+			}
+			# owners, double as check for states that hold theaters (the ones commented were depricated), the owner is a proxy metropolis
+			#1 = { set_variable = { theater_owner = 100 } }	# Spain
+			2 = { set_variable = { theater_owner = 100 } }	# Mongolia
+			3 = { set_variable = { theater_owner = 100 } }	# Poland
+			#4 = { set_variable = { theater_owner = 103 } }	# Ardennes
+			5 = { set_variable = { theater_owner = 103 } }	# Alsace
+			6 = { set_variable = { theater_owner = 101 } }	# Westphalia
+			7 = { set_variable = { theater_owner = 101 } }	# Germany
+			8 = { set_variable = { theater_owner = 103 } }	# France
+			9 = { set_variable = { theater_owner = 104 } }	# Belarus
+			10 = { set_variable = { theater_owner = 104 } }	# Smolensk
+			11 = { set_variable = { theater_owner = 104 } }	# Russia (Moscow)
+			#12 = { set_variable = { theater_owner = 100 } }	# Norway
+			#13 = { set_variable = { theater_owner = 100 } }	# Ethiopia
+			14 = { set_variable = { theater_owner = 109 } }	# Lybia
+			15 = { set_variable = { theater_owner = 102 } }	# Egypt
+			16 = { set_variable = { theater_owner = 102 } }	# India (south)
+			17 = { set_variable = { theater_owner = 102 } }	# Bengal
+			18 = { set_variable = { theater_owner = 106 } }	# Tibet
+			19 = { set_variable = { theater_owner = 106 } }	# China (west)
+			20 = { set_variable = { theater_owner = 107 } }	# Indies
+			21 = { set_variable = { theater_owner = 105 } }	# Philipines
+			22 = { set_variable = { theater_owner = 104 } }	# Siberia
+			23 = { set_variable = { theater_owner = 109 } }	# Italy (Rome)
+			24 = { set_variable = { theater_owner = 109 } }	# Sicily
+			25 = { set_variable = { theater_owner = 109 } }	# Alpes
+			26 = { set_variable = { theater_owner = 100 } }	# Austria
+			27 = { set_variable = { theater_owner = 107 } }	# Netherlands
+			28 = { set_variable = { theater_owner = 106 } }	# Guanxi
+			29 = { set_variable = { theater_owner = 104 } }	# Urals
+			30 = { set_variable = { theater_owner = 102 } }	# England
+			every_state = {	# world_stage_get_get_theater_info_from_metropolis
+				limit = { has_variable = theater_owner }
+				var:theater_owner = { set_variable = { PREV.theater_owner_coalition = world_stage_coalition } }
+				log = "[THIS.GetTheaterName] (proxy: [THIS.GetName])"
+				log = "theater_owner: [?theater_owner]"
+				log = "world_stage_coalition: [?theater_owner_coalition]"
+			}
 			#1 = { set_variable = { theater_timer_base = 60 } set_variable = { theater_timer = theater_timer_base } }
 			2 = { set_variable = { theater_timer_base = 60 } set_variable = { theater_timer = theater_timer_base } }
 			3 = { set_variable = { theater_timer_base = 60 } set_variable = { theater_timer = theater_timer_base } }
@@ -518,12 +587,6 @@ on_actions = {
 			set_global_flag = FER_ai_made_a_move
 			set_global_flag = ROC_ai_made_a_move
 			set_global_flag = HIR_ai_made_a_move
-			# interface variables
-			if = {
-				limit = { NOT = { has_global_flag = has_uncensored_german_flag } }
-				set_variable = { global.world_stage_german_flag = 1 }
-			} else = { set_variable = { global.world_stage_german_flag = 2 } }
-			
 			### OLD WORLD STAGE BELOW: REMOVE LATER ###### OLD WORLD STAGE BELOW: REMOVE LATER ###### OLD WORLD STAGE BELOW: REMOVE LATER ###
 			OSA = { set_country_flag = can_play_alsace set_country_flag = can_play_westphalia set_country_flag = can_play_france set_country_flag = can_play_england set_country_flag = can_play_germany set_country_flag = can_play_netherlands set_country_flag = can_play_alpes set_country_flag = can_play_austria set_country_flag = can_play_italy set_country_flag = can_play_sicily set_country_flag = can_play_lybia set_country_flag = can_play_egypt set_country_flag = can_play_normandy set_country_flag = can_play_sealion  set_country_flag = can_play_india set_country_flag = can_play_bengal set_country_flag = can_play_guanxi set_country_flag = can_play_china }
 			KOB = { set_country_flag = can_play_alsace set_country_flag = can_play_westphalia set_country_flag = can_play_france set_country_flag = can_play_england set_country_flag = can_play_germany set_country_flag = can_play_netherlands set_country_flag = can_play_alpes set_country_flag = can_play_austria set_country_flag = can_play_italy set_country_flag = can_play_sicily set_country_flag = can_play_lybia set_country_flag = can_play_egypt set_country_flag = can_play_normandy set_country_flag = can_play_sealion }
@@ -913,11 +976,10 @@ on_actions = {
 		}
 	}
 	
-	on_daily = {	### EXECTTE ON ONLY ONE COUNRTY A.K.A. "GLOBAL" ON DAILY ###
+	on_daily = {	### EXECUTE ON ONLY ONE COUNRTY A.K.A. "GLOBAL" ON DAILY ###
 		effect = {
 			if = {
 				limit = { controls_state = 1 }
-				log = "FOR DEBUGGING: [GetDatetext]"	# can be disabled for release
 				world_stage_activate_daily_state_effect = yes
 				world_stage_ai_ger = yes			
 				world_stage_ai_fra = yes			
