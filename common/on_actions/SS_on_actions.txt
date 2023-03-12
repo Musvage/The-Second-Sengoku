@@ -390,6 +390,39 @@ on_actions = {
 			# setting equivalent variables for tags (names of varibles must match!)
 			log = "FOR DEBUGGING: world_stage_get_get_tag_info_from_metropolis"
 			world_stage_get_get_tag_info_from_metropolis = yes
+			every_possible_country = {
+				set_variable = { world_stage_metropolis = 0 }
+				set_variable = { world_stage_coalition = 4 }
+				set_variable = { world_stage_power = 0 }
+			}
+			REI = { set_variable = { world_stage_metropolis = 1 } }	# for these ones it should be enough to get them once in start-up, the redundancy here works as safety mechanism
+			OSA = { set_variable = { world_stage_metropolis = 2 } }
+			KOB = { set_variable = { world_stage_metropolis = 3 } }
+			FER = { set_variable = { world_stage_metropolis = 4 } }
+			AMC = { set_variable = { world_stage_metropolis = 5 } }	#
+			OKI = { set_variable = { world_stage_metropolis = 5 } }	# both are America	(NOTE: possibility of OKI becoming independent and not being USA anymore should be considered here)
+			ROC = { set_variable = { world_stage_metropolis = 6 } }
+			HIR = { set_variable = { world_stage_metropolis = 7 } }
+			PRT = { set_variable = { world_stage_metropolis = 8 } }
+			#KIT = { set_variable = { world_stage_metropolis = 9 } }	# Italy, not implemented
+			PRO = { set_variable = { world_stage_metropolis = 10 } }	# Internationally recognized Japan
+			#SPR = { set_variable = { world_stage_metropolis = 11 } }	# Spain, not implemented
+			# now imports variables from metropolis
+			every_country = {
+				limit = { check_variable = { world_stage_metropolis > 0 } }
+				set_temp_variable = { proxy_metropolis = world_stage_metropolis }
+				add_to_temp_variable = { proxy_metropolis = 100 }
+				var:proxy_metropolis = {
+					set_variable = { PREV.world_stage_power = world_stage_power }
+					set_variable = { PREV.world_stage_coalition = world_stage_coalition }
+					log = "[PREV.GetMetropolisName] (proxy: [THIS.GetName])"
+				}
+				world_stage_get_country_icon = yes
+				log = "world_stage_metropolis: [?world_stage_metropolis]"
+				log = "world_stage_coalition: [?world_stage_coalition]"
+				log = "world_stage_power: [?world_stage_power]"
+				log = "world_stage_icon: [?world_stage_icon]"
+			}
 			# owners, double as check for states that hold theaters (the ones commented were depricated), the owner is a proxy metropolis
 			#1 = { set_variable = { theater_owner = 100 } }	# Spain
 			2 = { set_variable = { theater_owner = 100 } }	# Mongolia
@@ -421,7 +454,13 @@ on_actions = {
 			28 = { set_variable = { theater_owner = 106 } }	# Guanxi
 			29 = { set_variable = { theater_owner = 104 } }	# Urals
 			30 = { set_variable = { theater_owner = 102 } }	# England
-			world_stage_get_get_theater_info_from_metropolis = yes
+			every_state = {	# world_stage_get_get_theater_info_from_metropolis
+				limit = { has_variable = theater_owner }
+				var:theater_owner = { set_variable = { PREV.theater_owner_coalition = world_stage_coalition } }
+				log = "[THIS.GetTheaterName] (proxy: [THIS.GetName])"
+				log = "theater_owner: [?theater_owner]"
+				log = "world_stage_coalition: [?theater_owner_coalition]"
+			}
 			#1 = { set_variable = { theater_timer_base = 60 } set_variable = { theater_timer = theater_timer_base } }
 			2 = { set_variable = { theater_timer_base = 60 } set_variable = { theater_timer = theater_timer_base } }
 			3 = { set_variable = { theater_timer_base = 60 } set_variable = { theater_timer = theater_timer_base } }
@@ -548,12 +587,6 @@ on_actions = {
 			set_global_flag = FER_ai_made_a_move
 			set_global_flag = ROC_ai_made_a_move
 			set_global_flag = HIR_ai_made_a_move
-			# interface variables
-			if = {
-				limit = { NOT = { has_global_flag = has_uncensored_german_flag } }
-				set_variable = { global.world_stage_german_flag = 1 }
-			} else = { set_variable = { global.world_stage_german_flag = 2 } }
-			
 			### OLD WORLD STAGE BELOW: REMOVE LATER ###### OLD WORLD STAGE BELOW: REMOVE LATER ###### OLD WORLD STAGE BELOW: REMOVE LATER ###
 			OSA = { set_country_flag = can_play_alsace set_country_flag = can_play_westphalia set_country_flag = can_play_france set_country_flag = can_play_england set_country_flag = can_play_germany set_country_flag = can_play_netherlands set_country_flag = can_play_alpes set_country_flag = can_play_austria set_country_flag = can_play_italy set_country_flag = can_play_sicily set_country_flag = can_play_lybia set_country_flag = can_play_egypt set_country_flag = can_play_normandy set_country_flag = can_play_sealion  set_country_flag = can_play_india set_country_flag = can_play_bengal set_country_flag = can_play_guanxi set_country_flag = can_play_china }
 			KOB = { set_country_flag = can_play_alsace set_country_flag = can_play_westphalia set_country_flag = can_play_france set_country_flag = can_play_england set_country_flag = can_play_germany set_country_flag = can_play_netherlands set_country_flag = can_play_alpes set_country_flag = can_play_austria set_country_flag = can_play_italy set_country_flag = can_play_sicily set_country_flag = can_play_lybia set_country_flag = can_play_egypt set_country_flag = can_play_normandy set_country_flag = can_play_sealion }
