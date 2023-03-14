@@ -475,8 +475,6 @@ remove_world_stage_power_SELF_5 = {
 ### } GENERIC {
 
 world_stage_get_get_theater_info_from_metropolis = {
-	log = "FOR DEBUGGING: world_stage_get_get_theater_info_from_metropolis"
-	log = "getting theater information from proxy metropolis to proxy theater"
 	every_state = {
 		limit = { has_variable = theater_owner }
 		var:theater_owner = { set_variable = { PREV.theater_owner_coalition = world_stage_coalition } }
@@ -484,12 +482,11 @@ world_stage_get_get_theater_info_from_metropolis = {
 		log = "theater_owner: [?theater_owner]"
 		log = "world_stage_coalition: [?theater_owner_coalition]"
 	}
-} d_world_stage_get_get_theater_info_from_metropolis = { world_stage_get_get_theater_info_from_metropolis = yes }
+} d_world_stage_get_get_theater_info_from_metropolis = { world_stage_get_get_theater_info_from_metropolis = yes log = "getting theater information from proxy metropolis to proxy theater" }
 
 world_stage_get_get_tag_info_from_metropolis = {
-	log = "FOR DEBUGGING: world_stage_get_get_tag_info_from_metropolis"
 	every_possible_country = {
-		set_variable = { world_stage_metropolis = 0 }
+		set_variable = { world_stage_metropolis = 100 }
 		set_variable = { world_stage_coalition = 4 }
 		set_variable = { world_stage_power = 0 }
 		### TO-DO: ADD BELONGING TO FACTIONS LATER ### TO-DO: ADD BELONGING TO FACTIONS LATER ### TO-DO: ADD BELONGING TO FACTIONS LATER 
@@ -513,12 +510,9 @@ world_stage_get_get_tag_info_from_metropolis = {
 	# now imports variables from metropolis
 	every_country = {
 		limit = { check_variable = { world_stage_metropolis > 0 } }
-		set_temp_variable = { proxy_metropolis = world_stage_metropolis }
-		add_to_temp_variable = { proxy_metropolis = 100 }
-		var:proxy_metropolis = {
+		var:world_stage_metropolis = {
 			set_variable = { PREV.world_stage_power = world_stage_power }
 			set_variable = { PREV.world_stage_coalition = world_stage_coalition }
-			log = "[PREV.GetMetropolisName] (proxy: [THIS.GetName])"
 		}
 		log = "world_stage_metropolis: [?world_stage_metropolis]"
 		log = "world_stage_coalition: [?world_stage_coalition]"
@@ -528,7 +522,12 @@ world_stage_get_get_tag_info_from_metropolis = {
 
 world_stage_get_country_icon = {	# this is calculated every time the menu is opened
 	set_variable = { world_stage_icon = world_stage_metropolis }
+	subtract_from_variable = { world_stage_icon = 100 }
 	# specific rules here
+	if = {
+		limit = { check_variable = { world_stage_icon = 0 } }
+		set_variable = { world_stage_icon = 12 }
+	}
 	if = {
 		limit = { tag = ROC has_global_flag = ROC_goes_full_machu }
 		set_variable = { world_stage_icon = 14 }
@@ -537,7 +536,7 @@ world_stage_get_country_icon = {	# this is calculated every time the menu is ope
 		limit = { tag = REI has_global_flag = has_uncensored_german_flag }
 		set_variable = { world_stage_icon = 13 }
 	}
-} d_world_stage_get_country_icon = { world_stage_get_country_icon = yes log = "[THIS.GetMetropolisName]: country icon frame #[?world_stage_icon]" }
+} d_world_stage_get_country_icon = { world_stage_get_country_icon = yes log = "[THIS.GetMetropolisName]'s country icon frame: [?world_stage_icon]" }
 
 world_stage_get_coalitions = {	#### DEPRICATED
 	# Get Coalitions
