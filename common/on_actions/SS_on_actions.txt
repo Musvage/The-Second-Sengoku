@@ -363,12 +363,22 @@ on_actions = {
 			#SPR = { set_variable = { world_stage_metropolis = 111 } }	# Spain, not implemented
 			# now imports variables from metropolis
 			every_country = {
-				limit = { check_variable = { world_stage_metropolis > 0 } }
+				limit = { check_variable = { world_stage_metropolis > 100 } }
 				var:world_stage_metropolis = {
 					set_variable = { PREV.world_stage_power = world_stage_power }
 					set_variable = { PREV.world_stage_coalition = world_stage_coalition }
 				}
 				world_stage_get_country_icon = yes
+			}
+			# doctrine leves
+			every_country = {
+				limit = { has_variable = world_stage_metropolis }
+				set_variable = { doctrine_bonus_land = 1 }
+				set_variable = { doctrine_bonus_navy = 1 }
+				var:world_stage_metropolis = {
+					set_variable = { doctrine_bonus_land = 1 }
+					set_variable = { doctrine_bonus_navy = 1 }
+				}
 			}
 			# owners, double as check for states that hold theaters (the ones commented were depricated), the owner is a proxy metropolis
 			1 = { set_variable = { theater_owner = 100 } 	set_variable = { theater_id = 1 } }			# Spain (currently not implemented))
@@ -940,8 +950,8 @@ on_actions = {
 		}
 	}
 	
-	on_daily = {	### EXECUTE ON ONLY ONE COUNRTY A.K.A. "GLOBAL" ON DAILY ###
-		effect = {
+	on_daily = {
+		effect = {	### EXECUTE ON ONLY ONE COUNRTY A.K.A. "GLOBAL" ON DAILY ###
 			if = {
 				limit = { controls_state = 1 }
 				world_stage_activate_daily_state_effect = yes
@@ -953,6 +963,9 @@ on_actions = {
 				world_stage_ai_chi = yes			
 				world_stage_ai_sov = yes			
 			}
+		}
+		effect = {	### WORLD STAGE TIMER UPDATE
+			world_stage_get_timer_frame_daily = yes
 		}
 	}
 	
