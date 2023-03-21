@@ -8,7 +8,7 @@
 ### japanese nations/Korea/Manchuria do not appear here since they have no off-map presence
 ###
 
-world_stage_activate_daily_state_effect = {
+world_stage_activate_daily_state_effect_depricated = {		### REMOVE LATER	### REMOVE LATER	### REMOVE LATER	### REMOVE LATER	### REMOVE LATER
 	1 = { if = { limit = {  has_state_flag = theater_is_active } world_stage_state_daily_effect = yes } }
 	2 = { if = { limit = {  has_state_flag = theater_is_active } world_stage_state_daily_effect = yes } }
 	3 = { if = { limit = {  has_state_flag = theater_is_active } world_stage_state_daily_effect = yes } }
@@ -36,9 +36,10 @@ world_stage_activate_daily_state_effect = {
 	25 = { if = { limit = {  has_state_flag = theater_is_active } world_stage_state_daily_effect = yes } }
 	26 = { if = { limit = {  has_state_flag = theater_is_active } world_stage_state_daily_effect = yes } }
 	27 = { if = { limit = {  has_state_flag = theater_is_active } world_stage_state_daily_effect = yes } }
-}
+}		### REMOVE LATER	### REMOVE LATER	### REMOVE LATER	### REMOVE LATER	### REMOVE LATER	### REMOVE LATER	### REMOVE LATER
 
-world_stage_state_daily_effect = {	# activated from on_actions/daily from a random scope
+world_stage_state_daily_effect_depricated = {	# activated from on_actions/daily from a random scope
+		### REMOVE LATER		### REMOVE LATER		### REMOVE LATER		### REMOVE LATER		### REMOVE LATER		### REMOVE LATER
 	subtract_from_variable = { theater_timer = 1 }
 	# axis strength
 	set_variable = { AXIS_strength_final = 0 }
@@ -204,11 +205,12 @@ world_stage_state_daily_effect = {	# activated from on_actions/daily from a rand
 		add_to_variable = { ALLIES_strength_final = strength_value }
 		add_to_variable = { ALLIES_number = 1 }
 	}
-	world_stage_get_timer_frame = yes
+	#world_s tage_g et_time r_fra me = yes
 	if = {
 		limit = { OR = { check_variable = { theater_timer < 1 } check_variable = { AXIS_number < 1 } check_variable = { ALLIES_number < 1 } } }
 		resolve_threater = yes
 	}
+			### REMOVE LATER		### REMOVE LATER		### REMOVE LATER		### REMOVE LATER		### REMOVE LATER
 }
 
 resolve_threater = {
@@ -326,39 +328,155 @@ resolve_threater = {
 	set_variable = { theater_timer = theater_timer_base }																	# always restarts clock
 }
 
-# list of regular theaters
-# # alsace
-# # westphalia (western germany)
-# # france (focus on paris)
-# # germany (focus on berlin)
-# # poland
-# # belarus
-# # smolensk
-# # russia (focus on moscow)
-# # norway							# depricted
-# # lybia (north africa)
-# # ethiopia						# depricted
-# # egypt
-# # sicily
-# # italy (focus on rome)
-# # siberia
-# # mongolia
-# # tibet
-# # bengal (northern india)
-# # india (southern india)
-# # china (focus on beijing)
-# # normandy
-# # sealion
-# # urals
-# # guanxi (central china)
-# # alpes (northern italy)
-# # austria
-# # england (focus on london)						
-# # netherlands
-# # indies
-# TO-DO: fork in the roads in france (to alsace, alpes or netherlands)
-# TO-DO: fork in the roads in begal (to tibet or guanxi)
-# TO-DO: fork in the roads in alpes (to alsace or austria )
-# TO-DO: two fronts push back in germany (westphalia and poland)
-# TO-DO: three fronts push back in germany (westphalia, austria and poland)		### POSSIBLY
-# TO-DO: two fronts push back in russia (smolensk and urals)
+### NEW CODE STARTS HERE
+
+world_stage_activate_daily_state_effect = { # activated from on_actions/daily from a random scope
+	every_state = { limit = { has_state_flag = theater_is_active } world_stage_state_daily_effect = yes }
+}
+
+world_stage_state_daily_effect = {
+	subtract_from_variable = { theater_timer = 1 }
+	log = "theater_timer [?theater_timer]"
+	# calculate deployed forces (everyone is either axis or allies)
+	set_variable = { attacker_deployed_power = 0 }
+	set_variable = { defender_deployed_power = 0 }
+	every_state = {
+		limit = { has_variable = world_stage_metropolis }
+		# defender (variable theater_owner_coalition)
+		if = {
+			limit = { check_variable = { world_stage_coalition = PREV.theater_owner_coalition } }
+			set_temp_variable = { deployed_power_here = world_stage_power_deployed^var:PREV.theater_id }
+			if = { limit = { PREV = { has_state_flag = is_navy_theater } } multiply_temp_variable = { deployed_power_here = doctrine_bonus_navy }
+			} else = { multiply_temp_variable = { deployed_power_here = doctrine_bonus_land } }
+			add_to_variable = { PREV.defender_deployed_power = deployed_power_here }
+		}
+		if = {	# special permissions
+			limit = { OR = {
+				AND = { check_variable = { world_stage_coalition = 2 } check_variable = { PREV.theater_owner_coalition = 1 } has_global_flag = russia_joined_ww2 }
+				AND = { check_variable = { world_stage_coalition = 1 } check_variable = { PREV.theater_owner_coalition = 2 } has_global_flag = russia_joined_ww2 }
+			} }
+			set_temp_variable = { deployed_power_here = world_stage_power_deployed^var:PREV.theater_id }
+			if = { limit = { PREV = { has_state_flag = is_navy_theater } } multiply_temp_variable = { deployed_power_here = doctrine_bonus_navy }
+			} else = { multiply_temp_variable = { deployed_power_here = doctrine_bonus_land } }
+			add_to_variable = { PREV.defender_deployed_power = deployed_power_here }
+		}
+		# attacker (variable coalition_side_attack)
+		if = {
+			limit = { check_variable = { world_stage_coalition = PREV.coalition_side_attack } }
+			set_temp_variable = { deployed_power_here = world_stage_power_deployed^var:PREV.theater_id }
+			if = { limit = { PREV = { has_state_flag = is_navy_theater } } multiply_temp_variable = { deployed_power_here = doctrine_bonus_navy }
+			} else = { multiply_temp_variable = { deployed_power_here = doctrine_bonus_land } }
+			add_to_variable = { PREV.attacker_deployed_power = deployed_power_here }
+		}
+		if = {	# special permissions
+			limit = { OR = {
+				AND = { check_variable = { world_stage_coalition = 2 } check_variable = { PREV.coalition_side_attack = 1 } has_global_flag = russia_joined_ww2 }
+				AND = { check_variable = { world_stage_coalition = 1 } check_variable = { PREV.coalition_side_attack = 2 } has_global_flag = russia_joined_ww2 }
+			} }
+			set_temp_variable = { deployed_power_here = world_stage_power_deployed^var:PREV.theater_id }
+			if = { limit = { PREV = { has_state_flag = is_navy_theater } } multiply_temp_variable = { deployed_power_here = doctrine_bonus_navy }
+			} else = { multiply_temp_variable = { deployed_power_here = doctrine_bonus_land } }
+			add_to_variable = { PREV.attacker_deployed_power = deployed_power_here }
+		}
+		### ADD LOCAL FORCES
+	}
+	world_stage_get_timer_frame = yes	# GUI burocracy
+	if = {
+		limit = { OR = { check_variable = { theater_timer < 1 } check_variable = { defender_deployed_power < 1 } check_variable = { attacker_deployed_power < 1 } } }
+		world_stage_end_round = yes
+	}
+}
+
+world_stage_state_update_current_day = {	# same as "world_stage_state_daily_effect", but does not changes the timer or resolve the theater (if it should be the case)
+	# calculate deployed forces (everyone is either axis or allies)
+	set_variable = { attacker_deployed_power = 0 }
+	set_variable = { defender_deployed_power = 0 }
+	every_state = {
+		limit = { has_variable = world_stage_metropolis }
+		# defender (variable theater_owner_coalition)
+		if = {
+			limit = { check_variable = { world_stage_coalition = PREV.theater_owner_coalition } }
+			set_temp_variable = { deployed_power_here = world_stage_power_deployed^var:PREV.theater_id }
+			if = { limit = { PREV = { has_state_flag = is_navy_theater } } multiply_temp_variable = { deployed_power_here = doctrine_bonus_navy }
+			} else = { multiply_temp_variable = { deployed_power_here = doctrine_bonus_land }
+			add_to_variable = { PREV.defender_deployed_power = deployed_power_here }
+		}
+		if = {	# special permissions
+			limit = { OR = {
+				AND = { check_variable = { world_stage_coalition = 2 } check_variable = { PREV.theater_owner_coalition = 1 } has_global_flag = russia_joined_ww2 }
+				AND = { check_variable = { world_stage_coalition = 1 } check_variable = { PREV.theater_owner_coalition = 2 } has_global_flag = russia_joined_ww2 }
+			} }
+			set_temp_variable = { deployed_power_here = world_stage_power_deployed^var:PREV.theater_id }
+			if = { limit = { PREV = { has_state_flag = is_navy_theater } } multiply_temp_variable = { deployed_power_here = doctrine_bonus_navy }
+			} else = { multiply_temp_variable = { deployed_power_here = doctrine_bonus_land }
+			add_to_variable = { PREV.defender_deployed_power = deployed_power_here }
+		}
+		# attacker (variable coalition_side_attack)
+		if = {
+			limit = { check_variable = { world_stage_coalition = PREV.coalition_side_attack } }
+			set_temp_variable = { deployed_power_here = world_stage_power_deployed^var:PREV.theater_id }
+			if = { limit = { PREV = { has_state_flag = is_navy_theater } } multiply_temp_variable = { deployed_power_here = doctrine_bonus_navy }
+			} else = { multiply_temp_variable = { deployed_power_here = doctrine_bonus_land }
+			add_to_variable = { PREV.attacker_deployed_power = deployed_power_here }
+		}
+		if = {	# special permissions
+			limit = { OR = {
+				AND = { check_variable = { world_stage_coalition = 2 } check_variable = { PREV.coalition_side_attack = 1 } has_global_flag = russia_joined_ww2 }
+				AND = { check_variable = { world_stage_coalition = 1 } check_variable = { PREV.coalition_side_attack = 2 } has_global_flag = russia_joined_ww2 }
+			} }
+			set_temp_variable = { deployed_power_here = world_stage_power_deployed^var:PREV.theater_id }
+			if = { limit = { PREV = { has_state_flag = is_navy_theater } } multiply_temp_variable = { deployed_power_here = doctrine_bonus_navy }
+			} else = { multiply_temp_variable = { deployed_power_here = doctrine_bonus_land }
+			add_to_variable = { PREV.attacker_deployed_power = deployed_power_here }
+		}
+	}
+	world_stage_get_timer_frame = yes	# GUI burocracy
+} d_world_stage_state_update_current_day = { world_stage_state_update_current_day = yes log = "world_stage_state_update_current_day" }
+
+world_stage_end_round = {
+	# get number of combatants on each side (damage tanken is divided)
+	set_temp_variable = { number_of_defenders = 0 }
+	set_temp_variable = { number_of_attackers = 0 }
+	every_state = {
+		limit = { has_variable = world_stage_metropolis }
+		# defender (variable theater_owner_coalition)
+		if = {
+			limit = { check_variable = { world_stage_coalition = PREV.theater_owner_coalition } }
+			add_to_variable = { PREV.number_of_defenders = 1 }
+		}
+		if = {	# special permissions
+			limit = { OR = {
+				AND = { check_variable = { world_stage_coalition = 2 } check_variable = { PREV.theater_owner_coalition = 1 } has_global_flag = russia_joined_ww2 }
+				AND = { check_variable = { world_stage_coalition = 1 } check_variable = { PREV.theater_owner_coalition = 2 } has_global_flag = russia_joined_ww2 }
+			} }
+			add_to_variable = { PREV.number_of_defenders = 1 }
+		}
+		# attacker (variable coalition_side_attack)
+		if = {
+			limit = { check_variable = { world_stage_coalition = PREV.coalition_side_attack } }
+			add_to_variable = { PREV.number_of_attackers = 1 }
+		}
+		if = {	# special permissions
+			limit = { OR = {
+				AND = { check_variable = { world_stage_coalition = 2 } check_variable = { PREV.coalition_side_attack = 1 } has_global_flag = russia_joined_ww2 }
+				AND = { check_variable = { world_stage_coalition = 1 } check_variable = { PREV.coalition_side_attack = 2 } has_global_flag = russia_joined_ww2 }
+			} }
+			add_to_variable = { PREV.number_of_attackers = 1 }
+		}
+	}
+	clamp_variable = {var = number_of_defenders min = 1 max = 999 }
+	clamp_variable = {var = number_of_attackers min = 1 max = 999 }
+	# roll dices for attack (5%-20% of deployed power)
+	randomize_temp_variable = {	var = defender_dice distribution = uniform min = 0.05 max = 0.2 }
+	randomize_temp_variable = {	var = attacker_dice distribution = uniform min = 0.05 max = 0.2 }
+	multiply_temp_variable = { defender_dice = defender_deployed_power }
+	multiply_temp_variable = { attacker_dice = attacker_deployed_power }
+	#add_to_temp_variable = { defender_dice = defender_strategic_advantage }	# find a rule for this later # TO-DO # TO-DO # TO-DO # TO-DO # TO-DO # TO-DO # TO-DO # TO-DO 
+	#add_to_temp_variable = { attacker_dice = attacker_strategic_advantage }	# find a rule for this later # TO-DO # TO-DO # TO-DO # TO-DO # TO-DO # TO-DO # TO-DO # TO-DO 
+	divide_temp_variable = { defender_dice = number_of_attackers }
+	divide_temp_variable = { attacker_dice = number_of_defender }
+	clamp_temp_variable = { var = defender_dice min = 1 max = 999 } round_temp_variable = defender_dice
+	clamp_temp_variable = { var = attacker_dice min = 1 max = 999 } round_temp_variable = attacker_dice
+	# causes damage to enemy (reduces their deployed power)
+	
+}

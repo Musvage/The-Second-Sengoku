@@ -1,50 +1,4 @@
 defined_text = {
-	name = GET_text_colour_axis
-
-	text = {	# is friendly to axis
-		trigger = {
-			OR = {
-				has_world_stage_coalition_axis = yes
-				AND = { has_world_stage_coalition_komintern = yes has_global_flag = world_stage_invasion_of_poland_molotov_ribbentrop }
-			}
-		}
-		localization_key = use_green_text
-	}
-	text = {	# is axis' enemy, default
-		trigger = { has_world_stage_coalition_axis = no }
-		localization_key = use_red_text
-	}
-}
-defined_text = {
-	name = GET_text_colour_komintern
-
-	text = {	# is friendly to komintern
-		trigger = {
-			OR = {
-				OR = { has_world_stage_coalition_allies = yes has_world_stage_coalition_komintern = yes }
-				AND = { has_world_stage_coalition_axis = yes has_global_flag = world_stage_invasion_of_poland_molotov_ribbentrop }
-			}
-		}
-		localization_key = use_green_text
-	}
-	text = {	# is komintern's enemy, default
-		trigger = { has_world_stage_coalition_komintern = no }
-		localization_key = use_red_text
-	}
-}
-defined_text = {
-	name = GET_text_colour_allies
-
-	text = {	# is friendly to allies
-		trigger = { OR = { has_world_stage_coalition_allies = yes has_world_stage_coalition_komintern = yes } }
-		localization_key = use_green_text
-	}
-	text = {	# is allies' enemy, default
-		trigger = { has_world_stage_coalition_allies = no }
-		localization_key = use_red_text
-	}
-}
-defined_text = {
 	name = GET_text_colour_unaligned
 
 	text = {	# is friendly to unaligned
@@ -2405,6 +2359,91 @@ define_text = {
 ##--------------------------------------------------------------------------------------------------------------------------------------------
 ##--------------------------------------------------------------------------------------------------------------------------------------------
 ## NEW/USEFUL CODE STARTS HERE
+
+defined_text = {
+	name = GET_text_colour_axis
+
+	text = {	# is friendly to axis
+		trigger = {
+			OR = {
+				check_variable = { world_stage_coalition = 3 }
+				check_variable = { world_stage_coalition = 6 }
+				AND = { tag = FER has_global_flag = world_stage_invasion_of_poland_molotov_ribbentrop }
+			}
+		}
+		localization_key = use_green_text
+	}
+	text = {	# is neutral
+		trigger = {
+			NOT = { any_other_country = { check_variable = { world_stage_coalition = 3 } has_war_with = ROOT } }
+			OR = {
+				NOT = { has_variable = world_stage_coalition }
+				check_variable = { world_stage_coalition = 100 }
+				check_variable = { world_stage_coalition = 112 }
+			}
+		}
+		localization_key = use_orange_text
+	}
+	text = {	# is axis' enemy, default
+		localization_key = use_red_text
+	}
+}
+defined_text = {
+	name = GET_text_colour_komintern
+
+	text = {	# is friendly to komintern
+		trigger = {
+			OR = {
+				check_variable = { world_stage_coalition = 2 }
+				AND = { check_variable = { world_stage_coalition = 1 has_global_flag = russia_joined_ww2 } }
+				AND = { tag = REI has_global_flag = world_stage_invasion_of_poland_molotov_ribbentrop }
+			}
+		}
+		localization_key = use_green_text
+	}
+	text = {	# is neutral
+		trigger = {
+			NOT = { any_other_country = { check_variable = { world_stage_coalition = 2 } has_war_with = ROOT } }
+			OR = {
+				NOT = { has_variable = world_stage_coalition }
+				check_variable = { world_stage_coalition = 100 }
+				check_variable = { world_stage_coalition = 112 }
+			}
+		}
+		localization_key = use_orange_text
+	}
+	text = {	# is komintern's enemy, default
+		localization_key = use_red_text
+	}
+}
+defined_text = {
+	name = GET_text_colour_allies
+
+	text = {	# is friendly to allies
+		trigger = {
+			OR = {
+				check_variable = { world_stage_coalition = 1 }
+				AND = { check_variable = { world_stage_coalition = 2 has_global_flag = russia_joined_ww2 } }
+			}
+		}
+		localization_key = use_green_text
+	}
+	text = {	# is neutral
+		trigger = {
+			NOT = { any_other_country = { check_variable = { world_stage_coalition = 1 } has_war_with = ROOT } }
+			OR = {
+				NOT = { has_variable = world_stage_coalition }
+				check_variable = { world_stage_coalition = 100 }
+				check_variable = { world_stage_coalition = 112 }
+			}
+		}
+		localization_key = use_orange_text
+	}
+	text = {	# is allies' enemy, default
+		localization_key = use_red_text
+	}
+}
+
 define_text = {
 	name = Get_world_stage_coalition_description
 	text = { trigger = { check_variable = { world_stage_coalition = 1 } } localization_key = world_stage_allies_description }
@@ -2415,6 +2454,7 @@ define_text = {
 	text = { trigger = { check_variable = { world_stage_coalition = 6 } } localization_key = world_stage_pactofsteel_description }	# Pact of Steel , only exists until ww2
 	text = { localization_key = world_stage_nonaligned_description }	# default, non-aligned
 }
+
 define_text = {
 	name = Get_world_stage_power_tooltip
 	text = {
@@ -2427,7 +2467,7 @@ define_text = {
 	}
 	text = { localization_key = country_faction_icon_tt2_b }			# default, it's not a trade city, ROC or FER
 }
-### NEW MENU INTERFACE
+
 define_text = {
 	name = GetCurrentTheaterName
 	text = {
@@ -2551,6 +2591,32 @@ define_text = {
 		localization_key = theater_menu_header_england
 	}
 	text = { localization_key = "" }	# default, no theater selected
+}
+define_text = {
+	name = GetCurrentDefenderName
+	# special cases first
+	text = { trigger = { check_variable = { current_theater = 1 } } localization_key = coalition_name_republica_short }
+	#regular cases second
+	text = { trigger = { check_variable = { defender_symbol = 1 } } localization_key = coalition_name_allies_short }
+	text = { trigger = { check_variable = { defender_symbol = 2 } } localization_key = coalition_name_komintern_short }
+	text = { trigger = { check_variable = { defender_symbol = 3 } } localization_key = coalition_name_axis_short }
+	text = { trigger = { check_variable = { defender_symbol = 4 } } localization_key = coalition_name_nonaligned_short }
+	text = { trigger = { check_variable = { defender_symbol = 5 } } localization_key = coalition_name_leagueofnations_short }
+	text = { trigger = { check_variable = { defender_symbol = 6 } } localization_key = coalition_name_pactofsteel_short }
+	text = { localization_key = coalition_name_nonaligned }	# default, no coalition selected
+}
+define_text = {
+	# special cases first
+	name = GetCurrentAttackerName
+	text = { trigger = { check_variable = { current_theater = 1 } } localization_key = coalition_name_falange_short }
+	#regular cases second
+	text = { trigger = { check_variable = { attacker_symbol = 1 } } localization_key = coalition_name_allies_short }
+	text = { trigger = { check_variable = { attacker_symbol = 2 } } localization_key = coalition_name_komintern_short }
+	text = { trigger = { check_variable = { attacker_symbol = 3 } } localization_key = coalition_name_axis_short }
+	text = { trigger = { check_variable = { attacker_symbol = 4 } } localization_key = coalition_name_nonaligned_short }
+	text = { trigger = { check_variable = { attacker_symbol = 5 } } localization_key = coalition_name_leagueofnations_short }
+	text = { trigger = { check_variable = { attacker_symbol = 6 } } localization_key = coalition_name_pactofsteel_short }
+	text = { localization_key = coalition_name_nonaligned }	# default, no coalition selected
 }
 define_text = {
 	name = GetCurrentTheaterConnection1Name
@@ -3254,30 +3320,12 @@ define_text = {
 define_text = {
 	name = GetCoalitionNameShort
 	
-	text = {
-		trigger = { check_variable = { world_stage_coalition = 1 } }
-		localization_key = coalition_name_allies_short
-	}
-	text = {
-		trigger = { check_variable = { world_stage_coalition = 2 } }
-		localization_key = coalition_name_komintern_short
-	}
-	text = {
-		trigger = { check_variable = { world_stage_coalition = 3 } }
-		localization_key = coalition_name_axis_short
-	}
-	text = {
-		trigger = { check_variable = { world_stage_coalition = 4 } }
-		localization_key = coalition_name_nonaligned_short
-	}
-	text = {
-		trigger = { check_variable = { world_stage_coalition = 5 } }
-		localization_key = coalition_name_leagueofnations_short
-	}
-	text = {
-		trigger = { check_variable = { world_stage_coalition = 6 } }
-		localization_key = coalition_name_pactofsteel_short
-	}
+	text = { trigger = { check_variable = { world_stage_coalition = 1 } } localization_key = coalition_name_allies_short }
+	text = { trigger = { check_variable = { world_stage_coalition = 2 } } localization_key = coalition_name_komintern_short }
+	text = { trigger = { check_variable = { world_stage_coalition = 3 } } localization_key = coalition_name_axis_short }
+	text = { trigger = { check_variable = { world_stage_coalition = 4 } } localization_key = coalition_name_nonaligned_short }
+	text = { trigger = { check_variable = { world_stage_coalition = 5 } } localization_key = coalition_name_leagueofnations_short }
+	text = { trigger = { check_variable = { world_stage_coalition = 6 } } localization_key = coalition_name_pactofsteel_short }
 	text = { localization_key = coalition_name_nonaligned }	# default, no coalition selected
 }
 define_text = {
@@ -3310,4 +3358,22 @@ define_text = {
 	text = { trigger = { check_variable = { theater_owner_coalition = 5 } } localization_key = member_coalition_name_leagueofnations }
 	text = { trigger = { check_variable = { theater_owner_coalition = 6 } } localization_key = member_coalition_name_pactofsteel }
 	text = { localization_key = member_coalition_name_nonaligned }
+}
+define_text = {
+	name = GetIconSideAttack	# scope is proxy state for theater
+	text = { trigger = { check_variable = { coalition_side_attack = 1 } } localization_key = texticon_allies }
+	text = { trigger = { check_variable = { coalition_side_attack = 2 } } localization_key = texticon_komintern }
+	text = { trigger = { check_variable = { coalition_side_attack = 3 } } localization_key = texticon_axis }
+	text = { trigger = { check_variable = { coalition_side_attack = 5 } } localization_key = texticon_leagueofnations }
+	text = { trigger = { check_variable = { coalition_side_attack = 6 } } localization_key = texticon_pactofsteel }
+	text = { localization_key = texticon_nonaligned }	# default
+}
+define_text = {
+	name = GetIconSideDefence	# scope is proxy state for theater
+	text = { trigger = { check_variable = { theater_owner_coalition = 1 } } localization_key = texticon_allies }
+	text = { trigger = { check_variable = { theater_owner_coalition = 2 } } localization_key = texticon_komintern }
+	text = { trigger = { check_variable = { theater_owner_coalition = 3 } } localization_key = texticon_axis }
+	text = { trigger = { check_variable = { theater_owner_coalition = 5 } } localization_key = texticon_leagueofnations }
+	text = { trigger = { check_variable = { theater_owner_coalition = 6 } } localization_key = texticon_pactofsteel }
+	text = { localization_key = texticon_nonaligned }	# default
 }
