@@ -335,7 +335,7 @@ world_stage_activate_daily_state_effect = { # activated from on_actions/daily fr
 }
 
 world_stage_state_daily_effect = {
-	subtract_from_variable = { theater_timer = 1 }
+	subtract_from_variable = { theater_timer = 10 }	### DEBUG, CHANGE TO 1 LATER ### DEBUG, CHANGE TO 1 LATER ### DEBUG, CHANGE TO 1 LATER ### DEBUG, CHANGE TO 1 LATER 
 	log = "theater_timer [?theater_timer]"
 	# calculate deployed forces (everyone is either axis or allies)
 	set_variable = { attacker_deployed_power = 0 }
@@ -383,6 +383,7 @@ world_stage_state_daily_effect = {
 	world_stage_get_timer_frame = yes	# GUI burocracy
 	if = {
 		limit = { OR = { check_variable = { theater_timer < 1 } check_variable = { defender_deployed_power < 1 } check_variable = { attacker_deployed_power < 1 } } }
+		log = "[THIS.GetTheaterName]: world_stage_end_round [THIS.GetName]" 
 		world_stage_end_round = yes
 	}
 }
@@ -398,7 +399,7 @@ world_stage_state_update_current_day = {	# same as "world_stage_state_daily_effe
 			limit = { check_variable = { world_stage_coalition = PREV.theater_owner_coalition } }
 			set_temp_variable = { deployed_power_here = world_stage_power_deployed^var:PREV.theater_id }
 			if = { limit = { PREV = { has_state_flag = is_navy_theater } } multiply_temp_variable = { deployed_power_here = doctrine_bonus_navy }
-			} else = { multiply_temp_variable = { deployed_power_here = doctrine_bonus_land }
+			} else = { multiply_temp_variable = { deployed_power_here = doctrine_bonus_land } }
 			add_to_variable = { PREV.defender_deployed_power = deployed_power_here }
 		}
 		if = {	# special permissions
@@ -408,7 +409,7 @@ world_stage_state_update_current_day = {	# same as "world_stage_state_daily_effe
 			} }
 			set_temp_variable = { deployed_power_here = world_stage_power_deployed^var:PREV.theater_id }
 			if = { limit = { PREV = { has_state_flag = is_navy_theater } } multiply_temp_variable = { deployed_power_here = doctrine_bonus_navy }
-			} else = { multiply_temp_variable = { deployed_power_here = doctrine_bonus_land }
+			} else = { multiply_temp_variable = { deployed_power_here = doctrine_bonus_land } }
 			add_to_variable = { PREV.defender_deployed_power = deployed_power_here }
 		}
 		# attacker (variable coalition_side_attack)
@@ -416,7 +417,7 @@ world_stage_state_update_current_day = {	# same as "world_stage_state_daily_effe
 			limit = { check_variable = { world_stage_coalition = PREV.coalition_side_attack } }
 			set_temp_variable = { deployed_power_here = world_stage_power_deployed^var:PREV.theater_id }
 			if = { limit = { PREV = { has_state_flag = is_navy_theater } } multiply_temp_variable = { deployed_power_here = doctrine_bonus_navy }
-			} else = { multiply_temp_variable = { deployed_power_here = doctrine_bonus_land }
+			} else = { multiply_temp_variable = { deployed_power_here = doctrine_bonus_land } }
 			add_to_variable = { PREV.attacker_deployed_power = deployed_power_here }
 		}
 		if = {	# special permissions
@@ -426,7 +427,7 @@ world_stage_state_update_current_day = {	# same as "world_stage_state_daily_effe
 			} }
 			set_temp_variable = { deployed_power_here = world_stage_power_deployed^var:PREV.theater_id }
 			if = { limit = { PREV = { has_state_flag = is_navy_theater } } multiply_temp_variable = { deployed_power_here = doctrine_bonus_navy }
-			} else = { multiply_temp_variable = { deployed_power_here = doctrine_bonus_land }
+			} else = { multiply_temp_variable = { deployed_power_here = doctrine_bonus_land } }
 			add_to_variable = { PREV.attacker_deployed_power = deployed_power_here }
 		}
 	}
@@ -434,6 +435,7 @@ world_stage_state_update_current_day = {	# same as "world_stage_state_daily_effe
 } d_world_stage_state_update_current_day = { world_stage_state_update_current_day = yes log = "world_stage_state_update_current_day" }
 
 world_stage_end_round = {
+	log = "AA!"
 	# get number of combatants on each side (damage tanken is divided)
 	set_temp_variable = { number_of_defenders = 0 }
 	set_temp_variable = { number_of_attackers = 0 }
@@ -471,12 +473,45 @@ world_stage_end_round = {
 	randomize_temp_variable = {	var = attacker_dice distribution = uniform min = 0.05 max = 0.2 }
 	multiply_temp_variable = { defender_dice = defender_deployed_power }
 	multiply_temp_variable = { attacker_dice = attacker_deployed_power }
-	#add_to_temp_variable = { defender_dice = defender_strategic_advantage }	# find a rule for this later # TO-DO # TO-DO # TO-DO # TO-DO # TO-DO # TO-DO # TO-DO # TO-DO 
-	#add_to_temp_variable = { attacker_dice = attacker_strategic_advantage }	# find a rule for this later # TO-DO # TO-DO # TO-DO # TO-DO # TO-DO # TO-DO # TO-DO # TO-DO 
-	divide_temp_variable = { defender_dice = number_of_attackers }
+	#add_to_temp_variable = { defender_dice = defender_strategic_advantage }		# find a rule for this later # TO-DO # TO-DO # TO-DO # TO-DO # TO-DO # TO-DO # TO-DO # TO-DO 
+	#add_to_temp_variable = { attacker_dice = attacker_strategic_advantage }		# find a rule for this later # TO-DO # TO-DO # TO-DO # TO-DO # TO-DO # TO-DO # TO-DO # TO-DO 
+	subtract_from_variable = { defender_deployed_power = attacker_dice }		# subtratcs from the whole forces before calculating indivudual damage to save code
+	subtract_from_variable = { attacker_deployed_power = defender_dice }
+	divide_temp_variable = { defender_dice = number_of_attackers }				# damage is divided among all combatants
 	divide_temp_variable = { attacker_dice = number_of_defender }
 	clamp_temp_variable = { var = defender_dice min = 1 max = 999 } round_temp_variable = defender_dice
 	clamp_temp_variable = { var = attacker_dice min = 1 max = 999 } round_temp_variable = attacker_dice
 	# causes damage to enemy (reduces their deployed power)
-	
+	# goes through the array, checks each actually deployed and causes de damage
+	set_variable = { attacker_deployed_power = 0 }	## DEBUG ## DEBUG ## DEBUG ## DEBUG ## DEBUG ## DEBUG ## DEBUG ## DEBUG 
+	log = "BB! [THIS.GetName]"
+	if = {
+		limit = { check_variable = { attacker_deployed_power < 1 } }	# checks if attacker lost first (if both loose, draw favours defender)
+		log = "defender won, pushes front towards enemy"
+		# defender won, pushes front towards enemy
+		set_temp_variable = { new_fronts = 0 }
+		for_loop_effect = {
+			value = theater
+			start = 0
+			end = 3
+			add = 1
+			var:connects_to^theater = {
+				log = "SCOPE TEST: index ([?theater]) // GetTheaterName: [GetTheaterName] // THIS: [THIS.GetName] // PREV: [?PREV.GetName]"	# SCOPE TEST
+				if = {
+					limit = { NOT = { check_variable = { connects_to^theater = 0 } } }
+					if = {
+						limit = { check_variable = { theater_owner_coalition = PREV.coalition_side_attack } }
+						log = "PREV.coalition_side_attack [?PREV.coalition_side_attack]"
+						set_state_flag = theater_is_active
+					}
+				}
+				
+			}
+		}
+	}
+	if = {
+		limit = { check_variable = { defender_deployed_power < 1 } }
+		# attacker won, pushes front towards enemy
+	}
 }
+
