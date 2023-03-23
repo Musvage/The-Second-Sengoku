@@ -7,7 +7,7 @@ focus_tree = {
 	country = {
 		factor = 0
 		modifier = {
-			add = -10
+			add = 10
 			tag = HIR
 		}
 	}
@@ -96,6 +96,7 @@ focus_tree = {
 		prerequisite = { focus = HIR_colony_state_recovery }
 		cost = 8
 		available = {
+			NOT = { has_global_flag = world_stage_netherlands_exists }
 		}
 		ai_will_do = {
 			factor = 10
@@ -117,6 +118,7 @@ focus_tree = {
 		prerequisite = { focus = HIR_homeland_first }
 		cost = 5
 		available = {
+			NOT = { has_global_flag = world_stage_netherlands_exists }
 		}
 		ai_will_do = {
 			factor = 10
@@ -128,6 +130,10 @@ focus_tree = {
 			add_to_variable  = { var = HIR_buildings_speed value = -0.02 }
 			add_to_variable  = { var = HIR_resources value = -0.02 }
 			add_to_variable  = { var = HIR_recrutable_population value = -0.02 }
+			swap_ideas = {
+				remove_idea = HIR_main_land_refugees
+				add_idea = HIR_main_land_refugees_1
+			} 
 		}
 	}
 
@@ -140,6 +146,7 @@ focus_tree = {
 		prerequisite = { focus = HIR_homeland_first }
 		cost = 5
 		available = {
+			NOT = { has_global_flag = world_stage_netherlands_exists }
 		}
 		ai_will_do = {
 			factor = 10
@@ -159,10 +166,10 @@ focus_tree = {
 	focus = {
 		id = HIR_invite_nsm_amsterdam
 		icon = GFX_focus_
-		x = -1
+		x = -2
 		y = 1
-		relative_position_id = HIR_homeland_exile_navy
-		prerequisite = { focus = HIR_homeland_exile_navy }
+		relative_position_id = HIR_invite_homeland_companies
+		prerequisite = { focus = HIR_invite_homeland_companies }
 		cost = 5
 		available = {
 		}
@@ -183,10 +190,10 @@ focus_tree = {
 	focus = {
 		id = HIR_invite_fokker
 		icon = GFX_focus_
-		x = 1
+		x = 2
 		y = 1
-		relative_position_id = HIR_homeland_refugees
-		prerequisite = { focus = HIR_homeland_refugees }
+		relative_position_id = HIR_invite_homeland_companies
+		prerequisite = { focus = HIR_invite_homeland_companies }
 		cost = 5
 		available = {
 		}
@@ -234,13 +241,38 @@ focus_tree = {
 	}
 
 	focus = {
+		id = HIR_invite_homeland_companies
+		icon = GFX_focus_KAN_cabinet_information_comitee
+		x = 0
+		y = 1
+		relative_position_id = HIR_industry
+		prerequisite = { focus = HIR_industry }
+		cost = 2
+		available = {
+			NOT = { has_global_flag = world_stage_netherlands_exists }
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			custom_effect_tooltip = "All Motherland buffs fall by -2%."
+			# Hirado Homeland Variables
+			add_to_variable  = { var = HIR_slot value = -0.02 }
+			add_to_variable  = { var = HIR_buildings_speed value = -0.02 }
+			add_to_variable  = { var = HIR_resources value = -0.02 }
+			add_to_variable  = { var = HIR_recrutable_population value = -0.02 }
+			add_stability = 0.10
+		}
+	}
+
+	focus = {
 		id = HIR_roads
 		icon = GFX_goal_generic_construct_infrastructure
 		x = 0
 		y = 1
-		relative_position_id = HIR_industry
+		relative_position_id = HIR_invite_homeland_companies
 		available_if_capitulated = yes
-		prerequisite = { focus = HIR_industry }
+		prerequisite = { focus = HIR_invite_homeland_companies }
 		cost = 10
 		available = {
 			any_owned_state = {
@@ -257,7 +289,7 @@ focus_tree = {
 			add_to_variable  = { var = HIR_buildings_speed value = 0.02 }
 			add_to_variable  = { var = HIR_resources value = 0.02 }
 			add_to_variable  = { var = HIR_recrutable_population value = 0.02 }
-			random_owned_controlled_state = {
+			any_owned_controlled_state = {
 				limit = {
 					infrastructure < 5
 				}
@@ -300,11 +332,11 @@ focus_tree = {
 	focus = {
 		id = HIR_military
 		icon = GFX_focus_FER_military_reforms
-		x = -2
+		x = 0
 		y = 1
-		relative_position_id = HIR_industry
+		relative_position_id = HIR_invite_nsm_amsterdam
 		available_if_capitulated = yes
-		prerequisite = { focus = HIR_industry }
+		prerequisite = { focus = HIR_invite_homeland_companies }
 		prerequisite = { focus = HIR_invite_nsm_amsterdam }
 		cost = 10
 		available = {
@@ -462,6 +494,7 @@ focus_tree = {
 		prerequisite = { focus = HIR_colony_state_recovery }
 		cost = 10
 		available = {
+			NOT = { has_global_flag = world_stage_netherlands_exists }
 		}
 		ai_will_do = {
 			factor = 10
@@ -559,11 +592,11 @@ focus_tree = {
 	focus = {
 		id = HIR_civilian
 		icon = GFX_focus_FER_light_industry
-		x = 2
+		x = 0
 		y = 1
-		relative_position_id = HIR_industry
+		relative_position_id = HIR_invite_fokker
 		available_if_capitulated = yes
-		prerequisite = { focus = HIR_industry }
+		prerequisite = { focus = HIR_invite_homeland_companies }
 		prerequisite = { focus = HIR_invite_fokker }
 		cost = 10
 		available = {
@@ -690,7 +723,7 @@ focus_tree = {
 		id = HIR_research_new_technologies
 		icon = GFX_focus_research
 		x = 0
-		y = 3
+		y = 4
 		relative_position_id = HIR_roads
 		available_if_capitulated = yes
 		prerequisite = { focus = HIR_military_factory }
