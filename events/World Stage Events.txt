@@ -1,7 +1,160 @@
 ### EVENTS for diplomatic and military plays in the WORLD STAGE
 															   #and we are merely players
-add_namespace = worldstage									   #performers and portrayers
+add_namespace = worldstage #(scripted & focuses)			   #performers and portrayers
 add_namespace = worldstage_surrender						   #each anothers audience outside the gilded cage										   
+add_namespace = worldstage_automatic
+
+########################################################################
+########################## worldstage_automatic ########################
+########################################################################
+
+
+
+########################################################################
+############################## worldstage ##############################
+########################################################################
+
+# theater ended: defender won (defender event)
+state_event = {
+	id = worldstage_automatic.1
+	title = worldstage_automatic.1.t
+	desc = worldstage_automatic.1.d 
+	picture = GFX_news_ww2_starts
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	show_major = {
+		AND = { check_variable = { ROOT.theater_owner_coalition = THIS.world_stage_coalition } }	### add rules for kominter/allies friendship
+	}
+	
+	option = { name = worldstage_automatic.1.a custom_effect_tooltip = worldstage_automatic.1.tt }
+}
+
+# theater ended: defender won (attacker event)
+state_event = {
+	id = worldstage_automatic.2
+	title = worldstage_automatic.2.t
+	desc = worldstage_automatic.2.d 
+	picture = GFX_news_ww2_starts
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	show_major = {
+		AND = { check_variable = { ROOT.coalition_side_attack = THIS.world_stage_coalition } }	### add rules for kominter/allies friendship
+	}
+	
+	option = { name = worldstage_automatic.2.a custom_effect_tooltip = worldstage_automatic.2.tt }
+}
+
+# theater ended: defender won (neutral event)
+state_event = {
+	id = worldstage_automatic.3
+	title = worldstage_automatic.3.t
+	desc = worldstage_automatic.3.d 
+	picture = GFX_news_ww2_starts
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	show_major = {
+		NOT = {
+			has_country_flag = hide_worldstage_notification
+			AND = { check_variable = { ROOT.theater_owner_coalition = THIS.world_stage_coalition } }	### add rules for kominter/allies friendship
+			AND = { check_variable = { ROOT.coalition_side_attack = THIS.world_stage_coalition } }	### add rules for kominter/allies friendship
+		}
+	}
+	
+	option = { name = worldstage_automatic.3.a custom_effect_tooltip = worldstage_automatic.3.tt }
+}
+
+# theater ended: attacker won (defender event)
+state_event = {
+	id = worldstage_automatic.4
+	title = worldstage_automatic.4.t
+	desc = worldstage_automatic.4.d 
+	picture = GFX_news_ww2_starts
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	show_major = {
+		AND = { check_variable = { ROOT.theater_owner_coalition = THIS.world_stage_coalition } }	### add rules for kominter/allies friendship
+	}
+	
+	option = { name = worldstage_automatic.4.a custom_effect_tooltip = worldstage_automatic.4.tt }
+}
+
+# theater ended: attacker won (attacker event)
+state_event = {
+	id = worldstage_automatic.5
+	title = worldstage_automatic.5.t
+	desc = worldstage_automatic.5.d 
+	picture = GFX_news_ww2_starts
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	show_major = {
+		AND = { check_variable = { ROOT.coalition_side_attack = THIS.world_stage_coalition } }	### add rules for kominter/allies friendship
+	}
+	
+	option = { name = worldstage_automatic.5.a custom_effect_tooltip = worldstage_automatic.5.tt }
+}
+
+# theater ended: attacker won (neutral event)
+state_event = {
+	id = worldstage_automatic.6
+	title = worldstage_automatic.6.t
+	desc = worldstage_automatic.6.d 
+	picture = GFX_news_ww2_starts
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	show_major = {
+		NOT = {
+			has_country_flag = hide_worldstage_notification
+			AND = { check_variable = { ROOT.theater_owner_coalition = THIS.world_stage_coalition } }	### add rules for kominter/allies friendship
+			AND = { check_variable = { ROOT.coalition_side_attack = THIS.world_stage_coalition } }	### add rules for kominter/allies friendship
+		}
+	}
+	
+	option = { name = worldstage_automatic.6.a custom_effect_tooltip = worldstage_automatic.6.tt }
+}
+
+# SCOPE TEST	### FOR DEBUG DELETE LATER	### FOR DEBUG DELETE LATER	### FOR DEBUG DELETE LATER
+state_event = {
+	id = worldstage_automatic.7
+	title = worldstage_automatic.7.t
+	desc = worldstage_automatic.7.d 
+	picture = GFX_news_ww2_starts_wide
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	show_major = {
+		OR = {
+			NOT = { has_country_flag = hide_worldstage_notification }
+			AND = { check_variable = { ROOT.theater_owner = THIS.world_stage_metropolis } }
+		}
+	}
+	option = {
+		name = "test"
+		log = "ROOT [ROOT.GetName]"
+		log = "THIS [THIS.GetName]"
+		log = "PREV [PREV.GetName]"
+	}
+}	### FOR DEBUG DELETE LATER	### FOR DEBUG DELETE LATER	### FOR DEBUG DELETE LATER
+
 
 ### MONGOLIA MEDDLING
 # ROC completes 'ROC_aid_mongolia'
@@ -827,7 +980,14 @@ news_event = {
 news_event = {
 	id = worldstage.15
 	title = worldstage.15.t
-	desc = worldstage.15.d 
+	desc = {
+		text = worldstage.15.d1
+		trigger = { NOT = { REI = { has_government = autocracy } } }	# normal event
+	}
+	desc = {
+		text = worldstage.15.d2
+		trigger = { REI = { has_government = autocracy } }  			# monarchist event (cannot use 2nd leader text)
+	}
 	picture = GFX_news_ww2_starts_wide
 
 	is_triggered_only = yes
@@ -847,7 +1007,7 @@ news_event = {
 	
 	option = {
 		name = worldstage.15.axis
-		trigger = {check_variable = { world_stage_coalition = 3 } }
+		trigger = { OR = { check_variable = { world_stage_coalition = 3 } check_variable = { world_stage_coalition = 6 } } }
 	}
 	option = {
 		name = worldstage.15.komin1
@@ -865,7 +1025,7 @@ news_event = {
 	}
 	option = {
 		name = worldstage.15.allies
-		 trigger = {check_variable = { world_stage_coalition = 1 } }
+		trigger = { OR = { check_variable = { world_stage_coalition = 1 } check_variable = { world_stage_coalition = 5 } } }
 	}
 	option = {
 		name = worldstage.15.other
@@ -2505,6 +2665,7 @@ news_event = {
 		KOB = { set_variable = { world_stage_coalition = 1 } }
 		FER = { set_variable = { world_stage_coalition = 2 } }		# URSS was already expelled from LoN at this point but we'll run the command again just in case the FER player did not play his part 
 		REI = { set_variable = { world_stage_coalition = 3 } }
+		115 = { set_variable = { world_stage_coalition = 1 } }		# Poland is off map
 		# second:
 		every_country = {
 			limit = { has_country_flag = will_join_allies }
@@ -2619,7 +2780,6 @@ news_event = {
 				}
 			}
 		}
-		3 = { set_variable = { theater_owner_coalition = 1 } }	# Poland joins Allies
 	}
 	
 	option = {
@@ -3286,7 +3446,9 @@ news_event = {
 	}
 }
 
-### SURRENDER EVENTS ###
+########################################################################
+########################## worldstage_surrender ########################
+########################################################################
 
 # FRANCE SURRENDER # imagine my shock!
 country_event = {

@@ -336,7 +336,7 @@ world_stage_activate_daily_state_effect = { # activated from on_actions/daily fr
 
 world_stage_state_daily_effect = {
 	subtract_from_variable = { theater_timer = 10 }	### DEBUG, CHANGE TO 1 LATER ### DEBUG, CHANGE TO 1 LATER ### DEBUG, CHANGE TO 1 LATER ### DEBUG, CHANGE TO 1 LATER 
-	log = "theater_timer [?theater_timer]"
+	log = "[GetTheaterName]: theater_timer [?theater_timer]"
 	# calculate deployed forces (everyone is either axis or allies)
 	set_variable = { attacker_deployed_power = 0 }
 	set_variable = { defender_deployed_power = 0 }
@@ -435,7 +435,6 @@ world_stage_state_update_current_day = {	# same as "world_stage_state_daily_effe
 } d_world_stage_state_update_current_day = { world_stage_state_update_current_day = yes log = "world_stage_state_update_current_day" }
 
 world_stage_end_round = {
-	log = "AA!"
 	# get number of combatants on each side (damage tanken is divided)
 	set_temp_variable = { number_of_defenders = 0 }
 	set_temp_variable = { number_of_attackers = 0 }
@@ -484,34 +483,140 @@ world_stage_end_round = {
 	# causes damage to enemy (reduces their deployed power)
 	# goes through the array, checks each actually deployed and causes de damage
 	set_variable = { attacker_deployed_power = 0 }	## DEBUG ## DEBUG ## DEBUG ## DEBUG ## DEBUG ## DEBUG ## DEBUG ## DEBUG 
-	log = "BB! [THIS.GetName]"
 	if = {
 		limit = { check_variable = { attacker_deployed_power < 1 } }	# checks if attacker lost first (if both loose, draw favours defender)
-		log = "defender won, pushes front towards enemy"
+		log = "[GetTheaterName]: defender won, pushes front towards enemy"
 		# defender won, pushes front towards enemy
+		# checks whether or not there are theaters nearby to push the front
 		set_temp_variable = { new_fronts = 0 }
-		for_loop_effect = {
-			value = theater
-			start = 0
-			end = 3
-			add = 1
-			var:connects_to^theater = {
-				log = "SCOPE TEST: index ([?theater]) // GetTheaterName: [GetTheaterName] // THIS: [THIS.GetName] // PREV: [?PREV.GetName]"	# SCOPE TEST
+		for_each_loop = {
+			array = connects_to
+			index = this_index
+			value = theater	#start = 0	#end = 3 #add = 1
+			var:theater = {
 				if = {
-					limit = { NOT = { check_variable = { connects_to^theater = 0 } } }
+					limit = { NOT = { check_variable = { theater = 0 } } }
 					if = {
 						limit = { check_variable = { theater_owner_coalition = PREV.coalition_side_attack } }
-						log = "PREV.coalition_side_attack [?PREV.coalition_side_attack]"
-						set_state_flag = theater_is_active
+						add_to_temp_variable = { new_fronts = 1 }	# temp vars are scopeless
 					}
 				}
 				
 			}
 		}
-	}
+		clamp_temp_variable = { var = new_fronts min = 0 max = 3 }
+		# pushes the front (calculates how many troops go and where, and activates fronts)
+		if = {
+			limit = { NOT = { check_variable = { new_fronts = 0 } } }	# push front to new theaters
+			for_each_loop = {											# divide the current deployed forces by the number of new fronts BEFORE zeroing the values in the array
+				array = world_stage_power_deployed
+				index = this_index	# this index is a metropolis
+				value = deployed_power
+				if = {
+					limit = { check_variable = { this_index > 100 } }
+					divide_variable = { world_stage_power_deployed^this_index = new_fronts }
+					round_variable = world_stage_power_deployed^this_index
+					if = {
+						limit = { check_variable = { deployed_power > 0 } }	# this temp value is not affected by last operation
+						clamp_variable = { var = world_stage_power_deployed^this_index min = 1 max = 999 }	# if it was not 0, should be at least 1
+					}
+				}
+			}
+			for_each_loop = {											# now deploys those troops and activates the theater
+				array = connects_to
+				index = this_index	# this index is a theater
+				value = theater
+				var:theater = {
+					if = {
+						limit = { NOT = { check_variable = { theater = 0 } } }
+						if = {
+							limit = { check_variable = { theater_owner_coalition = PREV.coalition_side_attack } }
+							set_state_flag = theater_is_active	# log = "PREV.coalition_side_attack [?PREV.coalition_side_attack]"
+							# now adds troops, an array within an array
+							for_each_loop = {
+								array = world_stage_power_deployed
+								index = this_index	# this index is a metropolis
+								value = deployed_power
+								if = {
+									limit = { check_variable = { this_index > 100 } }
+									add_to_variable = { world_stage_power_deployed^this_index = PREV.world_stage_power_deployed^this_index }
+								}
+							}
+						}
+					}
+					
+				}
+			}
+			for_each_loop = {											# NOW sets the values in the array to zero (except unespecified minors)
+				array = world_stage_power_deployed
+				index = this_index	# this index is a metropolis
+				value = deployed_power
+				if = {
+					limit = { check_variable = { this_index > 100 } }
+					set_variable = { world_stage_power_deployed^this_index = 0 }
+				}
+			}
+		} else = {	# war hit a dead-end, nowhere to push: withdraw all forces (except unespecified minors)
+			for_each_loop = {
+				array = world_stage_power_deployed
+				index = this_index
+				value = deployed_power
+				if = {
+					limit = { check_variable = { this_index > 100 } }
+					set_temp_variable = { origin_theater = theater_id }
+					var:this_index = { add_to_variable = { world_stage_power_deployed^origin_theater = deployed_power }
+					set_variable = { world_stage_power_deployed^this_index = 0 }
+				}
+			}
+		}
+		# spread the news!
+		state_event = worldstage_automatic.1
+		state_event = worldstage_automatic.2
+		state_event = worldstage_automatic.3
+		# updates all relevant stats
+		
+		# the very last thing, set this theater as inactive
+		clr_state_flag = theater_is_active
+	} ##################################################################################################################
 	if = {
-		limit = { check_variable = { defender_deployed_power < 1 } }
+		limit = { NOT = { check_variable = { attacker_deployed_power < 1 } } check_variable = { defender_deployed_power < 1 } }
+		log = "[GetTheaterName]: attacker won, pushes front towards enemy"
 		# attacker won, pushes front towards enemy
+		set_temp_variable = { new_fronts = 0 }
+		for_each_loop = {
+			array = connects_to
+			index = this_index
+			value = theater	#start = 0	#end = 3	#add = 1
+			var:theater = {
+				if = {
+					limit = { NOT = { check_variable = { theater = 0 } } }
+					if = {
+						limit = { check_variable = { theater_owner_coalition = PREV.coalition_side_attack } }
+						set_state_flag = theater_is_active	# log = "PREV.coalition_side_attack [?PREV.coalition_side_attack]"
+					}
+				}
+				
+			}
+		}
+		# remove all deployed forces (except locals)
+		for_each_loop = {
+			array = world_stage_power_deployed
+			value = deployed_power
+			index = this_index
+			if = {
+				limit = { check_variable = { this_index > 100 } }
+				set_variable = { world_stage_power_deployed^this_index = 0 }	# log = "deployed_power: [?deployed_power] index [?this_index]/ world_stage_power_deployed^this_index [?world_stage_power_deployed^this_index]"
+			}
+			
+		}
+		# spread the news!
+		state_event = worldstage_automatic.4
+		state_event = worldstage_automatic.5
+		state_event = worldstage_automatic.6
+		# updates all relevant stats
+		
+		# the very last thing, set this theater as inactive
+		clr_state_flag = theater_is_active
 	}
 }
 
