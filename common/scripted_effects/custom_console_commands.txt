@@ -725,20 +725,51 @@ d_test_invasion_of_poland = {
 		news_event = worldstage.55
 		set_global_flag = REI_attack_poland_completed
 		3 = { set_state_flag = theater_is_active }
+		add_to_variable = { 3.attacker_strategic_advantage = 60 }
 		if = {
 			limit = { has_global_flag = GER_SOV_pact_enabled }
 			news_event = { id = worldstage.16 days = 7 random_days  = 10 }
 		}
 		add_named_threat = { threat = 25 name = REI_threat_attack_poland }
-		hidden_effect = {
-			3 = { add_to_variable = { world_stage_power_deployed^101 = 60 } }	# proxy for Poland
-			3 = { add_to_variable = { world_stage_power_deployed^102 = 999 } }	# debug # debug # debug # debug # debug # debug 
-			3 = { set_variable = { coalition_side_attack = 3 } }
-			101 = { add_to_variable = { world_stage_power_deployed^3 = 60 } }	# proxy for Germany
-		}
+		3 = { add_to_variable = { world_stage_power_deployed^101 = 60 } }	# proxy for Poland
+		3 = { add_to_variable = { world_stage_power_deployed^102 = 100 } }	# debug # debug # debug # debug # debug # debug 
+		3 = { set_variable = { coalition_side_attack = 3 } }
+		101 = { add_to_variable = { world_stage_power_deployed^3 = 60 } }	# proxy for Germany
+		3 = { world_stage_state_update_current_day = yes }
 		set_global_flag = world_stage_world_war_2_is_active
 		set_global_flag = world_stage_theater_poland_is_active_first
 	}
+}
+
+d_fast_theaters = {
+	if = {
+		limit = { has_global_flag = debug_fast_theaters }
+		log = "disable fast theaters"
+		clr_global_flag = debug_fast_theaters
+		every_state = { limit = { has_variable = theater_timer_base } multiply_variable = { theater_timer_base = 5 } }
+	} else = {
+		log = "enabable fast theaters"
+		set_global_flag = debug_fast_theaters
+		every_state = {
+			limit = { has_variable = theater_timer_base }
+			divide_variable = { theater_timer_base = 5 }
+			if = {
+				limit = { check_variable = { theater_timer_base < theater_timer } }
+				set_variable = { theater_timer = theater_timer_base }
+			}
+		}
+	}
+}
+
+d_world_stage_end_round = {
+	if = {
+		limit = { has_variable = theater_owner }
+		if = {
+			limit = { has_state_flag = theater_is_active }
+			world_stage_end_round = yes
+			log = "world_stage_end_round"
+		} else = { log = "this theater is not active" }
+	} else = { log = "no theater selected" }
 }
 
 ### } HELP
@@ -858,6 +889,10 @@ d_help_ss = {
 	log = "   updates the current country according to the variables held by its corresponding metropolis proxy"
 	log = "world_stage_state_update_current_day"
 	log = "   updates the current proxy theater (replicating world_stage_state_daily_effect) without decreasing the timer or resolving the theater"
+	log = "fast_theaters"
+	log = "   divides the duration of all theaters by 5, or returns them to their original values"
+	log = "world_stage_end_round"
+	log = "   ends the round in the currently selected theater, if it is active"
 	log = "unification_get_score"
 	log = "   returns the country's unification score"
 	log = "unification_count_states_southern_japan"
