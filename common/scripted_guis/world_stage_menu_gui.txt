@@ -110,12 +110,11 @@ scripted_gui = {
 			worldstage_power_display_visible = {
 				has_variable = world_stage_metropolis
 				NOT = { check_variable = { world_stage_metropolis = 100 } }	# should be redundant, but just in case...
-				NOT = { check_variable = { world_stage_metropolis = 101 } }
+				NOT = { check_variable = { world_stage_metropolis = 111 } }	# internationally recognized Japan
 			}
 			worldstage_power_frame_icon_visible = {
 				has_variable = world_stage_metropolis
 				NOT = { check_variable = { world_stage_metropolis = 100 } }	# should be redundant, but just in case...
-				NOT = { check_variable = { world_stage_metropolis = 101 } }	# non-foreing power
 				NOT = { check_variable = { world_stage_metropolis = 111 } }	# internationally recognized Japan
 			}
 	#		theater_icon_england_visible = { NOT = { has_country_flag = worldstage_menu_show_asia } }
@@ -239,12 +238,11 @@ scripted_gui = {
 			worldstage_power_display_visible = {
 				has_variable = world_stage_metropolis
 				NOT = { check_variable = { world_stage_metropolis = 100 } }	# should be redundant, but just in case...
-				NOT = { check_variable = { world_stage_metropolis = 101 } }
+				NOT = { check_variable = { world_stage_metropolis = 111 } }	# internationally recognized Japan
 			}
 			worldstage_power_frame_icon_visible = {
 				has_variable = world_stage_metropolis
 				NOT = { check_variable = { world_stage_metropolis = 100 } }	# should be redundant, but just in case...
-				NOT = { check_variable = { world_stage_metropolis = 101 } }
 				NOT = { check_variable = { world_stage_metropolis = 111 } }	# internationally recognized Japan
 			}
 	#		theater_icon_urals_visible = { has_country_flag = worldstage_menu_show_asia }
@@ -368,13 +366,19 @@ scripted_gui = {
 			}
 			world_stage_defender_symbol = { frame = var:defender_symbol }
 			world_stage_attacker_symbol = { frame = var:attacker_symbol }
-			world_stage_clock_counter = { frame = var:current_theater:clock_frame }
+			world_stage_clock_counter = { frame = var:clock_frame }
+			#world_stage_clock_counter = { frame = "[THIS.Get_clock_frame]" }
 		}
 		
 		triggers = {
 			worldstage_go_to_connection_1_visible = { always = yes }
 			worldstage_go_to_connection_2_visible = { if = { check_variable = { number_of_connections_displayed > 1 } } }
-			worldstage_go_to_connection_3_visible = { if = { check_variable = { number_of_connections_displayed > 2 } } }
+			worldstage_go_to_connection_3_visible = { if = { check_variable = { number_of_connections_displayed > 2 } } }			
+			worldstage_go_to_connection_4_visible = { if = { check_variable = { number_of_connections_displayed > 3 } } }			
+			worldstage_go_to_connection_1_click_enabled = { var:current_theater:connects_to^0 = { can_open_theater = yes  } }
+			worldstage_go_to_connection_2_click_enabled = { var:current_theater:connects_to^1 = { can_open_theater = yes  } }
+			worldstage_go_to_connection_3_click_enabled = { var:current_theater:connects_to^2 = { can_open_theater = yes  } }
+			worldstage_go_to_connection_4_click_enabled = { var:current_theater:connects_to^3 = { can_open_theater = yes  } }
 			world_stage_naval_based_theater_visible = { var:current_theater = { has_state_flag = is_navy_theater } }
 			world_stage_land_based_theater_visible = { NOT = { var:current_theater = { has_state_flag = is_navy_theater } } }
 			world_stage_clock_base_visible = { var:current_theater = { has_state_flag = theater_is_active } }
@@ -410,6 +414,11 @@ scripted_gui = {
 			}
 			worldstage_go_to_connection_3_click = {
 				var:current_theater = { set_variable = { ROOT.current_theater = connects_to^2 } }
+				switch_theater_displayed = yes
+				get_current_theater_info = yes
+			}
+			worldstage_go_to_connection_4_click = {
+				var:current_theater = { set_variable = { ROOT.current_theater = connects_to^3 } }
 				switch_theater_displayed = yes
 				get_current_theater_info = yes
 			}
@@ -432,13 +441,19 @@ scripted_gui = {
 			world_stage_defender_symbol = { frame = var:defender_symbol }
 			world_stage_attacker_symbol = { frame = var:attacker_symbol }
 			world_stage_clock_counter = { frame = var:current_theater:clock_frame }
+			#world_stage_clock_counter = { frame = "[THIS.Get_clock_frame]" }
 		}
 		
 		triggers = {
 			worldstage_go_to_connection_1_visible = { always = yes }
 			worldstage_go_to_connection_2_visible = { if = { check_variable = { number_of_connections_displayed > 1 } } }
 			worldstage_go_to_connection_3_visible = { if = { check_variable = { number_of_connections_displayed > 2 } } }
+			worldstage_go_to_connection_4_visible = { if = { check_variable = { number_of_connections_displayed > 3 } } }
 			world_stage_naval_based_theater_visible = { var:current_theater = { has_state_flag = is_navy_theater } }
+			worldstage_go_to_connection_1_click_enabled = { var:current_theater:connects_to^0 = { can_open_theater = yes  } }
+			worldstage_go_to_connection_2_click_enabled = { var:current_theater:connects_to^1 = { can_open_theater = yes  } }
+			worldstage_go_to_connection_3_click_enabled = { var:current_theater:connects_to^2 = { can_open_theater = yes  } }
+			worldstage_go_to_connection_4_click_enabled = { var:current_theater:connects_to^3 = { can_open_theater = yes  } }
 			world_stage_land_based_theater_visible = { NOT = { var:current_theater = { has_state_flag = is_navy_theater } } }
 			world_stage_clock_base_visible = { var:current_theater = { has_state_flag = theater_is_active } }
 			world_stage_clock_counter_visible = { var:current_theater = { has_state_flag = theater_is_active } }
@@ -473,6 +488,11 @@ scripted_gui = {
 			}
 			worldstage_go_to_connection_3_click = {
 				var:current_theater = { set_variable = { ROOT.current_theater = connects_to^2 } }
+				switch_theater_displayed = yes
+				get_current_theater_info = yes
+			}
+			worldstage_go_to_connection_4_click = {
+				var:current_theater = { set_variable = { ROOT.current_theater = connects_to^3 } }
 				switch_theater_displayed = yes
 				get_current_theater_info = yes
 			}

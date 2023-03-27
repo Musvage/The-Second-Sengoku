@@ -293,7 +293,7 @@ on_actions = {
 			set_global_flag = world_stage_germany_exists
 			set_global_flag = world_stage_france_exists					# to-do: splits into _free and _vichy later (if all goes according to GER's plans)
 			set_global_flag = world_stage_england_exists
-			set_global_flag = world_stage_russia_exists
+			set_global_flag = world_stage_sovietunion_exists
 			set_global_flag = world_stage_netherlands_exists
 			set_global_flag = world_stage_china_exists
 			set_global_flag = world_stage_usa_exists
@@ -365,7 +365,7 @@ on_actions = {
 			117 = { set_variable = { world_stage_power = 0 } }
 			118 = { set_variable = { world_stage_power = 0 } }
 			119 = { set_variable = { world_stage_power = 0 } }
-			every_state = { limit = { has_variable = world_stage_metropolis } add_to_array = { world_stage_power_deployed = 99 } }	# this array is how much power each metropolis has in each theater # 1st entry of array is not used, so other entries have their indexes matching state id's # this line "sets the array", actual values (which are all zero) are added further down the code
+			every_state = { limit = { has_variable = world_stage_metropolis } add_to_array = { world_stage_power_deployed_in = -1 } }	# this array is how much power each metropolis has in each theater # 1st entry of array is not used, so other entries have their indexes matching state id's # this line "sets the array", actual values (which are all zero) are added further down the code
 			world_stage_get_tag_info_from_metropolis = yes
 			every_possible_country = {
 				set_variable = { world_stage_metropolis = 100 }
@@ -440,24 +440,24 @@ on_actions = {
 			every_state = {	# world_stage_get_theater_info_from_metropolis
 				limit = { has_variable = theater_owner }
 				var:theater_owner = { set_variable = { PREV.theater_owner_coalition = world_stage_coalition } }	# imports from theater owner info about its coalition
-				add_to_array = { world_stage_power_deployed = 99 } 	# this array is how much power metropolis have deployed in this theater  # notice that the index of the array and the index of 
+				add_to_array = { world_stage_power_deployed_by = -1 } 			# this array is how much power each metropolis have deployed in this theater # this command creates the array, first 100 entries are filler
 				set_temp_variable = { temporary_index = 1 }
 				while_loop_effect = {
-					limit = { check_variable = { temporary_index < 100 } }	# 101 is the first 'actual' metropolis
-					add_to_array = { world_stage_power_deployed = 99 }		# this 'fills' the first 100 entries so that the index of the array matches the index of the metropolis and the proxy state's id
+					limit = { check_variable = { temporary_index < 100 } }		# 101 is the first 'actual' metropolis
+					add_to_array = { world_stage_power_deployed_by = -1 }		# this 'fills' the first 100 entries so that the index of the array matches the index of the metropolis and the proxy state's id
 					add_to_temp_variable = { temporary_index = 1 }
 				}
 				every_state = {
 					limit = { has_variable = world_stage_metropolis }
-					add_to_array = { PREV.world_stage_power_deployed = 0 }	# now adds each metropolis' own deployed power (which is zero at start)
-					add_to_array = { world_stage_power_deployed = 0 }							# now adds values to the array of deployed powers each metropolis have, as mentioned above in the code
+					add_to_array = { PREV.world_stage_power_deployed_by = 0 }	# now adds each metropolis' own deployed power (which is zero at start) across all theaters
+					add_to_array = { world_stage_power_deployed_in = 0 }		# now adds values to the array of deployed powers each metropolis have, as mentioned above in the code
 				}
 			}
 			# manually adding the deployed forces of minor powers:
-			3 = { set_variable = { world_stage_power_deployed^115 = 15 } }
-			12 = { set_variable = { world_stage_power_deployed^117 = 10 } }
-			13 = { set_variable = { world_stage_power_deployed^118 = 5 } }
-			26 = { set_variable = { world_stage_power_deployed^119 = 10 } }			
+			3 = { set_variable = { world_stage_power_deployed_by^115 = 15 } }
+			12 = { set_variable = { world_stage_power_deployed_by^117 = 10 } }
+			13 = { set_variable = { world_stage_power_deployed_by^118 = 5 } }
+			26 = { set_variable = { world_stage_power_deployed_by^119 = 10 } }			
 			#1 = { set_variable = { theater_timer_base = 60 } set_variable = { theater_timer = theater_timer_base } }
 			2 = { set_variable = { theater_timer_base = 60 } set_variable = { theater_timer = theater_timer_base } }
 			3 = { set_variable = { theater_timer_base = 60 } set_variable = { theater_timer = theater_timer_base } }
@@ -530,7 +530,7 @@ on_actions = {
 			3 = { add_to_array = { connects_to = 7 } add_to_array = { connects_to = 9 } }
 			#4 = { add_to_array = { connects_to = [none] } }
 			5 = { add_to_array = { connects_to = 8 } add_to_array = { connects_to = 6 } add_to_array = { connects_to = 25 } }
-			6 = { add_to_array = { connects_to = 5 } add_to_array = { connects_to = 27 } add_to_array = { connects_to = 26 } add_to_array = { connects_to =  7 } }
+			6 = { add_to_array = { connects_to =  7 } add_to_array = { connects_to = 5 } add_to_array = { connects_to = 27 } add_to_array = { connects_to = 26 } }
 			7 = { add_to_array = { connects_to = 6 } add_to_array = { connects_to = 3 } }
 			8 = { add_to_array = { connects_to = 5 } add_to_array = { connects_to = 27 } }	# add sealion later
 			9 = { add_to_array = { connects_to = 3 } add_to_array = { connects_to = 10 } }
@@ -645,7 +645,7 @@ on_actions = {
 				country_event = { id = startup_flavour.3 }
 			}
 			REI = {
-				country_event = { id = ostasien.1 days = 335 random_days = 30 }
+				country_event = { id = ostasien.1 days = 305 random_days = 60 }
 				country_event = { id = ostasien.9 days = 2 random_days = 5 }
 			}
 			KOB = {
@@ -985,19 +985,16 @@ on_actions = {
 				world_stage_ai_sov = yes
 				log = "SPECIAL POLAND LOG"
 				3 = { log = "timer: [?theater_timer]" }
-				3 = { log = "German troops: [?world_stage_power_deployed^101]" }
-				3 = { log = "Briti. troops: [?world_stage_power_deployed^102]" }
-				3 = { log = "Polish troops: [?world_stage_power_deployed^115]" }
+				3 = { log = "German troops: [?world_stage_power_deployed_by^101]" }
+				3 = { log = "Briti. troops: [?world_stage_power_deployed_by^102]" }
+				3 = { log = "Polish troops: [?world_stage_power_deployed_by^115]" }
 				log = "SPECIAL BERLIN LOG"
 				7 = { log = "timer: [?theater_timer]" }
-				7 = { log = "German troops: [?world_stage_power_deployed^101]" }
-				7 = { log = "Briti. troops: [?world_stage_power_deployed^102]" }
-				7 = { log = "Polish troops: [?world_stage_power_deployed^115]" }
+				7 = { log = "German troops: [?world_stage_power_deployed_by^101]" }
+				7 = { log = "Briti. troops: [?world_stage_power_deployed_by^102]" }
+				7 = { log = "Polish troops: [?world_stage_power_deployed_by^115]" }
 			}
 		}
-		#effect = {	### WORLD STAGE TIMER UPDATE
-		#	world_stage_get_timer_frame_daily = yes
-		#}
 	}
 	
 	on_daily = {
@@ -1109,6 +1106,8 @@ on_actions = {
 						set_variable = { legitimacy_popularity_bonus = pop_bonus }
 					} else = { set_variable = { legitimacy_popularity_bonus = 0 } }
 				}
+				### WORLD STAGE TIMER UPDATE
+				world_stage_get_timer_frame_daily = yes
 			}
 		}
 	}

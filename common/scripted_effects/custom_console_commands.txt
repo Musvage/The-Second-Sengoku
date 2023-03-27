@@ -623,7 +623,7 @@ d_portugal_aligned_axis = {
 	}
 }
 
-d_force_poland_surrender = {
+d_force_poland_surrender = {	# DEPRICATED
 	if = {
 		limit = { has_global_flag = world_stage_theater_poland_is_active_first }
 		log = "force poland to surrender"
@@ -689,21 +689,26 @@ d_show_proxy_info = {
 			log = "theater_owner: [?theater_owner]"
 			log = "theater_owner_coalition: [?theater_owner_coalition]"
 			log = "Deployed power:"
-			log = "[?world_stage_power_deployed^100] other"
-			log = "[?world_stage_power_deployed^101] germany"
-			log = "[?world_stage_power_deployed^102] england"
-			log = "[?world_stage_power_deployed^103] france"
-			log = "[?world_stage_power_deployed^104] sovietunion"
-			log = "[?world_stage_power_deployed^105] usa"
-			log = "[?world_stage_power_deployed^106] china"
-			log = "[?world_stage_power_deployed^107] netherlands"
-			log = "[?world_stage_power_deployed^108] portugal"
-			log = "[?world_stage_power_deployed^109] italy"
-			log = "[?world_stage_power_deployed^110] japan"
-			log = "[?world_stage_power_deployed^111] spain"
-			log = "[?world_stage_power_deployed^112] other"
-			log = "[?world_stage_power_deployed^113] nazigermany"
-			log = "[?world_stage_power_deployed^114] manchuria"
+			log = "[?world_stage_power_deployed_by^100] other"
+			log = "[?world_stage_power_deployed_by^101] germany"
+			log = "[?world_stage_power_deployed_by^102] england"
+			log = "[?world_stage_power_deployed_by^103] france"
+			log = "[?world_stage_power_deployed_by^104] sovietunion"
+			log = "[?world_stage_power_deployed_by^105] usa"
+			log = "[?world_stage_power_deployed_by^106] china"
+			log = "[?world_stage_power_deployed_by^107] netherlands"
+			log = "[?world_stage_power_deployed_by^108] portugal"
+			log = "[?world_stage_power_deployed_by^109] italy"
+			log = "[?world_stage_power_deployed_by^110] japan"
+			log = "[?world_stage_power_deployed_by^111] spain"
+			log = "[?world_stage_power_deployed_by^112] other"
+			log = "[?world_stage_power_deployed_by^113] nazigermany"
+			log = "[?world_stage_power_deployed_by^114] manchuria"
+			log = "[?world_stage_power_deployed_by^115] poland"
+			log = "[?world_stage_power_deployed_by^116] mongolia"
+			log = "[?world_stage_power_deployed_by^117] norway"
+			log = "[?world_stage_power_deployed_by^118] ethiopia"
+			log = "[?world_stage_power_deployed_by^119] austria"
 		}
 	if = {
 		limit = { has_variable = world_stage_metropolis }
@@ -731,14 +736,38 @@ d_test_invasion_of_poland = {
 			news_event = { id = worldstage.16 days = 7 random_days  = 10 }
 		}
 		add_named_threat = { threat = 25 name = REI_threat_attack_poland }
-		3 = { add_to_variable = { world_stage_power_deployed^101 = 60 } }	# proxy for Poland
-		3 = { add_to_variable = { world_stage_power_deployed^102 = 100 } }	# debug # debug # debug # debug # debug # debug 
+		3 = { add_to_variable = { world_stage_power_deployed_by^101 = 60 } }	# proxy for Poland
 		3 = { set_variable = { coalition_side_attack = 3 } }
-		101 = { add_to_variable = { world_stage_power_deployed^3 = 60 } }	# proxy for Germany
+		101 = { add_to_variable = { world_stage_power_deployed_in^3 = 60 } }	# proxy for Germany
+		101 = { subtract_from_variable = { world_stage_power = 60 } }
+		subtract_from_variable = { world_stage_power = 60 }
 		3 = { world_stage_state_update_current_day = yes }
 		set_global_flag = world_stage_world_war_2_is_active
 		set_global_flag = world_stage_theater_poland_is_active_first
 	}
+}
+
+d_op_poland = {
+	3 = { add_to_variable = { world_stage_power_deployed_by^115 = 150 } }	# proxy for Poland, theater
+	115 = { add_to_variable = { world_stage_power_deployed_in^3 = 150 } }	# proxy for Poland, metropolis
+	log = "OP Poland is not real, it can't hurt you"
+	log = "OP Poland: Deploys 150 of its overall power in the Wolrd Stage to Poland"
+}
+
+d_defender_strategic_advantage = {
+	if = {
+		limit = { has_state_flag = theater_is_active }
+		add_to_variable = { defender_strategic_advantage = args^0?100 }
+		log = "added [?args^0?100] strategic advantage to defenders in [GetTheaterName]"
+	} else = { log = "no active theater selected" }
+}
+
+d_attacker_strategic_advantage = {
+	if = {
+		limit = { has_state_flag = theater_is_active }
+		add_to_variable = { attacker_strategic_advantage = args^0?100 }
+		log = "added [?args^0?100] strategic advantage to attackers in [GetTheaterName]"
+	} else = { log = "no active theater selected" }
 }
 
 d_fast_theaters = {
@@ -906,6 +935,12 @@ d_help_ss = {
 	log = "   updates the current country according to the variables held by its corresponding metropolis proxy"
 	log = "world_stage_state_update_current_day"
 	log = "   updates the current proxy theater (replicating world_stage_state_daily_effect) without decreasing the timer or resolving the theater"
+	log = "op_poland"
+	log = "   adds 150 to Poland’s deployed power in Poland"
+	log = "defender_strategic_advantage [argument]"
+	log = "   adds the specified argument to the defenders’ strategic advantage in the currently selected proxy theater, if it is an active theater. If there is no argument, defaults to 100"
+	log = "attacker_strategic_advantage [argument]"
+	log = "   adds the specified argument to the attackers’ strategic advantage in the currently selected proxy theater, if it is an active theater. If there is no argument, defaults to 100"
 	log = "fast_theaters"
 	log = "   divides the duration of all theaters by 5, or returns them to their original values"
 	log = "world_stage_end_round"
