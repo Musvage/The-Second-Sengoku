@@ -249,7 +249,7 @@ world_stage_end_round = {
 				}
 			}
 			for_each_loop = {											# NOW sets the values in the array to zero (except unespecified minors)
-				array = world_stage_power_deployed
+				array = world_stage_power_deployed_by
 				index = this_metropolis	# this index is a metropolis
 				value = deployed_power
 				if = {
@@ -266,31 +266,28 @@ world_stage_end_round = {
 			set_temp_variable = { origin_theater = theater_id } log = "TEST TEST TEST [?origin_theater]"
 			for_each_loop = {
 				array = world_stage_power_deployed_by
-				index = this_metropolis	# index is metropolis
+				index = this_metropolis
 				value = deployed_power
 				if = {
 					limit = { check_variable = { this_metropolis > 100 } }
-					round_variable = world_stage_power_deployed_by^origin_theater
-					clamp_variable = { var = world_stage_power_deployed_by^origin_theater min = 0 max = 999 }
+					clamp_variable = { var = world_stage_power_deployed_by^this_metropolis min = 0 max = 999 }
 					var:this_metropolis = {
 						if = {
 							limit = { check_variable = { world_stage_coalition = PREV.theater_owner_coalition } }	# if it is a defender, retrieves all deployed power (attacker looses all)
 							add_to_variable = { world_stage_power = deployed_power }		# 'deployed_power' temp var is scopeless
-							set_variable = { world_stage_power_deployed_in^origin_theater = 0 }	# 'origin_theater' temp var is scopeless
-						} else = {
-							set_variable = { world_stage_power_deployed_in^origin_theater = 0 }	# does not retrieve anything
-						}
-						# updates the tags (this complex check is needed due to Okinawa and Chiba sharing a metropolis)
-						every_country = {
-							limit = { check_variable = { world_stage_metropolis = PREV.world_stage_metropolis } }
-							set_variable = { world_stage_power_deployed_in^origin_theater = PREV.world_stage_power_deployed_in^origin_theater }
-						}
+						} # else: does not retrieve anything
+						set_variable = { world_stage_power_deployed_in^origin_theater = 0 }	# 'origin_theater' temp var is scopeless
 					}
+					set_variable = { world_stage_power_deployed_by^this_metropolis = 0 }
 				}
 			}
-			every_state = {												# clean metropolis' array for deployed forces in this theater
+			# updates the tag with info from proxy metropolis
+			every_country = {
 				limit = { has_variable = world_stage_metropolis }
-				set_variable = { world_stage_power_deployed_in^origin_theater = 0 }
+				set_variable = { world_stage_power_deployed_in^origin_theater = 0 }	# clears all deployed forces from current theater
+				var:world_stage_metropolis = {
+					set_variable = { PREV.world_stage_power = world_stage_power }
+				}
 			}
 		}
 		# spread the news!
@@ -298,7 +295,7 @@ world_stage_end_round = {
 		state_event = worldstage_automatic.2
 		state_event = worldstage_automatic.3
 		# updates all relevant stats
-		
+		set_variable = { coalition_side_attack = 0 }
 		# the very last thing, set this theater as inactive
 		clr_state_flag = theater_is_active
 	} ##################################################################################################################
@@ -310,7 +307,7 @@ world_stage_end_round = {
 		set_temp_variable = { metropolis_conquerer_value = 0 }
 		for_each_loop = {
 			array = connects_to
-			index = this_index
+			index = this_theater
 			value = theater	#start = 0	#end = 3 #add = 1
 			var:theater = {
 				if = {
@@ -323,12 +320,12 @@ world_stage_end_round = {
 							set_temp_variable = { deploy_new = world_stage_power }
 							clamp_temp_variable = { var = deploy_new min = 1 max = 999 }
 							subtratc_from_variable = { world_stage_power = deploy_new }
-							add_to_variable = { world_stage_power_deployed^theater = deploy_new }
-							add_to_variable = { PREV.world_stage_power_deployed^world_stage_metropolis = deploy_new }
+							add_to_variable = { world_stage_power_deployed_in^theater = deploy_new }
+							add_to_variable = { PREV.world_stage_power_deployed_by^world_stage_metropolis = deploy_new }
 							# updates the tags (this complex check is needed due to Okinawa and Chiba sharing a metropolis)
 							every_country = {
 								limit = { check_variable = { world_stage_metropolis = PREV.world_stage_metropolis } }
-								set_variable = { world_stage_power_deployed^theater = PREV.world_stage_power_deployed^theater }
+								set_variable = { world_stage_power_deployed_in^theater = PREV.world_stage_power_deployed_by^theater }
 							}
 						}
 					}
@@ -340,43 +337,44 @@ world_stage_end_round = {
 		if = {
 			limit = { NOT = { check_variable = { new_fronts = 0 } } }	# push front to new theaters
 			for_each_loop = {											# divide the current deployed forces by the number of new fronts BEFORE zeroing the values in the array
-				array = world_stage_power_deployed
-				index = this_index	# this index is a metropolis
+				array = world_stage_power_deployed_by
+				index = this_metropolis
 				value = deployed_power
 				if = {
-					limit = { check_variable = { this_index > 100 } }	# unspecified minors DO NOT count here
+					limit = { check_variable = { this_metropolis > 100 } }	# unspecified minors DO NOT count here
 					if = {
-						limit = { check_variable = { world_stage_power_deployed^this_index > metropolis_conquerer_value } }	# checks the attacker with most power, who, in the ends, wins the potatos
-						set_temp_variable = { metropolis_conquerer = this_index }
+						limit = { check_variable = { world_stage_power_deployed_by^this_metropolis > metropolis_conquerer_value } }	# checks the attacker with most power, who, in the ends, wins the potatos
+						set_temp_variable = { metropolis_conquerer = this_metropolis }
+						set_temp_variable = { metropolis_conquerer_value = world_stage_power_deployed_by^this_metropolis }
 					}
-					divide_variable = { world_stage_power_deployed^this_index = new_fronts }
-					round_variable = world_stage_power_deployed^this_index
+					divide_variable = { world_stage_power_deployed_by^this_metropolis = new_fronts }
+					round_variable = world_stage_power_deployed_by^this_metropolis
 					if = {
 						limit = { check_variable = { deployed_power > 0 } }	# this temp value is not affected by last operation
-						clamp_variable = { var = world_stage_power_deployed^this_index min = 1 max = 999 }	# if it was not 0, should be at least 1
+						clamp_variable = { var = world_stage_power_deployed_by^this_metropolis min = 1 max = 999 }	# if it was not 0, should be at least 1
 					}
 				}
 			}
 			for_each_loop = {											# now deploys those troops and activates the theater
 				array = connects_to
-				index = this_index	# this index is a theater
-				value = theater
-				var:theater = {
+				index = conquered_theater_index
+				value = conquered_theater
+				var:conquered_theater = {
 					if = {
-						limit = { NOT = { check_variable = { theater = 0 } } }
+						limit = { NOT = { check_variable = { conquered_theater = 0 } } }
 						if = {
 							limit = { check_variable = { theater_owner_coalition = PREV.theater_owner_coalition } }
 							set_state_flag = theater_is_active	# log = "PREV.theater_owner_coalition [?PREV.theater_owner_coalition]"
 							# now adds troops, an array within an array
 							for_each_loop = {
-								array = world_stage_power_deployed
-								index = this_index	# this index is a metropolis
+								array = world_stage_power_deployed_by
+								index = this_metropolis
 								value = deployed_power2
 								if = {
-									limit = { check_variable = { this_index > 100 } check_variable = { deployed_power2 > 0 } }
-									log = "[GetTheaterName] world_stage_power_deployed^this_index [?world_stage_power_deployed^this_index]"
-									log = "[GetTheaterName] PREV.world_stage_power_deployed^this_index [?PREV.world_stage_power_deployed^this_index]"
-									add_to_variable = { world_stage_power_deployed^this_index = PREV.world_stage_power_deployed^this_index }
+									limit = { check_variable = { this_metropolis > 100 } check_variable = { deployed_power2 > 0 } }
+									log = "[GetTheaterName] world_stage_power_deployed_by^this_metropolis [?world_stage_power_deployed^this_metropolis]"
+									log = "[GetTheaterName] PREV.world_stage_power_deployed_by^this_metropolis [?PREV.world_stage_power_deployed^this_metropolis]"
+									add_to_variable = { world_stage_power_deployed_by^this_metropolis = PREV.world_stage_power_deployed_by^this_metropolis }
 								}
 							}
 						}
@@ -385,67 +383,48 @@ world_stage_end_round = {
 				}
 			}
 			for_each_loop = {											# NOW sets the values in the array to zero (except unespecified minors)
-				array = world_stage_power_deployed
-				index = this_index	# this index is a metropolis
+				array = world_stage_power_deployed_by
+				index = this_metropolis	# this index is a metropolis
 				value = deployed_power
 				if = {
-					limit = { check_variable = { this_index > 100 } }
-					set_variable = { world_stage_power_deployed^this_index = 0 }
+					limit = { check_variable = { this_metropolis > 100 } }
+					set_variable = { world_stage_power_deployed_by^this_metropolis = 0 }
 				}
 			}
 			set_temp_variable = { origin_theater = theater_id }
 			every_state = {												# clean metropolis' array for deployed forces
 				limit = { has_variable = world_stage_metropolis }
-				for_each_loop = {
-					array = world_stage_power_deployed
-					index = this_index
-					value = deployed_power
-					set_variable = { world_stage_power_deployed^origin_theater = 0 }
-				}
+				set_variable = { world_stage_power_deployed_in^origin_theater = 0 }
+			}
+			every_country = {												# clean tags' array for deployed forces
+				limit = { has_variable = world_stage_metropolis }
+				set_variable = { world_stage_power_deployed_in^origin_theater = 0 }
 			}
 		} else = {	# war hit a dead-end, nowhere to push: withdraw all forces (except unespecified minors)
 			set_temp_variable = { origin_theater = theater_id }	 log = "TEST TEST TEST [?origin_theater]"
 			for_each_loop = {
-				array = world_stage_power_deployed
-				index = this_index	# index is metropolis
+				array = world_stage_power_deployed_by
+				index = this_metropolis
 				value = deployed_power
 				if = {
-					limit = { check_variable = { this_index > 100 } }
-					log = "AAA [GetMetropolisName]"
-					round_variable = world_stage_power_deployed^origin_theater
-					clamp_variable = { var = world_stage_power_deployed^origin_theater min = 0 max = 999 }
-					var:this_index = {
+					limit = { check_variable = { this_metropolis > 100 } }	# dont mind unspecified minors
+					clamp_variable = { var = world_stage_power_deployed_by^this_metropolis min = 0 max = 999 }
+					var:this_metropolis = {
 						if = {
 							limit = { check_variable = { world_stage_coalition = PREV.coalition_side_attack } }	# if it is a attacker, retrieves all deployed power (defender looses all)
-							log = "BBB [GetMetropolisName]: [?world_stage_power] world_stage_power"
-							add_to_variable = { world_stage_power = deployed_power }		# 'deployed_power' temp var is scopeless
-							log = "CCC [GetMetropolisName]: [?world_stage_power] world_stage_power"
-						} else = {
-							set_variable = { world_stage_power_deployed^origin_theater = 0 }	# does not retrieve anything	# 'origin_theater' temp var is scopeless
-							log = "DDD [GetMetropolisName]: [?world_stage_power] world_stage_power"
-						}
-						# updates the tags (this complex check is needed due to Okinawa and Chiba sharing a metropolis)
-						log = "world_stage_power_deployed^origin_theater [?world_stage_power_deployed^origin_theater]"
-						every_country = {
-							limit = { check_variable = { world_stage_metropolis = PREV.world_stage_metropolis } }
-							log = "EEE [GetMetropolisName]: [?world_stage_power] world_stage_power TAG [THIS.GetName] PREV.world_stage_power_deployed^origin_theater [?PREV.world_stage_power_deployed^origin_theater]"
-							set_variable = { world_stage_power_deployed^origin_theater = PREV.world_stage_power_deployed^origin_theater }
-							log = "FFF [GetMetropolisName]: [?world_stage_power] world_stage_power TAG [THIS.GetName]"
-						}
-						set_variable = { world_stage_power_deployed^origin_theater = 0 }	# clear the metropolis proxy array entry
+							add_to_variable = { world_stage_power = PREV.world_stage_power_deployed_by^this_metropolis }
+						} # else: does not retrieve anything
+						set_variable = { world_stage_power_deployed_in^origin_theater = 0 }	# 'origin_theater' temp var is scopeless # clear the metropolis proxy array entry
 					}
+					set_variable = { world_stage_power_deployed_by^this_metropolis = 0 }	# clean the current theater's array
 				}
-				# clears all deployed forces from current theater
-				set_variable = { world_stage_power_deployed^this_index = 0 }
 			}
-			### THE COMMAND BELLOW MAY BE REDUNDANT WITH LINE DDD
-			every_state = {												# clean metropolis' array for deployed forces
+			# updates the tag with info from proxy metropolis
+			every_country = {
 				limit = { has_variable = world_stage_metropolis }
-				for_each_loop = {
-					array = world_stage_power_deployed
-					index = this_index
-					value = deployed_power
-					set_variable = { world_stage_power_deployed^origin_theater = 0 }
+				set_variable = { world_stage_power_deployed_in^origin_theater = 0 }	# clears all deployed forces from current theater
+				var:world_stage_metropolis = {
+					set_variable = { PREV.world_stage_power = world_stage_power }
 				}
 			}
 		}
@@ -456,6 +435,7 @@ world_stage_end_round = {
 		# updates all relevant stats
 		set_variable = { theater_owner = metropolis_conquerer }
 		set_variable = { theater_owner_coalition = coalition_side_attack }
+		set_variable = { coalition_side_attack = 0 }
 		# the very last thing, set this theater as inactive
 		clr_state_flag = theater_is_active
 	}
