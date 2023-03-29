@@ -747,6 +747,69 @@ d_test_invasion_of_poland = {
 	}
 }
 
+d_test_invasion_of_poland = {
+	log = "test_invasion_of_poland"
+	REI = {
+		unlock_national_focus = REI_attack_poland
+		news_event = worldstage.15
+		news_event = worldstage.55
+		set_global_flag = REI_attack_poland_completed
+		3 = { set_state_flag = theater_is_active }
+		add_to_variable = { 3.attacker_strategic_advantage = 60 }
+		if = {
+			limit = { has_global_flag = GER_SOV_pact_enabled }
+			news_event = { id = worldstage.16 days = 7 random_days  = 10 }
+		}
+		add_named_threat = { threat = 25 name = REI_threat_attack_poland }
+		3 = { add_to_variable = { world_stage_power_deployed_by^101 = 60 } }	# proxy for Poland
+		3 = { set_variable = { coalition_side_attack = 3 } }
+		101 = { add_to_variable = { world_stage_power_deployed_in^3 = 60 } }	# proxy for Germany
+		101 = { subtract_from_variable = { world_stage_power = 60 } }
+		subtract_from_variable = { world_stage_power = 60 }
+		3 = { world_stage_state_update_current_day = yes }
+		set_global_flag = world_stage_world_war_2_is_active
+		set_global_flag = world_stage_theater_poland_is_active_first
+	}
+}
+
+d_test_barbarossa = {
+	REI = {
+		set_global_flag = REI_barbarossa_completed
+		set_temp_variable = { ger_forces_value = world_stage_power }
+		multiply_temp_variable = { ger_forces_value = 0.75 }
+		round_temp_variable = ger_forces_value
+		clamp_temp_variable = { var = ger_forces_value min = 150 max = 999 }
+		add_named_threat = { 
+			threat = 25
+			name = REI_threat_barbarossa
+		}
+		if = {
+			limit = { has_global_flag = GER_SOV_pact_enabled }
+			clr_global_flag = GER_SOV_pact_enabled
+			# add soviet advantage here
+			#news_event = worldstage.33	# fix event later	# has molotov
+		} else = {
+			#news_event = worldstage.34	# fix event later	# no molotov
+			hidden_effect = {
+				9 = {	# Belarus proxy
+					set_state_flag = theater_is_active
+					set_variable = { world_state_power_deployed_by^101 = ger_forces_value }
+					set_variable = { world_state_power_deployed_by^104 = 30 }
+					set_variable = { coalition_side_attack = 3 }
+				}
+				101 = {
+					set_variable = { world_state_power_deployed_in^101 = ger_forces_value }
+					subtract_from_variable = { world_stage_power = ger_forces_value }
+				}
+				104 = {
+					set_variable = { world_state_power_deployed_in^104 = 30 }
+					subtract_from_variable = { world_stage_power = 30 }
+				}
+			}
+		}
+	}
+}
+
 d_op_poland = {
 	3 = { add_to_variable = { world_stage_power_deployed_by^115 = 150 } }	# proxy for Poland, theater
 	115 = { add_to_variable = { world_stage_power_deployed_in^3 = 150 } }	# proxy for Poland, metropolis
