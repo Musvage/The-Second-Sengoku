@@ -179,29 +179,31 @@ world_stage_end_round = {
 		for_each_loop = {
 			array = connects_to
 			index = this_theater
-			value = theater	#start = 0	#end = 3 #add = 1
-			var:theater = {
+			value = new_theater	#start = 0	#end = 3 #add = 1
+			var:new_theater = {
 				if = {
-					limit = { NOT = { check_variable = { theater = 0 } } }	# this index is filler
+					limit = { NOT = { check_variable = { new_theater = 0 } } }	# this index is filler
 					if = {
 						limit = { check_variable = { theater_owner_coalition = PREV.coalition_side_attack } }
 						add_to_temp_variable = { new_fronts = 1 }	# temp vars are scopeless
 						# auto-deploys forces from this theater's owner to meet the attackers
 						var:theater_owner = {	# this is a metropolis, owner of the theater about to be invaded
+							log = "[GetMetropolisName]: world_stage_power [?world_stage_power]"
 							set_temp_variable = { deploy_new = world_stage_power }
-							clamp_temp_variable = { var = deploy_new min = 1 max = 999 }
+							log = "[GetMetropolisName]: deploy_new [?deploy_new]"
+							clamp_temp_variable = { var = deploy_new min = 1 max = 10 }
 							subtratc_from_variable = { world_stage_power = deploy_new }
-							add_to_variable = { world_stage_power_deployed_in^theater = deploy_new }
-							add_to_variable = { PREV.world_stage_power_deployed_by^world_stage_metropolis = deploy_new }
+							log = "[GetMetropolisName]: world_stage_power [?world_stage_power]"
 						}
+						add_to_variable = { world_stage_power_deployed_by^theater_owner = deploy_new }
 					}
 				}
 			}
 		}
-		clamp_temp_variable = { var = new_fronts min = 0 max = 3 }
+		clamp_temp_variable = { var = new_fronts min = 0 max = 4 }
 		# pushes the front (calculates how many troops go and where, and activates fronts)
 		if = {
-			limit = { NOT = { check_variable = { new_fronts = 0 } } }	# push front to new theaters
+			limit = { NOT = { check_temp_variable = { new_fronts = 0 } } }	# push front to new theaters
 			for_each_loop = {											# divide the current deployed forces by the number of new fronts BEFORE zeroing the values in the array
 				array = world_stage_power_deployed_by
 				index = this_metropolis	# this index is a metropolis
@@ -253,10 +255,6 @@ world_stage_end_round = {
 				}
 			}
 			set_temp_variable = { origin_theater = theater_id }
-			every_state = {												# clean metropolis' array for deployed forces
-				limit = { has_variable = world_stage_metropolis }
-				set_variable = { world_stage_power_deployed_in^origin_theater = 0 }
-			}
 		} else = {	# war hit a dead-end, nowhere to push: withdraw all forces (except unespecified minors)
 			set_temp_variable = { origin_theater = theater_id } log = "TEST TEST TEST [?origin_theater]"
 			for_each_loop = {
@@ -271,7 +269,6 @@ world_stage_end_round = {
 							limit = { check_variable = { world_stage_coalition = PREV.theater_owner_coalition } }	# if it is a defender, retrieves all deployed power (attacker looses all)
 							add_to_variable = { world_stage_power = deployed_power }		# 'deployed_power' temp var is scopeless
 						} # else: does not retrieve anything
-						set_variable = { world_stage_power_deployed_in^origin_theater = 0 }	# 'origin_theater' temp var is scopeless
 					}
 					set_variable = { world_stage_power_deployed_by^this_metropolis = 0 }
 				}
@@ -295,10 +292,10 @@ world_stage_end_round = {
 		for_each_loop = {
 			array = connects_to
 			index = this_theater
-			value = theater	#start = 0	#end = 3 #add = 1
-			var:theater = {
+			value = next_theater	#start = 0	#end = 3 #add = 1
+			var:next_theater = {
 				if = {
-					limit = { NOT = { check_variable = { theater = 0 } } }	# this index is filler
+					limit = { NOT = { check_variable = { next_theater = 0 } } }	# this index is filler
 					if = {
 						limit = { check_variable = { theater_owner_coalition = PREV.theater_owner_coalition } }
 						add_to_temp_variable = { new_fronts = 1 }	# temp vars are scopeless
@@ -307,17 +304,16 @@ world_stage_end_round = {
 							set_temp_variable = { deploy_new = world_stage_power }
 							clamp_temp_variable = { var = deploy_new min = 1 max = 999 }
 							subtratc_from_variable = { world_stage_power = deploy_new }
-							add_to_variable = { world_stage_power_deployed_in^theater = deploy_new }
-							add_to_variable = { PREV.world_stage_power_deployed_by^world_stage_metropolis = deploy_new }
 						}
+						add_to_variable = { world_stage_power_deployed_by^theater_owner = deploy_new }
 					}
 				}
 			}
 		}
-		clamp_temp_variable = { var = new_fronts min = 0 max = 3 }
+		clamp_temp_variable = { var = new_fronts min = 0 max = 4 }
 		# pushes the front (calculates how many troops go and where, and activates fronts)
 		if = {
-			limit = { NOT = { check_variable = { new_fronts = 0 } } }	# push front to new theaters
+			limit = { NOT = { check_temp_variable = { new_fronts = 0 } } }	# push front to new theaters
 			for_each_loop = {											# divide the current deployed forces by the number of new fronts BEFORE zeroing the values in the array
 				array = world_stage_power_deployed_by
 				index = this_metropolis
@@ -374,10 +370,6 @@ world_stage_end_round = {
 				}
 			}
 			set_temp_variable = { origin_theater = theater_id }
-			every_state = {												# clean metropolis' array for deployed forces
-				limit = { has_variable = world_stage_metropolis }
-				set_variable = { world_stage_power_deployed_in^origin_theater = 0 }
-			}
 		} else = {	# war hit a dead-end, nowhere to push: withdraw all forces (except unespecified minors)
 			set_temp_variable = { origin_theater = theater_id }	 log = "TEST TEST TEST [?origin_theater]"
 			for_each_loop = {
@@ -392,7 +384,6 @@ world_stage_end_round = {
 							limit = { check_variable = { world_stage_coalition = PREV.coalition_side_attack } }	# if it is a attacker, retrieves all deployed power (defender looses all)
 							add_to_variable = { world_stage_power = PREV.world_stage_power_deployed_by^this_metropolis }
 						} # else: does not retrieve anything
-						set_variable = { world_stage_power_deployed_in^origin_theater = 0 }	# 'origin_theater' temp var is scopeless # clear the metropolis proxy array entry
 					}
 					set_variable = { world_stage_power_deployed_by^this_metropolis = 0 }	# clean the current theater's array
 				}
