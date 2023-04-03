@@ -173,7 +173,7 @@ world_stage_end_round = {
 	}
 	if = {
 		limit = { check_variable = { attacker_deployed_power < 1 } }	# checks if attacker lost first (if both loose, draw favours defender)
-		# defender won
+		log = "[GetTheaterName]: defender won"
 		# checks whether or not there are theaters nearby to push the front
 		set_temp_variable = { new_fronts = 0 }
 		for_each_loop = {
@@ -188,14 +188,17 @@ world_stage_end_round = {
 						add_to_temp_variable = { new_fronts = 1 }	# temp vars are scopeless
 						# auto-deploys forces from this theater's owner to meet the attackers
 						var:theater_owner = {	# this is a metropolis, owner of the theater about to be invaded
-							log = "[GetMetropolisName]: world_stage_power [?world_stage_power]"
 							set_temp_variable = { deploy_new = world_stage_power }
+							log = "[GetMetropolisName]: world_stage_power [?world_stage_power]"
 							log = "[GetMetropolisName]: deploy_new [?deploy_new]"
 							clamp_temp_variable = { var = deploy_new min = 1 max = 10 }
-							subtratc_from_variable = { world_stage_power = deploy_new }
+							subtract_from_variable = { world_stage_power = deploy_new }
+							log = "--------------------------------------------------------------"
 							log = "[GetMetropolisName]: world_stage_power [?world_stage_power]"
+							log = "[GetMetropolisName]: deploy_new [?deploy_new]"
 						}
 						add_to_variable = { world_stage_power_deployed_by^theater_owner = deploy_new }
+						log = "[GetTheaterName] ([GeName])  world_stage_power_deployed_by^[?theater_owner] [?world_stage_power_deployed_by^theater_owner]"
 					}
 				}
 			}
@@ -210,21 +213,22 @@ world_stage_end_round = {
 				value = deployed_power
 				if = {
 					limit = { check_variable = { this_metropolis > 100 } }	# unspecified minors DO NOT count here
-					divide_variable = { world_stage_power_deployed_by^this_metropolis = new_fronts }
-					round_variable = world_stage_power_deployed_by^this_metropolis
 					if = {
-						limit = { check_variable = { deployed_power > 0 } }	# this temp value is not affected by last operation
+						limit = { NOT = { check_variable = { deployed_power < 1 } } }
+						divide_variable = { world_stage_power_deployed_by^this_metropolis = new_fronts }			# this variable will be used to store the amount of troops to be transfered to the next scenario before being cleared
+						round_variable = world_stage_power_deployed_by^this_metropolis
 						clamp_variable = { var = world_stage_power_deployed_by^this_metropolis min = 1 max = 999 }	# if it was not 0, should be at least 1
-					}
+						log = "metropolis [?this_metropolis]: deployed to next theater [?world_stage_power_deployed_by^this_metropolis]"
+					} else = { set_variable = { world_stage_power_deployed_by^this_metropolis = 0 } }
 				}
 			}
 			for_each_loop = {											# now deploys those troops and activates the theater
 				array = connects_to
 				index = this_theater	# this index is a theater
-				value = theater
-				var:theater = {
+				value = new_theater
+				var:new_theater = {
 					if = {
-						limit = { NOT = { check_variable = { theater = 0 } } }
+						limit = { NOT = { check_variable = { new_theater = 0 } } }
 						if = {
 							limit = { check_variable = { theater_owner_coalition = PREV.coalition_side_attack } }
 							set_state_flag = theater_is_active	# log = "PREV.coalition_side_attack [?PREV.coalition_side_attack]"
@@ -285,7 +289,7 @@ world_stage_end_round = {
 	} ##################################################################################################################
 	if = {
 		limit = { NOT = { check_variable = { attacker_deployed_power < 1 } } check_variable = { defender_deployed_power < 1 } }
-		# attacker won
+		log = "[GetTheaterName]: defender won"
 		set_temp_variable = { new_fronts = 0 }
 		set_temp_variable = { metropolis_conquerer = 100 }
 		set_temp_variable = { metropolis_conquerer_value = 0 }
@@ -303,7 +307,7 @@ world_stage_end_round = {
 						var:theater_owner = {	# this is a metropolis, owner of the theater about to be invaded
 							set_temp_variable = { deploy_new = world_stage_power }
 							clamp_temp_variable = { var = deploy_new min = 1 max = 999 }
-							subtratc_from_variable = { world_stage_power = deploy_new }
+							subtract_from_variable = { world_stage_power = deploy_new }
 						}
 						add_to_variable = { world_stage_power_deployed_by^theater_owner = deploy_new }
 					}
