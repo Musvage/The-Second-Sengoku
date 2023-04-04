@@ -171,6 +171,7 @@ world_stage_end_round = {
 			}
 		}
 	}
+	################################ DEFENDER WINS ################################
 	if = {
 		limit = { check_variable = { attacker_deployed_power < 1 } }	# checks if attacker lost first (if both loose, draw favours defender)
 		log = "[GetTheaterName]: defender won"
@@ -207,9 +208,9 @@ world_stage_end_round = {
 		# pushes the front (calculates how many troops go and where, and activates fronts)
 		if = {
 			limit = { NOT = { check_temp_variable = { new_fronts = 0 } } }	# push front to new theaters
-			for_each_loop = {											# divide the current deployed forces by the number of new fronts BEFORE zeroing the values in the array
+			for_each_loop = {												# divide the current deployed forces by the number of new fronts BEFORE zeroing the values in the array
 				array = world_stage_power_deployed_by
-				index = this_metropolis	# this index is a metropolis
+				index = this_metropolis
 				value = deployed_power
 				if = {
 					limit = { check_variable = { this_metropolis > 100 } }	# unspecified minors DO NOT count here
@@ -224,29 +225,31 @@ world_stage_end_round = {
 			}
 			for_each_loop = {											# now deploys those troops and activates the theater
 				array = connects_to
-				index = this_theater	# this index is a theater
+				index = this_connection	# this index is a theater
 				value = new_theater
 				var:new_theater = {
 					if = {
-						limit = { NOT = { check_variable = { new_theater = 0 } } }
+						limit = { NOT = { check_variable = { new_theater = 0 } } }	# is not filler
 						if = {
-							limit = { check_variable = { theater_owner_coalition = PREV.coalition_side_attack } }
-							set_state_flag = theater_is_active	# log = "PREV.coalition_side_attack [?PREV.coalition_side_attack]"
+							limit = { check_variable = { theater_owner_coalition = PREV.coalition_side_attack } }	# connected theater belongs to attacker
+							set_state_flag = theater_is_active
+							set_variable = { coalition_side_attack = PREV.theater_owner_coalition }					# sets the attacking coalition in this connected theater after previous theater owner's coalition
 							# now adds troops, an array within an array
 							for_each_loop = {
 								array = world_stage_power_deployed_by
-								index = this_metropolis	# this index is a metropolis
+								index = this_metropolis2
 								value = deployed_power2
+								log = "this_metropolis2 [?this_metropolis2] / deployed_power2 [?deployed_power2]"
 								if = {
-									limit = { check_variable = { this_metropolis > 100 } check_variable = { deployed_power2 > 0 } }
-									log = "[GetTheaterName] world_stage_power_deployed_by^this_metropolis [?world_stage_power_deployed_by^this_metropolis]"
-									log = "[GetTheaterName] PREV.world_stage_power_deployed_by^this_metropolis [?PREV.world_stage_power_deployed_by^this_metropolis]"
-									add_to_variable = { world_stage_power_deployed_by^this_metropolis = PREV.world_stage_power_deployed_by^this_metropolis }
+									limit = { check_variable = { this_metropolis2 > 100 } check_variable = { PREV.world_stage_power_deployed_by^this_metropolis2 > 0 } }	# check if this metropolis had troops in the theater that just ended
+									log = "[GetTheaterName] world_stage_power_deployed_by^this_metropolis2 [?world_stage_power_deployed_by^this_metropolis2]"
+									log = "[GetTheaterName] PREV.world_stage_power_deployed_by^this_metropolis2 [?PREV.world_stage_power_deployed_by^this_metropolis2]"
+									add_to_variable = { world_stage_power_deployed_by^this_metropolis2 = PREV.world_stage_power_deployed_by^this_metropolis2 }
 								}
 							}
 						}
 					}
-					
+					world_stage_state_update_current_day = yes	# updates the UI
 				}
 			}
 			for_each_loop = {											# NOW sets the values in the array to zero (except unespecified minors)
@@ -286,7 +289,8 @@ world_stage_end_round = {
 		set_variable = { coalition_side_attack = 0 }
 		# the very last thing, set this theater as inactive
 		clr_state_flag = theater_is_active
-	} ##################################################################################################################
+	}
+	################################ ATTACKER WINS ################################
 	if = {
 		limit = { NOT = { check_variable = { attacker_deployed_power < 1 } } check_variable = { defender_deployed_power < 1 } }
 		log = "[GetTheaterName]: defender won"
