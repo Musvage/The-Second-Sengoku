@@ -680,14 +680,741 @@ focus_tree = {
 			}
 		}
 	}
-	
+
+	focus = {
+		id = KYU_a_junta_problem
+		icon = GFX_
+		x = 5
+		y = 0
+		cost = 10
+		available = {
+		}
+		mutually_exclusive = {focus = KYU_stabilize_the_nation }
+		ai_will_do = {
+			factor = 100
+		}	
+		completion_reward = {
+			set_politics = {
+				ruling_party = autocracy
+				elections_allowed = yes
+			}
+			create_country_leader = {
+				name = "Isoroku Yamamoto "
+				desc = "POLITICS_YAMAMOTO_DESC"
+				picture = "Portrait_KYU_Isoroku_Yamamoto_Emperor.dds"
+				expire = "1965.1.1"
+				ideology = autocracy_subtype
+				traits = {
+					emperor_of_admiralty
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = KYU_navy_coup_start
+		icon = GFX_focus_generic_coup
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = KYU_a_junta_problem
+		prerequisite = { focus = KYU_a_junta_problem }
+		mutually_exclusive = {}
+		available = {
+		}
+		ai_will_do = {
+			factor = 100
+		}	
+		completion_reward = {
+			add_country_leader_trait = nationalist_symbol
+			add_country_leader_trait = Napoleon_of_Japan
+		}
+	}
+
+	focus = {
+		id = KYU_new_industrial_effort
+		icon = GFX_focus_generic_coup
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = KYU_navy_coup_start
+		prerequisite = { focus = KYU_navy_coup_start}
+		mutually_exclusive = {}
+		available = {
+		}
+		ai_will_do = {
+			factor = 100
+		}	
+		completion_reward = {
+			add_tech_bonus = {
+				name = industrial_bonus
+				bonus = 1.0
+				uses = 3
+				category = industry
+			}
+		}
+	}
+
+	focus = {
+		id = KYU_new_civilian_effort
+		icon = GFX_focus_generic_coup
+		x = 2
+		y = 1
+		cost = 5
+		relative_position_id = KYU_new_industrial_effort
+		prerequisite = { focus = KYU_new_industrial_effort}
+		mutually_exclusive = {}
+		available = {
+		}
+		ai_will_do = {
+			factor = 100
+		}	
+		completion_reward = {
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = industrial_complex
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = industrial_complex
+					level = 2
+					instant_build = yes
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = KYU_new_military_effort
+		icon = GFX_focus_generic_coup
+		x = -2
+		y = 1
+		cost = 5
+		relative_position_id = KYU_new_industrial_effort
+		prerequisite = { focus = KYU_new_industrial_effort}
+		mutually_exclusive = {}
+		available = {
+		}
+		ai_will_do = {
+			factor = 100
+		}	
+		completion_reward = {
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = arms_factory
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = arms_factory
+					level = 2
+					instant_build = yes
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = KYU_navy_expansion
+		icon = GFX_focus_generic_coup
+		x = 0
+		y = 1
+		cost = 5
+		relative_position_id = KYU_new_industrial_effort
+		prerequisite = { focus = KYU_new_industrial_effort }
+		mutually_exclusive = {}
+		available = {
+		}
+		ai_will_do = {
+			factor = 100
+		}	
+		completion_reward = {
+			random_owned_controlled_state = {
+					limit = {
+						is_coastal = yes
+						free_building_slots = {
+							building = dockyard
+							size > 2
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = dockyard
+						level = 2
+						instant_build = yes
+					}
+				}	
+		}
+	}
+
+	focus = {
+		id = KYU_Internal_political_reforms
+		icon = GFX_focus_generic_coup
+		x = 2
+		y = 1
+		cost = 10
+		relative_position_id = KYU_new_military_effort
+		prerequisite = { focus = KYU_new_military_effort }
+		prerequisite = { focus = KYU_new_civilian_effort }
+		prerequisite = { focus = KYU_navy_expansion }
+		mutually_exclusive = {}
+		available = {
+		}
+		ai_will_do = {
+			factor = 100
+		}	
+		completion_reward = {
+			add_stability = 0.10
+			add_political_power = 100
+		}
+	}
+
+	focus = {
+		id = KYU_Political_Bans
+		icon = GFX_focus_generic_coup
+		x = 1
+		y = 1
+		cost = 5
+		relative_position_id = KYU_Internal_political_reforms
+		prerequisite = { focus = KYU_Internal_political_reforms }
+		mutually_exclusive = {}
+		available = {
+		}
+		ai_will_do = {
+			factor = 100
+		}	
+		completion_reward = {
+			set_temp_variable = {
+				var = ban_democratic_var
+				value = party_popularity@democratic
+			}
+			multiply_temp_variable = {
+				var = ban_democratic_var
+				value = -1
+			}
+			add_popularity = {
+				ideology = democratic
+				popularity = ban_democratic_var
+			}
+			set_temp_variable = {
+				var = ban_communism_var
+				value = party_popularity@communism
+			}
+			multiply_temp_variable = {
+				var = ban_communism_var
+				value = -1
+			}
+			add_popularity = {
+				ideology = communism
+				popularity = ban_communism_var
+			}
+			set_temp_variable = {
+				var = ban_fascism_var
+				value = party_popularity@fascism
+			}
+			multiply_temp_variable = {
+				var = ban_fascism_var
+				value = -1
+			}
+			add_popularity = {
+				ideology = fascism
+				popularity = ban_fascism_var
+			}
+			swap_ruler_traits = { remove = disdain_for_politicians_1 add = disdain_for_politicians_2 }
+		}
+	}
+
+	focus = {
+		id = KYU_Nationalizing_education_in_schools
+		icon = GFX_focus_generic_coup
+		x = -1
+		y = 1
+		cost = 5
+		relative_position_id = KYU_Internal_political_reforms
+		prerequisite = { focus = KYU_Internal_political_reforms }
+		mutually_exclusive = {}
+		available = {
+		}
+		ai_will_do = {
+			factor = 100
+		}	
+		completion_reward = {
+			add_ideas = KYU_Nationalizing_education_in_schools
+		}
+	}
+
+	focus = {
+		id = KYU_strengthen_national_unity
+		icon = GFX_focus_generic_coup
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = KYU_Nationalizing_education_in_schools
+		prerequisite = { focus = KYU_Nationalizing_education_in_schools }
+		mutually_exclusive = {}
+		available = {
+		}
+		ai_will_do = {
+			factor = 100
+		}	
+		completion_reward = {
+			add_ideas = KYU_strengthen_national_unity
+		}
+	}
+
+	focus = {
+		id = KYU_new_attitude
+		icon = GFX_focus_generic_coup
+		x = 2
+		y = 1
+		cost = 10
+		relative_position_id = KYU_Nationalizing_education_in_schools
+		prerequisite = { focus = KYU_Nationalizing_education_in_schools }
+		prerequisite = { focus = KYU_Political_Bans }
+		mutually_exclusive = {}
+		available = {
+		}
+		ai_will_do = {
+			factor = 100
+		}	
+		completion_reward = {
+			17 = { add_manpower = -10000 }
+			202 = { add_manpower = -10000 }
+		}
+	}
+
+	focus = {
+		id = KYU_Foreign_policy_reforms
+		icon = GFX_focus_generic_coup
+		x = -1
+		y = 1
+		cost = 10
+		relative_position_id = KYU_new_attitude
+		prerequisite = { focus = KYU_new_attitude }
+		mutually_exclusive = {}
+		available = {
+		}
+		ai_will_do = {
+			factor = 100
+		}	
+		completion_reward = {
+			add_political_power = 120
+			add_stability = 0.10
+			add_war_support = 0.10
+		}
+	}
+
+	focus = {
+		id = KYU_New_spy_network
+		icon = GFX_focus_generic_coup
+		x = 0
+		y = 2
+		cost = 10
+		relative_position_id = KYU_Foreign_policy_reforms
+		prerequisite = { focus = KYU_The_search_for_a_new_global_ally focus = KYU_Possible_Asian_Allies }
+		mutually_exclusive = {}
+		available = {
+		}
+		ai_will_do = {
+			factor = 100
+		}	
+		completion_reward = {
+			add_ideas = KYU_New_spy_network
+		}
+	}
+
+	focus = {
+		id = KYU_Possible_Asian_Allies
+		icon = GFX_focus_generic_coup
+		x = 2
+		y = 1
+		cost = 5
+		relative_position_id = KYU_Foreign_policy_reforms
+		prerequisite = { focus = KYU_Foreign_policy_reforms }
+		mutually_exclusive = { focus = KYU_The_search_for_a_new_global_ally }
+		available = {
+		}
+		ai_will_do = {
+			factor = 100
+		}	
+		completion_reward = {
+			every_other_country = {
+				limit = {
+					OR = {
+						TAG = JOS
+						TAG = FER
+						TAG = GAN
+						TAG = ROC
+					}
+				}
+				add_opinion_modifier = {
+					target = KYU
+					modifier = huge_increase
+				}
+				PREV = {
+					add_opinion_modifier = {
+						target = KYU
+						modifier = huge_increase
+					}
+				}	
+			}
+		}
+	}
+
+	focus = {
+		id = KYU_The_search_for_a_new_global_ally
+		icon = GFX_focus_generic_coup
+		x = -2
+		y = 1
+		cost = 5
+		relative_position_id = KYU_Foreign_policy_reforms
+		prerequisite = { focus = KYU_Foreign_policy_reforms }
+		mutually_exclusive = { focus = KYU_Possible_Asian_Allies }
+		available = {
+		}
+		ai_will_do = {
+			factor = 100
+		}	
+		completion_reward = {
+			every_other_country = {
+				limit = {
+					OR = {
+						TAG = HIR
+						TAG = OKI
+						TAG = AMC
+						TAG = KOB
+						TAG = OSA
+						TAG = AMO
+						TAG = PRT
+					}
+				}
+				add_opinion_modifier = {
+					target = KYU
+					modifier = huge_increase
+				}
+				PREV = {
+					add_opinion_modifier = {
+						target = KYU
+						modifier = huge_increase
+					}
+				}	
+			}
+		}
+	}
+
+	focus = {
+		id = KYU_New_army_organisation
+		icon = GFX_focus_generic_coup
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = KYU_New_spy_network
+		prerequisite = { focus = KYU_New_spy_network }
+		mutually_exclusive = {}
+		available = {
+		}
+		ai_will_do = {
+			factor = 100
+		}	
+		completion_reward = {
+			add_ideas = KYU_New_army_organisation
+		}
+	}
+
+	focus = {
+		id = KYU_Modernize_the_army_and_navy
+		icon = GFX_focus_generic_coup
+		x = -2
+		y = 1
+		cost = 5
+		relative_position_id = KYU_New_army_organisation
+		prerequisite = { focus = KYU_New_army_organisation }
+		prerequisite = {  }
+		prerequisite = {  }
+		mutually_exclusive = {}
+		available = {
+		}
+		ai_will_do = {
+			factor = 100
+		}	
+		completion_reward = {
+			add_tech_bonus = {
+				name = infantry_weapons_bonus
+				bonus = 1.0
+				uses = 1
+				category = infantry_weapons
+			}
+			add_tech_bonus = {
+				name = dd_bonus
+				bonus = 1.0
+				uses = 1
+				category = dd_tech
+			}
+		}
+	}
+
+	focus = {
+		id = KYU_Focus_on_production
+		icon = GFX_focus_generic_coup
+		x = 2
+		y = 1
+		cost = 5
+		relative_position_id = KYU_New_army_organisation
+		prerequisite = { focus = KYU_New_army_organisation }
+		prerequisite = {  }
+		prerequisite = {  }
+		mutually_exclusive = {}
+		available = {
+		}
+		ai_will_do = {
+			factor = 100
+		}	
+		completion_reward = {
+			add_ideas = KYU_Focus_on_production
+		}
+	}
+
+	focus = {
+		id = KYU_learn_new_battle_tactics
+		icon = GFX_focus_generic_coup
+		x = 0
+		y = 1
+		cost = 5
+		relative_position_id = KYU_New_army_organisation
+		prerequisite = { focus = KYU_New_army_organisation }
+		prerequisite = {  }
+		prerequisite = {  }
+		mutually_exclusive = {}
+		available = {
+		}
+		ai_will_do = {
+			factor = 100
+		}	
+		completion_reward = {
+			add_doctrine_cost_reduction  = {				
+				name = land_doc_bonus				
+				cost_reduction = 0.5
+				uses = 3
+				category = land_doctrine
+			}
+		}
+	}
+
+	focus = {
+		id = KYU_re-glorifying_japan
+		icon = GFX_focus_generic_coup
+		x = 0
+		y = 1
+		cost = 10
+		relative_position_id = KYU_learn_new_battle_tactics
+		prerequisite = { focus = KYU_learn_new_battle_tactics }
+		prerequisite = { focus = KYU_Modernize_the_army_and_navy }
+		prerequisite = { focus = KYU_Focus_on_production }
+		mutually_exclusive = {}
+		available = {
+		}
+		ai_will_do = {
+			factor = 100
+		}	
+		completion_reward = {
+			add_ideas = KYU_re-glorifying_japan
+		}
+	}
+
+	focus = {
+		id = KYU_Creating_a_new_national_myth
+		icon = GFX_focus_generic_coup
+		x = -2
+		y = 1
+		cost = 5
+		relative_position_id = KYU_re-glorifying_japan
+		prerequisite = { focus = KYU_re-glorifying_japan }
+		mutually_exclusive = {}
+		available = {
+		}
+		ai_will_do = {
+			factor = 100
+		}	
+		completion_reward = {
+			add_ideas = KYU_Creating_a_new_national_myth
+		}
+	}
+
+	focus = {
+		id = KYU_Starting_a_new_cultural_reform
+		icon = GFX_focus_generic_coup
+		x = 0
+		y = 1
+		cost = 5
+		relative_position_id = KYU_re-glorifying_japan
+		prerequisite = { focus = KYU_re-glorifying_japan }
+		mutually_exclusive = {}
+		available = {
+		}
+		ai_will_do = {
+			factor = 100
+		}	
+		completion_reward = {
+			add_ideas = KYU_Starting_a_new_cultural_reform
+		}
+	}
+
+	focus = {
+		id = KYU_Creating_a_new_tourism_industry
+		icon = GFX_focus_generic_coup
+		x = 2
+		y = 1
+		cost = 5
+		relative_position_id = KYU_re-glorifying_japan
+		prerequisite = { focus = KYU_re-glorifying_japan }
+		mutually_exclusive = {}
+		available = {
+		}
+		ai_will_do = {
+			factor = 100
+		}	
+		completion_reward = {
+			add_ideas = KYU_Creating_a_new_tourism_industry
+		}
+	}
+
+	focus = {
+		id = KYU_World_domination
+		icon = GFX_focus_generic_coup
+		x = -1
+		y = 1
+		cost = 10
+		relative_position_id = KYU_Creating_a_new_tourism_industry
+		prerequisite = { focus = KYU_Creating_a_new_tourism_industry  }
+		prerequisite = { focus = KYU_Starting_a_new_cultural_reform  }
+		prerequisite = { focus = KYU_Creating_a_new_national_myth }
+		prerequisite = { focus = KYU_reunification }
+		mutually_exclusive = {}
+		available = {
+		}
+		ai_will_do = {
+			factor = 100
+		}	
+		completion_reward = {
+			every_other_country = {
+				limit = {
+					OR = {
+						TAG = JOS
+						TAG = FER
+						TAG = GAN
+						TAG = ROC
+						TAG = HIR
+						TAG = OKI
+						TAG = AMC
+						TAG = KOB
+						TAG = OSA
+						TAG = AMO
+						TAG = PRT
+					}
+					NOT = {
+						is_in_faction_with = KYU
+					}
+				}
+				KYU = {
+					create_wargoal = {
+						type = annex_everything
+						target = PREV
+					}
+				}	
+			}
+		}
+	}
+
+	focus = {
+		id = KYU_reunification
+		icon = GFX_focus_generic_coup
+		x = 5
+		y = 1
+		cost = 10
+		relative_position_id = KYU_re-glorifying_japan
+		prerequisite = { focus = KYU_re-glorifying_japan focus = KYU_united_juntas }
+		mutually_exclusive = {}
+		available = {
+		}
+		ai_will_do = {
+			factor = 100
+		}	
+		completion_reward = {
+			every_other_country = {
+				limit = {
+					NOT = {
+						OR = {
+						TAG = JOS
+						TAG = FER
+						TAG = GAN
+						TAG = ROC
+						TAG = HIR
+						TAG = OKI
+						TAG = AMC
+						TAG = KOB
+						TAG = OSA
+						TAG = AMO
+						TAG = PRT
+						}
+						is_in_faction_with = KYU
+					}
+				}
+				KYU = {
+					create_wargoal = {
+						type = annex_everything
+						target = PREV
+					}
+				}	
+			}
+		}
+	}
 	
 	focus = {
 		id = KYU_stabilize_the_nation
 		icon = GFX_focus_KYU_stabilize_the_nation
-		x = 7
+		x = 20
 		y = 0
 		cost = 10
+		relative_position_id = KYU_junta_problem
+		mutually_exclusive = {focus = KYU_a_junta_problem }
 		available = {
 		}
 		ai_will_do = {
@@ -919,7 +1646,7 @@ modifier = {
 		y = 3
 		cost = 10
 		relative_position_id = KYU_join_provisional
-		prerequisite = { focus = KYU_demand_jeju focus = KYU_deal_hirado focus = KYU_personality_cult focus = KYU_join_provisional focus = KYU_imperial_alliance focus = KYU_the_unthinkable_option2 }
+		prerequisite = { focus = KYU_demand_jeju focus = KYU_deal_hirado }
 		available = {
 		has_stability > 0.50
 		has_war_support > 0.50
@@ -2196,7 +2923,9 @@ available = {
 		}	
 		completion_reward = {
 		add_war_support = 0.05
-		add_doctrine_cost_reduction  = {				name = land_doc_bonus				cost_reduction = 0.5
+			add_doctrine_cost_reduction  = {				
+				name = land_doc_bonus				
+				cost_reduction = 0.5
 				uses = 1
 				category = land_doctrine
 			}
