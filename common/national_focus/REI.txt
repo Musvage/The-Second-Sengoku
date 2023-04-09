@@ -656,7 +656,7 @@ focus_tree = {
 	focus = {
 		id = REI_help_spain
 		icon = GFX_focus_REI_help_spain
-		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_DIPLOMACY }
+		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WORLD }
 		ai_will_do = { factor = 10 modifier = { factor = 2 has_government = fascism } }
 		prerequisite = { focus = REI_denounce_versailles }
 		
@@ -674,6 +674,10 @@ focus_tree = {
 		
 		bypass = {
 			has_global_flag = world_stage_spanish_cw_over
+		}
+		
+		allow_branch = {
+			always = no 
 		}
 		
 		completion_reward = {
@@ -732,7 +736,7 @@ focus_tree = {
 		
 		
 		bypass = {
-			has_global_flag = REI_anschluss_completed
+			hidden_trigger = { has_global_flag = REI_anschluss_completed }
 		}
 		
 		completion_reward = {
@@ -750,8 +754,12 @@ focus_tree = {
 			set_variable = { global.worldstage_europe_map_frame = 2 }
 			if = {
 				limit = { has_global_flag = leagueofnations_exists }
-				set_variable = { global.theater_owner_austria = 6 }
-			} else = { set_variable = { global.theater_owner_austria = 3 } }
+				set_variable = { 26.theater_owner = 101 }
+				set_variable = { 26.theater_owner_coalition = 6 }
+			} else = {
+				set_variable = { 26.theater_owner = 101 }
+				set_variable = { 26.theater_owner_coalition = 3 }
+			}
 			custom_effect_tooltip = REI_austria_tt
 			add_to_variable = { global.tc_base_yawatahama_steel = 2 }
 			check_trade_cities = yes
@@ -843,7 +851,7 @@ focus_tree = {
 		}
 		
 		bypass = {
-			has_global_flag = REI_molotov_ribbentrop_completed
+			hidden_trigger = { has_global_flag = REI_molotov_ribbentrop_completed }
 		}
 		
 		completion_reward = {
@@ -901,6 +909,10 @@ focus_tree = {
 			}
 		}
 		
+		bypass = {
+			hidden_trigger = { has_global_flag = REI_help_finland_completed }
+		}
+		
 		completion_reward = {
 			army_experience = 5
 			air_experience = 5
@@ -911,6 +923,7 @@ focus_tree = {
 				tooltip = remove_world_stage_power_tt
 			}
 			FER = { custom_effect_tooltip = REI_help_finland_tt }
+			set_global_flag = REI_help_finland_completed
 		}
 	}
 	
@@ -927,6 +940,10 @@ focus_tree = {
 		cost = 10
 		
 		available_if_capitulated = yes
+		
+		bypass = {
+			hidden_trigger = { has_global_flag = REI_help_baltics_completed }
+		}
 				
 		completion_reward = {
 			army_experience = 5
@@ -938,6 +955,7 @@ focus_tree = {
 				tooltip = remove_world_stage_power_tt
 			}
 			FER = { custom_effect_tooltip = REI_help_baltics_tt }
+			set_global_flag = REI_help_baltics_completed
 		}
 	}
 	
@@ -957,6 +975,10 @@ focus_tree = {
 		
 		available_if_capitulated = yes
 		
+		bypass = {
+			hidden_trigger = { has_global_flag = REI_help_mongolia_completed }
+		}
+		
 		completion_reward = {
 			army_experience = 5
 			air_experience = 5
@@ -971,6 +993,7 @@ focus_tree = {
 				tooltip = world_stage_bonus_power_mongolia
 				global.ROC_strength_mongolia_bonus = 10 
 			}
+			set_global_flag = REI_help_mongolia_completed
 		}
 	}
 	
@@ -996,7 +1019,7 @@ focus_tree = {
 		available_if_capitulated = yes
 		
 		bypass = {
-			has_global_flag = REI_sudetenland_completed
+			hidden_trigger = { has_global_flag = REI_sudetenland_completed }
 		}
 		
 		completion_reward = {
@@ -1067,18 +1090,16 @@ focus_tree = {
 			}
 			custom_effect_tooltip = theater_scope_poland
 			custom_effect_tooltip = world_stage_activate_theater_tt
-			log = "TEST world_stage_metropolis:world_stage_power [?world_stage_metropolis:world_stage_power]"
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
 				101.world_stage_power = 60
 				tooltip = world_stage_deploy_power
 			}
-			log = "XTEST world_stage_metropolis:world_stage_power [?world_stage_metropolis:world_stage_power]"
 			add_to_variable = {
 				3.attacker_strategic_advantage = 60
 				tooltip = world_stage_add_strategic_advantage
 			}
 			hidden_effect = {
-				3 = { add_to_variable = { world_stage_power_deployed_by^101 = 60 } log = "AAAA" }	# proxy for Poland
+				3 = { add_to_variable = { world_stage_power_deployed_by^101 = 60 }  }	# proxy for Poland
 				3 = { set_variable = { coalition_side_attack = 6 } }					# it's not Axis quite yet
 				3 = { world_stage_state_update_current_day = yes }
 			}
@@ -1106,6 +1127,10 @@ focus_tree = {
 			always = no
 		}
 		
+		bypass = {
+			hidden_trigger = { has_global_flag = REI_operation_weserbung_completed }
+		}
+		
 		available = {
 			has_global_flag = world_stage_world_war_2_is_active
 			custom_trigger_tooltip = {
@@ -1120,16 +1145,22 @@ focus_tree = {
 				name = REI_threat_operation_weserbung
 			}
 			news_event = worldstage.45
-			set_global_flag = world_stage_theater_norway_is_active
-			custom_effect_tooltip = world_stage_theater_norway_is_active_tt
-			add_to_variable = {
-				global.GER_strength_norway = 60
-				tooltip = world_stage_deploy_power_norway
+			custom_effect_tooltip = theater_scope_norway
+			custom_effect_tooltip = world_stage_activate_theater_tt
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				101.world_stage_power = 60
+				tooltip = world_stage_deploy_power
 			}
 			add_to_variable = {
-				global.GER_strength_norway_bonus = 30
-				tooltip = world_stage_bonus_power_norway
+				12.attacker_strategic_advantage = 30
+				tooltip = world_stage_add_strategic_advantage
+			}	
+			hidden_effect = {
+				12 = { add_to_variable = { world_stage_power_deployed_by^101 = 60 } }	# proxy for Norway
+				12 = { set_variable = { coalition_side_attack = 3 } }
+				12 = { world_stage_state_update_current_day = yes }
 			}
+			set_global_flag = REI_operation_weserbung_completed
 		}
 	}
 	
@@ -1153,6 +1184,10 @@ focus_tree = {
 			has_global_flag = world_stage_world_war_2_is_active
 		}
 		
+		bypass = {
+			hidden_trigger = { has_global_flag = REI_case_yellow_completed }
+		}
+		
 		completion_reward = {
 			add_doctrine_cost_reduction = {
 				name = land_doc_bonus
@@ -1166,6 +1201,7 @@ focus_tree = {
 				uses = 1
 				category = air_doctrine
 			}
+			set_global_flag = REI_case_yellow_completed
 		}
 	}
 	
@@ -1223,7 +1259,7 @@ focus_tree = {
 			OR = {
 				theater_france_controlled_axis = yes
 				NOT = { has_global_flag = world_stage_france_exists }
-				has_global_flag = REI_blitzkrieg_completed
+				hidden_trigger = { has_global_flag = REI_blitzkrieg_completed }
 			}
 		}
 		
@@ -1633,7 +1669,7 @@ focus_tree = {
 	focus = {
 		id = REI_west_ost_wall
 		icon = GFX_focus_REI_west_ost_wall
-		search_filters = { }
+		search_filters = { FOCUS_FILTER_WORLD FOCUS_FILTER_MILITARY }
 		
 		prerequisite = { focus = REI_denounce_versailles }
 		
@@ -1656,7 +1692,7 @@ focus_tree = {
 	focus = {
 		id = REI_army_tech
 		icon = GFX_focus_REI_army_tech
-		search_filters = { FOCUS_FILTER_RESEARCH }
+		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_WORLD }
 		
 		prerequisite = { focus = REI_west_ost_wall }
 		
@@ -1701,7 +1737,7 @@ focus_tree = {
 	focus = {
 		id = REI_air_tech
 		icon = GFX_focus_HIR_air_force_modernized
-		search_filters = { FOCUS_FILTER_RESEARCH }
+		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_WORLD }
 		
 		prerequisite = { focus = REI_west_ost_wall }
 		
@@ -1732,7 +1768,7 @@ focus_tree = {
 	focus = {
 		id = REI_home_construction # Four Year Plan
 		icon = GFX_focus_REI_four_years_plan
-		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_INDUSTRY }
+		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_INDUSTRY FOCUS_FILTER_WORLD }
 		
 		prerequisite = { focus = REI_denounce_versailles }
 		
@@ -1767,7 +1803,7 @@ focus_tree = {
 	focus = {
 		id = REI_home_industry # Autarky
 		icon = GFX_focus_REI_autarky
-		search_filters = { FOCUS_FILTER_RESEARCH }
+		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_WORLD }
 		
 		prerequisite = { focus = REI_home_construction }
 		
@@ -1800,7 +1836,7 @@ focus_tree = {
 	focus = {
 		id = REI_home_infrastructure # # Großraumwirtschaft
 		icon = GFX_focus_REI_home_infrastructure
-		search_filters = { FOCUS_FILTER_RESEARCH  }
+		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_WORLD }
 		
 		prerequisite = { focus = REI_home_construction }
 		
@@ -1857,10 +1893,12 @@ focus_tree = {
 				tooltip = add_world_stage_power_tt
 			}
 			add_political_power = 100
-			every_character = {
-				limit = { has_character_flag = dual_leader_first_title_generalkomissar }
-				clr_character_flag = dual_leader_first_title_generalkomissar
-				set_character_flag = dual_leader_first_title_reichskomissar
+			hidden_effect = {
+				every_character = {
+					limit = { has_character_flag = dual_leader_first_title_generalkomissar }
+					clr_character_flag = dual_leader_first_title_generalkomissar
+					set_character_flag = dual_leader_first_title_reichskomissar
+				}
 			}
 		}
 	}
@@ -1868,7 +1906,7 @@ focus_tree = {
 	focus = {
 		id = REI_synthetic_resources
 		icon = GFX_focus_REI_synth_resources
-		search_filters = { FOCUS_FILTER_RESEARCH }
+		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_WORLD }
 		
 		prerequisite = { focus = REI_home_industry }
 		
@@ -1921,7 +1959,7 @@ focus_tree = {
 	focus = {
 		id = REI_volkswagen
 		icon = GFX_focus_REI_volkswagen
-		search_filters = { FOCUS_FILTER_RESEARCH }
+		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_WORLD }
 		dynamic = yes
 		
 		prerequisite = { focus = REI_home_industry }
