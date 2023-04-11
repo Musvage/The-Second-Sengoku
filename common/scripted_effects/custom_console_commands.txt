@@ -858,17 +858,34 @@ d_add_deployed_power = {
 	if = {
 		limit = { has_state_flag = theater_is_active }
 		if = {
-			limit = { has_variable = theater_owner }
 			set_temp_variable = { added_power = args^0?50 }
+			limit = { has_variable = theater_owner }
 			add_to_variable = { world_stage_power_deployed_by^theater_owner = added_power }
 			log = "[GetTheaterName] added [?added_power] deployed power to defender"
 		}
 	} else = { log ="no active theater selected" }
 }
 
+d_set_world_stage_coalition = {
+	if = {
+		limit = { has_variable = world_stage_metropolis }
+		set_temp_variable = { new_coalition = args^0?4 }
+		var:world_stage_metropolis = {
+			set_variable = { world_stage_coalition = new_coalition }
+			log = "[GetMetropolisName] now belongs to [GetCoalitionName]"
+			every_state = {
+				limit = { check_variable = { theater_owner = PREV.world_stage_metropolis } }
+				set_variable = { theater_owner_coalition = PREV.world_stage_coalition }
+			}
+		}
+		world_stage_get_country_icon = yes
+	} else = { log = "[THIS.GetName] does not have a metropolis" }
+}
+
 ### } HELP
 
 d_help_ss = {
+	log = "------------ HELP ------------"
 	log = "spawn_troops"
 	log = "   spawn divisions on country, scales slightly with controlled states"
 	log = "spawn_trools_all"
@@ -999,6 +1016,8 @@ d_help_ss = {
 	log = "   adds 150 to Poland’s deployed power in Poland"
 	log = "add_deployed_power [argument]"
 	log = "   for an active theater's selected proxy, adds the argument to the theater owner's deployed power (defaults to 50 if no argument is provided)"
+	log = "set_world_stage_coalition"
+	log = "   for a country with a metropolis, sets the coalition according to argument (if no argument is provided, defaults to 4 (non-aligned)"
 	log = "unification_get_score"
 	log = "   returns the country's unification score"
 	log = "unification_count_states_southern_japan"
