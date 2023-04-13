@@ -792,35 +792,30 @@ focus_tree = {
 		
 		available_if_capitulated = yes
 		
-		available = {
-			NOT = { has_global_flag = REI_molotov_ribbentrop_completed }
-		}
-		
 		completion_reward = {
 			set_global_flag = REI_molotov_ribbentrop_completed			# for auto-pilot on REI-less world stage
 			add_war_support = 0.05
 			every_other_country = {
-				if = {
-					limit = { has_government = fascism }
-					add_opinion_modifier = {
+				limit = { has_government = fascism }
+				add_opinion_modifier = {
 						target = REI
 						modifier = REI_enemy_of_soviets_strong
 					}
+			}
+			every_other_country = {
+				limit = { OR = {	has_government = neutrality
+									has_government = autocracy } }
+				add_opinion_modifier = {
+					target = REI
+					modifier = REI_enemy_of_soviets
 				}
-				if = {
-					limit = { OR = { has_government = neutrality has_government = autocracy } }
-					add_opinion_modifier = {
-						target = REI
-						modifier = REI_enemy_of_soviets
-					}
-				}
-				if = {
-					limit = { has_government = communism }
-					add_opinion_modifier = {
+			}
+			every_other_country = {
+				limit = { has_government = fascism }
+				add_opinion_modifier = {
 						target = REI
 						modifier = REI_enemy_of_soviets_bad
 					}
-				}
 			}
 		}
 	}
@@ -1469,48 +1464,83 @@ focus_tree = {
 		
 		available = {
 			has_global_flag = world_stage_world_war_2_is_active
-			has_world_stage_power_ger_30 = yes
+			custom_trigger_tooltip = {
+				tooltip = has_world_stage_power_30
+				101 = { check_variable = { world_stage_power > 30 } }
+			}
 			OR = {
 				custom_trigger_tooltip = {
-					has_global_flag = world_stage_theater_lybia_is_active
-					tooltip = world_stage_theater_lybia_is_active
+					tooltip = theater_active_lybia
+					14 = { has_state_flag = theater_is_active }
 				}
 				custom_trigger_tooltip = {
-					has_global_flag = world_stage_theater_egypt_is_active
-					tooltip = world_stage_theater_egypt_is_active
+					tooltip = theater_active_egypt
+					15 = { has_state_flag = theater_is_active }
 				}
 			}
 		}
 		
 		completion_reward = {
-			set_global_flag = afrikakorps_allowed
-			custom_effect_tooltip = afrikakorps_allowed
-			set_country_flag = can_play_lybia set_country_flag = can_play_egypt
-			set_temp_variable = { ger_forces_value = 30 }
+			#set_global_flag = afrikakorps_allowed
+			#custom_effect_tooltip = afrikakorps_allowed
+			#set_country_flag = can_play_lybia set_country_flag = can_play_egypt
+			hidden_effect = { country_event = ostasien.13}
 			if = {
-				limit ={
-					AND = {
-						has_global_flag = world_stage_theater_lybia_is_active
-						has_global_flag = world_stage_theater_egypt_is_active
+				limit = {
+					14 = { has_state_flag = theater_is_active }
+					15 = { has_state_flag = theater_is_active }
+				}
+				set_temp_variable = { ger_forces_value = 15 }
+				set_temp_variable = { strat_bonus = 0.5 }
+				set_temp_variable = { xp_bonus = 5 }
+			} else = {
+				set_temp_variable = { ger_forces_value = 30 }
+				set_temp_variable = { xp_bonus = 10 }
+			}
+			custom_effect_tooltip = theater_scope_lybia
+			if = {
+				limit = { 14 = { has_state_flag = theater_is_active } }
+				if = {
+					limit = { var:world_stage_metropolis = { check_variable = { 14.coalition_side_attack = world_stage_coalition } } }
+					add_to_variable = {
+						14.defender_strategic_advantage = strat_bonus
+						tooltip = world_stage_add_strategic_advantage_attacker
+					}
+				} else = {
+					add_to_variable = {
+						14.defender_strategic_advantage = strat_bonus
+						tooltip = world_stage_add_strategic_advantage_defender
 					}
 				}
-				divide_temp_variable = { ger_forces_value = 2 }
-			}
-			if = {
-				limit = { has_global_flag = world_stage_theater_lybia_is_active }
-				add_to_variable = {
-					global.GER_strength_lybia = var:ger_forces_value
-					tooltip = world_stage_deploy_power_lybia
+				hidden_effect = { 14 = { add_to_variable = { world_stage_power_deployed_by^101 = ger_forces_value }  world_stage_state_update_current_day = yes } }	# proxy for Lybia
+				subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+					101.world_stage_power = ger_forces_value
+					tooltip = world_stage_deploy_power
 				}
-			}
+				
+			} else = { custom_effect_tooltip = REI_afrikakorps_tt }
+			custom_effect_tooltip = theater_scope_egypt
 			if = {
-				limit = { has_global_flag = world_stage_theater_egypt_is_active }
-				add_to_variable = {
-					global.GER_strength_egypt = var:ger_forces_value
-					tooltip = world_stage_deploy_power_egypt
+				limit = { 15 = { has_state_flag = theater_is_active } }
+				if = {
+					limit = { var:world_stage_metropolis = { check_variable = { 15.coalition_side_attack = world_stage_coalition } } }
+					add_to_variable = {
+						15.defender_strategic_advantage = strat_bonus
+						tooltip = world_stage_add_strategic_advantage_attacker
+					}
+				} else = {
+					add_to_variable = {
+						15.defender_strategic_advantage = strat_bonus
+						tooltip = world_stage_add_strategic_advantage_defender
+					}
 				}
-			}
-			subtract_from_variable = { global.world_stage_power_ger = ger_forces_value }
+				hidden_effect = { 15 = { add_to_variable = { world_stage_power_deployed_by^101 = ger_forces_value } world_stage_state_update_current_day = yes } }	# proxy for Egypt
+				subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+					101.world_stage_power = ger_forces_value
+					tooltip = world_stage_deploy_power
+				}
+			} else = { custom_effect_tooltip = REI_afrikakorps_tt }
+			army_experience = xp_bonus
 		}
 	}
 	
