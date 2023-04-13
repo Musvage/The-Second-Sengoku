@@ -1353,7 +1353,7 @@ focus_tree = {
 		prerequisite = { focus = REI_attack_poland }
 		
 		relative_position_id = REI_attack_poland
-		x = 2
+		x = 3
 		y = 1
 		cost = 10
 		
@@ -1529,7 +1529,7 @@ focus_tree = {
 					tooltip = world_stage_deploy_power
 				}
 				
-			} else = { custom_effect_tooltip = REI_afrikakorps_tt }
+			} else = { custom_effect_tooltip = world_stage_possibly_reinforce_here }
 			custom_effect_tooltip = theater_scope_egypt
 			if = {
 				limit = { 15 = { has_state_flag = theater_is_active } }
@@ -1550,7 +1550,7 @@ focus_tree = {
 					101.world_stage_power = ger_forces_value
 					tooltip = world_stage_deploy_power
 				}
-			} else = { custom_effect_tooltip = REI_afrikakorps_tt }
+			} else = { custom_effect_tooltip = world_stage_possibly_reinforce_here }
 			army_experience = xp_bonus
 		}
 	}
@@ -1706,6 +1706,85 @@ focus_tree = {
 				global.GER_strength_smolensk_bonus = 150
 				tooltip = world_stage_bonus_power_smolensk
 			}
+		}
+	}
+	
+	focus = {
+		id = REI_volksstrum
+		icon = GFX_focus_REI_volksstrum
+		search_filters = { FOCUS_FILTER_WORLD }
+		
+		prerequisite = { focus = REI_blitzkrieg focus = REI_barbarossa }
+		
+		relative_position_id = REI_blitzkrieg
+		x = 3
+		y = 1
+		cost = 10
+		
+		available_if_capitulated = yes
+		
+		ai_will_do = { factor = 100 }
+		
+		available = {
+			has_global_flag = world_stage_world_war_2_is_active
+			OR = {
+				custom_trigger_tooltip = {
+					tooltip = theater_active_germany
+					6 = { has_state_flag = theater_is_active }
+				}
+				custom_trigger_tooltip = {
+					tooltip = theater_active_westphalia
+					7 = { has_state_flag = theater_is_active }
+				}
+				custom_trigger_tooltip = {
+					tooltip = theater_active_austria
+					26 = { has_state_flag = theater_is_active }
+				}
+			}
+		}
+		
+		completion_reward = {
+			hidden_effect = { news_event = ostasien.14 }
+			set_temp_variable = { ger_forces_value = 30 }
+			if = { limit = { 6 = { has_state_flag = theater_is_active } } add_to_temp_variable = { number_of_theaters = 1 } }
+			if = { limit = { 7 = { has_state_flag = theater_is_active } } add_to_temp_variable = { number_of_theaters = 1 } }
+			if = { limit = { 26 = { has_state_flag = theater_is_active } } add_to_temp_variable = { number_of_theaters = 1 } }
+			divide_temp_variable = { ger_forces_value = number_of_theaters?0 }
+			add_to_variable = {
+				var = 101.world_stage_power
+				value = 30
+				tooltip = add_world_stage_power_tt
+			}
+			custom_effect_tooltip = theater_scope_germany
+			if = {
+				limit = { 6 = { has_state_flag = theater_is_active } }
+				hidden_effect = { 6 = { add_to_variable = { world_stage_power_deployed_by^101 = ger_forces_value }  world_stage_state_update_current_day = yes } }	# proxy for Berlin
+				subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+					101.world_stage_power = ger_forces_value
+					tooltip = world_stage_deploy_power
+				}
+				
+			} else = { custom_effect_tooltip = world_stage_possibly_reinforce_here }
+			custom_effect_tooltip = theater_scope_westphalia
+			if = {
+				limit = { 7 = { has_state_flag = theater_is_active } }
+				hidden_effect = { 7 = { add_to_variable = { world_stage_power_deployed_by^101 = ger_forces_value }  world_stage_state_update_current_day = yes } }	# proxy for Western Germany
+				subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+					101.world_stage_power = ger_forces_value
+					tooltip = world_stage_deploy_power
+				}
+				
+			} else = { custom_effect_tooltip = world_stage_possibly_reinforce_here }
+			custom_effect_tooltip = theater_scope_austria
+			if = {
+				limit = { 26 = { has_state_flag = theater_is_active } }
+				hidden_effect = { 26 = { add_to_variable = { world_stage_power_deployed_by^101 = ger_forces_value }  world_stage_state_update_current_day = yes } }	# proxy for Austria
+				subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+					101.world_stage_power = ger_forces_value
+					tooltip = world_stage_deploy_power
+				}
+				
+			} else = { custom_effect_tooltip = world_stage_possibly_reinforce_here }
 		}
 	}
 	
