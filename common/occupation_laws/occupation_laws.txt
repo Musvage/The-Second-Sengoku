@@ -109,6 +109,35 @@ no_garrison = {
 	}
 }
 
+international_mandate_western = {
+	icon = 17
+	sound_effect = "Martial_Law_Interface_Autonomous_Occupation_Unique_DEM"
+
+	visible = { has_idea = SS_western_city }
+
+	state_modifier = {
+		resistance_target = 0.1
+		no_compliance_gain = 1
+		required_garrison_factor = -0.9
+		resistance_damage_to_garrison = -0.25
+	}
+
+	suppressed_state_modifier = {
+		required_garrison_factor = -0.9
+		resistance_target = 0.1
+		resistance_damage_to_garrison = -0.25
+	}
+
+	ai_will_do = {
+		base = 300
+
+		modifier = {
+			has_active_resistance = no
+			add = 300
+		}
+	}
+}
+
 autonomous_occupation = {
 	icon = 2
 	sound_effect = "Martial_Law_Interface_Autonomous_Occupation_Unique_DEM"
@@ -139,7 +168,7 @@ autonomous_occupation = {
 }
 
 pacifying_commitees = {
-	icon = 13
+	icon = 15
 	sound_effect = "Martial_Law_Interface_Autonomous_Occupation_Unique_DEM"
 
 	visible = {
@@ -147,14 +176,12 @@ pacifying_commitees = {
 	}
 
 	state_modifier = {
-		compliance_gain 				= 0.03
-		required_garrison_factor 		= -0.35
-		resistance_damage_to_garrison 	= -0.3
+		required_garrison_factor 		= -0.75
+		no_compliance_gain = 1
 	}
-
+	
 	suppressed_state_modifier = {
-		local_factories = 1
-		local_resources = 1
+		required_garrison_factor 		= -0.75
 	}
 
 	ai_will_do = {
@@ -171,100 +198,6 @@ pacifying_commitees = {
 		}
 	}
 }
-
-strong_daimyos = {
-	icon = 14
-	sound_effect = "Martial_Law_Interface_Autonomous_Occupation_Unique_DEM"
-
-	visible = {
-		has_government = autocracy
-	}
-
-	state_modifier = {
-		required_garrison_factor 		= -0.7
-		resistance_damage_to_garrison 	= -0.4
-	}
-
-	suppressed_state_modifier = {
-		local_factories = 0.4
-		local_resources = 0.4
-	}
-
-	ai_will_do = {
-		base = 500
-
-		modifier = {
-			set_temp_variable = { resistance_limit = 30 }
-			if = {
-				limit = { occupation_law = martial_law_occupation }
-				set_temp_variable = { resistance_limit = 35 }
-			}
-			resistance < strong_daimyos # if we are under base resistance try to build compliance instead
-			add = 500
-		}
-	}
-}
-
-full_military_administration = {
-	icon = 15
-	sound_effect = "Martial_Law_Interface_Autonomous_Occupation_Unique_DEM"
-
-	visible = {
-		original_tag = CHU
-	}
-
-	state_modifier = {
-		compliance_gain 				= -0.1
-		required_garrison_factor 		= 1
-		resistance_damage_to_garrison 	= -0.8
-		resistance_target 				= -0.75
-		resistance_damage_to_garrison 		= 0.5
-		local_resources 				= 0.15
-		resistance_decay 				= 1.0
-	}
-
-	suppressed_state_modifier = {
-		local_manpower = 0.5
-	}
-
-	ai_will_do = {
-		base = 500
-
-		modifier = {
-			set_temp_variable = { resistance_limit = 30 }
-			if = {
-				limit = { occupation_law = martial_law_occupation }
-				set_temp_variable = { resistance_limit = 35 }
-			}
-			resistance < full_military_administration # if we are under base resistance try to build compliance instead
-			add = 500
-		}
-	}
-}
-
-foreign_civilian_oversight = {
-	icon = 3
-	sound_effect = "Martial_Law_Interface_Foreign_Cvilian_Oversight"
-
-	state_modifier = {
-		resistance_target 				= -0.10
-		required_garrison_factor 		= -0.50
-		resistance_damage_to_garrison 	= -0.25
-		compliance_gain 				= 0.000
-		local_factories 				= 0.00
-		local_resources 				= 0.00
-	}
-	starting_law = yes
-
-	ai_will_do = {
-		base = 120
-		modifier = {
-			check_variable  = { resistance_target_without_law > 0.29}
-			add = 100
-		}
-	}
-}
-
 
 local_police_force_garrison = {
 	icon = 11
@@ -299,6 +232,65 @@ local_police_force_garrison = {
 			check_variable = { garrison_min_support_ratio < requirement_limit }
 
 			add = 350
+		}
+	}
+}
+
+strong_daimyos = {
+	icon = 14
+	sound_effect = "Martial_Law_Interface_Autonomous_Occupation_Unique_DEM"
+
+	visible = {
+		has_government = autocracy
+	}
+
+	state_modifier = {
+		resistance_target 				= -0.05
+		required_garrison_factor 		= -0.50
+		compliance_gain 				= 0.01
+	}
+
+	suppressed_state_modifier = {
+		resistance_target 				= -0.05
+		required_garrison_factor 		= -0.50
+		compliance_gain 				= 0.01
+		local_manpower 					= 0.04
+	}
+
+	ai_will_do = {
+		base = 500
+
+		modifier = {
+			set_temp_variable = { resistance_limit = 30 }
+			if = {
+				limit = { occupation_law = martial_law_occupation }
+				set_temp_variable = { resistance_limit = 35 }
+			}
+			resistance < strong_daimyos # if we are under base resistance try to build compliance instead
+			add = 500
+		}
+	}
+}
+
+foreign_civilian_oversight = {
+	icon = 3
+	sound_effect = "Martial_Law_Interface_Foreign_Cvilian_Oversight"
+
+	state_modifier = {
+		resistance_target 				= -0.10
+		required_garrison_factor 		= -0.50
+		resistance_damage_to_garrison 	= -0.25
+		compliance_gain 				= 0.000
+		local_factories 				= 0.00
+		local_resources 				= 0.00
+	}
+	starting_law = yes
+
+	ai_will_do = {
+		base = 120
+		modifier = {
+			check_variable  = { resistance_target_without_law > 0.29}
+			add = 100
 		}
 	}
 }
@@ -346,6 +338,10 @@ military_governor_occupation = {
 	icon = 6
 	sound_effect = "Martial_Law_Interface_Military_Governor_Occupation"
 
+	visible = {
+		NOT = { original_tag = CHU }
+	}
+	
 	state_modifier = {
 		resistance_target 			= -0.4
 		compliance_gain 			= -0.045
@@ -372,6 +368,40 @@ military_governor_occupation = {
 		modifier = {
 			check_variable  = { resistance_target_without_law > 0.55}
 			add = 400
+		}
+	}
+}
+
+full_military_administration = {
+	icon = 16
+	sound_effect = "Martial_Law_Interface_Military_Governor_Occupation"
+
+	visible = {
+		original_tag = CHU
+	}
+
+	state_modifier = {
+		resistance_target 			= -0.4
+		compliance_gain 				= -0.045
+		required_garrison_factor 		= -0.1
+		resistance_damage_to_garrison 	= -0.2
+		local_factories 				= 0.05
+		local_resources 				= 0.1
+		enemy_operative_detection_chance_over_occupied_tag = 1 # offset detection chance by +1%
+		enemy_intel_network_gain_factor_over_occupied_tag = -0.25 # -25% scaled by the number of occupied states and the ratio of the network covering those occupied states
+	}
+
+	ai_will_do = {
+		base = 500
+
+		modifier = {
+			set_temp_variable = { resistance_limit = 30 }
+			if = {
+				limit = { occupation_law = martial_law_occupation }
+				set_temp_variable = { resistance_limit = 35 }
+			}
+			resistance < martial_law_occupation # if we are under base resistance try to build compliance instead
+			add = 500
 		}
 	}
 }
