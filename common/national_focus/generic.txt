@@ -495,6 +495,68 @@ focus_tree = {
 		cost = 10
 
 		available_if_capitulated = yes
+		
+		allow_branch = {
+			NOT = {
+				tag = REI
+				tag = PRT
+				tag = OSA
+				tag = KON
+				tag = HIR
+				tag = FER
+				tag = AMC
+				tag = OKI
+				tag = KIT
+				tag = SPR
+			}
+		}
+		
+		completion_reward = {
+			add_tech_bonus = {
+				name = jet_rocket_bonus
+				ahead_reduction = 2
+				uses = 2
+				category = rocketry
+				category = jet_technology
+			}
+		}
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0.25
+				always = yes
+			}
+		}
+	}
+	
+	focus = {
+		id = rocket_effort_western
+		icon = GFX_focus_rocketry
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		prerequisite = { focus = aviation_effort_2 }
+		prerequisite = { focus = production_effort_3_western }
+		x = 0
+		y = 2
+		relative_position_id = aviation_effort_2
+		cost = 10
+
+		available_if_capitulated = yes
+		
+		allow_branch = {
+			OR = {
+				tag = REI
+				tag = PRT
+				tag = OSA
+				tag = KON
+				tag = HIR
+				tag = FER
+				tag = AMC
+				tag = OKI
+				tag = KIT
+				tag = SPR
+			}
+		}
 
 		completion_reward = {
 			add_tech_bonus = {
@@ -896,6 +958,7 @@ focus_tree = {
 		}
 	}
 
+	### ASIAN BRANCH
 	focus = {
 		id = industrial_effort
 		search_filters = { FOCUS_FILTER_RESEARCH }
@@ -905,6 +968,21 @@ focus_tree = {
 		cost = 10
 
 		available_if_capitulated = yes
+		
+		allow_branch = {
+			NOT = {
+				tag = REI
+				tag = PRT
+				tag = OSA
+				tag = KON
+				tag = HIR
+				tag = FER
+				tag = AMC
+				tag = OKI
+				tag = KIT
+				tag = SPR
+			}
+		}
 
 		completion_reward = {
 			add_tech_bonus = {
@@ -1631,6 +1709,550 @@ focus_tree = {
 		x = 2
 		y = 1
 		relative_position_id = infrastructure_effort_2
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_tech_bonus = {
+				name = secret_bonus
+				bonus = 1.0
+				uses = 4
+				category = electronics
+				category = nuclear
+				category = rocketry
+			}
+		}
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0.25
+				always = yes
+			}
+		}
+	}
+	
+	### WESTERN BRANCH
+	focus = {
+		id = industrial_effort_western
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		icon = GFX_focus_generic_western_production
+		x = 13
+		y = 0
+		cost = 10
+
+		available_if_capitulated = yes
+		
+		allow_branch = {
+			OR = {
+				tag = REI
+				tag = PRT
+				tag = OSA
+				tag = KON
+				tag = HIR
+				tag = FER
+				tag = AMC
+				tag = OKI
+				tag = KIT
+				tag = SPR
+			}
+		}
+
+		completion_reward = {
+			add_tech_bonus = {
+				name = industrial_bonus
+				bonus = 1.5
+				uses = 1
+				category = industry
+			}
+		}
+
+		ai_will_do = {
+			factor = 3
+			modifier = {
+				factor = 0
+				date < 1939.1.1
+				# we also dont want tiny nations to go crazy with slots right away
+				num_of_controlled_states < 2				
+			}
+		}
+	}
+
+	focus = {
+		id = construction_effort_western
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		icon = GFX_focus_generic_western_construction
+		prerequisite = { focus = industrial_effort_western }
+		x = 1
+		y = 1
+		relative_position_id = industrial_effort_western
+		cost = 10
+
+		available_if_capitulated = yes
+
+		ai_will_do = {
+			factor = 2
+		}
+
+		complete_tooltip = {
+			add_extra_state_shared_building_slots = 1
+			add_building_construction = {
+				type = industrial_complex
+				level = 1
+				instant_build = yes
+			}			
+		}
+
+		completion_reward = {
+			crash_1929_decrease_level = yes
+			add_offsite_building = { type = industrial_complex level = 1 }
+		}
+	}
+
+	focus = {
+		id = production_effort_western
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_WORLD }
+		icon = GFX_focus_generic_western_factory
+		prerequisite = { focus = industrial_effort_western }
+		x = -1
+		y = 1
+		relative_position_id = industrial_effort_western
+		cost = 10
+
+		available_if_capitulated = yes
+
+
+		ai_will_do = {
+			factor = 2			
+		}
+
+		completion_reward = {
+			hidden_effect = {
+				var:world_stage_metropolis = {
+					add_to_variable = {
+						var = world_stage_power
+						value = 5
+					}
+				}
+			}
+			effect_tooltip = {
+				add_to_variable = {
+					var = world_stage_power
+					value = 5
+					tooltip = add_world_stage_power_no_scope_tt
+				}
+			}
+			add_offsite_building = { type = arms_factory level = 1 }
+		}
+	}
+
+	focus = {
+		id = construction_effort_2_western
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		icon = GFX_focus_generic_western_construction
+		prerequisite = { focus = construction_effort_western }
+		x = 0
+		y = 1
+		relative_position_id = construction_effort_western
+		cost = 10
+
+		available_if_capitulated = yes
+
+
+		ai_will_do = {
+			factor = 2
+		}
+
+		bypass = {
+			OR = {
+				custom_trigger_tooltip = {
+					tooltip = construction_effort_tt
+					all_owned_state = {
+						free_building_slots = {
+							building = industrial_complex
+							size < 1
+							include_locked = yes
+						}
+					}
+				}
+				NOT = { has_global_flag = crash_1929_global_enabled }
+			}
+		}
+
+		complete_tooltip = {
+			add_extra_state_shared_building_slots = 1
+			add_building_construction = {
+				type = industrial_complex
+				level = 1
+				instant_build = yes
+			}
+		}		
+
+		completion_reward = {
+			crash_1929_decrease_level = yes
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = industrial_complex
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = production_effort_2_western
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_WORLD }
+		icon = GFX_focus_generic_western_factory
+		prerequisite = { focus = production_effort_western }
+		x = 0
+		y = 1
+		relative_position_id = production_effort_western
+		cost = 10
+
+		available_if_capitulated = yes
+
+
+		ai_will_do = {
+			factor = 2
+		}
+
+		complete_tooltip = {
+			add_extra_state_shared_building_slots = 1
+			add_building_construction = {
+				type = arms_factory
+				level = 1
+				instant_build = yes
+			}
+		}		
+
+		completion_reward = {
+			hidden_effect = {
+				var:world_stage_metropolis = {
+					add_to_variable = {
+						var = world_stage_power
+						value = 5
+					}
+				}
+			}
+			effect_tooltip = {
+				add_to_variable = {
+					var = world_stage_power
+					value = 5
+					tooltip = add_world_stage_power_no_scope_tt
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = arms_factory
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = infrastructure_effort_western	# Fuel effort
+		search_filters = { FOCUS_FILTER_INDUSTRY  FOCUS_FILTER_RESEARCH }
+		icon = GFX_focus_generic_western_fuel
+		prerequisite = { focus = construction_effort_2_western }
+		x = 0
+		y = 1
+		relative_position_id = construction_effort_2_western
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_offsite_building = { type = synthetic_refinery level = 1 }
+			add_tech_bonus = {
+				name = JAP_coal_liquification
+				bonus = 1.0
+				uses = 1
+				category = synth_resources	
+			}
+		}
+	}
+
+	focus = {
+		id = production_effort_3_western
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_WORLD }
+		icon = GFX_focus_generic_western_factory
+		prerequisite = { focus = production_effort_2_western }
+		x = 0
+		y = 1
+		relative_position_id = production_effort_2_western
+		cost = 10
+
+		available_if_capitulated = yes
+
+
+		ai_will_do = {
+			factor = 2
+		}
+
+		complete_tooltip = {
+			add_extra_state_shared_building_slots = 1
+			add_building_construction = {
+				type = arms_factory
+				level = 1
+				instant_build = yes
+			}
+		}		
+
+		completion_reward = {
+			hidden_effect = {
+				var:world_stage_metropolis = {
+					add_to_variable = {
+						var = world_stage_power
+						value = 5
+					}
+				}
+			}
+			effect_tooltip = {
+				add_to_variable = {
+					var = world_stage_power
+					value = 5
+					tooltip = add_world_stage_power_no_scope_tt
+				}
+			}
+			add_offsite_building = { type = arms_factory level = 1 }
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = arms_factory
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = infrastructure_effort_2_western	# Dockyards Effort
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		icon = GFX_focus_generic_western_dock
+		prerequisite = { focus = infrastructure_effort_western }
+		x = -1
+		y = 2
+		relative_position_id = infrastructure_effort_western
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_offsite_building = { type = dockyard level = 2 }
+		}
+	}
+
+	focus = {
+		id = construction_effort_3_western
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		icon = GFX_focus_generic_western_construction
+		prerequisite = { focus = infrastructure_effort_western }
+		x = 0
+		y = 1
+		relative_position_id = infrastructure_effort_western
+		cost = 10
+
+		available_if_capitulated = yes
+
+
+		ai_will_do = {
+			factor = 2
+		}
+
+		complete_tooltip = {
+			add_extra_state_shared_building_slots = 1
+			add_building_construction = {
+				type = industrial_complex
+				level = 1
+				instant_build = yes
+			}
+		}		
+
+		completion_reward = {
+			crash_1929_decrease_level = yes
+			add_offsite_building = { type = industrial_complex level = 1 }
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = industrial_complex
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = nuclear_effort_western
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		icon = GFX_focus_wonderweapons
+		prerequisite = { focus = production_effort_3_western }
+		x = -3
+		y = 1
+		relative_position_id = production_effort_3_western
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_tech_bonus = {
+				name = nuclear_bonus
+				ahead_reduction = 2
+				category = nuclear
+			}
+		}
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0.25
+				always = yes
+			}
+		}
+	}
+
+	focus = {
+		id = extra_tech_slot_western
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		icon = GFX_focus_generic_western_tech
+		prerequisite = { focus = production_effort_3_western }
+		x = -2
+		y = 2
+		relative_position_id = production_effort_3_western
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_research_slot = 1
+		}
+	}
+	
+	focus = {
+		id = extra_tech_slot_2_western
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		icon = GFX_focus_generic_western_tech
+		prerequisite = { focus = extra_tech_slot_western }
+		available = {
+			num_of_factories > 50
+		}
+		cancel_if_invalid = no
+		continue_if_invalid = yes
+		x = 0
+		y = 1
+		relative_position_id = extra_tech_slot_western
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_research_slot = 1
+		}
+	}	
+
+	focus = {
+		id = secret_weapons_western
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		icon = GFX_goal_generic_secret_weapon
+		prerequisite = { focus = production_effort_3_western }
+		x = -1
+		y = 1
+		relative_position_id = production_effort_3_western
 		cost = 10
 
 		available_if_capitulated = yes
