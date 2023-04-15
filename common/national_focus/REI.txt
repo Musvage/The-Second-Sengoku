@@ -611,8 +611,15 @@ focus_tree = {
 		id = REI_denounce_versailles
 		icon = GFX_focus_REI_denounce_versailles
 		search_filters = { FOCUS_FILTER_WAR_SUPPORT }
-		ai_will_do = { factor = 10 modifier = { factor = 10 has_war = yes } }
 		prerequisite = { focus = REI_kaiser_august focus = REI_new_reich focus = REI_fascist_cabinet focus = REI_military_dictatorship focus = REI_saint_lud focus = REI_paganphiles }
+		
+		ai_will_do = {
+			factor = 10
+			modifier = { factor = 10 has_war = yes }
+			modifier = { factor = 100 date > 1936.03.06 }
+		}
+		
+		bypass = { hidden_trigger = { has_global_flag = REI_denounce_versailles_completed } }
 		
 		relative_position_id = REI_fascist_cabinet
 		x = -3
@@ -623,7 +630,12 @@ focus_tree = {
 		
 		completion_reward = {
 			add_war_support = 0.1
-			#Rhineland
+			add_named_threat = { 
+				threat = 5
+				name = REI_threat_rhineland
+			}
+			hidden_effect = { news_event = ostasien.15 }
+			set_global_flag = REI_denounce_versailles_completed
 		}
 	}
 	
@@ -742,11 +754,6 @@ focus_tree = {
 		completion_reward = {
 			hidden_effect = { news_event = ostasien.7 }
 			set_global_flag = REI_anschluss_completed
-			add_to_variable = {
-				var = 101.world_stage_power
-				value = 20
-				tooltip = add_world_stage_power_tt
-			}
 			add_named_threat = { 
 				threat = 10
 				name = REI_threat_anschluss
@@ -763,6 +770,12 @@ focus_tree = {
 			custom_effect_tooltip = REI_austria_tt
 			add_to_variable = { global.tc_base_yawatahama_steel = 2 }
 			check_trade_cities = yes
+			custom_effect_tooltip = metropolis_scope_germany
+			add_to_variable = {
+				var = 101.world_stage_power
+				value = 20
+				tooltip = add_world_stage_power_no_scope_tt
+			}
 		}
 	}
 	
@@ -912,12 +925,13 @@ focus_tree = {
 			army_experience = 5
 			air_experience = 5
 			navy_experience = 5
+			FER = { custom_effect_tooltip = REI_help_finland_tt }
+			custom_effect_tooltip = metropolis_scope_germany
 			subtract_from_variable = {
 				var = 101.world_stage_power
 				value = 1
-				tooltip = remove_world_stage_power_tt
+				tooltip = remove_world_stage_power_no_scope_tt
 			}
-			FER = { custom_effect_tooltip = REI_help_finland_tt }
 			set_global_flag = REI_help_finland_completed
 		}
 	}
@@ -944,12 +958,13 @@ focus_tree = {
 			army_experience = 5
 			air_experience = 5
 			navy_experience = 5
+			FER = { custom_effect_tooltip = REI_help_baltics_tt }
+			custom_effect_tooltip = metropolis_scope_germany
 			subtract_from_variable = {
 				var = 101.world_stage_power
 				value = 1
-				tooltip = remove_world_stage_power_tt
+				tooltip = remove_world_stage_power_no_scope_tt
 			}
-			FER = { custom_effect_tooltip = REI_help_baltics_tt }
 			set_global_flag = REI_help_baltics_completed
 		}
 	}
@@ -978,16 +993,17 @@ focus_tree = {
 			army_experience = 5
 			air_experience = 5
 			navy_experience = 5
+			custom_effect_tooltip = metropolis_scope_germany
 			subtract_from_variable = {
 				var = 101.world_stage_power
 				value = 1
-				tooltip = remove_world_stage_power_tt
+				tooltip = remove_world_stage_power_no_scope_tt
 			}
-			custom_effect_tooltip = country_name_china
-			add_to_variable = {
-				tooltip = world_stage_bonus_power_mongolia
-				global.ROC_strength_mongolia_bonus = 10 
-			}
+			custom_effect_tooltip = metropolis_scope_china
+			#add_to_variable = {							# strat adv. add later, if this focus gets implemented
+			#	tooltip = world_stage_bonus_power_mongolia
+			#	global.ROC_strength_mongolia_bonus = 10 
+			#}
 			set_global_flag = REI_help_mongolia_completed
 		}
 	}
@@ -1024,16 +1040,17 @@ focus_tree = {
 				threat = 15
 				name = REI_threat_sudetenland
 			}
-			add_to_variable = {
-				var = 101.world_stage_power
-				value = 15
-				tooltip = add_world_stage_power_tt
-			}
 			set_variable = { global.worldstage_europe_map_frame = 3 }
 			custom_effect_tooltip = REI_czechoslovakia_tt
 			add_to_variable = { global.tc_base_yawatahama_steel = 4 }
 			add_to_variable = { global.tc_base_yawatahama_oil = 2 }
 			check_trade_cities = yes
+			custom_effect_tooltip = metropolis_scope_germany
+			add_to_variable = {
+				var = 101.world_stage_power
+				value = 15
+				tooltip = add_world_stage_power_no_scope_tt
+			}
 		}
 	}
 	
@@ -1085,13 +1102,14 @@ focus_tree = {
 			}
 			custom_effect_tooltip = theater_scope_poland
 			custom_effect_tooltip = world_stage_activate_theater_tt
-			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				101.world_stage_power = 60
-				tooltip = world_stage_deploy_power
-			}
 			add_to_variable = {
 				3.attacker_strategic_advantage = 1
 				tooltip = world_stage_add_strategic_advantage_attacker
+			}
+			custom_effect_tooltip = metropolis_scope_germany_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				101.world_stage_power = 60
+				tooltip = world_stage_deploy_power_poland_space
 			}
 			hidden_effect = {
 				3 = { add_to_variable = { world_stage_power_deployed_by^101 = 60 }  }	# proxy for Poland
@@ -1858,10 +1876,11 @@ focus_tree = {
 					category = mot_rockets
 				}
 			}
+			custom_effect_tooltip = metropolis_scope_germany
 			add_to_variable = {
 				var = 101.world_stage_power
 				value = 5
-				tooltip = add_world_stage_power_tt
+				tooltip = add_world_stage_power_no_scope_tt
 			}
 		}
 	}
@@ -1889,10 +1908,11 @@ focus_tree = {
 				uses = 2
 				category = air_equipment
 			}
+			custom_effect_tooltip = metropolis_scope_germany
 			add_to_variable = {
 				var = 101.world_stage_power
 				value = 5
-				tooltip = add_world_stage_power_tt
+				tooltip = add_world_stage_power_no_scope_tt
 			}
 		}
 	}
@@ -1921,14 +1941,12 @@ focus_tree = {
 				uses = 1
 				category = construction_tech
 			}
-			effect_tooltip = {
-				add_to_variable = {
-					var = world_stage_power
-					value = 5
-					tooltip = add_world_stage_power_tt
-				}
+			custom_effect_tooltip = metropolis_scope_germany
+			add_to_variable = {
+				var = 101.world_stage_power
+				value = 5
+				tooltip = add_world_stage_power_no_scope_tt
 			}
-			hidden_effect = { 101 = { add_to_variable = { world_stage_power = 5 } } }
 		}
 	}
 	
@@ -1957,10 +1975,11 @@ focus_tree = {
 				category = concentrated_industry_category
 				category = dispersed_industry_category
 			}
+			custom_effect_tooltip = metropolis_scope_germany
 			add_to_variable = {
 				var = 101.world_stage_power
 				value = 5
-				tooltip = add_world_stage_power_tt
+				tooltip = add_world_stage_power_no_scope_tt
 			}
 		}
 	}
@@ -1989,10 +2008,11 @@ focus_tree = {
 				category = concentrated_industry_category
 				category = dispersed_industry_category
 			}
+			custom_effect_tooltip = metropolis_scope_germany
 			add_to_variable = {
 				var = 101.world_stage_power
 				value = 2
-				tooltip = add_world_stage_power_tt
+				tooltip = add_world_stage_power_no_scope_tt
 			}
 		}
 	}
@@ -2019,11 +2039,6 @@ focus_tree = {
 				remove_idea = REI_idea_generalkommissariat
 				add_idea = REI_idea_reichskommissariat
 			}
-			add_to_variable = {
-				var = 101.world_stage_power
-				value = 10
-				tooltip = add_world_stage_power_tt
-			}
 			add_political_power = 100
 			hidden_effect = {
 				every_character = {
@@ -2031,6 +2046,12 @@ focus_tree = {
 					clr_character_flag = dual_leader_first_title_generalkomissar
 					set_character_flag = dual_leader_first_title_reichskomissar
 				}
+			}
+			custom_effect_tooltip = metropolis_scope_germany
+			add_to_variable = {
+				var = 101.world_stage_power
+				value = 5
+				tooltip = add_world_stage_power_no_scope_tt
 			}
 		}
 	}
@@ -2059,10 +2080,11 @@ focus_tree = {
 				uses = 1
 				category = synth_resources	
 			}
+			custom_effect_tooltip = metropolis_scope_germany
 			add_to_variable = {
 				var = 101.world_stage_power
 				value = 2
-				tooltip = add_world_stage_power_tt
+				tooltip = add_world_stage_power_no_scope_tt
 			}
 		}
 	}
@@ -2112,10 +2134,11 @@ focus_tree = {
 				category = motorized_equipment
 			}
 			add_offsite_building = { type = arms_factory level = 1 }
+			custom_effect_tooltip = metropolis_scope_germany
 			add_to_variable = {
 				var = 101.world_stage_power
 				value = 2
-				tooltip = add_world_stage_power_tt
+				tooltip = add_world_stage_power_no_scope_tt
 			}
 		}
 	}
