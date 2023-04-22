@@ -157,7 +157,19 @@ world_stage_ai_germany = {
 		every_possible_country = { limit = { tag = REI } log = "(off-map AI) [THIS.GetName] completed focus REI_attack_poland"
 			complete_national_focus = REI_attack_poland
 		}
+		set_global_flag = offmap_event_worldstage_55
+		if = {
+			limit = { has_global_flag = GER_SOV_pact_enabled }
+			set_global_flag = offmap_event_worldstage_16
+		}
 		clr_global_flag = world_stage_ai_germany_focus set_global_flag = world_stage_ai_germany_focus set_global_flag = REI_attack_poland_completed
+	}
+	# next two are special cases for delayed events after WW2 starts, they also do not need to check for AI cooldown
+	if = { limit = { has_global_flag = { flag = offmap_event_worldstage_55 days > 1 } } 
+		every_possible_country = { limit = { tag = REI } news_event = { id = worldstage.55 } clr_global_flag = offmap_event_worldstage_55 }
+	}
+	if = { limit = { has_global_flag = { flag = offmap_event_worldstage_16 days > 12 } } 
+		every_possible_country = { limit = { tag = REI } news_event = { id = worldstage.16 }clr_global_flag = offmap_event_worldstage_16 }
 	}
 }
 world_stage_ai_france = {
@@ -189,6 +201,8 @@ world_stage_news_handler = {	# the number of the event id does not mean chronolo
 	if = { limit = { date > 1937.04.06 date < 1937.04.07 }	news_event = { id = worldstage_news.4 hours = 12 } log = "NEWS: Italy Occupies Albania" }
 	if = { limit = { date > 1937.11.09 date < 1937.11.10 }	news_event = { id = worldstage_news.2 hours = 12 } log = "NEWS: Vargas' Coup" }
 	if = { limit = { date > 1938.11.09 date < 1938.11.10 }	news_event = { id = worldstage_news.1 hours = 12 } log = "NEWS: Attaturk Dies" }
-	if = { limit = { date > 1937.04.06 date < 1941.01.28 }	news_event = { id = worldstage_news.6 hours = 12 } log = "NEWS: Metaxas's Death" }
+	if = { limit = { date > 1941.01.28 date < 1941.01.29 }	news_event = { id = worldstage_news.6 hours = 12 } log = "NEWS: Metaxas's Death" }
 	if = { limit = { date > 1941.07.04 date < 1941.07.05 }	news_event = { id = worldstage_news.3 hours = 12 } log = "NEWS: Peru-Ecuador War" }
 }
+
+#Masacre del Seguro Obrero en Chile en el 38, y el golpe de estado del 43 en Argentina, tambien hay un golpe de estado en Paraguay en Febrero del 1936, y uno en Bolivia en Abril del 1936 si mal no me equivoco
