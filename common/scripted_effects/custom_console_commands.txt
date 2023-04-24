@@ -882,6 +882,61 @@ d_set_world_stage_coalition = {
 	} else = { log = "[THIS.GetName] does not have a metropolis" }
 }
 
+d_start_phoney_war = {
+	if = {
+		limit = { NOT = { has_global_flag = world_stage_phoney_war_rages_on } }
+		log = "Start the Phoney War!"
+		every_country = {
+			limit = { check_variable = { world_stage_metropolis > 100 } }
+			if = {
+				limit = {
+					OR = {
+						tag = KOB
+						tag = OSA
+						has_country_flag = will_join_allies
+					}
+				}
+				activate_mission = world_stage_phoney_war_countdown_allies
+			} else = {	# everyone else gets the axis versions
+				activate_mission = world_stage_phoney_war_countdown_axis
+			}
+		}
+		set_global_flag = world_stage_phoney_war_rages_on
+	} else = { log = "The Phoney War already rages on" }
+}
+
+d_end_phoney_war = {
+	if = {
+		limit = { has_global_flag = world_stage_phoney_war_rages_on }
+		log = "End the Phoney War"
+		every_country = {
+			limit = { has_active_mission = world_stage_phoney_war_countdown_allies }
+			add_days_mission_timeout = {
+				mission = world_stage_phoney_war_countdown_allies
+				days = -180
+			}
+		}
+		every_country = {
+			limit = { has_active_mission = world_stage_phoney_war_countdown_axis }
+			add_days_mission_timeout = {
+				mission = world_stage_phoney_war_countdown_axis
+				days = -180
+			}
+		}
+		# does not clr_global_flag = world_stage_phoney_war_rages_on lest the actual effects do not fire from KOB
+	} else = { log = "the Phoney War already ended" }
+}
+
+d_world_stage_phoney_war_rages_on = {
+	if = {
+		limit = { has_global_flag = world_stage_phoney_war_rages_on }
+		log = "clr_global_flag = world_stage_phoney_war_rages_on"
+		clr_global_flag = world_stage_phoney_war_rages_on
+	} else = {
+		log = "set_global_flag = world_stage_phoney_war_rages_on"
+		set_global_flag = world_stage_phoney_war_rages_on
+	}
+}
 ### } HELP
 
 d_help_ss = {
@@ -1018,6 +1073,12 @@ d_help_ss = {
 	log = "   for an active theater's selected proxy, adds the argument to the theater owner's deployed power (defaults to 50 if no argument is provided)"
 	log = "set_world_stage_coalition"
 	log = "   for a country with a metropolis, sets the coalition according to argument (if no argument is provided, defaults to 4 (non-aligned)"
+	log = "start_phoney_war"
+	log = "   activates the missions for the Phoney War for every eligible country and sets the global flag world_stage_phoney_war_rages_on"
+	log = "end_phoney_war"
+	log = "   for all Phoney War active missions, sets the timers to zero"
+	log = "world_stage_phoney_war_rages_on"
+	log = "   switches the global flag world_stage_phoney_war_rages_on on and off"
 	log = "unification_get_score"
 	log = "   returns the country's unification score"
 	log = "unification_count_states_southern_japan"
