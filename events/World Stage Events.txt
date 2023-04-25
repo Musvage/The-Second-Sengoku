@@ -1268,6 +1268,7 @@ news_event = {
 			set_variable = { coalition_side_attack = 1 }
 			world_stage_state_update_current_day = yes
 		}
+		news_event = worldstage.53
 	}
 	
 	option = {
@@ -1361,43 +1362,7 @@ news_event = {
 
 	is_triggered_only = yes
 
-	major = yes show_major = { NOT = { has_country_flag = hide_worldstage_notification } }
-	
-	immediate = {
-		if = {
-			limit = { has_global_flag = phoney_war_countdown }
-			clr_global_flag = phoney_war_countdown
-		}
-		set_temp_variable = { fra_forces_value = global.world_stage_power_fra }
-		divide_temp_variable = { fra_forces_value = 3 }
-		round_temp_variable = fra_forces_value
-		set_temp_variable = { fra_forces_value_a = global.world_stage_power_fra }
-		divide_temp_variable = { fra_forces_value_a = 4 }
-		round_temp_variable = fra_forces_value_a
-		set_variable = { global.FRA_strength_ardennes = fra_forces_value_a }
-		subtract_from_variable = { global.world_stage_power_fra = fra_forces_value_a }
-		if = {
-			limit = { has_global_flag = fra_send_forces_netherlands }
-			if = {
-				limit = { check_variable = { global.world_stage_coalition_net = 3 } }	# Netherlands is in axis but did not join war yet
-				set_variable = { global.theater_owner_netherlands = 3 }
-			} else = { set_variable = { global.theater_owner_netherlands = 1 } }
-			clr_global_flag = fra_send_forces_netherlands
-			set_variable = { global.FRA_strength_netherlands = fra_forces_value }
-			subtract_from_variable = { global.world_stage_power_fra = fra_forces_value }
-			set_temp_variable = { net_forces_value = global.world_stage_power_net }
-			divide_temp_variable = { net_forces_value = 2 }
-			round_temp_variable = net_forces_value
-			set_variable = { global.NET_strength_netherlands = net_forces_value }
-			subtract_from_variable = { global.world_stage_power_net = net_forces_value }
-		}
-		if = {
-			limit = { has_global_flag = fra_send_forces_alsace }
-			clr_global_flag = fra_send_forces_alsace
-			set_variable = { global.FRA_strength_alsace = fra_forces_value }
-			subtract_from_variable = { global.world_stage_power_fra = fra_forces_value }
-		}
-	}
+	major = yes #show_major = { NOT = { has_country_flag = hide_worldstage_notification } }
 	
 	option = {
 		name = worldstage.24.axis
@@ -1429,23 +1394,7 @@ country_event = {
 	major = yes
 	
 	immediate = {
-		set_variable = { global.theater_owner_france = 3 }
-		set_variable = { global.theater_owner_alsace = 3 }
-		set_variable = { global.FRA_strength_alsace = 3 }
-		set_variable = { global.FRA_strength_france = 3 }
-		set_variable = { global.FRA_strength_westphalia = 0 }
-		set_variable = { global.FRA_strength_ardennes = 0 }
-		set_variable = { global.FRA_strength_germany = 0 }
-		set_variable = { global.FRA_strength_lybia = 0 }
-		set_variable = { global.FRA_strength_egypt = 0 }
-		set_variable = { global.FRA_strength_sicily = 0 }
-		set_variable = { global.FRA_strength_italy = 0 }
-		set_variable = { global.FRA_strength_alpes = 0 }
-		set_variable = { global.FRA_strength_austria = 0 }
-		set_variable = { global.FRA_strength_england = 0 }
-		set_variable = { global.FRA_strength_sealion = 0 }
-		set_variable = { global.FRA_strength_normandy = 0 }
-		#set_variable = { global.FRA_strength_atlantic = 0 }
+
 	}
 
 	option = {
@@ -1477,8 +1426,6 @@ country_event = {
 
 	major = yes show_major = { NOT = { has_country_flag = hide_worldstage_notification } }
 	
-	#immediate = {}
-
 	option = {
 		name = worldstage.26.axis
 		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
@@ -2274,13 +2221,19 @@ country_event = {
 		clr_global_flag = phoney_war_rages_on
 		if = {
 			limit = { country_exists = REI }
-			REI = {	declare_war_on = { target = OSA type = annex_everything }
-					declare_war_on = { target = KOB type = annex_everything } }
+			every_country = {
+				limit = { check_variable = { var:world_stage_metropolis = { world_stage_coalition = 1 } } }
+				REI = {	declare_war_on = { target = PREV type = annex_everything } }
+			}
+			
 		} else = {
 			random_country = {
-				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
-				declare_war_on = { target = OSA type = annex_everything }
-				declare_war_on = { target = KOB type = annex_everything }
+				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes }
+				set_temp_variable = { axis_leader = THIS.id}
+				every_country = {
+					limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
+					var:axis_leader = {	declare_war_on = { target = PREV type = annex_everything } }
+				}
 			}
 		}
 	}	

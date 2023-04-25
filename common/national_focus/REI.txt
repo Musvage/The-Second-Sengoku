@@ -1246,7 +1246,7 @@ focus_tree = {
 			has_global_flag = world_stage_world_war_2_is_active
 			custom_trigger_tooltip = { has_global_flag = { flag = world_stage_phoney_war_rages_on days < 110 } tooltip = world_stage_phoney_war_rages_on_110_days_ago  }
 			custom_trigger_tooltip = { 101 = { check_variable = { world_stage_power > 119 } } tooltip = germany_has_world_stage_power_120 }
-			custom_trigger_tooltip = { 8 = { check_variable = { theater_owner_coalition = 1 } } tooltip = theater_france_controlled_allies }
+			custom_trigger_tooltip = { 5 = { check_variable = { theater_owner_coalition = 1 } } tooltip = theater_alsace_controlled_allies }
 			custom_trigger_tooltip = { 3 = { NOT = { has_state_flag = theater_is_active } } tooltip = theater_not_active_poland }
 		}
 		
@@ -1262,12 +1262,50 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			set_global_flag = REI_blitzkrieg_completed
-			news_event = worldstage.24
+			hidden_effect = { news_event = worldstage.24 }
+			set_global_flag = REI_blitzkrieg_completed 5 = { set_state_flag = theater_is_active }	
+			custom_effect_tooltip = REI_blitzkrieg_tt
+			add_named_threat = { 
+				threat = 25
+				name = REI_threat_blitzkrieg
+			}
+			custom_effect_tooltip = theater_scope_alsace
+			custom_effect_tooltip = world_stage_activate_theater_tt
+			add_to_variable = {
+				5.attacker_strategic_advantage = 2
+				tooltip = world_stage_add_strategic_advantage_attacker
+			}
+			custom_effect_tooltip = metropolis_scope_germany_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				101.world_stage_power = 120
+				tooltip = world_stage_deploy_power_alsace_space
+			}
+			hidden_effect = {
+				103 = {
+					set_temp_variable = { french_forces = world_stage_power }
+					clamp_temp_variable = { var = french_forces min = 0 max = 90 }
+					round_temp_variable = french_forces
+					subtract_from_variable = { world_stage_power = french_forces }
+				}
+				5 = { add_to_variable = { world_stage_power_deployed_by^101 = 120 }  }	# proxy for Eastern France
+				5 = { add_to_variable = { world_stage_power_deployed_by^103 = french_forces }  }
+				5 = { set_variable = { coalition_side_attack = 3 } }					# it's Axis already
+				5 = { world_stage_state_update_current_day = yes }
+			}
 			if = {
 				limit = { has_global_flag = phoney_war_rages_on }
 				hidden_effect = { news_event = worldstage.53 }
 			}
+			# calculate chance of auto-win
+			set_temp_variable = { chance_success = 200 } 101 = { multiply_temp_variable = { chance_success = doctrine_bonus_land } multiply_temp_variable = { chance_success = doctrine_bonus_air } }
+			set_temp_variable = { chance_failure = 100 } 103 = { multiply_temp_variable = { chance_failure = doctrine_bonus_land } multiply_temp_variable = { chance_failure = doctrine_bonus_air } }
+			if = { limit = { 107 = { check_variable = { world_stage_coalition = 3 } } } multiply_temp_variable = { chance_success = 2 } }
+			if = { limit = { 107 = { check_variable = { world_stage_coalition = 1 } } } multiply_temp_variable = { chance_failure = 2 } }
+			random_list = {
+				var:chance_success = { news_event = { id = worldstage.25 days = 40 random = 10 } }
+				var:chance_failure = { news_event = { id = worldstage.26 days = 40 random = 10 }}
+			}
+			custom_effect_tooltip = blitzkrieg_factors_tt
 #			news_event = { id = worldstage.57 hours = 12 }	 has_global_flag = netherlands_aligned_axis
 #			news_event = { id = worldstage.58 hours = 12 }	has_global_flag = netherlands_aligned_axis
 		}
