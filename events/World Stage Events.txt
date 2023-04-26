@@ -6,10 +6,785 @@ add_namespace = worldstage_surrender
 add_namespace = worldstage_news
 
 ########################################################################
-############################## worldstage ##############################
+############################## worldstage ##############################	# the ones here are actually in the game
 ########################################################################
 
+### INVASION OF POLAND
 
+# Invasion of Poland - Start of WW2
+news_event = {
+	id = worldstage.15
+	title = worldstage.15.t
+	desc = {
+		text = worldstage.15.d1
+		trigger = { NOT = { REI = { has_government = autocracy } } }	# normal event
+	}
+	desc = {
+		text = worldstage.15.d2
+		trigger = { REI = { has_government = autocracy } }  			# monarchist event (cannot use 2nd leader text)
+	}
+	picture = GFX_news_ww2_starts_wide
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			if = {
+				limit = {
+					country_exists = OSA
+					country_exists = KOB
+					NOT = { KOB = { is_in_faction_with = OSA } }
+				}
+				OSA = { add_to_faction = KOB }
+			}
+			set_global_flag = world_stage_phoney_war_rages_on
+			every_country = {
+				limit = { check_variable = { world_stage_metropolis > 100 } }
+				if = {
+					limit = {
+						OR = {
+							tag = KOB
+							tag = OSA
+							has_country_flag = will_join_allies
+						}
+					}
+					activate_mission = world_stage_phoney_war_countdown_allies
+				} else = {	# everyone else gets the axis versions
+					activate_mission = world_stage_phoney_war_countdown_axis
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = worldstage.15.axis
+		trigger = { OR = { check_variable = { world_stage_coalition = 3 } check_variable = { world_stage_coalition = 6 } } }
+		if = {
+			limit = { check_variable = { world_stage_metropolis > 100 } }
+			effect_tooltip = { activate_mission = world_stage_phoney_war_countdown_axis }
+		}
+	}
+	option = {
+		name = worldstage.15.komin1
+		trigger = {
+			check_variable = { world_stage_coalition = 2 }
+			NOT = { has_global_flag = GER_SOV_pact_enabled }
+		}
+		if = {
+			limit = { check_variable = { world_stage_metropolis > 100 } }
+			effect_tooltip = { activate_mission = world_stage_phoney_war_countdown_axis }
+		}
+	}
+	option = {
+		name = worldstage.15.komin2
+		trigger = {
+			check_variable = { world_stage_coalition = 2 }
+			has_global_flag = GER_SOV_pact_enabled
+		}
+		if = {
+			limit = { check_variable = { world_stage_metropolis > 100 } }
+			effect_tooltip = { activate_mission = world_stage_phoney_war_countdown_axis }
+		}
+	}
+	option = {
+		name = worldstage.15.allies
+		trigger = { OR = { check_variable = { world_stage_coalition = 1 } check_variable = { world_stage_coalition = 5 } } }
+		if = {
+			limit = { check_variable = { world_stage_metropolis > 100 } }
+			effect_tooltip = { activate_mission = world_stage_phoney_war_countdown_axis }
+		}
+	}
+	option = {
+		name = worldstage.15.other
+		trigger = {
+			OR = { check_variable = { world_stage_coalition = 4 } NOT = { has_variable = world_stage_coalition } }
+		}
+		if = {
+			limit = { check_variable = { world_stage_metropolis > 100 } }
+			effect_tooltip = { activate_mission = world_stage_phoney_war_countdown_axis }
+		}
+	}
+}
+
+# Invasion of Poland - Soviet Invasion
+news_event = {
+	id = worldstage.16
+	title = worldstage.16.t
+	desc = worldstage.16.d 
+	picture = GFX_news_nazi_soviet_handshake_wide
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			world_stage_end_invasion_of_poland = yes
+		}
+	}
+	
+	option = {
+		name = worldstage.16.axis
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		custom_effect_tooltip = worldstage.16.tt_green
+		custom_effect_tooltip = worldstage.16.tt_inactive
+	}
+	option = {
+		name = worldstage.16.komin
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+		custom_effect_tooltip = worldstage.16.tt_green
+		custom_effect_tooltip = worldstage.16.tt_inactive
+	}
+	option = {
+		name = worldstage.16.allies
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
+		custom_effect_tooltip = worldstage.16.tt_red
+		custom_effect_tooltip = worldstage.16.tt_inactive
+	}
+	option = {
+		name = worldstage.16.other
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
+		custom_effect_tooltip = worldstage.16.tt_orange
+		custom_effect_tooltip = worldstage.16.tt_inactive
+	}
+}
+
+# Invasion of Germany - Phoney War Ends!
+news_event = {
+	id = worldstage.21
+	title = worldstage.21.t
+	desc = worldstage.21.d 
+	picture = GFX_news_ww2_saarland_wide
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			103 = {
+				set_temp_variable = { french_forces = world_stage_power }
+				clamp_temp_variable = { var = french_forces min = 0 max = 90 }
+				round_temp_variable = french_forces
+				subtract_from_variable = { world_stage_power = french_forces }
+			}
+			101 = {
+				set_temp_variable = { german_forces = world_stage_power }
+				divide_temp_variable = { german_forces = 2 }
+				round_temp_variable german_forces
+				clamp_temp_variable = { var = german_forces min = 0 max = 60 }
+				subtract_from_variable = { world_stage_power = german_forces }
+			}
+			6 = { # proxy for Western Germany
+				set_state_flag = theater_is_active
+				add_to_variable = { world_stage_power_deployed_by^103 = french_forces }
+				add_to_variable = { world_stage_power_deployed_by^101 = german_forces }
+				set_variable = { coalition_side_attack = 1 }
+				world_stage_state_update_current_day = yes
+			}
+			news_event = worldstage.53
+		}
+	}
+	
+	option = {
+		name = worldstage.21.allies
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
+		hidden_effect = {	6 = { set_temp_variable = { ger_for = world_stage_power_deployed_by^101 } }
+							6 = { set_temp_variable = { fra_for = world_stage_power_deployed_by^103 } } }
+		effect_tooltip  = {
+			custom_effect_tooltip = theater_scope_westphalia
+			custom_effect_tooltip = world_stage_activate_theater_tt
+			custom_effect_tooltip = metropolis_scope_france
+			subtract_from_variable = {
+				103.world_stage_power = fra_for
+				tooltip = world_stage_deploy_power_westphalia_space
+			}
+			custom_effect_tooltip = metropolis_scope_germany
+			subtract_from_variable = {	#
+				101.world_stage_power = ger_for
+				tooltip = world_stage_deploy_power_westphalia_space
+			}
+		}
+	}
+	option = {
+		name = worldstage.21.komin
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+		hidden_effect = {	6 = { set_temp_variable = { ger_for = world_stage_power_deployed_by^101 } }
+							6 = { set_temp_variable = { fra_for = world_stage_power_deployed_by^103 } } }
+		effect_tooltip  = {
+			custom_effect_tooltip = theater_scope_westphalia
+			custom_effect_tooltip = world_stage_activate_theater_tt
+			custom_effect_tooltip = metropolis_scope_france
+			subtract_from_variable = {
+				103.world_stage_power = fra_for
+				tooltip = world_stage_deploy_power_westphalia_space
+			}
+			custom_effect_tooltip = metropolis_scope_germany
+			subtract_from_variable = {	#
+				101.world_stage_power = ger_for
+				tooltip = world_stage_deploy_power_westphalia_space
+			}
+		}
+	}
+	option = {
+		name = worldstage.21.axis
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		hidden_effect = {	6 = { set_temp_variable = { ger_for = world_stage_power_deployed_by^101 } }
+							6 = { set_temp_variable = { fra_for = world_stage_power_deployed_by^103 } } }
+		effect_tooltip  = {
+			custom_effect_tooltip = theater_scope_westphalia
+			custom_effect_tooltip = world_stage_activate_theater_tt
+			custom_effect_tooltip = metropolis_scope_france
+			subtract_from_variable = {
+				103.world_stage_power = fra_for
+				tooltip = world_stage_deploy_power_westphalia_space
+			}
+			custom_effect_tooltip = metropolis_scope_germany
+			subtract_from_variable = {	#
+				101.world_stage_power = ger_for
+				tooltip = world_stage_deploy_power_westphalia_space
+			}
+		}
+	}
+	option = {
+		name = worldstage.21.other
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
+		hidden_effect = {	6 = { set_temp_variable = { ger_for = world_stage_power_deployed_by^101 } }
+							6 = { set_temp_variable = { fra_for = world_stage_power_deployed_by^103 } } }
+		effect_tooltip  = {
+			custom_effect_tooltip = theater_scope_westphalia
+			custom_effect_tooltip = world_stage_activate_theater_tt
+			custom_effect_tooltip = metropolis_scope_france
+			subtract_from_variable = {
+				103.world_stage_power = fra_for
+				tooltip = world_stage_deploy_power_westphalia_space
+			}
+			custom_effect_tooltip = metropolis_scope_germany
+			subtract_from_variable = {	#
+				101.world_stage_power = ger_for
+				tooltip = world_stage_deploy_power_westphalia_space
+			}
+		}
+	}
+}
+
+# The Blitzkrieg!
+news_event = {
+	id = worldstage.24
+	title = worldstage.24.t
+	desc = worldstage.24.d 
+	picture = GFX_news_ww2_starts_wide
+
+	is_triggered_only = yes
+
+	major = yes #show_major = { NOT = { has_country_flag = hide_worldstage_notification } }
+	
+	option = {
+		name = worldstage.24.axis
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		hidden_effect = {	5 = { set_temp_variable = { ger_for = world_stage_power_deployed_by^101 } }
+							5 = { set_temp_variable = { fra_for = world_stage_power_deployed_by^103 } } }
+		effect_tooltip  = {
+			custom_effect_tooltip = theater_scope_alsace
+			custom_effect_tooltip = world_stage_activate_theater_tt
+			custom_effect_tooltip = metropolis_scope_france
+			subtract_from_variable = {
+				103.world_stage_power = fra_for
+				tooltip = world_stage_deploy_power_alsace_space
+			}
+			custom_effect_tooltip = metropolis_scope_germany
+			subtract_from_variable = {	#
+				101.world_stage_power = ger_for
+				tooltip = world_stage_deploy_power_alsace_space
+			}
+		}
+	}
+	option = {
+		name = worldstage.24.komin
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+		hidden_effect = {	5 = { set_temp_variable = { ger_for = world_stage_power_deployed_by^101 } }
+							5 = { set_temp_variable = { fra_for = world_stage_power_deployed_by^103 } } }
+		effect_tooltip  = {
+			custom_effect_tooltip = theater_scope_alsace
+			custom_effect_tooltip = world_stage_activate_theater_tt
+			custom_effect_tooltip = metropolis_scope_france
+			subtract_from_variable = {
+				103.world_stage_power = fra_for
+				tooltip = world_stage_deploy_power_alsace_space
+			}
+			custom_effect_tooltip = metropolis_scope_germany
+			subtract_from_variable = {	#
+				101.world_stage_power = ger_for
+				tooltip = world_stage_deploy_power_alsace_space
+			}
+		}
+	}
+	option = {
+		name = worldstage.24.allies
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
+		hidden_effect = {	5 = { set_temp_variable = { ger_for = world_stage_power_deployed_by^101 } }
+							5 = { set_temp_variable = { fra_for = world_stage_power_deployed_by^103 } } }
+		effect_tooltip  = {
+			custom_effect_tooltip = theater_scope_alsace
+			custom_effect_tooltip = world_stage_activate_theater_tt
+			custom_effect_tooltip = metropolis_scope_france
+			subtract_from_variable = {
+				103.world_stage_power = fra_for
+				tooltip = world_stage_deploy_power_alsace_space
+			}
+			custom_effect_tooltip = metropolis_scope_germany
+			subtract_from_variable = {	#
+				101.world_stage_power = ger_for
+				tooltip = world_stage_deploy_power_alsace_space
+			}
+		}
+	}
+	option = {
+		name = worldstage.24.other
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
+		hidden_effect = {	5 = { set_temp_variable = { ger_for = world_stage_power_deployed_by^101 } }
+							5 = { set_temp_variable = { fra_for = world_stage_power_deployed_by^103 } } }
+		effect_tooltip  = {
+			custom_effect_tooltip = theater_scope_alsace
+			custom_effect_tooltip = world_stage_activate_theater_tt
+			custom_effect_tooltip = metropolis_scope_france
+			subtract_from_variable = {
+				103.world_stage_power = fra_for
+				tooltip = world_stage_deploy_power_alsace_space
+			}
+			custom_effect_tooltip = metropolis_scope_germany
+			subtract_from_variable = {	#
+				101.world_stage_power = ger_for
+				tooltip = world_stage_deploy_power_alsace_space
+			}
+		}
+	}
+}
+
+# The Blitzkrieg - France Falls to Blitzkrieg
+country_event = {
+	id = worldstage.25
+	title = worldstage.25.t
+	desc = worldstage.25.d 
+	picture = GFX_news_ww2_starts
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			every_possible_country = {
+				limit = { tag = KOB }
+				news_event = { id = worldstage_surrender.103 hours = 24 random = 24 }
+			}
+		}
+	}
+
+	option = {
+		name = worldstage.25.axis
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		effect_tooltip = {
+			if = { limit = { country_exists = KOB }	KOB = { add_war_support = -0.1 } }
+			every_country = { limit = { NOT = { tag = KOB } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
+		}
+		custom_effect_tooltip = metropolis_scope_vichy
+		custom_effect_tooltip = join_coalition_axis_good
+	}
+	option = {
+		name = worldstage.25.komin
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+		effect_tooltip = {
+			if = { limit = { country_exists = KOB }	KOB = { add_war_support = -0.1 } }
+			every_country = { limit = { NOT = { tag = KOB } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
+		}
+		custom_effect_tooltip = metropolis_scope_vichy
+		if = {
+			limit = { has_global_flag = GER_SOV_pact_enabled }
+			custom_effect_tooltip = join_coalition_axis_good
+		} else = {
+			custom_effect_tooltip = join_coalition_axis
+		}
+	}
+	option = {
+		name = worldstage.25.allies1
+		trigger = {
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
+			tag = KOB
+		}
+		add_war_support = -0.1
+		effect_tooltip = {
+			every_country = { limit = { NOT = { tag = KOB } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
+		}
+		custom_effect_tooltip = metropolis_scope_vichy
+		custom_effect_tooltip = join_coalition_axis_bad
+	}
+	option = {
+		name = worldstage.25.allies2
+		trigger = {
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
+			NOT = { tag = KOB }
+		}
+		effect_tooltip = {
+			if = { limit = { country_exists = KOB }	add_war_support = -0.1 }
+			every_country = { limit = { NOT = { tag = KOB } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
+		}
+		hidden_effect = { add_war_support = -0.05 }
+		custom_effect_tooltip = metropolis_scope_vichy
+		custom_effect_tooltip = join_coalition_axis_bad
+	}
+	option = {
+		name = worldstage.25.other
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
+		effect_tooltip = {
+			if = { limit = { country_exists = KOB }	add_war_support = -0.1 }
+			every_country = { limit = { NOT = { tag = KOB } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
+		}
+		custom_effect_tooltip = metropolis_scope_vichy
+		custom_effect_tooltip = join_coalition_axis
+	}
+}
+
+# The Blitzkrieg - France Resists
+country_event = {
+	id = worldstage.26
+	title = worldstage.26.t
+	desc = worldstage.26.d 
+	picture = GFX_news_ww2_starts
+
+	is_triggered_only = yes
+
+	major = yes show_major = { NOT = { has_country_flag = hide_worldstage_notification } }
+	
+	option = {
+		name = worldstage.26.axis
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		effect_tooltip = {
+			if = { limit = { country_exists = KOB }	add_war_support = 0.1 }
+			every_country = { limit = { NOT = { tag = KOB } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = 0.05 }
+		}
+	}
+	option = {
+		name = worldstage.26.komin
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+		effect_tooltip = {
+			if = { limit = { country_exists = KOB }	add_war_support = 0.1 }
+			every_country = { limit = { NOT = { tag = KOB } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = 0.05 }
+		}
+	}
+	option = {
+		name = worldstage.26.allies1
+		trigger = {
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
+			tag = KOB
+		}
+		add_war_support = 0.1
+		effect_tooltip = {
+			every_country = { limit = { NOT = { tag = KOB } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = 0.05 }
+		}
+	}
+	option = {
+		name = worldstage.26.allies2
+		trigger = {
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
+			NOT = { tag = KOB }
+		}
+		effect_tooltip = {
+			if = { limit = { country_exists = KOB }	add_war_support = 0.1 }
+			every_country = { limit = { NOT = { tag = KOB } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = 0.05 }
+		}
+		hidden_effect = { add_war_support = 0.05 }
+	}
+	option = {
+		name = worldstage.26.other
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
+		effect_tooltip = {
+			if = { limit = { country_exists = KOB }	add_war_support = 0.1 }
+			every_country = { limit = { NOT = { tag = KOB } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = 0.05 }
+		}
+	}
+}
+
+# HIDDEN EVENT Phoney War Ends!
+country_event = {
+	id = worldstage.53
+	title = worldstage.53.t
+	desc = worldstage.53.d 
+	picture = GFX_news_ww2_starts
+
+	is_triggered_only = yes
+
+	hidden = yes
+	
+	immediate = {
+		clr_global_flag = phoney_war_rages_on
+		if = {
+			limit = { country_exists = REI }
+			every_country = {
+				limit = { check_variable = { var:world_stage_metropolis = { world_stage_coalition = 1 } } }
+				REI = {	declare_war_on = { target = PREV type = annex_everything } }
+			}
+			
+		} else = {
+			random_country = {
+				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes }
+				set_temp_variable = { axis_leader = THIS.id}
+				every_country = {
+					limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
+					var:axis_leader = {	declare_war_on = { target = PREV type = annex_everything } }
+				}
+			}
+		}
+	}	
+}
+
+# URSS is expelled from the League of Nations
+news_event = {
+	id = worldstage.54
+	title = worldstage.54.t
+	desc = worldstage.54.d 
+	picture = GFX_news_ww2_starts_wide
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		set_global_flag = SOV_expelled_from_lon
+		every_country = {
+			limit = { check_variable = { world_stage_metropolis = 104 } }
+			set_variable = { world_stage_coalition = 2 }
+		}
+		every_state = {
+			limit = { check_variable = { theater_owner = 104 } }	# proxy for sovietunion
+			set_variable = { theater_owner_coalition = 2 }
+		}
+	}
+	
+	option = {
+		name = worldstage.54.axis
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		effect_tooltip = {
+			
+		}
+	}
+	option = {
+		name = worldstage.54.komin
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+		effect_tooltip = {
+			
+		}
+		if = {
+			limit = { tag = FER has_game_rule = { rule = censored_or_uncensored_german_flag option = UNCENSORED } }
+			custom_effect_tooltip = worldstage.54.special
+		}
+	}
+	option = {
+		name = worldstage.54.allies
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
+		effect_tooltip = {
+			
+		}
+	}
+	option = {
+		name = worldstage.54.other
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
+		effect_tooltip = {
+			
+		}
+	}
+}
+
+# The End of the League of Nations
+news_event = {
+	id = worldstage.55
+	title = worldstage.55.t
+	desc = worldstage.55.d 
+	picture = GFX_news_lon_ends_wide
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			log = "Begone!, League of Nations!"
+			every_country = {
+				limit = { has_idea = SS_lon_member }
+				remove_ideas = SS_lon_member
+			}
+			every_country = {
+				limit = { has_idea = SS_lon_member_japan }
+				remove_ideas = SS_lon_member_japan
+			}
+			clr_global_flag = leagueofnations_exists
+			set_global_flag = SOV_already_expelled
+			# the 'Great Swithceroo of Coalitions" happens here
+			# first: run specific tags
+			# second: run tags that may contain relevant infomation
+			# third: run proxy metropolis for off-map countries with no tags in game
+			# first:
+			OSA = { set_variable = { world_stage_coalition = 1 } }
+			KOB = { set_variable = { world_stage_coalition = 1 } }
+			FER = { set_variable = { world_stage_coalition = 2 } }		# URSS was already expelled from LoN at this point but we'll run the command again just in case the FER player did not play his part 
+			REI = { set_variable = { world_stage_coalition = 3 } }
+			115 = { set_variable = { world_stage_coalition = 1 } }		# Poland is off map
+			120 = { set_variable = { world_stage_coalition = 3 } }		# Vichy France is off map
+			# second:
+			every_country = {
+				limit = { has_country_flag = will_join_allies }
+				set_variable = { world_stage_coalition = 1 }
+			}
+			every_country = {
+				limit = { has_country_flag = will_join_komintern }
+				set_variable = { world_stage_coalition = 2 }
+			}
+			every_country = {
+				limit = { check_variable = { world_stage_coalition = 6 } }
+				set_variable = { world_stage_coalition = 3 }
+			}
+			every_country = {
+				limit = {
+					NOT = { has_country_flag = will_join_allies has_country_flag = will_join_komintern }	# every one that belongs to LoN but has not side in WW2
+					check_variable = { world_stage_coalition = 5 }
+				}
+				set_variable = { world_stage_coalition = 4 }
+			}
+			# updating proxy metropolises for 1st and 2nd
+			every_country = {
+				limit = { has_variable = world_stage_metropolis }
+				world_stage_update_metropolis = yes
+			}
+			# updating proxy states for 1st and 2nd
+			every_state = {
+				limit = { has_variable = world_stage_metropolis }
+				log = "[THIS.GetMetropolisName]'s owned theater"
+				every_state = {
+					limit = { check_variable = { theater_owner = PREV.world_stage_metropolis } }
+					log = "[THIS.GetTheaterName]: previous coalition [?theater_owner_coalition]"
+					set_variable = { theater_owner_coalition = PREV.world_stage_coalition }
+					log = "[THIS.GetTheaterName]: new coalition [?theater_owner_coalition]"
+				}
+			}
+			# updating proxy states and metropolis for 3rd
+			every_state = {
+				limit = { has_variable = world_stage_metropolis }
+				if = { limit = { check_variable = { world_stage_coalition = 5 } } set_variable = { world_stage_coalition = 4 } }	# leagueofnations becomes unaligned
+				if = { limit = { check_variable = { world_stage_coalition = 6 } } set_variable = { world_stage_coalition = 3 } }	# pactofsteel becomes axis
+			}
+			every_state = {
+				limit = { has_variable = theater_owner }
+				if = { limit = { check_variable = { theater_owner_coalition = 5 } } set_variable = { theater_owner_coalition = 4 } }	# leagueofnations becomes unaligned
+				if = { limit = { check_variable = { theater_owner_coalition = 6 } } set_variable = { theater_owner_coalition = 3 } }	# pactofsteel becomes axis
+			}
+			# create on-map factions
+			if = {
+				limit = { country_exists = OSA }
+				OSA = {
+					if = { limit = { is_in_faction = yes is_faction_leader = no } leave_faction = yes }
+					if = { limit = { is_in_faction = no } create_faction = coalition_name_allies_short }
+					every_other_country = {
+						limit = { check_variable = { world_stage_coalition = 1 } }
+						OSA = { add_to_faction = PREV }
+					}
+				}
+			} else = {
+				random_country = {
+					limit = { check_variable = { world_stage_coalition = 1 } }
+					if = { limit = { is_in_faction = yes is_faction_leader = no } leave_faction = yes }
+					if = { limit = { is_in_faction = no } create_faction = coalition_name_allies_short }
+					set_temp_variable = { coalitionleader = THIS.id }
+					every_other_country = {
+						limit = { check_variable = { world_stage_coalition = 1 } }
+						var:coalitionleader = { add_to_faction = PREV }
+					}
+				}
+			}
+			if = {
+				limit = { country_exists = FER }
+				FER = {
+					if = { limit = { is_in_faction = yes is_faction_leader = no } leave_faction = yes }
+					if = { limit = { is_in_faction = no } create_faction = coalition_name_komintern_short }
+					every_other_country = {
+						limit = { check_variable = { world_stage_coalition = 2 } }
+						REI = { add_to_faction = PREV }
+					}
+				}
+			} else = {
+				random_country = {
+					limit = { check_variable = { world_stage_coalition = 2 } }
+					if = { limit = { is_in_faction = yes is_faction_leader = no } leave_faction = yes }
+					if = { limit = { is_in_faction = no } create_faction = coalition_name_komintern_short }
+					set_temp_variable = { coalitionleader = THIS.id }
+					every_other_country = {
+						limit = { check_variable = { world_stage_coalition = 2 } }
+						var:coalitionleader = { add_to_faction = PREV }
+					}
+				}
+			}
+			if = {
+				limit = { country_exists = REI }
+				REI = {
+					if = { limit = { is_in_faction = yes is_faction_leader = no } leave_faction = yes }
+					if = { limit = { is_in_faction = no } create_faction = coalition_name_axis_short }
+					every_other_country = {
+						limit = { check_variable = { world_stage_coalition = 3 } }
+						REI = { add_to_faction = PREV }
+					}
+				}
+			} else = {
+				random_country = {
+					limit = { check_variable = { world_stage_coalition = 3 } }
+					if = { limit = { is_in_faction = yes is_faction_leader = no } leave_faction = yes }
+					if = { limit = { is_in_faction = no } create_faction = coalition_name_axis_short }
+					set_temp_variable = { coalitionleader = THIS.id }
+					every_other_country = {
+						limit = { check_variable = { world_stage_coalition = 3 } }
+						var:coalitionleader = { add_to_faction = PREV }
+					}
+				}
+			}
+			3 = { set_variable = { coalition_side_attack = 3 } }	# Change attacker on Poland
+		}
+	}
+	
+	option = {
+		name = worldstage.55.allies
+		trigger = { OR = { check_variable = { world_stage_coalition = 1 } check_variable = { world_stage_coalition = 5 } } }
+		effect_tooltip = {
+			custom_effect_tooltip = worldstage.55.lon_tt
+			custom_effect_tooltip = worldstage.55.allies_tt
+		}
+	}
+	option = {
+		name = worldstage.55.komin
+		trigger = { check_variable = { world_stage_coalition = 2 } }
+		effect_tooltip = {
+			custom_effect_tooltip = worldstage.55.lon_tt
+			if = {
+				limit = { NOT = { has_global_flag = SOV_already_expelled } }
+				custom_effect_tooltip = worldstage.55.komin_tt
+			}
+		}
+	}
+	option = {
+		name = worldstage.55.axis
+		trigger = { OR = { check_variable = { world_stage_coalition = 3 } check_variable = { world_stage_coalition = 6 } } }
+		effect_tooltip = {
+			custom_effect_tooltip = worldstage.55.lon_tt
+			custom_effect_tooltip = worldstage.55.axis_tt
+		}
+	}
+	option = {
+		name = worldstage.55.other
+		trigger = { OR = { check_variable = { world_stage_coalition = 4 } NOT = { has_variable = world_stage_coalition } } }
+		effect_tooltip = {
+			custom_effect_tooltip = worldstage.55.lon_tt
+		}
+	}
+}
 
 ########################################################################
 ########################## worldstage_automatic ########################
@@ -207,25 +982,28 @@ country_event = {
 
 	is_triggered_only = yes
 
-	major = yes
+	major = no	# this is KOB-only
 	
 	immediate = {
-		clr_global_flag = world_stage_france_exists
-		set_global_flag = world_stage_vichy_exists
-		every_state = {
-			limit = { check_variable = { theater_owner = 103 } }
-			set_variable = { theater_owner = 120 }
-			set_variable = { theater_owner_coalition = 3 }
-		}
-		8 = { set_variable = { theater_owner = 101 } set_variable = { theater_owner_coalition = 3 } }
-		every_state = {
-			limit = { has_variable = theater_owner }
-			set_variable = { world_stage_power_deployed_by^120 = world_stage_power_deployed_by^103 } }
-			divide_variable = {  world_stage_power_deployed_by^120 = 4 }
-			set_variable = { world_stage_power_deployed_by^103 = 0 } }
+		hidden_effect = {
+			clr_global_flag = world_stage_france_exists
+			set_global_flag = world_stage_vichy_exists
+			every_state = {
+				limit = { check_variable = { theater_owner = 103 } }
+				set_variable = { theater_owner = 120 }
+				set_variable = { theater_owner_coalition = 3 }
+			}
+			8 = { set_variable = { theater_owner = 101 } set_variable = { theater_owner_coalition = 3 } }
+			every_state = {
+				limit = { has_variable = theater_owner }
+				set_variable = { world_stage_power_deployed_by^120 = world_stage_power_deployed_by^103 }
+				divide_variable = { world_stage_power_deployed_by^120 = 4 }
+				set_variable = { world_stage_power_deployed_by^103 = 0 }
+			}
+			103 = { set_variable = { world_stage_power = 0 } }
 		}
 	}
-	
+
 	option = {
 		name = worldstage_surrender.103.a	# fight, prefered human option
 		trigger = { is_puppet = no }		# puppet don't get to decide
@@ -248,6 +1026,15 @@ country_event = {
 				add_to_faction = KOB
 			}
 		}
+		custom_effect_tooltip = metropolis_scope_vichy
+		custom_effect_tooltip = join_coalition_axis
+		hidden_effect = {
+			if = {
+				limit = { country_exists = KOB }
+				country_event = { id = worldstage_surrender.1031 days = 3 random_hours = 48 }
+			}	
+		}
+		ai_chance = { base = 0 }
 	}
 	option = {
 		name = worldstage_surrender.103.b	# surrender, prefered AI option
@@ -264,11 +1051,20 @@ country_event = {
 			}
 			set_variable = { world_stage_metropolis = 120 }	# Vichy France
 		}
+		custom_effect_tooltip = metropolis_scope_vichy
+		custom_effect_tooltip = join_coalition_axis
+		hidden_effect = {
+			if = {
+				limit = { country_exists = KOB }
+				country_event = { id = worldstage_surrender.1032 days = 3 random_hours = 48 }
+			}	
+		}
+		ai_chance = { base = 100 }
 	}
 	option = {
 		name = worldstage_surrender.103.c
 		trigger = { is_puppet = yes }		# puppet don't get to decide
-		if = {	z
+		if = {
 			limit = { OVERLORD = { OR = { has_government = fascism has_government = neutrality has_government = autocracy } } }
 			every_possible_country = {
 				limit = { tag = KOB }
@@ -293,6 +1089,12 @@ country_event = {
 					add_to_faction = KOB
 				}
 			}
+			hidden_effect = {
+				if = {
+					limit = { country_exists = KOB }
+					country_event = { id = worldstage_surrender.1032 days = 1 }
+				}	
+			}
 		} else = {
 			every_possible_country = {
 			limit = { tag = KOB }
@@ -302,14 +1104,90 @@ country_event = {
 					clr_country_flag = tc_kobe_has_access
 				}
 			}
+			hidden_effect = {
+				if = {
+					limit = { country_exists = KOB }
+					country_event = { id = worldstage_surrender.1031 days = 1 }
+				}	
+			}
 		}
+		custom_effect_tooltip = metropolis_scope_vichy
+		custom_effect_tooltip = join_coalition_axis
+		ai_chance = { base = 100 }
 	}
 }
 
-##### OLD##### OLD##### OLD##### OLD##### OLD##### OLD##### OLD##### OLD##### OLD##### OLD##### OLD##### OLD
-##### OLD##### OLD##### OLD##### OLD##### OLD##### OLD##### OLD##### OLD##### OLD##### OLD##### OLD##### OLD
-##### OLD##### OLD##### OLD##### OLD##### OLD##### OLD##### OLD##### OLD##### OLD##### OLD##### OLD##### OLD
-##### OLD##### OLD##### OLD##### OLD##### OLD##### OLD##### OLD##### OLD##### OLD##### OLD##### OLD##### OLD
+# KOBE IS FREE FRANCE
+country_event = {
+	id = worldstage_surrender.1031
+	title = worldstage_surrender.1031.t
+	desc = worldstage_surrender.1031.d 
+	picture = GFX_news_ww2_starts
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	option = {
+		name = worldstage_surrender.1031.allies
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } NOT = { tag = KOB } }
+	}
+	option = {
+		name = worldstage_surrender.1031.kob
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } tag = KOB }
+	}
+	option = {
+		name = worldstage_surrender.1031.komin
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+	}
+	option = {
+		name = worldstage_surrender.1031.axis
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+	}
+	option = {
+		name = worldstage_surrender.1031.other
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
+	}
+}
+
+# KOBE IS VICHY FRANCE
+country_event = {
+	id = worldstage_surrender.1032
+	title = worldstage_surrender.1032.t
+	desc = worldstage_surrender.1032.d 
+	picture = GFX_news_ww2_starts
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	option = {
+		name = worldstage_surrender.1032.allies
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
+	}
+	option = {
+		name = worldstage_surrender.1032.komin
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+	}
+	option = {
+		name = worldstage_surrender.1032.axis
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } NOT = { tag = KOB } }
+	}
+	option = {
+		name = worldstage_surrender.1032.kob
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } tag = KOB }
+	}
+	option = {
+		name = worldstage_surrender.1032.other
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
+	}
+}
+
+#########################
+######################### THE ONES BELLOW MAY BE DEPRICATED
+#########################
+#########################
+#########################
 
 ### MONGOLIA MEDDLING
 # ROC completes 'ROC_aid_mongolia'
@@ -1129,148 +2007,6 @@ news_event = {
 	}
 }
 
-### INVASION OF POLAND
-
-# Invasion of Poland - Start of WW2
-news_event = {
-	id = worldstage.15
-	title = worldstage.15.t
-	desc = {
-		text = worldstage.15.d1
-		trigger = { NOT = { REI = { has_government = autocracy } } }	# normal event
-	}
-	desc = {
-		text = worldstage.15.d2
-		trigger = { REI = { has_government = autocracy } }  			# monarchist event (cannot use 2nd leader text)
-	}
-	picture = GFX_news_ww2_starts_wide
-
-	is_triggered_only = yes
-
-	major = yes
-	
-	immediate = {
-		hidden_effect = {
-			if = {
-				limit = {
-					country_exists = OSA
-					country_exists = KOB
-					NOT = { KOB = { is_in_faction_with = OSA } }
-				}
-				OSA = { add_to_faction = KOB }
-			}
-			set_global_flag = world_stage_phoney_war_rages_on
-			every_country = {
-				limit = { check_variable = { world_stage_metropolis > 100 } }
-				if = {
-					limit = {
-						OR = {
-							tag = KOB
-							tag = OSA
-							has_country_flag = will_join_allies
-						}
-					}
-					activate_mission = world_stage_phoney_war_countdown_allies
-				} else = {	# everyone else gets the axis versions
-					activate_mission = world_stage_phoney_war_countdown_axis
-				}
-			}
-		}
-	}
-	
-	option = {
-		name = worldstage.15.axis
-		trigger = { OR = { check_variable = { world_stage_coalition = 3 } check_variable = { world_stage_coalition = 6 } } }
-		if = {
-			limit = { check_variable = { world_stage_metropolis > 100 } }
-			effect_tooltip = { activate_mission = world_stage_phoney_war_countdown_axis }
-		}
-	}
-	option = {
-		name = worldstage.15.komin1
-		trigger = {
-			check_variable = { world_stage_coalition = 2 }
-			NOT = { has_global_flag = GER_SOV_pact_enabled }
-		}
-		if = {
-			limit = { check_variable = { world_stage_metropolis > 100 } }
-			effect_tooltip = { activate_mission = world_stage_phoney_war_countdown_axis }
-		}
-	}
-	option = {
-		name = worldstage.15.komin2
-		trigger = {
-			check_variable = { world_stage_coalition = 2 }
-			has_global_flag = GER_SOV_pact_enabled
-		}
-		if = {
-			limit = { check_variable = { world_stage_metropolis > 100 } }
-			effect_tooltip = { activate_mission = world_stage_phoney_war_countdown_axis }
-		}
-	}
-	option = {
-		name = worldstage.15.allies
-		trigger = { OR = { check_variable = { world_stage_coalition = 1 } check_variable = { world_stage_coalition = 5 } } }
-		if = {
-			limit = { check_variable = { world_stage_metropolis > 100 } }
-			effect_tooltip = { activate_mission = world_stage_phoney_war_countdown_axis }
-		}
-	}
-	option = {
-		name = worldstage.15.other
-		trigger = {
-			OR = { check_variable = { world_stage_coalition = 4 } NOT = { has_variable = world_stage_coalition } }
-		}
-		if = {
-			limit = { check_variable = { world_stage_metropolis > 100 } }
-			effect_tooltip = { activate_mission = world_stage_phoney_war_countdown_axis }
-		}
-	}
-}
-
-# Invasion of Poland - Soviet Invasion
-news_event = {
-	id = worldstage.16
-	title = worldstage.16.t
-	desc = worldstage.16.d 
-	picture = GFX_news_nazi_soviet_handshake_wide
-
-	is_triggered_only = yes
-
-	major = yes
-	
-	immediate = {
-		hidden_effect = {
-			world_stage_end_invasion_of_poland = yes
-		}
-	}
-	
-	option = {
-		name = worldstage.16.axis
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
-		custom_effect_tooltip = worldstage.16.tt_green
-		custom_effect_tooltip = worldstage.16.tt_inactive
-	}
-	option = {
-		name = worldstage.16.komin
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
-		custom_effect_tooltip = worldstage.16.tt_green
-		custom_effect_tooltip = worldstage.16.tt_inactive
-	}
-	option = {
-		name = worldstage.16.allies
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
-		custom_effect_tooltip = worldstage.16.tt_red
-		custom_effect_tooltip = worldstage.16.tt_inactive
-	}
-	option = {
-		name = worldstage.16.other
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
-		custom_effect_tooltip = worldstage.16.tt_orange
-		custom_effect_tooltip = worldstage.16.tt_inactive
-	}
-}
-
 # Invasion of Poland - Poland Resists		#### CURRENTLY NOT USED IN GAME
 country_event = {
 	id = worldstage.17
@@ -1337,345 +2073,11 @@ country_event = {
 
 	option = {
 		name = worldstage.20.a1				# Attack!
-		cutom_effect_tooltip = "not from devs: this event does not have effects"
+		custom_effect_tooltip = "not from devs: this event does not have effects"
 	}
 	option = {
 		name = worldstage.20.a2				# Hold!
-		cutom_effect_tooltip = "not from devs: this event does not have effects"
-	}
-}
-
-# Invasion of Germany - Phoney War Ends!
-news_event = {
-	id = worldstage.21
-	title = worldstage.21.t
-	desc = worldstage.21.d 
-	picture = GFX_news_ww2_saarland_wide
-
-	is_triggered_only = yes
-
-	major = yes
-	
-	immediate = {
-		103 = {
-			set_temp_variable = { french_forces = world_stage_power }
-			clamp_temp_variable = { var = french_forces min = 0 max = 90 }
-			round_temp_variable = french_forces
-			subtract_from_variable = { world_stage_power = french_forces }
-		}
-		101 = {
-			set_temp_variable = { german_forces = world_stage_power }
-			divide_temp_variable = { german_forces = 2 }
-			round_temp_variable german_forces
-			clamp_temp_variable = { var = german_forces min = 0 max = 60 }
-			subtract_from_variable = { world_stage_power = german_forces }
-		}
-		6 = { # proxy for Western Germany
-			set_state_flag = theater_is_active
-			add_to_variable = { world_stage_power_deployed_by^103 = french_forces }
-			add_to_variable = { world_stage_power_deployed_by^101 = german_forces }
-			set_variable = { coalition_side_attack = 1 }
-			world_stage_state_update_current_day = yes
-		}
-		news_event = worldstage.53
-	}
-	
-	option = {
-		name = worldstage.21.allies
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
-		hidden_effect = {	6 = { set_temp_variable = { ger_for = world_stage_power_deployed_by^101 } }
-							6 = { set_temp_variable = { fra_for = world_stage_power_deployed_by^103 } } }
-		effect_tooltip  = {
-			custom_effect_tooltip = theater_scope_westphalia
-			custom_effect_tooltip = world_stage_activate_theater_tt
-			custom_effect_tooltip = metropolis_scope_france
-			subtract_from_variable = {
-				103.world_stage_power = fra_for
-				tooltip = world_stage_deploy_power_westphalia_space
-			}
-			custom_effect_tooltip = metropolis_scope_germany
-			subtract_from_variable = {	#
-				101.world_stage_power = ger_for
-				tooltip = world_stage_deploy_power_westphalia_space
-			}
-		}
-	}
-	option = {
-		name = worldstage.21.komin
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
-		hidden_effect = {	6 = { set_temp_variable = { ger_for = world_stage_power_deployed_by^101 } }
-							6 = { set_temp_variable = { fra_for = world_stage_power_deployed_by^103 } } }
-		effect_tooltip  = {
-			custom_effect_tooltip = theater_scope_westphalia
-			custom_effect_tooltip = world_stage_activate_theater_tt
-			custom_effect_tooltip = metropolis_scope_france
-			subtract_from_variable = {
-				103.world_stage_power = fra_for
-				tooltip = world_stage_deploy_power_westphalia_space
-			}
-			custom_effect_tooltip = metropolis_scope_germany
-			subtract_from_variable = {	#
-				101.world_stage_power = ger_for
-				tooltip = world_stage_deploy_power_westphalia_space
-			}
-		}
-	}
-	option = {
-		name = worldstage.21.axis
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
-		hidden_effect = {	6 = { set_temp_variable = { ger_for = world_stage_power_deployed_by^101 } }
-							6 = { set_temp_variable = { fra_for = world_stage_power_deployed_by^103 } } }
-		effect_tooltip  = {
-			custom_effect_tooltip = theater_scope_westphalia
-			custom_effect_tooltip = world_stage_activate_theater_tt
-			custom_effect_tooltip = metropolis_scope_france
-			subtract_from_variable = {
-				103.world_stage_power = fra_for
-				tooltip = world_stage_deploy_power_westphalia_space
-			}
-			custom_effect_tooltip = metropolis_scope_germany
-			subtract_from_variable = {	#
-				101.world_stage_power = ger_for
-				tooltip = world_stage_deploy_power_westphalia_space
-			}
-		}
-	}
-	option = {
-		name = worldstage.21.other
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
-		hidden_effect = {	6 = { set_temp_variable = { ger_for = world_stage_power_deployed_by^101 } }
-							6 = { set_temp_variable = { fra_for = world_stage_power_deployed_by^103 } } }
-		effect_tooltip  = {
-			custom_effect_tooltip = theater_scope_westphalia
-			custom_effect_tooltip = world_stage_activate_theater_tt
-			custom_effect_tooltip = metropolis_scope_france
-			subtract_from_variable = {
-				103.world_stage_power = fra_for
-				tooltip = world_stage_deploy_power_westphalia_space
-			}
-			custom_effect_tooltip = metropolis_scope_germany
-			subtract_from_variable = {	#
-				101.world_stage_power = ger_for
-				tooltip = world_stage_deploy_power_westphalia_space
-			}
-		}
-	}
-}
-
-# The Blitzkrieg!
-news_event = {
-	id = worldstage.24
-	title = worldstage.24.t
-	desc = worldstage.24.d 
-	picture = GFX_news_ww2_starts_wide
-
-	is_triggered_only = yes
-
-	major = yes #show_major = { NOT = { has_country_flag = hide_worldstage_notification } }
-	
-	option = {
-		name = worldstage.24.axis
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
-		hidden_effect = {	5 = { set_temp_variable = { ger_for = world_stage_power_deployed_by^101 } }
-							5 = { set_temp_variable = { fra_for = world_stage_power_deployed_by^103 } } }
-		effect_tooltip  = {
-			custom_effect_tooltip = theater_scope_alsace
-			custom_effect_tooltip = world_stage_activate_theater_tt
-			custom_effect_tooltip = metropolis_scope_france
-			subtract_from_variable = {
-				103.world_stage_power = fra_for
-				tooltip = world_stage_deploy_power_alsace_space
-			}
-			custom_effect_tooltip = metropolis_scope_germany
-			subtract_from_variable = {	#
-				101.world_stage_power = ger_for
-				tooltip = world_stage_deploy_power_alsace_space
-			}
-		}
-	}
-	option = {
-		name = worldstage.24.komin
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
-		hidden_effect = {	5 = { set_temp_variable = { ger_for = world_stage_power_deployed_by^101 } }
-							5 = { set_temp_variable = { fra_for = world_stage_power_deployed_by^103 } } }
-		effect_tooltip  = {
-			custom_effect_tooltip = theater_scope_alsace
-			custom_effect_tooltip = world_stage_activate_theater_tt
-			custom_effect_tooltip = metropolis_scope_france
-			subtract_from_variable = {
-				103.world_stage_power = fra_for
-				tooltip = world_stage_deploy_power_alsace_space
-			}
-			custom_effect_tooltip = metropolis_scope_germany
-			subtract_from_variable = {	#
-				101.world_stage_power = ger_for
-				tooltip = world_stage_deploy_power_alsace_space
-			}
-		}
-	}
-	option = {
-		name = worldstage.24.allies
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
-		hidden_effect = {	5 = { set_temp_variable = { ger_for = world_stage_power_deployed_by^101 } }
-							5 = { set_temp_variable = { fra_for = world_stage_power_deployed_by^103 } } }
-		effect_tooltip  = {
-			custom_effect_tooltip = theater_scope_alsace
-			custom_effect_tooltip = world_stage_activate_theater_tt
-			custom_effect_tooltip = metropolis_scope_france
-			subtract_from_variable = {
-				103.world_stage_power = fra_for
-				tooltip = world_stage_deploy_power_alsace_space
-			}
-			custom_effect_tooltip = metropolis_scope_germany
-			subtract_from_variable = {	#
-				101.world_stage_power = ger_for
-				tooltip = world_stage_deploy_power_alsace_space
-			}
-		}
-	}
-	option = {
-		name = worldstage.24.other
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
-		hidden_effect = {	5 = { set_temp_variable = { ger_for = world_stage_power_deployed_by^101 } }
-							5 = { set_temp_variable = { fra_for = world_stage_power_deployed_by^103 } } }
-		effect_tooltip  = {
-			custom_effect_tooltip = theater_scope_alsace
-			custom_effect_tooltip = world_stage_activate_theater_tt
-			custom_effect_tooltip = metropolis_scope_france
-			subtract_from_variable = {
-				103.world_stage_power = fra_for
-				tooltip = world_stage_deploy_power_alsace_space
-			}
-			custom_effect_tooltip = metropolis_scope_germany
-			subtract_from_variable = {	#
-				101.world_stage_power = ger_for
-				tooltip = world_stage_deploy_power_alsace_space
-			}
-		}
-	}
-}
-
-# The Blitzkrieg - France Falls to Blitzkrieg
-country_event = {
-	id = worldstage.25
-	title = worldstage.25.t
-	desc = worldstage.25.d 
-	picture = GFX_news_ww2_starts
-
-	is_triggered_only = yes
-
-	major = yes
-	
-	immediate = {
-
-	}
-
-	option = {
-		name = worldstage.25.axis
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
-		effect_tooltip = {
-			if = { limit = { country_exists = KOB }	add_war_support = -0.1 }
-			every_country = { limit = { NOT = { tag = KOB } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
-		}
-	}
-	option = {
-		name = worldstage.25.komin
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
-		effect_tooltip = {
-			if = { limit = { country_exists = KOB }	add_war_support = -0.1 }
-			every_country = { limit = { NOT = { tag = KOB } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
-		}
-	}
-	option = {
-		name = worldstage.25.allies1
-		trigger = {
-			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
-			tag = KOB
-		}
-		add_war_support = -0.1
-		effect_tooltip = {
-			every_country = { limit = { NOT = { tag = KOB } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
-		}
-	}
-	option = {
-		name = worldstage.25.allies2
-		trigger = {
-			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
-			NOT = { tag = KOB }
-		}
-		effect_tooltip = {
-			if = { limit = { country_exists = KOB }	add_war_support = -0.1 }
-			every_country = { limit = { NOT = { tag = KOB } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
-		}
-		hidden_effect = { add_war_support = -0.05 }
-	}
-	option = {
-		name = worldstage.25.other
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
-		effect_tooltip = {
-			if = { limit = { country_exists = KOB }	add_war_support = -0.1 }
-			every_country = { limit = { NOT = { tag = KOB } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
-		}
-	}
-}
-
-# The Blitzkrieg - France Resists
-country_event = {
-	id = worldstage.26
-	title = worldstage.26.t
-	desc = worldstage.26.d 
-	picture = GFX_news_ww2_starts
-
-	is_triggered_only = yes
-
-	major = yes show_major = { NOT = { has_country_flag = hide_worldstage_notification } }
-	
-	option = {
-		name = worldstage.26.axis
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
-		effect_tooltip = {
-			if = { limit = { country_exists = KOB }	add_war_support = 0.1 }
-			every_country = { limit = { NOT = { tag = KOB } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = 0.05 }
-		}
-	}
-	option = {
-		name = worldstage.26.komin
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
-		effect_tooltip = {
-			if = { limit = { country_exists = KOB }	add_war_support = 0.1 }
-			every_country = { limit = { NOT = { tag = KOB } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = 0.05 }
-		}
-	}
-	option = {
-		name = worldstage.26.allies1
-		trigger = {
-			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
-			tag = KOB
-		}
-		add_war_support = 0.1
-		effect_tooltip = {
-			every_country = { limit = { NOT = { tag = KOB } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = 0.05 }
-		}
-	}
-	option = {
-		name = worldstage.26.allies2
-		trigger = {
-			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
-			NOT = { tag = KOB }
-		}
-		effect_tooltip = {
-			if = { limit = { country_exists = KOB }	add_war_support = 0.1 }
-			every_country = { limit = { NOT = { tag = KOB } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = 0.05 }
-		}
-		hidden_effect = { add_war_support = 0.05 }
-	}
-	option = {
-		name = worldstage.26.other
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
-		effect_tooltip = {
-			if = { limit = { country_exists = KOB }	add_war_support = 0.1 }
-			every_country = { limit = { NOT = { tag = KOB } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = 0.05 }
-		}
+		custom_effect_tooltip = "not from devs: this event does not have effects"
 	}
 }
 
@@ -2428,288 +2830,6 @@ news_event = {
 		}
 	}
 }
-
-
-
-# HDIDEN EVENT Phoney War Ends!
-country_event = {
-	id = worldstage.53
-	title = worldstage.53.t
-	desc = worldstage.53.d 
-	picture = GFX_news_ww2_starts
-
-	is_triggered_only = yes
-
-	hidden = yes
-	
-	immediate = {
-		clr_global_flag = phoney_war_rages_on
-		if = {
-			limit = { country_exists = REI }
-			every_country = {
-				limit = { check_variable = { var:world_stage_metropolis = { world_stage_coalition = 1 } } }
-				REI = {	declare_war_on = { target = PREV type = annex_everything } }
-			}
-			
-		} else = {
-			random_country = {
-				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes }
-				set_temp_variable = { axis_leader = THIS.id}
-				every_country = {
-					limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
-					var:axis_leader = {	declare_war_on = { target = PREV type = annex_everything } }
-				}
-			}
-		}
-	}	
-}
-
-# URSS is expelled from the League of Nations
-news_event = {
-	id = worldstage.54
-	title = worldstage.54.t
-	desc = worldstage.54.d 
-	picture = GFX_news_ww2_starts_wide
-
-	is_triggered_only = yes
-
-	major = yes
-	
-	immediate = {
-		set_global_flag = SOV_expelled_from_lon
-		every_country = {
-			limit = { check_variable = { world_stage_metropolis = 104 } }
-			set_variable = { world_stage_coalition = 2 }
-		}
-		every_state = {
-			limit = { check_variable = { theater_owner = 104 } }	# proxy for sovietunion
-			set_variable = { theater_owner_coalition = 2 }
-		}
-	}
-	
-	option = {
-		name = worldstage.54.axis
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
-		effect_tooltip = {
-			
-		}
-	}
-	option = {
-		name = worldstage.54.komin
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
-		effect_tooltip = {
-			
-		}
-		if = {
-			limit = { tag = FER has_game_rule = { rule = censored_or_uncensored_german_flag option = UNCENSORED } }
-			custom_effect_tooltip = worldstage.54.special
-		}
-	}
-	option = {
-		name = worldstage.54.allies
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
-		effect_tooltip = {
-			
-		}
-	}
-	option = {
-		name = worldstage.54.other
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
-		effect_tooltip = {
-			
-		}
-	}
-}
-
-# The End of the League of Nations
-news_event = {
-	id = worldstage.55
-	title = worldstage.55.t
-	desc = worldstage.55.d 
-	picture = GFX_news_lon_ends_wide
-
-	is_triggered_only = yes
-
-	major = yes
-	
-	immediate = {
-		hidden_effect = {
-			log = "Begone!, League of Nations!"
-			every_country = {
-				limit = { has_idea = SS_lon_member }
-				remove_ideas = SS_lon_member
-			}
-			every_country = {
-				limit = { has_idea = SS_lon_member_japan }
-				remove_ideas = SS_lon_member_japan
-			}
-			clr_global_flag = leagueofnations_exists
-			set_global_flag = SOV_already_expelled
-			# the 'Great Swithceroo of Coalitions" happens here
-			# first: run specific tags
-			# second: run tags that may contain relevant infomation
-			# third: run proxy metropolis for off-map countries with no tags in game
-			# first:
-			OSA = { set_variable = { world_stage_coalition = 1 } }
-			KOB = { set_variable = { world_stage_coalition = 1 } }
-			FER = { set_variable = { world_stage_coalition = 2 } }		# URSS was already expelled from LoN at this point but we'll run the command again just in case the FER player did not play his part 
-			REI = { set_variable = { world_stage_coalition = 3 } }
-			115 = { set_variable = { world_stage_coalition = 1 } }		# Poland is off map
-			120 = { set_variable = { world_stage_coalition = 3 } }		# Vichy France is off map
-			# second:
-			every_country = {
-				limit = { has_country_flag = will_join_allies }
-				set_variable = { world_stage_coalition = 1 }
-			}
-			every_country = {
-				limit = { has_country_flag = will_join_komintern }
-				set_variable = { world_stage_coalition = 2 }
-			}
-			every_country = {
-				limit = { check_variable = { world_stage_coalition = 6 } }
-				set_variable = { world_stage_coalition = 3 }
-			}
-			every_country = {
-				limit = {
-					NOT = { has_country_flag = will_join_allies has_country_flag = will_join_komintern }	# every one that belongs to LoN but has not side in WW2
-					check_variable = { world_stage_coalition = 5 }
-				}
-				set_variable = { world_stage_coalition = 4 }
-			}
-			# updating proxy metropolises for 1st and 2nd
-			every_country = {
-				limit = { has_variable = world_stage_metropolis }
-				world_stage_update_metropolis = yes
-			}
-			# updating proxy states for 1st and 2nd
-			every_state = {
-				limit = { has_variable = world_stage_metropolis }
-				log = "[THIS.GetMetropolisName]'s owned theater"
-				every_state = {
-					limit = { check_variable = { theater_owner = PREV.world_stage_metropolis } }
-					log = "[THIS.GetTheaterName]: previous coalition [?theater_owner_coalition]"
-					set_variable = { theater_owner_coalition = PREV.world_stage_coalition }
-					log = "[THIS.GetTheaterName]: new coalition [?theater_owner_coalition]"
-				}
-			}
-			# updating proxy states and metropolis for 3rd
-			every_state = {
-				limit = { has_variable = world_stage_metropolis }
-				if = { limit = { check_variable = { world_stage_coalition = 5 } } set_variable = { world_stage_coalition = 4 } }	# leagueofnations becomes unaligned
-				if = { limit = { check_variable = { world_stage_coalition = 6 } } set_variable = { world_stage_coalition = 3 } }	# pactofsteel becomes axis
-			}
-			every_state = {
-				limit = { has_variable = theater_owner }
-				if = { limit = { check_variable = { theater_owner_coalition = 5 } } set_variable = { theater_owner_coalition = 4 } }	# leagueofnations becomes unaligned
-				if = { limit = { check_variable = { theater_owner_coalition = 6 } } set_variable = { theater_owner_coalition = 3 } }	# pactofsteel becomes axis
-			}
-			# create on-map factions
-			if = {
-				limit = { country_exists = OSA }
-				OSA = {
-					if = { limit = { is_in_faction = yes is_faction_leader = no } leave_faction = yes }
-					if = { limit = { is_in_faction = no } create_faction = coalition_name_allies_short }
-					every_other_country = {
-						limit = { check_variable = { world_stage_coalition = 1 } }
-						OSA = { add_to_faction = PREV }
-					}
-				}
-			} else = {
-				random_country = {
-					limit = { check_variable = { world_stage_coalition = 1 } }
-					if = { limit = { is_in_faction = yes is_faction_leader = no } leave_faction = yes }
-					if = { limit = { is_in_faction = no } create_faction = coalition_name_allies_short }
-					set_temp_variable = { coalitionleader = THIS.id }
-					every_other_country = {
-						limit = { check_variable = { world_stage_coalition = 1 } }
-						var:coalitionleader = { add_to_faction = PREV }
-					}
-				}
-			}
-			if = {
-				limit = { country_exists = FER }
-				FER = {
-					if = { limit = { is_in_faction = yes is_faction_leader = no } leave_faction = yes }
-					if = { limit = { is_in_faction = no } create_faction = coalition_name_komintern_short }
-					every_other_country = {
-						limit = { check_variable = { world_stage_coalition = 2 } }
-						REI = { add_to_faction = PREV }
-					}
-				}
-			} else = {
-				random_country = {
-					limit = { check_variable = { world_stage_coalition = 2 } }
-					if = { limit = { is_in_faction = yes is_faction_leader = no } leave_faction = yes }
-					if = { limit = { is_in_faction = no } create_faction = coalition_name_komintern_short }
-					set_temp_variable = { coalitionleader = THIS.id }
-					every_other_country = {
-						limit = { check_variable = { world_stage_coalition = 2 } }
-						var:coalitionleader = { add_to_faction = PREV }
-					}
-				}
-			}
-			if = {
-				limit = { country_exists = REI }
-				REI = {
-					if = { limit = { is_in_faction = yes is_faction_leader = no } leave_faction = yes }
-					if = { limit = { is_in_faction = no } create_faction = coalition_name_axis_short }
-					every_other_country = {
-						limit = { check_variable = { world_stage_coalition = 3 } }
-						REI = { add_to_faction = PREV }
-					}
-				}
-			} else = {
-				random_country = {
-					limit = { check_variable = { world_stage_coalition = 3 } }
-					if = { limit = { is_in_faction = yes is_faction_leader = no } leave_faction = yes }
-					if = { limit = { is_in_faction = no } create_faction = coalition_name_axis_short }
-					set_temp_variable = { coalitionleader = THIS.id }
-					every_other_country = {
-						limit = { check_variable = { world_stage_coalition = 3 } }
-						var:coalitionleader = { add_to_faction = PREV }
-					}
-				}
-			}
-			3 = { set_variable = { coalition_side_attack = 3 } }	# Change attacker on Poland
-		}
-	}
-	
-	option = {
-		name = worldstage.55.allies
-		trigger = { OR = { check_variable = { world_stage_coalition = 1 } check_variable = { world_stage_coalition = 5 } } }
-		effect_tooltip = {
-			custom_effect_tooltip = worldstage.55.lon_tt
-			custom_effect_tooltip = worldstage.55.allies_tt
-		}
-	}
-	option = {
-		name = worldstage.55.komin
-		trigger = { check_variable = { world_stage_coalition = 2 } }
-		effect_tooltip = {
-			custom_effect_tooltip = worldstage.55.lon_tt
-			if = {
-				limit = { NOT = { has_global_flag = SOV_already_expelled } }
-				custom_effect_tooltip = worldstage.55.komin_tt
-			}
-		}
-	}
-	option = {
-		name = worldstage.55.axis
-		trigger = { OR = { check_variable = { world_stage_coalition = 3 } check_variable = { world_stage_coalition = 6 } } }
-		effect_tooltip = {
-			custom_effect_tooltip = worldstage.55.lon_tt
-			custom_effect_tooltip = worldstage.55.axis_tt
-		}
-	}
-	option = {
-		name = worldstage.55.other
-		trigger = { OR = { check_variable = { world_stage_coalition = 4 } NOT = { has_variable = world_stage_coalition } } }
-		effect_tooltip = {
-			custom_effect_tooltip = worldstage.55.lon_tt
-		}
-	}
-}
-
 
 ########################################################################
 ########################## worldstage_surrender ########################
