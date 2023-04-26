@@ -409,7 +409,7 @@ country_event = {
 		}
 	}
 	option = {
-		name = worldstage.25.allies1
+		name = worldstage.25.kob
 		trigger = {
 			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
 			tag = KOB
@@ -422,7 +422,7 @@ country_event = {
 		custom_effect_tooltip = join_coalition_axis_bad
 	}
 	option = {
-		name = worldstage.25.allies2
+		name = worldstage.25.allies
 		trigger = {
 			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
 			NOT = { tag = KOB }
@@ -992,6 +992,8 @@ country_event = {
 				limit = { check_variable = { theater_owner = 103 } }
 				set_variable = { theater_owner = 120 }
 				set_variable = { theater_owner_coalition = 3 }
+				world_stage_end_round_partial = yes
+				clr_state_flag = theater_is_active
 			}
 			8 = { set_variable = { theater_owner = 101 } set_variable = { theater_owner_coalition = 3 } }
 			every_state = {
@@ -1009,11 +1011,8 @@ country_event = {
 		trigger = { is_puppet = no }		# puppet don't get to decide
 		every_possible_country = {
 			limit = { tag = KOB }
-			every_possible_country = {
-			limit = { tag = KOB }
-				custom_effect_tooltip = lose_access_to_trade_resources
-				clr_country_flag = tc_kobe_has_access
-			}
+			custom_effect_tooltip = lose_access_to_trade_resources_kobe
+			clr_country_flag = tc_kobe_has_access
 		}
 		if = {
 			limit = { country_exists = KOB }
@@ -1040,9 +1039,13 @@ country_event = {
 		name = worldstage_surrender.103.b	# surrender, prefered AI option
 		trigger = { is_puppet = no }		# puppet don't get to decide
 		every_possible_country = {
+			limit = { tag = REI }
+			set_temp_variable = { new_ideology = current_party_ideology_group }
+		}
+		every_possible_country = {
 			limit = { tag = KOB }
 			set_politics = {
-				ruling_party = fascism
+				ruling_party = var:new_ideology
 				elections_allowed = no
 				last_election = "1939.09.1"
 				election_frequency = 48
@@ -1067,9 +1070,13 @@ country_event = {
 		if = {
 			limit = { OVERLORD = { OR = { has_government = fascism has_government = neutrality has_government = autocracy } } }
 			every_possible_country = {
+				limit = { tag = REI }
+				set_temp_variable = { new_ideology = current_party_ideology_group }
+			}
+			every_possible_country = {
 				limit = { tag = KOB }
 				set_politics = {
-					ruling_party = fascism
+					ruling_party = var:new_ideology
 					elections_allowed = no
 					last_election = "1939.09.1"
 					election_frequency = 48
@@ -1098,11 +1105,8 @@ country_event = {
 		} else = {
 			every_possible_country = {
 			limit = { tag = KOB }
-				every_possible_country = {
-				limit = { tag = KOB }
-					custom_effect_tooltip = lose_access_to_trade_resources
-					clr_country_flag = tc_kobe_has_access
-				}
+				custom_effect_tooltip = lose_access_to_trade_resources_kobe
+				clr_country_flag = tc_kobe_has_access
 			}
 			hidden_effect = {
 				if = {
