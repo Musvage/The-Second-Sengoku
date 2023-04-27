@@ -376,9 +376,29 @@ country_event = {
 	
 	immediate = {
 		hidden_effect = {
+			clr_global_flag = world_stage_france_exists
+			set_global_flag = world_stage_vichy_exists
+			every_state = {
+				limit = { check_variable = { theater_owner = 103 } }
+				set_variable = { theater_owner = 120 }
+				set_variable = { theater_owner_coalition = 3 }
+				world_stage_end_round_partial = yes
+				clr_state_flag = theater_is_active
+			}
+			8 = { set_variable = { theater_owner = 101 } set_variable = { theater_owner_coalition = 3 } }
+			every_state = {
+				limit = { has_variable = theater_owner }
+				set_variable = { world_stage_power_deployed_by^120 = world_stage_power_deployed_by^103 }
+				divide_variable = { world_stage_power_deployed_by^120 = 4 }
+				set_variable = { world_stage_power_deployed_by^103 = 0 }
+			}
+			103 = { set_variable = { world_stage_power = 0 } }
 			every_possible_country = {
 				limit = { tag = KOB }
-				news_event = { id = worldstage_surrender.103 hours = 24 random = 24 }
+				if = {
+					limit = { country_exists = KOB }
+					news_event = { id = worldstage_surrender.103 hours = 24 random = 24 }
+				} else = { clr_country_flag = tc_kobe_has_access }
 			}
 		}
 	}
@@ -941,11 +961,115 @@ state_event = {
 	option = { name = worldstage_automatic.6.a custom_effect_tooltip = worldstage_automatic.6.tt }
 }
 
+# Paris is taken, France falls
+country_event = {
+	id = worldstage_automatic.103
+	title = worldstage_automatic.103.t
+	desc = worldstage_automatic.103.d 
+	picture = GFX_news_ww2_starts
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			clr_global_flag = world_stage_france_exists
+			set_global_flag = world_stage_vichy_exists
+			every_state = {
+				limit = { check_variable = { theater_owner = 103 } }
+				set_variable = { theater_owner = 120 }
+				set_variable = { theater_owner_coalition = 3 }
+				world_stage_end_round_partial = yes
+				clr_state_flag = theater_is_active
+			}
+			8 = { set_variable = { theater_owner = 101 } set_variable = { theater_owner_coalition = 3 } }
+			every_state = {
+				limit = { has_variable = theater_owner }
+				set_variable = { world_stage_power_deployed_by^120 = world_stage_power_deployed_by^103 }
+				divide_variable = { world_stage_power_deployed_by^120 = 4 }
+				set_variable = { world_stage_power_deployed_by^103 = 0 }
+			}
+			103 = { set_variable = { world_stage_power = 0 } }
+			every_possible_country = {
+				limit = { tag = KOB }
+				if = {
+					limit = { country_exists = KOB }
+					news_event = { id = worldstage_surrender.103 hours = 24 random = 24 }
+				} else = { clr_country_flag = tc_kobe_has_access }
+			}
+		}
+	}
+
+	option = {
+		name = worldstage_automatic.103.axis
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		effect_tooltip = {
+			if = { limit = { country_exists = KOB }	KOB = { add_war_support = -0.1 } }
+			every_country = { limit = { NOT = { tag = KOB } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
+		}
+		custom_effect_tooltip = metropolis_scope_vichy
+		custom_effect_tooltip = join_coalition_axis_good
+	}
+	option = {
+		name = worldstage_automatic.103.komin
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+		effect_tooltip = {
+			if = { limit = { country_exists = KOB }	KOB = { add_war_support = -0.1 } }
+			every_country = { limit = { NOT = { tag = KOB } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
+		}
+		custom_effect_tooltip = metropolis_scope_vichy
+		if = {
+			limit = { has_global_flag = GER_SOV_pact_enabled }
+			custom_effect_tooltip = join_coalition_axis_good
+		} else = {
+			custom_effect_tooltip = join_coalition_axis
+		}
+	}
+	option = {
+		name = worldstage_automatic.103.kob
+		trigger = {
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
+			tag = KOB
+		}
+		add_war_support = -0.1
+		effect_tooltip = {
+			every_country = { limit = { NOT = { tag = KOB } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
+		}
+		custom_effect_tooltip = metropolis_scope_vichy
+		custom_effect_tooltip = join_coalition_axis_bad
+	}
+	option = {
+		name = worldstage_automatic.103.allies
+		trigger = {
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
+			NOT = { tag = KOB }
+		}
+		effect_tooltip = {
+			if = { limit = { country_exists = KOB }	add_war_support = -0.1 }
+			every_country = { limit = { NOT = { tag = KOB } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
+		}
+		hidden_effect = { add_war_support = -0.05 }
+		custom_effect_tooltip = metropolis_scope_vichy
+		custom_effect_tooltip = join_coalition_axis_bad
+	}
+	option = {
+		name = worldstage_automatic.103.other
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
+		effect_tooltip = {
+			if = { limit = { country_exists = KOB }	add_war_support = -0.1 }
+			every_country = { limit = { NOT = { tag = KOB } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
+		}
+		custom_effect_tooltip = metropolis_scope_vichy
+		custom_effect_tooltip = join_coalition_axis
+	}
+}
+
 # SCOPE TEST	### FOR DEBUG DELETE LATER	### FOR DEBUG DELETE LATER	### FOR DEBUG DELETE LATER
 state_event = {
-	id = worldstage_automatic.7
-	title = worldstage_automatic.7.t
-	desc = worldstage_automatic.7.d 
+	id = worldstage_automatic.7777
+	title = worldstage_automatic.7777.t
+	desc = worldstage_automatic.7777.d 
 	picture = GFX_news_ww2_starts_wide
 
 	is_triggered_only = yes
@@ -983,28 +1107,6 @@ country_event = {
 	is_triggered_only = yes
 
 	major = no	# this is KOB-only
-	
-	immediate = {
-		hidden_effect = {
-			clr_global_flag = world_stage_france_exists
-			set_global_flag = world_stage_vichy_exists
-			every_state = {
-				limit = { check_variable = { theater_owner = 103 } }
-				set_variable = { theater_owner = 120 }
-				set_variable = { theater_owner_coalition = 3 }
-				world_stage_end_round_partial = yes
-				clr_state_flag = theater_is_active
-			}
-			8 = { set_variable = { theater_owner = 101 } set_variable = { theater_owner_coalition = 3 } }
-			every_state = {
-				limit = { has_variable = theater_owner }
-				set_variable = { world_stage_power_deployed_by^120 = world_stage_power_deployed_by^103 }
-				divide_variable = { world_stage_power_deployed_by^120 = 4 }
-				set_variable = { world_stage_power_deployed_by^103 = 0 }
-			}
-			103 = { set_variable = { world_stage_power = 0 } }
-		}
-	}
 
 	option = {
 		name = worldstage_surrender.103.a	# fight, prefered human option
