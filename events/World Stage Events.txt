@@ -173,7 +173,7 @@ news_event = {
 			101 = {
 				set_temp_variable = { german_forces = world_stage_power }
 				divide_temp_variable = { german_forces = 2 }
-				round_temp_variable german_forces
+				round_temp_variable = german_forces
 				clamp_temp_variable = { var = german_forces min = 0 max = 60 }
 				subtract_from_variable = { world_stage_power = german_forces }
 			}
@@ -543,21 +543,20 @@ country_event = {
 		if = {
 			limit = { country_exists = REI }
 			every_country = {
-				limit = { check_variable = { var:world_stage_metropolis = { world_stage_coalition = 1 } } }
+				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
 				REI = {	declare_war_on = { target = PREV type = annex_everything } }
 			}
-			
 		} else = {
 			random_country = {
 				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes }
-				set_temp_variable = { axis_leader = THIS.id}
+				set_temp_variable = { axis_leader = THIS.id }
 				every_country = {
 					limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
 					var:axis_leader = {	declare_war_on = { target = PREV type = annex_everything } }
 				}
 			}
 		}
-	}	
+	}
 }
 
 # URSS is expelled from the League of Nations
@@ -565,21 +564,23 @@ news_event = {
 	id = worldstage.54
 	title = worldstage.54.t
 	desc = worldstage.54.d 
-	picture = GFX_news_ww2_starts_wide
+	picture = GFX_news_lon_ends_wide
 
 	is_triggered_only = yes
 
 	major = yes
 	
 	immediate = {
-		set_global_flag = SOV_expelled_from_lon
-		every_country = {
-			limit = { check_variable = { world_stage_metropolis = 104 } }
-			set_variable = { world_stage_coalition = 2 }
-		}
-		every_state = {
-			limit = { check_variable = { theater_owner = 104 } }	# proxy for sovietunion
-			set_variable = { theater_owner_coalition = 2 }
+		hidden_effect = {
+			set_global_flag = SOV_expelled_from_lon
+			every_country = {
+				limit = { check_variable = { world_stage_metropolis = 104 } }
+				set_variable = { world_stage_coalition = 2 }
+			}
+			every_state = {
+				limit = { check_variable = { theater_owner = 104 } }	# proxy for sovietunion
+				set_variable = { theater_owner_coalition = 2 }
+			}
 		}
 	}
 	
@@ -587,7 +588,7 @@ news_event = {
 		name = worldstage.54.axis
 		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
 		effect_tooltip = {
-			
+			custom_effect_tooltip = worldstage.54.tooltip
 		}
 	}
 	option = {
@@ -596,6 +597,7 @@ news_event = {
 		effect_tooltip = {
 			
 		}
+		custom_effect_tooltip = worldstage.54.tooltip
 		if = {
 			limit = { tag = FER has_game_rule = { rule = censored_or_uncensored_german_flag option = UNCENSORED } }
 			custom_effect_tooltip = worldstage.54.special
@@ -605,14 +607,14 @@ news_event = {
 		name = worldstage.54.allies
 		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
 		effect_tooltip = {
-			
+			custom_effect_tooltip = worldstage.54.tooltip
 		}
 	}
 	option = {
 		name = worldstage.54.other
 		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
 		effect_tooltip = {
-			
+			custom_effect_tooltip = worldstage.54.tooltip
 		}
 	}
 }
@@ -2937,599 +2939,6 @@ news_event = {
 	}
 }
 
-########################################################################
-########################## worldstage_surrender ########################
-########################################################################
-
-# CHINA SURRENDER
-country_event = {
-	id = worldstage_surrender.2
-	title = worldstage_surrender.2.t
-	desc = worldstage_surrender.2.d 
-	picture = GFX_news_ww2_starts
-
-	is_triggered_only = yes
-
-	major = yes
-	
-	immediate = {
-		clr_global_flag = world_stage_china_exists
-		set_variable = { global.CHI_strength_alsace = 0 }
-		set_variable = { global.CHI_strength_westphalia = 0 }
-		set_variable = { global.CHI_strength_france = 0 }
-		set_variable = { global.CHI_strength_germany = 0 }
-		set_variable = { global.CHI_strength_poland = 0 }
-		set_variable = { global.CHI_strength_belarus = 0 }
-		set_variable = { global.CHI_strength_smolensk = 0 }
-		set_variable = { global.CHI_strength_russia = 0 }
-		set_variable = { global.CHI_strength_norway = 0 }
-		set_variable = { global.CHI_strength_lybia = 0 }
-		set_variable = { global.CHI_strength_ethiopia = 0 }
-		set_variable = { global.CHI_strength_egypt = 0 }
-		set_variable = { global.CHI_strength_italy = 0 }
-		set_variable = { global.CHI_strength_siberia = 0 }
-		set_variable = { global.CHI_strength_mongolia = 0 }
-		set_variable = { global.CHI_strength_tibet = 0 }
-		set_variable = { global.CHI_strength_mongolia = 0 }
-		set_variable = { global.CHI_strength_bengal = 0 }
-		set_variable = { global.CHI_strength_india = 0 }
-		set_variable = { global.CHI_strength_china = 0 }
-		set_variable = { global.CHI_strength_normandy = 0 }
-		set_variable = { global.CHI_strength_sealion = 0 }
-		set_variable = { global.CHI_strength_urals = 0 }
-		set_variable = { global.CHI_strength_guanxi = 0 }
-		set_variable = { global.CHI_strength_alpes = 0 }
-		set_variable = { global.CHI_strength_autria = 0 }
-		set_variable = { global.CHI_strength_england = 0 }
-		set_variable = { global.CHI_strength_netherlands = 0 }
-	}
-	
-	option = {
-		name = worldstage_surrender.2.axis
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } NOT = { tag = ROC } }
-	}
-	option = {
-		name = worldstage_surrender.2.komin
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } NOT = { tag = ROC } }
-	}
-	option = {
-		name = worldstage_surrender.2.allies
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } NOT = { tag = ROC } }
-	}
-	option = {
-		name = worldstage_surrender.2.other
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } NOT = { tag = ROC } }
-	}
-	option = {
-		name = worldstage_surrender.2.fight
-		trigger = { tag = ROC }
-		custom_effect_tooltip = lose_access_to_trade_resources
-		clr_country_flag = tc_fengtian_has_access
-	}
-	option = {
-		name = worldstage_surrender.2.surrender
-		trigger = { tag = ROC }
-		set_temp_variable = { global.winner_tag = THIS.id }
-		if = {
-			limit = { OR = { has_global_flag = china_aligned_allies has_global_flag = china_aligned_komintern } }
-			if = {
-				limit = {
-					any_country = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes }
-				}
-				random_country = {
-					limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes }
-					set_temp_variable = { global.winner_tag = THIS.id }
-					log = "A: [?global.winner_tag.GetName]"
-				}
-			} else = {
-				random_country = {
-					limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
-					set_temp_variable = { global.winner_tag = THIS.id }
-					log = "B: [?global.winner_tag.GetName]"
-				}
-			}
-			if = {
-				limit = { NOT = { global.winner_tag = ROC} }	# aka, there was someone with the conditions above
-				log = "C"
-				var:global.winner_tag = {
-					5 = { if = { limit = { controller = { tag = ROC } } transfer_state_to = global.winner_tag } }
-					218 = { if = { limit = { controller = { tag = ROC } } transfer_state_to = var:global.winner_tag } }
-					228 = { if = { limit = { controller = { tag = ROC } } transfer_state_to = var:global.winner_tag } }
-					233 = { if = { limit = { controller = { tag = ROC } } transfer_state_to = var:global.winner_tag } }
-					234 = { if = { limit = { controller = { tag = ROC } } transfer_state_to = var:global.winner_tag } }
-					puppet = ROC
-				}
-			}
-			hidden_effect = {
-				every_country = {
-					limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } has_war_with = ROC }
-					white_peace = ROC
-				}
-			}
-		} else = {
-			if = {
-				limit = {
-					any_country = { OR = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } } is_faction_leader = yes }
-				}
-				random_country = {
-					limit = { OR = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } } is_faction_leader = yes }
-					set_temp_variable = { global.winner_tag = THIS.id }
-				}
-			} else = {
-				random_country = {
-					limit = { OR = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } } }
-					set_temp_variable = { global.winner_tag = THIS.id }
-				}
-			}
-			if = {
-				limit = { NOT = { var:global.winner_tag = ROC} }	# aka, there was someone with the conditions above
-				var:global.winner_tag = {
-					5 = { if = { limit = { controller = { tag = ROC } } transfer_state_to = var:global.winner_tag  add_compliance = 100 } }
-					218 = { if = { limit = { controller = { tag = ROC } } transfer_state_to = var:global.winner_tag add_compliance = 100 } }
-					228 = { if = { limit = { controller = { tag = ROC } } transfer_state_to = var:global.winner_tag add_compliance = 100 } }
-					233 = { if = { limit = { controller = { tag = ROC } } transfer_state_to = var:global.winner_tag add_compliance = 100 } }
-					234 = { if = { limit = { controller = { tag = ROC } } transfer_state_to = var:global.winner_tag add_compliance = 100 } }
-					puppet = ROC
-				}
-			}
-			hidden_effect = {
-				every_country = {
-					limit = { OR = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } } has_war_with = ROC }
-					white_peace = ROC
-				}
-			}
-		}
-	}
-}
-
-# GERMANY SURRENDER
-country_event = {
-	id = worldstage_surrender.3
-	title = worldstage_surrender.3.t
-	desc = worldstage_surrender.3.d 
-	picture = GFX_news_ww2_starts
-
-	is_triggered_only = yes
-
-	major = yes
-	
-	immediate = {
-		clr_global_flag = world_stage_germany_exists
-		set_variable = { global.GER_strength_alsace = 0 }
-		set_variable = { global.GER_strength_westphalia = 0 }
-		set_variable = { global.GER_strength_france = 0 }
-		set_variable = { global.GER_strength_germany = 0 }
-		set_variable = { global.GER_strength_poland = 0 }
-		set_variable = { global.GER_strength_belarus = 0 }
-		set_variable = { global.GER_strength_smolensk = 0 }
-		set_variable = { global.GER_strength_russia = 0 }
-		set_variable = { global.GER_strength_norway = 0 }
-		set_variable = { global.GER_strength_lybia = 0 }
-		set_variable = { global.GER_strength_ethiopia = 0 }
-		set_variable = { global.GER_strength_egypt = 0 }
-		set_variable = { global.GER_strength_italy = 0 }
-		set_variable = { global.GER_strength_siberia = 0 }
-		set_variable = { global.GER_strength_mongolia = 0 }
-		set_variable = { global.GER_strength_tibet = 0 }
-		set_variable = { global.GER_strength_mongolia = 0 }
-		set_variable = { global.GER_strength_bengal = 0 }
-		set_variable = { global.GER_strength_india = 0 }
-		set_variable = { global.GER_strength_china = 0 }
-		set_variable = { global.GER_strength_normandy = 0 }
-		set_variable = { global.GER_strength_sealion = 0 }
-		set_variable = { global.GER_strength_urals = 0 }
-		set_variable = { global.GER_strength_guanxi = 0 }
-		set_variable = { global.GER_strength_alpes = 0 }
-		set_variable = { global.GER_strength_autria = 0 }
-		set_variable = { global.GER_strength_england = 0 }
-		set_variable = { global.GER_strength_netherlands = 0 }
-	}
-	
-	option = {
-		name = worldstage_surrender.3.axis
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } NOT = { tag = REI } }
-	}
-	option = {
-		name = worldstage_surrender.3.komin
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } NOT = { tag = REI } }
-	}
-	option = {
-		name = worldstage_surrender.3.allies
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } NOT = { tag = REI } }
-	}
-	option = {
-		name = worldstage_surrender.3.other
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } NOT = { tag = REI } }
-	}
-	option = {
-		name = worldstage_surrender.3.fight
-		trigger = { tag = REI }
-		ai_chance = { base = 0 }
-		custom_effect_tooltip = lose_access_to_trade_resources
-		clr_country_flag = tc_yawatahama_has_access
-	}
-	option = {
-		name = worldstage_surrender.3.surrender
-		trigger = { tag = REI }
-		ai_chance = { base = 1 }
-		hidden_effect = {
-			every_country = {
-				limit = { OR = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } } has_war_with = REI }
-				white_peace = REI
-			}
-		}
-		if = {
-			limit = {
-				any_country = { OR = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } } is_faction_leader = yes }
-			}
-			random_country = {
-				limit = { OR = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } } is_faction_leader = yes }
-				puppet = REI
-			}
-		} else = {
-			random_country = {
-				limit = { OR = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } } }
-				puppet = REI
-			}
-		}
-	}
-}
-
-# RUSSIA SURRENDER
-country_event = {
-	id = worldstage_surrender.4
-	title = worldstage_surrender.4.t
-	desc = worldstage_surrender.4.d 
-	picture = GFX_news_ww2_starts
-
-	is_triggered_only = yes
-
-	major = yes
-	
-	immediate = {
-		clr_global_flag = world_stage_russia_exists
-		set_variable = { global.SOV_strength_alsace = 0 }
-		set_variable = { global.SOV_strength_westphalia = 0 }
-		set_variable = { global.SOV_strength_france = 0 }
-		set_variable = { global.SOV_strength_germany = 0 }
-		set_variable = { global.SOV_strength_poland = 0 }
-		set_variable = { global.SOV_strength_belarus = 0 }
-		set_variable = { global.SOV_strength_smolensk = 0 }
-		set_variable = { global.SOV_strength_russia = 0 }
-		set_variable = { global.SOV_strength_norway = 0 }
-		set_variable = { global.SOV_strength_lybia = 0 }
-		set_variable = { global.SOV_strength_ethiopia = 0 }
-		set_variable = { global.SOV_strength_egypt = 0 }
-		set_variable = { global.SOV_strength_italy = 0 }
-		set_variable = { global.SOV_strength_siberia = 0 }
-		set_variable = { global.SOV_strength_mongolia = 0 }
-		set_variable = { global.SOV_strength_tibet = 0 }
-		set_variable = { global.SOV_strength_mongolia = 0 }
-		set_variable = { global.SOV_strength_bengal = 0 }
-		set_variable = { global.SOV_strength_india = 0 }
-		set_variable = { global.SOV_strength_china = 0 }
-		set_variable = { global.SOV_strength_normandy = 0 }
-		set_variable = { global.SOV_strength_sealion = 0 }
-		set_variable = { global.SOV_strength_urals = 0 }
-		set_variable = { global.SOV_strength_guanxi = 0 }
-		set_variable = { global.SOV_strength_alpes = 0 }
-		set_variable = { global.SOV_strength_autria = 0 }
-		set_variable = { global.SOV_strength_england = 0 }
-		set_variable = { global.SOV_strength_netherlands = 0 }
-	}
-	
-	option = {
-		name = worldstage_surrender.4.axis
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } NOT = { tag = FER } }
-	}
-	option = {
-		name = worldstage_surrender.4.komin
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } NOT = { tag = FER } }
-	}
-	option = {
-		name = worldstage_surrender.4.allies
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } NOT = { tag = FER } }
-	}
-	option = {
-		name = worldstage_surrender.4.other
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } NOT = { tag = FER } }
-	}
-	option = {
-		name = worldstage_surrender.4.fight
-		trigger = { tag = FER }
-		ai_chance = { base = 1 }
-		custom_effect_tooltip = lose_access_to_trade_resources
-		clr_country_flag = tc_khabarovsky_has_access
-	}
-	option = {
-		name = worldstage_surrender.4.surrender
-		trigger = { tag = FER }
-		ai_chance = { base = 1 }
-		set_temp_variable = { global.winner_tag = THIS.id }
-		if = {
-			limit = {
-				any_country = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes }
-			}
-			random_country = {
-				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes }
-				set_temp_variable = { global.winner_tag = THIS.id }
-			}
-		} else = {
-			random_country = {
-				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
-				set_temp_variable = { global.winner_tag = THIS.id }
-			}
-		}
-		if = {
-			limit = { NOT = { var:global.winner_tag = FER} }	# aka, there was someone with the conditions above
-			var:global.winner_tag = {
-				186 = { if = { limit = { controller = { tag = FER } } transfer_state_to = var:global.winner_tag add_compliance = 100 } }
-				187 = { if = { limit = { controller = { tag = FER } } transfer_state_to = var:global.winner_tag add_compliance = 100 } }
-				222 = { if = { limit = { controller = { tag = FER } } transfer_state_to = var:global.winner_tag add_compliance = 100 } }
-				225 = { if = { limit = { controller = { tag = FER } } transfer_state_to = var:global.winner_tag add_compliance = 100 } }
-				215 = { if = { limit = { controller = { tag = FER } } transfer_state_to = var:global.winner_tag add_compliance = 100 } }
-				puppet = FER
-			}
-		}
-		hidden_effect = {
-			every_country = {
-				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } has_war_with = FER }
-				white_peace = FER
-			}
-		}
-	}
-}
-
-# ENGLAND SURRENDER
-country_event = {
-	id = worldstage_surrender.5
-	title = worldstage_surrender.5.t
-	desc = worldstage_surrender.5.d 
-	picture = GFX_news_ww2_starts
-
-	is_triggered_only = yes
-
-	major = yes
-	
-	immediate = {
-		clr_global_flag = world_stage_england_exists
-		set_variable = { global.ENG_strength_alsace = 0 }
-		set_variable = { global.ENG_strength_westphalia = 0 }
-		set_variable = { global.ENG_strength_france = 0 }
-		set_variable = { global.ENG_strength_germany = 0 }
-		set_variable = { global.ENG_strength_poland = 0 }
-		set_variable = { global.ENG_strength_belarus = 0 }
-		set_variable = { global.ENG_strength_smolensk = 0 }
-		set_variable = { global.ENG_strength_russia = 0 }
-		set_variable = { global.ENG_strength_norway = 0 }
-		set_variable = { global.ENG_strength_lybia = 0 }
-		set_variable = { global.ENG_strength_ethiopia = 0 }
-		set_variable = { global.ENG_strength_egypt = 0 }
-		set_variable = { global.ENG_strength_italy = 0 }
-		set_variable = { global.ENG_strength_siberia = 0 }
-		set_variable = { global.ENG_strength_mongolia = 0 }
-		set_variable = { global.ENG_strength_tibet = 0 }
-		set_variable = { global.ENG_strength_mongolia = 0 }
-		set_variable = { global.ENG_strength_bengal = 0 }
-		set_variable = { global.ENG_strength_india = 0 }
-		set_variable = { global.ENG_strength_china = 0 }
-		set_variable = { global.ENG_strength_normandy = 0 }
-		set_variable = { global.ENG_strength_sealion = 0 }
-		set_variable = { global.ENG_strength_urals = 0 }
-		set_variable = { global.ENG_strength_guanxi = 0 }
-		set_variable = { global.ENG_strength_alpes = 0 }
-		set_variable = { global.ENG_strength_autria = 0 }
-		set_variable = { global.ENG_strength_england = 0 }
-		set_variable = { global.ENG_strength_netherlands = 0 }
-	}
-	
-	option = {
-		name = worldstage_surrender.5.axis
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } NOT = { tag = OSA } }
-	}
-	option = {
-		name = worldstage_surrender.5.komin
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } NOT = { tag = OSA } }
-	}
-	option = {
-		name = worldstage_surrender.5.allies
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } NOT = { tag = OSA } }
-	}
-	option = {
-		name = worldstage_surrender.5.other
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } NOT = { tag = OSA } }
-	}
-	option = {
-		name = worldstage_surrender.5.fight
-		trigger = { tag = OSA }
-		ai_chance = { base = 0 }
-		custom_effect_tooltip = lose_access_to_trade_resources
-		clr_country_flag = tc_osaka_has_access
-	}
-	option = {
-		name = worldstage_surrender.5.surrender
-		trigger = { tag = OSA }
-		ai_chance = { base = 1 }
-		hidden_effect = {
-			every_country = {
-				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } has_war_with = OSA }
-				white_peace = OSA
-			}
-		}
-		if = {
-			limit = {
-				any_country = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes }
-			}
-			random_country = {
-				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes }
-				puppet = OSA
-			}
-		} else = {
-			random_country = {
-				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
-				puppet = OSA
-			}
-		}
-	}
-}
-
-# ITALY SURRENDER
-country_event = {
-	id = worldstage_surrender.6
-	title = worldstage_surrender.6.t
-	desc = worldstage_surrender.6.d 
-	picture = GFX_news_ww2_starts
-
-	is_triggered_only = yes
-
-	major = yes
-	
-	immediate = {
-		clr_global_flag = world_stage_italy_exists
-		set_variable = { global.AXIS_locals_france = 0 }
-		set_variable = { global.AXIS_locals_lybia = 0 }
-		set_variable = { global.AXIS_locals_ethiopia = 0 }
-		set_variable = { global.AXIS_locals_egypt = 0 }
-		set_variable = { global.AXIS_locals_italy = 0 }
-		set_variable = { global.AXIS_locals_alpes = 0 }
-	}
-	
-	option = {
-		name = worldstage_surrender.6.axis
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
-	}
-	option = {
-		name = worldstage_surrender.6.komin
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
-	}
-	option = {
-		name = worldstage_surrender.6.allies
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
-	}
-	option = {
-		name = worldstage_surrender.6.other
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
-	}
-}
-
-# NETHERLANDS SURRENDER
-country_event = {
-	id = worldstage_surrender.7
-	title = worldstage_surrender.7.t
-	desc = worldstage_surrender.7.d 
-	picture = GFX_news_ww2_starts
-
-	is_triggered_only = yes
-
-	major = yes
-	
-	immediate = {
-		clr_global_flag = world_stage_netherlands_exists
-		set_variable = { global.NET_strength_alsace = 0 }
-		set_variable = { global.CHI_strength_westphalia = 0 }
-		set_variable = { global.CHI_strength_france = 0 }
-		set_variable = { global.CHI_strength_germany = 0 }
-		set_variable = { global.CHI_strength_poland = 0 }
-		set_variable = { global.CHI_strength_belarus = 0 }
-		set_variable = { global.CHI_strength_smolensk = 0 }
-		set_variable = { global.CHI_strength_russia = 0 }
-		set_variable = { global.CHI_strength_norway = 0 }
-		set_variable = { global.CHI_strength_lybia = 0 }
-		set_variable = { global.CHI_strength_ethiopia = 0 }
-		set_variable = { global.CHI_strength_egypt = 0 }
-		set_variable = { global.CHI_strength_italy = 0 }
-		set_variable = { global.CHI_strength_siberia = 0 }
-		set_variable = { global.CHI_strength_mongolia = 0 }
-		set_variable = { global.CHI_strength_tibet = 0 }
-		set_variable = { global.CHI_strength_mongolia = 0 }
-		set_variable = { global.CHI_strength_bengal = 0 }
-		set_variable = { global.CHI_strength_india = 0 }
-		set_variable = { global.CHI_strength_china = 0 }
-		set_variable = { global.CHI_strength_normandy = 0 }
-		set_variable = { global.CHI_strength_sealion = 0 }
-		set_variable = { global.CHI_strength_urals = 0 }
-		set_variable = { global.CHI_strength_guanxi = 0 }
-		set_variable = { global.CHI_strength_alpes = 0 }
-		set_variable = { global.CHI_strength_autria = 0 }
-		set_variable = { global.CHI_strength_england = 0 }
-		set_variable = { global.CHI_strength_netherlands = 0 }
-	}
-	
-	option = {
-		name = worldstage_surrender.7.axis
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } NOT = { tag = HIR } }
-	}
-	option = {
-		name = worldstage_surrender.7.komin
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } NOT = { tag = HIR } }
-	}
-	option = {
-		name = worldstage_surrender.7.allies
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } NOT = { tag = HIR } }
-	}
-	option = {
-		name = worldstage_surrender.7.other
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } NOT = { tag = HIR } }
-	}
-	option = {
-		name = worldstage_surrender.7.fight
-		trigger = { tag = HIR }
-		ai_chance = { base = 0 }
-		custom_effect_tooltip = lose_access_to_trade_resources
-		clr_country_flag = tc_hirado_has_access
-		add_ideas = HIR_main_land_refugees
-	}
-	option = {
-		name = worldstage_surrender.7.surrender
-		trigger = { tag = HIR }
-		 ai_chance = { base = 1 }
-		if = {
-			limit = { has_global_flag = netherlands_aligned_axis }
-			hidden_effect = {
-				every_country = {
-					limit = { OR = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } } has_war_with = HIR }
-					white_peace = HIR
-				}
-			}
-			if = {
-				limit = {
-					any_country = { OR = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } } is_faction_leader = yes }
-				}
-				random_country = {
-					limit = { OR = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } } is_faction_leader = yes }
-					puppet = HIR
-				}
-			} else = {
-				random_country = {
-					limit = { OR = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } } }
-					puppet = HIR
-				}
-			}
-		} else = {
-			hidden_effect = {
-				every_country = {
-					limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } has_war_with = HIR }
-					white_peace = HIR
-				}
-			}
-			if = {
-				limit = {
-					any_country = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes }
-				}
-				random_country = {
-					limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes }
-					puppet = HIR
-				}
-			} else = {
-				random_country = {
-					limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
-					puppet = HIR
-				}
-			}
-		}
-	}
-}
-
 #######################################################################
 ############################ worldstage_news ##########################
 #######################################################################
@@ -3650,7 +3059,7 @@ news_event = {	# Metaxas' Death
 	
 	option = {
 		name = worldstage_news.6.a
-		trigger = { OR = {  has_government = fascism has_government = netruality has_government = autocracy } }
+		trigger = { OR = {  has_government = fascism has_government = neutrality has_government = autocracy } }
 	}
 	option = {
 		name = worldstage_news.6.b
