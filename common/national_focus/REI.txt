@@ -1376,49 +1376,96 @@ focus_tree = {
 		
 		completion_reward = {
 			set_global_flag = REI_barbarossa_completed
-			set_temp_variable = { ger_forces_value = world_stage_power }
-			multiply_temp_variable = { ger_forces_value = 0.75 }
-			round_temp_variable = ger_forces_value
-			clamp_temp_variable = { var = ger_forces_value min = 150 max = 999 }
 			add_named_threat = { 
 				threat = 25
 				name = REI_threat_barbarossa
 			}
+			# there are 4 possibilities: WW2 is active or ended, German-Soviet Pact is active or not
+			hidden_effect = {
+				set_temp_variable = { ger_forces_value = world_stage_power }
+				multiply_temp_variable = { ger_forces_value = 0.75 }
+				round_temp_variable = ger_forces_value
+				clamp_temp_variable = { var = ger_forces_value min = 120 max = 999 }
+				104 = { set_temp_variable = { sov_forces_value = world_stage_power } }	# sov forces value is determined in 4 possible scenarios bellow
+				multiply_temp_variable = { sov_forces_value = 0.5 }
+			}
 			if = {
-				limit = { has_global_flag = GER_SOV_pact_enabled }
+				limit = { has_global_flag = world_stage_world_war_2_is_active has_global_flag = GER_SOV_pact_enabled }						# WW2 is ongoing: USSR is surprised and joins allies
+				custom_effect_tooltip = metropolis_scope_sovietunion
+				custom_effect_tooltip = join_coalition_allies
+				set_global_flag = sovietunion_joined_ww2
+				news_event = worldstage.33
+				custom_effect_tooltip = theater_scope_belarus
+				custom_effect_tooltip = world_stage_activate_theater_tt
+				add_to_variable = {
+					9.attacker_strategic_advantage = 1
+					tooltip = world_stage_add_strategic_advantage_attacker
+				}
 				clr_global_flag = GER_SOV_pact_enabled
-				# add soviet advantage here
-				#news_event = worldstage.33	# fix event later	# has molotov
-			} else = {
-				#news_event = worldstage.34	# fix event later	# no molotov
-				hidden_effect = {
-					9 = {	# Belarus proxy
-						set_state_flag = theater_is_active
-						set_variable = { world_state_power_deployed_by^101 = ger_forces_value }
-						set_variable = { world_state_power_deployed_by^104 = 30 }
-						set_variable = { coalition_side_attack = 3 }
-						world_stage_state_update_current_day = yes
-					}
-					101 = {
-						set_variable = { world_state_power_deployed_in^101 = ger_forces_value }
-						subtract_from_variable = { world_stage_power = ger_forces_value }
-					}
-					104 = {
-						set_variable = { world_state_power_deployed_in^104 = 30 }
-						subtract_from_variable = { world_stage_power = 30 }
-					}
+				clamp_temp_variable = { var = sov_forces_value min = 0 max = 60 }
+			}
+			if = {
+				limit = { NOT = { has_global_flag = world_stage_world_war_2_is_active } has_global_flag = GER_SOV_pact_enabled }			# WW2 ended: USSR is surprised and fights alone
+				set_global_flag = world_stage_german_soviet_war_is_active
+				news_event = worldstage.34
+				custom_effect_tooltip = theater_scope_belarus
+				custom_effect_tooltip = world_stage_activate_theater_tt
+				add_to_variable = {
+					9.attacker_strategic_advantage = 1
+					tooltip = world_stage_add_strategic_advantage_attacker
+				}
+				clr_global_flag = GER_SOV_pact_enabled
+				clamp_temp_variable = { var = sov_forces_value min = 0 max = 60 }
+			}
+			if = {
+				limit = { has_global_flag = world_stage_world_war_2_is_active NOT = { has_global_flag = GER_SOV_pact_enabled } }			# WW2 is ongoing: USSR is prepared and joins allies
+				custom_effect_tooltip = metropolis_scope_sovietunion
+				custom_effect_tooltip = join_coalition_allies
+				set_global_flag = sovietunion_joined_ww2
+				news_event = worldstage.35
+				custom_effect_tooltip = theater_scope_belarus
+				custom_effect_tooltip = world_stage_activate_theater_tt
+				add_to_variable = {
+					9.attacker_strategic_advantage = 0.5
+					tooltip = world_stage_add_strategic_advantage_attacker
+				}
+				clamp_temp_variable = { var = sov_forces_value min = 0 max = 90 }
+			}
+			if = {
+				limit = { NOT = { has_global_flag = world_stage_world_war_2_is_active } NOT = { has_global_flag = GER_SOV_pact_enabled } }	# WW2 ended: USSR is prepared and fights alone
+				set_global_flag = world_stage_german_soviet_war_is_active
+				news_event = worldstage.36
+				custom_effect_tooltip = theater_scope_belarus
+				custom_effect_tooltip = world_stage_activate_theater_tt
+				add_to_variable = {
+					9.attacker_strategic_advantage = 0.5
+					tooltip = world_stage_add_strategic_advantage_attacker
+				}
+				clamp_temp_variable = { var = sov_forces_value min = 0 max = 90 }
+			}
+			round_temp_variable = sov_forces_value
+			custom_effect_tooltip = metropolis_scope_germany_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				101.world_stage_power = ger_forces_value
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+			hidden_effect = {
+				9 = {	# Belarus proxy
+					set_state_flag = theater_is_active
+					set_variable = { world_state_power_deployed_by^101 = ger_forces_value }
+					set_variable = { world_state_power_deployed_by^104 = sov_forces_value }
+					set_variable = { coalition_side_attack = 3 }
+					world_stage_state_update_current_day = yes
+				}
+				101 = {
+					set_variable = { world_state_power_deployed_in^101 = ger_forces_value }
+					subtract_from_variable = { world_stage_power = ger_forces_value }
+				}
+				104 = {
+					set_variable = { world_state_power_deployed_in^104 = 30 }
+					subtract_from_variable = { world_stage_power = 30 }
 				}
 			}
-			if = { limit = { has_global_flag = world_stage_world_war_2_is_active } set_global_flag = russia_joined_ww2 }	# if ENG/FRA are still fighting, WW2 is not over yet
-			#set_country_flag = can_play_belarus set_country_flag = can_play_smolensk set_country_flag = can_play_russia	# depricated commands
-			#if = {
-			#	limit = { check_variable = { global.world_stage_coalition_chi = 3 } NOT = { has_global_flag = china_joined_ww2 } }	# if ROC and FER bordere ach other and ROC is axis, there is war
-			#	news_event = { id = worldstage.59 days = 1 random_days = 6 }
-			#	log = "china joined war alongside axis"
-			#} if = {
-			#	limit = {  NOT = { has_global_flag = china_joined_ww2 check_variable = { global.world_stage_coalition_chi = 3 } } }
-			#	custom_effect_tooltip = china_possibly_joins_war
-			#}
 		}
 	}
 	
