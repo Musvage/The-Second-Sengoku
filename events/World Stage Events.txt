@@ -1,8 +1,9 @@
 ### EVENTS for diplomatic and military plays in the WORLD STAGE
-															   #and we are merely players
-add_namespace = worldstage #(scripted & focuses)			   #performers and portrayers
-add_namespace = worldstage_automatic						   #each anothers audience outside the gilded cage										   
+												   #and we are merely players
+add_namespace = worldstage 						   #performers and portrayers
+add_namespace = worldstage_automatic			   #each anothers audience outside the gilded cage										   
 add_namespace = worldstage_surrender
+add_namespace = worldstage_exhaust
 add_namespace = worldstage_news
 
 ########################################################################
@@ -553,6 +554,7 @@ country_event = {
 				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } is_faction_leader = yes }
 				set_temp_variable = { allies_leader_tag = THIS.id }
 			}
+			var:allies_leader_tag = { log = "worldstage.32: there is an Allies tag ([THIS.GetName])" }
 		}
 		if = {
 			limit = { NOT = { has_global_flag = there_is_faction_allies } has_global_flag = sovietunion_joined_ww2 }	# There is Allies faction and SOV will join it
@@ -561,6 +563,7 @@ country_event = {
 				var:allies_leader_tag = { add_to_faction = PREV }
 				var:world_stage_metropolis = { set_variable = { world_stage_metropolis = 1 } }
 			}
+			log = "worldstage.32: There is Allies faction and SOV will join it"
 		}
 		if = {
 			limit = { has_global_flag = there_is_faction_allies has_global_flag = sovietunion_joined_ww2 }	# There is no Allies faction and SOV will join it
@@ -592,6 +595,7 @@ country_event = {
 					type = annex_everything
 				}
 			}
+			log = "worldstage.32: There is no Allies faction and SOV will join it"
 		}
 		if = {
 			limit = { NOT = { has_global_flag = sovietunion_joined_ww2 } }		# SOV will not join Allies
@@ -615,6 +619,7 @@ country_event = {
 					type = annex_everything
 				}
 			}
+			log = "worldstage.32: # SOV will not join Allies"
 		}
 	}
 }
@@ -1692,17 +1697,6 @@ country_event = {
 			custom_effect_tooltip = lose_access_to_trade_resources_kobe
 			clr_country_flag = tc_kobe_has_access
 		}
-		if = {
-			limit = { country_exists = KOB }
-			random_country = {
-				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes }
-				white_peace = {
-					tag = KOB
-					message = worldstage_surrender.103.kob
-				}
-				add_to_faction = KOB
-			}
-		}
 		custom_effect_tooltip = metropolis_scope_vichy
 		custom_effect_tooltip = join_coalition_axis
 		hidden_effect = {
@@ -1711,12 +1705,12 @@ country_event = {
 				country_event = { id = worldstage_surrender.1031 days = 3 random_hours = 48 }
 			}	
 		}
-		ai_chance = { base = 0 }
+		ai_chance = { base = 0 } log = "FRANCE SURRENDERS, imagine my shock! option:  worldstage_surrender.103.a	# fight, prefered human option"
 	}
 	option = {
 		name = worldstage_surrender.103.b	# surrender, prefered AI option
 		trigger = { is_puppet = no }		# puppet don't get to decide
-		if = { limit = { is_in_faction = yes REI = { exists = no } } leave_faction = yes }
+		hidden_effect = { if = { limit = { is_in_faction = yes } leave_faction = yes } }			# the faction here SHOULD be the Allies. Let's hope for the best
 		every_possible_country = {
 			limit = { tag = REI }
 			set_temp_variable = { new_ideology = current_party_ideology_group }
@@ -1741,15 +1735,25 @@ country_event = {
 				country_event = { id = worldstage_surrender.1032 days = 3 random_hours = 48 }
 			}	
 		}
-		if = { limit = { REI = { exists = yes is_faction_leader = yes } } REI = { add_to_faction = KOB } }
-		ai_chance = { base = 100 }
+		if = {
+			limit = { country_exists = KOB }
+			random_country = {
+				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes }
+				white_peace = {
+					tag = KOB
+					message = worldstage_surrender.103.kob
+				}
+				add_to_faction = KOB
+			}
+		}
+		ai_chance = { base = 100 } log = "FRANCE SURRENDERS, imagine my shock! option:  worldstage_surrender.103.b	# surrender, prefered AI option"
 	}
 	option = {
 		name = worldstage_surrender.103.c
 		trigger = { is_puppet = yes }		# puppet don't get to decide
 		if = {
 			limit = { OVERLORD = { OR = { has_government = fascism has_government = neutrality has_government = autocracy } } }
-			if = { limit = { is_in_faction = yes REI = { exists = no } } leave_faction = yes }
+			hidden_effect = { if = { limit = { is_in_faction = yes } leave_faction = yes } }			# the faction here SHOULD be the Allies. Let's hope for the best
 			every_possible_country = {
 				limit = { tag = REI }
 				set_temp_variable = { new_ideology = current_party_ideology_group }
@@ -1798,8 +1802,7 @@ country_event = {
 		}
 		custom_effect_tooltip = metropolis_scope_vichy
 		custom_effect_tooltip = join_coalition_axis
-		if = { limit = { REI = { exists = yes is_faction_leader = yes } } REI = { add_to_faction = KOB } }
-		ai_chance = { base = 100 }
+		ai_chance = { base = 100 } log = "FRANCE SURRENDERS, imagine my shock! option:  worldstage_surrender.103.c # puppet don't get to decide"
 	}
 }
 

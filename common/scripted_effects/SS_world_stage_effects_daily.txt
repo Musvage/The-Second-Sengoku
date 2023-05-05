@@ -598,12 +598,13 @@ world_stage_end_invasion_of_poland = {	# Similar to end of turn but Germany alwa
 		set_variable = { theater_owner_coalition = coalition_side_attack }
 		set_variable = { coalition_side_attack = 0 }
 		set_variable = { defender_strategic_advantage = 0 }
+		set_variable = { attacker_strategic_advantage = 0 }
 		# the very last thing, set this theater as inactive
 		clr_state_flag = theater_is_active
 	}
 } d_world_stage_end_invasion_of_poland = { world_stage_end_invasion_of_poland = yes log = "world_stage_end_invasion_of_poland" }
 
-world_stage_end_round_partial = {	# this is for ending theaters when the owner surrender, works like reguar end of turn but only calculates strat.advantage and damages
+world_stage_end_round_partial = {	# this is for ending theaters when the owner surrender, works like reguar end of turn but only calculates strat.advantage, damages and retreives power
 	# get number of combatants on each side (damage tanken is divided)
 	set_temp_variable = { number_of_defenders = 0 }
 	set_temp_variable = { number_of_attackers = 0 }
@@ -692,4 +693,25 @@ world_stage_end_round_partial = {	# this is for ending theaters when the owner s
 			}
 		}
 	}
+	# fronts do not move in this end of turn: withdraw all forces (except unespecified minors)
+	set_temp_variable = { origin_theater = theater_id }
+	for_each_loop = {
+		array = world_stage_power_deployed_by
+		index = this_metropolis
+		value = deployed_power
+		if = {
+			limit = { check_variable = { this_metropolis > 100 } }	# dont mind unspecified minors
+			clamp_variable = { var = world_stage_power_deployed_by^this_metropolis min = 0 max = 999 }
+			var:this_metropolis = {
+				add_to_variable = { world_stage_power = PREV.world_stage_power_deployed_by^this_metropolis }	# unlike regular theaters, here both attacker and defender get their power back, regardless of who's winning
+			}
+			set_variable = { world_stage_power_deployed_by^this_metropolis = 0 }	# clean the current theater's array
+		}
+	}
+	# updates all relevant stats
+	set_variable = { coalition_side_attack = 0 }
+	set_variable = { defender_strategic_advantage = 0 }
+	set_variable = { attacker_strategic_advantage = 0 }
+	# the very last thing, set this theater as inactive
+	clr_state_flag = theater_is_active
 } d_world_stage_end_round_partial = { world_stage_end_round_partial = yes log = "world_stage_end_round_partial" }
