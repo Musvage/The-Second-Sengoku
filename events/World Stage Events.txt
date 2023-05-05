@@ -1,8 +1,9 @@
 ### EVENTS for diplomatic and military plays in the WORLD STAGE
-															   #and we are merely players
-add_namespace = worldstage #(scripted & focuses)			   #performers and portrayers
-add_namespace = worldstage_automatic						   #each anothers audience outside the gilded cage										   
+												   #and we are merely players
+add_namespace = worldstage 						   #performers and portrayers
+add_namespace = worldstage_automatic			   #each anothers audience outside the gilded cage										   
 add_namespace = worldstage_surrender
+add_namespace = worldstage_exhaust
 add_namespace = worldstage_news
 
 ########################################################################
@@ -528,6 +529,580 @@ country_event = {
 			if = { limit = { country_exists = KOB }	add_war_support = 0.1 }
 			every_country = { limit = { NOT = { tag = KOB } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = 0.05 }
 		}
+	}
+}
+
+# HIDDEN EVENT Barbarossa!
+country_event = {
+	id = worldstage.32
+	title = worldstage.32.t
+	desc = worldstage.32.d 
+	picture = GFX_news_ww2_starts
+
+	is_triggered_only = yes
+
+	hidden = yes
+	
+	immediate = {
+		# checks if SOV is Allies -> if any TAG is Allies	-> then makes all Comintern TAGS join the Allied TAG's faction (which, hopefully, is the Allies)
+		#							 if not					-> declares war on all Axis TAGS
+		# checks if SOV is Comintern -> declares war on all Axis TAGS
+		if = {
+			limit = { any_country = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } is_faction_leader = yes } } 
+			set_global_flag = there_is_faction_allies
+			random_country = {
+				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } is_faction_leader = yes }
+				set_temp_variable = { allies_leader_tag = THIS.id }
+			}
+			var:allies_leader_tag = { log = "worldstage.32: there is an Allies tag ([THIS.GetName])" }
+		}
+		if = {
+			limit = { NOT = { has_global_flag = there_is_faction_allies } has_global_flag = sovietunion_joined_ww2 }	# There is Allies faction and SOV will join it
+			every_country = {
+				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+				var:allies_leader_tag = { add_to_faction = PREV }
+				var:world_stage_metropolis = { set_variable = { world_stage_metropolis = 1 } }
+			}
+			log = "worldstage.32: There is Allies faction and SOV will join it"
+		}
+		if = {
+			limit = { has_global_flag = there_is_faction_allies has_global_flag = sovietunion_joined_ww2 }	# There is no Allies faction and SOV will join it
+			if = {
+				limit = { country_exists = FER }	# we assume FER is always a faction leader
+				set_temp_variable = { allies_leader_tag = THIS.id }
+				set_faction_name = coalition_name_allies_short
+				104 = { set_variable = { world_stage_metropolis = 1 } }
+			} else = {
+				random_country = {
+					limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+					set_temp_variable = { allies_leader_tag = THIS.id }
+					var:world_stage_metropolis = { set_variable = { world_stage_metropolis = 1 } }
+					if = {
+						limit = { is_faction_leader = yes }
+						create_faction = coalition_name_allies_short
+					} else = { create_faction = coalition_name_allies_short }
+				}
+			}
+			every_country = {
+				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+				var:allies_leader_tag = { add_to_faction = PREV }
+				var:world_stage_metropolis = { set_variable = { world_stage_metropolis = 1 } }
+			}
+			random_country = {
+				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition =  3 } } }
+				declare_war_on = {
+					target = var:allies_leader_tag
+					type = annex_everything
+				}
+			}
+			log = "worldstage.32: There is no Allies faction and SOV will join it"
+		}
+		if = {
+			limit = { NOT = { has_global_flag = sovietunion_joined_ww2 } }		# SOV will not join Allies
+			if = {
+				limit = { any_country = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } is_faction_leader = yes } } }
+				random_country = {
+					limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } is_faction_leader = yes } }
+					set_temp_variable = { komintern_leader_tag = THIS.id }
+				}
+			} else = {
+				random_country = {
+					limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition =  2 } } }
+					create_faction = coalition_name_komintern_short
+					set_temp_variable = { komintern_leader_tag = THIS.id }
+				}
+			} 
+			random_country = {
+				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+				declare_war_on = {
+					target = var:komintern_leader_tag
+					type = annex_everything
+				}
+			}
+			log = "worldstage.32: # SOV will not join Allies"
+		}
+	}
+}
+
+# Germany Invades Soviet Union! # WW2 ONGOING + MOLOTOV-RIBBENTROP
+news_event = {
+	id = worldstage.33
+	title = worldstage.33.t
+	desc = worldstage.33.d 
+	picture = GFX_news_ww2_barbarossa_wide
+
+	is_triggered_only = yes
+	
+	option = {
+		name = worldstage.33.axis
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		effect_tooltip = {
+			custom_effect_tooltip = metropolis_scope_sovietunion
+			custom_effect_tooltip = join_coalition_allies_bad
+			custom_effect_tooltip = theater_scope_belarus
+			custom_effect_tooltip = world_stage_activate_theater_tt
+			add_to_variable = {
+				9.attacker_strategic_advantage = 1
+				tooltip = world_stage_add_strategic_advantage_attacker
+			}
+			custom_effect_tooltip = metropolis_scope_germany_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				101.world_stage_power = 9.world_state_power_deployed_by^101
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+			custom_effect_tooltip = metropolis_scope_sovietunion_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				104.world_stage_power = 9.world_state_power_deployed_by^104
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+		}
+	}
+	option = {
+		name = worldstage.33.komin
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+		effect_tooltip = {
+			custom_effect_tooltip = metropolis_scope_sovietunion
+			custom_effect_tooltip = join_coalition_allies_good
+			custom_effect_tooltip = theater_scope_belarus
+			custom_effect_tooltip = world_stage_activate_theater_tt
+			add_to_variable = {
+				9.attacker_strategic_advantage = 1
+				tooltip = world_stage_add_strategic_advantage_attacker
+			}
+			custom_effect_tooltip = metropolis_scope_germany_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				101.world_stage_power = 9.world_state_power_deployed_by^101
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+			custom_effect_tooltip = metropolis_scope_sovietunion_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				104.world_stage_power = 9.world_state_power_deployed_by^104
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+		}
+	}
+	option = {
+		name = worldstage.33.allies
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
+		effect_tooltip = {
+			custom_effect_tooltip = metropolis_scope_sovietunion
+			custom_effect_tooltip = join_coalition_allies_good
+			custom_effect_tooltip = theater_scope_belarus
+			custom_effect_tooltip = world_stage_activate_theater_tt
+			add_to_variable = {
+				9.attacker_strategic_advantage = 1
+				tooltip = world_stage_add_strategic_advantage_attacker
+			}
+			custom_effect_tooltip = metropolis_scope_germany_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				101.world_stage_power = 9.world_state_power_deployed_by^101
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+			custom_effect_tooltip = metropolis_scope_sovietunion_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				104.world_stage_power = 9.world_state_power_deployed_by^104
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+		}
+	}
+	option = {
+		name = worldstage.33.other
+		trigger = { var:world_stage_metropolis = { NOT = { check_variable = { world_stage_coalition = 1 } check_variable = { world_stage_coalition = 2 } check_variable = { world_stage_coalition = 3 } } } }
+		effect_tooltip = {
+			custom_effect_tooltip = metropolis_scope_sovietunion
+			custom_effect_tooltip = join_coalition_allies
+			custom_effect_tooltip = theater_scope_belarus
+			custom_effect_tooltip = world_stage_activate_theater_tt
+			add_to_variable = {
+				9.attacker_strategic_advantage = 1
+				tooltip = world_stage_add_strategic_advantage_attacker
+			}
+			custom_effect_tooltip = metropolis_scope_germany_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				101.world_stage_power = 9.world_state_power_deployed_by^101
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+			custom_effect_tooltip = metropolis_scope_sovietunion_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				104.world_stage_power = 9.world_state_power_deployed_by^104
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+		}
+	}
+}
+
+# Germany Invades Soviet Union! # WW2 ENDED + MOLOTOV-RIBBENTROP
+news_event = {
+	id = worldstage.34
+	title = worldstage.34.t
+	desc = worldstage.34.d 
+	picture = GFX_news_ww2_barbarossa_wide
+
+	is_triggered_only = yes
+	
+	option = {
+		name = worldstage.34.axis
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		effect_tooltip = {
+			custom_effect_tooltip = theater_scope_belarus
+			custom_effect_tooltip = world_stage_activate_theater_tt
+			add_to_variable = {
+				9.attacker_strategic_advantage = 1
+				tooltip = world_stage_add_strategic_advantage_attacker
+			}
+			custom_effect_tooltip = metropolis_scope_germany_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				101.world_stage_power = 9.world_state_power_deployed_by^101
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+			custom_effect_tooltip = metropolis_scope_sovietunion_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				104.world_stage_power = 9.world_state_power_deployed_by^104
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+		}
+	}
+	option = {
+		name = worldstage.34.komin
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+		effect_tooltip = {
+			custom_effect_tooltip = theater_scope_belarus
+			custom_effect_tooltip = world_stage_activate_theater_tt
+			add_to_variable = {
+				9.attacker_strategic_advantage = 1
+				tooltip = world_stage_add_strategic_advantage_attacker
+			}
+			custom_effect_tooltip = metropolis_scope_germany_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				101.world_stage_power = 9.world_state_power_deployed_by^101
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+			custom_effect_tooltip = metropolis_scope_sovietunion_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				104.world_stage_power = 9.world_state_power_deployed_by^104
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+		}
+	}
+	option = {
+		name = worldstage.34.allies
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
+		effect_tooltip = {
+			custom_effect_tooltip = theater_scope_belarus
+			custom_effect_tooltip = world_stage_activate_theater_tt
+			add_to_variable = {
+				9.attacker_strategic_advantage = 1
+				tooltip = world_stage_add_strategic_advantage_attacker
+			}
+			custom_effect_tooltip = metropolis_scope_germany_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				101.world_stage_power = 9.world_state_power_deployed_by^101
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+			custom_effect_tooltip = metropolis_scope_sovietunion_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				104.world_stage_power = 9.world_state_power_deployed_by^104
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+		}
+	}
+	option = {
+		name = worldstage.34.other
+		trigger = { var:world_stage_metropolis = { NOT = { check_variable = { world_stage_coalition = 1 } check_variable = { world_stage_coalition = 2 } check_variable = { world_stage_coalition = 3 } } } }
+		effect_tooltip = {
+			custom_effect_tooltip = theater_scope_belarus
+			custom_effect_tooltip = world_stage_activate_theater_tt
+			add_to_variable = {
+				9.attacker_strategic_advantage = 1
+				tooltip = world_stage_add_strategic_advantage_attacker
+			}
+			custom_effect_tooltip = metropolis_scope_germany_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				101.world_stage_power = 9.world_state_power_deployed_by^101
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+			custom_effect_tooltip = metropolis_scope_sovietunion_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				104.world_stage_power = 9.world_state_power_deployed_by^104
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+		}
+	}
+}
+
+# Germany Invades Soviet Union! # WW2 ONGOING + NO PACT
+news_event = {
+	id = worldstage.35
+	title = worldstage.35.t
+	desc = worldstage.35.d 
+	picture = GFX_news_ww2_barbarossa_wide
+
+	is_triggered_only = yes
+	
+	option = {
+		name = worldstage.35.axis
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		effect_tooltip = {
+			custom_effect_tooltip = metropolis_scope_sovietunion
+			custom_effect_tooltip = join_coalition_allies_bad
+			custom_effect_tooltip = theater_scope_belarus
+			custom_effect_tooltip = world_stage_activate_theater_tt
+			add_to_variable = {
+				9.attacker_strategic_advantage = 0.5
+				tooltip = world_stage_add_strategic_advantage_attacker
+			}
+			custom_effect_tooltip = metropolis_scope_germany_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				101.world_stage_power = 9.world_state_power_deployed_by^101
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+			custom_effect_tooltip = metropolis_scope_sovietunion_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				104.world_stage_power = 9.world_state_power_deployed_by^104
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+		}
+	}
+	option = {
+		name = worldstage.35.komin	# Comintern will merge with Allies, so this may not even be read. Just in case...
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+		effect_tooltip = {
+			custom_effect_tooltip = metropolis_scope_sovietunion
+			custom_effect_tooltip = join_coalition_allies_good
+			custom_effect_tooltip = theater_scope_belarus
+			custom_effect_tooltip = world_stage_activate_theater_tt
+			add_to_variable = {
+				9.attacker_strategic_advantage = 0.5
+				tooltip = world_stage_add_strategic_advantage_attacker
+			}
+			custom_effect_tooltip = metropolis_scope_germany_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				101.world_stage_power = 9.world_state_power_deployed_by^101
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+			custom_effect_tooltip = metropolis_scope_sovietunion_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				104.world_stage_power = 9.world_state_power_deployed_by^104
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+		}
+	}
+	option = {
+		name = worldstage.35.allies
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
+		effect_tooltip = {
+			custom_effect_tooltip = metropolis_scope_sovietunion
+			custom_effect_tooltip = join_coalition_allies_good
+			custom_effect_tooltip = theater_scope_belarus
+			custom_effect_tooltip = world_stage_activate_theater_tt
+			add_to_variable = {
+				9.attacker_strategic_advantage = 0.5
+				tooltip = world_stage_add_strategic_advantage_attacker
+			}
+			custom_effect_tooltip = metropolis_scope_germany_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				101.world_stage_power = 9.world_state_power_deployed_by^101
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+			custom_effect_tooltip = metropolis_scope_sovietunion_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				104.world_stage_power = 9.world_state_power_deployed_by^104
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+		}
+	}
+	option = {
+		name = worldstage.35.other
+		trigger = { var:world_stage_metropolis = { NOT = { check_variable = { world_stage_coalition = 1 } check_variable = { world_stage_coalition = 2 } check_variable = { world_stage_coalition = 3 } } } }
+		effect_tooltip = {
+			custom_effect_tooltip = metropolis_scope_sovietunion
+			custom_effect_tooltip = join_coalition_allies
+			custom_effect_tooltip = theater_scope_belarus
+			custom_effect_tooltip = world_stage_activate_theater_tt
+			add_to_variable = {
+				9.attacker_strategic_advantage = 0.5
+				tooltip = world_stage_add_strategic_advantage_attacker
+			}
+			custom_effect_tooltip = metropolis_scope_germany_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				101.world_stage_power = 9.world_state_power_deployed_by^101
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+			custom_effect_tooltip = metropolis_scope_sovietunion_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				104.world_stage_power = 9.world_state_power_deployed_by^104
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+		}
+	}
+}
+
+# Germany Invades Soviet Union! # WW2 ENDED + NO PACT
+news_event = {
+	id = worldstage.36
+	title = worldstage.36.t
+	desc = worldstage.36.d 
+	picture = GFX_news_ww2_barbarossa_wide
+
+	is_triggered_only = yes
+	
+	option = {
+		name = worldstage.36.axis
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		effect_tooltip = {
+			custom_effect_tooltip = theater_scope_belarus
+			custom_effect_tooltip = world_stage_activate_theater_tt
+			add_to_variable = {
+				9.attacker_strategic_advantage = 0.5
+				tooltip = world_stage_add_strategic_advantage_attacker
+			}
+			custom_effect_tooltip = metropolis_scope_germany_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				101.world_stage_power = 9.world_state_power_deployed_by^101
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+			custom_effect_tooltip = metropolis_scope_sovietunion_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				104.world_stage_power = 9.world_state_power_deployed_by^104
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+		}
+	}
+	option = {
+		name = worldstage.36.komin
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+		effect_tooltip = {
+			custom_effect_tooltip = theater_scope_belarus
+			custom_effect_tooltip = world_stage_activate_theater_tt
+			add_to_variable = {
+				9.attacker_strategic_advantage = 0.5
+				tooltip = world_stage_add_strategic_advantage_attacker
+			}
+			custom_effect_tooltip = metropolis_scope_germany_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				101.world_stage_power = 9.world_state_power_deployed_by^101
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+			custom_effect_tooltip = metropolis_scope_sovietunion_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				104.world_stage_power = 9.world_state_power_deployed_by^104
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+		}
+	}
+	option = {
+		name = worldstage.36.allies
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
+		effect_tooltip = {
+			custom_effect_tooltip = theater_scope_belarus
+			custom_effect_tooltip = world_stage_activate_theater_tt
+			add_to_variable = {
+				9.attacker_strategic_advantage = 0.5
+				tooltip = world_stage_add_strategic_advantage_attacker
+			}
+			custom_effect_tooltip = metropolis_scope_germany_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				101.world_stage_power = 9.world_state_power_deployed_by^101
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+			custom_effect_tooltip = metropolis_scope_sovietunion_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				104.world_stage_power = 9.world_state_power_deployed_by^104
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+		}
+	}
+	option = {
+		name = worldstage.36.other
+		trigger = { var:world_stage_metropolis = { NOT = { check_variable = { world_stage_coalition = 1 } check_variable = { world_stage_coalition = 2 } check_variable = { world_stage_coalition = 3 } } } }
+		effect_tooltip = {
+			custom_effect_tooltip = theater_scope_belarus
+			custom_effect_tooltip = world_stage_activate_theater_tt
+			add_to_variable = {
+				9.attacker_strategic_advantage = 0.5
+				tooltip = world_stage_add_strategic_advantage_attacker
+			}
+			custom_effect_tooltip = metropolis_scope_germany_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				101.world_stage_power = 9.world_state_power_deployed_by^101
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+			custom_effect_tooltip = metropolis_scope_sovietunion_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+				104.world_stage_power = 9.world_state_power_deployed_by^104
+				tooltip = world_stage_deploy_power_belarus_space
+			}
+		}
+	}
+}
+
+# Barbarossa - Germany Overwhelms Soviets in Belarus
+news_event = {
+	id = worldstage.37
+	title = worldstage.37.t
+	desc = worldstage.37.d 
+	picture = GFX_news_ww2_soviet_defeat
+
+	is_triggered_only = yes
+
+	immediate = {
+		
+	}
+	
+	option = {
+		name = worldstage.37.axis
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		
+	}
+	option = {
+		name = worldstage.37.komin
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+		
+	}
+	option = {
+		name = worldstage.37.allies
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
+		
+	}
+	option = {
+		name = worldstage.37.other
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
+		
+	}
+}
+
+# Barbarossa - German Suprise Attack Fails
+news_event = {
+	id = worldstage.38
+	title = worldstage.38.t
+	desc = worldstage.38.d 
+	picture = GFX_news_ww2_soviet_soldiers
+
+	is_triggered_only = yes
+
+	immediate = {
+		
+	}
+	
+	option = {
+		name = worldstage.38.axis
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		
+	}
+	option = {
+		name = worldstage.38.komin
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+		
+	}
+	option = {
+		name = worldstage.38.allies
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
+		
+	}
+	option = {
+		name = worldstage.38.other
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
+		
 	}
 }
 
@@ -1122,17 +1697,6 @@ country_event = {
 			custom_effect_tooltip = lose_access_to_trade_resources_kobe
 			clr_country_flag = tc_kobe_has_access
 		}
-		if = {
-			limit = { country_exists = KOB }
-			random_country = {
-				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes }
-				white_peace = {
-					tag = KOB
-					message = worldstage_surrender.103.kob
-				}
-				add_to_faction = KOB
-			}
-		}
 		custom_effect_tooltip = metropolis_scope_vichy
 		custom_effect_tooltip = join_coalition_axis
 		hidden_effect = {
@@ -1141,11 +1705,12 @@ country_event = {
 				country_event = { id = worldstage_surrender.1031 days = 3 random_hours = 48 }
 			}	
 		}
-		ai_chance = { base = 0 }
+		ai_chance = { base = 0 } log = "FRANCE SURRENDERS, imagine my shock! option:  worldstage_surrender.103.a	# fight, prefered human option"
 	}
 	option = {
 		name = worldstage_surrender.103.b	# surrender, prefered AI option
 		trigger = { is_puppet = no }		# puppet don't get to decide
+		hidden_effect = { if = { limit = { is_in_faction = yes } leave_faction = yes } }			# the faction here SHOULD be the Allies. Let's hope for the best
 		every_possible_country = {
 			limit = { tag = REI }
 			set_temp_variable = { new_ideology = current_party_ideology_group }
@@ -1168,15 +1733,42 @@ country_event = {
 			if = {
 				limit = { country_exists = KOB }
 				country_event = { id = worldstage_surrender.1032 days = 3 random_hours = 48 }
+				add_ai_strategy = {
+					type = alliance
+					id = REI
+					value = 50
+				}
+				every_other_country = {
+					limit = { unification_candidate = no }
+					KOB = {
+						add_ai_strategy = {
+							type = alliance
+							id = PREV
+							value = -100
+						}
+					}
+				}
 			}	
 		}
-		ai_chance = { base = 100 }
+		if = {
+			limit = { country_exists = KOB }
+			random_country = {
+				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes }
+				white_peace = {
+					tag = KOB
+					message = worldstage_surrender.103.kob
+				}
+				add_to_faction = KOB
+			}
+		}
+		ai_chance = { base = 100 } log = "FRANCE SURRENDERS, imagine my shock! option:  worldstage_surrender.103.b	# surrender, prefered AI option"
 	}
 	option = {
 		name = worldstage_surrender.103.c
 		trigger = { is_puppet = yes }		# puppet don't get to decide
 		if = {
 			limit = { OVERLORD = { OR = { has_government = fascism has_government = neutrality has_government = autocracy } } }
+			hidden_effect = { if = { limit = { is_in_faction = yes } leave_faction = yes } }			# the faction here SHOULD be the Allies. Let's hope for the best
 			every_possible_country = {
 				limit = { tag = REI }
 				set_temp_variable = { new_ideology = current_party_ideology_group }
@@ -1208,7 +1800,22 @@ country_event = {
 				if = {
 					limit = { country_exists = KOB }
 					country_event = { id = worldstage_surrender.1032 days = 1 }
-				}	
+				}
+				add_ai_strategy = {
+					type = alliance
+					id = REI
+					value = 50
+				}
+				every_other_country = {
+					limit = { unification_candidate = no }
+					KOB = {
+						add_ai_strategy = {
+							type = alliance
+							id = PREV
+							value = -100
+						}
+					}
+				}
 			}
 		} else = {
 			every_possible_country = {
@@ -1225,7 +1832,7 @@ country_event = {
 		}
 		custom_effect_tooltip = metropolis_scope_vichy
 		custom_effect_tooltip = join_coalition_axis
-		ai_chance = { base = 100 }
+		ai_chance = { base = 100 } log = "FRANCE SURRENDERS, imagine my shock! option:  worldstage_surrender.103.c # puppet don't get to decide"
 	}
 }
 
@@ -1234,7 +1841,7 @@ country_event = {
 	id = worldstage_surrender.1031
 	title = worldstage_surrender.1031.t
 	desc = worldstage_surrender.1031.d 
-	picture = GFX_news_ww2_starts
+	picture = GFX_news_ww2_chad_de_gaulle
 
 	is_triggered_only = yes
 
@@ -1267,7 +1874,7 @@ country_event = {
 	id = worldstage_surrender.1032
 	title = worldstage_surrender.1032.t
 	desc = worldstage_surrender.1032.d 
-	picture = GFX_news_ww2_starts
+	picture = GFX_news_ww2_virgin_petain
 
 	is_triggered_only = yes
 
@@ -2190,216 +2797,6 @@ country_event = {
 	option = {
 		name = worldstage.20.a2				# Hold!
 		custom_effect_tooltip = "not from devs: this event does not have effects"
-	}
-}
-
-# Germany Invades Soviet Union! # WW2 ONGOING + MOLOTOV-RIBBENTROP
-news_event = {
-	id = worldstage.33
-	title = worldstage.33.t
-	desc = worldstage.33.d 
-	picture = GFX_news_ww2_barbarossa_wide
-
-	is_triggered_only = yes
-
-	immediate = {
-		
-	}
-	
-	option = {
-		name = worldstage.33.axis
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
-		
-	}
-	option = {
-		name = worldstage.33.komin
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
-		
-	}
-	option = {
-		name = worldstage.33.allies
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
-		
-	}
-	option = {
-		name = worldstage.33.other
-		trigger = { var:world_stage_metropolis = { NOT = { check_variable = { world_stage_coalition = 1 } check_variable = { world_stage_coalition = 2 } check_variable = { world_stage_coalition = 3 } } } }
-		
-	}
-}
-
-# Germany Invades Soviet Union! # WW2 ENDED + MOLOTOV-RIBBENTROP
-news_event = {
-	id = worldstage.34
-	title = worldstage.34.t
-	desc = worldstage.34.d 
-	picture = GFX_news_ww2_barbarossa_wide
-
-	is_triggered_only = yes
-
-	immediate = {
-		
-	}
-	
-	option = {
-		name = worldstage.34.axis
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
-		
-	}
-	option = {
-		name = worldstage.34.komin
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
-		
-	}
-	option = {
-		name = worldstage.34.allies
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
-		
-	}
-	option = {
-		name = worldstage.34.other
-		trigger = { var:world_stage_metropolis = { NOT = { check_variable = { world_stage_coalition = 1 } check_variable = { world_stage_coalition = 2 } check_variable = { world_stage_coalition = 3 } } } }
-		
-	}
-}
-
-# Germany Invades Soviet Union! # WW2 ONGOING + NO PACT
-news_event = {
-	id = worldstage.35
-	title = worldstage.35.t
-	desc = worldstage.35.d 
-	picture = GFX_news_ww2_barbarossa_wide
-
-	is_triggered_only = yes
-
-	immediate = {
-		
-	}
-	
-	option = {
-		name = worldstage.35.axis
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
-		
-	}
-	option = {
-		name = worldstage.35.komin
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
-		
-	}
-	option = {
-		name = worldstage.35.allies
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
-		
-	}
-	option = {
-		name = worldstage.35.other
-		trigger = { var:world_stage_metropolis = { NOT = { check_variable = { world_stage_coalition = 1 } check_variable = { world_stage_coalition = 2 } check_variable = { world_stage_coalition = 3 } } } }
-		
-	}
-}
-
-# Germany Invades Soviet Union! # WW2 ENDED + NO PACT
-news_event = {
-	id = worldstage.36
-	title = worldstage.36.t
-	desc = worldstage.36.d 
-	picture = GFX_news_ww2_barbarossa_wide
-
-	is_triggered_only = yes
-
-	immediate = {
-		
-	}
-	
-	option = {
-		name = worldstage.36.axis
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
-		
-	}
-	option = {
-		name = worldstage.36.komin
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
-		
-	}
-	option = {
-		name = worldstage.36.allies
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
-		
-	}
-	option = {
-		name = worldstage.36.other
-		trigger = { var:world_stage_metropolis = { NOT = { check_variable = { world_stage_coalition = 1 } check_variable = { world_stage_coalition = 2 } check_variable = { world_stage_coalition = 3 } } } }
-		
-	}
-}
-
-# Barbarossa - Germany Overwhelms Soviets in Belarus
-news_event = {
-	id = worldstage.37
-	title = worldstage.37.t
-	desc = worldstage.37.d 
-	picture = GFX_news_ww2_soviet_defeat
-
-	is_triggered_only = yes
-
-	immediate = {
-		
-	}
-	
-	option = {
-		name = worldstage.37.axis
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
-		
-	}
-	option = {
-		name = worldstage.37.komin
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
-		
-	}
-	option = {
-		name = worldstage.37.allies
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
-		
-	}
-	option = {
-		name = worldstage.37.other
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
-		
-	}
-}
-
-# Barbarossa - German Suprise Attack Fails
-news_event = {
-	id = worldstage.38
-	title = worldstage.38.t
-	desc = worldstage.38.d 
-	picture = GFX_news_ww2_soviet_soldiers
-
-	is_triggered_only = yes
-
-	immediate = {
-		
-	}
-	
-	option = {
-		name = worldstage.38.axis
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
-		
-	}
-	option = {
-		name = worldstage.38.komin
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
-		
-	}
-	option = {
-		name = worldstage.38.allies
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
-		
-	}
-	option = {
-		name = worldstage.38.other
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
-		
 	}
 }
 
