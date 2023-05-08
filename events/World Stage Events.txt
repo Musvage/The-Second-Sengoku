@@ -122,7 +122,7 @@ news_event = {
 	
 	immediate = {
 		hidden_effect = {
-			 3 = { world_stage_end_invasion_of_poland = yes }
+			 3 = { world_stage_end_round_axis_victory = yes }
 		}
 	}
 	
@@ -547,6 +547,7 @@ country_event = {
 		# checks if SOV is Allies -> if any TAG is Allies	-> then makes all Comintern TAGS join the Allied TAG's faction (which, hopefully, is the Allies)
 		#							 if not					-> declares war on all Axis TAGS
 		# checks if SOV is Comintern -> declares war on all Axis TAGS
+		# sovietunion_joined_ww2 means SOV joined Allies (coalition #1)
 		if = {
 			limit = { any_country = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } is_faction_leader = yes } } 
 			set_global_flag = there_is_faction_allies
@@ -557,31 +558,46 @@ country_event = {
 			var:allies_leader_tag = { log = "worldstage.32: there is an Allies tag ([THIS.GetName])" }
 		}
 		if = {
-			limit = { NOT = { has_global_flag = there_is_faction_allies } has_global_flag = sovietunion_joined_ww2 }	# There is Allies faction and SOV will join it
-			every_country = {
-				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
-				var:allies_leader_tag = { add_to_faction = PREV }
-				var:world_stage_metropolis = { set_variable = { world_stage_metropolis = 1 } }
+			limit = { any_country = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } is_faction_leader = yes } } 
+			random_country = {
+				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } is_faction_leader = yes }
+				set_temp_variable = { komintern_leader_tag = THIS.id }
 			}
-			log = "worldstage.32: There is Allies faction and SOV will join it"
+			var:komintern_leader_tag = { log = "worldstage.32: there is a Comintern tag ([THIS.GetName])" }
 		}
 		if = {
-			limit = { has_global_flag = there_is_faction_allies has_global_flag = sovietunion_joined_ww2 }	# There is no Allies faction and SOV will join it
-			if = {
-				limit = { country_exists = FER }	# we assume FER is always a faction leader
-				set_temp_variable = { allies_leader_tag = THIS.id }
-				set_faction_name = coalition_name_allies_short
-				104 = { set_variable = { world_stage_metropolis = 1 } }
-			} else = {
-				random_country = {
-					limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
-					set_temp_variable = { allies_leader_tag = THIS.id }
-					var:world_stage_metropolis = { set_variable = { world_stage_metropolis = 1 } }
-					if = {
-						limit = { is_faction_leader = yes }
-						create_faction = coalition_name_allies_short
-					} else = { create_faction = coalition_name_allies_short }
+			limit = { has_global_flag = there_is_faction_allies has_global_flag = sovietunion_joined_ww2 }	# There is a local Allies faction and SOV will join it
+			every_country = {
+				limit = { is_in_faction_with = var:komintern_leader_tag }
+				leave_faction = yes
+				var:allies_leader_tag = { add_to_faction = PREV }
+			}
+			var:komintern_leader_tag = {
+				dismantle_faction = yes
+				var:allies_leader_tag = { add_to_faction = PREV }
+			}
+			every_state = {
+				limit = { check_variable = { world_stage_coalition = 2 } }
+				set_variable = { world_stage_coalition = 1 }
+			}
+			every_state = {
+				limit = { check_variable = { theater_owner_coalition = 2 } }
+				set_variable = { theater_owner_coalition = 1 }
+			}
+			random_other_country = {
+				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition =  3 } } }
+				declare_war_on = {
+					target = var:komintern_leader_tag
+					type = annex_everything
 				}
+			}
+			log = "worldstage.32: A) There is a local Allies faction and SOV will join it"
+		}
+		if = {
+			limit = { NOT = { has_global_flag = there_is_faction_allies } has_global_flag = sovietunion_joined_ww2 }	# There is no local Allies faction and SOV will join it
+			var:komintern_leader_tag = {
+				set_faction_name = coalition_name_allies_short
+				set_temp_variable = { allies_leader_tag = THIS.id }
 			}
 			every_country = {
 				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
@@ -595,31 +611,29 @@ country_event = {
 					type = annex_everything
 				}
 			}
-			log = "worldstage.32: There is no Allies faction and SOV will join it"
+			every_state = {
+				limit = { check_variable = { world_stage_coalition = 2 } }
+				set_variable = { world_stage_coalition = 1 }
+			}
+			every_state = {
+				limit = { check_variable = { theater_owner_coalition = 2 } }
+				set_variable = { theater_owner_coalition = 1 }
+			}
+			log = "worldstage.32: B) There is no local Allies faction and SOV will join it"
 		}
 		if = {
-			limit = { NOT = { has_global_flag = sovietunion_joined_ww2 } }		# SOV will not join Allies
-			if = {
-				limit = { any_country = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } is_faction_leader = yes } } }
-				random_country = {
-					limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } is_faction_leader = yes } }
-					set_temp_variable = { komintern_leader_tag = THIS.id }
-				}
-			} else = {
-				random_country = {
-					limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition =  2 } } }
-					create_faction = coalition_name_komintern_short
-					set_temp_variable = { komintern_leader_tag = THIS.id }
-				}
-			} 
-			random_other_country = {
-				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
-				declare_war_on = {
-					target = var:komintern_leader_tag
-					type = annex_everything
+			limit = { NOT = { has_global_flag = sovietunion_joined_ww2 } }		# SOV will not join Allies (does not need to check if there's an Allies tag, since FER will not join it)
+			if = { 
+				limit = { any_country = { tag = var:komintern_leader_tag } }
+				random_other_country = {
+					limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes }
+					declare_war_on = {
+						target = var:komintern_leader_tag
+						type = annex_everything
+					}
 				}
 			}
-			log = "worldstage.32: # SOV will not join Allies"
+			log = "worldstage.32: # C) SOV will not join Allies"
 		}
 	}
 }
@@ -647,12 +661,12 @@ news_event = {
 			}
 			custom_effect_tooltip = metropolis_scope_germany_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				101.world_stage_power = 9.world_state_power_deployed_by^101
+				101.world_stage_power = 9.world_stage_power_deployed_by^101
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 			custom_effect_tooltip = metropolis_scope_sovietunion_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				104.world_stage_power = 9.world_state_power_deployed_by^104
+				104.world_stage_power = 9.world_stage_power_deployed_by^104
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 		}
@@ -671,12 +685,12 @@ news_event = {
 			}
 			custom_effect_tooltip = metropolis_scope_germany_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				101.world_stage_power = 9.world_state_power_deployed_by^101
+				101.world_stage_power = 9.world_stage_power_deployed_by^101
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 			custom_effect_tooltip = metropolis_scope_sovietunion_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				104.world_stage_power = 9.world_state_power_deployed_by^104
+				104.world_stage_power = 9.world_stage_power_deployed_by^104
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 		}
@@ -695,12 +709,12 @@ news_event = {
 			}
 			custom_effect_tooltip = metropolis_scope_germany_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				101.world_stage_power = 9.world_state_power_deployed_by^101
+				101.world_stage_power = 9.world_stage_power_deployed_by^101
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 			custom_effect_tooltip = metropolis_scope_sovietunion_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				104.world_stage_power = 9.world_state_power_deployed_by^104
+				104.world_stage_power = 9.world_stage_power_deployed_by^104
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 		}
@@ -719,12 +733,12 @@ news_event = {
 			}
 			custom_effect_tooltip = metropolis_scope_germany_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				101.world_stage_power = 9.world_state_power_deployed_by^101
+				101.world_stage_power = 9.world_stage_power_deployed_by^101
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 			custom_effect_tooltip = metropolis_scope_sovietunion_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				104.world_stage_power = 9.world_state_power_deployed_by^104
+				104.world_stage_power = 9.world_stage_power_deployed_by^104
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 		}
@@ -752,12 +766,12 @@ news_event = {
 			}
 			custom_effect_tooltip = metropolis_scope_germany_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				101.world_stage_power = 9.world_state_power_deployed_by^101
+				101.world_stage_power = 9.world_stage_power_deployed_by^101
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 			custom_effect_tooltip = metropolis_scope_sovietunion_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				104.world_stage_power = 9.world_state_power_deployed_by^104
+				104.world_stage_power = 9.world_stage_power_deployed_by^104
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 		}
@@ -774,12 +788,12 @@ news_event = {
 			}
 			custom_effect_tooltip = metropolis_scope_germany_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				101.world_stage_power = 9.world_state_power_deployed_by^101
+				101.world_stage_power = 9.world_stage_power_deployed_by^101
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 			custom_effect_tooltip = metropolis_scope_sovietunion_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				104.world_stage_power = 9.world_state_power_deployed_by^104
+				104.world_stage_power = 9.world_stage_power_deployed_by^104
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 		}
@@ -796,12 +810,12 @@ news_event = {
 			}
 			custom_effect_tooltip = metropolis_scope_germany_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				101.world_stage_power = 9.world_state_power_deployed_by^101
+				101.world_stage_power = 9.world_stage_power_deployed_by^101
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 			custom_effect_tooltip = metropolis_scope_sovietunion_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				104.world_stage_power = 9.world_state_power_deployed_by^104
+				104.world_stage_power = 9.world_stage_power_deployed_by^104
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 		}
@@ -818,12 +832,12 @@ news_event = {
 			}
 			custom_effect_tooltip = metropolis_scope_germany_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				101.world_stage_power = 9.world_state_power_deployed_by^101
+				101.world_stage_power = 9.world_stage_power_deployed_by^101
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 			custom_effect_tooltip = metropolis_scope_sovietunion_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				104.world_stage_power = 9.world_state_power_deployed_by^104
+				104.world_stage_power = 9.world_stage_power_deployed_by^104
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 		}
@@ -853,12 +867,12 @@ news_event = {
 			}
 			custom_effect_tooltip = metropolis_scope_germany_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				101.world_stage_power = 9.world_state_power_deployed_by^101
+				101.world_stage_power = 9.world_stage_power_deployed_by^101
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 			custom_effect_tooltip = metropolis_scope_sovietunion_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				104.world_stage_power = 9.world_state_power_deployed_by^104
+				104.world_stage_power = 9.world_stage_power_deployed_by^104
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 		}
@@ -877,12 +891,12 @@ news_event = {
 			}
 			custom_effect_tooltip = metropolis_scope_germany_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				101.world_stage_power = 9.world_state_power_deployed_by^101
+				101.world_stage_power = 9.world_stage_power_deployed_by^101
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 			custom_effect_tooltip = metropolis_scope_sovietunion_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				104.world_stage_power = 9.world_state_power_deployed_by^104
+				104.world_stage_power = 9.world_stage_power_deployed_by^104
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 		}
@@ -901,12 +915,12 @@ news_event = {
 			}
 			custom_effect_tooltip = metropolis_scope_germany_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				101.world_stage_power = 9.world_state_power_deployed_by^101
+				101.world_stage_power = 9.world_stage_power_deployed_by^101
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 			custom_effect_tooltip = metropolis_scope_sovietunion_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				104.world_stage_power = 9.world_state_power_deployed_by^104
+				104.world_stage_power = 9.world_stage_power_deployed_by^104
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 		}
@@ -925,12 +939,12 @@ news_event = {
 			}
 			custom_effect_tooltip = metropolis_scope_germany_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				101.world_stage_power = 9.world_state_power_deployed_by^101
+				101.world_stage_power = 9.world_stage_power_deployed_by^101
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 			custom_effect_tooltip = metropolis_scope_sovietunion_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				104.world_stage_power = 9.world_state_power_deployed_by^104
+				104.world_stage_power = 9.world_stage_power_deployed_by^104
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 		}
@@ -958,12 +972,12 @@ news_event = {
 			}
 			custom_effect_tooltip = metropolis_scope_germany_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				101.world_stage_power = 9.world_state_power_deployed_by^101
+				101.world_stage_power = 9.world_stage_power_deployed_by^101
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 			custom_effect_tooltip = metropolis_scope_sovietunion_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				104.world_stage_power = 9.world_state_power_deployed_by^104
+				104.world_stage_power = 9.world_stage_power_deployed_by^104
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 		}
@@ -980,12 +994,12 @@ news_event = {
 			}
 			custom_effect_tooltip = metropolis_scope_germany_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				101.world_stage_power = 9.world_state_power_deployed_by^101
+				101.world_stage_power = 9.world_stage_power_deployed_by^101
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 			custom_effect_tooltip = metropolis_scope_sovietunion_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				104.world_stage_power = 9.world_state_power_deployed_by^104
+				104.world_stage_power = 9.world_stage_power_deployed_by^104
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 		}
@@ -1002,12 +1016,12 @@ news_event = {
 			}
 			custom_effect_tooltip = metropolis_scope_germany_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				101.world_stage_power = 9.world_state_power_deployed_by^101
+				101.world_stage_power = 9.world_stage_power_deployed_by^101
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 			custom_effect_tooltip = metropolis_scope_sovietunion_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				104.world_stage_power = 9.world_state_power_deployed_by^104
+				104.world_stage_power = 9.world_stage_power_deployed_by^104
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 		}
@@ -1024,12 +1038,12 @@ news_event = {
 			}
 			custom_effect_tooltip = metropolis_scope_germany_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				101.world_stage_power = 9.world_state_power_deployed_by^101
+				101.world_stage_power = 9.world_stage_power_deployed_by^101
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 			custom_effect_tooltip = metropolis_scope_sovietunion_space
 			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
-				104.world_stage_power = 9.world_state_power_deployed_by^104
+				104.world_stage_power = 9.world_stage_power_deployed_by^104
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 		}
@@ -1046,7 +1060,9 @@ news_event = {
 	is_triggered_only = yes
 
 	immediate = {
-		
+		hidden_effect = {
+			 9 = { world_stage_end_round_axis_victory = yes }
+		}
 	}
 	
 	option = {
