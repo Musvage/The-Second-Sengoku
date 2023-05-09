@@ -442,7 +442,7 @@ resolve_strategic_advantage = {
 	}
 } d_resolve_strategic_advantage = { resolve_strategic_advantage = yes log = "resolve_strategic_advantage" }
 
-world_stage_end_round_axis_victory = {	# Similar to end of turn but Germany always wins in the end
+world_stage_end_round_axis_victory = {	# Similar to end of turn but Axis always wins in the end
 	# get number of combatants on each side (damage tanken is divided)
 	set_temp_variable = { number_of_defenders = 0 }
 	set_temp_variable = { number_of_attackers = 0 }
@@ -574,22 +574,76 @@ world_stage_end_round_axis_victory = {	# Similar to end of turn but Germany alwa
 		}
 	}
 	var:metropolis_conquerer = { log = "[GetMetropolisName] wins [PREV.GetTheaterName]" }
-	# war hit a dead-end, nowhere to push: withdraw all forces (except unespecified minors)
-	set_temp_variable = { origin_theater = theater_id }
-	for_each_loop = {
-		array = world_stage_power_deployed_by
-		index = this_metropolis
-		value = deployed_power
-		if = {
-			limit = { check_variable = { this_metropolis > 100 } }	# dont mind unspecified minors
-			clamp_variable = { var = world_stage_power_deployed_by^this_metropolis min = 0 max = 999 }
-			var:this_metropolis = {
+	# pushes the front (calculates how many troops go and where, and activates fronts)
+	if = {
+		limit = { NOT = { check_variable = { new_fronts = 0 } } }	# push front to new theaters
+		for_each_loop = {												# divide the current deployed forces by the number of new fronts BEFORE zeroing the values in the array
+			array = world_stage_power_deployed_by
+			index = this_metropolis
+			value = deployed_power
+			if = {
+				limit = { check_variable = { this_metropolis > 100 } }	# unspecified minors DO NOT count here
+				divide_variable = { world_stage_power_deployed_by^this_metropolis = new_fronts }
+				round_variable = world_stage_power_deployed_by^this_metropolis
 				if = {
-					limit = { check_variable = { world_stage_coalition = PREV.coalition_side_attack } }	# if it is a attacker, retrieves all deployed power (defender looses all)
-					add_to_variable = { world_stage_power = PREV.world_stage_power_deployed_by^this_metropolis }
-				} # else: does not retrieve anything
+					limit = { check_variable = { deployed_power > 0 } }	# this temp value is not affected by last operation
+					clamp_variable = { var = world_stage_power_deployed_by^this_metropolis min = 1 max = 999 }	# if it was not 0, should be at least 1
+				}
 			}
-			set_variable = { world_stage_power_deployed_by^this_metropolis = 0 }	# clean the current theater's array
+		}
+		for_each_loop = {											# now deploys those troops and activates the theater
+			array = connects_to
+			index = connection_index
+			value = next_theater
+			var:next_theater = {
+				if = {
+					limit = { NOT = { check_variable = { next_theater = 0 } } }
+					if = {
+						limit = { check_variable = { theater_owner_coalition = PREV.theater_owner_coalition } }
+						set_state_flag = theater_is_active
+						set_variable = { coalition_side_attack = PREV.coalition_side_attack }					# sets the attacking coalition in this connected theater after previous coalition_side_attack
+						# now adds troops, an array within an array
+						for_each_loop = {
+							array = world_stage_power_deployed_by
+							index = this_metropolis2
+							value = deployed_power2
+							if = {
+								limit = { check_variable = { this_metropolis2 > 100 } check_variable = { PREV.world_stage_power_deployed_by^this_metropolis2 > 0 } }
+								add_to_variable = { world_stage_power_deployed_by^this_metropolis2 = PREV.world_stage_power_deployed_by^this_metropolis2 }
+							}
+						}
+					}
+				}
+				world_stage_state_update_current_day = yes	# updates the UI
+			}
+		}
+		for_each_loop = {											# NOW sets the values in the array to zero (except unespecified minors)
+			array = world_stage_power_deployed_by
+			index = this_metropolis	# this index is a metropolis
+			value = deployed_power
+			if = {
+				limit = { check_variable = { this_metropolis > 100 } }
+				set_variable = { world_stage_power_deployed_by^this_metropolis = 0 }
+			}
+		}
+		set_temp_variable = { origin_theater = theater_id }
+	} else = {	# war hit a dead-end, nowhere to push: withdraw all forces (except unespecified minors)
+		set_temp_variable = { origin_theater = theater_id }
+		for_each_loop = {
+			array = world_stage_power_deployed_by
+			index = this_metropolis
+			value = deployed_power
+			if = {
+				limit = { check_variable = { this_metropolis > 100 } }	# dont mind unspecified minors
+				clamp_variable = { var = world_stage_power_deployed_by^this_metropolis min = 0 max = 999 }
+				var:this_metropolis = {
+					if = {
+						limit = { check_variable = { world_stage_coalition = PREV.coalition_side_attack } }	# if it is a attacker, retrieves all deployed power (defender looses all)
+						add_to_variable = { world_stage_power = PREV.world_stage_power_deployed_by^this_metropolis }
+					} # else: does not retrieve anything
+				}
+				set_variable = { world_stage_power_deployed_by^this_metropolis = 0 }	# clean the current theater's array
+			}
 		}
 	}
 	# updates all relevant stats
