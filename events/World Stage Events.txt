@@ -1786,7 +1786,7 @@ country_event = {
 		every_possible_country = {
 			limit = { tag = KOB }
 			set_politics = {
-				ruling_party = var:new_ideology
+				ruling_party = var:new_ideology?neutrality
 				elections_allowed = no
 				last_election = "1939.09.1"
 				election_frequency = 48
@@ -1845,7 +1845,7 @@ country_event = {
 			every_possible_country = {
 				limit = { tag = KOB }
 				set_politics = {
-					ruling_party = var:new_ideology
+					ruling_party = var:new_ideology?neutrality
 					elections_allowed = no
 					last_election = "1939.09.1"
 					election_frequency = 48
@@ -1902,7 +1902,7 @@ country_event = {
 		}
 		custom_effect_tooltip = metropolis_scope_vichy
 		custom_effect_tooltip = join_coalition_axis
-		ai_chance = { base = 100 } log = "FRANCE SURRENDERS, imagine my shock! option:  worldstage_surrender.103.c # puppets don't get to decide"
+		ai_chance = { base = 999 } log = "FRANCE SURRENDERS, imagine my shock! option:  worldstage_surrender.103.c # puppets don't get to decide"
 	}
 }
 
@@ -1977,11 +1977,11 @@ country_event = {
 	id = worldstage_surrender.104
 	title = worldstage_surrender.104.t
 	desc = {
-		text = worldstage.104.d1
+		text = worldstage_surrender.104.d1
 		trigger = { NOT = { 106 = { check_variable = { world_stage_coalition = 3 } } } }
 	}
 	desc = {
-		text = worldstage.104.d2
+		text = worldstage_surrender.104.d2
 		trigger = { 106 = { check_variable = { world_stage_coalition = 3 } } }
 	}
 	picture = GFX_news_ww2_sovietunion_capitulades
@@ -2020,7 +2020,6 @@ country_event = {
 				}
 				add_to_faction = FER
 			}
-			log = "AAAAAAAAAAAAA"
 		}
 		if = {
 			limit = { 106 = { check_variable = { world_stage_coalition = 3 } } }			# surrender to ROC
@@ -2028,11 +2027,10 @@ country_event = {
 				limit = { tag = ROC }
 				set_temp_variable = { new_ideology = current_party_ideology_group }
 			}
-			log = "BBBBBBBBBBBBBb"
 			every_possible_country = {
 				limit = { tag = FER }
 				set_politics = {
-					ruling_party = var:new_ideology
+					ruling_party = var:new_ideology?neutrality
 					elections_allowed = no
 					last_election = "1939.09.1"
 					election_frequency = 48
@@ -2071,17 +2069,16 @@ country_event = {
 				limit = { country_exists = ROC country_exists = FER }
 				ROC = { puppet = FER }
 			}
+			set_cosmetic_tag = FER_CHINA
 		} else = {	#	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -	# surrenders to REI instead
 			every_possible_country = {
 				limit = { tag = REI }
 				set_temp_variable = { new_ideology = current_party_ideology_group }
 			}
-			log = "CCCCCCCCCCCCCC"
 			every_possible_country = {
 				limit = { tag = FER }
-				log = "THIS [GetName]"
 				set_politics = {
-					ruling_party = var:new_ideology
+					ruling_party = var:new_ideology?neutrality
 					elections_allowed = no
 					last_election = "1939.09.1"
 					election_frequency = 48
@@ -2115,14 +2112,140 @@ country_event = {
 				limit = { country_exists = REI country_exists = FER }
 				REI = { puppet = FER }
 			}
+			set_cosmetic_tag = FER_REICH
 		}
 		hidden_effect = {
 			104 = { set_variable = { world_stage_coalition = 3 } }
 		}
-		log = "DDDDDDDDDDDDDDDDDD"
 		ai_chance = { base = 100 } log = "SOVIET UNION SURRENDERS option:  worldstage_surrender.104.b	# surrender, prefered AI option"
 	}
-	# ADD PUPPETED OPTION
+	option = {
+		name = worldstage_surrender.104.c
+		trigger = { is_puppet = yes }		# puppets don't get to decide
+		if = {
+			limit = { OVERLORD = { OR = { has_government = fascism has_government = neutrality has_government = autocracy } } }
+			hidden_effect = { if = { limit = { is_in_faction = yes } leave_faction = yes } }			# the faction here SHOULD be the Allies or Comintern. Let's hope for the best
+			if = {
+			limit = { country_exists = FER }
+			random_country = {
+				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes }
+				white_peace = {
+					tag = FER
+					message = worldstage_surrender.104.fer
+				}
+				add_to_faction = FER
+			}
+		}
+		if = {
+			limit = { 106 = { check_variable = { world_stage_coalition = 3 } } }			# surrender to ROC
+			every_possible_country = {
+				limit = { tag = ROC }
+				set_temp_variable = { new_ideology = current_party_ideology_group }
+			}
+			every_possible_country = {
+				limit = { tag = FER }
+				set_politics = {
+					ruling_party = var:new_ideology?neutrality
+					elections_allowed = no
+					last_election = "1939.09.1"
+					election_frequency = 48
+					#long_name = TAG_party_long
+					#name = TAG_party
+				}
+				add_ideas = SS_restricted_foreign_policy
+			}
+			hidden_effect = {
+				if = {
+					limit = { country_exists = FER }
+					country_event = worldstage_surrender.1042
+					add_ai_strategy = {
+						type = alliance
+						id = REI
+						value = 50
+					}
+					add_ai_strategy = {
+						type = alliance
+						id = ROC
+						value = 50
+					}
+					every_other_country = {
+						limit = { has_country_flag = is_not_japan NOT = { tag = ROC } }
+						FER = {
+							add_ai_strategy = {
+								type = alliance
+								id = PREV
+								value = -100
+							}
+						}
+					}
+				}	
+			}
+			if = {
+				limit = { country_exists = ROC country_exists = FER }
+				ROC = { puppet = FER }
+			}
+			set_cosmetic_tag = FER_CHINA
+		} else = {	#	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -	# surrenders to REI instead
+			every_possible_country = {
+				limit = { tag = REI }
+				set_temp_variable = { new_ideology = current_party_ideology_group }
+			}
+			every_possible_country = {
+				limit = { tag = FER }
+				set_politics = {
+					ruling_party = var:new_ideology?neutrality
+					elections_allowed = no
+					last_election = "1939.09.1"
+					election_frequency = 48
+					#long_name = TAG_party_long
+					#name = TAG_party
+				}
+				add_ideas = SS_restricted_foreign_policy
+			}
+			hidden_effect = {
+				if = {
+					limit = { country_exists = FER }
+					country_event = worldstage_surrender.1043
+					add_ai_strategy = {
+						type = alliance
+						id = REI
+						value = 50
+					}
+					every_other_country = {
+						limit = { has_country_flag = is_not_japan }
+						FER = {
+							add_ai_strategy = {
+								type = alliance
+								id = PREV
+								value = -100
+							}
+						}
+					}
+				}	
+			}
+			if = {
+				limit = { country_exists = REI country_exists = FER }
+				REI = { puppet = FER }
+			}
+			set_cosmetic_tag = FER_REICH
+		}
+		hidden_effect = {
+			104 = { set_variable = { world_stage_coalition = 3 } }
+		}
+	} else = {
+		every_possible_country = {
+			limit = { tag = FER }
+			custom_effect_tooltip = lose_access_to_trade_resources_khabarovsky
+			clr_country_flag = tc_khabarovsky_has_access
+		}
+		hidden_effect = {
+			if = {
+				limit = { country_exists = FER }
+				country_event = worldstage_surrender.1041
+			}	
+		}
+	}
+	ai_chance = { base = 999 } log = "SOVIET UNION SURRENDERS option:  worldstage_surrender.104.c	#  puppets don't get to decide"
 }
 
 #########################
