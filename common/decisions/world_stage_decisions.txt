@@ -87,11 +87,8 @@ world_stage_overlord_category = {
 			tag = OSA	# make it more elegant later....
 		}
 
-
 		days_remove = 70
 		days_re_enable = 70
-
-		cost = 100
 
 		remove_effect = {
 			custom_effect_tooltip = "WORK IN PROGRESS! Placeholder effect:"
@@ -111,6 +108,12 @@ world_stage_sealion_category = {
 		icon = GFX_decision_generic_advancing_soldier
 		
 		allowed = { tag = REI }
+		
+		custom_cost_trigger = {
+			var:world_stage_metropolis = { check_variable = { world_stage_power > 49 } }
+		}
+		
+		custom_cost_text = world_stage_50_power_cost
 
 		available = {
 			#custom_trigger_tooltip = {
@@ -135,17 +138,28 @@ world_stage_sealion_category = {
 			has_global_flag = REI_sea_lion_completed	# REI's focus
 		}
 
-
 		days_remove = 70
 		days_re_enable = 70
 
-		cost = 100
-
 		remove_effect = {
-			custom_effect_tooltip = "WORK IN PROGRESS! Placeholder effect:"
-			army_experience = 10
 			hidden_effect = { add_to_variable = { global.sealion_number = 1 } }
-			set_variable = { global.sealion_strength = 60 }
+			set_variable = { global.sealion_strength = 50 }
+			set_global_flag = world_stage_sealion_preparing
+			set_temp_variable = { chance_success = global.sealion_strength } multiply_temp_variable = { chance_success = chance_success }
+			random_list = {
+				var:chance_success = { custom_effect_tooltip = "SUCESS" }
+				2500 = { custom_effect_tooltip = "FAILURE" }
+			}
+		}
+		
+		complete_effect = {
+			hidden_effect = {
+			set_variable = { global.sealion_strength = 0 }
+				add_to_variable = { global.sealion_number = 1 }
+				set_global_flag = world_stage_sealion_preparing
+				var:world_stage_metropolis = { subtract_from_variable = { world_stage_power = 50 } }
+			}
+			add_to_variable = { global.sealion_strength = 50 tooltip = world_stage_sealion_increase_var_tt }
 		}
 
 		ai_will_do = {
@@ -156,6 +170,12 @@ world_stage_sealion_category = {
 	world_stage_sealion_increase = {
 		
 		allowed = { tag = REI }
+		
+		custom_cost_trigger = {
+			var:world_stage_metropolis = { check_variable = { world_stage_power > 29 } }
+		}
+		
+		custom_cost_text = world_stage_30_power_cost
 
 		available = {
 			has_decision = world_stage_sealion
@@ -165,14 +185,64 @@ world_stage_sealion_category = {
 			has_global_flag = REI_sea_lion_completed	# REI's focus
 		}
 
+		days_remove = 14
+		days_re_enable = 21
 
-		days_remove = 20
-		days_re_enable = 0
+
+		complete_effect = {
+			set_temp_variable = { chance_success = 100 } 101 = { multiply_temp_variable = { chance_success = doctrine_bonus_air } }
+			set_temp_variable = { chance_failure = 100 } 102 = { multiply_temp_variable = { chance_failure = doctrine_bonus_air } }
+			random_list = { 
+				var:chance_failure = {	add_to_variable = { global.sealion_strength = 10 tooltip = world_stage_sealion_increase_var_tt } }
+				200 = {					add_to_variable = { global.sealion_strength = 20 tooltip = world_stage_sealion_increase_var_tt } }
+				var:chance_success = {	add_to_variable = { global.sealion_strength = 30 tooltip = world_stage_sealion_increase_var_tt } }
+			}
+			hidden_trigger = { var:world_stage_metropolis = { subtract_from_variable = { world_stage_power = 30 } } }
+		}
+
+		ai_will_do = {
+			base = 1
+		}
+	}
+	
+	world_stage_sealion_defend = {
+		
+		allowed = { tag = OSA }
+		
+		custom_cost_trigger = {
+			var:world_stage_metropolis = { check_variable = { world_stage_power > 19 } }
+		}
+		
+		custom_cost_text = world_stage_20_power_cost
+
+		available = {
+			has_decision = world_stage_sealion
+		}
+
+		available = {
+			has_global_flag = world_stage_sealion_preparing
+		}
+
+		visible = {
+			has_global_flag = REI_sea_lion_completed	# REI's focus
+			has_global_flag = world_stage_sealion_preparing
+		}
+
+
+		days_remove = 14
+		days_re_enable = 21
 
 		cost = 100
 
 		complete_effect = {
-			add_to_variable = { global.sealion_strength = 30 }
+			set_temp_variable = { chance_success = 100 } 102 = { multiply_temp_variable = { chance_success = doctrine_bonus_air } }
+			set_temp_variable = { chance_failure = 100 } 101 = { multiply_temp_variable = { chance_failure = doctrine_bonus_air } }
+			random_list = { 
+				var:chance_failure = {	subtract_from_variable = { global.sealion_strength = 10 tooltip = world_stage_sealion_defend_var_tt } }
+				200 = {					subtract_from_variable = { global.sealion_strength = 20 tooltip = world_stage_sealion_defend_var_tt } }
+				var:chance_success = {	subtract_from_variable = { global.sealion_strength = 30 tooltip = world_stage_sealion_defend_var_tt } }
+			}
+			hidden_trigger = { var:world_stage_metropolis = { subtract_from_variable = { world_stage_power = 30 } } }
 		}
 
 		ai_will_do = {
@@ -183,6 +253,12 @@ world_stage_sealion_category = {
 	world_stage_sealion_abort = {
 	
 		allowed = { tag = REI }
+		
+		custom_cost_trigger = {
+			command_power > 24.9
+		}
+		
+		custom_cost_text = world_stage_25_cp_cost
 
 		available = {
 			has_decision = world_stage_sealion
@@ -191,7 +267,6 @@ world_stage_sealion_category = {
 		visible = {
 			has_global_flag = REI_sea_lion_completed	# REI's focus
 		}
-
 
 		days_remove = 70
 		days_re_enable = 70
@@ -202,6 +277,7 @@ world_stage_sealion_category = {
 			remove_decision = world_stage_sealion
 			# retreives portion of deployed power
 			set_variable = { global.sealion_strength = 0 }
+			hidden_effect = { add_command_power = -25 }
 		}
 
 		ai_will_do = {
