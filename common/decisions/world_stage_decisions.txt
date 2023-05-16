@@ -63,16 +63,16 @@ world_stage_overlord_category = {
 	
 	world_stage_overlord = {
 		icon = GFX_decision_generic_advancing_soldier
+		
+		allowed = { tag = OSA }
+		
+		custom_cost_trigger = {
+			var:world_stage_metropolis = { check_variable = { world_stage_power > 49 } }
+		}
+		
+		custom_cost_text = world_stage_50_power_cost
 
 		available = {
-			#custom_trigger_tooltip = {
-			#	tooltip = theater_not_active_france
-			#	8 = { NOT = { has_state_flag = theater_is_active } }
-			#}
-			custom_trigger_tooltip = {
-				tooltip = theater_france_controlled_axis
-				8 = { check_variable = { theater_owner_coalition = 3 } }
-			}
 			custom_trigger_tooltip = {
 				tooltip = theater_not_active_england
 				30 = { NOT = { has_state_flag = theater_is_active } }
@@ -81,19 +81,168 @@ world_stage_overlord_category = {
 				tooltip = theater_england_controlled_allies
 				30 = { check_variable = { theater_owner_coalition = 1 } }
 			}
+			custom_trigger_tooltip = {
+				tooltip = theater_not_active_france
+				8 = { NOT = { has_state_flag = theater_is_active } }
+			}
+			custom_trigger_tooltip = {
+				tooltip = theater_france_controlled_axis
+				8 = { check_variable = { theater_owner_coalition = 3 } }
+			}
+			hidden_trigger = {
+				NOT = { has_global_flag = world_stage_overlord_preparing }
+			}
 		}
 
 		visible = {
-			tag = OSA	# make it more elegant later....
+			has_global_flag = OSA_operation_overlord_completed	# OSA's focus: TO-DO
 		}
+		
+		cancel_effect = {
+			hidden_effect = {
+				102 = { add_to_variable = { world_stage_power = global.overlord_strength } set_variable = { global.overlord_strength = 50 } }
+			}
+		}
+		
+		cancel_trigger  = { hidden_trigger = { NOT = { has_global_flag = world_stage_world_war_2_is_active } } }
+		
+		cancel_if_not_visible  = yes
 
 		days_remove = 70
 		days_re_enable = 70
 
 		remove_effect = {
-			custom_effect_tooltip = "WORK IN PROGRESS! Placeholder effect:"
-			army_experience = 10
 			hidden_effect = { add_to_variable = { global.overlord_number = 1 } }
+			set_variable = { global.overlord_strength = 50 }
+			set_global_flag = world_stage_overlord_preparing
+			set_temp_variable = { chance_success = global.overlord_strength } multiply_temp_variable = { chance_success = chance_success }
+			random_list = {
+				var:chance_success = { news_event = worldstage.57 }
+				2500 = { news_event = worldstage.58 }
+			}
+		}
+		
+		complete_effect = {
+			hidden_effect = {
+				news_event = { id = worldstage.56 }
+				set_variable = { global.overlord_strength = 0 }
+				add_to_variable = { global.overlord_number = 1 }
+				set_global_flag = world_stage_overlord_preparing
+				var:world_stage_metropolis = { subtract_from_variable = { world_stage_power = 50 } }
+			}
+			add_to_variable = { global.overlord_strength = 50 tooltip = world_stage_overlord_increase_var_tt }
+		}
+
+		ai_will_do = {
+			base = 1
+		}
+	}
+	
+	world_stage_overlord_increase = {
+		
+		allowed = { tag = OSA }
+		
+		custom_cost_trigger = {
+			var:world_stage_metropolis = { check_variable = { world_stage_power > 29 } }
+		}
+		
+		custom_cost_text = world_stage_30_power_cost
+
+		available = {
+			has_global_flag = world_stage_overlord_preparing
+		}
+
+		visible = {
+			has_global_flag = world_stage_overlord_preparing
+		}
+		
+		cancel_trigger  = { hidden_trigger = { NOT = { has_global_flag = world_stage_world_war_2_is_active } } }
+		
+		cancel_if_not_visible  = yes
+
+		days_remove = 14
+		days_re_enable = 21
+
+		complete_effect = {
+			set_temp_variable = { chance_success = 100 } 101 = { multiply_temp_variable = { chance_success = doctrine_bonus_air } }
+			set_temp_variable = { chance_failure = 100 } 102 = { multiply_temp_variable = { chance_failure = doctrine_bonus_air } }
+			random_list = { 
+				var:chance_failure = {	add_to_variable = { global.overlord_strength = 10 tooltip = world_stage_overlord_increase_var_tt } }
+				200 = {					add_to_variable = { global.overlord_strength = 20 tooltip = world_stage_overlord_increase_var_tt } }
+				var:chance_success = {	add_to_variable = { global.overlord_strength = 30 tooltip = world_stage_overlord_increase_var_tt } }
+			}
+			hidden_trigger = { var:world_stage_metropolis = { subtract_from_variable = { world_stage_power = 30 } } }
+		}
+
+		ai_will_do = {
+			base = 1
+		}
+	}
+	
+	world_stage_overlord_defend = {
+		
+		allowed = { tag = REI }	# add vichy kobe later
+		
+		custom_cost_trigger = {
+			var:world_stage_metropolis = { check_variable = { world_stage_power > 19 } }
+		}
+		
+		custom_cost_text = world_stage_20_power_cost
+
+		available = {
+			has_global_flag = world_stage_overlord_preparing
+		}
+
+		visible = {
+			has_global_flag = world_stage_overlord_preparing
+		}
+		
+		cancel_trigger  = { hidden_trigger = { NOT = { has_global_flag = world_stage_world_war_2_is_active } } }
+		
+		cancel_if_not_visible  = yes
+
+		days_remove = 14
+		days_re_enable = 21
+
+		complete_effect = {
+			set_temp_variable = { chance_success = 100 } 101 = { multiply_temp_variable = { chance_success = doctrine_bonus_air } }
+			set_temp_variable = { chance_failure = 100 } 102 = { multiply_temp_variable = { chance_failure = doctrine_bonus_air } }
+			random_list = { 
+				var:chance_failure = {	subtract_from_variable = { global.overlord_strength = 10 tooltip = world_stage_overlord_defend_var_tt } }
+				200 = {					subtract_from_variable = { global.overlord_strength = 20 tooltip = world_stage_overlord_defend_var_tt } }
+				var:chance_success = {	subtract_from_variable = { global.overlord_strength = 30 tooltip = world_stage_overlord_defend_var_tt } }
+			}
+			hidden_trigger = { var:world_stage_metropolis = { subtract_from_variable = { world_stage_power = 30 } } }
+		}
+
+		ai_will_do = {
+			base = 1
+		}
+	}
+	
+	world_stage_overlord_abort = {
+	
+		allowed = { tag = OSA }
+		
+		custom_cost_trigger = {
+			command_power > 24.9
+		}
+		
+		custom_cost_text = world_stage_25_cp_cost
+
+		available = {
+			has_global_flag = world_stage_overlord_preparing
+		}
+
+		visible = {
+			has_global_flag = REI_operation_overlord_completed	# OSA's focus
+		}
+
+		complete_effect = {
+			remove_decision = world_stage_overlord
+			# retreives portion of deployed power
+			set_variable = { global.overlord_strength = 0 }
+			hidden_effect = { add_command_power = -25 country_event = worldstage.59 }
 		}
 
 		ai_will_do = {
@@ -116,10 +265,10 @@ world_stage_sealion_category = {
 		custom_cost_text = world_stage_50_power_cost
 
 		available = {
-			#custom_trigger_tooltip = {
-			#	tooltip = theater_not_active_england
-			#	30 = { NOT = { has_state_flag = theater_is_active } }
-			#}
+			custom_trigger_tooltip = {
+				tooltip = theater_not_active_england
+				30 = { NOT = { has_state_flag = theater_is_active } }
+			}
 			custom_trigger_tooltip = {
 				tooltip = theater_england_controlled_allies
 				30 = { check_variable = { theater_owner_coalition = 1 } }
@@ -140,6 +289,16 @@ world_stage_sealion_category = {
 		visible = {
 			has_global_flag = REI_sea_lion_completed	# REI's focus
 		}
+		
+		cancel_effect = {
+			hidden_effect = {
+				101 = { add_to_variable = { world_stage_power = global.overlord_strength } set_variable = { global.overlord_strength = 50 } }
+			}
+		}
+		
+		cancel_trigger  = { hidden_trigger = { NOT = { has_global_flag = world_stage_world_war_2_is_active } } }
+		
+		cancel_if_not_visible  = yes
 
 		days_remove = 70
 		days_re_enable = 70
@@ -182,16 +341,19 @@ world_stage_sealion_category = {
 		custom_cost_text = world_stage_30_power_cost
 
 		available = {
-			has_decision = world_stage_sealion
+			has_global_flag = world_stage_sealion_preparing
 		}
 
 		visible = {
-			has_global_flag = REI_sea_lion_completed	# REI's focus
+			has_global_flag = world_stage_sealion_preparing
 		}
+		
+		cancel_trigger  = { hidden_trigger = { NOT = { has_global_flag = world_stage_world_war_2_is_active } } }
+		
+		cancel_if_not_visible  = yes
 
 		days_remove = 14
 		days_re_enable = 21
-
 
 		complete_effect = {
 			set_temp_variable = { chance_success = 100 } 101 = { multiply_temp_variable = { chance_success = doctrine_bonus_air } }
@@ -220,23 +382,19 @@ world_stage_sealion_category = {
 		custom_cost_text = world_stage_20_power_cost
 
 		available = {
-			has_decision = world_stage_sealion
-		}
-
-		available = {
 			has_global_flag = world_stage_sealion_preparing
 		}
 
 		visible = {
-			has_global_flag = REI_sea_lion_completed	# REI's focus
 			has_global_flag = world_stage_sealion_preparing
 		}
 
-
+		cancel_trigger  = { hidden_trigger = { NOT = { has_global_flag = world_stage_world_war_2_is_active } } }
+		
+		cancel_if_not_visible  = yes
+		
 		days_remove = 14
 		days_re_enable = 21
-
-		cost = 100
 
 		complete_effect = {
 			set_temp_variable = { chance_success = 100 } 102 = { multiply_temp_variable = { chance_success = doctrine_bonus_air } }
@@ -265,17 +423,12 @@ world_stage_sealion_category = {
 		custom_cost_text = world_stage_25_cp_cost
 
 		available = {
-			has_decision = world_stage_sealion
+			has_global_flag = world_stage_sealion_preparing
 		}
 
 		visible = {
 			has_global_flag = REI_sea_lion_completed	# REI's focus
 		}
-
-		days_remove = 70
-		days_re_enable = 70
-
-		cost = 100
 
 		complete_effect = {
 			remove_decision = world_stage_sealion
@@ -294,40 +447,187 @@ world_stage_husky_category = {
 	
 	world_stage_husky = {
 		icon = GFX_decision_generic_advancing_soldier
+		
+		allowed = { OR = { tag = OSA tag = AMC tag = OKI } }
+		
+		custom_cost_trigger = {
+			var:world_stage_metropolis = { check_variable = { world_stage_power > 49 } }
+		}
+		
+		custom_cost_text = world_stage_50_power_cost
 
 		available = {
-			#custom_trigger_tooltip = {
-			#	tooltip = theater_not_active_sicily
-			#	24 = { NOT = { has_state_flag = theater_is_active } }
-			#}
 			custom_trigger_tooltip = {
-				tooltip = theater_sicily_controlled_axis
-				24 = { check_variable = { theater_owner_coalition = 3 } }
+				tooltip = theater_lybia_controlled_allies
+				14 = { check_variable = { theater_owner_coalition = 1 } }
 			}
 			custom_trigger_tooltip = {
 				tooltip = theater_not_active_lybia
 				14 = { NOT = { has_state_flag = theater_is_active } }
 			}
 			custom_trigger_tooltip = {
-				tooltip = theater_lybia_controlled_allies
-				14 = { check_variable = { theater_owner_coalition = 1 } }
+				tooltip = theater_sicily_controlled_axis
+				24 = { check_variable = { theater_owner_coalition = 3 } }
+			}
+			custom_trigger_tooltip = {
+				tooltip = theater_not_active_egypt
+				15 = { NOT = { has_state_flag = theater_is_active } }
+			}
+			hidden_trigger = {
+				NOT = { has_global_flag = world_stage_husky_preparing }
 			}
 		}
 
 		visible = {
-			tag = OSA	# make it more elegant later....
+			OR = {
+				has_global_flag = OSA_operaion_husky_completed	# OSA's focus
+				has_global_flag = AMC_operaion_husky_completed	# AMC/OKI's focus
+			}
 		}
-
+		
+		cancel_effect = {
+			hidden_effect = {
+				divide_variable = { global.overlord_strength = 2 }	round_variable = { global.overlord_strength }	## assuming both sides contributed, maybe we should split into 2 different sets of decisions
+				102 = { add_to_variable = { world_stage_power = global.overlord_strength } }
+				105 = { add_to_variable = { world_stage_power = global.overlord_strength } }
+				set_variable = { global.overlord_strength = 50 }
+			}
+		}
+		
+		cancel_trigger  = { hidden_trigger = { NOT = { has_global_flag = world_stage_world_war_2_is_active } } }
+		
+		cancel_if_not_visible  = yes
 
 		days_remove = 70
 		days_re_enable = 70
 
-		cost = 100
-
 		remove_effect = {
-			custom_effect_tooltip = "WORK IN PROGRESS! Placeholder effect:"
-			army_experience = 10
 			hidden_effect = { add_to_variable = { global.husky_number = 1 } }
+			set_variable = { global.husky_strength = 50 }
+			set_global_flag = world_stage_husky_preparing
+			set_temp_variable = { chance_success = global.husky_strength } multiply_temp_variable = { chance_success = chance_success }
+			random_list = {
+				var:chance_success = { news_event = worldstage.57 }
+				2500 = { news_event = worldstage.58 }
+			}
+		}
+		
+		complete_effect = {
+			hidden_effect = {
+				news_event = { id = worldstage.56 }
+				set_variable = { global.husky_strength = 0 }
+				add_to_variable = { global.husky_number = 1 }
+				set_global_flag = world_stage_husky_preparing
+				var:world_stage_metropolis = { subtract_from_variable = { world_stage_power = 50 } }
+			}
+			add_to_variable = { global.husky_strength = 50 tooltip = world_stage_husky_increase_var_tt }
+		}
+
+		ai_will_do = {
+			base = 1
+		}
+	}
+	
+	world_stage_husky_increase = {
+		
+		allowed = { OR = { tag = OSA tag = AMC tag = OKI } }
+		
+		custom_cost_trigger = {
+			var:world_stage_metropolis = { check_variable = { world_stage_power > 29 } }
+		}
+		
+		custom_cost_text = world_stage_30_power_cost
+
+		visible = {
+			has_global_flag = world_stage_husky_preparing
+		}
+		
+		cancel_trigger  = { hidden_trigger = { NOT = { has_global_flag = world_stage_world_war_2_is_active } } }
+		
+		cancel_if_not_visible  = yes
+
+		days_remove = 14
+		days_re_enable = 21
+
+		complete_effect = {
+			set_temp_variable = { chance_success = 100 } 101 = { multiply_temp_variable = { chance_success = doctrine_bonus_air } }
+			set_temp_variable = { chance_failure = 100 } 102 = { multiply_temp_variable = { chance_failure = doctrine_bonus_air } }
+			random_list = { 
+				var:chance_failure = {	add_to_variable = { global.husky_strength = 10 tooltip = world_stage_husky_increase_var_tt } }
+				200 = {					add_to_variable = { global.husky_strength = 20 tooltip = world_stage_husky_increase_var_tt } }
+				var:chance_success = {	add_to_variable = { global.husky_strength = 30 tooltip = world_stage_husky_increase_var_tt } }
+			}
+			hidden_trigger = { var:world_stage_metropolis = { subtract_from_variable = { world_stage_power = 30 } } }
+		}
+
+		ai_will_do = {
+			base = 1
+		}
+	}
+	
+	world_stage_husky_defend = {
+		
+		allowed = { tag = REI }
+		
+		custom_cost_trigger = {
+			var:world_stage_metropolis = { check_variable = { world_stage_power > 19 } }
+		}
+		
+		custom_cost_text = world_stage_20_power_cost
+
+		visible = {
+			has_global_flag = world_stage_husky_preparing
+		}
+
+		cancel_trigger  = { hidden_trigger = { NOT = { has_global_flag = world_stage_world_war_2_is_active } } }
+		
+		cancel_if_not_visible  = yes
+
+		days_remove = 14
+		days_re_enable = 21
+
+		complete_effect = {
+			set_temp_variable = { chance_success = 100 } 102 = { multiply_temp_variable = { chance_success = doctrine_bonus_air } }
+			set_temp_variable = { chance_failure = 100 } 101 = { multiply_temp_variable = { chance_failure = doctrine_bonus_air } }
+			random_list = { 
+				var:chance_failure = {	subtract_from_variable = { global.husky_strength = 10 tooltip = world_stage_husky_defend_var_tt } }
+				200 = {					subtract_from_variable = { global.husky_strength = 20 tooltip = world_stage_husky_defend_var_tt } }
+				var:chance_success = {	subtract_from_variable = { global.husky_strength = 30 tooltip = world_stage_husky_defend_var_tt } }
+			}
+			hidden_trigger = { var:world_stage_metropolis = { subtract_from_variable = { world_stage_power = 30 } } }
+		}
+
+		ai_will_do = {
+			base = 1
+		}
+	}
+	
+	world_stage_husky_abort = {
+	
+		allowed = { OR = { tag = OSA tag = AMC tag = OKI } }
+		
+		custom_cost_trigger = {
+			command_power > 24.9
+		}
+		
+		custom_cost_text = world_stage_25_cp_cost
+
+		available = {
+			has_global_flag = world_stage_husky_preparing
+		}
+
+		visible = {
+			OR = {
+				has_global_flag = OSA_operaion_husky_completed	# OSA's focus
+				has_global_flag = AMC_operaion_husky_completed	# AMC/OKI's focus
+			}
+		}
+		
+		complete_effect = {
+			remove_decision = world_stage_husky
+			# retreives portion of deployed power
+			set_variable = { global.husky_strength = 0 }
+			hidden_effect = { add_command_power = -25 country_event = worldstage.59 }
 		}
 
 		ai_will_do = {
@@ -340,36 +640,197 @@ world_stage_torch_category = {
 	
 	world_stage_torch = {
 		icon = GFX_decision_generic_advancing_soldier
+		
+		allowed = { OR = { tag = OSA tag = AMC tag = OKI } }
+		
+		custom_cost_trigger = {
+			var:world_stage_metropolis = { check_variable = { world_stage_power > 49 } }
+		}
+		
+		custom_cost_text = world_stage_50_power_cost
 
 		available = {
+			has_global_flag = world_stage_world_war_2_is_active
 			#custom_trigger_tooltip = {
-			#	tooltip = theater_not_active_lybia
-			#	14 = { NOT = { has_state_flag = theater_is_active } }
+			#	tooltip = theater_not_active_[theater]
+			#	[theater id] = { NOT = { has_state_flag = theater_is_active } }
+			#}
+			#custom_trigger_tooltip = {
+			#	tooltip = theater_[theater]_controlled_allies
+			#	[theater id] = { check_variable = { theater_owner_coalition = 1 } }
 			#}
 			custom_trigger_tooltip = {
 				tooltip = theater_lybia_controlled_axis
 				14 = { check_variable = { theater_owner_coalition = 3 } }
 			}
 			custom_trigger_tooltip = {
-				tooltip = world_stage_usa_is_allies
-				105 = { check_variable = { world_stage_coalition = 1 } }
+				tooltip = theater_not_active_lybia
+				14 = { NOT = { has_state_flag = theater_is_active } }
+			}
+			hidden_trigger = {
+				NOT = { has_global_flag = world_stage_torch_preparing }
 			}
 		}
 
 		visible = {
-			tag = OSA	# make it more elegant later....
+			OR = {
+				has_global_flag = OSA_operaion_torch_completed	# OSA's focus
+				has_global_flag = AMC_operaion_torch_completed	# AMC/OKI's focus
+			}
 		}
-
+		
+		cancel_effect = {
+			hidden_effect = {
+				divide_variable = { global.overlord_strength = 2 }	round_variable = { global.overlord_strength }	## assuming both sides contributed, maybe we should split into 2 different sets of decisions
+				102 = { add_to_variable = { world_stage_power = global.overlord_strength } }
+				105 = { add_to_variable = { world_stage_power = global.overlord_strength } }
+				set_variable = { global.overlord_strength = 50 }
+			}
+		}
+		
+		cancel_trigger  = { hidden_trigger = { NOT = { has_global_flag = world_stage_world_war_2_is_active } } }
+		
+		cancel_if_not_visible  = yes
 
 		days_remove = 70
 		days_re_enable = 70
 
-		cost = 100
-
 		remove_effect = {
-			custom_effect_tooltip = "WORK IN PROGRESS! Placeholder effect:"
-			army_experience = 10
 			hidden_effect = { add_to_variable = { global.torch_number = 1 } }
+			set_variable = { global.torch_strength = 50 }
+			set_global_flag = world_stage_torch_preparing
+			set_temp_variable = { chance_success = global.torch_strength } multiply_temp_variable = { chance_success = chance_success }
+			random_list = {
+				var:chance_success = { news_event = worldstage.57 }
+				2500 = { news_event = worldstage.58 }
+			}
+		}
+		
+		complete_effect = {
+			hidden_effect = {
+				news_event = { id = worldstage.56 }
+				set_variable = { global.torch_strength = 0 }
+				add_to_variable = { global.torch_number = 1 }
+				set_global_flag = world_stage_torch_preparing
+				var:world_stage_metropolis = { subtract_from_variable = { world_stage_power = 50 } }
+			}
+			add_to_variable = { global.torch_strength = 50 tooltip = world_stage_torch_increase_var_tt }
+		}
+
+		ai_will_do = {
+			base = 1
+		}
+	}
+	
+	world_stage_torch_increase = {
+		
+		allowed = { OR = { tag = OSA tag = AMC tag = OKI } }
+		
+		custom_cost_trigger = {
+			var:world_stage_metropolis = { check_variable = { world_stage_power > 29 } }
+		}
+		
+		custom_cost_text = world_stage_30_power_cost
+
+		available = {
+			has_global_flag = world_stage_torch_preparing
+		}
+
+		visible = {
+			has_global_flag = world_stage_torch_preparing
+		}
+		
+		cancel_trigger  = { hidden_trigger = { NOT = { has_global_flag = world_stage_world_war_2_is_active } } }
+		
+		cancel_if_not_visible  = yes
+
+		days_remove = 14
+		days_re_enable = 21
+
+		complete_effect = {
+			set_temp_variable = { chance_success = 100 } 101 = { multiply_temp_variable = { chance_success = doctrine_bonus_air } }
+			set_temp_variable = { chance_failure = 100 } 102 = { multiply_temp_variable = { chance_failure = doctrine_bonus_air } }
+			random_list = { 
+				var:chance_failure = {	add_to_variable = { global.torch_strength = 10 tooltip = world_stage_torch_increase_var_tt } }
+				200 = {					add_to_variable = { global.torch_strength = 20 tooltip = world_stage_torch_increase_var_tt } }
+				var:chance_success = {	add_to_variable = { global.torch_strength = 30 tooltip = world_stage_torch_increase_var_tt } }
+			}
+			hidden_trigger = { var:world_stage_metropolis = { subtract_from_variable = { world_stage_power = 30 } } }
+		}
+
+		ai_will_do = {
+			base = 1
+		}
+	}
+	
+	world_stage_torch_defend = {
+		
+		allowed = { tag = REI }
+		
+		custom_cost_trigger = {
+			var:world_stage_metropolis = { check_variable = { world_stage_power > 19 } }
+		}
+		
+		custom_cost_text = world_stage_20_power_cost
+
+		available = {
+			has_global_flag = world_stage_torch_preparing
+			has_completed_focus = REI_afrikakorps
+		}
+
+		visible = {
+			has_global_flag = world_stage_torch_preparing
+		}
+		
+		cancel_trigger  = { hidden_trigger = { NOT = { has_global_flag = world_stage_world_war_2_is_active } } }
+		
+		cancel_if_not_visible  = yes
+
+		days_remove = 14
+		days_re_enable = 21
+
+		complete_effect = {
+			set_temp_variable = { chance_success = 100 } 102 = { multiply_temp_variable = { chance_success = doctrine_bonus_air } }
+			set_temp_variable = { chance_failure = 100 } 101 = { multiply_temp_variable = { chance_failure = doctrine_bonus_air } }
+			random_list = { 
+				var:chance_failure = {	subtract_from_variable = { global.torch_strength = 10 tooltip = world_stage_torch_defend_var_tt } }
+				200 = {					subtract_from_variable = { global.torch_strength = 20 tooltip = world_stage_torch_defend_var_tt } }
+				var:chance_success = {	subtract_from_variable = { global.torch_strength = 30 tooltip = world_stage_torch_defend_var_tt } }
+			}
+			hidden_trigger = { var:world_stage_metropolis = { subtract_from_variable = { world_stage_power = 30 } } }
+		}
+
+		ai_will_do = {
+			base = 1
+		}
+	}
+	
+	world_stage_torch_abort = {
+	
+		allowed = { OR = { tag = OSA tag = AMC tag = OKI } }
+		
+		custom_cost_trigger = {
+			command_power > 24.9
+		}
+		
+		custom_cost_text = world_stage_25_cp_cost
+
+		available = {
+			has_global_flag = world_stage_torch_preparing
+		}
+
+		visible = {
+			OR = {
+				has_global_flag = OSA_operaion_torch_completed	# OSA's focus
+				has_global_flag = AMC_operaion_torch_completed	# AMC/OKI's focus
+			}
+		}
+
+		complete_effect = {
+			remove_decision = world_stage_torch
+			# retreives portion of deployed power
+			set_variable = { global.torch_strength = 0 }
+			hidden_effect = { add_command_power = -25 country_event = worldstage.59 }
 		}
 
 		ai_will_do = {
