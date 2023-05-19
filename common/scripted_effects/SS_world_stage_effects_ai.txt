@@ -220,13 +220,47 @@ world_stage_ai_germany = {
 		}
 		clr_global_flag = world_stage_ai_germany_focus set_global_flag = world_stage_ai_germany_focus set_global_flag = REI_atlantikwall_completed
 	}
+	if = { limit = {
+			date > 1942.1.1  NOT = { has_global_flag = REI_sea_lion_completed }													# regular triggers
+			has_global_flag = world_stage_world_war_2_is_active																	# ww2 is active
+			30 = { check_variable = { theater_owner_coalition = 1 } } 8 = { check_variable = { theater_owner_coalition = 3 } }	# specific triggers
+		}
+		every_possible_country = { limit = { tag = REI } log = "(off-map AI) [THIS.GetName] completed focus REI_sea_lion"
+			complete_national_focus = REI_sea_lion
+		}
+		clr_global_flag = world_stage_ai_germany_focus set_global_flag = world_stage_ai_germany_focus set_global_flag = REI_sea_lion_completed
+	}
 	if = { limit = { date > 1940.12.24  NOT = { has_global_flag = REI_lossberg_halder_plans_completed } }
 		every_possible_country = { limit = { tag = REI } log = "(off-map AI) [THIS.GetName] completed focus REI_lossberg_halder_plans"
 			complete_national_focus = REI_lossberg_halder_plans
 		}
 		clr_global_flag = world_stage_ai_germany_focus set_global_flag = world_stage_ai_germany_focus set_global_flag = REI_lossberg_halder_plans_completed
 	}
-	# Barbarossa: 22 june 1941
+	if = { limit = {
+			date > 1941.06.21  NOT = { has_global_flag = REI_barbarossa_completed }											# regular triggers
+			has_global_flag = world_stage_world_war_2_is_active																# ww2 is active
+			101 = { check_variable = { world_stage_power > 89 } }															# specific triggers
+			3 = { check_variable = { theater_owner_coalition = 3 } }
+		}
+		every_possible_country = { limit = { tag = REI } log = "(off-map AI) [THIS.GetName] completed focus REI_barbarossa"
+			complete_national_focus = REI_barbarossa
+		}
+		random_list = {
+			100 = { news_event = { set_global_flag = offmap_event_worldstage_37 } }					# FOR TESTING, SET ACTUAL VALUES LATER (the ones commented bellow)
+			0 = { news_event = { set_global_flag = offmap_event_worldstage_38 } }
+			#var:chance_success = { news_event = { id = worldstage.37 days = 14 random = 7 } }
+			#var:chance_failure = { news_event = { id = worldstage.38 days = 14 random = 7 } }
+		}
+		set_global_flag = offmap_event_worldstage_55
+		clr_global_flag = world_stage_ai_germany_focus set_global_flag = world_stage_ai_germany_focus set_global_flag = REI_barbarossa_completed
+	}
+	# next two are special cases for delayed events after Barbarosa starts, they also do not need to check for AI cooldown
+	if = { limit = { has_global_flag = { flag = offmap_event_worldstage_37 days > 18 } } 
+		every_possible_country = { limit = { tag = REI } news_event = { id = worldstage.37 } clr_global_flag = offmap_event_worldstage_37 }
+	}
+	if = { limit = { has_global_flag = { flag = offmap_event_worldstage_38 days > 18 } } 
+		every_possible_country = { limit = { tag = REI } news_event = { id = worldstage.38 } clr_global_flag = offmap_event_worldstage_38 }
+	}
 }
 world_stage_ai_france = {
 	if = { limit = { has_global_flag = { flag = world_stage_phoney_war_rages_on days > 110 } has_global_flag = world_stage_world_war_2_is_active has_global_flag = world_stage_world_war_2_is_active has_global_flag = world_stage_france_exists }
