@@ -628,6 +628,15 @@ country_event = {
 			var:komintern_leader_tag = { log = "worldstage.32: there is a Comintern tag ([THIS.GetName])" }
 		}
 		if = {
+			limit = { any_country = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes } } 
+			set_global_flag = there_is_faction_axis
+			random_country = {
+				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes }
+				set_temp_variable = { axis_leader_tag = THIS.id }
+			}
+			var:axis_leader_tag = { log = "worldstage.32: there is an Axis tag ([THIS.GetName])" }
+		}
+		if = {
 			limit = { has_global_flag = there_is_faction_allies has_global_flag = sovietunion_joined_ww2 }	# There is a local Allies faction and SOV will join it
 			every_country = {
 				limit = { is_in_faction_with = var:komintern_leader_tag }
@@ -646,12 +655,11 @@ country_event = {
 				limit = { check_variable = { theater_owner_coalition = 2 } }
 				set_variable = { theater_owner_coalition = 1 }
 			}
-			random_other_country = {
-				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition =  3 } } }
+			var:axis_leader_tag = {
 				declare_war_on = {
-					target = var:komintern_leader_tag
-					type = annex_everything
-				}
+						target = var:komintern_leader_tag
+						type = annex_everything
+					}
 			}
 			log = "worldstage.32: A) There is a local Allies faction and SOV will join it"
 		}
@@ -666,12 +674,11 @@ country_event = {
 				var:allies_leader_tag = { add_to_faction = PREV }
 				var:world_stage_metropolis = { set_variable = { world_stage_metropolis = 1 } }
 			}
-			random_other_country = {
-				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition =  3 } } }
+			var:axis_leader_tag = {
 				declare_war_on = {
-					target = var:allies_leader_tag
-					type = annex_everything
-				}
+						target = var:komintern_leader_tag
+						type = annex_everything
+					}
 			}
 			every_state = {
 				limit = { check_variable = { world_stage_coalition = 2 } }
@@ -687,12 +694,11 @@ country_event = {
 			limit = { NOT = { has_global_flag = sovietunion_joined_ww2 } }		# SOV will not join Allies (does not need to check if there's an Allies tag, since FER will not join it)
 			if = { 
 				limit = { any_country = { tag = var:komintern_leader_tag } }
-				random_other_country = {
-					limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes }
+				var:axis_leader_tag = {
 					declare_war_on = {
-						target = var:komintern_leader_tag
-						type = annex_everything
-					}
+							target = var:komintern_leader_tag
+							type = annex_everything
+						}
 				}
 			}
 			log = "worldstage.32: # C) SOV will not join Allies"
