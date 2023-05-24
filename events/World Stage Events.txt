@@ -2343,6 +2343,106 @@ state_event = {
 	option = { name = worldstage_automatic.6.a custom_effect_tooltip = worldstage_automatic.6.tt }
 }
 
+# London is taken, England falls
+country_event = {
+	id = worldstage_automatic.102
+	title = worldstage_automatic.102.t
+	desc = worldstage_automatic.102.d 
+	picture = GFX_news_ww2_england_capitulates
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			set_global_flag = world_stage_england_capitulated
+			every_state = {
+				limit = { check_variable = { theater_owner = 102 } }
+				set_variable = { theater_owner_coalition = 3 }
+				world_stage_end_round_partial = yes
+				clr_state_flag = theater_is_active
+			}
+			every_state = {
+				limit = { has_variable = theater_owner }
+				divide_variable = { world_stage_power_deployed_by^102 = 4 }
+				clamp_variable = world_stage_power_deployed_by^102
+			}
+			102 = { set_variable = { world_stage_power = 0 } }
+			every_possible_country = {									# this effect is convoluted but necessary in order to cut resources from OSA if England is defeated while OSA is annexed
+				limit = { tag = OSA }
+				if = {
+					limit = { country_exists = OSA }
+					news_event = { id = worldstage_surrender.102 hours = 24 random = 24 }
+				} else = { clr_country_flag = tc_osaka_has_access }
+			}
+		}
+	}
+
+	option = {
+		name = worldstage_automatic.102.axis
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		effect_tooltip = {
+			if = { limit = { country_exists = OSA }	OSA = { add_war_support = -0.1 } }
+			every_country = { limit = { NOT = { tag = OSA } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
+		}
+		custom_effect_tooltip = metropolis_scope_england
+		custom_effect_tooltip = join_coalition_axis_good
+	}
+	option = {
+		name = worldstage_automatic.102.komin
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+		effect_tooltip = {
+			if = { limit = { country_exists = OSA }	OSA = { add_war_support = -0.1 } }
+			every_country = { limit = { NOT = { tag = OSA } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
+		}
+		custom_effect_tooltip = metropolis_scope_england
+		if = {
+			limit = { has_global_flag = GER_SOV_pact_enabled }
+			custom_effect_tooltip = join_coalition_axis_good
+		} else = {
+			custom_effect_tooltip = join_coalition_axis
+		}
+	}
+	option = {
+		name = worldstage_automatic.102.osa
+		trigger = {
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
+			tag = OSA
+		}
+		add_war_support = -0.1
+		effect_tooltip = {
+			every_country = { limit = { NOT = { tag = OSA } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
+		}
+		custom_effect_tooltip = metropolis_scope_england
+		custom_effect_tooltip = join_coalition_axis_bad
+	}
+	option = {
+		name = worldstage_automatic.102.allies
+		trigger = {
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
+			NOT = { tag = OSA }
+		}
+		effect_tooltip = {
+			if = { limit = { country_exists = OSA }	add_war_support = -0.1 }
+			every_country = { limit = { NOT = { tag = OSA } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
+		}
+		hidden_effect = { add_war_support = -0.05 }
+		custom_effect_tooltip = metropolis_scope_england
+		custom_effect_tooltip = join_coalition_axis_bad
+	}
+	option = {
+		name = worldstage_automatic.102.other
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
+		effect_tooltip = {
+			if = { limit = { country_exists = OSA }	add_war_support = -0.1 }
+			every_country = { limit = { NOT = { tag = OSA } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
+		}
+		custom_effect_tooltip = metropolis_scope_england
+		custom_effect_tooltip = join_coalition_axis
+	}
+}
+
 # Paris is taken, France falls
 country_event = {
 	id = worldstage_automatic.103
@@ -2356,7 +2456,8 @@ country_event = {
 	
 	immediate = {
 		hidden_effect = {
-			clr_global_flag = world_stage_france_exists
+			set_global_flag = world_stage_france_capitulated
+			#clr_global_flag = world_stage_france_exists
 			set_global_flag = world_stage_vichy_exists
 			every_state = {
 				limit = { check_variable = { theater_owner = 103 } }
@@ -2370,6 +2471,7 @@ country_event = {
 				limit = { has_variable = theater_owner }
 				set_variable = { world_stage_power_deployed_by^120 = world_stage_power_deployed_by^103 }
 				divide_variable = { world_stage_power_deployed_by^120 = 4 }
+				clamp_variable = world_stage_power_deployed_by^120
 				set_variable = { world_stage_power_deployed_by^103 = 0 }
 			}
 			103 = { set_variable = { world_stage_power = 0 } }
@@ -2479,7 +2581,265 @@ state_event = {
 ########################## worldstage_surrender ########################
 ########################################################################
 
-# these events are for Western Exclaves, when deciding whether or not to capitulate or fight
+# these events are for Western Exclaves or China, when deciding whether or not to capitulate or fight
+
+# FRANCE SURRENDERS # imagine my shock!
+country_event = {
+	id = worldstage_surrender.102
+	title = worldstage_surrender.102.t
+	desc = worldstage_surrender.102.d 
+	picture = GFX_news_ww2_england_capitulates
+
+	is_triggered_only = yes
+
+	major = no	# this is OSA-only
+	
+	option = {
+		name = worldstage_surrender.102.a	# fight, prefered human option
+		trigger = { is_subject = no }		# puppets don't get to decide
+		every_possible_country = {
+			limit = { tag = OSA }
+			custom_effect_tooltip = lose_access_to_trade_resources_osaka
+			clr_country_flag = tc_osaka_has_access
+		}
+		hidden_effect = {
+			if = {
+				limit = { country_exists = OSA }
+				country_event = worldstage_surrender.1021
+			}
+			every_character = {
+				limit = { can_be_country_leader = yes }
+				dual_leader_clear_secondary_leader = yes
+				if = { limit = { has_ideology_group = communism } set_character_flag = dual_leader_id_bernard_montgomery set_character_flag = dual_leader_second_title_prime_minister_exile }
+				if = { limit = { has_ideology_group = democratic } set_character_flag = dual_leader_id_bernard_montgomery set_character_flag = dual_leader_second_title_prime_minister_exile }
+				if = { limit = { has_ideology_group = democratic_socialism } set_character_flag = dual_leader_id_bernard_montgomery set_character_flag = dual_leader_second_title_prime_minister_exile }
+				if = { limit = { has_ideology_group = autocracy } set_character_flag = dual_leader_id_franz_von_papen set_character_flag = dual_leader_second_title_reichskomissar }
+				if = { limit = { has_ideology_group = fascism } set_character_flag = dual_leader_id_franz_von_papen set_character_flag = dual_leader_second_title_reichskomissar }
+				if = { limit = { has_ideology_group = neutrality } set_character_flag = dual_leader_id_franz_von_papen set_character_flag = dual_leader_second_title_reichskomissar }
+			}
+		}
+		ai_chance = { base = 0 } log = "ENGLAND SURRENDERS, option: worldstage_surrender.102.a	# fight, prefered human option"
+	}
+	option = {
+		name = worldstage_surrender.102.b	# surrender, prefered AI option
+		trigger = { is_subject = no }		# puppets don't get to decide
+		hidden_effect = { if = { limit = { is_in_faction = yes } leave_faction = yes } }			# the faction here SHOULD be the Allies. Let's hope for the best
+		every_possible_country = {
+			limit = { tag = REI }
+			set_temp_variable = { new_ideology = current_party_ideology_group }
+		}
+		every_possible_country = {
+			limit = { tag = OSA }
+			set_politics = {
+				ruling_party = var:new_ideology?neutrality
+				elections_allowed = no
+				last_election = "1939.09.1"
+				election_frequency = 48
+				#long_name = TAG_party_long
+				#name = TAG_party
+			}
+		}
+		hidden_effect = {
+			if = {
+				limit = { country_exists = OSA }
+				country_event = worldstage_surrender.1022
+				add_ai_strategy = {
+					type = alliance
+					id = REI
+					value = 50
+				}
+				every_other_country = {
+					limit = { has_country_flag = is_not_japan }
+					OSA = {
+						add_ai_strategy = {
+							type = alliance
+							id = PREV
+							value = -100
+						}
+					}
+				}
+				every_character = {
+					limit = { can_be_country_leader = yes }
+					dual_leader_clear_secondary_leader = yes
+					if = { limit = { has_ideology_group = communism } set_character_flag = dual_leader_id_bernard_montgomery set_character_flag = dual_leader_second_title_prime_minister_exile }
+					if = { limit = { has_ideology_group = democratic } set_character_flag = dual_leader_id_bernard_montgomery set_character_flag = dual_leader_second_title_prime_minister_exile }
+					if = { limit = { has_ideology_group = democratic_socialism } set_character_flag = dual_leader_id_bernard_montgomery set_character_flag = dual_leader_second_title_prime_minister_exile }
+					if = { limit = { has_ideology_group = autocracy } set_character_flag = dual_leader_id_franz_von_papen set_character_flag = dual_leader_second_title_reichskomissar }
+					if = { limit = { has_ideology_group = fascism } set_character_flag = dual_leader_id_franz_von_papen set_character_flag = dual_leader_second_title_reichskomissar }
+					if = { limit = { has_ideology_group = neutrality } set_character_flag = dual_leader_id_franz_von_papen set_character_flag = dual_leader_second_title_reichskomissar }
+				}
+			}	
+		}
+		if = {
+			limit = { country_exists = OSA }
+			random_country = {
+				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes }
+				white_peace = {
+					tag = OSA
+					message = worldstage_surrender.102.OSA
+				}
+				add_to_faction = OSA
+			}
+			load_focus_tree generic_focus
+		}
+		ai_chance = { base = 100 } log = "ENGLAND SURRENDERS, option: worldstage_surrender.102.b	# surrender, prefered AI option"
+	}
+	option = {
+		name = worldstage_surrender.102.c
+		trigger = { is_subject = yes }		# puppets don't get to decide
+		if = {
+			limit = { OVERLORD = { OR = { has_government = fascism has_government = neutrality has_government = autocracy } } }
+			every_possible_country = {
+				limit = { tag = OSA }
+				custom_effect_tooltip = lose_access_to_trade_resources_osaka
+				clr_country_flag = tc_osaka_has_access
+			}
+			hidden_effect = {
+				if = {
+					limit = { country_exists = OSA }
+					country_event = worldstage_surrender.1021
+				}
+				every_character = {
+					limit = { can_be_country_leader = yes }
+					dual_leader_clear_secondary_leader = yes
+					if = { limit = { has_ideology_group = communism } set_character_flag = dual_leader_id_bernard_montgomery set_character_flag = dual_leader_second_title_prime_minister_exile }
+					if = { limit = { has_ideology_group = democratic } set_character_flag = dual_leader_id_bernard_montgomery set_character_flag = dual_leader_second_title_prime_minister_exile }
+					if = { limit = { has_ideology_group = democratic_socialism } set_character_flag = dual_leader_id_bernard_montgomery set_character_flag = dual_leader_second_title_prime_minister_exile }
+					if = { limit = { has_ideology_group = autocracy } set_character_flag = dual_leader_id_franz_von_papen set_character_flag = dual_leader_second_title_reichskomissar }
+					if = { limit = { has_ideology_group = fascism } set_character_flag = dual_leader_id_franz_von_papen set_character_flag = dual_leader_second_title_reichskomissar }
+					if = { limit = { has_ideology_group = neutrality } set_character_flag = dual_leader_id_franz_von_papen set_character_flag = dual_leader_second_title_reichskomissar }
+				}
+			}
+		} else = {
+			hidden_effect = { if = { limit = { is_in_faction = yes } leave_faction = yes } }			# the faction here SHOULD be the Allies. Let's hope for the best
+			every_possible_country = {
+				limit = { tag = REI }
+				set_temp_variable = { new_ideology = current_party_ideology_group }
+			}
+			every_possible_country = {
+				limit = { tag = OSA }
+				set_politics = {
+					ruling_party = var:new_ideology?neutrality
+					elections_allowed = no
+					last_election = "1939.09.1"
+					election_frequency = 48
+					#long_name = TAG_party_long
+					#name = TAG_party
+				}
+			}
+			hidden_effect = {
+				if = {
+					limit = { country_exists = OSA }
+					country_event = worldstage_surrender.1022
+					add_ai_strategy = {
+						type = alliance
+						id = REI
+						value = 50
+					}
+					every_other_country = {
+						limit = { has_country_flag = is_not_japan }
+						OSA = {
+							add_ai_strategy = {
+								type = alliance
+								id = PREV
+								value = -100
+							}
+						}
+					}
+					every_character = {
+						limit = { can_be_country_leader = yes }
+						dual_leader_clear_secondary_leader = yes
+						if = { limit = { has_ideology_group = communism } set_character_flag = dual_leader_id_bernard_montgomery set_character_flag = dual_leader_second_title_prime_minister_exile }
+						if = { limit = { has_ideology_group = democratic } set_character_flag = dual_leader_id_bernard_montgomery set_character_flag = dual_leader_second_title_prime_minister_exile }
+						if = { limit = { has_ideology_group = democratic_socialism } set_character_flag = dual_leader_id_bernard_montgomery set_character_flag = dual_leader_second_title_prime_minister_exile }
+						if = { limit = { has_ideology_group = autocracy } set_character_flag = dual_leader_id_franz_von_papen set_character_flag = dual_leader_second_title_reichskomissar }
+						if = { limit = { has_ideology_group = fascism } set_character_flag = dual_leader_id_franz_von_papen set_character_flag = dual_leader_second_title_reichskomissar }
+						if = { limit = { has_ideology_group = neutrality } set_character_flag = dual_leader_id_franz_von_papen set_character_flag = dual_leader_second_title_reichskomissar }
+					}
+				}	
+			}
+			if = {
+				limit = { country_exists = OSA }
+				random_country = {
+					limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes }
+					white_peace = {
+						tag = OSA
+						message = worldstage_surrender.102.OSA
+					}
+					add_to_faction = OSA
+				}
+				load_focus_tree generic_focus
+			}
+		}
+		ai_chance = { base = 999 } log = "ENGLAND SURRENDERS, option: worldstage_surrender.102.c # puppets don't get to decide"
+	}
+}
+
+# OSAKA RESISTS
+country_event = {
+	id = worldstage_surrender.1021
+	title = worldstage_surrender.1021.t
+	desc = worldstage_surrender.1021.d 
+	picture = GFX_news_ww2_montgomery
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	option = {
+		name = worldstage_surrender.1021.allies
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } NOT = { tag = OSA } }
+	}
+	option = {
+		name = worldstage_surrender.1021.osa
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } tag = OSA }
+	}
+	option = {
+		name = worldstage_surrender.1221.komin
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+	}
+	option = {
+		name = worldstage_surrender.1021.axis
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+	}
+	option = {
+		name = worldstage_surrender.1021.other
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
+	}
+}
+
+# OSAKA SURRENDERS
+country_event = {
+	id = worldstage_surrender.1022
+	title = worldstage_surrender.1022.t
+	desc = worldstage_surrender.1022.d 
+	picture = GFX_news_ww2_england_capitulates
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	option = {
+		name = worldstage_surrender.1022.allies
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
+	}
+	option = {
+		name = worldstage_surrender.1022.komin
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+	}
+	option = {
+		name = worldstage_surrender.1022.axis
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } NOT = { tag = OSA } }
+	}
+	option = {
+		name = worldstage_surrender.1022.osa
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } tag = OSA }
+	}
+	option = {
+		name = worldstage_surrender.1022.other
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
+	}
+}
 
 # FRANCE SURRENDERS # imagine my shock!
 country_event = {
@@ -2518,7 +2878,7 @@ country_event = {
 				if = { limit = { has_ideology_group = neutrality } set_character_flag = dual_leader_id_philippe_petain set_character_flag = dual_leader_second_title_prime_minister }
 			}
 		}
-		ai_chance = { base = 0 } log = "FRANCE SURRENDERS, imagine my shock! option:  worldstage_surrender.103.a	# fight, prefered human option"
+		ai_chance = { base = 0 } log = "FRANCE SURRENDERS, imagine my shock! option: worldstage_surrender.103.a	# fight, prefered human option"
 	}
 	option = {
 		name = worldstage_surrender.103.b	# surrender, prefered AI option
@@ -2576,7 +2936,7 @@ country_event = {
 			}
 			load_focus_tree generic_focus
 		}
-		ai_chance = { base = 100 } log = "FRANCE SURRENDERS, imagine my shock! option:  worldstage_surrender.103.b	# surrender, prefered AI option"
+		ai_chance = { base = 100 } log = "FRANCE SURRENDERS, imagine my shock! option: worldstage_surrender.103.b	# surrender, prefered AI option"
 	}
 	option = {
 		name = worldstage_surrender.103.c
@@ -2659,7 +3019,7 @@ country_event = {
 		}
 		custom_effect_tooltip = metropolis_scope_vichy
 		custom_effect_tooltip = join_coalition_axis
-		ai_chance = { base = 999 } log = "FRANCE SURRENDERS, imagine my shock! option:  worldstage_surrender.103.c # puppets don't get to decide"
+		ai_chance = { base = 999 } log = "FRANCE SURRENDERS, imagine my shock! option: worldstage_surrender.103.c # puppets don't get to decide"
 	}
 }
 
@@ -2773,7 +3133,7 @@ country_event = {
 			FER_terenty_shtykov = { clr_character_flag = dual_leader_first_title_governor set_character_flag = dual_leader_first_title_president }
 			FER_nezhek_iecifovich = { clr_character_flag = dual_leader_first_title_governor set_character_flag = dual_leader_first_title_president }
 		}
-		ai_chance = { base = 0 } log = "SOVIET UNION SURRENDERS option:  worldstage_surrender.104.a	# fight, prefered human option"
+		ai_chance = { base = 0 } log = "SOVIET UNION SURRENDERS option: worldstage_surrender.104.a	# fight, prefered human option"
 	}
 	option = {
 		name = worldstage_surrender.104.b	# surrender, prefered AI option
@@ -2911,7 +3271,7 @@ country_event = {
 		hidden_effect = {
 			104 = { set_variable = { world_stage_coalition = 3 } }
 		}
-		ai_chance = { base = 100 } log = "SOVIET UNION SURRENDERS option:  worldstage_surrender.104.b	# surrender, prefered AI option"
+		ai_chance = { base = 100 } log = "SOVIET UNION SURRENDERS option: worldstage_surrender.104.b	# surrender, prefered AI option"
 	}
 	option = {
 		name = worldstage_surrender.104.c
@@ -3076,7 +3436,7 @@ country_event = {
 			FER_nezhek_iecifovich = { clr_character_flag = dual_leader_first_title_governor set_character_flag = dual_leader_first_title_president }
 		}
 	}
-	ai_chance = { base = 999 } log = "SOVIET UNION SURRENDERS option:  worldstage_surrender.104.c	#  puppets don't get to decide"
+	ai_chance = { base = 999 } log = "SOVIET UNION SURRENDERS option: worldstage_surrender.104.c	#  puppets don't get to decide"
 }
 
 # FAR EASTERN REPUBLIC IS INDEPENDENT
