@@ -1356,7 +1356,7 @@ news_event = {
 				limit = { has_idea = SS_lon_member_japan }
 				remove_ideas = SS_lon_member_japan
 			}
-			clr_global_flag = leagueofnations_exists
+			clr_global_flag = league_of_nations_exists
 			set_global_flag = SOV_already_expelled
 			# the 'Great Swithceroo of Coalitions" happens here
 			# first: run specific tags
@@ -2577,6 +2577,47 @@ state_event = {
 
 # ENGLAND SURRENDERS
 country_event = {
+	id = worldstage_surrender.101
+	title = worldstage_surrender.101.t
+	desc = worldstage_surrender.101.d 
+	picture = GFX_news_ww2_germany_capitulates
+
+	is_triggered_only = yes
+
+	major = no	# this is REI-only
+	
+	immediate = { hidden_effect = { set_global_flag = world_stage_england_capitulated set_cosmetic_tag = OSA_EXL } }
+	
+	option = {
+		name = worldstage_surrender.102.a	# fight, prefered human option
+		trigger = { is_subject = no }		# puppets don't get to decide
+		every_possible_country = {
+			limit = { tag = REI }
+			custom_effect_tooltip = lose_access_to_trade_resources_osaka
+			clr_country_flag = tc_osaka_has_access
+		}
+		hidden_effect = {
+			if = {
+				limit = { country_exists = REI }
+				country_event = worldstage_surrender.1011
+			}
+			every_character = {
+				limit = { can_be_country_leader = yes }
+				dual_leader_clear_secondary_leader = yes
+				if = { limit = { has_ideology_group = communism } set_character_flag = dual_leader_id_bernard_montgomery set_character_flag = dual_leader_second_title_prime_minister_exile }
+				if = { limit = { has_ideology_group = democratic } set_character_flag = dual_leader_id_bernard_montgomery set_character_flag = dual_leader_second_title_prime_minister_exile }
+				if = { limit = { has_ideology_group = democratic_socialism } set_character_flag = dual_leader_id_bernard_montgomery set_character_flag = dual_leader_second_title_prime_minister_exile }
+				if = { limit = { has_ideology_group = autocracy } set_character_flag = dual_leader_id_franz_von_papen set_character_flag = dual_leader_second_title_reichskomissar }
+				if = { limit = { has_ideology_group = fascism } set_character_flag = dual_leader_id_franz_von_papen set_character_flag = dual_leader_second_title_reichskomissar }
+				if = { limit = { has_ideology_group = neutrality } set_character_flag = dual_leader_id_franz_von_papen set_character_flag = dual_leader_second_title_reichskomissar }
+			}
+		}
+		ai_chance = { base = 0 } log = "ENGLAND SURRENDERS, option: worldstage_surrender.102.a	# fight, prefered human option"
+	}
+}
+
+# ENGLAND SURRENDERS
+country_event = {
 	id = worldstage_surrender.102
 	title = worldstage_surrender.102.t
 	desc = worldstage_surrender.102.d 
@@ -3577,19 +3618,19 @@ news_event = {
 	
 	immediate = {
 		if = {
-			limit = { has_global_flag = leagueofnations_exists NOT = { has_global_flag = china_aligned_axis } }
+			limit = { has_global_flag = league_of_nations_exists NOT = { has_global_flag = china_aligned_axis } }
 			set_variable = { global.theater_owner_mongolia = 5 }
 		}
 		if = {
-			limit = { has_global_flag = leagueofnations_exists has_global_flag = china_aligned_axis }
+			limit = { has_global_flag = league_of_nations_exists has_global_flag = china_aligned_axis }
 			set_variable = { global.theater_owner_mongolia = 6 }
 		}
 		if = {
-			limit = { NOT = { has_global_flag = leagueofnations_exists has_global_flag = china_aligned_axis } }
+			limit = { NOT = { has_global_flag = league_of_nations_exists has_global_flag = china_aligned_axis } }
 			set_variable = { global.theater_owner_mongolia = 4 }
 		}
 		if = {
-			limit = { NOT = { has_global_flag = leagueofnations_exists } has_global_flag = china_aligned_axis }
+			limit = { NOT = { has_global_flag = league_of_nations_exists } has_global_flag = china_aligned_axis }
 			set_variable = { global.theater_owner_mongolia = 3 }
 		}
 	}
@@ -3641,11 +3682,11 @@ news_event = {
 	
 	immediate = {
 		if = {
-			limit = { OR = { has_global_flag = SOV_expelled_from_lon NOT = { has_global_flag = leagueofnations_exists } } }
+			limit = { OR = { has_global_flag = SOV_expelled_from_lon NOT = { has_global_flag = league_of_nations_exists } } }
 			set_variable = { global.theater_owner_mongolia = 2 }
 		}
 		if = {
-			limit = { has_global_flag = leagueofnations_exists NOT = { has_global_flag = SOV_expelled_from_lon } }
+			limit = { has_global_flag = league_of_nations_exists NOT = { has_global_flag = SOV_expelled_from_lon } }
 			set_variable = { global.theater_owner_mongolia = 5 }
 		}
 	}
