@@ -642,10 +642,14 @@ country_event = {
 				limit = { is_in_faction_with = var:komintern_leader_tag }
 				leave_faction = yes
 				var:allies_leader_tag = { add_to_faction = PREV }
+				remove_from_array = { array = global.array_komintern value = THIS.id }
+				add_to_array = { global.array_allies = THIS.id }
 			}
 			var:komintern_leader_tag = {
 				dismantle_faction = yes
 				var:allies_leader_tag = { add_to_faction = PREV }
+				remove_from_array = { array = global.array_komintern value = THIS.id }
+				add_to_array = { global.array_allies = THIS.id }
 			}
 			every_state = {
 				limit = { check_variable = { world_stage_coalition = 2 } }
@@ -1296,6 +1300,9 @@ news_event = {
 				limit = { check_variable = { theater_owner = 104 } }	# proxy for sovietunion
 				set_variable = { theater_owner_coalition = 2 }
 			}
+			### arrays for tag aliases ###
+			remove_from_array = { array = global.array_leagueofnations value = FER }
+			add_to_array = { global.array_komintern = FER }
 		}
 	}
 	
@@ -1484,6 +1491,21 @@ news_event = {
 				}
 			}
 			3 = { set_variable = { coalition_side_attack = 3 } }	# Change attacker on Poland
+			### arrays for tag aliases ###
+			for_each_loop = {
+				array = global.array_leagueofnations
+				index = this_index
+				value = this_tag
+				add_to_array = { global.array_allies = this_tag }
+			}
+			clear_array = global.array_leagueofnations
+			for_each_loop = {
+				array = global.array_pactofsteel
+				index = this_index
+				value = this_tag
+				add_to_array = { global.array_axis = this_tag }
+			}
+			clear_array = global.array_pactofsteel
 		}
 	}
 	
