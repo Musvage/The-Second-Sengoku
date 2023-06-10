@@ -2696,8 +2696,6 @@ country_event = {
 				elections_allowed = no
 				last_election = "1939.09.1"
 				election_frequency = 48
-				#long_name = TAG_party_long
-				#name = TAG_party
 			}
 		}
 		hidden_effect = {
@@ -2978,8 +2976,6 @@ country_event = {
 				elections_allowed = no
 				last_election = "1939.09.1"
 				election_frequency = 48
-				#long_name = TAG_party_long
-				#name = TAG_party
 			}
 			set_variable = { world_stage_metropolis = 120 }	# Vichy France
 			add_ideas = SS_restricted_foreign_policy
@@ -3653,18 +3649,127 @@ country_event = {
 
 	immediate = {
 		hidden_effect = {
-			#set_global_flag = world_stage_france_capitulated set_cosmetic_tag = KOB_FVF
-			every_character = {
-				limit = { can_be_country_leader = yes }
-				dual_leader_clear_secondary_leader = yes
-				if = { limit = { has_ideology_group = communism } set_character_flag = dual_leader_id_hendrikus_colijn set_character_flag = dual_leader_second_title_prime_minister_exile }
-				if = { limit = { has_ideology_group = democratic } set_character_flag = dual_leader_id_hendrikus_colijn set_character_flag = dual_leader_second_title_prime_minister_exile }
-				if = { limit = { has_ideology_group = democratic_socialism } set_character_flag = dual_leader_id_hendrikus_colijn set_character_flag = dual_leader_second_title_prime_minister_exile }
-				if = { limit = { has_ideology_group = autocracy } set_character_flag = dual_leader_id_nobody set_character_flag = dual_leader_second_title_none }
-				if = { limit = { has_ideology_group = fascism } set_character_flag = dual_leader_id_anton_mussert set_character_flag = dual_leader_second_title_reichskomissar }
-				if = { limit = { has_ideology_group = neutrality } set_character_flag = dual_leader_id_anton_mussert set_character_flag = dual_leader_second_title_reichskomissar }
+			# first thing is to figure out on which side HIR is, which is given by who is conquering the country
+			if = {
+				limit = { 27 = { check_variable = { theater_owner_coalition = 3 } } }	# Netherlands conquered by Axis
+				#set_global_flag = world_stage_france_capitulated set_cosmetic_tag = HIR_AON
+				every_character = {
+					limit = { can_be_country_leader = yes }
+					dual_leader_clear_secondary_leader = yes
+					if = { limit = { has_ideology_group = communism } set_character_flag = dual_leader_id_hendrikus_colijn set_character_flag = dual_leader_second_title_prime_minister_exile }
+					if = { limit = { has_ideology_group = democratic } set_character_flag = dual_leader_id_hendrikus_colijn set_character_flag = dual_leader_second_title_prime_minister_exile }
+					if = { limit = { has_ideology_group = democratic_socialism } set_character_flag = dual_leader_id_hendrikus_colijn set_character_flag = dual_leader_second_title_prime_minister_exile }
+					if = { limit = { has_ideology_group = autocracy } set_character_flag = dual_leader_id_nobody set_character_flag = dual_leader_second_title_none }
+					if = { limit = { has_ideology_group = fascism } set_character_flag = dual_leader_id_anton_mussert set_character_flag = dual_leader_second_title_reichskomissar }
+					if = { limit = { has_ideology_group = neutrality } set_character_flag = dual_leader_id_anton_mussert set_character_flag = dual_leader_second_title_reichskomissar }
+				}
+			} else_if = {
+				limit = { 27 = { check_variable = { theater_owner_coalition = 2 } } }	# Netherlands conquered by Comintern
+				every_character = {
+					limit = { can_be_country_leader = yes }
+					dual_leader_clear_secondary_leader = yes
+					if = { limit = { has_ideology_group = communism } set_character_flag = dual_leader_id_louis_beel set_character_flag = dual_leader_second_title_president }
+					if = { limit = { has_ideology_group = democratic } set_character_flag = dual_leader_id_louis_beel set_character_flag = dual_leader_second_title_president }
+					if = { limit = { has_ideology_group = democratic_socialism } set_character_flag = dual_leader_id_louis_beel set_character_flag = dual_leader_second_title_president }
+					if = { limit = { has_ideology_group = autocracy } set_character_flag = dual_leader_id_nobody set_character_flag = dual_leader_second_title_none }
+					if = { limit = { has_ideology_group = fascism } set_character_flag = dual_leader_id_anton_mussert set_character_flag = dual_leader_second_title_prime_minister_exile }
+					if = { limit = { has_ideology_group = neutrality } set_character_flag = dual_leader_id_anton_mussert set_character_flag = dual_leader_second_title_prime_minister_exile }
+				}
+			} else = {	# Netherlands conquered by Allies, TIAR or someone else
+				every_character = {
+					limit = { can_be_country_leader = yes }
+					dual_leader_clear_secondary_leader = yes
+					if = { limit = { has_ideology_group = communism } set_character_flag = dual_leader_id_hendrikus_colijn set_character_flag = dual_leader_second_title_prime_minister }
+					if = { limit = { has_ideology_group = democratic } set_character_flag = dual_leader_id_hendrikus_colijn set_character_flag = dual_leader_second_title_prime_minister }
+					if = { limit = { has_ideology_group = democratic_socialism } set_character_flag = dual_leader_id_hendrikus_colijn set_character_flag = dual_leader_second_title_prime_minister }
+					if = { limit = { has_ideology_group = autocracy } set_character_flag = dual_leader_id_nobody set_character_flag = dual_leader_second_title_none }
+					if = { limit = { has_ideology_group = fascism } set_character_flag = dual_leader_id_anton_mussert set_character_flag = dual_leader_second_title_prime_minister_exile }
+					if = { limit = { has_ideology_group = neutrality } set_character_flag = dual_leader_id_anton_mussert set_character_flag = dual_leader_second_title_prime_minister_exile }
+				}
 			}
 		}
+	}
+	
+	option = {
+		name = worldstage_surrender.107.a_axis	# fight, prefered human option
+		trigger = {
+			NOT = {
+				27 = { check_variable = { theater_owner_coalition = 2 } }	# Netherlands was conquered by Allies or TIAR
+				27 = { check_variable = { theater_owner_coalition = 3 } }
+			}
+			is_subject = no													# puppets don't get to decide
+		}
+		every_possible_country = {
+			limit = { tag = HIR }
+			custom_effect_tooltip = lose_access_to_trade_resources_hirado
+			clr_country_flag = tc_hirado_has_access
+		}
+		hidden_effect = {
+			if = {
+				limit = { country_exists = HIR }
+				country_event = worldstage_surrender.1071
+			}
+		}
+		ai_chance = { base = 0 } log = "NETHERLANDS SURRENDER! option: worldstage_surrender.107.a	# fight, prefered human option"
+	}
+	option = {
+		name = worldstage_surrender.107.b_axis	# surrender, prefered AI option
+		trigger = {
+			NOT = {
+				27 = { check_variable = { theater_owner_coalition = 2 } }	# Netherlands was conquered by Allies or TIAR
+				27 = { check_variable = { theater_owner_coalition = 3 } }
+			}
+			is_subject = no													# puppets don't get to decide
+		}
+		hidden_effect = { if = { limit = { is_in_faction = yes } leave_faction = yes } }			# the faction here SHOULD be the Allies. Let's hope for the best
+		every_possible_country = {
+			limit = { tag = ALY }
+			set_temp_variable = { new_ideology = current_party_ideology_group }
+		}
+		every_possible_country = {
+			limit = { tag = KOB }
+			set_politics = {
+				ruling_party = var:new_ideology?democratic
+				elections_allowed = no
+				last_election = "1939.09.1"
+				election_frequency = 48
+			}
+			add_ideas = SS_restricted_foreign_policy
+		}
+		hidden_effect = {
+			if = {
+				limit = { country_exists = HIR }
+				country_event = worldstage_surrender.1072
+				add_ai_strategy = {
+					type = alliance
+					id = REI
+					value = 50
+				}
+				every_other_country = {
+					limit = { has_country_flag = is_not_japan }
+					KOB = {
+						add_ai_strategy = {
+							type = alliance
+							id = PREV
+							value = -100
+						}
+					}
+				}
+			}
+		}	
+		if = {
+			limit = { country_exists = HIR }
+			random_country = {
+				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } is_faction_leader = yes }	# update this later...
+				white_peace = {
+					tag = HIR
+					message = worldstage_surrender.103.hir
+				}
+				add_to_faction = HIR
+			}
+			load_focus_tree = generic_focus
+		}
+		ai_chance = { base = 100 } log = "FRANCE SURRENDERS, imagine my shock! option: worldstage_surrender.103.b	# surrender, prefered AI option"
 	}
 }
 
