@@ -2739,7 +2739,7 @@ country_event = {
 				}
 				add_to_faction = OSA
 			}
-			load_focus_tree = generic_focus
+			set_country_flag = lost_original_focus_tree load_focus_tree = generic_focus
 		}
 		ai_chance = { base = 100 } log = "ENGLAND SURRENDERS, option: worldstage_surrender.102.b	# surrender, prefered AI option"
 	}
@@ -2827,7 +2827,7 @@ country_event = {
 					}
 					add_to_faction = OSA
 				}
-				load_focus_tree = generic_focus
+				set_country_flag = lost_original_focus_tree load_focus_tree = generic_focus
 			}
 		}
 		ai_chance = { base = 999 } log = "ENGLAND SURRENDERS, option: worldstage_surrender.102.c # puppets don't get to decide"
@@ -3029,7 +3029,7 @@ country_event = {
 				}
 				add_to_faction = KOB
 			}
-			load_focus_tree = generic_focus
+			set_country_flag = lost_original_focus_tree load_focus_tree = generic_focus
 		}
 		ai_chance = { base = 100 } log = "FRANCE SURRENDERS, imagine my shock! option: worldstage_surrender.103.b	# surrender, prefered AI option"
 	}
@@ -3066,7 +3066,7 @@ country_event = {
 					}
 					add_to_faction = KOB
 				}
-				load_focus_tree = generic_focus
+				set_country_flag = lost_original_focus_tree load_focus_tree = generic_focus
 			}
 			hidden_effect = {
 				if = {
@@ -3252,7 +3252,7 @@ country_event = {
 				}
 				add_to_faction = FER
 			}
-			load_focus_tree = generic_focus
+			set_country_flag = lost_original_focus_tree load_focus_tree = generic_focus
 		}
 		if = {
 			limit = { 106 = { check_variable = { world_stage_coalition = 3 } } }			# surrender to ROC
@@ -3392,7 +3392,7 @@ country_event = {
 					}
 					add_to_faction = FER
 				}
-				load_focus_tree = generic_focus
+				set_country_flag = lost_original_focus_tree load_focus_tree = generic_focus
 			}
 		}
 		if = {
@@ -3713,6 +3713,25 @@ country_event = {
 		ai_chance = { base = 0 } log = "NETHERLANDS SURRENDER! option: worldstage_surrender.107.a	# fight, prefered human option"
 	}
 	option = {
+		name = worldstage_surrender.107.a_axis	# fight, prefered human option
+		trigger = {
+			27 = { check_variable = { theater_owner_coalition = 2 } }	# Netherlands was conquered by Comintern	# I'm not sure it needs a separated option, I'll keep it here just in case...
+			is_subject = no												# puppets don't get to decide
+		}
+		every_possible_country = {
+			limit = { tag = HIR }
+			custom_effect_tooltip = lose_access_to_trade_resources_hirado
+			clr_country_flag = tc_hirado_has_access
+		}
+		hidden_effect = {
+			if = {
+				limit = { country_exists = HIR }
+				country_event = worldstage_surrender.1071
+			}
+		}
+		ai_chance = { base = 0 } log = "NETHERLANDS SURRENDER! option: worldstage_surrender.107.a	# fight, prefered human option"
+	}
+	option = {
 		name = worldstage_surrender.107.b_axis	# surrender, prefered AI option
 		trigger = {
 			NOT = {
@@ -3722,12 +3741,11 @@ country_event = {
 			is_subject = no													# puppets don't get to decide
 		}
 		hidden_effect = { if = { limit = { is_in_faction = yes } leave_faction = yes } }			# the faction here SHOULD be the Allies. Let's hope for the best
-		every_possible_country = {
-			limit = { tag = ALY }
+		ALY = {
 			set_temp_variable = { new_ideology = current_party_ideology_group }
 		}
 		every_possible_country = {
-			limit = { tag = KOB }
+			limit = { tag = HIR }
 			set_politics = {
 				ruling_party = var:new_ideology?democratic
 				elections_allowed = no
@@ -3742,12 +3760,12 @@ country_event = {
 				country_event = worldstage_surrender.1072
 				add_ai_strategy = {
 					type = alliance
-					id = REI
+					id = ALY
 					value = 50
 				}
 				every_other_country = {
 					limit = { has_country_flag = is_not_japan }
-					KOB = {
+					HIR = {
 						add_ai_strategy = {
 							type = alliance
 							id = PREV
@@ -3760,16 +3778,71 @@ country_event = {
 		if = {
 			limit = { country_exists = HIR }
 			random_country = {
-				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } is_faction_leader = yes }	# update this later...
+				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } is_faction_leader = yes }	# update this later... (use tag aliases)
 				white_peace = {
 					tag = HIR
 					message = worldstage_surrender.103.hir
 				}
 				add_to_faction = HIR
 			}
-			load_focus_tree = generic_focus
+			set_country_flag = lost_original_focus_tree load_focus_tree = generic_focus
 		}
-		ai_chance = { base = 100 } log = "FRANCE SURRENDERS, imagine my shock! option: worldstage_surrender.103.b	# surrender, prefered AI option"
+		ai_chance = { base = 100 } log = "NETHERLANDS SURRENDER, option: worldstage_surrender.107.b	# surrender, prefered AI option"
+	}
+	option = {
+		name = worldstage_surrender.107.b_axis	# surrender, prefered AI option
+		trigger = {
+			27 = { check_variable = { theater_owner_coalition = 2 } }		# Netherlands was conquered by Comintern
+			is_subject = no													# puppets don't get to decide
+		}
+		hidden_effect = { if = { limit = { is_in_faction = yes } leave_faction = yes } }			# the faction here SHOULD be the Allies. Let's hope for the best
+		COM = {
+			set_temp_variable = { new_ideology = current_party_ideology_group }
+		}
+		every_possible_country = {
+			limit = { tag = HIR }
+			set_politics = {
+				ruling_party = var:new_ideology?communism
+				elections_allowed = no
+				last_election = "1939.09.1"
+				election_frequency = 48
+			}
+			add_ideas = SS_restricted_foreign_policy
+		}
+		hidden_effect = {
+			if = {
+				limit = { country_exists = HIR }
+				country_event = worldstage_surrender.1072
+				add_ai_strategy = {
+					type = alliance
+					id = COM
+					value = 50
+				}
+				every_other_country = {
+					limit = { has_country_flag = is_not_japan }
+					HIR = {
+						add_ai_strategy = {
+							type = alliance
+							id = PREV
+							value = -100
+						}
+					}
+				}
+			}
+		}	
+		if = {
+			limit = { country_exists = HIR }
+			random_country = {
+				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } is_faction_leader = yes }	# update this later... (use tag aliases)
+				white_peace = {
+					tag = HIR
+					message = worldstage_surrender.103.hir
+				}
+				add_to_faction = HIR
+			}
+			set_country_flag = lost_original_focus_tree load_focus_tree = generic_focus
+		}
+		ai_chance = { base = 100 } log = "NETHERLANDS SURRENDER, option: worldstage_surrender.107.b	# surrender, prefered AI option"
 	}
 }
 
