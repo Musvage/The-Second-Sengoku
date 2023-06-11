@@ -495,7 +495,7 @@ focus_tree = {
 		x = 6
 		y = 7
 		cost = 10
-		available = { country_exists = PRO }
+		available = { country_exists = PRO NOT = {has_war_with = PRO}}
 		prerequisite = { focus = EZO_claim_the_Kuril_Islands focus = EZO_unlock_economic_help }
 		relative_position_id = EZO_traditionalism
 		ai_will_do = {
@@ -562,7 +562,7 @@ focus_tree = {
 		x = 0
 		y = 1
 		cost = 10
-		available = { country_exists = PRO }
+		available = { country_exists = PRO NOT = {has_war_with = PRO}}
 		prerequisite = { focus = EZO_get_support_from_PRO }
 		relative_position_id = EZO_get_support_from_PRO
 		ai_will_do = {
@@ -628,7 +628,7 @@ focus_tree = {
 		x = 1
 		y = 1
 		cost = 10
-		available = { country_exists = PRO }
+		available = { country_exists = PRO NOT = {has_war_with = PRO}}
 		prerequisite = { focus = EZO_strengthen_social_democratic_system }
 		relative_position_id = EZO_strengthen_social_democratic_system
 		ai_will_do = {
@@ -695,7 +695,7 @@ focus_tree = {
 		x = 0
 		y = 1
 		cost = 10
-		available = { country_exists = PRO }
+		available = { country_exists = PRO NOT = {has_war_with = PRO}}
 		prerequisite = { focus = EZO_echonomic_aid }
 		relative_position_id = EZO_echonomic_aid
 		ai_will_do = {
@@ -725,7 +725,7 @@ focus_tree = {
 		x = -1
 		y = 1
 		cost = 10
-		available = { country_exists = PRO }
+		available = { country_exists = PRO NOT = {has_war_with = PRO}}
 		prerequisite = { focus = EZO_strengthen_social_democratic_system }
 		relative_position_id = EZO_strengthen_social_democratic_system
 		ai_will_do = {
@@ -756,7 +756,7 @@ focus_tree = {
 		x = 0
 		y = 1
 		cost = 10
-		available = { country_exists = PRO }
+		available = { country_exists = PRO NOT = {has_war_with = PRO}}
 		prerequisite = { focus = EZO_technology_transfer }
 		relative_position_id = EZO_technology_transfer
 		ai_will_do = {
@@ -799,7 +799,7 @@ focus_tree = {
 		x = 1
 		y = 1
 		cost = 10
-		available = { country_exists = PRO }
+		available = { country_exists = PRO NOT = {has_war_with = PRO}}
 		prerequisite = { focus = EZO_new_farmer_technology_integrat focus = EZO_technology_transfer_army }
 		relative_position_id = EZO_technology_transfer_army
 		ai_will_do = {
@@ -2066,7 +2066,7 @@ focus_tree = {
 	focus = {
 		id = EZO_League_Of_Nations
 		icon = GFX_focus_EZO_League_Of_Nations
-		x = 8
+		x = 9
 		y = 1
 		cost = 10
 
@@ -2246,7 +2246,7 @@ focus_tree = {
 				limit = {
 					is_core_of = MTS
 				}
-				custom_effect_tooltip = "This states clear all revolts"
+				custom_effect_tooltip = "This states clear all revolt modifier"
 				clr_state_flag = EZO_player_revolt_flag
 			}
 			set_country_flag = build_industry
@@ -2264,7 +2264,18 @@ focus_tree = {
 			
 		}
 		available = { 
-			
+			if = {
+				limit = {
+					any_controlled_state = {
+						is_core_of = MTS
+					}
+				}
+				MTS = {
+					all_core_state = {
+						is_fully_controlled_by = EZO
+					}
+				}
+			}
 		}
 		mutually_exclusive = {}
 		relative_position_id = EZO_house_of_autocracy
@@ -3073,7 +3084,7 @@ focus_tree = {
 	focus = {
 		id = EZO_unlock_economic_help
 		icon = GFX_focus_generic_money
-		x = 2
+		x = 0
 		y = 1
 		cost = 10
 		available = {
@@ -3159,12 +3170,12 @@ focus_tree = {
 	focus = {
 		id = EZO_invite_PRO_scientist
 		icon = GFX_focus_PRO_recover_from_the_braindrain
-		x = 0
+		x = 2
 		y = 1
 		cost = 10
 		available = {  }
 		prerequisite = { focus = EZO_ask_PRO_for_economic_help }
-		prerequisite = {focus = EZO_nationalise_the_industry}
+		prerequisite = {focus = EZO_deal_social_democrats}
 		relative_position_id = EZO_ask_PRO_for_economic_help
 		ai_will_do = {
 			factor = 10
@@ -3288,6 +3299,18 @@ focus_tree = {
 				OR = {
 					has_government = neutrality
 					has_country_flag = EZO_constitution_drafted
+				}
+			}
+			if = {
+				limit = {
+					any_controlled_state = {
+						is_core_of = RZO
+					}
+				}
+				RZO = {
+					all_core_state = {
+						is_fully_controlled_by = EZO
+					}
 				}
 			}
 			has_country_flag = EZO_constitution_drafted
@@ -3650,13 +3673,51 @@ focus_tree = {
 	}
 
 	focus = {
+		id = EZO_deal_social_democrats
+		icon = GFX_focus_FER_socialist_party
+		x = -3
+		y = 1
+		cost = 9
+		prerequisite = { focus = EZO_tetsu_katayama }
+		available = {
+			if = {
+				limit = {
+					any_controlled_state = {
+						is_core_of = SZO
+					}
+				}
+				SZO = {
+					all_core_state = {
+						is_fully_controlled_by = EZO
+					}
+				}
+			}
+		}
+		relative_position_id = EZO_tetsu_katayama
+
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			every_owned_state = {
+				limit = {
+					is_core_of = SZO
+				}
+				add_dynamic_modifier = { modifier = EZO_deals }
+			}
+		}
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+	}
+
+	focus = {
 		id = EZO_unionise_the_workers
 		icon = GFX_focus_EZO_unionise_the_workers
-		x = 1
+		x = 0
 		y = 1
 		relative_position_id = EZO_nationalise_the_industry
 		cost = 9
 		prerequisite = { focus = EZO_nationalise_the_industry}
+		prerequisite = { focus = EZO_deal_social_democrats}
 		ai_will_do = {
 			factor = 10
 		}	
@@ -3767,13 +3828,50 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_POLITICAL }
 	}
 	focus = {
+		id = EZO_deal_democratics
+		icon = GFX_focus_SHO_western_leanings
+		x = 3
+		y = 1
+		relative_position_id = EZO_kolchi_kido
+		cost = 9
+		prerequisite = { focus = EZO_kolchi_kido }
+		available = {
+			if = {
+				limit = {
+					any_controlled_state = {
+						is_core_of = DZO
+					}
+				}
+				DZO = {
+					all_core_state = {
+						is_fully_controlled_by = EZO
+					}
+				}
+			}
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			log = "[GetDateText]: [Root.GetName]: Focus EZO_Yotei_bank"	
+			every_owned_state = {
+				limit = {
+					is_core_of = DZO
+				}
+				add_dynamic_modifier = { modifier = EZO_deals }
+			}
+		}
+		search_filters = { FOCUS_FILTER_POLITICAL }
+	}
+	focus = {
 		id = EZO_income_tax_reductions
 		icon = GFX_focus_EZO_income_tax_reductions
-		x = -1
+		x = 0
 		y = 1
 		relative_position_id = EZO_Yotei_bank
 		cost = 9
 		prerequisite = { focus = EZO_Yotei_bank }
+		prerequisite = { focus = EZO_deal_democratics }
 		ai_will_do = {
 			factor = 10
 		}	
@@ -5050,6 +5148,26 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 	}
 	focus = {
+		id = EZO_Russians_in_Joseon
+		icon = GFX_focus_generic_strike_joseon
+		x = 0
+		y = 1
+		relative_position_id = EZO_pro_deals
+		cost = 9
+		prerequisite = { 
+			focus = EZO_pro_deals
+		}
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			declare_war_on = { 
+				type = annex_everything
+				target = JOS
+			}
+		}
+	}
+	focus = {
 		id = EZO_the_other_juntas_deals
 		icon = GFX_focus_EZO_reopen_talks_with_the_junta
 		x = 1 
@@ -5155,6 +5273,18 @@ focus_tree = {
 		}
 		available = {
 			has_country_flag = EZO_akai_rising_left
+			if = {
+				limit = {
+					any_controlled_state = {
+						is_core_of = CZO
+					}
+				}
+				CZO = {
+					all_core_state = {
+						is_fully_controlled_by = EZO
+					}
+				}
+			}
 		}	
 		completion_reward = {
 			every_owned_state = {
@@ -5243,6 +5373,7 @@ focus_tree = {
 		}
 		search_filters = { FOCUS_FILTER_MANPOWER }
 	}
+	
 	focus = {
 		id = EZO_private_talk_with_nosaka
 		icon = GFX_focus_TOH_one_state
