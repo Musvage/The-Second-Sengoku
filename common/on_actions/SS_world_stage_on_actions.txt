@@ -1,0 +1,87 @@
+on_actions = {
+	on_join_faction = {			### This is when a country (THIS) joins a faction through diplomacy, by their own initiative (faction leader is FROM)
+		effect = {
+			log = "[THIS.GetName] join [FROM.GetName]'s faction"
+			FROM = {
+				if = {
+					limit = { has_variable = world_stage_metropolis }
+					var:world_stage_metropolis = { set_temp_variable = { new_coalition = world_stage_coalition } }
+					PREV = {
+						if = {
+							limit = { has_variable = world_stage_metropolis }
+							var:world_stage_metropolis = { set_variable = { world_stage_coalition = new_coalition } }
+						}
+						if = {
+							limit = { has_variable = world_stage_coalition }
+							set_variable = { world_stage_coalition = new_coalition }
+						}
+					}
+				}
+			}
+			FROM = {
+				if = {
+					limit = { has_variable = world_stage_coalition }
+					set_temp_variable = { new_coalition = world_stage_coalition }
+					PREV = {
+						if = {
+							limit = { has_variable = world_stage_metropolis }
+							var:world_stage_metropolis = { set_variable = { world_stage_coalition = new_coalition } }
+						}
+						if = {
+							limit = { has_variable = world_stage_coalition }
+							set_variable = { world_stage_coalition = new_coalition }
+						}
+					}
+				}
+			}
+		}
+	}
+
+	on_offer_join_faction = {	### This is when a country (FROM) is added to a faction by commands or invited by the leader (THIS)
+		effect = {
+			log = "[FROM.GetName] join [THIS.GetName]'s faction"
+			if = {
+				limit = { has_variable = world_stage_metropolis }
+				var:world_stage_metropolis = { set_temp_variable = { new_coalition = world_stage_coalition } }
+				FROM = {
+					if = {
+						limit = { has_variable = world_stage_metropolis }
+						var:world_stage_metropolis = { set_variable = { world_stage_coalition = new_coalition } }
+					}
+					if = {
+						limit = { has_variable = world_stage_coalition }
+						set_variable = { world_stage_coalition = new_coalition }
+					}
+				}
+			}
+			if = {
+				limit = { has_variable = world_stage_coalition }
+				set_temp_variable = { new_coalition = world_stage_coalition }
+				FROM = {
+					if = {
+						limit = { has_variable = world_stage_metropolis }
+						var:world_stage_metropolis = { set_variable = { world_stage_coalition = new_coalition } }
+					}
+					if = {
+						limit = { has_variable = world_stage_coalition }
+						set_variable = { world_stage_coalition = new_coalition }
+					}
+				}
+			}
+		}
+	}
+	
+	on_leave_faction = {
+		effect = {
+			log = "[THIS.GetName] left its faction"
+			if = {
+					limit = { has_variable = world_stage_metropolis }
+					var:world_stage_metropolis = { set_variable = { world_stage_coalition = 4 } }	# non-aligned
+			}
+			if = {
+					limit = { has_variable = world_stage_coalition }
+					set_variable = { world_stage_coalition = 4 }									# non-aligned
+			}
+		}
+	}
+}
