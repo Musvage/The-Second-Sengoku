@@ -1,0 +1,484 @@
+set_up_global_division_limit_system = {
+	set_variable = { global.division_limit_base = 300 }
+	# trade port
+	set_variable = { global.division_limit_trade_city = -100 }
+	# economic laws
+	set_variable = { global.division_limit_undisturbed_isolation = -90 }
+	set_variable = { global.division_limit_isolation = -40 }
+	set_variable = { global.division_limit_civilian_economy = 0 }
+	set_variable = { global.division_limit_low_economic_mobilisation = 20 }
+	set_variable = { global.division_limit_partial_economic_mobilisation = 60 }
+	set_variable = { global.division_limit_war_economy = 90 }
+	set_variable = { global.division_limit_tot_economic_mobilisation = 120 }
+	# manpower laws CURRENTLY DEPRICATED
+	set_variable = { global.division_limit_disarmed_nation = -60 }
+	set_variable = { global.division_limit_volunteer_only = -20 }
+	set_variable = { global.division_limit_limited_conscription = 0 }
+	set_variable = { global.division_limit_extensive_conscription = 20 }
+	set_variable = { global.division_limit_service_by_requirement = 60 }
+	set_variable = { global.division_limit_all_adults_serve = 90 }
+	set_variable = { global.division_limit_scraping_the_barrel = 120 }
+	# attaché
+	set_variable = { global.division_limit_attache_received = 30 }
+	set_variable = { global.division_limit_attache_sent = -30 }
+	# support company
+	set_variable = { global.division_limit_support_companies_tech_level = 0 }
+	# advisor
+	set_variable = { global.division_limit_advisor_1 = 0.1 }
+	set_variable = { global.division_limit_advisor_2 = 0.15 }
+	set_variable = { global.division_limit_advisor_3 = 0.2 }
+	# infrastructure
+	set_variable = { global.division_limit_infrastructure = 0.1 }	# it was 0.05 before NSB, set to 0.1 to match new max. infras. level
+	# other variables
+	#
+	set_global_flag = has_global_division_system
+	### TECHNOLOGIES BONUS VALUES
+	set_variable = { global.division_limit_doctrine_small = 15 }
+	set_variable = { global.division_limit_doctrine_medium = 30 }
+	set_variable = { global.division_limit_doctrine_big = 60 }
+
+	every_country = { 
+		set_variable = { desire_to_go_overhead = 0 }	# Matters only for AI
+		set_up_division_limit_system = yes
+	}
+}
+
+set_up_division_limit_system = {
+	set_country_flag = has_division_limit_system
+	if = {
+		limit = { NOT = { check_variable = { division_limit_technology_bonus = 0 } } }	# does not loose technological advances from starting techs or when resetting system for debug
+		set_variable = { division_limit_technology_bonus = 0 }
+	}
+	if = {
+		limit = { NOT = { check_variable = { division_limit_other_bonus = 0 } } }	# does not loose other bonuses from starting bonuses or when resetting system for debug
+		set_variable = { division_limit_other_bonus = 0 }
+	} else = {
+		if = {
+			limit = {
+				OR = { has_tech = superior_firepower has_tech = mobile_warfare }
+			}
+			division_limit_add_small_doctrine_bonus = yes
+		}
+		if = {
+			limit = {
+				has_tech = trench_warfare
+			}
+			division_limit_add_medium_doctrine_bonus = yes
+		}
+		if = {
+			limit = {
+				has_tech = mass_assault
+			}
+			division_limit_add_big_doctrine_bonus = yes
+		}
+	}
+	if = {
+		limit = { NOT = { check_variable = { division_limit_other_multiplier = 0 } } }	# does not loose other multipliers from starting bonuses or when resetting system for debug
+		set_variable = { division_limit_other_multiplier = 0 }
+	}
+	if = {
+		limit = { NOT = { check_variable = { division_limit_support_companies_tech_level = 0 } } }	# does not loose support tech when starting the game or resetting system for debug
+		set_variable = { division_limit_support_companies_tech_level = 0 }
+	}
+	calculate_division_limit = yes
+}
+
+calculate_average_infrastructure_level = {
+	
+	set_temp_variable = { total_infrastructure_weight = 0 }
+
+	every_controlled_state = {
+		add_to_temp_variable = { PREV.total_infrastructure_weight = division_limit_infrastructure_weight }
+	}
+	
+	set_variable = { average_infrastructure_level = 0 }
+	
+	every_controlled_state = {
+		set_temp_variable = { state_infrastructure_level = non_damaged_building_level@infrastructure }
+		multiply_temp_variable = { state_infrastructure_level = division_limit_infrastructure_weight }
+		add_to_variable = { PREV.average_infrastructure_level = state_infrastructure_level }
+	}
+	divide_variable = { average_infrastructure_level = total_infrastructure_weight }
+	#set_variable = { debug_weights_total = total_infrastructure_weight }	## DEBUG ## DEBUG ## DEBUG ## DEBUG 
+}
+
+calculate_support_companies = {
+
+	set_variable = { num_battalions_support = num_battalions_with_type@engineer }
+	add_to_variable = { num_battalions_support = num_battalions_with_type@recon }
+	add_to_variable = { num_battalions_support = num_battalions_with_type@mot_recon }
+	add_to_variable = { num_battalions_support = num_battalions_with_type@armored_car_recon }
+	add_to_variable = { num_battalions_support = num_battalions_with_type@light_tank_recon }
+	add_to_variable = { num_battalions_support = num_battalions_with_type@military_police }
+	add_to_variable = { num_battalions_support = num_battalions_with_type@maintenance_company }
+	add_to_variable = { num_battalions_support = num_battalions_with_type@field_hospital }
+	add_to_variable = { num_battalions_support = num_battalions_with_type@logistics_company }
+	add_to_variable = { num_battalions_support = num_battalions_with_type@signal_company }
+	
+	set_variable = { division_limit_support_companies_discount = 0 }
+	set_variable = { division_limit_support_companies_bonus = 0 }
+	if = {
+		limit = { check_variable = { division_limit_support_companies_tech_level = 1 } }
+		set_variable = { division_limit_support_companies_discount = num_battalions_support }
+		divide_variable = { division_limit_support_companies_discount = 2 }								### HARDCODED VALUES
+		round_variable = division_limit_support_companies_discount
+	}
+	if = {
+		limit = { check_variable = { division_limit_support_companies_tech_level = 2 } }
+		set_variable = { division_limit_support_companies_discount = num_battalions_support }
+	}
+	if = {
+		limit = { check_variable = { division_limit_support_companies_tech_level = 3 } }
+		set_variable = { division_limit_support_companies_discount = num_battalions_support }
+		set_variable = { division_limit_support_companies_bonus = num_battalions_support }
+		multiply_variable = { division_limit_support_companies_bonus = 0.2 }							### HARDCODED VALUES
+		round_variable = division_limit_support_companies_bonus
+	}
+}
+
+calculate_division_limit = {
+	set_variable = { country_division_limit = global.division_limit_base }
+	#### TRADE CITY
+	if = {
+		limit = { OR = { tag = AMC tag = HIR tag = KOB tag = OKI tag = OSA tag = PRT tag = REI } }
+		set_variable = { division_limit_trade_city = global.division_limit_trade_city }
+	}
+	#### ECONOMIC LAW
+	if = {
+		limit = { has_idea = undisturbed_isolation }
+		set_variable = { division_limit_economy_law = global.division_limit_undisturbed_isolation }
+	}
+	if = {
+		limit = { has_idea = isolation }
+		set_variable = { division_limit_economy_law = global.division_limit_isolation }
+	}
+	if = {
+		limit = { has_idea = civilian_economy }
+		set_variable = { division_limit_economy_law = global.division_limit_civilian_economy }
+	}
+	if = {
+		limit = { has_idea = low_economic_mobilisation }
+		set_variable = { division_limit_economy_law = global.division_limit_low_economic_mobilisation }
+	}
+	if = {
+		limit = { has_idea = partial_economic_mobilisation }
+		set_variable = { division_limit_economy_law = global.division_limit_partial_economic_mobilisation }
+	}
+	if = {
+		limit = { has_idea = war_economy }
+		set_variable = { division_limit_economy_law = global.division_limit_war_economy }
+	}
+	if = {
+		limit = { has_idea = tot_economic_mobilisation }
+		set_variable = { division_limit_economy_law = global.division_limit_tot_economic_mobilisation }
+	}
+	#### SUPPORT COMPANIES
+	calculate_support_companies = yes
+		
+	#### ADVISOR
+	set_variable = { division_limit_advisor = 0 }
+	if = {
+		limit = { has_idea_with_trait  = army_division_limit_1 }
+		set_variable = { division_limit_advisor = global.division_limit_advisor_1 }
+	}
+	if = {
+		limit = { has_idea_with_trait  = army_division_limit_2 }
+		set_variable = { division_limit_advisor = global.division_limit_advisor_2 }
+	}
+	if = {
+		limit = { has_idea_with_trait  = army_division_limit_3 }
+		set_variable = { division_limit_advisor = global.division_limit_advisor_3 }
+	}
+
+	#### INFRASTRUCTURE
+	calculate_average_infrastructure_level = yes
+	set_variable = { division_limit_infrastructure = average_infrastructure_level }
+	multiply_variable = { division_limit_infrastructure = global.division_limit_infrastructure }
+	
+	#### IDEAS
+	# must be added ad-hoc
+	set_variable = { division_limit_other_bonus = 0 }
+	if = {
+		limit = {
+			OR = {
+				has_idea = EZO_civil_war
+				has_idea = EZO_civil_war_1
+				has_idea = EZO_civil_war_2
+				has_idea = EZO_civil_war_3
+			}
+		}
+		add_to_variable = { division_limit_other_bonus = -200 }
+	}
+	if = {
+		limit = { has_idea = ROC_idea_limited_army }
+		add_to_variable = { division_limit_other_bonus = -120 }
+	}
+	if = {
+		limit = { has_idea = ROC_idea_limited_army_2 }
+		add_to_variable = { division_limit_other_bonus = -80 }
+	}
+	if = {
+		limit = { has_idea = ROC_idea_limited_army_2 }
+		add_to_variable = { division_limit_other_bonus = -80 }
+	}
+	if = {
+		limit = { has_idea = levee_en_masse_spirit }
+		add_to_variable = { division_limit_other_bonus = 60 }
+	}
+	if = {
+		limit = { has_idea = elite_forces_spirit }
+		add_to_variable = { division_limit_other_bonus = -60 }
+	}
+	#### ATTACHÉS
+	set_variable = { division_limit_attache = 0 }
+	if = {
+		limit = {
+			has_idea = received_attache
+		}
+		add_to_variable = { division_limit_attache = global.division_limit_attache_received }
+	}
+	if = {
+		limit = {
+			any_other_country = {
+				has_attache_from = PREV
+			}
+		}
+		add_to_variable = { division_limit_attache = global.division_limit_attache_sent }
+	}
+	
+	### Add multipliers
+	set_variable = { country_division_limit_multiplier = 1 }
+	add_to_variable = { country_division_limit_multiplier = division_limit_advisor }
+	add_to_variable = { country_division_limit_multiplier = division_limit_infrastructure }
+	add_to_variable = { country_division_limit_multiplier = division_limit_other_multiplier }
+	
+	#### CALCULATE EFFECT
+	add_to_variable = { country_division_limit = division_limit_trade_city }
+	add_to_variable = { country_division_limit = division_limit_economy_law }
+	add_to_variable = { country_division_limit = division_limit_technology_bonus }
+	add_to_variable = { country_division_limit = division_limit_support_companies_bonus }
+	add_to_variable = { country_division_limit = division_limit_attache }
+	add_to_variable = { country_division_limit = division_limit_other_bonus }
+	multiply_variable = { country_division_limit = country_division_limit_multiplier }
+	clamp_variable = { var = country_division_limit min = 25 max = 99999 }
+	
+	### AI ONLY
+	if = {
+		limit = { OR = { is_ai = yes is_debug = yes } }
+		division_limit_get_ai_limit = yes
+	}
+	round_variable = country_division_limit
+	check_division_limit = yes
+}
+
+check_division_limit = {
+	set_variable = { division_limit_num_battalions = num_battalions }
+	subtract_from_variable = { division_limit_num_battalions = division_limit_support_companies_discount }
+	if = {
+		limit = {
+			check_variable = { division_limit_num_battalions > country_division_limit }
+		}
+		set_variable = { division_limit_overhead = division_limit_num_battalions }
+		divide_variable = { division_limit_overhead = country_division_limit }
+		subtract_from_variable = { division_limit_overhead = 1 }
+		
+		if = {
+			limit = {												# HARD CAP ON DEPLOYMENT
+				OR = {
+					check_variable = { division_limit_overhead > 0.25 }
+					AND = {
+						is_ai = yes
+						check_variable = { division_limit_overhead > desire_to_go_overhead }
+						check_variable = { desire_to_go_overhead > 0 }
+					}
+				}
+			}
+			set_variable = { minimum_training_level_mod = 9.99 }
+		} else = {
+			set_variable = { minimum_training_level_mod = 0 }
+		}
+		
+		
+		if = {
+			limit = { check_variable = { division_limit_overhead > 0.5 } }			# EXTREME OVERHEAD PENALTY (ORG/MORALE)
+			set_variable = { army_org_factor_mod = division_limit_overhead }
+			add_to_variable = { army_org_factor_mod = -0.5 }
+			multiply_variable = { army_org_factor_mod = -2 }
+			clamp_variable = { var = army_org_factor_mod	min = -0.99	max = 0 }
+		} else = {
+			set_variable = { army_org_factor_mod = 0 }
+		}
+		
+		set_variable = { command_power_gain_mult_mod = division_limit_overhead }	# COMMAND POWER
+		multiply_variable = { command_power_gain_mult_mod = -2 }
+		clamp_variable = { var = command_power_gain_mult_mod	min = -0.5	max = 0 }
+		
+		set_variable = { supply_consumption_factor_mod = division_limit_overhead }	# SUPPLY CONSUMPTION
+		multiply_variable = { supply_consumption_factor_mod = 2 }
+		clamp_variable = { var = supply_consumption_factor_mod	min = 0	max = 0.5 }
+		
+		set_variable = { mobilization_speed_mod = division_limit_overhead }			# MOBILIZATION SPEED
+		multiply_variable = { mobilization_speed_mod = -2 }
+		clamp_variable = { var = mobilization_speed_mod	min = -0.5	max = 0 }
+		
+		set_variable = { training_time_factor_mod = division_limit_overhead }		# TRAINING TIME
+		multiply_variable = { training_time_factor_mod = 4 }
+		clamp_variable = { var = training_time_factor_mod	min = 0	max = 1 }
+		if = {
+			limit = {
+				NOT = {
+					has_dynamic_modifier = {
+						modifier = division_limit_spirit
+					}
+				}
+			}
+			add_dynamic_modifier = { modifier = division_limit_spirit }
+			if = {
+				limit = { has_dynamic_modifier = { modifier = division_limit_spirit_good } }
+				remove_dynamic_modifier = { modifier = division_limit_spirit_good }
+			}
+		}
+		force_update_dynamic_modifier = yes
+	} else = {
+		set_variable = { division_limit_proportion = division_limit_num_battalions }
+		divide_variable = { division_limit_proportion = country_division_limit }
+		if = {
+			limit = {
+				check_variable = { division_limit_proportion < 0.25 }
+			}
+			set_variable = { army_org_factor_mod = 0.25 }
+			subtract_from_variable = { army_org_factor_mod = division_limit_proportion }
+			multiply_variable = { army_org_factor_mod = 2 }
+			clamp_variable = { var = army_org_factor_mod	min = 0	max = 0.25 }
+			if = {
+				limit = {
+					NOT = {
+						has_dynamic_modifier = {
+							modifier = division_limit_spirit_good
+						}
+					}
+				}
+				add_dynamic_modifier = { modifier = division_limit_spirit_good } 
+			}
+			force_update_dynamic_modifier = yes
+		} else = {
+			if = {
+				limit = {
+					has_dynamic_modifier = {
+						modifier = division_limit_spirit_good
+					}
+				}
+				remove_dynamic_modifier = { modifier = division_limit_spirit_good }
+			}
+		}
+		if = {
+			limit = {
+				has_dynamic_modifier = {
+					modifier = division_limit_spirit
+				}
+			}
+			remove_dynamic_modifier = { modifier = division_limit_spirit }
+			set_variable = { division_limit_overhead = 0 }
+		}
+	}
+}
+
+division_limit_add_small_doctrine_bonus = {
+	
+	custom_effect_tooltip = division_limit_add_small_doctrine_bonus_tt
+	hidden_effect = {
+		add_to_variable = { division_limit_technology_bonus = global.division_limit_doctrine_small }
+		force_update_dynamic_modifier = yes
+	}
+}
+
+division_limit_add_medium_doctrine_bonus = {
+	
+	custom_effect_tooltip = division_limit_add_medium_doctrine_bonus_tt
+	hidden_effect = {
+		add_to_variable = { division_limit_technology_bonus = global.division_limit_doctrine_medium }
+		force_update_dynamic_modifier = yes
+	}
+}
+
+division_limit_add_big_doctrine_bonus = {
+	
+	custom_effect_tooltip = division_limit_add_big_doctrine_bonus_tt
+	hidden_effect = {
+		add_to_variable = { division_limit_technology_bonus = global.division_limit_doctrine_big }
+		force_update_dynamic_modifier = yes
+	}
+}
+
+division_limit_get_ai_limit = {	# DOES NOT AFFECT HUMAN PLAYERS
+	set_variable = { desire_to_go_overhead = 0 }
+	if = {
+		limit = {
+			OR = {
+				has_war = yes
+				any_other_country = { has_wargoal_against = PREV }
+				threat > 0.5
+			}
+		}
+		#	chuckles_i'm_in_danger = yes
+		if = {
+			limit = { alliance_strength_ratio < 1 }
+			add_to_variable = { desire_to_go_overhead = 0.05 }
+		}
+		if = {
+			limit = {
+				any_enemy_country = {
+					strength_ratio = {
+						tag = ROOT
+						ratio > 1
+					}
+				}
+			}
+			add_to_variable = { desire_to_go_overhead = 0.05 }
+		}
+		if = {
+			limit = {
+				OR = { has_idea = tot_economic_mobilisation  has_idea = war_economy  }
+			}
+			add_to_variable = { desire_to_go_overhead = 0.05 }
+		}
+		if = {
+			limit = {
+				any_enemy_country = {
+					is_major = yes
+				}
+			}
+			add_to_variable = { desire_to_go_overhead = 0.05 }
+		}
+		if = {
+			limit = { arms_factory > 50 }
+			add_to_variable = { desire_to_go_overhead = 0.05 }
+		}
+		if = {
+			limit = { is_major = no }
+			add_to_variable = { desire_to_go_overhead = 0.1 }
+		}
+		if = {
+			limit = { has_tech = mass_assault }	### ROLE PLAYING: ORCS ORCS ORCS
+			add_to_variable = { desire_to_go_overhead = -0.05 }
+		}
+		
+		if = {
+			limit = { has_tech = superior_firepower }	### ROLE PLAYING: MACHINE GUN GOES BRRRRRRR
+			add_to_variable = { desire_to_go_overhead = -0.05 }
+		}
+		if = {
+			limit = { arms_factory < 25 }
+			add_to_variable = { desire_to_go_overhead = -0.05 }
+		}
+		if = {
+			limit = { check_variable = { crash_1929_efficiency_loss < 0.25 } }
+			add_to_variable = { desire_to_go_overhead = -0.05 }
+		}
+		if = {
+			limit = { check_variable = { crash_1929_efficiency_loss < 0.12 } }
+			add_to_variable = { desire_to_go_overhead = -0.05 }
+		}
+	}
+	#clamp_variable = { var = desire_to_go_overhead min = 0 max = 0.25 }
+}

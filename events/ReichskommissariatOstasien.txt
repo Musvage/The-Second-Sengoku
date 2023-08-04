@@ -1,6 +1,5 @@
 add_namespace = ostasien
 add_namespace = ostasiencthulhu
-add_namespace = REI_foreign_influence
 
 country_event = {	### Lud dies
 	id = ostasien.1
@@ -14,18 +13,17 @@ country_event = {	### Lud dies
 
 	option = {
 		name = ostasien.1.a
+		REI_herbert_von_dirksen = {
+			clr_character_flag = dual_leader_id_ludendorff
+			set_character_flag = dual_leader_id_werner_blomberg
+			dual_leader_display_kill_secondary_leader = yes
+		}
 		if = {
 			limit = {
 				NOT = { has_completed_focus = REI_luds_manifesto }
 			}
 			unlock_national_focus = REI_luds_manifesto
 			news_event = { id = ostasien.12 days = 1 random = 24 }
-		}
-		hidden_effect = {
-			REI_herbert_von_dirksen = {
-				clr_character_flag = dual_leader_id_ludendorff
-				set_character_flag = dual_leader_id_werner_blomberg
-			}
 		}
 	}
 }
@@ -224,10 +222,13 @@ country_event = { # Annex Austria
 	option = {
 		trigger = { tag = REI }
 		name = ostasien.7.a
+		custom_effect_tooltip = ostasien.7.tt
+		custom_effect_tooltip = annex_austria_mexico
 	}
 	option = {
 		trigger = { NOT = { tag = REI } }
 		name = ostasien.7.b
+		custom_effect_tooltip = ostasien.7.tt
 	}
 }
 
@@ -244,10 +245,12 @@ country_event = { # Annex Czechs
 	option = {
 		trigger = { tag = REI }
 		name = ostasien.8.a
+		custom_effect_tooltip = ostasien.8.tt
 	}
 	option = {
 		trigger = { not = { tag = REI } }
 		name = ostasien.8.b
+		custom_effect_tooltip = ostasien.8.tt
 	}
 }
 
@@ -278,16 +281,17 @@ country_event = { # Who will Lud support?
 	option = { # The Emperor and Nazi
 		name = ostasien.10.a
 		complete_national_focus = REI_nazi_and_emperor
+		log = "ostasien.10: The Ludendorff Manifesto, ..the Hohenzollern and their allies!"
 	}
-
 	option = { # The status quo
 		name = ostasien.10.b
 		complete_national_focus = REI_general_staff
+		log = "ostasien.10: The Ludendorff Manifesto,..the General Staff and the Armed Forces."
 	}
-
 	option = { # The Fringe groups
 		name = ostasien.10.c
 		complete_national_focus = REI_cthule_putsch
+		log = "ostasien.10: The Ludendorff Manifesto, ...those who see beyond purely materialistic concerns."
 	}
 }
 
@@ -301,13 +305,51 @@ country_event = { # Molotov-Ribentrop
 	
 	major = yes
 
+	# Soviet Union always accept, even if FER is a human player
 	option = {
-		trigger = { OR = {  tag = REI tag = FER } }
+		trigger = { OR = { tag = FER tag = REI } }
 		name = ostasien.11.a
+		custom_effect_tooltip = ostasien.11.tt
+		if = {
+			limit = { tag = REI }
+			effect_tooltip = { add_named_threat = { threat = -5 name = REI_threat_molotov_ribbentrop } }
+		} else = {
+			effect_tooltip = { REI = { add_named_threat = { threat = -5 name = REI_threat_molotov_ribbentrop } } }
+		}
 	}
 	option = {
-		trigger = { not = { tag = REI tag = FER } }
+		trigger = {
+			OR = {	var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } }
+					var:world_stage_metropolis = { check_variable = { world_stage_coalition = 6 } } }
+			NOT = { tag = FER tag = REI }
+		}
 		name = ostasien.11.b
+		effect_tooltip = {
+			REI = {
+				add_named_threat = {
+					threat = -5
+					name = REI_threat_molotov_ribbentrop
+				}
+			}
+		}
+	}
+	option = {
+		trigger = {
+			NOT = {
+				var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } }
+				var:world_stage_metropolis = { check_variable = { world_stage_coalition = 6 } }
+				tag = FER tag = REI
+			}
+		}
+		name = ostasien.11.c
+		effect_tooltip = {
+			REI = {
+				add_named_threat = {
+					threat = -5
+					name = REI_threat_molotov_ribbentrop
+				}
+			}
+		}
 	}
 }
 
@@ -347,44 +389,237 @@ country_event = { # Lud dies without a will - power struggle
 	}
 }
 
-### foreign influenec, possibly depricated
-country_event = {
-    id = REI_foreign_influence.1
-	title = REI_foreign_influence.1.t
-	desc = REI_foreign_influence.1.d
-	picture = GFX_report_event_generic_sign_treaty2
+country_event = {	### Afrikakorps
+	id = ostasien.13
+	title = ostasien.13.t
+	desc = ostasien.13.d
+	picture = GFX_news_ww2_afrikakorps
 
 	is_triggered_only = yes
-	fire_only_once = no
-
-	option = {
-		ai_chance = {
-			base = 90
+	
+	major = yes
+	
+	show_major = {
+		OR = { 
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } }
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
+			NOT = { has_country_flag = hide_worldstage_notification }
 		}
-		name="We shall not be apart of their affairs."
-		KOB = { country_event = KOB_foreign_influence.3 }
+		is_ai = no
 	}
 
+	### THESE EFFECTS ARE ALL COSMETIC ### THESE EFFECTS ARE ALL COSMETIC ### THESE EFFECTS ARE ALL COSMETIC ### THESE EFFECTS ARE ALL COSMETIC 
+
 	option = {
-		ai_chance = {
-			base = 10
-		}
-		name="Perhaps, this could be a new beginning of a long lasting friendship"
-		KOB = { country_event = KOB_foreign_influence.4 }
-		REI = {
-			diplomatic_relation = {
-				country = KOB
-				relation = docking_rights
+		name = ostasien.13.a
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		if = {
+			limit = {
+				14 = { has_state_flag = theater_is_active }
+				15 = { has_state_flag = theater_is_active }
 			}
-			give_guarantee = KOB
+			set_temp_variable = { ger_forces_value = 15 }
+		} else = {
+			set_temp_variable = { ger_forces_value = 30 }
 		}
-		KOB = {
-			diplomatic_relation = {
-				country = REI
-				relation = docking_rights
+		effect_tooltip = {
+			if = {	limit = { 14 = { has_state_flag = theater_is_active } } custom_effect_tooltip = theater_scope_lybia
+				if = {	limit = { REI = { var:world_stage_metropolis = { check_variable = { 14.coalition_side_attack = world_stage_coalition } } } }
+					add_to_variable = { 14.defender_strategic_advantage = 0.5 tooltip = world_stage_add_strategic_advantage_attacker }
+				} else = { add_to_variable = { 14.defender_strategic_advantage = 0.5 tooltip = world_stage_add_strategic_advantage_defender } }
+				custom_effect_tooltip = country_scope_germany_space add_to_variable = { world_stage_power_deployed_by^101 = ger_forces_value tooltip = world_stage_deploy_power_here } }
+			if = { limit = { 15 = { has_state_flag = theater_is_active } } custom_effect_tooltip = theater_scope_egypt
+				if = { limit = { REI = { var:world_stage_metropolis = { check_variable = { 15.coalition_side_attack = world_stage_coalition } } } }
+					add_to_variable = { 15.defender_strategic_advantage = 0.5 tooltip = world_stage_add_strategic_advantage_attacker }
+				} else = { add_to_variable = { 15.defender_strategic_advantage = 0.5 tooltip = world_stage_add_strategic_advantage_defender } }
+				custom_effect_tooltip = country_scope_germany_space add_to_variable = { world_stage_power_deployed_by^101 = ger_forces_value tooltip = world_stage_deploy_power_here }
 			}
-			give_guarantee = REI
 		}
+	}
+	option = {
+		name = ostasien.13.b
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
+		if = {
+			limit = {
+				14 = { has_state_flag = theater_is_active }
+				15 = { has_state_flag = theater_is_active }
+			}
+			set_temp_variable = { ger_forces_value = 15 }
+		} else = {
+			set_temp_variable = { ger_forces_value = 30 }
+		}
+		effect_tooltip = {
+			if = {	limit = { 14 = { has_state_flag = theater_is_active } } custom_effect_tooltip = theater_scope_lybia
+				if = {	limit = { REI = { var:world_stage_metropolis = { check_variable = { 14.coalition_side_attack = world_stage_coalition } } } }
+					add_to_variable = { 14.defender_strategic_advantage = 0.5 tooltip = world_stage_add_strategic_advantage_attacker }
+				} else = { add_to_variable = { 14.defender_strategic_advantage = 0.5 tooltip = world_stage_add_strategic_advantage_defender } }
+				custom_effect_tooltip = country_scope_germany_space add_to_variable = { world_stage_power_deployed_by^101 = ger_forces_value tooltip = world_stage_deploy_power_here } }
+			if = { limit = { 15 = { has_state_flag = theater_is_active } } custom_effect_tooltip = theater_scope_egypt
+				if = { limit = { REI = { var:world_stage_metropolis = { check_variable = { 15.coalition_side_attack = world_stage_coalition } } } }
+					add_to_variable = { 15.defender_strategic_advantage = 0.5 tooltip = world_stage_add_strategic_advantage_attacker }
+				} else = { add_to_variable = { 15.defender_strategic_advantage = 0.5 tooltip = world_stage_add_strategic_advantage_defender } }
+				custom_effect_tooltip = country_scope_germany_space add_to_variable = { world_stage_power_deployed_by^101 = ger_forces_value tooltip = world_stage_deploy_power_here }
+			}
+		}
+	}
+	option = {
+		name = ostasien.13.c
+		trigger = {
+			var:world_stage_metropolis = {
+				NOT = { check_variable = { world_stage_coalition = 1 } }
+				NOT = {check_variable = { world_stage_coalition = 3 } }
+			}
+		}
+		if = {
+			limit = {
+				14 = { has_state_flag = theater_is_active }
+				15 = { has_state_flag = theater_is_active }
+			}
+			set_temp_variable = { ger_forces_value = 15 }
+		} else = {
+			set_temp_variable = { ger_forces_value = 30 }
+		}
+		effect_tooltip = {
+			if = {	limit = { 14 = { has_state_flag = theater_is_active } } custom_effect_tooltip = theater_scope_lybia
+				if = {	limit = { REI = { var:world_stage_metropolis = { check_variable = { 14.coalition_side_attack = world_stage_coalition } } } }
+					add_to_variable = { 14.defender_strategic_advantage = 0.5 tooltip = world_stage_add_strategic_advantage_attacker }
+				} else = { add_to_variable = { 14.defender_strategic_advantage = 0.5 tooltip = world_stage_add_strategic_advantage_defender } }
+				custom_effect_tooltip = country_scope_germany_space add_to_variable = { world_stage_power_deployed_by^101 = ger_forces_value tooltip = world_stage_deploy_power_here } }
+			if = { limit = { 15 = { has_state_flag = theater_is_active } } custom_effect_tooltip = theater_scope_egypt
+				if = { limit = { REI = { var:world_stage_metropolis = { check_variable = { 15.coalition_side_attack = world_stage_coalition } } } }
+					add_to_variable = { 15.defender_strategic_advantage = 0.5 tooltip = world_stage_add_strategic_advantage_attacker }
+				} else = { add_to_variable = { 15.defender_strategic_advantage = 0.5 tooltip = world_stage_add_strategic_advantage_defender } }
+				custom_effect_tooltip = country_scope_germany_space add_to_variable = { world_stage_power_deployed_by^101 = ger_forces_value tooltip = world_stage_deploy_power_here }
+			}
+		}
+	}
+}
+
+country_event = {	### Volksstrum
+	id = ostasien.14
+	title = ostasien.14.t
+	desc = {
+		text = ostasien.14.d1
+		trigger = { NOT = { REI = { has_government = autocracy } } }	# normal event
+	}
+	desc = {
+		text = ostasien.145.d2
+		trigger = { REI = { has_government = autocracy } }  			# monarchist event (cannot use 2nd leader text)
+	}
+	picture = GFX_news_ww2_volksstrum
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	show_major = {
+		OR = { 
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } }
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } }	# maybe check if Comintern joined war as separated participant
+			NOT = { has_country_flag = hide_worldstage_notification }
+		}
+		is_ai = no
+	}
+
+	### THESE EFFECTS ARE ALL COSMETIC ### THESE EFFECTS ARE ALL COSMETIC ### THESE EFFECTS ARE ALL COSMETIC ### THESE EFFECTS ARE ALL COSMETIC 
+
+	option = {
+		name = ostasien.14.a
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		effect_tooltip = {
+			set_temp_variable = { ger_forces_value = 30 }
+			if = { limit = { 6 = { has_state_flag = theater_is_active } } add_to_temp_variable = { number_of_theaters = 1 } }
+			if = { limit = { 7 = { has_state_flag = theater_is_active } } add_to_temp_variable = { number_of_theaters = 1 } }
+			if = { limit = { 26 = { has_state_flag = theater_is_active } } add_to_temp_variable = { number_of_theaters = 1 } }
+			divide_temp_variable = { ger_forces_value = number_of_theaters?0 }
+			custom_effect_tooltip = country_scope_germany
+			add_to_variable = { var = 101.world_stage_power value = 30 tooltip = add_world_stage_power_no_scope_tt }	
+			if = { limit = { 6 = { has_state_flag = theater_is_active } }
+				hidden_effect = { 6 = { add_to_variable = { world_stage_power_deployed_by^101 = ger_forces_value }  world_stage_state_update_current_day = yes } }
+				subtract_from_variable = { 101.world_stage_power = ger_forces_value tooltip = world_stage_deploy_power_germany } }
+				if = { limit = { 7 = { has_state_flag = theater_is_active } }
+				hidden_effect = { 7 = { add_to_variable = { world_stage_power_deployed_by^101 = ger_forces_value }  world_stage_state_update_current_day = yes } }
+				subtract_from_variable = { 101.world_stage_power = ger_forces_value tooltip = world_stage_deploy_power_westphalia } }
+			if = { limit = { 26 = { has_state_flag = theater_is_active } }
+				hidden_effect = { 26 = { add_to_variable = { world_stage_power_deployed_by^101 = ger_forces_value }  world_stage_state_update_current_day = yes } }
+				subtract_from_variable = { 101.world_stage_power = ger_forces_value tooltip = world_stage_deploy_power_austria } }
+		}
+	}
+	option = {
+		name = ostasien.14.b
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
+		effect_tooltip = {
+			set_temp_variable = { ger_forces_value = 30 }
+			if = { limit = { 6 = { has_state_flag = theater_is_active } } add_to_temp_variable = { number_of_theaters = 1 } }
+			if = { limit = { 7 = { has_state_flag = theater_is_active } } add_to_temp_variable = { number_of_theaters = 1 } }
+			if = { limit = { 26 = { has_state_flag = theater_is_active } } add_to_temp_variable = { number_of_theaters = 1 } }
+			divide_temp_variable = { ger_forces_value = number_of_theaters?0 }
+			custom_effect_tooltip = country_scope_germany
+			add_to_variable = { var = 101.world_stage_power value = 30 tooltip = add_world_stage_power_no_scope_tt }	
+			if = { limit = { 6 = { has_state_flag = theater_is_active } }
+				hidden_effect = { 6 = { add_to_variable = { world_stage_power_deployed_by^101 = ger_forces_value }  world_stage_state_update_current_day = yes } }
+				subtract_from_variable = { 101.world_stage_power = ger_forces_value tooltip = world_stage_deploy_power_germany } }
+				if = { limit = { 7 = { has_state_flag = theater_is_active } }
+				hidden_effect = { 7 = { add_to_variable = { world_stage_power_deployed_by^101 = ger_forces_value }  world_stage_state_update_current_day = yes } }
+				subtract_from_variable = { 101.world_stage_power = ger_forces_value tooltip = world_stage_deploy_power_westphalia } }
+			if = { limit = { 26 = { has_state_flag = theater_is_active } }
+				hidden_effect = { 26 = { add_to_variable = { world_stage_power_deployed_by^101 = ger_forces_value }  world_stage_state_update_current_day = yes } }
+				subtract_from_variable = { 101.world_stage_power = ger_forces_value tooltip = world_stage_deploy_power_austria } }
+		}
+	}
+	option = {
+		name = ostasien.14.c
+		trigger = { var:world_stage_metropolis = { NOT = { check_variable = { world_stage_coalition = 1 } check_variable = { world_stage_coalition = 3 } } } }
+		effect_tooltip = {
+			set_temp_variable = { ger_forces_value = 30 }
+			if = { limit = { 6 = { has_state_flag = theater_is_active } } add_to_temp_variable = { number_of_theaters = 1 } }
+			if = { limit = { 7 = { has_state_flag = theater_is_active } } add_to_temp_variable = { number_of_theaters = 1 } }
+			if = { limit = { 26 = { has_state_flag = theater_is_active } } add_to_temp_variable = { number_of_theaters = 1 } }
+			divide_temp_variable = { ger_forces_value = number_of_theaters?0 }
+			custom_effect_tooltip = country_scope_germany
+			add_to_variable = { var = 101.world_stage_power value = 30 tooltip = add_world_stage_power_no_scope_tt }	
+			if = { limit = { 6 = { has_state_flag = theater_is_active } }
+				hidden_effect = { 6 = { add_to_variable = { world_stage_power_deployed_by^101 = ger_forces_value }  world_stage_state_update_current_day = yes } }
+				subtract_from_variable = { 101.world_stage_power = ger_forces_value tooltip = world_stage_deploy_power_germany } }
+				if = { limit = { 7 = { has_state_flag = theater_is_active } }
+				hidden_effect = { 7 = { add_to_variable = { world_stage_power_deployed_by^101 = ger_forces_value }  world_stage_state_update_current_day = yes } }
+				subtract_from_variable = { 101.world_stage_power = ger_forces_value tooltip = world_stage_deploy_power_westphalia } }
+			if = { limit = { 26 = { has_state_flag = theater_is_active } }
+				hidden_effect = { 26 = { add_to_variable = { world_stage_power_deployed_by^101 = ger_forces_value }  world_stage_state_update_current_day = yes } }
+				subtract_from_variable = { 101.world_stage_power = ger_forces_value tooltip = world_stage_deploy_power_austria } }
+		}
+	}
+}
+
+country_event = {	### Rheinland
+	id = ostasien.15
+	title = ostasien.15.t
+	desc = {
+		text = ostasien.15.d1
+		trigger = { NOT = { REI = { has_government = autocracy } } }	# normal event
+	}
+	desc = {
+		text = ostasien.15.d2
+		trigger = { REI = { has_government = autocracy } }  			# monarchist event (cannot use 2nd leader text)
+	}
+	picture = GFX_news_ww2_starts
+
+	is_triggered_only = yes
+	
+	major = yes
+
+	option = {
+		name = ostasien.15.a
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 6 } } }	# no Axis and Allies exist yet
+	}
+	option = {
+		name = ostasien.15.b
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 5 } } }
+	}
+	option = {
+		name = ostasien.15.c
+		trigger = { var:world_stage_metropolis = { NOT = { check_variable = { world_stage_coalition = 5 } check_variable = { world_stage_coalition = 6 } } } }
 	}
 }
 
@@ -442,7 +677,7 @@ country_event = {	# Germany Turns Cthulhist
 		name = ostasiencthulhu.2.b
 		trigger = { NOT = { tag = REI } }
 		effect_tooltip = {
-			REI = { set_country_religion = 7 }
+			REI = { set_religion_7 = yes }
 		}
 	}
 }

@@ -14,6 +14,25 @@ get_number_of_connected_theaters = {
 	log = "show [?number_of_connections_displayed] connection(s)"	
 }
 
+get_current_theater_info = {
+	var:current_theater = {
+		# VARS FOR COMBAT
+		log = "PREV.current_defender_deployed_power [?PREV.current_defender_deployed_power]"
+		log = "defender_deployed_power [?defender_deployed_power]"
+		log = "attacker_deployed_power [?attacker_deployed_power]"
+		# SYMBOLS
+		## generic rules
+		set_variable = { PREV.defender_symbol = theater_owner_coalition }
+		set_variable = { PREV.attacker_symbol = coalition_side_attack }
+	}
+	## special cases
+	if = {
+		limit = { check_variable = { current_theater = 1 } }	# spanish civil war
+		set_variable = { defender_symbol = 7 }	# república
+		set_variable = { attacker_symbol = 8 }	# falange
+	}
+}
+
 switch_theater_displayed = {
 	get_number_of_connected_theaters = yes	# there is not situation in which "switch_theater_displayed" is used that "get_number_of_connected_theaters" is not!
 	if = {
@@ -30,3 +49,39 @@ clear_alternative_theater = {
 		clr_country_flag = view_alternative_theater_display
 	}
 }
+
+world_stage_get_timer_frame_daily = {	# this effect is used by the daily tick of World Stage theaters
+	set_temp_variable = { clock_frame_temp = var:current_theater:theater_timer }
+	divide_temp_variable = { clock_frame_temp = var:current_theater:theater_timer_base }
+	multiply_temp_variable = { clock_frame_temp = 8 }
+	round_temp_variable = clock_frame_temp
+	clamp_temp_variable = { var = clock_frame_temp min = 1 max = 8 }
+	set_variable = { clock_frame = 9 }
+	subtract_from_variable = { clock_frame = clock_frame_temp }
+}
+
+world_stage_get_country_icon = {	# scope is a tag # this is calculated every time the menu is opened
+	set_variable = { world_stage_icon_country = world_stage_metropolis }
+	set_variable = { world_stage_icon_coalition = 4 }
+	var:world_stage_metropolis = {
+		set_variable = { PREV.world_stage_icon_coalition = world_stage_coalition }
+	}
+	subtract_from_variable = { world_stage_icon_country = 100 }
+	# specific rules here
+	if = {
+		limit = { check_variable = { world_stage_icon_country = 0 } }
+		set_variable = { world_stage_icon_country = 12 }
+	}
+	if = {
+		limit = { tag = REI has_global_flag = has_uncensored_german_flag }
+		set_variable = { world_stage_icon_country = 13 }
+	}
+	if = {
+		limit = { tag = ROC has_global_flag = ROC_goes_full_machu }
+		set_variable = { world_stage_icon_country = 14 }
+	}
+	if = {
+		limit = { tag = KOB check_variable = { world_stage_metropolis = 120 } }
+		set_variable = { world_stage_icon_country = 15 }
+	}
+} d_world_stage_get_country_icon = { world_stage_get_country_icon = yes log = "[THIS.GetMetropolisName]'s country icon frame: [?world_stage_icon_country]" }
