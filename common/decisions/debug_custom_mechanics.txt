@@ -272,22 +272,37 @@ ss_debug_category  = {
 		}
 	}
 	
-	debug_allow_uncensored_german_flag = {
+	debug_switch_uncensored_german_flag = {
+		icon = GFX_game_rule_german_flags
 		available = {
 			always = yes
-			REI = { exists = yes }
-			custom_trigger_tooltip = {
-				tooltip = "[REI.GetName] has censored flag."
-				NOT = { REI = { has_cosmetic_tag = REI_UNCENSORED } }
-			}
+			#REI = { exists = yes }
+			#custom_trigger_tooltip = {
+			#	tooltip = "[REI.GetName] has censored flag."
+			#	NOT = { REI = { has_cosmetic_tag = REI_UNCENSORED } }
+			#}
 		}
 		visible = {
 			is_debug = yes
 		}
 		complete_effect = {
-			REI = {
-				set_cosmetic_tag = REI_UNCENSORED
-				set_country_leader_ideology = nazism_2
+			if = {
+				limit = { has_global_flag = has_uncensored_german_flag }
+				clr_global_flag = has_uncensored_german_flag
+				REI = {
+					drop_cosmetic_tag = REI_UNCENSORED
+					set_country_leader_ideology = nazism
+					mark_focus_tree_layout_dirty = yes
+				}
+				SHI = { mark_focus_tree_layout_dirty = yes }	# insert every tag that has focuses with censorable symbols
+			} else = {
+				set_global_flag = has_uncensored_german_flag
+				REI = {
+					set_cosmetic_tag = REI_UNCENSORED
+					set_country_leader_ideology = nazism_2
+					mark_focus_tree_layout_dirty = yes
+				}
+				SHI = { mark_focus_tree_layout_dirty = yes }	# insert every tag that has focuses with censorable symbols
 			}
 		}
 	}
