@@ -390,11 +390,11 @@ scripted_gui = {
 		#	world_stage_axis_header_visible = { OR = { has_world_stage_coalition_axis = yes has_state_flag = theater_is_active } }
 		#	world_stage_axis_visible = { OR = { has_world_stage_coalition_axis = yes has_state_flag = theater_is_active } }
 		#	world_stage_axis_power_display_visible = { OR = { has_world_stage_coalition_axis = yes has_state_flag = theater_is_active } }
-			button_reinforce_click_enabled = { has_state_flag = theater_is_active }
-			button_equipment_click_enabled = { has_state_flag = theater_is_active }	# placeholder triggers, change later
-			button_offensive_click_enabled = { has_state_flag = theater_is_active }
-			button_defensive_click_enabled = { has_state_flag = theater_is_active }
-			button_retreat_click_enabled = { has_state_flag = theater_is_active }
+			button_reinforce_click_enabled = { var:current_theater = { has_state_flag = theater_is_active } check_variable = { array_worldstage_action_cooldown^var:current_theater < 1 } }	# placeholder triggers, change later
+			button_equipment_click_enabled = { var:current_theater = { has_state_flag = theater_is_active } }
+			button_offensive_click_enabled = { var:current_theater = { has_state_flag = theater_is_active } }
+			button_defensive_click_enabled = { var:current_theater = { has_state_flag = theater_is_active } }
+			button_retreat_click_enabled = { var:current_theater = { has_state_flag = theater_is_active } }
 			world_stage_attacker_header_visible = { var:current_theater = { has_state_flag = theater_is_active } }
 			world_stage_attacker_symbol_visible = { var:current_theater = { has_state_flag = theater_is_active } }
 			world_stage_attacker_power_display_visible = { var:current_theater = { has_state_flag = theater_is_active } }
@@ -422,7 +422,10 @@ scripted_gui = {
 				switch_theater_displayed = yes
 				get_current_theater_info = yes
 			}
-			button_reinforce_click = { log = "debug: button_reinforce" }
+			button_reinforce_click = {
+				set_variable = { array_worldstage_action_cooldown^var:current_theater = 5 } # number of days of cooldown
+				log = "debug: button_reinforce theater nº[?var:current_theater], cooldown: [?array_worldstage_action_cooldown^var:current_theater] days"
+			}
 		}
 	}
 	

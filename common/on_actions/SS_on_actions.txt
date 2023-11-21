@@ -619,8 +619,17 @@ on_actions = {
 			set_variable = { global.sealion_number = 1 }
 			set_variable = { global.husky_number = 1 }
 			set_variable = { global.torch_number = 1 }
+			# a few variables related to operating buttons in the World Stage menu
+			every_country = {			# adding cooldown for buttons
+				limit = { is_ai = no }	# only humans interact with those buttons
+				every_state = {			# each country has a list of theaters, each one with it's own cooldown
+					limit = { has_variable = theater_owner }
+					PREV = { add_to_array = { array_worldstage_action_cooldown = 0 } }
+					log = "[PREV.GetName] adding cooldown entry to [THIS.GetName]'s proxy"
+				}
+			}
 			every_possible_country = {
-				limt = { is_ai = yes }
+				limit = { is_ai = yes }
 				set_country_flag = enable_worldstage_autopilot	### By setting this flag, we can check only for that when calculating AI moves, without needing to ask if it's an AI player or a human player with autopilot
 			}
 			# scheduled ww2 events	############### CHANGE TO STATE EVENTS LATER############### CHANGE TO STATE EVENTS LATER############### CHANGE TO STATE EVENTS LATER
@@ -1190,8 +1199,21 @@ on_actions = {
 						set_variable = { legitimacy_popularity_bonus = pop_bonus }
 					} else = { set_variable = { legitimacy_popularity_bonus = 0 } }
 				}
-				### WORLD STAGE TIMER UPDATE
-				world_stage_get_timer_frame_daily = yes
+				log = "test"
+				### WORLD STAGE
+				world_stage_get_timer_frame_daily = yes	# timer for each theater resolving
+				if = {
+					limit = { has_variable = array_worldstage_action_cooldown^0 }
+					log = "test: has array"
+				} else = { log = "oops" }
+				for_each_loop = {
+					array = array_worldstage_action_cooldown
+					index = this_theater
+					value = new_value
+					
+					subtract_from_variable = { array_worldstage_action_cooldown^this_theater = 1 }
+					log = "[THIS.GetName]: theater nº [?this_theater], cooldown = [?array_worldstage_action_cooldown^this_theater]"
+				}
 			}
 		}
 	}
