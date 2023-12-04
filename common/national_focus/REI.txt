@@ -34,16 +34,17 @@ focus_tree = {
 		icon = GFX_focus_REI_colonial_hegemony
 		cost = 10
 		mutually_exclusive = {  focus = REI_matsuyama_pact }
-		ai_will_do = { factor = 5 }
+		ai_will_do = {
+			factor = 5
+			modifier = {
+				factor = 4
+				IMS = { is_ai = no }	# give a human player a bit of help
+			}
+		}
 		
 		relative_position_id = REI_luds_manifesto
-		x = 7
+		x = 9
 		y = 0
-		offset = {
-			x = 1
-			y = 0
-			trigger = { has_global_flag = religion_cthulhu_allowed }
-		}
 
 		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WAR_SUPPORT}
 
@@ -71,13 +72,25 @@ focus_tree = {
 
 	focus = {
 		id = REI_matsuyama_pact
-		icon = { value = GFX_focus_SHI_friends_in_the_west_alt trigger = { has_global_flag = has_uncensored_german_flag } }
+		icon = { value = GFX_focus_SHI_friends_in_the_west_UNCENSORED trigger = { has_global_flag = has_uncensored_german_flag } }
 		icon = GFX_focus_SHI_friends_in_the_west
 		dynamic = yes
 		cost = 10
 
 		mutually_exclusive = {  focus = REI_colonial_hegemony }
-		ai_will_do = { factor = 10 }
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 0.1
+				IMS = { is_ai = no }	# give a human player a bit of help
+				SHI = { is_ai = yes }
+			}
+			modifier = {
+				factor = 0.5
+				IMS = { is_ai = no }	# give a human player a bit of help
+				SHI = { is_ai = no }
+			}
+		}
 		
 		relative_position_id = REI_colonial_hegemony
 		x = 2
@@ -115,10 +128,16 @@ focus_tree = {
 		cost = 10
 
 		prerequisite = { focus = REI_colonial_hegemony }
-		ai_will_do = { factor = 10 }
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 5
+				IMS = { is_ai = no }	# choose this a bit earlier if it's a human player
+			}
+		}
 		
 		relative_position_id = REI_colonial_hegemony
-		x = 0
+		x = -1
 		y = 1
 
 		
@@ -171,7 +190,7 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_DIPLOMACY }
 		
 		relative_position_id = REI_matsuyama_pact
-		x = 0
+		x = 1
 		y = 1
 
 		available = {
@@ -219,7 +238,7 @@ focus_tree = {
 		
 		relative_position_id = REI_matsuyama_pact
 		x = -1
-		y = 3
+		y = 1
 
 		completion_reward = {
 			add_manpower = 10000
@@ -374,21 +393,21 @@ focus_tree = {
 		available = {
 			#autocracy > var:party_popularity@fascism
 			has_country_flag = lud_died
-			hidden_trigger = { NOT = { has_global_trigger = REI_new_reich_completed } }
+			hidden_trigger = { NOT = { has_global_flag = REI_new_reich_completed } }
 		}
-		bypass = { hidden_trigger = { has_global_trigger = REI_kaiser_august_completed } }
+		bypass = { hidden_trigger = { has_global_flag = REI_kaiser_august_completed } }
 		
 		completion_reward = {
 			set_politics = {
 				ruling_party = autocracy
 				elections_allowed = no
-				last_election = "[REI.GetDateString]"
+				#last_election = "[REI.GetDateString]"
 				election_frequency = 48
 			}
 			add_ideas = REI_idea_austrian_painter
 			REI_august_hohenzollern = { promote_character = yes }
 			remove_ideas = REI_kaiser_willy
-			set_global_trigger = REI_kaiser_august_completed
+			set_global_flag = REI_kaiser_august_completed
 		}
 	}
 	
@@ -414,15 +433,15 @@ focus_tree = {
 		available = {
 			#fascism > var:party_popularity@autocracy
 			has_country_flag = lud_died
-			hidden_trigger = { NOT = { bypass = { has_global_trigger = REI_kaiser_august_completed } } }
+			hidden_trigger = { NOT = { has_global_flag = REI_kaiser_august_completed } }
 		}
-		bypass = { has_global_trigger = REI_new_reich_completed }
+		bypass = { has_global_flag = REI_new_reich_completed }
 		
 		completion_reward = {
 			set_politics = {
 				ruling_party = fascism
 				elections_allowed = no
-				last_election = "[REI.GetDateString]"
+				#last_election = "[REI.GetDateString]"
 				election_frequency = 48
 			}
 			add_ideas = REI_idea_figurehead_kaiser
@@ -434,7 +453,7 @@ focus_tree = {
 			}
 			remove_ideas = REI_kaiser_willy
 		}
-		set_global_trigger = REI_new_reich_completed
+		set_global_flag = REI_new_reich_completed
 	}
 
 	focus = {
@@ -465,7 +484,7 @@ focus_tree = {
 			set_politics = {
 				ruling_party = fascism
 				elections_allowed = no
-				last_election = "[REI.GetDateString]"
+				#last_election = "[REI.GetDateString]"
 				election_frequency = 48
 			}
 			add_ideas = REI_idea_army_over_executive
@@ -510,7 +529,7 @@ focus_tree = {
 				set_politics = {
 					ruling_party = neutrality
 					elections_allowed = no
-					last_election = "[REI.GetDateString]"
+					#last_election = "[REI.GetDateString]"
 					election_frequency = 48
 				}
 			}
@@ -563,7 +582,7 @@ focus_tree = {
 				set_politics = {
 					ruling_party = neutrality
 					elections_allowed = no
-					last_election = "[REI.GetDateString]"
+					#last_election = "[REI.GetDateString]"
 					election_frequency = 48
 				}
 			}
@@ -580,7 +599,7 @@ focus_tree = {
 	focus = {
 		id = REI_paganphiles
 		icon = GFX_focus_REI_paganphiles
-		search_filters = { FOCUS_FILTER_RELIGION }
+		search_filters = { FOCUS_FILTER_RELIGION FOCUS_FILTER_POLITICAL }
 		
 		ai_will_do = {
 			factor = 10
@@ -614,7 +633,7 @@ focus_tree = {
 			set_politics = {
 				ruling_party = fascism
 				elections_allowed = no
-				last_election = "[REI.GetDateString]"
+				#last_election = "[REI.GetDateString]"
 				election_frequency = 48
 			}
 			hidden_effect = {
@@ -759,7 +778,7 @@ focus_tree = {
 			modifier = { add = 999 date > 1938.1.1 }
 			modifier = { factor = 10 date > 1939.1.1 }
 		}
-		prerequisite = { focus = REI_long_knives focus = REI_help_spain }
+		prerequisite = { focus = REI_long_knives } # focus = REI_help_spain }
 		
 		relative_position_id = REI_long_knives
 		x = -1
@@ -1506,7 +1525,7 @@ focus_tree = {
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 			hidden_effect = {
-				clam_temp_variable = { var = sov_forces_value min = 5 }
+				clamp_temp_variable = { var = sov_forces_value min = 5 }
 				news_event = worldstage.32	# handles diplomatic relations
 				9 = {	# Belarus proxy
 					set_state_flag = theater_is_active
@@ -2427,142 +2446,18 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = REI_help_japanese_strategy
-		icon = GFX_focus_REI_japanese_strategy
-		search_filters = { FOCUS_FILTER_DIPLOMACY }
-		
-		mutually_exclusive = { focus = REI_help_shikoku_strategy }
-		prerequisite = { focus = REI_coopt_local_leaderships focus = REI_commandeer_industry }
-		
-		relative_position_id = REI_coopt_local_leaderships
-		x = 0
-		y = 2
-		cost = 10
-		
-		available_if_capitulated = yes
-		
-		ai_will_do = {
-			factor = 5
-			modifier = {
-				factor = 3
-				has_completed_focus = REI_colonial_hegemony
-			}
-			modifier = {
-				factor = 0
-				has_opinion = {
-					target = SHI
-					value > 100
-				}
-			}
-		}
-		
-		completion_reward = {
-			custom_effect_tooltip = PRO_trade_japan_tt
-			every_other_country = {
-				limit = {
-					NOT = { tag = OSA tag = HIR tag = KOB tag = REI tag = FER tag = JOS tag = AMC tag = OKI tag = PRT tag = GAN }
-				}
-				hidden_effect = { add_ideas = REI_idea_trade_bonus_hidden }
-				add_opinion_modifier = {
-					target = REI
-					modifier = REI_diplomatic_overtures
-				}
-				add_opinion_modifier = {
-					target = REI
-					modifier = REI_diplomatic_overtures_trade
-				}
-			}
-		}
-	}
-	
-	focus = {
-		id = REI_help_shikoku_strategy
-		icon = GFX_focus_REI_bet_on_shikoku
-		search_filters = { FOCUS_FILTER_DIPLOMACY }
-		
-		mutually_exclusive = { focus = REI_help_japanese_strategy }
-		prerequisite = { focus = REI_commandeer_industry focus = REI_coopt_local_leaderships }
-		
-		relative_position_id = REI_commandeer_industry
-		x = 0
-		y = 2
-		cost = 10
-		
-		available_if_capitulated = yes
-		
-		ai_will_do = {
-			factor = 5
-			modifier = {
-				factor = 3
-				has_completed_focus = REI_matsuyama_pact
-			}
-			modifier = {
-				factor = 0
-				has_opinion = {
-					target = SHI
-					value < 1
-				}
-			}
-		}
-		
-		available = {
-			SHI = {
-				exists = yes
-				NOT = { has_war_with = REI }
-			}
-		}
-		
-		completion_reward = {
-			# event for SHI
-			SHI = {
-				add_opinion_modifier = {
-					target = REI
-					modifier = REI_prefered_partner
-				}
-				add_opinion_modifier = {
-					target = REI
-					modifier = REI_prefered_partner_trade
-				}
-				add_ideas = REI_idea_prefered_partner
-			}
-			hidden_effect = {
-				add_opinion_modifier = {
-					target = SHI
-					modifier = REI_prefered_partner
-				}
-				add_opinion_modifier = {
-					target = SHI
-					modifier = REI_prefered_partner_trade
-				}
-				add_ai_strategy = {
-					type = alliance
-					id = SHI
-					value = 200
-				}
-				SHI = {
-					add_ai_strategy = {
-						type = alliance
-						id = REI
-						value = 200
-					}
-				}
-			}
-		}
-	}
-	
-	focus = {
 		id = REI_local_industry
 		icon = GFX_focus_generic_arms_factory
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		
-		prerequisite = { focus = REI_state_of_affairs  focus = REI_reinforce_garrison }
+		prerequisite = { focus = REI_reinforce_garrison }
 		
 		relative_position_id = REI_reinforce_garrison
-		x = 1
-		y = 1
+		x = 0
+		y = 2
 		cost = 10
 		offset = {
-			x = -1
+			x = 0
 			y = 1
 			trigger = { has_global_flag = religion_cthulhu_allowed }
 		}
@@ -2608,6 +2503,131 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = REI_help_japanese_strategy
+		icon = GFX_focus_REI_japanese_strategy
+		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_INDUSTRY }
+		
+		prerequisite = { focus = REI_colonial_hegemony }
+		prerequisite = { focus = REI_reinforce_garrison }
+		
+		relative_position_id = REI_colonial_hegemony
+		x = 0
+		y = 2
+		cost = 10
+		
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 5
+			modifier = {
+				factor = 3
+				has_completed_focus = REI_colonial_hegemony
+			}
+			modifier = {
+				factor = 0
+				has_opinion = {
+					target = SHI
+					value > 100
+				}
+			}
+		}
+		
+		completion_reward = {
+			custom_effect_tooltip = PRO_trade_japan_tt
+			every_other_country = {
+				limit = {
+					NOT = { tag = OSA tag = HIR tag = KOB tag = REI tag = FER tag = JOS tag = AMC tag = OKI tag = PRT tag = GAN }
+				}
+				hidden_effect = { add_ideas = REI_idea_trade_bonus_hidden }
+				add_opinion_modifier = {
+					target = REI
+					modifier = REI_diplomatic_overtures
+				}
+				add_opinion_modifier = {
+					target = REI
+					modifier = REI_diplomatic_overtures_trade
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = REI_help_shikoku_strategy
+		icon = GFX_focus_REI_bet_on_shikoku
+		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_POLITICAL }
+		
+		prerequisite = { focus = REI_matsuyama_pact }
+		prerequisite = { focus = REI_reinforce_garrison }
+		
+		relative_position_id = REI_matsuyama_pact
+		x = 0
+		y = 2
+		cost = 10
+		
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 5
+			modifier = {
+				factor = 3
+				has_completed_focus = REI_matsuyama_pact
+			}
+			modifier = {
+				factor = 0
+				has_opinion = {
+					target = SHI
+					value < 1
+				}
+			}
+		}
+		
+		available = {
+			SHI = {
+				exists = yes
+				NOT = { has_war_with = REI }
+			}
+		}
+		
+		completion_reward = {
+			# event for SHI
+			add_political_power = 100
+			SHI = {
+				add_opinion_modifier = {
+					target = REI
+					modifier = REI_prefered_partner
+				}
+				add_opinion_modifier = {
+					target = REI
+					modifier = REI_prefered_partner_trade
+				}
+				add_ideas = REI_idea_prefered_partner
+			}
+			hidden_effect = {
+				add_opinion_modifier = {
+					target = SHI
+					modifier = REI_prefered_partner
+				}
+				add_opinion_modifier = {
+					target = SHI
+					modifier = REI_prefered_partner_trade
+				}
+				add_ai_strategy = {
+					type = alliance
+					id = SHI
+					value = 200
+				}
+				SHI = {
+					add_ai_strategy = {
+						type = alliance
+						id = REI
+						value = 200
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
 		id = REI_german_standard
 		icon = GFX_focus_REI_german_engineering
 		search_filters = { FOCUS_FILTER_RESEARCH }
@@ -2615,7 +2635,7 @@ focus_tree = {
 		prerequisite = { focus = REI_local_industry }
 		
 		relative_position_id = REI_local_industry
-		x = -2
+		x = 3
 		y = 1
 		cost = 10
 		
@@ -2645,9 +2665,10 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_MANPOWER }
 		
 		prerequisite = { focus = REI_local_industry }
+		prerequisite = { focus = REI_state_of_affairs }
 		
 		relative_position_id = REI_local_industry
-		x = 3
+		x = 0
 		y = 1
 		cost = 10
 		
@@ -2667,9 +2688,10 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_SPY }
 		
 		prerequisite = { focus = REI_local_industry }
+		prerequisite = { focus = REI_state_of_affairs }
 		
 		relative_position_id = REI_local_industry
-		x = 1
+		x = -2
 		y = 1
 		cost = 10
 		
@@ -2871,9 +2893,42 @@ focus_tree = {
 				set_character_flag = dual_leader_id_alfred_rosenberg
 				set_character_flag = dual_leader_second_title_reichchancellror
 			}
+			capital_scope = {
+				custom_effect_tooltip = religion_convert_state_to_cthulhu_tt
+				if = {
+					limit = { has_religion_1 = yes }
+					divide_variable = { state_religion_buddhism = 2 }
+					add_to_variable = { state_religion_cthulhu = state_religion_buddhism }
+				}
+				if = {
+					limit = { has_religion_2 = yes }
+					divide_variable = { state_religion_shinto = 2 }
+					add_to_variable = { state_religion_cthulhu = state_religion_shinto }
+				}
+				if = {
+					limit = { has_religion_3 = yes }
+					divide_variable = { state_religion_christianity = 2 }
+					add_to_variable = { state_religion_cthulhu = state_religion_christianity }
+				}
+				if = {
+					limit = { has_religion_4 = yes }
+					divide_variable = { state_religion_taoism = 2 }
+					add_to_variable = { state_religion_cthulhu = state_religion_taoism }
+				}
+				if = {
+					limit = { has_religion_5 = yes }
+					divide_variable = { state_religion_confucianism = 2 }
+					add_to_variable = { state_religion_cthulhu = state_religion_confucianism }
+				}
+				if = {
+					limit = { has_religion_6 = yes }
+					divide_variable = { state_religion_secularism = 2 }
+					add_to_variable = { state_religion_cthulhu = state_religion_secularism }
+				}
+			}
 		}
 	}
-	
+
 	focus = {
 		id = REI_cult_of_cthulhu_a
 		icon = GFX_focus_REI_call_of_cthulhu2
