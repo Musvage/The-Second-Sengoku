@@ -437,7 +437,7 @@ scripted_gui = {
 				var:current_theater = { has_state_flag = theater_is_active }
 				check_variable = { array_worldstage_action_cooldown^var:current_theater < 1 }
 				command_power > 24.9
-				#check_variable = { current_theater_strength > 1 }
+				check_variable = { current_theater_strength > 1 }
 				world_stage_has_permission_no_tooltip = yes
 			}
 			button_retreat_click_enabled = {
@@ -499,6 +499,17 @@ scripted_gui = {
 					set_variable = { array_worldstage_action_ongoing^var:current_theater = @action_offensive } # type of action taken
 					add_command_power  = -25
 					log = "debug: button_offensive theater nº[?var:current_theater], cooldown: [?array_worldstage_action_cooldown^var:current_theater] days"
+					set_temp_variable = { offensive_bonus = current_theater_strength }
+					multiply_temp_variable = { offensive_bonus = 0.1 }
+					clamp_temp_variable = { var = offensive_bonus min = 0.05 max = 0.75 }
+					var:current_theater = {
+						if = {
+							limit = { PREV.world_stage_coalition = theater_owner_coalition }	# it's a defender
+							add_to_variable = { attacker_strategic_advantage = offensive_bonus }
+						} else = {																# it's an attacker
+							add_to_variable = { defender_strategic_advantage = offensive_bonus }
+						}
+					}
 				}
 			}
 			button_defenses_click = {
@@ -508,11 +519,18 @@ scripted_gui = {
 					set_variable = { array_worldstage_action_ongoing^var:current_theater = @action_defenses } # type of action taken
 					add_command_power  = -25
 					log = "debug: button_defenses theater nº[?var:current_theater], cooldown: [?array_worldstage_action_cooldown^var:current_theater] days"
+					set_temp_variable = { defensive_bonus = current_theater_strength }
+					multiply_temp_variable = { defensive_bonus = 0.5 }
+					clamp_temp_variable = { var = defensive_bonus min = 0.1 max = 0.50 }
 					var:current_theater = {
 						if = {
 							limit = { PREV.world_stage_coalition = theater_owner_coalition }	# it's a defender
-							multiply_variable = { attacker_strategic_advantage = 0.5 }
-						} else = { multiply_variable = { defender_strategic_advantage = 0.5 } }	# it's an attacker
+							subtract_from_variable = { attacker_strategic_advantage = defensive_bonus }
+							clamp_variable = { var = attacker_strategic_advantage min = 0 }
+						} else = {																# it's an attacker
+							subtract_from_variable = { defender_strategic_advantage = defensive_bonus }
+							clamp_variable = { var = defender_strategic_advantage min = 0 }
+						}
 					}
 				}
 			}
@@ -590,7 +608,7 @@ scripted_gui = {
 				var:current_theater = { has_state_flag = theater_is_active }
 				check_variable = { array_worldstage_action_cooldown^var:current_theater < 1 }
 				command_power > 24.9
-				#check_variable = { current_theater_strength > 1 }
+				check_variable = { current_theater_strength > 1 }
 				world_stage_has_permission_no_tooltip = yes
 			}
 			button_retreat_click_enabled = {
@@ -652,6 +670,17 @@ scripted_gui = {
 					set_variable = { array_worldstage_action_ongoing^var:current_theater = @action_offensive } # type of action taken
 					add_command_power  = -25
 					log = "debug: button_offensive theater nº[?var:current_theater], cooldown: [?array_worldstage_action_cooldown^var:current_theater] days"
+					set_temp_variable = { offensive_bonus = current_theater_strength }
+					multiply_temp_variable = { offensive_bonus = 0.1 }
+					clamp_temp_variable = { var = offensive_bonus min = 0.05 max = 0.75 }
+					var:current_theater = {
+						if = {
+							limit = { PREV.world_stage_coalition = theater_owner_coalition }	# it's a defender
+							add_to_variable = { attacker_strategic_advantage = offensive_bonus }
+						} else = {																# it's an attacker
+							add_to_variable = { defender_strategic_advantage = offensive_bonus }
+						}
+					}
 				}
 			}
 			button_defenses_click = {
@@ -661,11 +690,18 @@ scripted_gui = {
 					set_variable = { array_worldstage_action_ongoing^var:current_theater = @action_defenses } # type of action taken
 					add_command_power  = -25
 					log = "debug: button_defenses theater nº[?var:current_theater], cooldown: [?array_worldstage_action_cooldown^var:current_theater] days"
+					set_temp_variable = { defensive_bonus = current_theater_strength }
+					multiply_temp_variable = { defensive_bonus = 0.5 }
+					clamp_temp_variable = { var = defensive_bonus min = 0.1 max = 0.50 }
 					var:current_theater = {
 						if = {
 							limit = { PREV.world_stage_coalition = theater_owner_coalition }	# it's a defender
-							multiply_variable = { attacker_strategic_advantage = 0.5 }
-						} else = { multiply_variable = { defender_strategic_advantage = 0.5 } }	# it's an attacker
+							subtract_from_variable = { attacker_strategic_advantage = defensive_bonus }
+							clamp_variable = { var = attacker_strategic_advantage min = 0 }
+						} else = {																# it's an attacker
+							subtract_from_variable = { defender_strategic_advantage = defensive_bonus }
+							clamp_variable = { var = defender_strategic_advantage min = 0 }
+						}
 					}
 				}
 			}
