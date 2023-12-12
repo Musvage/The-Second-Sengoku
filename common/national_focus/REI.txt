@@ -948,7 +948,7 @@ focus_tree = {
 	focus = {
 		id = REI_help_finland
 		icon = GFX_focus_REI_help_finland
-		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WORLD }
+		search_filters = { FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WORLD }
 		ai_will_do = { factor = 100 }
 		prerequisite = { focus = REI_befriend_soviet_enemies }
 		
@@ -964,8 +964,8 @@ focus_tree = {
 				FER = { has_completed_focus = FER_soviet_finnish_war }
 			}
 			custom_trigger_tooltip = { tooltip = world_stage_germany_did_not_capitulate_trigger NOT = { has_global_flag = world_stage_germany_capitulated } }
-			custom_trigger_tooltip = { tooltip = world_stage_germany_did_not_finland_trigger NOT = { has_global_flag = world_stage_finland_capitulated } }
-			has_global_flag = world_stage_finland_exists
+			custom_trigger_tooltip = { tooltip = world_stage_finland_did_not_capitulate_trigger NOT = { has_global_flag = world_stage_finland_capitulated } }
+			#has_global_flag = world_stage_finland_exists	# MAYBE THIS IS UNCESSARY / OLD CODE, CHECK LATER --- TODO TO DO TO-DO
 		}
 		
 		bypass = {
@@ -973,9 +973,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			army_experience = 5
-			air_experience = 5
-			navy_experience = 5
+			add_war_support = 0.05
 			FER = { custom_effect_tooltip = REI_help_finland_tt }
 			custom_effect_tooltip = metropolis_scope_germany
 			subtract_from_variable = {
@@ -984,13 +982,16 @@ focus_tree = {
 				tooltip = remove_world_stage_power_no_scope_tt
 			}
 			set_global_flag = REI_help_finland_completed
+			custom_effect_tooltip = metropolis_scope_finland
+			custom_effect_tooltip = join_coalition_pactofsteel	# Pact of Steel (Axis does not exist yet)
+			hidden_effect = { 122 = { world_stage_join_pactofsteel = yes } }
 		}
 	}
 	
 	focus = {
 		id = REI_help_baltics
 		icon = GFX_focus_REI_help_baltic
-		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_MILITARY FOCUS_FILTER_WORLD }
+		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_WORLD }
 		ai_will_do = { factor = 100 }
 		prerequisite = { focus = REI_befriend_soviet_enemies }
 		
@@ -1006,13 +1007,14 @@ focus_tree = {
 		}
 		
 		available = {
+			NOT = {
+				FER = { has_completed_focus = FER_annex_batlic_states }	# batlic?
+			}
 			custom_trigger_tooltip = { tooltip = world_stage_germany_did_not_capitulate_trigger NOT = { has_global_flag = world_stage_germany_capitulated } }
 		}
 				
 		completion_reward = {
-			army_experience = 5
-			air_experience = 5
-			navy_experience = 5
+			add_war_support = 0.05
 			FER = { custom_effect_tooltip = REI_help_baltics_tt }
 			custom_effect_tooltip = metropolis_scope_germany
 			subtract_from_variable = {
@@ -1441,7 +1443,7 @@ focus_tree = {
 			set_temp_variable = { chance_success = 200 } 101 = { multiply_temp_variable = { chance_success = doctrine_bonus_land } multiply_temp_variable = { chance_success = doctrine_bonus_air } }
 			set_temp_variable = { chance_failure = 100 } 104 = { multiply_temp_variable = { chance_failure = doctrine_bonus_land } multiply_temp_variable = { chance_failure = doctrine_bonus_air } }
 			if = { limit = { has_global_flag = GER_SOV_pact_enabled } add_to_temp_variable = { chance_success = 200 } }
-			#if = { limit = { <<FINLAND>> = { check_variable = { world_stage_coalition = 3 } } } add_to_temp_variable = { chance_success = 200 } }	# change to Finland later
+			if = { limit = { 122 = { check_variable = { world_stage_coalition = 3 } } } add_to_temp_variable = { chance_success = 200 } }
 			# there are 4 possibilities: WW2 is active or ended, German-Soviet Pact is active or not. Those without GER_SOV_pact_enabled must be checked first so the flag can be cleared without firing 2 events
 			hidden_effect = {
 				set_temp_variable = { ger_forces_value = world_stage_power }
@@ -1538,10 +1540,10 @@ focus_tree = {
 				}
 			}
 			random_list = {
-				100 = { news_event = { id = worldstage.37 days = 2 random = 2 } }					# FOR TESTING, SET ACTUAL VALUES LATER (the ones commented bellow)
-				0 = { news_event = { id = worldstage.38 days = 2 random = 2 } }
-				#var:chance_success = { news_event = { id = worldstage.37 days = 14 random = 7 } }
-				#var:chance_failure = { news_event = { id = worldstage.38 days = 14 random = 7 } }
+				#100 = { news_event = { id = worldstage.37 days = 2 random = 2 } }					# FOR TESTING, SET ACTUAL VALUES LATER (the ones commented bellow)
+				#0 = { news_event = { id = worldstage.38 days = 2 random = 2 } }
+				var:chance_success = { news_event = { id = worldstage.37 days = 14 random = 7 } }
+				var:chance_failure = { news_event = { id = worldstage.38 days = 14 random = 7 } }
 			}
 			custom_effect_tooltip = barbarossa_factors_tt
 		}
