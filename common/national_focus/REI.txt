@@ -965,7 +965,7 @@ focus_tree = {
 			}
 			custom_trigger_tooltip = { tooltip = world_stage_germany_did_not_capitulate_trigger NOT = { has_global_flag = world_stage_germany_capitulated } }
 			custom_trigger_tooltip = { tooltip = world_stage_finland_did_not_capitulate_trigger NOT = { has_global_flag = world_stage_finland_capitulated } }
-			#has_global_flag = world_stage_finland_exists	# MAYBE THIS IS UNCESSARY / OLD CODE, CHECK LATER --- TODO TO DO TO-DO
+			#has_global_flag = world_stage_finland_exists	# MAYBE THIS IS UNCESSARY / OLD CODE, CHECK LATER --- TODO TO-DO TO DO
 		}
 		
 		bypass = {
@@ -1063,9 +1063,9 @@ focus_tree = {
 			}
 			custom_effect_tooltip = metropolis_scope_china
 			#add_to_variable = {							# strat adv. add later, if this focus gets implemented
-			#	tooltip = world_stage_bonus_power_mongolia
-			#	global.ROC_strength_mongolia_bonus = 10 
-			#}
+			#	tooltip = world_stage_bonus_power_mongolia	# THIS IS OLD SYSTEM CODE
+			#	global.ROC_strength_mongolia_bonus = 10 	# THIS IS OLD SYSTEM CODE
+			#}												# THIS IS OLD SYSTEM CODE -> update to new code when implementing this focus
 			set_global_flag = REI_help_mongolia_completed
 		}
 	}
@@ -1625,7 +1625,6 @@ focus_tree = {
 					101.world_stage_power = ger_forces_value
 					tooltip = world_stage_deploy_power
 				}
-				
 			} else = { custom_effect_tooltip = world_stage_possibly_reinforce_here }
 			custom_effect_tooltip = theater_scope_egypt
 			if = {
@@ -1654,7 +1653,7 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = REI_help_italy							allow_branch = { is_debug = yes }
+		id = REI_help_italy							#allow_branch = { is_debug = yes }
 		icon = GFX_focus_REI_help_italy
 		search_filters = { FOCUS_FILTER_WORLD }
 		
@@ -1671,13 +1670,108 @@ focus_tree = {
 		
 		available = {
 			has_global_flag = world_stage_world_war_2_is_active
-			custom_trigger_tooltip = { tooltip = world_stage_vichy_did_not_capitulate_trigger NOT = { has_global_flag = world_stage_vichy_capitulated } }
+			custom_trigger_tooltip = {
+				tooltip = germany_has_world_stage_power_30
+				101 = { check_variable = { world_stage_power > 29 } }
+			}
+			OR = {
+				custom_trigger_tooltip = {
+					tooltip = theater_active_italy
+					23 = { has_state_flag = theater_is_active }
+				}
+				custom_trigger_tooltip = {
+					tooltip = theater_active_sicily
+					24 = { has_state_flag = theater_is_active }
+				}
+				custom_trigger_tooltip = {
+					tooltip = theater_active_alpes
+					25 = { has_state_flag = theater_is_active }
+				}
+			}
+			custom_trigger_tooltip = { tooltip = world_stage_italy_did_not_capitulate_trigger NOT = { has_global_flag = world_stage_italy_capitulated } }
 			custom_trigger_tooltip = { tooltip = world_stage_germany_did_not_capitulate_trigger NOT = { has_global_flag = world_stage_germany_capitulated } }
 		}
 		
 		bypass = { hidden_trigger = { has_global_flag = REI_help_italy_completed } }
 		
 		completion_reward = {
+			set_temp_variable = { number_of_theater_to_help = 0 }
+			if = { limit { { 23 = { has_state_flag = theater_is_active } } } add_to_temp_variable = { number_of_theater_to_help = 1 }
+			if = { limit { { 24 = { has_state_flag = theater_is_active } } } add_to_temp_variable = { number_of_theater_to_help = 1 }
+			if = { limit { { 25 = { has_state_flag = theater_is_active } } } add_to_temp_variable = { number_of_theater_to_help = 1 }
+			set_temp_variable = { ger_forces_value = 30 }
+			set_temp_variable = { strategic_bonus_value = 0.6 }
+			set_temp_variable = { xp_bonus = 5 }
+			divide_temp_variable = { ger_forces_value = number_of_theater_to_help }
+			divide_temp_variable = { strategic_bonus_value = number_of_theater_to_help }
+			multiply_temp_variable = { xp_bonus = number_of_theater_to_help}
+			custom_effect_tooltip = theater_scope_italy
+			if = {
+				limit = { 23 = { has_state_flag = theater_is_active } }
+				if = {
+					limit = { var:world_stage_metropolis = { check_variable = { 23.coalition_side_attack = world_stage_coalition } } }
+					add_to_variable = {
+						23.defender_strategic_advantage = var:strategic_bonus_value
+						tooltip = world_stage_add_strategic_advantage_attacker
+					}
+				} else = {
+					add_to_variable = {
+						23.defender_strategic_advantage = var:strategic_bonus_value
+						tooltip = world_stage_add_strategic_advantage_defender
+					}
+				}
+				hidden_effect = { 23 = { add_to_variable = { world_stage_power_deployed_by^101 = ger_forces_value }  world_stage_state_update_current_day = yes } }	# proxy for Italy/Rome
+				subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+					101.world_stage_power = ger_forces_value
+					tooltip = world_stage_deploy_power
+				}			
+			} else = { custom_effect_tooltip = world_stage_possibly_reinforce_here }
+			custom_effect_tooltip = theater_scope_sicily
+			if = {
+				limit = { 24 = { has_state_flag = theater_is_active } }
+				if = {
+					limit = { var:world_stage_metropolis = { check_variable = { 24.coalition_side_attack = world_stage_coalition } } }
+					add_to_variable = {
+						24.defender_strategic_advantage = var:strategic_bonus_value
+						tooltip = world_stage_add_strategic_advantage_attacker
+					}
+				} else = {
+					add_to_variable = {
+						24.defender_strategic_advantage = var:strategic_bonus_value
+						tooltip = world_stage_add_strategic_advantage_defender
+					}
+				}
+				hidden_effect = { 24 = { add_to_variable = { world_stage_power_deployed_by^101 = ger_forces_value }  world_stage_state_update_current_day = yes } }	# proxy for Sicily
+				subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+					101.world_stage_power = ger_forces_value
+					tooltip = world_stage_deploy_power
+				}			
+			} else = { custom_effect_tooltip = world_stage_possibly_reinforce_here }
+			custom_effect_tooltip = theater_scope_alpes
+			if = {
+				limit = { 25 = { has_state_flag = theater_is_active } }
+				if = {
+					limit = { var:world_stage_metropolis = { check_variable = { 25.coalition_side_attack = world_stage_coalition } } }
+					add_to_variable = {
+						25.defender_strategic_advantage = var:strategic_bonus_value
+						tooltip = world_stage_add_strategic_advantage_attacker
+					}
+				} else = {
+					add_to_variable = {
+						25.defender_strategic_advantage = var:strategic_bonus_value
+						tooltip = world_stage_add_strategic_advantage_defender
+					}
+				}
+				hidden_effect = { 25 = { add_to_variable = { world_stage_power_deployed_by^101 = ger_forces_value }  world_stage_state_update_current_day = yes } }	# proxy for Alpes/Northern Italy
+				subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+					101.world_stage_power = ger_forces_value
+					tooltip = world_stage_deploy_power
+				}			
+			} else = { custom_effect_tooltip = world_stage_possibly_reinforce_here }
+			
+			
+			army_experience = xp_bonus
+			set_global_flag = REI_afrikakorps_completed
 			set_global_flag = REI_help_italy_completed
 		}
 	}
