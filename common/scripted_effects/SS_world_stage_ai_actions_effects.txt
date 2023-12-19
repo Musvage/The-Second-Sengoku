@@ -33,6 +33,29 @@
 @sealion		= 32
 @taiwan			= 33
 
+# indexes of World Stage actions
+@action_none = 0
+@action_reinforce = 1
+@action_equipment = 2
+@action_offensive = 3
+@action_defenses = 4
+@action_retreat = 5
+# costs of World Stage actions	# reinforce/reatread will use some more dynamic variables, specific overall strength costs are not shown here
+@reinforce_cp = 10
+@reinforce_cooldown = 7
+@supply_cp = 10
+@supply_cooldown = 7
+@supply_amount = 1000
+@reinforce_cooldown_near = 7
+@reinforce_cooldown_mid = 21
+@reinforce_cooldown_distant = 42
+@offensive_cp = 25
+@offensive_cooldown = 14
+@defenses_cp = 25
+@defenses_cooldown = 14
+@retreat_cp = 15
+@retreat_cooldown = 7
+
 set_up_ai_for_world_stage = {
 	# 1st step: list theaters by priority order for each country
 	# 2nd step: list theaters that the country does not want to interfere
@@ -62,6 +85,12 @@ set_up_ai_for_world_stage = {
 		add_to_array = { world_stage_ignore_theater = @sibeira }
 		add_to_array = { world_stage_ignore_theater = @taiwan }
 		add_to_array = { world_stage_ignore_theater = @china }
+		#values
+		#set_variable = { ai_prefers_reinforce = }
+		#set_variable = { ai_prefers_supply = }		# DEPRICATED
+		set_variable = { ai_prefers_offensive = 1.25 }	# Germany does not have that much raw power, prefers to use it intelligently
+		set_variable = { ai_prefers_defenses = 1.25 }
+		#set_variable = { ai_prefers_retreat = }
 	}
 	102 = {	# England
 		# priority
@@ -98,6 +127,12 @@ set_up_ai_for_world_stage = {
 		add_to_array = { world_stage_ignore_theater = @monoglia }
 		add_to_array = { world_stage_ignore_theater = @siberia }
 		add_to_array = { world_stage_ignore_theater = @urals }
+		#values
+		#set_variable = { ai_prefers_reinforce = }
+		#set_variable = { ai_prefers_supply = }
+		#set_variable = { ai_prefers_offensive = }
+		set_variable = { ai_prefers_defenses = 1.25 }
+		set_variable = { ai_prefers_retreat = 1.25 }	# [insert jokes about surrendering]
 	}
 	104 = {	# Soviet Union
 		# priority
@@ -118,6 +153,12 @@ set_up_ai_for_world_stage = {
 		add_to_array = { world_stage_ignore_theater = @philipines }
 		add_to_array = { world_stage_ignore_theater = @indies }
 		add_to_array = { world_stage_ignore_theater = @india }
+		#values
+		set_variable = { ai_prefers_reinforce = 1.5 }	# The one with the rifle shoots, the one without follows him
+		#set_variable = { ai_prefers_supply = }
+		#set_variable = { ai_prefers_offensive =  }
+		#set_variable = { ai_prefers_defenses =  }
+		set_variable = { ai_prefers_retreat = 0.5 }	# No Step Back!
 	}
 	105 = {	# USA
 		# priority
@@ -185,6 +226,12 @@ set_up_ai_for_world_stage = {
 		add_to_array = { world_stage_ignore_theater = @belarus }
 		add_to_array = { world_stage_ignore_theater = @poland }
 		add_to_array = { world_stage_ignore_theater = @russia }
+		#values
+		set_variable = { ai_prefers_reinforce = 0.5 }
+		#set_variable = { ai_prefers_supply = }
+		#set_variable = { ai_prefers_offensive =  }
+		#set_variable = { ai_prefers_defenses =  }
+		#set_variable = { ai_prefers_retreat =  }
 	}
 	108 = {	# Portugal
 		# priority
@@ -200,6 +247,12 @@ set_up_ai_for_world_stage = {
 		add_to_array = { world_stage_ignore_theater = @belarus }
 		add_to_array = { world_stage_ignore_theater = @poland }
 		add_to_array = { world_stage_ignore_theater = @russia }
+		#values
+		set_variable = { ai_prefers_reinforce = 0.5 }
+		#set_variable = { ai_prefers_supply = }
+		#set_variable = { ai_prefers_offensive =  }
+		#set_variable = { ai_prefers_defenses =  }
+		#set_variable = { ai_prefers_retreat =  }
 	}
 	109 = {	# Italy
 		# priority
@@ -293,10 +346,15 @@ chose_theater_to_act = {
 			}
 		}
 	}
-	var:theater_index = { log = "selected theater [?theater_index] ([THIS.GetTheaterName])" }
+	if = {
+		limit = { NOT = { check_variable = { selected_theater = 0 } } }
+		var:theater_index = { log = "WORLDSTAGE AI: [PREV.GetMetropolisName]: selected theater [?theater_index] ([THIS.GetTheaterName])" }
+		choose_an_action = yes
+	} else = { log = "[GetMetropolisName] AI chose no valid theater, it will try again next day" }
 } d_chose_theater_to_act = { 101 = { log = "GERMANY: chose_theater_to_act" chose_theater_to_act = yes } }	# this is just for testing
 
 choose_an_action = {
+	log = "[GetMetropolisName] choose_an_action"
 	# here, AI weights each action and chooses one
 	# if victory is assured, it is less likely to reinforce
 	# if theater is ignored, it is less likely to reinforce
@@ -309,11 +367,12 @@ choose_an_action = {
 	# all probabilities are zero if the triggers for each 'button' are not met (if no action is taken, resets AI_took_an_action to make another action tomorrow )
 	
 	# base weights
-	set_temp_variable = { want_to_reinforce = 100 }
-	set_temp_variable = { want_to_supply = 100 }
-	set_temp_variable = { want_to_offensive = 100 }
-	set_temp_variable = { want_to_defenses = 100 }
-	set_temp_variable = { want_to_retreat = 50 }
+	set_temp_variable = { want_to_reinforce = 100 } log = "test [?want_to_reinforce]" multiply_temp_variable = { want_to_reinforce = ai_prefers_reinforce?1 } log = "test [?want_to_reinforce] AFTER"
+	#set_temp_variable = { want_to_supply = 100 } multiply_temp_variable = { want_to_supply = ai_prefers_supply?1 }
+	set_temp_variable = { want_to_offensive = 100 } multiply_temp_variable = { want_to_offensive = ai_prefers_offensive?1 }
+	set_temp_variable = { want_to_defenses = 100 } multiply_temp_variable = { want_to_defenses = ai_prefers_defenses?1 }
+	set_temp_variable = { want_to_retreat = 50 } multiply_temp_variable = { want_to_retreat = ai_prefers_retreat?1 }
+
 	# modifiers for weights
 	if = {
 		limit = { has_state_flag = selected_theater_is_ignored }
@@ -327,28 +386,135 @@ choose_an_action = {
 		limit = { check_variable = { selected_theater = world_stage_priority_theater^0 } }
 		set_temp_variable = { want_to_retreat = 0 }
 	}
+	
+	#### ADD MORE WEIGHTS TO CHOOSE STRAT, DENFS OR REINFORCE
+	
+	#### MAKE AI IMPOSSIBLE TO RETREAT WHEN WINNING
+	
+	# checking triggers for each action (copy/paste from GUI buttons and reversing the conditions, removing cp cost and replacing selected_theater for selected_theater, does not need to check permissions
+	
+	if = {
+		limit = { heck_variable = { array_worldstage_action_cooldown^var:selected_theater < 1 } }	# CHECK COOLDOWN
+		if = {	# REINFORCE
+			limit = { check_variable = { var:world_stage_metropolis:world_stage_power > 0 } }
+			# action is possible, nothing happens yet
+		} else = { set_temp_variable = { want_to_reinforce = 0 } }
+	#	if = {	# SUPPLY
+	#		limit = {
+	#			#has_equipment = { infantry_equipment_1 > 999  }
+	#			always = no
+	#		}
+	#		# action is possible, nothing happens yet
+	#	} else = { set_temp_variable = { want_to_supply = 0 } }
+		if = {	# OFFENSIVE
+			limit = { check_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis > 1 } }
+			# action is possible, nothing happens yet
+		} else = { set_temp_variable = { want_to_offensive = 0 } }
+		if = {	# DEFENSES
+			limit = { check_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis > 1 } }
+			# action is possible, nothing happens yet
+		} else = { set_temp_variable = { want_to_defenses = 0 } }
+		if = {	# RETREAT
+			limit = { check_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis > 1.1 } }	# min = 2
+			# action is possible, nothing happens yet
+		} else = { set_temp_variable = { want_to_retreat = 0 } }
+	} else = { log = "This theater has action cooldown" }
 	# TODO TO-DO TO DO: finish this later
 	#I may have to add an "Axis AI" and a "Allies AI"
-	
+		
+	log = "Deicsion weights:"
+	log = "want_to_reinforce [?want_to_reinforce]"
+	log = "want_to_supply [?want_to_supply]"
+	log = "want_to_offensive [?want_to_offensive]"
+	log = "want_to_defenses [?want_to_defenses]"
+	log = "want_to_retreat [?want_to_retreat]"
 	# now, cast the die!
 	if = {
 		limit = {
-			OR = {
-				check_variable = { want_to_reinforce > 0 }
-				check_variable = { want_to_supply > 0 }
-				check_variable = { want_to_offensive > 0 }
-				check_variable = { want_to_defenses > 0 }
-				check_variable = { want_to_retreat > 0 }
+			NOT = {
+				AND = {
+					check_variable = { want_to_reinforce = 0 }
+					#check_variable = { want_to_supply = 0 }
+					check_variable = { want_to_offensive = 0 }
+					check_variable = { want_to_defenses = 0 }
+					check_variable = { want_to_retreat = 0 }
+				}
 			}
 		}
-		random_list = {
-			var:want_to_reinforce = { log = "want_to_reinforce"}
-			var:want_to_supply = { log = "want_to_supply" }
-			var:want_to_offensive = { log = "want_to_offensive" }
-			var:want_to_defenses = { log = "want_to_defenses"}
-			var:want_to_retreat = { log = "want_to_retreat"}
+		random_list = {	# copy/paste effects from GUI buttons, replacing selected_theater for selected_theater and removing cp cost
+			var:want_to_reinforce = {
+				log = "WORLDSTAGE AI: [GetMetropolisName] AI chose to reinforce"
+				set_variable = { array_worldstage_action_cooldown^var:selected_theater = @reinforce_cooldown } # number of days of cooldown
+				set_variable = { array_worldstage_action_ongoing^var:selected_theater = @action_reinforce } # type of action taken
+				set_temp_variable = { reinforce_value = 1 }
+				if = { limit = { check_variable = { var:world_stage_metropolis:world_stage_power > 10 } } add_to_temp_variable = { reinforce_value = 4 } }	# easier to add values step by step
+				if = { limit = { check_variable = { var:world_stage_metropolis:world_stage_power > 50 } } add_to_temp_variable = { reinforce_value = 5 } }
+				if = { limit = { check_variable = { var:world_stage_metropolis:world_stage_power > 100 } } add_to_temp_variable = { reinforce_value = 5 } }
+				subtract_from_variable = { var:world_stage_metropolis:world_stage_power = reinforce_value }
+				add_to_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis = reinforce_value }
+				var:selected_theater = { world_stage_state_update_current_day = yes }
+				log = "WORLDSTAGE AI: button_reinforce theater nº[?var:selected_theater] by [?reinforce_value], cooldown: [?array_worldstage_action_cooldown^var:selected_theater] days"
+			}
+#			var:want_to_supply = {
+#				log = "WORLDSTAGE AI: [GetMetropolisName] AI chose to supply"
+#				### AI WILL NOT MAKE SUPPLY RUNS FROM THIS SCRIP: IT WILL BE HANDLED BY AN AI-EXCLUSIVE DECISION
+#			}
+			var:want_to_offensive = {
+				log = "WORLDSTAGE AI: [GetMetropolisName] AI chose offensive"
+				set_variable = { array_worldstage_action_cooldown^var:selected_theater = 5 } # number of days of cooldown
+				set_variable = { array_worldstage_action_ongoing^var:selected_theater = @action_offensive } # type of action taken
+				set_temp_variable = { offensive_bonus = var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis }
+				multiply_temp_variable = { offensive_bonus = 0.1 }
+				clamp_temp_variable = { var = offensive_bonus min = 0.05 max = 0.75 }
+				var:selected_theater = {
+					if = {
+						limit = { PREV.world_stage_coalition = theater_owner_coalition }	# it's a defender
+						add_to_variable = { attacker_strategic_advantage = offensive_bonus }
+					} else = {																# it's an attacker
+						add_to_variable = { defender_strategic_advantage = offensive_bonus }
+					}
+				}
+				log = "WORLDSTAGE AI: button_offensive theater nº[?var:selected_theater], cooldown: [?array_worldstage_action_cooldown^var:selected_theater] days"
+			}
+			var:want_to_defenses = {
+				log = "WORLDSTAGE AI: [GetMetropolisName] AI chose defenses"
+				set_variable = { array_worldstage_action_cooldown^var:selected_theater = 5 } # number of days of cooldown
+				set_variable = { array_worldstage_action_ongoing^var:selected_theater = @action_defenses } # type of action taken
+				add_command_power = -25
+				set_temp_variable = { defensive_bonus = var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis }
+				multiply_temp_variable = { defensive_bonus = 0.5 }
+				clamp_temp_variable = { var = defensive_bonus min = 0.1 max = 0.50 }
+				var:selected_theater = {
+					if = {
+						limit = { PREV.world_stage_coalition = theater_owner_coalition }	# it's a defender
+						subtract_from_variable = { attacker_strategic_advantage = defensive_bonus }
+						clamp_variable = { var = attacker_strategic_advantage min = 0 }
+					} else = {																# it's an attacker
+						subtract_from_variable = { defender_strategic_advantage = defensive_bonus }
+						clamp_variable = { var = defender_strategic_advantage min = 0 }
+					}
+				}
+				log = "WORLDSTAGE AI: button_defenses theater nº[?var:selected_theater], cooldown: [?array_worldstage_action_cooldown^var:selected_theater] days"
+			}
+			var:want_to_retreat = {
+				log = "WORLDSTAGE AI: [GetMetropolisName] AI chose to retreat"
+				set_variable = { array_worldstage_action_cooldown^var:selected_theater = 5 } # number of days of cooldown
+				set_variable = { array_worldstage_action_ongoing^var:selected_theater = @action_retreat } # type of action taken
+				add_command_power = -25
+				set_temp_variable = { retreat_value = var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis }
+				set_temp_variable = { rear_guard = 1 }
+				if = { limit = { check_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis > 49 } set_temp_variable = { rear_guard = 5 } } }
+				if = { limit = { check_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis > 100 } set_temp_variable = { rear_guard = 10 } } }
+				if = { limit = { check_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis > 110 } set_temp_variable = { retreat_value = 100 } } set_temp_variable = { rear_guard = 0 } }
+				subtract_from_temp_variable = { retreat_value = rear_guard }
+				subtract_from_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis = retreat_value }
+				var:world_stage_metropolis = { add_to_variable = { world_stage_power = retreat_value } }
+				var:selected_theater = { world_stage_state_update_current_day = yes }
+				log = "WORLDSTAGE AI: button_retreat theater nº[?var:selected_theater] by [?retreat_value], cooldown: [?array_worldstage_action_cooldown^var:selected_theater] days"
+			}
 		}
-	} else = { clr_state_flag = AI_took_an_action set_state_flag = AI_took_an_action }	# try again tomorrow...
+		clr_state_flag = AI_took_an_action set_state_flag = AI_took_an_action	# resets flag
+	} else = { log = "WORLDSTAGE AI: [GetMetropolisName] AI did not have available actions to choose" }
 }
 
 ### NOTE TO MYSELF: REORDER "IGNORE LISTS" (less important should be at the botton)

@@ -600,18 +600,16 @@ on_actions = {
 				}
 			}
 			# kickstart AIs
-			random_country =  { set_up_ai_for_world_stage = yes }
-			set_global_flag = REI_ai_made_a_move									### MAYBE THESE SHOULD BE CHANGED TO STATE FLAGS, allowing for standardized spelling
-			set_global_flag = KOB_ai_made_a_move									### I'm definitely doing the flags
-			set_global_flag = OSA_ai_made_a_move									# delete later
-			set_global_flag = AMC_ai_made_a_move									# delete later
-			set_global_flag = FER_ai_made_a_move									# delete later
-			set_global_flag = ROC_ai_made_a_move									# delete later
-			set_global_flag = HIR_ai_made_a_move									# delete later
 			every_state = {
 				limit = { has_variable = world_stage_metropolis }
 				set_state_flag = AI_took_an_action
+				set_variable = { ai_prefers_reinforce = 1 }
+				set_variable = { ai_prefers_supply = 1 }		# DEPRICATED
+				set_variable = { ai_prefers_offensive = 1 }
+				set_variable = { ai_prefers_defenses = 1 }
+				set_variable = { ai_prefers_retreat = 1 }
 			}
+			random_country =  { set_up_ai_for_world_stage = yes }
 			# add offmapers later
 			set_global_flag = world_stage_ai_germany_focus							### I think there are no benefits to using standardized state flags here, since non-exclaves dont partake in this part of the system
 			set_global_flag = world_stage_ai_sovietunion_focus
@@ -1068,7 +1066,7 @@ on_actions = {
 					limit = {
 						NOT = {
 							country_exists = AMC
-							OKI = { exists = yes NOT = { has_country_flag = OKI_is_independent } }	# i'm not sure if this trigger is right, gotta check later TO-DO TODO TO DO
+							OKI = { exists = yes NOT = { has_country_flag = OKI_is_independent } }	# i'm not sure if this trigger is right, gotta check later TODO TO-DO TO DO
 						}
 					}
 					world_stage_ai_usa_focus = yes
@@ -1083,25 +1081,50 @@ on_actions = {
 				}
 				# now we check for moves in the world stage (actions, equivalent to human player pressing buttons)
 				# every AI will run the same code
-				if = {
-					limit = { REI = { has_country_flag = enable_worldstage_autopilot } }	# there's an on_action / on_annex that sets autopilot if a human player is annexed
-					101 = {
-						if = {
-							limit = { has_state_flag = { flag = AI_took_an_action days > 35 } }
-							chose_theater_to_act = yes
-							choose_an_action = yes
-						}
+				101 = {
+					if = {
+						limit = { has_state_flag = { flag = AI_took_an_action days > 30 } OR = { REI = { has_country_flag = enable_worldstage_autopilot } NOT = { country_exists = REI } } }	# there's an on_action / on_annex that sets autopilot if a human player is annexed
+						chose_theater_to_act = yes
+						#choose_an_action = yes	# this is activated by chose_theater_to_act if a valid theater is selected
 					}
 				}
-				# now, other staff
+				102 = {
+					if = {
+						limit = { has_state_flag = { flag = AI_took_an_action days > 30 } OR = { OSA = { has_country_flag = enable_worldstage_autopilot } NOT = { country_exists = OSA } } }
+						chose_theater_to_act = yes
+						#choose_an_action = yes
+					}
+				}
+				103 = {
+					if = {
+						limit = { has_state_flag = { flag = AI_took_an_action days > 30 } OR = { KOB = { has_country_flag = enable_worldstage_autopilot } NOT = { country_exists = KOB } } }
+						chose_theater_to_act = yes
+						#choose_an_action = yes
+					}
+				}
+				104 = {
+					if = {
+						limit = { has_state_flag = { flag = AI_took_an_action days > 30 } OR = { FER = { has_country_flag = enable_worldstage_autopilot } NOT = { country_exists = FER } } }
+						chose_theater_to_act = yes
+						#choose_an_action = yes
+					}
+				}
+				105 = {
+					if = {
+						limit = { has_state_flag = { flag = AI_took_an_action days > 30 } OR = { MUS = { has_country_flag = enable_worldstage_autopilot } NOT = { country_exists = MUS } } }	# MUS: Main US Colony (aliases tag)
+						chose_theater_to_act = yes
+						#choose_an_action = yes
+					}
+				}
+				# now, other stuff
 				world_stage_news_handler = yes
-			#	log = "SPECIAL WORLDSTAGE LOG"
-			#	every_state = {
-			#		limit = { has_variable = theater_owner has_state_flag = theater_is_active }
-			#		log = "[GetTheaterName] is active (timer: [?theater_timer] days)"
-			#		log = "theater_owner_coalition: [?theater_owner_coalition] // coalition_side_attack: [?coalition_side_attack]"
-			#	}
 			}
+		#	log = "SPECIAL WORLDSTAGE LOG"
+		#	every_state = {
+		#		limit = { has_variable = theater_owner has_state_flag = theater_is_active }
+		#		log = "[GetTheaterName] is active (timer: [?theater_timer] days)"
+		#		log = "theater_owner_coalition: [?theater_owner_coalition] // coalition_side_attack: [?coalition_side_attack]"
+		#	}
 		}
 	}
 	
@@ -1214,20 +1237,19 @@ on_actions = {
 						set_variable = { legitimacy_popularity_bonus = pop_bonus }
 					} else = { set_variable = { legitimacy_popularity_bonus = 0 } }
 				}
-				log = "test"
 				### WORLD STAGE
 				world_stage_get_timer_frame_daily = yes	# timer for each theater resolving
-				if = {
-					limit = { has_variable = array_worldstage_action_cooldown^0 }
-					log = "test: has array"
-				} else = { log = "oops" }
+				#if = {
+				#	limit = { has_variable = array_worldstage_action_cooldown^0 }
+				#	log = "test: has array"
+				#} else = { log = "oops" }
 				for_each_loop = {
 					array = array_worldstage_action_cooldown
 					index = this_theater
 					value = new_value
 					
 					subtract_from_variable = { array_worldstage_action_cooldown^this_theater = 1 }
-					log = "[THIS.GetName]: theater nº [?this_theater], cooldown = [?array_worldstage_action_cooldown^this_theater]"
+					#log = "[THIS.GetName]: theater nº [?this_theater], cooldown = [?array_worldstage_action_cooldown^this_theater]"
 				}
 			}
 		}
