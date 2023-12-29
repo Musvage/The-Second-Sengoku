@@ -10,7 +10,14 @@ focus_tree = {
 
 	focus = {
 		id = army_effort
-		icon = GFX_focus_generic_army
+		icon = { value = GFX_goal_generic_allies_build_infantry			trigger = { tag = AMC } }
+		icon = { value = GFX_goal_generic_allies_build_infantry			trigger = { tag = OKI } }
+		icon = { value = GFX_focus_HIR_army								trigger = { tag = HIR } }
+		icon = { value = GFX_focus_KOB_our_defences						trigger = { tag = KOB } }
+		icon = { value = GFX_focus_generic_commonwealth_build_infantry	trigger = { tag = OSA } }
+		icon = { value = GFX_focus_PRT_army_effort						trigger = { tag = PRT } }
+		icon = { value = GFX_goal_generic_axis_build_infantry			trigger = { tag = REI } }
+		icon = { value = GFX_focus_generic_army }						# default, no trigger
 		search_filters = { FOCUS_FILTER_MILITARY }
 		x = 1
 		y = 0
@@ -985,7 +992,7 @@ focus_tree = {
 					tag = REI
 					tag = PRT
 					tag = OSA
-					tag = KON
+					tag = KOB
 					tag = HIR
 					tag = FER
 					tag = AMC
@@ -1794,7 +1801,7 @@ focus_tree = {
 				tag = REI
 				tag = PRT
 				tag = OSA
-				tag = KON
+				tag = KOB
 				tag = HIR
 				tag = FER
 				tag = AMC
@@ -1803,6 +1810,11 @@ focus_tree = {
 				tag = SPR
 			}
 			NOT = { has_country_flag = lost_original_focus_tree }
+		}
+		
+		offset = {
+			x = 1 y = 0
+			trigger = { tag = KOB }
 		}
 
 		completion_reward = {
@@ -1868,15 +1880,22 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_WORLD }
 		icon = GFX_focus_generic_western_factory
 		prerequisite = { focus = industrial_effort_western }
-		x = -1
-		y = 1
-		relative_position_id = industrial_effort_western
 		cost = 10
 
+		relative_position_id = industrial_effort_western
+		x = -1
+		y = 1
+		
+		offset = {
+			x = -1 y = 0
+			trigger = { tag = KOB }
+		}
+		
 		available_if_capitulated = yes
 		
 		bypass = { hidden_trigger = { has_completed_focus = production_effort } }
-
+		
+		text_icon = worldstage_style
 
 		ai_will_do = {
 			factor = 2			
@@ -2088,6 +2107,8 @@ focus_tree = {
 		ai_will_do = {
 			factor = 2
 		}
+		
+		text_icon = worldstage_style
 
 		complete_tooltip = {
 			add_extra_state_shared_building_slots = 1
@@ -2147,6 +2168,56 @@ focus_tree = {
 			}
 		}
 	}
+	
+	focus = {
+		id = KOB_generic_saarland_offensive
+		icon = GFX_goal_generic_anti_fascist_diplomacy_red
+		search_filters = { FOCUS_FILTER_WORLD FOCUS_FILTER_WAR_SUPPORT }
+		cost = 10
+
+		prerequisite = { focus = production_effort_3_western }
+		relative_position_id = production_effort_3_western
+		x = 1
+		y = 1
+
+		available = {
+			has_global_flag = world_stage_world_war_2_is_active
+			custom_trigger_tooltip = {
+				tooltip = world_stage_phoney_war_rages_on_trigger_tt
+				has_active_mission = world_stage_phoney_war_countdown_allies
+			}
+			custom_trigger_tooltip = {
+				tooltip = world_stage_phoney_war_rages_on_110_days_ago
+				has_global_flag = { flag = world_stage_phoney_war_rages_on days < 110 }
+			}
+			custom_trigger_tooltip = { tooltip = world_stage_france_did_not_capitulate_trigger NOT = { has_global_flag = world_stage_france_capitulated } }
+		}
+		available_if_capitulated = yes
+		cancel_if_invalid = yes
+
+		ai_will_do = {
+			factor = 2
+		}
+		
+		allow_branch = { tag = KOB }
+		
+		text_icon = worldstage_style	
+
+		completion_reward = {
+			set_global_flag = KOB_saarland_offensive_completed	# "generic" is not included in the name since this is a placeholder for an actual KOB tree
+			add_days_mission_timeout = {
+				mission = world_stage_phoney_war_countdown_allies
+				days = -90
+			}
+			KOB = {
+				add_war_support = 0.1
+			}
+			every_other_country = {
+				limit = { is_in_faction_with = KOB}
+				add_war_support = 0.05
+			}
+		}
+	}
 
 	focus = {
 		id = infrastructure_effort_2_western	# Dockyards Effort
@@ -2161,6 +2232,8 @@ focus_tree = {
 		bypass = { hidden_trigger = { has_completed_focus = infrastructure_effort_2 } }
 
 		available_if_capitulated = yes
+		
+		text_icon = worldstage_style
 
 		completion_reward = {
 			hidden_effect = {
@@ -2365,6 +2438,7 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
 		mutually_exclusive = { focus = ss_generic_tradition }
+		#relative_position_id	# NO RELATIVE POSITION since the top focus of the branch to the left has allow_branch and may not be visible!
 		x = 19
 		y = 0
 		
@@ -2387,6 +2461,11 @@ focus_tree = {
 		}
 
 		available_if_capitulated = yes
+		
+		offset = {
+			x = 1 y = 0
+			trigger = { tag = KOB }
+		}
 		
 		available = {
 			if = {
@@ -2411,7 +2490,8 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_STABILITY }
 		
 		mutually_exclusive = { focus = ss_generic_modernisation }
-		x = 25
+		relative_position_id = ss_generic_modernisation
+		x = 6
 		y = 0
 		
 		cost = 10
@@ -2554,9 +2634,9 @@ focus_tree = {
 		
 		prerequisite = { focus = ss_generic_tradition }
 		mutually_exclusive = { focus = ss_generic_left focus = ss_generic_right }
+		relative_position_id = ss_generic_tradition
 		x = 2
 		y = 1
-		relative_position_id = ss_generic_tradition
 		
 		cost = 10
 		
@@ -2609,6 +2689,8 @@ focus_tree = {
 		relative_position_id = ss_generic_left
 		
 		cost = 10
+		
+		text_icon = worldstage_style
 
 		available_if_capitulated = yes
 		
@@ -2698,7 +2780,7 @@ focus_tree = {
 		icon = GFX_focus_PRO_1936_election
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
-		prerequisite = { focus = ss_generic_left focus = ss_generic_center }
+		prerequisite = { focus = ss_generic_center }
 		mutually_exclusive = { focus = ss_generic_government_democratic_socialism  focus = ss_generic_government_communism focus = ss_generic_government_neutrality }
 		x = 3
 		y = 1
@@ -2742,11 +2824,11 @@ focus_tree = {
 		icon = GFX_focus_TOH_army_primacy
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
-		prerequisite = { focus = ss_generic_right focus = ss_generic_center }
+		prerequisite = { focus = ss_generic_center }
 		mutually_exclusive = { focus = ss_generic_government_autocratic focus = ss_generic_government_fascism  focus = ss_generic_government_democratic }
-		x = -4
+		x = 1
 		y = 1
-		relative_position_id = ss_generic_right
+		relative_position_id = ss_generic_center
 		
 		cost = 10
 
@@ -2786,7 +2868,7 @@ focus_tree = {
 		icon = GFX_focus_generic_martial_law
 		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_WORLD }
 		
-		prerequisite = { focus = ss_generic_right focus = ss_generic_center }
+		prerequisite = { focus = ss_generic_right }
 		mutually_exclusive = { focus = ss_generic_government_autocratic focus = ss_generic_government_neutrality }
 		x = -1
 		y = 1
@@ -2795,6 +2877,8 @@ focus_tree = {
 		cost = 10
 
 		available_if_capitulated = yes
+		
+		text_icon = worldstage_style
 		
 		ai_will_do = {
 			factor = 1
@@ -2837,7 +2921,7 @@ focus_tree = {
 		icon = GFX_focus_KYU_war_preparations
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
-		prerequisite = { focus = ss_generic_right focus = ss_generic_center }
+		prerequisite = { focus = ss_generic_right }
 		mutually_exclusive = { focus = ss_generic_government_neutrality focus = ss_generic_government_fascism }
 		x = 1
 		y = 1
@@ -2941,9 +3025,9 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		prerequisite = { focus = ss_generic_government_neutrality focus = ss_generic_government_autocratic focus = ss_generic_government_fascism }
 		mutually_exclusive = { focus = ss_generic_religious_zeal focus = ss_generic_religious_zeal2 focus = ss_generic_religious_zeal3 }
+		relative_position_id = ss_generic_government_neutrality
 		x = 2
 		y = 1
-		relative_position_id = ss_generic_government_neutrality
 		cost = 10
 
 		available_if_capitulated = yes
@@ -3167,7 +3251,7 @@ focus_tree = {
 	
 	focus = {
 		id = interventionism_focus
-		icon = GFX_goal_generic_political_pressure
+		icon = GFX_goal_generic_military_deal
 		prerequisite = { focus = ss_generic_government_freedoms }
 		mutually_exclusive = { focus = neutrality_focus }
 		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_POLITICAL FOCUS_FILTER_WORLD }
@@ -3177,7 +3261,8 @@ focus_tree = {
 		cost = 10
 
 		available_if_capitulated = yes
-
+		
+		text_icon = worldstage_style
 
 		ai_will_do = {
 			factor = 1
@@ -3279,7 +3364,8 @@ focus_tree = {
 	
 	focus = {
 		id = militarism
-		icon = GFX_goal_generic_political_pressure
+		icon = { value = GFX_goal_generic_political_pressure trigger = { is_trade_city = yes } }
+		icon = { value = GFX_goal_generic_political_pressure_eastern }
 		search_filters = { FOCUS_FILTER_MANPOWER FOCUS_FILTER_MILITARY }
 		mutually_exclusive = { focus = neutrality_focus }
 		prerequisite = { focus = ss_generic_government_autocratic focus = ss_generic_government_fascism focus = ss_generic_government_neutrality }
