@@ -285,8 +285,6 @@ chose_theater_to_act = {
 	# 3rd step: check all ingored theaters, pick last on the list that is active
 		
 	set_variable = { selected_theater = 0 }	# always set to zero at the start: if no theater is selected, "0" means no action will be taken further down the code
-	clr_state_flag = selected_theater_is_priority
-	clr_state_flag = selected_theater_is_ignored
 	
 	for_each_loop = {
 		array = world_stage_priority_theater
@@ -374,22 +372,133 @@ choose_an_action = {
 	set_temp_variable = { want_to_retreat = 50 } multiply_temp_variable = { want_to_retreat = ai_prefers_retreat?1 }
 
 	# modifiers for weights
+	
+	 	# these are static
 	if = {
-		limit = { has_state_flag = selected_theater_is_ignored }
+		limit = { var:selected_theater = { has_state_flag = selected_theater_is_ignored } }
 		multiply_temp_variable = { want_to_reinforce = 0.5 }
 	}
 	if = {
-		limit = { has_state_flag = selected_theater_is_priority }
+		limit = { var:selected_theater = { has_state_flag = selected_theater_is_priority } }
 		multiply_temp_variable = { want_to_retreat = 0.5 }
 	}
 	if = {
-		limit = { check_variable = { selected_theater = world_stage_priority_theater^0 } }
+		limit = { check_variable = { selected_theater = world_stage_priority_theater^0 } }	# selected_theater is capital: never retreat
 		set_temp_variable = { want_to_retreat = 0 }
 	}
 	
-	#### ADD MORE WEIGHTS TO CHOOSE STRAT, DENFS OR REINFORCE
+		# these are dynamic
+	if = {
+		limit = { check_variable = { var:world_stage_metropolis.world_stage_power < 50 } ]	# if AI doesn't have lots of power, it prefers denfenses/offensive preparations rather than deploying more power
+		multiply_variable = { want_to_defenses = 2 }
+		multiply_variable = { want_to_offensive = 2 }
+		multiply_variable = { want_to_reinforce = 0.5 }
+	}
+	if = {
+		limit = { check_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis > 50 } }	# if it has lots of deployed troops in this theater, AI will prefere to prepare offensives
+		multiply_variable = { want_to_offensive = 2 }
+	}
+	if = {
+		limit = { check_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis > 10 } }	# if it has too few deployed troops in theater, preparing offensives is not very effective
+		multiply_variable = { want_to_offensive = 0.1 }
+	}
 	
-	#### MAKE AI IMPOSSIBLE TO RETREAT WHEN WINNING
+		# these are dynamic and depend on whether the AI is attacking or defending
+	if = {
+		limit = { check_variable = { world_stage_coalition = var:selected_theater.theater_owner_coalition } }
+		# the code for attacker (here) and defender is essentially the same, it just switches which set of variables it cares about
+		if = {
+			limit = {
+				check_variable = { var:selected_theater.attacker_deployed_power > var:selected_theater.defender_deployed_power }
+				check_variable = { var:selected_theater.defender_strategic_advantage < 0.5 }
+			}
+			set_variable = { want_to_retreat = 0 }	log = "attacker_deployed_power > defender_deployed_power, defender_strategic_advantage < 0.5"	# "Are you winning, son?" // never retreat if AI is winning
+		}
+		if = {
+			limit = {
+				check_variable = { var:selected_theater.defender_deployed_power > var:selected_theater.attacker_deployed_power }
+				check_variable = { var:selected_theater.defender_strategic_advantage > 0.5 }
+			}
+			multiply_variable = { want_to_defenses = 2 }	log = "defender_deployed_power > attacker_deployed_power, defender_strategic_advantage > 0.5"	# if enemy has lots of strat.adv., do defensive preparations!
+			miltiply_variable = { want_to_reinforce = 0.5 }
+			set_variable = { want_to_offensive = 0 }
+		}
+		if = {
+			limit = {
+				check_variable = { var:selected_theater.defender_deployed_power > var:selected_theater.attacker_deployed_power }	# note that if this condition is met, the one abote is too
+				check_variable = { var:selected_theater.defender_strategic_advantage > 1 }
+			}
+			multiply_variable = { want_to_retreat = 2 }	log = "defender_deployed_power > attacker_deployed_power, defender_strategic_advantage > 1"	# if such powerful blow is about to be dealt, AI will consider simply retreating
+			set_variable = { want_to_reinforce = 0 }
+		}
+	} else = {
+		# now, code for AI as defender
+		if = {
+			limit = {
+				check_variable = { var:selected_theater.defender_deployed_power > var:selected_theater.attacker_deployed_power }
+				check_variable = { var:selected_theater.attacker_strategic_advantage < 0.5 }
+			}
+			set_variable = { want_to_retreat = 0 }	log = "defender_deployed_power > attacker_deployed_power, attacker_strategic_advantage < 0.5"	# "Are you winning, son?" // never retreat if AI is winning
+		}
+		if = {
+			limit = {
+				check_variable = { var:selected_theater.attacker_deployed_power > var:selected_theater.defender_deployed_power }
+				check_variable = { var:selected_theater.attacker_strategic_advantage > 0.5 }
+			}
+			multiply_variable = { want_to_defenses = 2 }	log = "attacker_deployed_power > defender_deployed_power, attacker_strategic_advantage > 0.5"	# if enemy has lots of strat.adv., do defensive preparations!
+			miltiply_variable = { want_to_reinforce = 0.5 }
+			set_variable = { want_to_offensive = 0 }
+		}
+		if = {
+			limit = {
+				check_variable = { var:selected_theater.attacker_deployed_power > var:selected_theater.defender_deployed_power }	# note that if this condition is met, the one abote is too
+				check_variable = { var:selected_theater.attacker_strategic_advantage > 1 }
+			}
+			multiply_variable = { want_to_retreat = 2 }	log = "attacker_deployed_power > defender_deployed_power, attacker_strategic_advantage > 1"	# if such powerful blow is about to be dealt, AI will consider simply retreating
+			set_variable = { want_to_reinforce = 0 }
+		}
+	}
+	
+	### LAST CHECK, OVERWRITES ALL OTHER: IF CAPITAL IS ABOUT TO FALL, RETREAT FROM ANYOTHER THEATER TO REINFORCE IT
+	if = {
+		limit = { 
+			var:world_stage_priority_theater^0 = { has_stage_flag = theater_is_active }
+			check_variable = { var:world_stage_priority_theater^0.attacker_deployed_power > var:world_stage_priority_theater^0.defender_deployed_power } 	# AI is necessarily defender here
+		}
+		random_state = {
+			limit = {
+				check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 1.1 }	# pick a random theater where we have troops...
+				NOT = { state = var:world_stage_priority_theater^0 }							# ...that is not the capital
+			}
+			log = "WORLDSTAGE AI: emergency retreat to protect capital
+			log = "WORLDSTAGE AI: [GetMetropolisName] AI chose to retreat from [THIS.GetTheaterName]"
+			set_variable = { array_worldstage_action_cooldown^var:selected_theater = 5 } # number of days of cooldown
+			set_variable = { array_worldstage_action_ongoing^var:selected_theater = @action_retreat } # type of action taken
+			set_temp_variable = { retreat_value = var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis }
+			set_temp_variable = { rear_guard = 1 }
+			if = { limit = { check_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis > 49 } set_temp_variable = { rear_guard = 5 } } }
+			if = { limit = { check_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis > 100 } set_temp_variable = { rear_guard = 10 } } }
+			if = { limit = { check_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis > 110 } set_temp_variable = { retreat_value = 100 } } set_temp_variable = { rear_guard = 0 } }
+			subtract_from_temp_variable = { retreat_value = rear_guard }
+			subtract_from_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis = retreat_value }
+			var:world_stage_metropolis = { add_to_variable = { world_stage_power = retreat_value } }
+			var:selected_theater = { world_stage_state_update_current_day = yes }
+			log = "WORLDSTAGE AI: button_retreat theater nº[?var:selected_theater] by [?retreat_value], cooldown: [?array_worldstage_action_cooldown^var:selected_theater] days"
+			PREV = {
+				set_temp_variable = { want_to_reinforce = 0 }	# this forces the AI not to take any more action today, since already took one (retreat)
+				#set_temp_variable = { want_to_supply = 0 }
+				set_temp_variable = { want_to_offensive = 0 }
+				set_temp_variable = { want_to_defenses = 0 }
+				set_temp_variable = { want_to_retreat = 0 }
+			}
+		}
+	}
+	
+	# clear flags
+	var:selected_theater = {
+		clr_state_flag = selected_theater_is_priority
+		clr_state_flag = selected_theater_is_ignored
+	}
 	
 	# checking triggers for each action (copy/paste from GUI buttons and reversing the conditions, removing cp cost and replacing selected_theater for selected_theater, does not need to check permissions
 	
@@ -419,6 +528,10 @@ choose_an_action = {
 			# action is possible, nothing happens yet
 		} else = { set_temp_variable = { want_to_retreat = 0 } }
 	} else = { log = "This theater has action cooldown" }
+	
+	# there is no problem if the AI does not have available options: it will simply pick another scenario and try again the next day
+	# since AI can use "offensive" or "defenses" in any theater it is present, there is no "impossible action loop" as long as it has power left somewhere (if not, it looses the war)
+	
 	# TODO TO-DO TO DO: finish this later
 	#I may have to add an "Axis AI" and a "Allies AI"
 		
@@ -428,7 +541,10 @@ choose_an_action = {
 	log = "want_to_offensive [?want_to_offensive]"
 	log = "want_to_defenses [?want_to_defenses]"
 	log = "want_to_retreat [?want_to_retreat]"
+	
 	# now, cast the die!
+	# This part of the code essentialy copy/pastes the effects from the UI buttons available to the human player
+	
 	if = {
 		limit = {
 			NOT = {
@@ -480,7 +596,6 @@ choose_an_action = {
 				log = "WORLDSTAGE AI: [GetMetropolisName] AI chose defenses"
 				set_variable = { array_worldstage_action_cooldown^var:selected_theater = 5 } # number of days of cooldown
 				set_variable = { array_worldstage_action_ongoing^var:selected_theater = @action_defenses } # type of action taken
-				add_command_power = -25
 				set_temp_variable = { defensive_bonus = var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis }
 				multiply_temp_variable = { defensive_bonus = 0.5 }
 				clamp_temp_variable = { var = defensive_bonus min = 0.1 max = 0.50 }
@@ -500,7 +615,6 @@ choose_an_action = {
 				log = "WORLDSTAGE AI: [GetMetropolisName] AI chose to retreat"
 				set_variable = { array_worldstage_action_cooldown^var:selected_theater = 5 } # number of days of cooldown
 				set_variable = { array_worldstage_action_ongoing^var:selected_theater = @action_retreat } # type of action taken
-				add_command_power = -25
 				set_temp_variable = { retreat_value = var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis }
 				set_temp_variable = { rear_guard = 1 }
 				if = { limit = { check_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis > 49 } set_temp_variable = { rear_guard = 5 } } }
