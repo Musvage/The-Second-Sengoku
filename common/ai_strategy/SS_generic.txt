@@ -199,6 +199,7 @@ likes_marine_template_design = {
 			original_tag = SHO
 		}
 	}
+	abort = { always = no }
 	ai_strategy = {
 		type = template_prio
 		id = marine
@@ -219,6 +220,7 @@ really_likes_marine_template_design = {
 			original_tag = EZO
 		}
 	}
+	abort = { always = no }
 	ai_strategy = {
 		type = template_prio
 		id = marine
@@ -238,6 +240,7 @@ likes_construction_core_template_design = {
 			original_tag = TOH
 		}
 	}
+	abort = { always = no }
 	ai_strategy = {
 		type = template_prio
 		id = construction_corps
@@ -257,6 +260,7 @@ fortification_experts_core_template_design = {
 			original_tag = REI
 		}
 	}
+	abort = { always = no }
 	ai_strategy = {
 		type = template_prio
 		id = fortification_experts
@@ -287,7 +291,7 @@ warlords_dont_join_nanban = {
 			original_tag = PRT
 		}
 	}
-#	abort = { always = no }
+	abort = { always = no }	### TODO TO-DO TO DO add proper triggers later (maybe flags related to AI behaviour)
 	ai_strategy = {
 		type = alliance
 		id = "GAN"
@@ -353,6 +357,34 @@ franco_british_alliance = {
 			original_tag = KOB
 		}
 	}
+	abort = {
+		OR = {
+			AND = {
+				OR = {
+					OSA = { has_government = fascism }
+					OSA = { has_government = neutrality }
+					OSA = { has_government = autocracy }
+				}
+				OR = {
+					KOB = { has_government = democratic }
+					KOB = { has_government = democratic_socialism }
+					KOB = { has_government = communism }
+				}
+			}
+			AND = {
+				OR = {
+					OSA = { has_government = democratic }
+					OSA = { has_government = democratic_socialism }
+					OSA = { has_government = communism }
+				}
+				OR = {
+					KOB = { has_government = fascism }
+					KOB = { has_government = neutrality }
+					KOB = { has_government = autocracy }
+				}
+			}
+		}
+	}
 	ai_strategy = {
 		type = befriend
 		id = "OSA"
@@ -371,6 +403,24 @@ american_japanese_alliance = {
 			original_tag = OKI
 			original_tag = AMC
 			original_tag = PRO
+		}
+	}
+	abort = {
+		NOT = {
+			PRO = {
+				OR = {
+					has_government = democratic
+					has_government = democratic_socialism
+					has_government = communism
+				}
+			}
+			MUS = {
+				OR = {
+					has_government = democratic
+					has_government = democratic_socialism
+					has_government = communism
+				}
+			}
 		}
 	}
 	ai_strategy = {
@@ -437,7 +487,7 @@ EZO_isolacionist = {
 
 EZO_respect_independency = {
 	enable = { has_country_flag = accept_ezo_independence_flag }
-	abort = { any_enemy_country = { original_tag = EZO } }
+	abort = { any_other_country = { original_tag = EZO } }		# note from DuKe: original code had "enemy" but it would result this strategy being poinless, I'm changing to "other"
 	ai_strategy = {
 		type = conquer
 		id = "EZO"
@@ -458,6 +508,7 @@ a_house_divided = {
 			original_tag = KAN
 		}
 	}
+	abort = { always = no }
 	ai_strategy = {
 		type = antagonize
 		id = "SHO"
@@ -505,12 +556,19 @@ seto_islands_crisis = {
 	}
 }
 
-antagnoize_JOS = {
+antagnoize_JOS = {	# This and the next 2 ones are "mainlanders dont like each oter"
 	enable = {
 		OR = {
 			original_tag = ROC
 			original_tag = FER
 		}
+	}
+	abort = {
+		OR = {
+			is_in_faction_with = JOS
+			AND = { has_war = yes JOS = { has_war = no } }
+		}
+		
 	}
 	ai_strategy = {
 		type = antagonize
@@ -526,6 +584,13 @@ antoginize_ROC = {
 			original_tag = FER
 		}
 	}
+	abort = {
+		OR = {
+			is_in_faction_with = ROC
+			AND = { has_war = yes ROC = { has_war = no } }
+		}
+		
+	}
 	ai_strategy = {
 		type = antagonize
 		id = "ROC"
@@ -539,6 +604,13 @@ antagnoize_FER = {
 			original_tag = ROC
 			original_tag = JOS
 		}
+	}
+	abort = {
+		OR = {
+			is_in_faction_with = FER
+			AND = { has_war = yes FER = { has_war = no } }
+		}
+		
 	}
 	ai_strategy = {
 		type = antagonize
@@ -648,11 +720,11 @@ AMO_prepare_for_war = {
 am_i_a_joke_to_you = {
 	enable = {
 		OR = {
-			original_tag = EZO
-			original_tag = TOH
-			original_tag = ROC
-			original_tag = JOS
-			original_tag = KYU
+			capital_scope = {
+				is_on_continent = honshu
+			}
+			is_trade_city = yes
+			is_clan = no	# basically everyone outside honshu except any clans
 		}
 	}
 	abort = {
@@ -660,6 +732,31 @@ am_i_a_joke_to_you = {
 	}
 	ai_strategy = {
 		type = ignore
+		id = AMO
+		value = 50
+	}
+}
+
+based_and_redpilled = {	# this is mostly roleplay (but we can actually add focuses for AMO getting more help)
+	enable = {
+		is_clan = yes
+	}
+	abort = {
+		OR = {
+			has_government = communism
+			has_government = democratic_socialism
+			has_government = democratic
+		}
+		AMO = {
+			OR = {
+				has_government = communism
+				has_government = democratic_socialism
+				has_government = democratic
+			}
+		}
+	}
+	ai_strategy = {
+		type = befriend
 		id = AMO
 		value = 50
 	}
@@ -688,6 +785,7 @@ japanese_isolationism = {
 			}
 		}
 	}
+	abort = { always = no }
 	ai_strategy = {
 		type = dont_join_wars_with
 		id  = FER
@@ -740,6 +838,7 @@ asian_isolationism = {
 			}
 		}
 	}
+	abort = { always = no }
 	ai_strategy = {
 		type = dont_join_wars_with
 		id  = KYU
@@ -870,7 +969,7 @@ poor_country_prefers_cheap_support = {
 
 support_tech_design_priority_1 = {
 	enable = { has_tech = tech_support_companies_1 }
-
+	abort = { always = no }
 	ai_strategy = {
 		type = template_prio
 		id = construction_corps
@@ -925,7 +1024,7 @@ support_tech_design_priority_1 = {
 
 support_tech_design_priority_2 = {
 	enable = { has_tech = tech_support_companies_2 }
-
+	abort = { always = no }
 	ai_strategy = {
 		type = template_prio
 		id = construction_corps
@@ -980,7 +1079,7 @@ support_tech_design_priority_2 = {
 
 support_tech_design_priority_3 = {
 	enable = { has_tech = tech_support_companies_3 }
-
+	abort = { always = no }
 	ai_strategy = {
 		type = template_prio
 		id = construction_corps
@@ -1082,24 +1181,6 @@ what_hague_convention = {
 	enable = {
 		has_global_flag = chemical_weapons_in_use
 		has_government = fascism
-	}
-
-	ai_strategy = {
-		type = template_prio
-		id = artillery_chem
-		value = 10
-	}
-	ai_strategy = {
-		type = template_prio
-		id = rocket_artillery_chem
-		value = 10
-	}
-}
-
-occult_weaponry = {
-	enable = {
-		NOT = { original_tag = REI }
-		has_religion_7 = yes
 	}
 
 	ai_strategy = {

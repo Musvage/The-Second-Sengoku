@@ -278,12 +278,19 @@ world_stage_ai_germany_focus = {
 }
 
 world_stage_ai_france_focus = {
-	if = { limit = { has_global_flag = { flag = world_stage_phoney_war_rages_on days > 110 } has_global_flag = world_stage_world_war_2_is_active has_global_flag = world_stage_world_war_2_is_active has_global_flag = world_stage_france_exists }
+	if = {
+		limit = {
+			has_global_flag = world_stage_world_war_2_is_active has_global_flag = world_stage_france_exists NOT = { country_exists = KOB }
+			if = {
+				limit = { has_global_flag = KOB_saarland_offensive_completed }	# This focus is, itself, never completed off map!
+				has_global_flag = { flag = world_stage_phoney_war_rages_on days > 90 }
+			} else ={ has_global_flag = { flag = world_stage_phoney_war_rages_on days > 180 } }
+		}
 		every_possible_country = { limit = { tag = KOB } log = "(off-map AI) [THIS.GetName]: Phoeny War ends!"
 			clr_global_flag = world_stage_phoney_war_rages_on
 			news_event = worldstage.21
 		}
-		clr_global_flag = world_stage_ai_france_focus set_global_flag = world_stage_ai_france_focus
+		clr_global_flag = world_stage_ai_france_focus set_global_flag = world_stage_ai_france_focus	# this is ONLY supposed to be fire if KOB does not exist (if it does, its mission about the phoney war will fire the event
 	}
 }
 
