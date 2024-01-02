@@ -1986,9 +1986,15 @@ focus_tree = {
 		
 		available = {
 			has_global_flag = world_stage_world_war_2_is_active
-			custom_trigger_tooltip = {
-				has_global_flag = world_stage_theater_smolensk_is_active
-				tooltip = theater_active_smolensk
+			OR = {
+				custom_trigger_tooltip = {
+					10 = { has_state_flag = theater_is_active }
+					tooltip = theater_active_smolensk
+				}
+				custom_trigger_tooltip = {
+					11 = { has_state_flag = theater_is_active }
+					tooltip = theater_active_russia
+				}
 			}
 			custom_trigger_tooltip = {
 				NOT = {  11 = { check_variable = { theater_owner_coalition = 3 } } }
@@ -2001,21 +2007,35 @@ focus_tree = {
 			# cosmetic event
 			custom_effect_tooltip = theater_scope_smolensk
 			if = {
-				limit = { 10 = { OR = { check_variable = { coalition_side_attack = 1 } check_variable = { coalition_side_attack = 2 } } } }
-				add_to_variable = {
-					10.attacker_strategic_advantage = 1
-					tooltip = world_stage_add_strategic_advantage_defender
+				limit = { 11 = { has_state_flag = theater_is_active } }	# Moscow (always attacker, dont need to check ownership)
+				hidden_effect = { 11 = { add_to_variable = { attacker_strategic_advantage = 1 } } }
+				custom_effect_tooltip = theater_scope_russia
+				effect_tooltip = {
+					add_to_variable = {
+						attacker_strategic_advantage = 1
+						tooltip = world_stage_add_strategic_advantage_attacker
+					}
 				}
-			} else = {
-				add_to_variable = {
-					10.defender_strategic_advantage = 1
-					tooltip = world_stage_add_strategic_advantage_attacker
+			} else = {	# if else, action is in Smolensk
+				custom_effect_tooltip = theater_scope_smolensk
+				if = {
+					limit = { 10 = { check_variable = { theater_owner_coalition = 3 } } }	# Germans are defending in Smolensk
+					hidden_effect = { 10 = { add_to_variable = { defender_strategic_advantage = 1 } } }
+					effect_tooltip = {
+						add_to_variable = {
+							defender_strategic_advantage = 1
+							tooltip = world_stage_add_strategic_advantage_defender
+						}
+					}
+				} else = {	# if else, Germans are attacking in Smolensk
+					hidden_effect = { 10 = { add_to_variable = { attacker_strategic_advantage = 1 } } }
+					effect_tooltip = {
+						add_to_variable = {
+							attacker_strategic_advantage = 1
+							tooltip = world_stage_add_strategic_advantage_attacker
+						}
+					}
 				}
-			}
-			custom_effect_tooltip = theater_scope_russia
-			add_to_variable = {
-				11.attacker_strategic_advantage = 1
-				tooltip = world_stage_add_strategic_advantage_attacker
 			}
 		}
 	}
