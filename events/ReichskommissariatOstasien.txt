@@ -429,6 +429,64 @@ country_event = { # Molotov-Schleicher
 	}
 }
 
+country_event = { # Molotov-Rosenberg
+	id = ostasien.1102
+	title = ostasien.11.t
+	desc = ostasien.11.d
+	picture = GFX_report_rosenberg_molotov_handshake
+
+	is_triggered_only = yes
+	
+	major = yes
+
+	# Soviet Union always accept, even if FER is a human player
+	option = {
+		trigger = { OR = { tag = FER tag = REI } }
+		name = ostasien.11.a
+		custom_effect_tooltip = ostasien.11.tt
+		if = {
+			limit = { tag = REI }
+			effect_tooltip = { add_named_threat = { threat = -5 name = REI_threat_molotov_ribbentrop } }
+		} else = {
+			effect_tooltip = { REI = { add_named_threat = { threat = -5 name = REI_threat_molotov_ribbentrop } } }
+		}
+	}
+	option = {
+		trigger = {
+			OR = {	var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } }
+					var:world_stage_metropolis = { check_variable = { world_stage_coalition = 6 } } }
+			NOT = { tag = FER tag = REI }
+		}
+		name = ostasien.11.b
+		effect_tooltip = {
+			REI = {
+				add_named_threat = {
+					threat = -5
+					name = REI_threat_molotov_ribbentrop
+				}
+			}
+		}
+	}
+	option = {
+		trigger = {
+			NOT = {
+				var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } }
+				var:world_stage_metropolis = { check_variable = { world_stage_coalition = 6 } }
+				tag = FER tag = REI
+			}
+		}
+		name = ostasien.11.c
+		effect_tooltip = {
+			REI = {
+				add_named_threat = {
+					threat = -5
+					name = REI_threat_molotov_ribbentrop
+				}
+			}
+		}
+	}
+}
+
 country_event = { # Lud dies without a will - power struggle
 	id = ostasien.12
 	title = ostasien.12.t
@@ -592,7 +650,10 @@ country_event = {	### Volksstrum
 		OR = { 
 			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } }
 			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
-			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } }	# maybe check if Comintern joined war as separated participant
+			AND = {
+				NOT = { has_global_flag sovietunion_joined_ww2 }
+				var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } }
+			}
 			NOT = { has_country_flag = hide_worldstage_notification }
 		}
 		is_ai = no
