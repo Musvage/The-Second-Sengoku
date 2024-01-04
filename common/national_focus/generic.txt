@@ -105,7 +105,7 @@ focus_tree = {
 
 	focus = {
 		id = equipment_effort_2
-		icon = GFX_focus_generic_artillery
+		icon = GFX_focus_GENERIC_artillery_2
 		search_filters = { FOCUS_FILTER_RESEARCH }
 		prerequisite = { focus = equipment_effort }
 		x = 0
@@ -255,7 +255,7 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = generic_semper_fi
+		id = AMERICA_generic_semper_fi
 		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_RESEARCH }
 		icon = GFX_focus_AMERICA_semper_fi
 		prerequisite = { focus = equipment_effort_3 }
@@ -324,7 +324,7 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = generic_gurkhas
+		id = OSA_generic_gurkhas
 		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_RESEARCH }
 		icon = GFX_focus_OSA_gurkhas
 		prerequisite = { focus = equipment_effort_3 }
@@ -393,7 +393,7 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = generic_foreign_legion
+		id = KOB_generic_foreign_legion
 		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_RESEARCH }
 		icon = GFX_focus_KOB_foreign_legion
 		prerequisite = { focus = equipment_effort_3 }
@@ -2035,6 +2035,10 @@ focus_tree = {
 			x = 1 y = 0
 			trigger = { tag = KOB }
 		}
+		offset = {
+			x = 1 y = 0
+			trigger = { OR = { tag = AMC tag = OKI } }
+		}
 
 		completion_reward = {
 			add_tech_bonus = {
@@ -2055,17 +2059,73 @@ focus_tree = {
 			}
 		}
 	}
+	
+	focus = {
+		id = AMERICA_generic_new_deal
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_WORLD }
+		icon = GFX_focus_generic_american_investments
+		
+		prerequisite = { focus = industrial_effort_western }
+		x = 0
+		y = 1
+		relative_position_id = industrial_effort_western
+		cost = 10
+
+		available_if_capitulated = yes
+
+		available = { is_main_american_colony = yes }
+		
+		text_icon = worldstage_style
+
+		ai_will_do = {
+			factor = 2			
+		}
+
+		completion_reward = {
+			hidden_effect = {
+				var:world_stage_metropolis = {
+					add_to_variable = {
+						var = world_stage_power
+						value = 25
+					}
+				}
+			}
+			custom_effect_tooltip = metropolis_scope_usa
+			effect_tooltip = {
+				add_to_variable = {
+					var = world_stage_power
+					value = 25
+					tooltip = add_world_stage_power_no_scope_tt
+				}
+			}
+			crash_1929_decrease_level_2 = yes
+			if = {
+				limit = { tag = MUS}
+				MUS = { add_offsite_building = { type = industrial_complex level = 2 } }	## This looks redundant but the tooltip is more legible this way (trust me bro)
+				SUS = { add_offsite_building = { type = industrial_complex level = 2 } }
+				
+			} else = {
+				SUS = { add_offsite_building = { type = industrial_complex level = 2 } }
+				MUS = { add_offsite_building = { type = industrial_complex level = 2 } }
+			}
+		}
+	}
 
 	focus = {
 		id = construction_effort_western
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		icon = GFX_focus_generic_western_construction
-		prerequisite = { focus = industrial_effort_western }
-		x = 1
-		y = 1
-		relative_position_id = industrial_effort_western
 		cost = 10
 
+		prerequisite = { focus = industrial_effort_western }
+		relative_position_id = industrial_effort_western
+		x = 1
+		y = 1
+		offset = {
+			x = 1 y = 0
+			trigger = { OR = { tag = AMC tag = OKI } }
+		}
+		
 		available_if_capitulated = yes
 
 		ai_will_do = {
@@ -2109,6 +2169,10 @@ focus_tree = {
 			x = -1 y = 0
 			trigger = { tag = KOB }
 		}
+		offset = {
+			x = -1 y = 0
+			trigger = { OR = { tag = AMC tag = OKI } }
+		}
 		
 		available_if_capitulated = yes
 		
@@ -2121,22 +2185,43 @@ focus_tree = {
 		}
 
 		completion_reward = {
-			hidden_effect = {
-				var:world_stage_metropolis = {
+			if = {
+				limit = { NOT = { tag = SUS } }
+				hidden_effect = {
+					var:world_stage_metropolis = {
+						add_to_variable = {
+							var = world_stage_power
+							value = 5
+						}
+					}
+				}
+				effect_tooltip = {
 					add_to_variable = {
 						var = world_stage_power
 						value = 5
+						tooltip = add_world_stage_power_no_scope_tt
 					}
 				}
-			}
-			effect_tooltip = {
-				add_to_variable = {
-					var = world_stage_power
-					value = 5
-					tooltip = add_world_stage_power_no_scope_tt
+			} else = {
+				hidden_effect = {
+					var:world_stage_metropolis = {
+						add_to_variable = {
+							var = world_stage_power
+							value = 0
+						}
+					}
 				}
+				effect_tooltip = {
+					add_to_variable = {
+						var = world_stage_power
+						value = 0
+						tooltip = add_world_stage_power_no_scope_tt
+					}
+				}
+				add_political_power = 90
 			}
 			add_offsite_building = { type = arms_factory level = 1 }
+			custom_effect_tooltip = production_effort_western_SUS
 		}
 	}
 
@@ -2339,22 +2424,43 @@ focus_tree = {
 		}		
 
 		completion_reward = {
-			hidden_effect = {
-				var:world_stage_metropolis = {
+			if = {
+				limit = { NOT = { tag = SUS } }
+				hidden_effect = {
+					var:world_stage_metropolis = {
+						add_to_variable = {
+							var = world_stage_power
+							value = 5
+						}
+					}
+				}
+				effect_tooltip = {
 					add_to_variable = {
 						var = world_stage_power
 						value = 5
+						tooltip = add_world_stage_power_no_scope_tt
 					}
 				}
-			}
-			effect_tooltip = {
-				add_to_variable = {
-					var = world_stage_power
-					value = 5
-					tooltip = add_world_stage_power_no_scope_tt
+			} else = {
+				hidden_effect = {
+					var:world_stage_metropolis = {
+						add_to_variable = {
+							var = world_stage_power
+							value = 0
+						}
+					}
 				}
+				effect_tooltip = {
+					add_to_variable = {
+						var = world_stage_power
+						value = 0
+						tooltip = add_world_stage_power_no_scope_tt
+					}
+				}
+				add_political_power = 90
 			}
 			add_offsite_building = { type = arms_factory level = 1 }
+			custom_effect_tooltip = production_effort_western_SUS
 			random_owned_controlled_state = {
 				limit = {
 					free_building_slots = {
@@ -2689,6 +2795,11 @@ focus_tree = {
 			x = 1 y = 0
 			trigger = { tag = KOB }
 		}
+		offset = {
+			x = 2 y = 0
+			trigger = { OR = { tag = AMC tag = OKI } }
+		}
+		
 		
 		available = {
 			if = {
@@ -3512,7 +3623,7 @@ focus_tree = {
 	
 	focus = {
 		id = interventionism_focus_western
-		icon = GFX_goal_generic_military_deal
+		icon = GFX_focus_generic_military_deal
 		prerequisite = { focus = ss_generic_government_freedoms }
 		mutually_exclusive = { focus = neutrality_focus }
 		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY FOCUS_FILTER_WORLD }
@@ -3526,7 +3637,8 @@ focus_tree = {
 		text_icon = worldstage_style
 		
 		allow_branch = {
-			OR = { tag = REI tag = PRT tag = OSA tag = KOB tag = HIR tag = FER tag = AMC tag = OKI tag = KIT tag = SPR }
+			OR = { tag = REI tag = PRT tag = OSA tag = KOB tag = HIR tag = FER tag = OKI = KIT tag = SPR }
+			NOT = { tag = AMC tag = OKI }	# America has its own focus
 			NOT = { has_country_flag = lost_original_focus_tree } # this is related to World Stage
 		}
 
@@ -3552,6 +3664,46 @@ focus_tree = {
 				}
 				set_country_flag = will_join_allies
 				custom_effect_tooltip = will_join_allies_tt
+			}
+		}
+	}
+	
+	focus = {
+		id = AMERICA_generic_abandon_neutrality
+		icon = GFX_focus_AMERICA_abandon_neutrality
+		prerequisite = { focus = ss_generic_government_freedoms }
+		mutually_exclusive = { focus = neutrality_focus }
+		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY FOCUS_FILTER_WORLD }
+		x = -2
+		y = 1
+		relative_position_id = ss_generic_government_freedoms
+		cost = 10
+
+		available_if_capitulated = yes
+		
+		text_icon = worldstage_style
+		
+		available = { is_main_american_colony = yes }
+		
+		allow_branch = {
+			OR = { tag = AMC tag = OKI }
+			NOT = { has_country_flag = lost_original_focus_tree } # this is related to World Stage
+		}
+
+		ai_will_do = {
+			factor = 1
+			#modifier = {
+			#	factor = 0
+			#	has_idea = neutrality_idea
+			#}
+		}
+
+		completion_reward = {
+			every_country = {
+				limit = { OR = { tag = MUS tag = SUS } }	## This looks redundant but the tooltip is more legible this way (trust me bro)
+				if = { limit = { NOT = { has_global_flag = world_stage_world_war_2_is_active } } set_country_flag = will_join_allies custom_effect_tooltip = will_join_allies_tt }
+				set_rule = { can_send_volunteers = yes }
+				swap_ideas = { remove_idea = undisturbed_isolation add_idea = low_economic_mobilisation }
 			}
 		}
 	}
@@ -3598,6 +3750,87 @@ focus_tree = {
 				}
 			}
 			add_ideas = idea_colonial_armies
+		}
+	}
+	
+	focus = {
+		id = AMERICA_generic_operation_torch
+		icon = GFX_focus_AMERICA_operation_torch
+		prerequisite = { focus = AMERICA_generic_abandon_neutrality }
+
+		search_filters = { FOCUS_FILTER_WORLD }
+		x = -1
+		y = 1
+		relative_position_id = AMERICA_generic_abandon_neutrality
+		cost = 10
+
+		available_if_capitulated = no
+		
+		text_icon = worldstage_style
+		
+		available = { is_main_american_colony = yes }
+
+		ai_will_do = {
+			factor = 50
+		}
+
+		completion_reward = {
+			set_global_flag = AMERICA_operaion_torch_completed
+			unlock_decision_category_tooltip = world_stage_torch_category
+			set_variable = { global.torch_strength = 50 }
+		}
+	}
+	
+	focus = {
+		id = AMERICA_generic_arsenal_of_democracy
+		icon = GFX_focus_AMERICA_arsenal_of_democracy
+		prerequisite = { focus = AMERICA_generic_abandon_neutrality }
+
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_WORLD }
+		x = 1
+		y = 1
+		relative_position_id = AMERICA_generic_abandon_neutrality
+		cost = 10
+
+		available_if_capitulated = no
+		
+		text_icon = worldstage_style
+
+		ai_will_do = {
+			factor = 50
+		}
+		
+		available = { is_main_american_colony = yes }
+
+		completion_reward = {
+			hidden_effect = {
+				var:world_stage_metropolis = {
+					add_to_variable = {
+						var = world_stage_power
+						value = 25
+					}
+				}
+			}
+			custom_effect_tooltip = metropolis_scope_usa
+			effect_tooltip = {
+				add_to_variable = {
+					var = world_stage_power
+					value = 25
+					tooltip = add_world_stage_power_no_scope_tt
+				}
+			}
+			if = {
+				limit = { tag = MUS}
+				MUS = { add_offsite_building = { type = arms_factory level = 4 } }	## This looks redundant but the tooltip is more legible this way (trust me bro)
+				MUS = { add_offsite_building = { type = dockyard level = 4 } }	## This looks redundant but the tooltip is more legible this way (trust me bro)
+				SUS = { add_offsite_building = { type = arms_factory level = 4 } }
+				SUS = { add_offsite_building = { type = dockyard level = 4 } }
+			} else = {
+				SUS = { add_offsite_building = { type = arms_factory level = 4 } }
+				SUS = { add_offsite_building = { type = dockyard level = 4 } }
+				MUS = { add_offsite_building = { type = arms_factory level = 4 } }
+				MUS = { add_offsite_building = { type = dockyard level = 4 } }
+			}
 		}
 	}
 	
