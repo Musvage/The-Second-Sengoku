@@ -2033,10 +2033,6 @@ focus_tree = {
 		
 		offset = {
 			x = 1 y = 0
-			trigger = { tag = KOB }
-		}
-		offset = {
-			x = 1 y = 0
 			trigger = { OR = { tag = AMC tag = OKI } }
 		}
 
@@ -2074,6 +2070,8 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		available = { is_main_american_colony = yes }
+		
+		allow_branch = { OR = { tag = AMC tag = OKI } }
 		
 		text_icon = worldstage_style
 
@@ -2167,10 +2165,6 @@ focus_tree = {
 		
 		offset = {
 			x = -1 y = 0
-			trigger = { tag = KOB }
-		}
-		offset = {
-			x = -1 y = 0
 			trigger = { OR = { tag = AMC tag = OKI } }
 		}
 		
@@ -2221,7 +2215,7 @@ focus_tree = {
 				add_political_power = 90
 			}
 			add_offsite_building = { type = arms_factory level = 1 }
-			custom_effect_tooltip = production_effort_western_SUS
+			if = { limit = { tag = SUS } custom_effect_tooltip = production_effort_western_SUS }
 		}
 	}
 
@@ -2460,7 +2454,7 @@ focus_tree = {
 				add_political_power = 90
 			}
 			add_offsite_building = { type = arms_factory level = 1 }
-			custom_effect_tooltip = production_effort_western_SUS
+			if = { limit = { tag = SUS } custom_effect_tooltip = production_effort_western_SUS }
 			random_owned_controlled_state = {
 				limit = {
 					free_building_slots = {
@@ -2493,60 +2487,6 @@ focus_tree = {
 			}
 		}
 	}
-	
-	focus = {
-		id = KOB_generic_saarland_offensive
-		icon = GFX_goal_generic_anti_fascist_diplomacy_red
-		search_filters = { FOCUS_FILTER_WORLD FOCUS_FILTER_WAR_SUPPORT }
-		cost = 10
-
-		prerequisite = { focus = production_effort_3_western }
-		relative_position_id = production_effort_3_western
-		x = 1
-		y = 1
-
-		available = {
-			has_global_flag = world_stage_world_war_2_is_active
-			custom_trigger_tooltip = {
-				tooltip = world_stage_phoney_war_rages_on_trigger_tt
-				has_active_mission = world_stage_phoney_war_countdown_allies
-			}
-			custom_trigger_tooltip = {
-				tooltip = world_stage_phoney_war_rages_on_110_days_ago
-				has_global_flag = { flag = world_stage_phoney_war_rages_on days < 110 }
-			}
-			custom_trigger_tooltip = { tooltip = world_stage_france_did_not_capitulate_trigger NOT = { has_global_flag = world_stage_france_capitulated } }
-		}
-		available_if_capitulated = yes
-		cancel_if_invalid = yes
-		
-		bypass = {
-			hidden_trigger = { has_global_flag = KOB_saarland_offensive_completed }	# this is probably won't happen but I'm writting it here just for developing muscle memory
-		}
-
-		ai_will_do = {
-			factor = 2
-		}
-		
-		allow_branch = { tag = KOB }
-		
-		text_icon = worldstage_style	
-
-		completion_reward = {
-			set_global_flag = KOB_saarland_offensive_completed	# "generic" is not included in the name since this is a placeholder for an actual KOB tree
-			add_days_mission_timeout = {
-				mission = world_stage_phoney_war_countdown_allies
-				days = -90
-			}
-			KOB = {
-				add_war_support = 0.1
-			}
-			every_other_country = {
-				limit = { is_in_faction_with = KOB}
-				add_war_support = 0.05
-			}
-		}
-	}
 
 	focus = {
 		id = infrastructure_effort_2_western	# Dockyards Effort
@@ -2565,21 +2505,42 @@ focus_tree = {
 		text_icon = worldstage_style
 
 		completion_reward = {
-			hidden_effect = {
-				var:world_stage_metropolis = {
+			if = {
+				limit = { NOT = { tag = SUS } }
+				hidden_effect = {
+					var:world_stage_metropolis = {
+						add_to_variable = {
+							var = world_stage_power
+							value = 5
+						}
+					}
+				}
+				effect_tooltip = {
 					add_to_variable = {
 						var = world_stage_power
 						value = 5
+						tooltip = add_world_stage_power_no_scope_tt
 					}
 				}
-			}
-			effect_tooltip = {
-				add_to_variable = {
-					var = world_stage_power
-					value = 5
-					tooltip = add_world_stage_power_no_scope_tt
+			} else = {
+				hidden_effect = {
+					var:world_stage_metropolis = {
+						add_to_variable = {
+							var = world_stage_power
+							value = 0
+						}
+					}
 				}
+				effect_tooltip = {
+					add_to_variable = {
+						var = world_stage_power
+						value = 0
+						tooltip = add_world_stage_power_no_scope_tt
+					}
+				}
+				add_political_power = 90
 			}
+			if = { limit = { tag = SUS } custom_effect_tooltip = production_effort_western_SUS }
 			add_offsite_building = { type = dockyard level = 2 }
 		}
 	}
@@ -2790,11 +2751,7 @@ focus_tree = {
 		}
 
 		available_if_capitulated = yes
-		
-		offset = {
-			x = 1 y = 0
-			trigger = { tag = KOB }
-		}
+
 		offset = {
 			x = 2 y = 0
 			trigger = { OR = { tag = AMC tag = OKI } }
@@ -3623,7 +3580,7 @@ focus_tree = {
 	
 	focus = {
 		id = interventionism_focus_western
-		icon = GFX_focus_generic_military_deal
+		icon = GFX_goal_generic_military_deal
 		prerequisite = { focus = ss_generic_government_freedoms }
 		mutually_exclusive = { focus = neutrality_focus }
 		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY FOCUS_FILTER_WORLD }
@@ -3639,8 +3596,10 @@ focus_tree = {
 		allow_branch = {
 			OR = { tag = REI tag = PRT tag = OSA tag = KOB tag = HIR tag = FER tag = OKI = KIT tag = SPR }
 			NOT = { tag = AMC tag = OKI }	# America has its own focus
-			NOT = { has_country_flag = lost_original_focus_tree } # this is related to World Stage
+			#NOT = { has_country_flag = lost_original_focus_tree } # this is related to World Stage
 		}
+		
+		available = { world_stage_has_capitulated = no }
 
 		ai_will_do = {
 			factor = 1
@@ -3648,6 +3607,10 @@ focus_tree = {
 				factor = 0
 				has_idea = neutrality_idea
 			}
+		}
+		
+		available = {
+			world_stage_has_capitulated = no
 		}
 
 		completion_reward = {
@@ -3711,10 +3674,10 @@ focus_tree = {
 	focus = {
 		id = colonial_armies
 		icon = GFX_goal_GENERIC_colonal_army
-		prerequisite = { focus = interventionism_focus_western }
+		prerequisite = { focus = interventionism_focus_western focus = neutrality_focus }
 
 		search_filters = { FOCUS_FILTER_MANPOWER FOCUS_FILTER_WORLD }
-		x = -1
+		x = 2
 		y = 1
 		relative_position_id = interventionism_focus_western
 		cost = 10
@@ -3722,6 +3685,8 @@ focus_tree = {
 		available_if_capitulated = no
 		
 		text_icon = worldstage_style
+		
+		allow_branch = { NOT = { tag = AMC tag = OKI } }
 
 		ai_will_do = {
 			factor = 50
@@ -3750,6 +3715,120 @@ focus_tree = {
 				}
 			}
 			add_ideas = idea_colonial_armies
+		}
+	}
+	
+	focus = {
+		id = OSA_generic_operation_overlord
+	#	icon = GFX_focus_AMERICA_operation_torch
+		prerequisite = { focus = interventionism_focus_western }
+
+		search_filters = { FOCUS_FILTER_WORLD }
+		x = -1
+		y = 2
+		relative_position_id = interventionism_focus_western
+		cost = 10
+
+		available_if_capitulated = no
+		
+		text_icon = worldstage_style
+		
+		allow_branch = { tag = OSA }
+		
+		available = {  }
+
+		ai_will_do = {
+			factor = 50
+		}
+
+		completion_reward = {
+			set_global_flag = OSA_operaion_overlord_completed
+			unlock_decision_category_tooltip = world_stage_overlord_category
+			set_variable = { global.overlord_strength = 50 }
+		}
+	}
+	
+	focus = {
+		id = OSA_generic_operation_husky
+		icon = GFX_focus_OSA_operation_husky
+		prerequisite = { focus = interventionism_focus_western }
+
+		search_filters = { FOCUS_FILTER_WORLD }
+		x = 1
+		y = 2
+		relative_position_id = interventionism_focus_western
+		cost = 10
+
+		available_if_capitulated = no
+		
+		text_icon = worldstage_style
+		
+		allow_branch = { tag = OSA }
+		
+		available = {  }
+
+		ai_will_do = {
+			factor = 50
+		}
+
+		completion_reward = {
+			set_global_flag = OSA_operaion_husky_completed
+			unlock_decision_category_tooltip = world_stage_husky_category
+			set_variable = { global.husky_strength = 50 }
+		}
+	}
+	
+	focus = {
+		id = KOB_generic_saarland_offensive
+		icon = GFX_goal_generic_anti_fascist_diplomacy_red
+		search_filters = { FOCUS_FILTER_WORLD FOCUS_FILTER_WAR_SUPPORT }
+		cost = 10
+
+		prerequisite = { focus = interventionism_focus_western }
+		relative_position_id = interventionism_focus_western
+		x = 0
+		y = 1
+
+		available = {
+			has_global_flag = world_stage_world_war_2_is_active
+			custom_trigger_tooltip = {
+				tooltip = world_stage_phoney_war_rages_on_trigger_tt
+				has_active_mission = world_stage_phoney_war_countdown_allies
+			}
+			custom_trigger_tooltip = {
+				tooltip = world_stage_phoney_war_rages_on_110_days_ago
+				has_global_flag = { flag = world_stage_phoney_war_rages_on days < 110 }
+			}
+			world_stage_has_capitulated = no	#custom_trigger_tooltip = { tooltip = world_stage_france_did_not_capitulate_trigger NOT = { has_global_flag = world_stage_france_capitulated } }
+		}
+		available_if_capitulated = yes
+		cancel_if_invalid = yes
+		
+		bypass = {
+			hidden_trigger = { has_global_flag = KOB_saarland_offensive_completed }	# this is probably won't happen but I'm writting it here just for developing muscle memory
+		}
+
+		ai_will_do = {
+			factor = 2
+		}
+		
+		allow_branch = { tag = KOB }
+		
+		text_icon = worldstage_style	
+
+		completion_reward = {
+			set_global_flag = KOB_saarland_offensive_completed	# "generic" is not included in the name since this is a placeholder for an actual KOB tree
+			add_days_mission_timeout = {
+				mission = world_stage_phoney_war_countdown_allies
+				days = -90
+			}
+			KOB = {
+				add_war_support = 0.1
+			}
+			every_other_country = {
+				limit = { is_in_faction_with = KOB}
+				add_war_support = 0.05
+			}
 		}
 	}
 	
@@ -3991,6 +4070,11 @@ focus_tree = {
 		available_if_capitulated = yes
 		
 		ai_will_do = { factor = 1 }
+		
+		allow_branch = {
+			NOT = { tag = REI tag = PRT tag = OSA tag = KOB tag = HIR tag = FER tag = KIT tag = SPR }	# AMC/OKI do not have Colonial Armies
+			#NOT = { has_country_flag = lost_original_focus_tree } # this is related to World Stage
+		}
 
 		completion_reward = {
 			add_ideas = deterrence
@@ -4085,8 +4169,6 @@ focus_tree = {
 		icon = GFX_goal_generic_forceful_treaty
 		prerequisite = { focus = indoctrination_focus }
 		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_POLITICAL }
-		available = {
-		}
 		x = 0
 		y = 1
 		relative_position_id = indoctrination_focus
