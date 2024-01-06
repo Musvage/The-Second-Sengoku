@@ -3646,7 +3646,7 @@ focus_tree = {
 		
 		text_icon = worldstage_style
 		
-		available = { is_main_american_colony = yes }
+		available = { is_main_american_colony = yes has_global_flag = world_stage_world_war_2_is_active }
 		
 		allow_branch = {
 			OR = { tag = AMC tag = OKI }
@@ -3735,7 +3735,18 @@ focus_tree = {
 		
 		allow_branch = { tag = OSA }
 		
-		available = {  }
+		available = {
+			world_stage_has_capitulated = no
+			has_global_flag = world_stage_world_war_2_is_active
+			custom_trigger_tooltip = { 8 = { NOT = { has_state_flag = theater_is_active } } tooltip = theater_not_active_france }
+			custom_trigger_tooltip = { 8 = { check_variable = { theater_owner_coalition = 1 } } tooltip = theater_france_controlled_axis }
+			custom_trigger_tooltip = { 30 = { NOT = { has_state_flag = theater_is_active } } tooltip = theater_not_active_england }
+			custom_trigger_tooltip = { 30 = { check_variable = { theater_owner_coalition = 3 } } tooltip = theater_england_controlled_axis }
+			custom_trigger_tooltip = {
+				tooltip = england_has_world_stage_power_30
+				102 = { check_variable = { world_stage_power > 29 } }
+			}
+		}
 
 		ai_will_do = {
 			factor = 50
@@ -3765,7 +3776,18 @@ focus_tree = {
 		
 		allow_branch = { tag = OSA }
 		
-		available = {  }
+		available = {
+			world_stage_has_capitulated = no
+			has_global_flag = world_stage_world_war_2_is_active
+			custom_trigger_tooltip = { 14 = { NOT = { has_state_flag = theater_is_active } } tooltip = theater_not_active_lybia }
+			custom_trigger_tooltip = { 14 = { check_variable = { theater_owner_coalition = 1 } } tooltip = theater_lybia_controlled_allies }
+			custom_trigger_tooltip = { 24 = { NOT = { has_state_flag = theater_is_active } } tooltip = theater_not_active_sicily }
+			custom_trigger_tooltip = { 24 = { check_variable = { theater_owner_coalition = 3 } } tooltip = theater_sicily_controlled_axis }
+			custom_trigger_tooltip = {
+				tooltip = england_has_world_stage_power_30
+				102 = { check_variable = { world_stage_power > 29 } }
+			}
+		}
 
 		ai_will_do = {
 			factor = 50
@@ -3795,11 +3817,22 @@ focus_tree = {
 				tooltip = world_stage_phoney_war_rages_on_trigger_tt
 				has_active_mission = world_stage_phoney_war_countdown_allies
 			}
-			custom_trigger_tooltip = {
-				tooltip = world_stage_phoney_war_rages_on_110_days_ago
-				has_global_flag = { flag = world_stage_phoney_war_rages_on days < 110 }
+			if = {
+				limit = { focus_progress { focus = KOB_generic_saarland_offensive progress < 0.01 } }
+				custom_trigger_tooltip = {
+					tooltip = world_stage_phoney_war_rages_on_110_days_ago
+					has_global_flag = { flag = world_stage_phoney_war_rages_on days < 110 }
+				}
 			}
+			custom_trigger_tooltip = { 5 = { NOT = { has_state_flag = theater_is_active } } tooltip = theater_not_active_alsace }
+			custom_trigger_tooltip = { 5 = { check_variable = { theater_owner_coalition = 1 } } tooltip = theater_alsace_controlled_allies }
+			custom_trigger_tooltip = { 6 = { NOT = { has_state_flag = theater_is_active } } tooltip = theater_not_active_westphalia }
+			custom_trigger_tooltip = { 6 = { check_variable = { theater_owner_coalition = 3 } } tooltip = theater_alsace_controlled_axis }
 			world_stage_has_capitulated = no	#custom_trigger_tooltip = { tooltip = world_stage_france_did_not_capitulate_trigger NOT = { has_global_flag = world_stage_france_capitulated } }
+			custom_trigger_tooltip = {
+				tooltip = france_has_world_stage_power_30
+				103 = { check_variable = { world_stage_power > 29 } }
+			}
 		}
 		available_if_capitulated = yes
 		cancel_if_invalid = yes
@@ -3847,7 +3880,18 @@ focus_tree = {
 		
 		text_icon = worldstage_style
 		
-		available = { is_main_american_colony = yes }
+		available = {
+			is_main_american_colony = yes
+			world_stage_has_capitulated = no has_global_flag = world_stage_world_war_2_is_active
+			OR = {
+				custom_trigger_tooltip = { 14 = { has_state_flag = theater_is_active } tooltip = theater_active_lybia }
+				custom_trigger_tooltip = { 15 = { has_state_flag = theater_is_active } tooltip = theater_active_egypt }
+			}
+			custom_trigger_tooltip = {
+				tooltip = germany_has_world_stage_power_30
+				105 = { check_variable = { world_stage_power > 29 } }
+			}
+		}
 
 		ai_will_do = {
 			factor = 50
@@ -3855,8 +3899,63 @@ focus_tree = {
 
 		completion_reward = {
 			set_global_flag = AMERICA_operaion_torch_completed
-			unlock_decision_category_tooltip = world_stage_torch_category
-			set_variable = { global.torch_strength = 50 }
+		#	unlock_decision_category_tooltip = world_stage_torch_category
+		#	set_variable = { global.torch_strength = 50 }
+		### BELLOW, IT IS BASICALLY THE AFRIKAKORPS
+			if = {
+				limit = {
+					14 = { has_state_flag = theater_is_active }
+					15 = { has_state_flag = theater_is_active }
+				}
+				set_temp_variable = { usa_forces_value = 15 }
+				set_temp_variable = { xp_bonus = 10 }
+			} else = {
+				set_temp_variable = { usa_forces_value = 30 }
+				set_temp_variable = { xp_bonus = 5 }
+			}
+			custom_effect_tooltip = theater_scope_lybia
+			if = {
+				limit = { 14 = { has_state_flag = theater_is_active } }
+				if = {
+					limit = { var:world_stage_metropolis = { check_variable = { 14.coalition_side_attack = world_stage_coalition } } }
+					add_to_variable = {
+						14.defender_strategic_advantage = 0.5
+						tooltip = world_stage_add_strategic_advantage_attacker
+					}
+				} else = {
+					add_to_variable = {
+						14.defender_strategic_advantage = 0.5
+						tooltip = world_stage_add_strategic_advantage_defender
+					}
+				}
+				hidden_effect = { 14 = { add_to_variable = { world_stage_power_deployed_by^105 = usa_forces_value }  world_stage_state_update_current_day = yes } }	# proxy for Lybia
+				subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+					105.world_stage_power = usa_forces_value
+					tooltip = world_stage_deploy_power
+				}
+			} else = { custom_effect_tooltip = world_stage_possibly_reinforce_here }
+			custom_effect_tooltip = theater_scope_egypt
+			if = {
+				limit = { 15 = { has_state_flag = theater_is_active } }
+				if = {
+					limit = { var:world_stage_metropolis = { check_variable = { 15.coalition_side_attack = world_stage_coalition } } }
+					add_to_variable = {
+						15.defender_strategic_advantage = 0.5
+						tooltip = world_stage_add_strategic_advantage_attacker
+					}
+				} else = {
+					add_to_variable = {
+						15.defender_strategic_advantage = 0.5
+						tooltip = world_stage_add_strategic_advantage_defender
+					}
+				}
+				hidden_effect = { 15 = { add_to_variable = { world_stage_power_deployed_by^105 = usa_forces_value } world_stage_state_update_current_day = yes } }	# proxy for Egypt
+				subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+					105.world_stage_power = usa_forces_value
+					tooltip = world_stage_deploy_power
+				}
+			} else = { custom_effect_tooltip = world_stage_possibly_reinforce_here }
+			army_experience = xp_bonus
 		}
 	}
 	
@@ -3879,7 +3978,7 @@ focus_tree = {
 			factor = 50
 		}
 		
-		available = { is_main_american_colony = yes }
+		available = { is_main_american_colony = yes world_stage_has_capitulated = no has_global_flag = world_stage_world_war_2_is_active }
 
 		completion_reward = {
 			hidden_effect = {
