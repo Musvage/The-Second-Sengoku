@@ -18,6 +18,7 @@ country_event = {
 	trigger = {
 		has_war = yes
 		has_civil_war = no
+		is_government_in_exile = no # strikes etc shouldn't affect you if you are not there... 
 		OR = {
 			has_stability < 0.5
 			has_war_support < 0.5
@@ -44,7 +45,11 @@ country_event = {
 				has_idea = civilian_economy
 			}
 		}
-		NOT = { has_completed_focus = SPR_all_must_bear_the_torch }
+		#NOT = { has_completed_focus = SPR_all_must_bear_the_torch }
+		#NOT = {
+		#	original_tag = SWE
+		#	has_idea = SWE_hungershield
+		#}
 	}
 
 	mean_time_to_happen = { 
@@ -119,6 +124,17 @@ country_event = {
 				modifier = {
 					factor = 0.1
 					has_stability > 0.5
+				}
+				modifier = { #No strikes if Denmark has High Welfare Spending or already has sided with the Unions
+					factor = 0
+					original_tag = DEN
+					OR = {
+						power_balance_value = {
+							id = DEN_balance_of_power
+							value < -0.59 
+						}
+						has_completed_focus = DEN_side_with_unions
+					}
 				}
 				add_ideas = strikes_1 
 				country_event = stability.22
