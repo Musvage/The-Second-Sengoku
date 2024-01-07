@@ -73,10 +73,17 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		completion_reward = {
-			add_tech_bonus = {
-				name = motorized_bonus
-				bonus = 3.0
-				technology = motorised_infantry
+			if = {
+				limit = {
+					NOT = { has_tech = tech_trucks }
+				}
+				set_technology = { tech_trucks = 1 }
+			} else = {
+				add_tech_bonus = {
+					name = motorized_bonus
+					bonus = 3.0
+					technology = motorised_infantry
+				}
 			}
 		}
 	}
@@ -142,8 +149,19 @@ focus_tree = {
 			add_tech_bonus = {
 				name = motorized_bonus
 				ahead_reduction = 2
+				bonus = 1
 				uses = 1
 				category = motorized_equipment
+			}
+			if = {
+				limit = { has_dlc = "La Resistance" }
+				add_tech_bonus = {
+					name = motorized_bonus
+					ahead_reduction = 2
+					bonus = 1
+					uses = 1
+					category = cat_armored_cars
+				}
 			}
 		}
 	}
@@ -219,9 +237,7 @@ focus_tree = {
 		id = special_forces
 		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_RESEARCH }
 		icon = GFX_focus_KAN_small_arms_modernization
-		prerequisite = { focus = equipment_effort_3 }
-		prerequisite = { focus = doctrine_effort_2 }
-		prerequisite = { focus = armor_effort }
+		prerequisite = { focus = equipment_effort_3  focus = doctrine_effort_2 focus = armor_effort }
 		x = 1
 		y = 1
 		relative_position_id = equipment_effort_3
@@ -258,9 +274,7 @@ focus_tree = {
 		id = AMERICA_generic_semper_fi
 		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_RESEARCH }
 		icon = GFX_focus_AMERICA_semper_fi
-		prerequisite = { focus = equipment_effort_3 }
-		prerequisite = { focus = doctrine_effort_2 }
-		prerequisite = { focus = armor_effort }
+		prerequisite = { focus = equipment_effort_3  focus = doctrine_effort_2 focus = armor_effort }
 		x = 1
 		y = 1
 		relative_position_id = equipment_effort_3
@@ -327,9 +341,7 @@ focus_tree = {
 		id = OSA_generic_gurkhas
 		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_RESEARCH }
 		icon = GFX_focus_OSA_gurkhas
-		prerequisite = { focus = equipment_effort_3 }
-		prerequisite = { focus = doctrine_effort_2 }
-		prerequisite = { focus = armor_effort }
+		prerequisite = { focus = equipment_effort_3  focus = doctrine_effort_2 focus = armor_effort }
 		x = 1
 		y = 1
 		relative_position_id = equipment_effort_3
@@ -396,9 +408,7 @@ focus_tree = {
 		id = KOB_generic_foreign_legion
 		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_RESEARCH }
 		icon = GFX_focus_KOB_foreign_legion
-		prerequisite = { focus = equipment_effort_3 }
-		prerequisite = { focus = doctrine_effort_2 }
-		prerequisite = { focus = armor_effort }
+		prerequisite = { focus = equipment_effort_3  focus = doctrine_effort_2 focus = armor_effort }
 		x = 1
 		y = 1
 		relative_position_id = equipment_effort_3
@@ -974,7 +984,7 @@ focus_tree = {
 		cost = 10
 
 		available_if_capitulated = yes
-
+		available = { NOT = { has_tech = fleet_in_being } }
 
 		ai_will_do = {
 			factor = 1
@@ -1015,7 +1025,7 @@ focus_tree = {
 		cost = 10
 
 		available_if_capitulated = yes
-
+		available = { NOT = { has_tech = trade_interdiction has_tech = base_strike } }
 
 		ai_will_do = {
 			factor = 1
@@ -2101,7 +2111,7 @@ focus_tree = {
 				limit = { tag = MUS}
 				MUS = { add_offsite_building = { type = industrial_complex level = 2 } }	## This looks redundant but the tooltip is more legible this way (trust me bro)
 				SUS = { add_offsite_building = { type = industrial_complex level = 2 } }
-				
+				hidden_effect = { SUS = { unlock_national_focus = AMERICA_generic_new_deal } }
 			} else = {
 				SUS = { add_offsite_building = { type = industrial_complex level = 2 } }
 				MUS = { add_offsite_building = { type = industrial_complex level = 2 } }
@@ -2999,7 +3009,11 @@ focus_tree = {
 		
 		available = {
 			communism > 0.33
-			NOT = { has_government = communism } is_subject = no
+			NOT = { has_government = communism }
+			OR = {
+				is_subject = no
+				OVERLORD = { has_government = communism }
+			}
 		}
 		
 		bypass = {
@@ -3056,7 +3070,11 @@ focus_tree = {
 		
 		available = {
 			democratic_socialism > 0.33
-			NOT = { has_government = democratic_socialism } is_subject = no
+			NOT = { has_government = democratic_socialism }
+			OR = {
+				is_subject = no
+				OVERLORD = { has_government = democratic_socialism }
+			}
 		}
 		
 		bypass = {
@@ -3100,7 +3118,11 @@ focus_tree = {
 		
 		available = {
 			democratic > 0.33
-			NOT = { has_government = democratic } is_subject = no
+			NOT = { has_government = democratic }
+			OR = {
+				is_subject = no
+				OVERLORD = { has_government = democratic }
+			}
 		}
 		
 		bypass = {
@@ -3144,7 +3166,11 @@ focus_tree = {
 		
 		available = {
 			neutrality > 0.33
-			NOT = { has_government = neutrality } is_subject = no
+			NOT = { has_government = neutrality }
+			OR = {
+				is_subject = no
+				OVERLORD = { has_government = neutrality }
+			}
 		}
 		
 		bypass = {
@@ -3188,7 +3214,11 @@ focus_tree = {
 		
 		available = {
 			fascism > 0.33
-			NOT = { has_government = fascism } is_subject = no
+			NOT = { has_government = fascism }
+			OR = {
+				is_subject = no
+				OVERLORD = { has_government = fascism }
+			}
 		}
 		bypass = {
 			has_government = fascism
@@ -3231,7 +3261,11 @@ focus_tree = {
 		
 		available = {
 			autocracy > 0.33
-			NOT = { has_government = autocracy } is_subject = no
+			NOT = { has_government = autocracy }
+			OR = {
+				is_subject = no
+				OVERLORD = { has_government = autocracy }
+			}
 		}
 		bypass = {
 			has_government = autocracy
@@ -3532,6 +3566,28 @@ focus_tree = {
 
 		completion_reward = {
 			add_ideas = generic_idea_freedoms
+			if = {
+				limit = { has_government = democratic}
+				if = {
+					limit = { democratic_socialism > 5 democratic_socialism < 25  }
+					add_political_power = 90
+				}
+				if = {
+					limit = { democratic_socialism < 5  }
+					add_political_power = 150
+				}
+			}
+			if = {
+				limit = { has_government = democratic_socialism}
+				if = {
+					limit = { democratic > 5 democratic < 25  }
+					add_political_power = 90
+				}
+				if = {
+					limit = { democratic < 5  }
+					add_political_power = 150
+				}
+			}
 		}
 	}
 	
@@ -3676,6 +3732,7 @@ focus_tree = {
 				set_rule = { can_send_volunteers = yes }
 				swap_ideas = { remove_idea = undisturbed_isolation add_idea = low_economic_mobilisation }
 			}
+			hidden_effect = { SUS = { unlock_national_focus = AMERICA_generic_abandon_neutrality } }
 		}
 	}
 	
@@ -3764,6 +3821,7 @@ focus_tree = {
 			set_global_flag = OSA_operaion_overlord_completed
 			unlock_decision_category_tooltip = world_stage_overlord_category
 			set_variable = { global.overlord_strength = 50 }
+			hidden_effect = { SUS = { unlock_national_focus = OSA_generic_operation_overlord } }
 		}
 	}
 	
@@ -4011,6 +4069,7 @@ focus_tree = {
 				MUS = { add_offsite_building = { type = dockyard level = 4 } }	## This looks redundant but the tooltip is more legible this way (trust me bro)
 				SUS = { add_offsite_building = { type = arms_factory level = 4 } }
 				SUS = { add_offsite_building = { type = dockyard level = 4 } }
+				hidden_effect = { SUS = { unlock_national_focus = AMERICA_generic_arsenal_of_democracy } }
 			} else = {
 				SUS = { add_offsite_building = { type = arms_factory level = 4 } }
 				SUS = { add_offsite_building = { type = dockyard level = 4 } }
