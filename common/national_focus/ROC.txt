@@ -257,6 +257,12 @@ focus_tree = {
 	 
 		completion_reward = {
 			# sides with germany on wwii
+			if = {
+				limit = { has_global_flag = league_of_nations_exists }	# maybe this is unnecessary but i'll write the whole thing just in case
+				world_stage_join_pactofsteel = yes
+			} else = {
+				world_stage_join_axis = yes
+			}
 			hidden_effect = {
 				if = {
 					limit = { REI = { is_faction_leader = yes } has_world_stage_coalition_axis = yes }
@@ -276,27 +282,11 @@ focus_tree = {
 					}
 				}
 			}
-			world_stage_join_axis = yes
-			set_global_flag = china_aligned_axis					# MAYBE THIS IS UNCESSARY / OLD CODE, CHECK LATER --- TODO TO DO TO-DO
-			set_variable = { global.world_stage_coalition_chi = 3 }
-			if = {
-				limit = { has_global_flag = league_of_nations_exists }
-				custom_effect_tooltip = ROC_antikominternpakt_tt1
-				set_variable = { world_stage_coalition = 6 }
-				set_variable = { global.theater_owner_tibet = 6 }
-				set_variable = { global.theater_owner_guanxi = 6 }
-				set_variable = { global.theater_owner_china = 6 }
-			} else = {
-				custom_effect_tooltip = ROC_antikominternpakt_tt2
-				set_variable = { world_stage_coalition = 3 }
-				set_variable = { global.theater_owner_tibet = 3 }
-				set_variable = { global.theater_owner_guanxi = 3 }
-				set_variable = { global.theater_owner_china = 3 }
-			}
 			if = {
 				limit = { has_idea = SS_lon_member }
 				remove_ideas = SS_lon_member
 			}
+			set_global_flag = china_aligned_axis					# MAYBE THIS IS UNCESSARY / OLD CODE, CHECK LATER --- TODO TO-DO TO DO
 		}
 	}
 	
@@ -412,87 +402,93 @@ focus_tree = {
 		available = {
 			has_global_flag = world_stage_world_war_2_is_active
 			has_global_flag = sovietunion_joined_ww2
-			has_world_stage_power_chi_40 = yes
+			has_world_stage_coalition_axis = yes
+			custom_trigger_tooltip = {
+				tooltip = china_has_world_stage_power_40
+				106 = { check_variable = { world_stage_power > 39 } }
+			}
 			OR = {
-				AND = {
-					OR = {
-						custom_trigger_tooltip = {
-							has_global_flag = world_stage_theater_siberia_is_active
-							tooltip = world_stage_theater_siberia_is_active
-						}
-						NOT = {
-							custom_trigger_tooltip = {
-								tooltip = owner_siberia_not_axis
-								check_variable = { global.theater_owner_siberia = 3 }
-							}
-						}
-					}
-					custom_trigger_tooltip = {
-						tooltip = owner_mongolia_axis
-						check_variable = { global.theater_owner_mongolia = 3 }
-					}
-				}
-				AND = {
-					OR = {
-						custom_trigger_tooltip = {
-							has_global_flag = world_stage_theater_mongolia_is_active
-							tooltip = world_stage_theater_mongolia_is_active
-						}
-						NOT = {
-							custom_trigger_tooltip = {
-								tooltip = owner_mongolia_not_axis
-								check_variable = { global.theater_owner_mongolia = 3 }
-							}
-						}
-					}
-					custom_trigger_tooltip = {
-						tooltip = owner_tibet_axis
-						check_variable = { global.theater_owner_tibet = 3 }
-					}
-				}
+				custom_trigger_tooltip = { 18 = { check_variable = { theater_owner_coalition = 3 } } tooltip = theater_tibet_controlled_axis }
+				custom_trigger_tooltip = { 2 = { check_variable = { theater_owner_coalition = 3 } } tooltip = theater_mongolia_controlled_axis }
+			}
+			custom_trigger_tooltip = {
+				
 			}
 		}
 	 
 		completion_reward = {
-			hidden_effect = { news_event = worldstage.61 }
-			set_temp_variable = { sov_forces_value = global.world_stage_power_chi }
-			divide_temp_variable = { sov_forces_value = 5 }
+			set_global_flag = ROC_siberian_offensive_completed
+			add_named_threat = { 
+				threat = 25
+				name = ROC_threat_siberian_offensive
+			}
+			hidden_effect = {
+				106 = { set_temp_variable = { chi_forces_value = world_stage_power } }
+				multiply_temp_variable = { chi_forces_value = 0.75 }
+				round_temp_variable = chi_forces_value
+				clamp_temp_variable = { var = chi_forces_value min = 40 max = 50 }
+				104 = { set_temp_variable = { sov_forces_value = world_stage_power } }
+				multiply_temp_variable = { sov_forces_value = 0.25 }
+				round_temp_variable = sov_forces_value
+				clamp_temp_variable = { var = sov_forces_value min = 1 max = 50 }
+			}
+			# at this point, we expect that Mongolia will be aligned to someone, so we dont have to do a "across Belgium + throat singing"
 			if = {
-				limit = { check_variable = { global.theater_owner_mongolia = 3 } }	# has mongolia, attacks siberia
-				add_to_variable = { global.CHI_strength_siberia = 40 tooltip = world_stage_deploy_power_siberia }
-				add_to_variable = { global.AXIS_locals_siberia = 3 }
-				add_to_variable = { global.SOV_strength_siberia = sov_forces_value }
-				add_to_variable = { global.ALLIES_locals_siberia = 1 }
+				limit = { 2 = { check_variable = { theater_owner_coalition = 3 } } }	# MONGOLIA IS AXIS, so the offensive goes straigth to Siberia
+				custom_effect_tooltip = metropolis_scope_china_space
+				subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+					106.world_stage_power = chi_forces_value
+					tooltip = world_stage_deploy_power_siberia_space
+				}
+				custom_effect_tooltip = metropolis_scope_sovietunion_space
+				subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+					104.world_stage_power = sov_forces_value
+					tooltip = world_stage_deploy_power_siberia_space
+				}
+				hidden_effect = {
+					#news_event = worldstage.32	# handles diplomatic relations	# TODO TO-DO TO DO add event later
+					22 = {	# Belarus proxy
+						set_state_flag = theater_is_active
+						set_variable = { world_stage_power_deployed_by^106 = chi_forces_value }
+						set_variable = { world_stage_power_deployed_by^104 = sov_forces_value }
+						set_variable = { coalition_side_attack = 3 }
+						world_stage_state_update_current_day = yes
+					}
+				}
+				# we are assuming that ROC is on the offensive here
+				custom_effect_tooltip = theater_scope_siberia
 				add_to_variable = {
-					tooltip = world_stage_bonus_power_siberia
-					global.AXIS_strength_siberia_bonus = 40 
+					22.attacker_strategic_advantage = 0.5
+					tooltip = world_stage_add_strategic_advantage_attacker
 				}
-				if = {
-					limit = { NOT = { has_global_flag = world_stage_theater_siberia_is_active } }
-					set_global_flag = world_stage_theater_siberia_is_active
-					custom_effect_tooltip = world_stage_theater_siberia_is_active_tt
+			} else = {																# MONGOLIA IS KOMINTER/ALLIES, so the offensive starts in Mongolia
+				custom_effect_tooltip = metropolis_scope_china_space
+				subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+					106.world_stage_power = chi_forces_value
+					tooltip = world_stage_deploy_power_mongolia_space
 				}
-				add_named_threat = {
-					threat = 5
-					name = ROC_threat_siberia_offensive
+				custom_effect_tooltip = metropolis_scope_sovietunion_space
+				subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+					104.world_stage_power = sov_forces_value
+					tooltip = world_stage_deploy_power_mongolia_space
 				}
-			} else = {	# do not have mongolia, attack it instead
-				add_to_variable = { global.CHI_strength_mongolia = 40 tooltip = world_stage_deploy_power_mongolia }
-				add_to_variable = { global.AXIS_locals_mongolia = 1 }
-				add_to_variable = { global.SOV_strength_mongolia = sov_forces_value }
-				add_to_variable = { global.ALLIES_locals_mongolia = 1 }
+				hidden_effect = {
+					#news_event = worldstage.32	# handles diplomatic relations	 TODO TO-DO TO DO add event later
+					2 = {	# Belarus proxy
+						set_state_flag = theater_is_active
+						set_variable = { world_stage_power_deployed_by^106 = chi_forces_value }
+						set_variable = { world_stage_power_deployed_by^104 = sov_forces_value }
+						set_variable = { coalition_side_attack = 3 }
+						world_stage_state_update_current_day = yes
+					}
+				}
+				# we are assuming that ROC is on the offensive here
+				custom_effect_tooltip = theater_scope_mongolia
 				add_to_variable = {
-					tooltip = world_stage_bonus_power_mongolia
-					global.AXIS_strength_mongolia_bonus = 40 
-				}
-				if = {
-					limit = { NOT = { has_global_flag = world_stage_theater_mongolia_is_active } }
-					set_global_flag = world_stage_theater_mongolia_is_active
-					custom_effect_tooltip = world_stage_theater_mongolia_is_active_tt
+					2.attacker_strategic_advantage = 0.5
+					tooltip = world_stage_add_strategic_advantage_attacker
 				}
 			}
-			custom_effect_tooltip = siberia_offensive_allowed
-			set_country_flag = can_play_mongolia set_country_flag = can_play_siberia set_country_flag = can_play_urals set_country_flag = can_play_russia
 		}
 	}
 	
@@ -1053,8 +1049,11 @@ focus_tree = {
 		available_if_capitulated = yes
 		
 		available = {
-			has_world_stage_power_chi_50 = yes
-			does_not_have_world_stage_coalition_allies = yes
+			custom_trigger_tooltip = {
+				tooltip = china_has_world_stage_power_50
+				106 = { check_variable = { world_stage_power > 49 } }
+			}
+			has_world_stage_coalition_allies = no
 		}
 		
 		ai_will_do = {

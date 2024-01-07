@@ -1,4 +1,4 @@
-### this file contains code for effects that are other often repeated or a bit long and be clumsy to include them in the other fies
+### this file contains code for effects that are other often repeated or a bit long and be clumsy to include them in the other files
 ### commented brackets for navigation
 
 #OLD CODE {	### REMOVE THIS LATER, MAYBE
@@ -591,12 +591,6 @@ world_stage_get_coalitions = {	#### DEPRICATED
 		}
 	}
 }
-
-### NEW CODE STARTS HERE, I GUESS
-
-### WORLD STAGE 2.0
-### } METROPOLIS/TAG MANIPULATION {
-
 world_stage_get_tag_info_from_metropolis = {
 	## depricated ## depricated ## depricated ## depricated ## depricated ## depricated ## depricated ## depricated ## depricated 
 	every_possible_country = {
@@ -633,6 +627,12 @@ world_stage_get_tag_info_from_metropolis = {
 		log = "world_stage_power: [?world_stage_power]"
 	}
 } d_world_stage_get_tag_info_from_metropolis = { world_stage_get_tag_info_from_metropolis = yes log = "get all tag info from metropolis" }
+
+### NEW CODE STARTS HERE, I GUESS
+
+### WORLD STAGE 2.0
+### } METROPOLIS/TAG MANIPULATION {
+
 
 world_stage_set_leagueofnations_spirit = {	# scope is a tag
 	if = {
@@ -705,12 +705,14 @@ world_stage_join_leagueofnations = {	# scope is a tag
 	if = {
 		limit = { has_global_flag = league_of_nations_exists }
 		custom_effect_tooltip = world_stage_join_leagueofnations_tt
-		var:world_stage_metropolis = {
-			set_variable = { world_stage_coalition = 5 }
-		}
-		every_state = {
-			limit = { check_variable = {theater_owner = PREV.world_stage_metropolis } }
-			set_variable = { theater_owner_coalition = 5 }
+		hidden_effect = {
+			var:world_stage_metropolis = {
+				set_variable = { world_stage_coalition = 5 }
+			}
+			every_state = {
+				limit = { check_variable = {theater_owner = PREV.world_stage_metropolis } }
+				set_variable = { theater_owner_coalition = 5 }
+			}
 		}
 		world_stage_set_leagueofnations_spirit = yes
 	} else = { log = "[THIS.GetName] tried to join the League of Nations after it was disbanded" }
@@ -718,14 +720,16 @@ world_stage_join_leagueofnations = {	# scope is a tag
 
 world_stage_join_pactofsteel = {	# scope is a tag
 	if = {
-		limit = { has_global_flag = pactofsteel_exists }
+		limit = { has_global_flag = league_of_nations_exists }	# we dont need two flags for these checks
 		custom_effect_tooltip = world_stage_join_pactofsteel_tt
-		var:world_stage_metropolis = {
-			set_variable = { world_stage_coalition = 6 }
-		}
-		every_state = {
-			limit = { check_variable = {theater_owner = PREV.world_stage_metropolis } }
-			set_variable = { theater_owner_coalition = 6 }
+		hidden_effect = {
+			var:world_stage_metropolis = {
+				set_variable = { world_stage_coalition = 6 }
+			}
+			every_state = {
+				limit = { check_variable = {theater_owner = PREV.world_stage_metropolis } }
+				set_variable = { theater_owner_coalition = 6 }
+			}
 		}
 	} else = { world_stage_join_axis = yes log = "[THIS.GetName] tried to join the Pact of Steel after it became Axis" }
 } d_world_stage_join_pactofsteel = { world_stage_join_pactofsteel = yes log = "world_stage_join_pactofsteel" }
