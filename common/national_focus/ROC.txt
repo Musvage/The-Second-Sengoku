@@ -1095,37 +1095,72 @@ focus_tree = {
 		
 		available = {
 			OR = {
-				has_world_stage_power_chi_100 = yes
+				custom_trigger_tooltip = {
+					tooltip = china_has_world_stage_power_50
+					106 = { check_variable = { world_stage_power > 49 } }
+				}
 				has_global_flag = world_stage_world_war_2_is_active
 			}
-			does_not_have_world_stage_coalition_allies = yes
+			if = {
+				limit = { has_global_flag = league_of_nations_exists }
+				has_world_stage_coalition_leagueofnations = no
+			} else = {
+				has_world_stage_coalition_allies = no
+			}
 		}
 	 
 		completion_reward = {
 			# seize off map trade ports in China (off map British and Portuguese)
-			# cosmetic event
 			add_political_power = 120
-			custom_effect_tooltip = ROC_denounce_treaties_tt_macau
-			custom_effect_tooltip = paragraph_tt
-			remove_world_stage_power_prt_1 = yes
-			custom_effect_tooltip = paragraph_tt
-			custom_effect_tooltip = ROC_denounce_treaties_tt_hong_kong
-			custom_effect_tooltip = paragraph_tt
-			remove_world_stage_power_eng_1 = yes
-			custom_effect_tooltip = paragraph_tt
-			hidden_effect = {
-				var:world_stage_metropolis = {
-					add_to_variable = {
-						var = world_stage_power
-						value = 2
+			# Macau
+			if = {
+				limit = {	# we gotta check to see whether or not PRT and ROC are on the same side
+					NOT = {
+						AND = {
+							106 = { check_variable = { world_stage_coalition = 3 } }
+							108 = { check_variable = { world_stage_coalition = 3 } }
+						}
+						AND = {
+							106 = { check_variable = { world_stage_coalition = 6 } }
+							108 = { check_variable = { world_stage_coalition = 6 } }
+						}
 					}
 				}
+				# FIRE EVENT FOR BOTH ANNEXATIONS
+				custom_effect_tooltip = ROC_denounce_treaties_tt_macau
+				custom_effect_tooltip = metropolis_scope_portugal_space
+				hidden_effect = { 108 = { add_to_variable = { world_stage_power = -1 } } }
+				effect_tooltip = {
+					add_to_variable = {
+						var = world_stage_power
+						value = 1
+						tooltip = remove_world_stage_power_no_scope_tt
+					}
+				}
+				PRT = {
+					add_opinion_modifier = {
+						target = ROC
+						modifier = ROC_seized_macau
+					}
+				}
+			} else = {
+				# FIRE EVENT FOR ONLY HONG KONG'S ANNEXATION
 			}
+			# Hong Kong
+			custom_effect_tooltip = ROC_denounce_treaties_tt_hong_kong
+			custom_effect_tooltip = metropolis_scope_england_space
+			hidden_effect = { 102 = { add_to_variable = { world_stage_power = -1 } } }
 			effect_tooltip = {
 				add_to_variable = {
 					var = world_stage_power
-					value = 2
-					tooltip = add_world_stage_power_no_scope_tt
+					value = 1
+					tooltip = remove_world_stage_power_no_scope_tt
+				}
+			}
+			OSA = {
+				add_opinion_modifier = {
+					target = ROC
+					modifier = ROC_seized_hong_kong
 				}
 			}
 			hidden_effect = {
@@ -1136,18 +1171,6 @@ focus_tree = {
 				remove_opinion_modifier = {
 					target = OSA
 					modifier = ROC_holds_hong_kong
-				}
-			}
-			PRT = {
-				add_opinion_modifier = {
-					target = ROC
-					modifier = ROC_seized_macau
-				}
-			}
-			OSA = {
-				add_opinion_modifier = {
-					target = ROC
-					modifier = ROC_seized_hong_kong
 				}
 			}
 			add_named_threat = { 
