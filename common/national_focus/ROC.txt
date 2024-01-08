@@ -258,30 +258,26 @@ focus_tree = {
 		completion_reward = {
 			# sides with germany on wwii
 			if = {
-				limit = { has_global_flag = league_of_nations_exists }	# maybe this is unnecessary but i'll write the whole thing just in case
-				world_stage_join_pactofsteel = yes
-			} else = {
-				world_stage_join_axis = yes
-			}
-			hidden_effect = {
+				limit = { has_global_flag = league_of_nations_exists }
 				if = {
-					limit = { REI = { is_faction_leader = yes } has_world_stage_coalition_axis = yes }
-					REI = { add_to_faction = ROC }
+					limit = { country_exists = STL ROC = { NOT = { tag = STL } } }
+					STL = { add_to_faction = ROC }
+					hidden_effect = { add_to_array = { global.array_pactofsteel = THIS.id } }
 				} else = {
-					random_country = {
-						limit = { is_faction_leader = yes has_world_stage_coalition_axis = yes NOT = { has_global_flag = league_of_nations_exists } }
-						add_to_faction = ROC
-					}
-					if = {
-						limit = {
-							NOT = {
-								any_country = { is_faction_leader = yes has_world_stage_coalition_axis = yes NOT = { has_global_flag = league_of_nations_exists } has_global_flag = world_stage_world_war_2_is_active }
-							}
-						}
-						create_faction = "Axis"
-					}
+					create_faction = coalition_name_pactofsteel_short
+					hidden_effect = { add_to_array = { global.array_pactofsteel = THIS.id } }
+				}
+			} else = {
+				if = {
+					limit = { country_exists = AXS ROC = { NOT = { tag = AXS } } }
+					AXS = { add_to_faction = ROC }
+					hidden_effect = { add_to_array = { global.array_axis = THIS.id } }
+				} else = {
+					create_faction = coalition_name_axis_short
+					hidden_effect = { add_to_array = { global.array_axis = THIS.id } }
 				}
 			}
+
 			if = {
 				limit = { has_idea = SS_lon_member }
 				remove_ideas = SS_lon_member

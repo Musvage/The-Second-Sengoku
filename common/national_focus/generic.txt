@@ -3727,11 +3727,25 @@ focus_tree = {
 		completion_reward = {
 			every_country = {
 				limit = { OR = { tag = MUS tag = SUS } }	## This looks redundant but the tooltip is more legible this way (trust me bro)
-				if = { limit = { NOT = { has_global_flag = world_stage_world_war_2_is_active } } set_country_flag = will_join_allies custom_effect_tooltip = will_join_allies_tt }
 				set_rule = { can_send_volunteers = yes }
 				swap_ideas = { remove_idea = undisturbed_isolation add_idea = low_economic_mobilisation }
 			}
-			hidden_effect = { SUS = { unlock_national_focus = AMERICA_generic_abandon_neutrality } }
+			MUS = {
+				if = {
+					limit = { NOT = { has_global_flag = world_stage_world_war_2_is_active } }
+					set_country_flag = will_join_allies custom_effect_tooltip = will_join_allies_tt
+				} else = {
+					if = {
+						limit = { country_exists = ALY MUS = { NOT = { tag = ALY } } }
+						ALY = { add_to_faction = MUS }
+						hidden_effect = { add_to_array = { global.array_allies = THIS.id } }
+					} else = {
+						create_faction = coalition_name_allies_short
+						hidden_effect = { add_to_array = { global.array_allies = THIS.id } }
+					}
+				}
+				hidden_effect = { SUS = { unlock_national_focus = AMERICA_generic_abandon_neutrality } }
+			}
 		}
 	}
 	
