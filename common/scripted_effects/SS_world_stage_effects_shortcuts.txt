@@ -658,88 +658,202 @@ world_stage_set_leagueofnations_spirit = {	# scope is a tag
 }
 
 world_stage_join_allies = {	# scope is a tag
-	custom_effect_tooltip = world_stage_join_allies_tt
-	var:world_stage_metropolis = {
-		set_variable = { world_stage_coalition = 1 }
-	}
-	every_state = {
-		limit = { check_variable = {theater_owner = PREV.world_stage_metropolis } }
-		set_variable = { theater_owner_coalition = 1 }
+	clear_from_coalition_arrays = yes
+	if = {
+		limit = { has_global_flag = league_of_nations_exists }	# therefore, the Allies do not exist yet
+		if = {
+			limit = { country_exists = LON THIS = { NOT = { tag = LON } } }
+			LON = { add_to_faction = PREV }
+		} else = { create_faction = coalition_name_leagueofnations_short }
+		add_to_array = { global.array_leagueofnations = THIS.id }
+		if = {
+			limit = { has_variable = world_stage_metropolis }
+			hidden_effect = {
+				var:world_stage_metropolis = { set_variable = { world_stage_coalition = 5 } }
+				every_state = { limit = { check_variable = { theater_owner = PREV.world_stage_metropolis } } set_variable = { theater_owner_coalition = 5 } }
+			}
+		}
+		log = "[THIS.GetName] tried to join the Axis before the League of Nations morphed into its final form"
+	} else = {
+		if = {
+			limit = { country_exists = ALY THIS = { NOT = { tag = ALY } } }
+			ALY = { add_to_faction = PREV }
+			hidden_effect = { add_to_array = { global.array_allies = THIS.id } }
+		} else = {
+			create_faction = coalition_name_allies_short
+			hidden_effect = { add_to_array = { global.array_allies = THIS.id } }
+		}
+		if = {
+			limit = { has_variable = world_stage_metropolis }
+			hidden_effect = {
+				var:world_stage_metropolis = { set_variable = { world_stage_coalition = 1 } }
+				every_state = { limit = { check_variable = { theater_owner = PREV.world_stage_metropolis } } set_variable = { theater_owner_coalition = 1 } }
+			}
+		}
 	}
 } d_world_stage_join_allies = { world_stage_join_allies = yes log = "world_stage_join_allies" }
 
 world_stage_join_komintern = {	# scope is a tag
-	custom_effect_tooltip = world_stage_join_komintern_tt
-	var:world_stage_metropolis = {
-		set_variable = { world_stage_coalition = 2 }
+	clear_from_coalition_arrays = yes
+	if = {
+		limit = { has_global_flag = sovietunion_joined_ww2 }	# if so, then Comintern merged with Allies
+		if = {
+			limit = { country_exists = ALY THIS = { NOT = { tag = ALY } } }
+			ALY = { add_to_faction = PREV }
+		} else = { create_faction = coalition_name_allies_short }
+		add_to_array = { global.array_allies = THIS.id }
+		if = {
+			limit = { has_variable = world_stage_metropolis }
+			hidden_effect = {
+				var:world_stage_metropolis = { set_variable = { world_stage_coalition = 1 } }
+				every_state = { limit = { check_variable = { theater_owner = PREV.world_stage_metropolis } } set_variable = { theater_owner_coalition = 1 } }
+			}
+		}
+		log = "[THIS.GetName] tried to join the Comintern but it already merged with the Allies"
+	} else = {
+		if = {
+			limit = { country_exists = COM THIS = { NOT = { tag = COM } } }
+			COM = { add_to_faction = PREV }
+		} else = { create_faction = coalition_name_allies_short }
+		add_to_array = { global.array_komintern = THIS.id }
+		if = {
+			limit = { has_variable = world_stage_metropolis }
+			hidden_effect = {
+				var:world_stage_metropolis = { set_variable = { world_stage_coalition = 2 } }
+				every_state = { limit = { check_variable = { theater_owner = PREV.world_stage_metropolis } } set_variable = { theater_owner_coalition = 2 } }
+			}
+		}
 	}
-	every_state = {
-		limit = { check_variable = {theater_owner = PREV.world_stage_metropolis } }
-		set_variable = { theater_owner_coalition = 2 }
-	}
-} d_world_stage_join_axis = { world_stage_join_axis = yes log = "world_stage_join_axis" }
+} d_world_stage_join_komintern = { world_stage_join_komintern = yes log = "world_stage_join_komintern" }
 
 world_stage_join_axis = {	# scope is a tag
-	custom_effect_tooltip = world_stage_join_axis_tt
-	var:world_stage_metropolis = {
-		set_variable = { world_stage_coalition = 3 }
-	}
-	every_state = {
-		limit = { check_variable = {theater_owner = PREV.world_stage_metropolis } }
-		set_variable = { theater_owner_coalition = 3 }
+	clear_from_coalition_arrays = yes
+	if = {
+		limit = { has_global_flag = league_of_nations_exists }	# therefore, Pact of Steel exists
+		if = {
+			limit = { country_exists = STL THIS = { NOT = { tag = STL } } }
+			STL = { add_to_faction = PREV }
+		} else = { create_faction = coalition_name_pactofsteel_short }
+		add_to_array = { global.array_pactofsteel = THIS.id }
+		if = {
+			limit = { has_variable = world_stage_metropolis }
+			hidden_effect = {
+				var:world_stage_metropolis = { set_variable = { world_stage_coalition = 6 } }
+				every_state = { limit = { check_variable = { theater_owner = PREV.world_stage_metropolis } } set_variable = { theater_owner_coalition = 6 } }
+			}
+		}
+		log = "[THIS.GetName] tried to join the Axis before the Pact of Steel morphed into its final form"
+	} else = {
+		if = {
+			limit = { country_exists = AXS THIS = { NOT = { tag = AXS } } }
+			AXS = { add_to_faction = PREV }
+		} else = { create_faction = coalition_name_axis_short }
+		add_to_array = { global.array_axis = THIS.id }
+		if = {
+			limit = { has_variable = world_stage_metropolis }
+			hidden_effect = {
+				var:world_stage_metropolis = { set_variable = { world_stage_coalition = 3 } }
+				every_state = { limit = { check_variable = { theater_owner = PREV.world_stage_metropolis } } set_variable = { theater_owner_coalition = 3 } }
+			}
+		}
 	}
 } d_world_stage_join_axis = { world_stage_join_axis = yes log = "world_stage_join_axis" }
 
 world_stage_join_unaligned = {	# scope is a tag
 	custom_effect_tooltip = world_stage_join_unaligned_tt
-	var:world_stage_metropolis = {
-		set_variable = { world_stage_coalition = 4 }
-	}
-	every_state = {
-		limit = { check_variable = {theater_owner = PREV.world_stage_metropolis } }
-		set_variable = { theater_owner_coalition = 4 }
+	clear_from_coalition_arrays = yes
+	if = {
+		limit = { has_variable = world_stage_metropolis }
+		hidden_effect = {
+			var:world_stage_metropolis = { set_variable = { world_stage_coalition = 4 } }
+				every_state = { limit = { check_variable = { theater_owner = PREV.world_stage_metropolis } } set_variable = { theater_owner_coalition = 4 } }
+			}
 	}
 } d_world_stage_join_unaligned = { world_stage_join_unaligned = yes log = "world_stage_join_unaligned" }
 
-world_stage_join_leagueofnations = {	# scope is a tag
+world_stage_join_leagueofnations = {	# scope is a tag	/// THIS IS EXACTLY THE SAME AS world_stage_join_allies: I'm leaving it here just to avoid other mentions to it in the code
+	clear_from_coalition_arrays = yes
 	if = {
-		limit = { has_global_flag = league_of_nations_exists }
-		custom_effect_tooltip = world_stage_join_leagueofnations_tt
-		hidden_effect = {
-			var:world_stage_metropolis = {
-				set_variable = { world_stage_coalition = 5 }
-			}
-			every_state = {
-				limit = { check_variable = {theater_owner = PREV.world_stage_metropolis } }
-				set_variable = { theater_owner_coalition = 5 }
+		limit = { has_global_flag = league_of_nations_exists }	# therefore, the Allies do not exist yet
+		if = {
+			limit = { country_exists = LON THIS = { NOT = { tag = LON } } }
+			LON = { add_to_faction = PREV }
+		} else = { create_faction = coalition_name_leagueofnations_short }
+		add_to_array = { global.array_leagueofnations = THIS.id }
+		if = {
+			limit = { has_variable = world_stage_metropolis }
+			hidden_effect = {
+				var:world_stage_metropolis = { set_variable = { world_stage_coalition = 5 } }
+				every_state = { limit = { check_variable = { theater_owner = PREV.world_stage_metropolis } } set_variable = { theater_owner_coalition = 5 } }
 			}
 		}
-		world_stage_set_leagueofnations_spirit = yes
-	} else = { log = "[THIS.GetName] tried to join the League of Nations after it was disbanded" }
+		log = "[THIS.GetName] tried to join the Axis before the League of Nations morphed into its final form"
+	} else = {
+		if = {
+			limit = { country_exists = ALY THIS = { NOT = { tag = ALY } } }
+			ALY = { add_to_faction = PREV }
+		} else = { create_faction = coalition_name_allies_short }
+		add_to_array = { global.array_allies = THIS.id }
+		if = {
+			limit = { has_variable = world_stage_metropolis }
+			hidden_effect = {
+				var:world_stage_metropolis = { set_variable = { world_stage_coalition = 1 } }
+				every_state = { limit = { check_variable = { theater_owner = PREV.world_stage_metropolis } } set_variable = { theater_owner_coalition = 1 } }
+			}
+		}
+	}
 } d_world_stage_join_leagueofnations = { world_stage_join_leagueofnations = yes log = "world_stage_join_leagueofnations" }
 
-world_stage_join_pactofsteel = {	# scope is a tag
+world_stage_join_pactofsteel = {	# scope is a tag	/// THIS IS EXACTLY THE SAME AS world_stage_join_axis: I'm leaving it here just to avoid other mentions to it in the code
+	clear_from_coalition_arrays = yes
 	if = {
-		limit = { has_global_flag = league_of_nations_exists }	# we dont need two flags for these checks
-		custom_effect_tooltip = world_stage_join_pactofsteel_tt
-		hidden_effect = {
-			var:world_stage_metropolis = {
-				set_variable = { world_stage_coalition = 6 }
-			}
-			every_state = {
-				limit = { check_variable = {theater_owner = PREV.world_stage_metropolis } }
-				set_variable = { theater_owner_coalition = 6 }
+		limit = { has_global_flag = league_of_nations_exists }	# therefore, Pact of Steel exists
+		if = {
+			limit = { country_exists = STL THIS = { NOT = { tag = STL } } }
+			STL = { add_to_faction = PREV }
+		} else = { create_faction = coalition_name_pactofsteel_short }
+		add_to_array = { global.array_pactofsteel = THIS.id }
+		if = {
+			limit = { has_variable = world_stage_metropolis }
+			hidden_effect = {
+				var:world_stage_metropolis = { set_variable = { world_stage_coalition = 6 } }
+				every_state = { limit = { check_variable = { theater_owner = PREV.world_stage_metropolis } } set_variable = { theater_owner_coalition = 6 } }
 			}
 		}
-	} else = { world_stage_join_axis = yes log = "[THIS.GetName] tried to join the Pact of Steel after it became Axis" }
+	} else = {
+		if = {
+			limit = { country_exists = AXS THIS = { NOT = { tag = AXS } } }
+			AXS = { add_to_faction = PREV }
+		} else = { create_faction = coalition_name_axis_short }
+		add_to_array = { global.array_axis = THIS.id }
+		if = {
+			limit = { has_variable = world_stage_metropolis }
+			hidden_effect = {
+				var:world_stage_metropolis = { set_variable = { world_stage_coalition = 3 } }
+				every_state = { limit = { check_variable = { theater_owner = PREV.world_stage_metropolis } } set_variable = { theater_owner_coalition = 3 } }
+			}
+		}
+		log = "[THIS.GetName] tried to join the Pact of Steel after it became Axis"
+	}
 } d_world_stage_join_pactofsteel = { world_stage_join_pactofsteel = yes log = "world_stage_join_pactofsteel" }
 
 world_stage_join_tiar = {	# scope is a tag
 	if = {
 		limit = { has_global_flag = tiar_exists }
-		custom_effect_tooltip = world_stage_join_tiar_tt
-		set_variable = { world_stage_coalition = 7 }
-		world_stage_update_metropolis = yes
+		if = {
+			limit = { country_exists = RIO THIS = { NOT = { tag = RIO } } }
+			RIO = { add_to_faction = PREV }
+		} else = {
+			create_faction = coalition_name_tiar_short
+		}
+		add_to_array = { global.array_tiar = THIS.id }
+		if = {
+			limit = { has_variable = world_stage_metropolis }
+			hidden_effect = {
+				var:world_stage_metropolis = { set_variable = { world_stage_coalition = 7 } }
+				every_state = { limit = { check_variable = { theater_owner = PREV.world_stage_metropolis } } set_variable = { theater_owner_coalition = 7 } }
+			}
+		}
 	} else = { log = "[THIS.GetName] tried to join the Rio Treaty but it does not exist" }
 } d_world_stage_join_tiar = { world_stage_join_tiar = yes log = "world_stage_join_pactofsteel" }
 
@@ -783,6 +897,17 @@ world_stage_activate_theater = {	# scope is a state	# this effect does not have 
 		limit = { has_variable = theater_owner }
 		set_state_flag = theater_is_active
 	} else = { log = "world_stage_get_theater_info_from_metropolis: [THIS.GetName] is not a proxy for theater"}
+}
+
+### } COALIITON {
+
+clear_from_coalition_arrays = {
+	remove_from_array = { array = global.array_allies value = THIS }
+	remove_from_array = { array = global.array_komintern value = THIS }
+	remove_from_array = { array = global.array_axis value = THIS }
+	remove_from_array = { array = global.array_leagueofnations value = THIS }
+	remove_from_array = { array = global.array_pactofsteel value = THIS }
+	remove_from_array = { array = global.array_tiar value = THIS }
 }
 
 ### } EVENTS {

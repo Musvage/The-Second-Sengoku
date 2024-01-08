@@ -1,90 +1,75 @@
 on_actions = {
 	on_join_faction = {			### This is when a country (THIS/ROOT) joins a faction through diplomacy, by their own initiative (faction leader is FROM)
 		effect = {
-			log = "[THIS.GetName] join [FROM.GetName]'s faction"
-			FROM = {
-				if = {
-					limit = { has_variable = world_stage_metropolis }
-					var:world_stage_metropolis = { set_temp_variable = { new_coalition = world_stage_coalition } }
-					PREV = {
-						if = {
-							limit = { has_variable = world_stage_metropolis }
-							var:world_stage_metropolis = { set_variable = { world_stage_coalition = new_coalition } }
-						}
-						if = {
-							limit = { has_variable = world_stage_coalition }
-							set_variable = { world_stage_coalition = new_coalition }
-						}
-					}
-				}
-			}
-			FROM = {
-				if = {
-					limit = { has_variable = world_stage_coalition }
-					set_temp_variable = { new_coalition = world_stage_coalition }
-					PREV = {
-						if = {
-							limit = { has_variable = world_stage_metropolis }
-							var:world_stage_metropolis = { set_variable = { world_stage_coalition = new_coalition } }
-						}
-						if = {
-							limit = { has_variable = world_stage_coalition }
-							set_variable = { world_stage_coalition = new_coalition }
-						}
-					}
-				}
-			}
-		}
-	}
-
-	on_offer_join_faction = {	### This is when a country (FROM) is added to a faction by commands or invited by the leader (THIS/ROOT)
-		effect = {
-			log = "[FROM.GetName] join [THIS.GetName]'s faction"
+			clear_from_coalition_arrays = yes
+			if = { limit = { FROM = { tag = ALY } } add_to_array = { global.array_allies = THIS.id }			if = { limit = { has_variable = world_stage_metropolis } set_temp_variable = { new_coalition = 1 } } }
+			if = { limit = { FROM = { tag = COM } } add_to_array = { global.array_komintern = THIS.id }			if = { limit = { has_variable = world_stage_metropolis } set_temp_variable = { new_coalition = 2 } } }
+			if = { limit = { FROM = { tag = AXS } } add_to_array = { global.array_axis = THIS.id }				if = { limit = { has_variable = world_stage_metropolis } set_temp_variable = { new_coalition = 3 } } }
+			if = { limit = { FROM = { tag = LON } } add_to_array = { global.array_leagueofnations = THIS.id }	if = { limit = { has_variable = world_stage_metropolis } set_temp_variable = { new_coalition = 5 } } if = { limit = { unification_candidate = yes } add_idesa = SS_lon_member_japan } else = { add_idesa = SS_lon_member } }
+			if = { limit = { FROM = { tag = STL } } add_to_array = { global.array_pactofsteel = THIS.id }		if = { limit = { has_variable = world_stage_metropolis } set_temp_variable = { new_coalition = 6 } } }
+			if = { limit = { FROM = { tag = RIO } } add_to_array = { global.array_tiar = THIS.id }				if = { limit = { has_variable = world_stage_metropolis } set_temp_variable = { new_coalition = 7 } } }
+			if = { limit = { FROM = { NOT = { tag = ALY tag = COM tag = AXS tag = LON tag = STL tag = RIO } } }	set_temp_variable = { new_coalition = 4 } }	# Non-Algined
 			if = {
 				limit = { has_variable = world_stage_metropolis }
-				var:world_stage_metropolis = { set_temp_variable = { new_coalition = world_stage_coalition } }
-				FROM = {
-					if = {
-						limit = { has_variable = world_stage_metropolis }
-						var:world_stage_metropolis = { set_variable = { world_stage_coalition = new_coalition } }
-					}
-					if = {
-						limit = { has_variable = world_stage_coalition }
-						set_variable = { world_stage_coalition = new_coalition }
-					}
-				}
-			}
-			if = {
-				limit = { has_variable = world_stage_coalition }
-				set_temp_variable = { new_coalition = world_stage_coalition }
-				FROM = {
-					if = {
-						limit = { has_variable = world_stage_metropolis }
-						var:world_stage_metropolis = { set_variable = { world_stage_coalition = new_coalition } }
-					}
-					if = {
-						limit = { has_variable = world_stage_coalition }
-						set_variable = { world_stage_coalition = new_coalition }
-					}
+				set_temp_variable = { new_member = world_stage_metropolis }	# setting a temp var just so we can move from scopes without needing to re-scope the variables within triggers
+				var:world_stage_metropolis = { set_variable = { world_stage_coalition = new_coalition } }
+				every_state = {
+					limit = { check_variable = { theater_owner = new_member } }
+					set_variable = { theater_owner_coalition = new_coalition }
 				}
 			}
 		}
 	}
-	
-	on_leave_faction = {
+	on_offer_join_faction = {	### This is when a country (FROM) is added to a faction by commands or invited by the leader (THIS/ROOT)
 		effect = {
-			log = "[THIS.GetName] left its faction"
-			if = {
+			FROM = {
+				clear_from_coalition_arrays = yes
+				if = { limit = { ROOT = { tag = ALY } } add_to_array = { global.array_allies = THIS.id }			if = { limit = { has_variable = world_stage_metropolis } set_temp_variable = { new_coalition = 1 } } }
+				if = { limit = { ROOT = { tag = COM } } add_to_array = { global.array_komintern = THIS.id }			if = { limit = { has_variable = world_stage_metropolis } set_temp_variable = { new_coalition = 2 } } }
+				if = { limit = { ROOT = { tag = AXS } } add_to_array = { global.array_axis = THIS.id }				if = { limit = { has_variable = world_stage_metropolis } set_temp_variable = { new_coalition = 3 } } }
+				if = { limit = { ROOT = { tag = LON } } add_to_array = { global.array_leagueofnations = THIS.id }	if = { limit = { has_variable = world_stage_metropolis } set_temp_variable = { new_coalition = 5 } } if = { limit = { unification_candidate = yes } add_idesa = SS_lon_member_japan } else = { add_idesa = SS_lon_member } }
+				if = { limit = { ROOT = { tag = STL } } add_to_array = { global.array_pactofsteel = THIS.id }		if = { limit = { has_variable = world_stage_metropolis } set_temp_variable = { new_coalition = 6 } } }
+				if = { limit = { ROOT = { tag = RIO } } add_to_array = { global.array_tiar = THIS.id }				if = { limit = { has_variable = world_stage_metropolis } set_temp_variable = { new_coalition = 7 } } }
+				if = { limit = { ROOT = { NOT = { tag = ALY tag = COM tag = AXS tag = LON tag = STL tag = RIO } } }	set_temp_variable = { new_coalition = 4 } }	# Non-Algined
+				if = {
 					limit = { has_variable = world_stage_metropolis }
-					var:world_stage_metropolis = { set_variable = { world_stage_coalition = 4 } }	# non-aligned
-			}
-			if = {
-					limit = { has_variable = world_stage_coalition }
-					set_variable = { world_stage_coalition = 4 }									# non-aligned
+					set_temp_variable = { new_member = world_stage_metropolis }	# setting a temp var just so we can move from scopes without needing to re-scope the variables within triggers
+					var:world_stage_metropolis = { set_variable = { world_stage_coalition = new_coalition } }
+					every_state = {
+						limit = { check_variable = { theater_owner = new_member } }
+						set_variable = { theater_owner_coalition = new_coalition }
+					}
+				}
 			}
 		}
 	}
-	
+	on_leave_faction = {
+		clear_from_coalition_arrays = yes
+		if = {
+			limit = { has_variable = world_stage_metropolis }
+			var:world_stage_metropolis = { set_variable = { world_stage_coalition = 4 } }
+			set_temp_variable = { new_member = world_stage_metropolis }
+			every_state = {
+				limit = { check_variable = { theater_owner = new_member } }
+				set_variable = { theater_owner_coalition = 4 }
+			}
+		}
+	}
+	on_puppet = {
+		effect = {
+			clear_from_coalition_arrays = yes
+			if = {
+				limit = { has_variable = world_stage_metropolis }
+				var:world_stage_metropolis = { set_variable = { world_stage_coalition = 4 } }
+				set_temp_variable = { new_member = world_stage_metropolis }
+				every_state = {
+					limit = { check_variable = { theater_owner = new_member } }
+					set_variable = { theater_owner_coalition = 4 }
+				}
+			}
+		}
+	}
+	# AUTOPILOT
 	on_capitulation_immediate = {
 		effect = {
 			FROM = { set_country_flag = enable_worldstage_autopilot log = "[FROM.GetName]: set_country_flag = enable_worldstage_autopilot" }
@@ -96,3 +81,104 @@ on_actions = {
 		}
 	}	# I'm leaving the two possibilities here just in case...
 }
+
+#ALY	global.array_allies
+#COM	global.array_komintern
+#AXS	global.array_axis
+#LON	global.array_leagueofnations
+#STL	global.array_pactofsteel
+#RIO	global.array_tiar
+
+##### OLD CODE ##### MAYBE DELETE LATER
+##### OLD CODE ##### MAYBE DELETE LATER
+##### OLD CODE ##### MAYBE DELETE LATER
+##### OLD CODE ##### MAYBE DELETE LATER
+##### OLD CODE ##### MAYBE DELETE LATER
+
+# on_actions = {
+	# on_join_faction = {			### This is when a country (THIS/ROOT) joins a faction through diplomacy, by their own initiative (faction leader is FROM)
+		# effect = {
+			# log = "[THIS.GetName] join [FROM.GetName]'s faction"
+			# FROM = {
+				# if = {
+					# limit = { has_variable = world_stage_metropolis }
+					# var:world_stage_metropolis = { set_temp_variable = { new_coalition = world_stage_coalition } }
+					# PREV = {
+						# if = {
+							# limit = { has_variable = world_stage_metropolis }
+							# var:world_stage_metropolis = { set_variable = { world_stage_coalition = new_coalition } }
+						# }
+						# if = {
+							# limit = { has_variable = world_stage_coalition }
+							# set_variable = { world_stage_coalition = new_coalition }
+						# }
+					# }
+				# }
+			# }
+			# FROM = {
+				# if = {
+					# limit = { has_variable = world_stage_coalition }
+					# set_temp_variable = { new_coalition = world_stage_coalition }
+					# PREV = {
+						# if = {
+							# limit = { has_variable = world_stage_metropolis }
+							# var:world_stage_metropolis = { set_variable = { world_stage_coalition = new_coalition } }
+						# }
+						# if = {
+							# limit = { has_variable = world_stage_coalition }
+							# set_variable = { world_stage_coalition = new_coalition }
+						# }
+					# }
+				# }
+			# }
+		# }
+	# }
+
+	# on_offer_join_faction = {	### This is when a country (FROM) is added to a faction by commands or invited by the leader (THIS/ROOT)
+		# effect = {
+			# log = "[FROM.GetName] join [THIS.GetName]'s faction"
+			# if = {
+				# limit = { has_variable = world_stage_metropolis }
+				# var:world_stage_metropolis = { set_temp_variable = { new_coalition = world_stage_coalition } }
+				# FROM = {
+					# if = {
+						# limit = { has_variable = world_stage_metropolis }
+						# var:world_stage_metropolis = { set_variable = { world_stage_coalition = new_coalition } }
+					# }
+					# if = {
+						# limit = { has_variable = world_stage_coalition }
+						# set_variable = { world_stage_coalition = new_coalition }
+					# }
+				# }
+			# }
+			# if = {
+				# limit = { has_variable = world_stage_coalition }
+				# set_temp_variable = { new_coalition = world_stage_coalition }
+				# FROM = {
+					# if = {
+						# limit = { has_variable = world_stage_metropolis }
+						# var:world_stage_metropolis = { set_variable = { world_stage_coalition = new_coalition } }
+					# }
+					# if = {
+						# limit = { has_variable = world_stage_coalition }
+						# set_variable = { world_stage_coalition = new_coalition }
+					# }
+				# }
+			# }
+		# }
+	# }
+	
+	# on_leave_faction = {
+		# effect = {
+			# log = "[THIS.GetName] left its faction"
+			# if = {
+					# limit = { has_variable = world_stage_metropolis }
+					# var:world_stage_metropolis = { set_variable = { world_stage_coalition = 4 } }	# non-aligned
+			# }
+			# if = {
+					# limit = { has_variable = world_stage_coalition }
+					# set_variable = { world_stage_coalition = 4 }									# non-aligned
+			# }
+		# }
+	# }
+#}

@@ -3026,17 +3026,14 @@ focus_tree = {
 				elections_allowed = no
 			}
 			if = {
-				limit = {
-					NOT = { has_global_flag = world_stage_world_war_2_is_active }
-					NOT = { tag = REI tag = FER }
-				}
-				set_country_flag = will_join_komintern
-				custom_effect_tooltip = will_join_komintern_tt
-			}
-			if = {
-				limit = { has_global_flag = world_stage_world_war_2_is_active }
-				NOT = { tag = OSA tag = KOB tag = OKI tag = AMC tag = REI tag = FER }
-				world_stage_join_komintern = yes
+				limit = { NOT = { tag = OSA tag = KOB tag = REI tag = AMC tag = OKI } }	# some tags are redundant but I'll add them as a last fail-safe
+				if = {
+					limit = {
+						NOT = { has_global_flag = world_stage_world_war_2_is_active }
+					}
+					set_country_flag = will_join_komintern
+					custom_effect_tooltip = will_join_komintern_tt
+				} else = { world_stage_join_komintern = yes }
 			}
 		}
 	}
@@ -3467,6 +3464,7 @@ focus_tree = {
 
 		completion_reward = {
 			add_war_support = 0.1
+			custom_effect_tooltip = kamikaze_focus_tooltip
 		}
 	}
 	
@@ -3608,7 +3606,7 @@ focus_tree = {
 		allow_branch = {
 			OR = {
 				NOT = { tag = REI tag = PRT tag = OSA tag = KOB tag = HIR tag = FER tag = AMC tag = OKI tag = KIT tag = SPR }
-				has_country_flag = lost_original_focus_tree # this is related to World Stage
+				#has_country_flag = lost_original_focus_tree # this is related to World Stage
 			}
 		}
 
@@ -3619,6 +3617,8 @@ focus_tree = {
 				has_idea = neutrality_idea
 			}
 		}
+		
+		available = { world_stage_has_capitulated = no is_puppet = no }
 
 		completion_reward = {
 			if = {
@@ -3627,20 +3627,13 @@ focus_tree = {
 			}	
 			set_rule = { can_send_volunteers = yes }
 			add_war_support = 0.1
-			if = {
-				limit = {
-					NOT = { has_global_flag = world_stage_world_war_2_is_active }
-					NOT = { tag = REI tag = FER }
-				}
-				set_country_flag = will_join_allies
-				custom_effect_tooltip = will_join_allies_tt
-			}
 		}
 	}
 	
 	focus = {
 		id = interventionism_focus_western
-		icon = GFX_goal_generic_military_deal
+		icon = { value = GFX_goal_generic_military_deal trigger = { OR = { tag = OSA tag = KOB } } }
+		icon = { value = GFX_goal_GENERIC_join_allies trigger = { NOT = { tag = OSA tag = KOB } } }
 		prerequisite = { focus = ss_generic_government_freedoms }
 		mutually_exclusive = { focus = neutrality_focus }
 		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY FOCUS_FILTER_WORLD }
@@ -3648,13 +3641,14 @@ focus_tree = {
 		y = 1
 		relative_position_id = ss_generic_government_freedoms
 		cost = 10
+		dynamic = yes
 
 		available_if_capitulated = yes
 		
 		text_icon = worldstage_style
 		
 		allow_branch = {
-			OR = { tag = REI tag = PRT tag = OSA tag = KOB tag = HIR tag = FER tag = OKI = KIT tag = SPR }
+			OR = { tag = REI tag = PRT tag = OSA tag = KOB tag = HIR tag = FER tag = OKI tag = KIT tag = SPR }
 			NOT = { tag = AMC tag = OKI }	# America has its own focus
 			#NOT = { has_country_flag = lost_original_focus_tree } # this is related to World Stage
 		}
@@ -3667,29 +3661,27 @@ focus_tree = {
 			}
 		}
 		
-		available = {
-			world_stage_has_capitulated = no
-		}
+		available = { world_stage_has_capitulated = no is_puppet = no }
 
 		completion_reward = {
 			if = {
 				limit = { has_idea = neutrality_idea }
 				remove_ideas = neutrality_idea
-			}	
-			set_rule = { can_send_volunteers = yes }
+			}
 			add_ideas = idea_western_interventionism
 			if = {
-				limit = {
-					NOT = { has_global_flag = world_stage_world_war_2_is_active }
-					NOT = { tag = REI tag = FER }
-				}
-				set_country_flag = will_join_allies
-				custom_effect_tooltip = will_join_allies_tt
+				limit = { NOT = { tag = OSA tag = KOB tag = FER tag = REI tag = AMC tag = OKI } }	# some tags are redundant but I'll add them as a last fail-safe
+				if = {
+					limit = {
+						NOT = { has_global_flag = world_stage_world_war_2_is_active }
+					}
+					set_country_flag = will_join_allies
+					custom_effect_tooltip = will_join_allies_tt
+				} else = { world_stage_join_allies = yes }
 			}
 			if = {
-				limit = { has_global_flag = world_stage_world_war_2_is_active }
-				NOT = { tag = REI tag = FER }
-				world_stage_join_allies = yes
+				limit = { OR = { tag = OSA tag = KOB } }
+				add_war_support = 0.1
 			}
 		}
 	}
@@ -3738,11 +3730,10 @@ focus_tree = {
 					if = {
 						limit = { country_exists = ALY MUS = { NOT = { tag = ALY } } }
 						ALY = { add_to_faction = MUS }
-						hidden_effect = { add_to_array = { global.array_allies = THIS.id } }
 					} else = {
 						create_faction = coalition_name_allies_short
-						hidden_effect = { add_to_array = { global.array_allies = THIS.id } }
 					}
+					hidden_effect = { add_to_array = { global.array_allies = THIS.id } }
 				}
 				hidden_effect = { SUS = { unlock_national_focus = AMERICA_generic_abandon_neutrality } }
 			}
@@ -3764,7 +3755,10 @@ focus_tree = {
 		
 		text_icon = worldstage_style
 		
-		allow_branch = { NOT = { tag = AMC tag = OKI } }
+		allow_branch = {
+			OR = { tag = REI tag = PRT tag = OSA tag = KOB tag = HIR tag = FER tag = OKI tag = KIT tag = SPR }
+			NOT = { tag = AMC tag = OKI }
+		}
 
 		ai_will_do = {
 			factor = 50
@@ -4096,7 +4090,7 @@ focus_tree = {
 		id = neutrality_focus
 		icon = GFX_goal_GENERIC_neutrality
 		prerequisite = { focus = ss_generic_government_freedoms focus = ss_generic_government_neutrality }
-		mutually_exclusive = { focus = interventionism_focus focus = interventionism_focus_western focus = militarism }
+		mutually_exclusive = { focus = interventionism_focus focus = interventionism_focus_western focus = militarism focus = AMERICA_generic_abandon_neutrality }
 		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_DIPLOMACY }
 		x = 1
 		y = 1
@@ -4108,6 +4102,14 @@ focus_tree = {
 		ai_will_do = {
 			factor = 1
 		}
+		
+		available = {
+			is_puppet = no
+			if = {
+				limit = { OR = { tag = MUS tag = SUS } }
+				is_main_american_colony = yes
+			}
+		}
 
 		completion_reward = {
 			if = {
@@ -4117,6 +4119,13 @@ focus_tree = {
 				add_ideas = liberty_ethos_focus
 			}
 			add_political_power = 150
+			if = {
+				limit = { OR = { tag = MUS tag = SUS } }
+				every_country = {
+					limit = { OR = { tag = MUS tag = SUS } }
+					swap_ideas = { remove_idea = undisturbed_isolation add_idea = civilian_economy }
+				}
+			}
 		}
 	}
 	
@@ -4218,6 +4227,11 @@ focus_tree = {
 		text_icon = worldstage_style
 		
 		available = {
+			is_puppet = no
+			if = {
+				limit = { OR = { tag = MUS tag = SUS } }
+				is_main_american_colony = yes
+			}
 			if = {
 				limit = { is_trade_city = yes }
 				world_stage_has_capitulated = no
@@ -4230,24 +4244,20 @@ focus_tree = {
 			if = {
 				limit = { has_idea = neutrality_idea }
 				remove_ideas = neutrality_idea
+			}
+			if = {
+				limit = { has_idea = SS_lon_member }
+				remove_ideas = SS_lon_member
 			}			
 			add_ideas = militarism_focus
 			army_experience = 20
 			set_rule = { can_send_volunteers = yes }
 			if = {
-				limit = {
-					NOT = { has_global_flag = world_stage_world_war_2_is_active }
-					NOT = { tag = KOB tag = OSA tag = FER }
-				}
-				set_country_flag = will_join_axis
-				custom_effect_tooltip = will_join_axis_tt
-			}
-			if = {
-				limit = {
-					has_global_flag = world_stage_world_war_2_is_active
-					NOT = { tag = KOB tag = OSA tag = FER tag = AMC tag = OKI }
-				}
-				world_stage_join_axis = yes
+				limit = { NOT = { tag = KOB tag = OSA tag = FER tag = AMC tag = OKI } }
+				if = {
+					limit = { has_global_flag = league_of_nations_exists }	# therefore, Pact of Steel exists
+					world_stage_join_pactofsteel = yes
+				} else = { world_stage_join_axis = yes }
 			}
 		}
 	}
