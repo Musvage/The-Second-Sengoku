@@ -410,7 +410,8 @@ focus_tree = {
 				
 			}
 		}
-	 
+		cancelable = no
+		
 		completion_reward = {
 			set_global_flag = ROC_siberian_offensive_completed
 			add_named_threat = { 
@@ -3665,8 +3666,8 @@ focus_tree = {
 	
 	focus = {
 		id = ROC_aid_mongolia
-		icon = GFX_focus_ROC_aid_mongolia
-		search_filters = { FOCUS_FILTER_WORLD }
+		icon = GFX_focus_REI_help_mongolia	#GFX_focus_ROC_aid_mongolia
+		search_filters = { FOCUS_FILTER_WORLD FOCUS_FILTER_MILITARY }
 		
 		prerequisite = { focus = ROC_falkenhausean_reforms }
 		
@@ -3683,63 +3684,20 @@ focus_tree = {
 			factor = 10
 		}
 
-		bypass = { has_global_flag = SOV_won_mongolia }
-		
 		available = {
+			NOT = { has_government = communism }
+			NOT = { has_government = democratic_socialism }
 			custom_trigger_tooltip = {
-				tooltip = requires_ROC_expansion
-				always = no
-			}
-			hidden_trigger = { # just to hide the actual triggers
-			NOT = { has_global_flag = SOV_won_mongolia }
-				custom_trigger_tooltip = {
-					tooltip = china_has_world_stage_power_40
-					106 = { check_variable = { world_stage_power > 59 } }
-				}
-				OR = {
-					AND = {
-						has_world_stage_coalition_axis = yes
-						theater_mongolia_not_controlled_axis = yes
-					}
-					AND = {
-						has_world_stage_coalition_unaligned = yes
-						theater_mongolia_not_controlled_unaligned = yes
-					}
-				}
-				custom_trigger_tooltip = {
-					tooltip = owner_tibet_self
-					OR = {
-						AND = {
-							has_world_stage_coalition_axis = yes
-							theater_tibet_not_controlled_axis = yes
-						}
-						AND = {
-							has_world_stage_coalition_unaligned = yes
-							theater_tibet_not_controlled_unaligned = yes
-						}
-					}
-				}
+				tooltip = world_stage_mongolia_exists
+				2 = { check_variable = { theater_owner = 116 } }
 			}
 		}
+		cancel_if_invalid = yes
 	 
 		completion_reward = {
 			set_global_flag = CHI_won_mongolia
-			country_event = worldstage.2
-			hidden_effect = {
-				var:world_stage_metropolis = {
-					add_to_variable = {
-						var = world_stage_power
-						value = -5
-					}
-				}
-			}
-			effect_tooltip = {
-				add_to_variable = {
-					var = world_stage_power
-					value = 5
-					tooltip = remove_world_stage_power_no_scope_tt
-				}
-			}
+			country_event = { id = worldstage.2 days = 1 }
+			army_experience = 15
 		}
 	}
 	
