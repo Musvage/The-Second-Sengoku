@@ -1,0 +1,361 @@
+add_namespace = republic_of_china
+
+#Blue Shirts March on Beijing
+news_event = {
+	id = republic_of_china.1
+	title = republic_of_china.1.t
+	desc = republic_of_china.1.d
+	picture = GFX_
+	
+	is_triggered_only = yes
+
+	option = {
+		name = republic_of_china.1.a
+	}
+	option = {
+		name = republic_of_china.1.b
+		
+	}
+}
+
+#China Closes Ranks with Germany
+country_event = {
+	id = republic_of_china.2
+	title = republic_of_china.2.t
+	desc = republic_of_china.2.d
+	picture = GFX_news_china_axis
+	
+	is_triggered_only = yes
+
+	option = {
+		name = republic_of_china.2.allies
+		trigger = { NOT = { has_global_flag = world_stage_world_war_2_is_active } }
+		if = {
+			limit = { has_global_flag = league_of_nations_exists }
+			custom_effect_tooltip = metropolis_scope_china custom_effect_tooltip = join_coalition_pactofsteel_bad
+		} else = { custom_effect_tooltip = metropolis_scope_china custom_effect_tooltip = join_coalition_axis_bad }
+	}
+	option = {
+		name = republic_of_china.2.allies_war
+		trigger = { has_global_flag = world_stage_world_war_2_is_active }
+		if = {
+			limit = { has_global_flag = league_of_nations_exists }
+			custom_effect_tooltip = metropolis_scope_china custom_effect_tooltip = join_coalition_pactofsteel_bad
+		} else = { custom_effect_tooltip = metropolis_scope_china custom_effect_tooltip = join_coalition_axis_bad }
+	}
+	option = {
+		name = republic_of_china.2.axis
+		trigger = { NOT = { has_global_flag = world_stage_world_war_2_is_active } }
+		if = {
+			limit = { has_global_flag = league_of_nations_exists }
+			custom_effect_tooltip = metropolis_scope_china custom_effect_tooltip = join_coalition_pactofsteel
+		} else = { custom_effect_tooltip = metropolis_scope_china custom_effect_tooltip = join_coalition_axis }
+	}
+	option = {
+		name = republic_of_china.2.axis_war
+		trigger = { has_global_flag = world_stage_world_war_2_is_active }
+		if = {
+			limit = { has_global_flag = league_of_nations_exists }
+			custom_effect_tooltip = metropolis_scope_china custom_effect_tooltip = join_coalition_pactofsteel
+		} else = { custom_effect_tooltip = metropolis_scope_china custom_effect_tooltip = join_coalition_axis }
+	}
+	option = {
+		name = republic_of_china.2.other
+		if = {
+			limit = { has_global_flag = league_of_nations_exists }
+			custom_effect_tooltip = metropolis_scope_china custom_effect_tooltip = join_coalition_pactofsteel
+		} else = { custom_effect_tooltip = metropolis_scope_china custom_effect_tooltip = join_coalition_axis }
+	}
+}
+
+#Former Emperor Puyi Executed
+news_event = {
+	id = republic_of_china.3
+	title = republic_of_china.3.t
+	desc = republic_of_china.3.d
+	picture = GFX_news_china_puyi_death
+	
+	is_triggered_only = yes
+
+	option = {
+		name = republic_of_china.3.a
+		trigger = { tag = ROC }
+		every_other_country = {
+			limit = { has_government = autocracy }
+			add_opinion_modifier = {
+				target = ROC
+				modifier = ROC_regicide
+			}
+		}
+	}
+	option = {
+		name = republic_of_china.3.b
+		trigger = { has_government = autocracy }
+		effect_tooltip = {
+			add_opinion_modifier = {
+				target = ROC
+				modifier = ROC_regicide
+			}
+		}
+	}
+	option = {
+		name = republic_of_china.3.c
+		trigger = { NOT = { has_government = autocracy tag = ROC } }
+		
+	}
+}
+
+#China Denounces the Unequal Treaties - Macau & Hong Kong (Portugal is not Axis)
+country_event = {
+	id = republic_of_china.4
+	title = republic_of_china.4.t
+	desc = { text = republic_of_china.4.d1 trigger = { has_global_flag = world_stage_world_war_2_is_active } }
+	desc = { text = republic_of_china.4.d2 trigger = { NOT = { has_global_flag = world_stage_world_war_2_is_active } } }
+	picture = GFX_news_event_chinese_soldiers_city_ruin
+	
+	is_triggered_only = yes
+	
+	major = yes
+	
+	show_major = {
+		OR = {
+			NOT = { has_country_flag = hide_worldstage_notification }
+			tag = ROC
+			tag = OSA
+			tag = PRT
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } }
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 5 } }
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 6 } }
+		}
+	}
+
+	option = {
+		name = republic_of_china.4.allies	# it's .4 because it's the same loc as before
+		trigger = {
+			var:world_stage_metropolis = { OR = { check_variable = { world_stage_coalition = 1 } check_variable = { world_stage_coalition = 5 } } }
+			NOT = { tag = OSA tag = PRT }
+		}
+	}
+	option = {
+		name = republic_of_china.4.axis
+		var:world_stage_metropolis = { OR = { check_variable = { world_stage_coalition = 3 } check_variable = { world_stage_coalition = 6 } } }
+			NOT = { tag = ROC }
+	}
+	option = {
+		name = republic_of_china.4.roc
+		trigger = { tag = ROC }
+	}
+	option = {
+		name = republic_of_china.4.osa_prt
+		trigger = { OR = { tag = OSA tag = PRT } }
+	}
+	option = {
+		name = republic_of_china.4.other
+		NOT = {
+			tag = ROC tag = OSA tag = PRT
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 5 } }
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 6 } }
+		}
+		
+	}
+}
+
+#China Denounces the Unequal Treaties - Hong Kong (Portugal is Axis)
+country_event = {
+	id = republic_of_china.41
+	title = republic_of_china.41.t
+	desc = { text = republic_of_china.41.d1 trigger = { has_global_flag = world_stage_world_war_2_is_active } }
+	desc = { text = republic_of_china.41.d2 trigger = { NOT = { has_global_flag = world_stage_world_war_2_is_active } } }
+	picture = GFX_news_event_chinese_soldiers_city_ruin
+	
+	is_triggered_only = yes
+	
+	major = yes
+	
+	show_major = {
+		OR = {
+			NOT = { has_country_flag = hide_worldstage_notification }
+			tag = ROC
+			tag = OSA
+			tag = PRT
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } }
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 5 } }
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 6 } }
+		}
+	}
+
+	option = {
+		name = republic_of_china.4.allies	# it's .4 because it's the same loc as before
+		trigger = {
+			var:world_stage_metropolis = { OR = { check_variable = { world_stage_coalition = 1 } check_variable = { world_stage_coalition = 5 } } }
+			NOT = { tag = OSA tag = PRT }
+		}
+	}
+	option = {
+		name = republic_of_china.4.axis
+		var:world_stage_metropolis = { OR = { check_variable = { world_stage_coalition = 3 } check_variable = { world_stage_coalition = 6 } } }
+			NOT = { tag = ROC }
+	}
+	option = {
+		name = republic_of_china.4.roc
+		trigger = { tag = ROC }
+	}
+	option = {
+		name = republic_of_china.4.osa_prt
+		trigger = { tag = OSA }
+	}
+	option = {
+		name = republic_of_china.41.prt
+		trigger = { tag = PRT }
+		
+	}
+	option = {
+		name = republic_of_china.4.other
+		NOT = {
+			tag = ROC tag = OSA tag = PRT
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 5 } }
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 6 } }
+		}
+		
+	}
+}
+
+#Notherastern Army Arrives in Manchuria
+country_event = {
+	id = republic_of_china.5
+	title = republic_of_china.5.t
+	desc = republic_of_china.5.d
+	picture = GFX_news_china_army
+	
+	is_triggered_only = yes
+
+	major = yes
+	
+	show_major = {
+		OR = {
+			tag = ROC
+			is_in_faction_with = ROC
+			has_war_with = ROC
+		}
+	}
+	
+	option = {
+		name = republic_of_china.5.a
+	}
+	option = {
+		name = republic_of_china.5.b
+		
+	}
+}
+
+#Northern Seas Fleet Arrives in [X]
+country_event = {
+	id = republic_of_china.6
+	title = republic_of_china.6.t
+	desc = republic_of_china.6.d
+	picture = GFX_report_event_usa_heavy_cruiser
+	
+	is_triggered_only = yes
+	
+	major = yes
+	
+	show_major = {
+		OR = {
+			tag = ROC
+			is_in_faction_with = ROC
+			has_war_with = ROC
+		}
+	}
+
+	option = {
+		name = republic_of_china.6.a
+	}
+	option = {
+		name = republic_of_china.6.b
+		
+	}
+}
+
+#Flying Eagle Squadron Arrives in Manchuria
+country_event = {
+	id = republic_of_china.7
+	title = republic_of_china.7.t
+	desc = republic_of_china.7.d
+	picture = GFX_report_event_china_soviet_volunteers
+	
+	is_triggered_only = yes
+	
+	major = yes
+	
+	show_major = {
+		OR = {
+			tag = ROC
+			is_in_faction_with = ROC
+			has_war_with = ROC
+		}
+	}
+
+	option = {
+		name = republic_of_china.7.a
+	}
+	option = {
+		name = republic_of_china.7.b
+		
+	}
+}
+
+#Siberian Offensive
+country_event = {
+	id = republic_of_china.8
+	title = republic_of_china.8.t
+	desc = republic_of_china.8.d
+	picture = GFX_news_china_siberia
+	
+	is_triggered_only = yes
+
+	option = {
+		name = republic_of_china.8.a
+	}
+	option = {
+		name = republic_of_china.8.b
+		
+	}
+}
+
+#China Invades East Indies
+country_event = {
+	id = republic_of_china.9
+	title = republic_of_china.9.t
+	desc = republic_of_china.9.d
+	picture = GFX_
+	
+	is_triggered_only = yes
+
+	option = {
+		name = republic_of_china.9.a
+	}
+	option = {
+		name = republic_of_china.9.b
+		
+	}
+}
+
+#China Invades Taiwan
+country_event = {
+	id = republic_of_china.10
+	title = republic_of_china.10.t
+	desc = republic_of_china.10.d
+	picture = GFX_
+	
+	is_triggered_only = yes
+
+	option = {
+		name = republic_of_china.10.a
+	}
+	option = {
+		name = republic_of_china.10.b
+		
+	}
+}
