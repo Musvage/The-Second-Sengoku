@@ -1715,144 +1715,140 @@ news_event = {
 			# the 'Great Swithceroo of Coalitions" happens here
 			# first: run specific tags
 			# second: run tags that may contain relevant infomation
-			# third: run proxy metropolis for off-map countries with no tags in game
+			# third: run proxy metropolis for off-map countries with no tags in game and remaining LoN guys
+			# fourth: set up new arrays of tags for tag-aliases
 			# first:
-			OSA = { set_variable = { world_stage_coalition = 1 } }
+			OSA = { set_variable = { world_stage_coalition = 1 } }	#if = { limit = { country_exists = OSA } add_to_array = { global.array_allies = OSA } }
+			102 = { set_variable = { world_stage_coalition = 1 } }
 			KOB = { set_variable = { world_stage_coalition = 1 } }
+			103 = { set_variable = { world_stage_coalition = 1 } }
 			FER = { set_variable = { world_stage_coalition = 2 } }		# URSS was already expelled from LoN at this point but we'll run the command again just in case the FER player did not play his part 
+			104 = { set_variable = { world_stage_coalition = 2 } }
 			REI = { set_variable = { world_stage_coalition = 3 } }
+			101 = { set_variable = { world_stage_coalition = 3 } }
+			109 = { set_variable = { world_stage_coalition = 3 } }		# Italy starts off map (a port may spawn in the future)
 			115 = { set_variable = { world_stage_coalition = 1 } }		# Poland is off map
 			120 = { set_variable = { world_stage_coalition = 3 } }		# Vichy France is off map
 			# second:
-			every_country = {
+			every_possible_country = {
 				limit = { has_country_flag = will_join_allies }
 				set_variable = { world_stage_coalition = 1 }
+				if = { limit = { has_variable = world_stage_metropolis } var:world_stage_metropolis = { set_variable = { world_stage_coalition = 1 } } }
 			}
-			every_country = {
+			every_possible_country = {
 				limit = { has_country_flag = will_join_komintern }
 				set_variable = { world_stage_coalition = 2 }
+				if = { limit = { has_variable = world_stage_metropolis } var:world_stage_metropolis = { set_variable = { world_stage_coalition = 2 } } }
 			}
-			every_country = {
+			every_possible_country = {
+				limit = { has_country_flag = will_join_axis }
+				set_variable = { world_stage_coalition = 3 }
+				if = { limit = { has_variable = world_stage_metropolis } var:world_stage_metropolis = { set_variable = { world_stage_coalition = 3 } } }
+			}
+			every_possible_country = {
 				limit = { check_variable = { world_stage_coalition = 6 } }
 				set_variable = { world_stage_coalition = 3 }
+				if = { limit = { has_variable = world_stage_metropolis } var:world_stage_metropolis = { set_variable = { world_stage_coalition = 6 } } }
 			}
-			every_country = {
-				limit = {
-					NOT = { has_country_flag = will_join_allies has_country_flag = will_join_komintern }	# every one that belongs to LoN but has not side in WW2
-					check_variable = { world_stage_coalition = 5 }
-				}
-				set_variable = { world_stage_coalition = 4 }
-			}
-			# updating proxy metropolises for 1st and 2nd
-			every_country = {
-				limit = { has_variable = world_stage_metropolis }
-				world_stage_update_metropolis = yes
-			}
-			# updating proxy states for 1st and 2nd
+			# third:
+			# At this point, anyone that should have joined a faction would have done it already
+			# the following applies for both metropolises and theaters
 			every_state = {
-				limit = { has_variable = world_stage_metropolis }
-				log = "[THIS.GetMetropolisName]'s owned theater"
-				every_state = {
-					limit = { check_variable = { theater_owner = PREV.world_stage_metropolis } }
-					log = "[THIS.GetTheaterName]: previous coalition [?theater_owner_coalition]"
-					set_variable = { theater_owner_coalition = PREV.world_stage_coalition }
-					log = "[THIS.GetTheaterName]: new coalition [?theater_owner_coalition]"
+				limit = { has_variable = world_stage_coalition }
+				if = {
+					limit = {
+						NOT = { check_variable = { world_stage_coalition = 1 } }
+						NOT = { check_variable = { world_stage_coalition = 2 } }
+						NOT = { check_variable = { world_stage_coalition = 3 } }
+					}
+					set_variable = { world_stage_coalition = 4 }
 				}
-			}
-			# updating proxy states and metropolis for 3rd
-			every_state = {
-				limit = { has_variable = world_stage_metropolis }
-				if = { limit = { check_variable = { world_stage_coalition = 5 } } set_variable = { world_stage_coalition = 4 } }	# leagueofnations becomes unaligned
-				if = { limit = { check_variable = { world_stage_coalition = 6 } } set_variable = { world_stage_coalition = 3 } }	# pactofsteel becomes axis
 			}
 			every_state = {
 				limit = { has_variable = theater_owner }
-				if = { limit = { check_variable = { theater_owner_coalition = 5 } } set_variable = { theater_owner_coalition = 4 } }	# leagueofnations becomes unaligned
-				if = { limit = { check_variable = { theater_owner_coalition = 6 } } set_variable = { theater_owner_coalition = 3 } }	# pactofsteel becomes axis
+				var:theater_owner = { set_temp_variable = { new_coalition = world_stage_coalition } }
+				set_variable = { theater_owner_coalition = new_coalition }
+			}
+			# fourth:
+			### arrays for tag aliases ###
+			clear_array = global.array_komintern	# we set up the whole komintern array twice as a fail-safe
+			clear_array = global.array_leagueofnations
+			clear_array = global.array_pactofsteel
+			every_state = {
+				if = {
+					limit = { check_variable = { world_stage_coalition = 1 } }
+					add_to_array = { global.array_allies = THIS.id }
+				}
+			}
+			every_state = {
+				if = {
+					limit = { check_variable = { world_stage_coalition = 2 } }
+					add_to_array = { global.array_komintern = THIS.id }
+				}
+			}
+			every_state = {
+				if = {
+					limit = { check_variable = { world_stage_coalition = 3 } }
+					add_to_array = { global.array_axis = THIS.id }
+				}
 			}
 			# create on-map factions
-			if = {
-				limit = { country_exists = OSA }
-				OSA = {
-					if = { limit = { is_in_faction = yes is_faction_leader = no } leave_faction = yes }
-					if = { limit = { is_in_faction = no } create_faction = coalition_name_allies_short }
-					every_other_country = {
-						limit = { check_variable = { world_stage_coalition = 1 } }
-						OSA = { add_to_faction = PREV }
+			ALY = {
+				if = {
+					limit = { is_in_faction = yes }
+					if = {
+						limit = { is_faction_leader = yes }
+						set_faction_name  = coalition_name_allies_short
+					} else = {
+						leave_faction = yes
+						create_faction = coalition_name_allies_short
 					}
+				} else = {
+					create_faction = coalition_name_allies_short
 				}
-			} else = {
-				random_country = {
+				every_other_country = {
 					limit = { check_variable = { world_stage_coalition = 1 } }
-					if = { limit = { is_in_faction = yes is_faction_leader = no } leave_faction = yes }
-					if = { limit = { is_in_faction = no } create_faction = coalition_name_allies_short }
-					set_temp_variable = { coalitionleader = THIS.id }
-					every_other_country = {
-						limit = { check_variable = { world_stage_coalition = 1 } }
-						var:coalitionleader = { add_to_faction = PREV }
-					}
-				}
+					ALY = { add_to_faction = PREV }
+				}			
 			}
-			if = {
-				limit = { country_exists = FER }
-				FER = {
-					if = { limit = { is_in_faction = yes is_faction_leader = no } leave_faction = yes }
-					if = { limit = { is_in_faction = no } create_faction = coalition_name_komintern_short }
-					every_other_country = {
-						limit = { check_variable = { world_stage_coalition = 2 } }
-						REI = { add_to_faction = PREV }
+			COM = {
+				if = {
+					limit = { is_in_faction = yes }
+					if = {
+						limit = { is_faction_leader = yes }
+						set_faction_name  = coalition_name_allies_short
+					} else = {
+						leave_faction = yes
+						create_faction = coalition_name_allies_short
 					}
+				} else = {
+					create_faction = coalition_name_allies_short
 				}
-			} else = {
-				random_country = {
+				every_other_country = {
 					limit = { check_variable = { world_stage_coalition = 2 } }
-					if = { limit = { is_in_faction = yes is_faction_leader = no } leave_faction = yes }
-					if = { limit = { is_in_faction = no } create_faction = coalition_name_komintern_short }
-					set_temp_variable = { coalitionleader = THIS.id }
-					every_other_country = {
-						limit = { check_variable = { world_stage_coalition = 2 } }
-						var:coalitionleader = { add_to_faction = PREV }
-					}
-				}
+					COM = { add_to_faction = PREV }
+				}			
 			}
-			if = {
-				limit = { country_exists = REI }
-				REI = {
-					if = { limit = { is_in_faction = yes is_faction_leader = no } leave_faction = yes }
-					if = { limit = { is_in_faction = no } create_faction = coalition_name_axis_short }
-					every_other_country = {
-						limit = { check_variable = { world_stage_coalition = 3 } }
-						REI = { add_to_faction = PREV }
+			AXS = {
+				if = {
+					limit = { is_in_faction = yes }
+					if = {
+						limit = { is_faction_leader = yes }
+						set_faction_name  = coalition_name_allies_short
+					} else = {
+						leave_faction = yes
+						create_faction = coalition_name_allies_short
 					}
+				} else = {
+					create_faction = coalition_name_allies_short
 				}
-			} else = {
-				random_country = {
+				every_other_country = {
 					limit = { check_variable = { world_stage_coalition = 3 } }
-					if = { limit = { is_in_faction = yes is_faction_leader = no } leave_faction = yes }
-					if = { limit = { is_in_faction = no } create_faction = coalition_name_axis_short }
-					set_temp_variable = { coalitionleader = THIS.id }
-					every_other_country = {
-						limit = { check_variable = { world_stage_coalition = 3 } }
-						var:coalitionleader = { add_to_faction = PREV }
-					}
-				}
+					AXS = { add_to_faction = PREV }
+				}			
 			}
-			3 = { set_variable = { coalition_side_attack = 3 } }	# Change attacker on Poland
-			### arrays for tag aliases ###
-			for_each_loop = {
-				array = global.array_leagueofnations
-				index = this_index
-				value = this_tag
-				add_to_array = { global.array_allies = this_tag }
-			}
-			clear_array = global.array_leagueofnations
-			for_each_loop = {
-				array = global.array_pactofsteel
-				index = this_index
-				value = this_tag
-				add_to_array = { global.array_axis = this_tag }
-			}
-			clear_array = global.array_pactofsteel
+			# Change attacker on Poland
+			3 = { set_variable = { coalition_side_attack = 3 } }	
 		}
 	}
 	
