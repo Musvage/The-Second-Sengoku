@@ -234,7 +234,7 @@ focus_tree = {
 	focus = {
 		id = ROC_antikominternpakt
 		icon = GFX_focus_ROC_antikominternpakt
-		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WORLD }
+		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WORLD FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = ROC_whampoa_clique focus = ROC_favourable_treatment }
 		
@@ -265,6 +265,7 @@ focus_tree = {
 	 
 		completion_reward = {
 			# sides with germany on wwii
+			add_political_power = 150
 			if = {
 				limit = { has_global_flag = league_of_nations_exists }	# therefore, Pact of Steel exists
 				if = {
@@ -417,6 +418,7 @@ focus_tree = {
 			custom_trigger_tooltip = {
 				
 			}
+			world_stage_has_capitulated = no
 		}
 		cancelable = no
 		
@@ -1059,6 +1061,7 @@ focus_tree = {
 				106 = { check_variable = { world_stage_power > 49 } }
 			}
 			has_world_stage_coalition_allies = no
+			world_stage_has_capitulated = no
 		}
 		
 		ai_will_do = {
@@ -1112,11 +1115,14 @@ focus_tree = {
 			} else = {
 				has_world_stage_coalition_allies = no
 			}
+			world_stage_has_capitulated = no
 		}
 	 
 		completion_reward = {
-			# seize off map trade ports in China (off map British and Portuguese)
-			add_political_power = 120			
+			# seize off map trade ports in China (off map British and Portuguese)		
+			if = { limit = { has_government = autocracy } add_ideas = ROC_idea_nationalist_wave_autocracy }
+			else_if = { limit = { has_government = neutrality } add_ideas = ROC_idea_nationalist_wave_neutrality }
+			else = { add_ideas = ROC_idea_nationalist_wave_fascism }
 			# Macau
 			if = {
 				limit = {	# we gotta check to see whether or not PRT and ROC are on the same side
@@ -1178,9 +1184,18 @@ focus_tree = {
 					modifier = ROC_holds_hong_kong
 				}
 			}
-			add_named_threat = { 
-				threat = 1
-				name = ROC_threat_denounce_treaties
+			if = {
+				limit = { has_global_flag = world_stage_world_war_2_is_active }
+				custom_effect_tooltip = ROC_will_join_axis_ww2
+				add_named_threat = { 
+					threat = 10
+					name = ROC_threat_denounce_treaties
+				}
+			} else = {
+				add_named_threat = { 
+					threat = 1
+					name = ROC_threat_denounce_treaties
+				}
 			}
 		}
 	}
@@ -1216,7 +1231,7 @@ focus_tree = {
 					check_variable = { global.world_stage_coalition_net = 3 }
 				}
 			}
-			
+			world_stage_has_capitulated = no
 		}
 	 
 		completion_reward = {
@@ -1265,6 +1280,7 @@ focus_tree = {
 				is_in_faction_with = AMC
 				is_in_faction_with = OKI
 			}
+			world_stage_has_capitulated = no
 		}
 	 
 		completion_reward = {
