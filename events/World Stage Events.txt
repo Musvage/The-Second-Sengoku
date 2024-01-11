@@ -210,7 +210,7 @@ news_event = {
 	id = worldstage.2
 	title = worldstage.2.t
 	desc = worldstage.2.d
-	picture = GFX_news_ww2_starts_wide
+	picture = GFX_worldstage_news_mongolian_nationalists
 
 	is_triggered_only = yes
 
@@ -255,7 +255,7 @@ news_event = {
 	id = worldstage.3
 	title = worldstage.3.t
 	desc = worldstage.3.d
-	picture = GFX_news_ww2_starts_wide
+	picture = GFX_worldstage_news_mongolian_communist
 
 	is_triggered_only = no
 	fire_only_once = yes
@@ -1834,13 +1834,13 @@ news_event = {
 					limit = { is_in_faction = yes }
 					if = {
 						limit = { is_faction_leader = yes }
-						set_faction_name  = coalition_name_allies_short
+						set_faction_name  = coalition_name_axis_short
 					} else = {
 						leave_faction = yes
-						create_faction = coalition_name_allies_short
+						create_faction = coalition_name_axis_short
 					}
 				} else = {
-					create_faction = coalition_name_allies_short
+					create_faction = coalition_name_axis_short
 				}
 				every_other_country = {
 					limit = { check_variable = { world_stage_coalition = 3 } }
@@ -2678,6 +2678,131 @@ country_event = {
 				effect_tooltip = { add_to_variable = { attacker_strategic_advantage = 1 tooltip = world_stage_add_strategic_advantage_attacker_neutral } }
 			}
 		}
+	}
+}
+
+# Portugal: Join Allies when Macau is siezed?
+country_event = {
+	id = worldstage.73
+	title = worldstage.73.t
+	desc = worldstage.73.d
+	picture = GFX_report_event_portugal_attacked
+
+	is_triggered_only = yes
+	
+	option = {	# Do not join war
+		name = worldstage.73.a
+		add_stability = -0.05
+		set_truce = {
+			target = ROC
+			days = 180
+		}
+	}
+	option = {	# Join the Allies!
+		name = worldstage.73.b
+		world_stage_join_allies = yes
+		if = {
+			limit = { country_exists = ROC }
+			ROC = {
+				declare_war_on = {
+					target = PRT
+					type = annex_everything
+				}
+			}
+		}
+		add_war_support = 0.05
+		hidden_effect = {
+			ALY = {
+				add_ai_strategy = {
+					type = alliance
+					id = PRT
+					value = 100
+				}
+			}
+			country_event = worldstage.74
+		}
+	}
+	option = {	# We fight alone
+		name = worldstage.73.c
+		trigger = { country_exists = ROC 106 = { check_variable = { world_stage_coalition = 4 } } }
+		ROC = {
+			declare_war_on = {
+				target = PRT
+				type = annex_everything
+			}
+		}
+		add_war_support = 0.05
+		hidden_effect = {
+			add_ai_strategy = {
+				type = alliance
+				id = OSA
+				value = -100
+			}
+			add_ai_strategy = {
+				type = alliance
+				id = KOB
+				value = -100
+			}
+		}
+	}
+}
+
+# Portugal: Join Allies after China invaded Macau
+country_event = {
+	id = worldstage.74
+	title = worldstage.74.t
+	desc = worldstage.74.d
+	picture = GFX_report_event_portugal_attacked
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	show_major = {
+		OR = {
+			NOT = { has_country_flag = hide_worldstage_notification }
+			tag = PRT
+			tag = ROC
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } }
+			is_neighbor_of = PRT
+		}
+	}
+	
+	option = {
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
+		name = worldstage.74.allies
+		custom_effect_tooltip = metropolis_scope_portugal
+		custom_effect_tooltip = world_stage_join_allies_tt_good
+	}
+	option = {
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		name = worldstage.74.axis
+		custom_effect_tooltip = metropolis_scope_portugal
+		custom_effect_tooltip = world_stage_join_allies_tt_bad
+	}
+	option = {
+		trigger = { tag = PRT }
+		name = worldstage.74.prt
+		custom_effect_tooltip = metropolis_scope_portugal
+		custom_effect_tooltip = world_stage_join_allies_tt
+	}
+	option = {
+		trigger = { tag = ROC }
+		name = worldstage.74.roc
+		custom_effect_tooltip = metropolis_scope_portugal
+		custom_effect_tooltip = world_stage_join_allies_tt_bad
+	}
+	option = {
+		trigger = {
+			NOT = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
+			NOT = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+			NOT = { tag = PRT }
+			NOT = { tag = ROC }
+		}
+		name = worldstage.74.other
+		custom_effect_tooltip = metropolis_scope_portugal
+		custom_effect_tooltip = world_stage_join_allies_tt
 	}
 }
 ########################################################################
