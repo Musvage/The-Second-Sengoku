@@ -1774,19 +1774,19 @@ news_event = {
 			clear_array = global.array_komintern	# we set up the whole komintern array twice as a fail-safe
 			clear_array = global.array_leagueofnations
 			clear_array = global.array_pactofsteel
-			every_state = {
+			every_country = {
 				if = {
 					limit = { check_variable = { world_stage_coalition = 1 } }
 					add_to_array = { global.array_allies = THIS.id }
 				}
 			}
-			every_state = {
+			every_country = {
 				if = {
 					limit = { check_variable = { world_stage_coalition = 2 } }
 					add_to_array = { global.array_komintern = THIS.id }
 				}
 			}
-			every_state = {
+			every_country = {
 				if = {
 					limit = { check_variable = { world_stage_coalition = 3 } }
 					add_to_array = { global.array_axis = THIS.id }
@@ -1816,13 +1816,13 @@ news_event = {
 					limit = { is_in_faction = yes }
 					if = {
 						limit = { is_faction_leader = yes }
-						set_faction_name  = coalition_name_allies_short
+						set_faction_name  = coalition_name_komintern_short
 					} else = {
 						leave_faction = yes
-						create_faction = coalition_name_allies_short
+						create_faction = coalition_name_komintern_short
 					}
 				} else = {
-					create_faction = coalition_name_allies_short
+					create_faction = coalition_name_komintern_short
 				}
 				every_other_country = {
 					limit = { check_variable = { world_stage_coalition = 2 } }
@@ -2820,24 +2820,7 @@ country_event = {
 
 	is_triggered_only = yes
 	
-	major = yes
-	
-	show_major = {
-		OR = {
-			NOT = { has_country_flag = hide_worldstage_notification }
-			tag = ROOT
-			var:world_stage_metropolis = { check_variable = { world_stage_coalition = global.worldstage75 } }
-			AND = {
-				check_variable = { global.worldstage75 = 1 }
-				var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } }
-			}
-			AND = {
-				check_variable = { global.worldstage75 = 3 }
-				var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
-			}
-			is_neighbor_of = ROOT
-		}
-	}
+	major = yes	# this one is shown to everyone
 	
 	option = {
 		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = global.worldstage75 } } NOT = { tag = ROOT } }
@@ -2863,6 +2846,169 @@ country_event = {
 		add_political_power = var:global.worldstage75
 	}
 }
+
+# United States Join the Allies: Abandon Neutrality focus
+news_event = {
+	id = worldstage.76
+	title = worldstage.76.t
+	desc = worldstage.76.d
+	picture = GFX_news_ww2_usa_joins_war
+
+	is_triggered_only = yes
+	
+	major = yes	# this one is shown to everyone
+	
+	option = {
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } NOT = { tag = AMC tag = OKI } }
+		name = worldstage.76.allies
+		custom_effect_tooltip = metropolis_scope_usa
+		custom_effect_tooltip = world_stage_join_allies_tt_good
+	}
+	option = {
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+		name = worldstage.76.komintern
+		custom_effect_tooltip = metropolis_scope_usa
+		custom_effect_tooltip = world_stage_join_allies_tt
+	}
+	option = {
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		name = worldstage.76.axis
+		custom_effect_tooltip = metropolis_scope_usa
+		custom_effect_tooltip = world_stage_join_allies_tt_bad
+	}
+	option = {
+		trigger = { OR = { tag = AMC tag = OKI } }
+		name = worldstage.76.usa
+		custom_effect_tooltip = metropolis_scope_usa
+		custom_effect_tooltip = world_stage_join_allies_tt
+	}
+	option = {
+		trigger = {
+			NOT = {
+				tag = AMC tag = OKI
+				var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
+				var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } }
+				var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } }
+			}
+		}
+		name = worldstage.76.other
+		custom_effect_tooltip = metropolis_scope_usa
+		custom_effect_tooltip = world_stage_join_allies_tt
+	}
+}
+
+# United States Join the Allies: China Invaded Taiwan
+news_event = {
+	id = worldstage.77
+	title = worldstage.77.t
+	desc = worldstage.77.d
+	picture = GFX_news_ww2_usa_attacked
+
+	is_triggered_only = yes
+	
+	major = yes	# this one is shown to everyone
+	
+	option = {
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } NOT = { tag = AMC tag = OKI } }
+		name = worldstage.77.allies
+		custom_effect_tooltip = metropolis_scope_usa
+		custom_effect_tooltip = world_stage_join_allies_tt_good
+	}
+	option = {
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+		name = worldstage.77.komintern
+		custom_effect_tooltip = metropolis_scope_usa
+		custom_effect_tooltip = world_stage_join_allies_tt
+	}
+	option = {
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } NOT = { tag = ROC }}
+		name = worldstage.77.axis
+		custom_effect_tooltip = metropolis_scope_usa
+		custom_effect_tooltip = world_stage_join_allies_tt_bad
+	}
+	option = {
+		trigger = { OR = { tag = AMC tag = OKI } }
+		name = worldstage.77.usa
+		custom_effect_tooltip = metropolis_scope_usa
+		custom_effect_tooltip = world_stage_join_allies_tt
+	}
+	option = {
+		trigger = { tag = ROC }
+		name = worldstage.77.roc
+		custom_effect_tooltip = metropolis_scope_usa
+		custom_effect_tooltip = world_stage_join_allies_tt_bad
+	}
+	option = {
+		trigger = {
+			NOT = {
+				tag = AMC tag = OKI
+				var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
+				var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } }
+				var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } }
+			}
+		}
+		name = worldstage.77.other
+		custom_effect_tooltip = metropolis_scope_usa
+		custom_effect_tooltip = world_stage_join_allies_tt
+	}
+	
+}
+
+# United States pledges to join the Allies
+news_event = {
+	id = worldstage.78
+	title = worldstage.78.t
+	desc = worldstage.78.d
+	picture = GFX_news_ww2_usa_joins_war
+
+	is_triggered_only = yes
+	
+	major = yes	# this one is shown to everyone
+	
+	option = {
+		trigger = {
+			NOT = { tag = AMC tag = OKI }
+			OR = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 5 } } }
+		}
+		name = worldstage.78.lon
+		custom_effect_tooltip = metropolis_scope_usa
+		custom_effect_tooltip = will_join_allies_tt
+	}
+	option = {
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+		name = worldstage.78.komintern
+		custom_effect_tooltip = metropolis_scope_usa
+		custom_effect_tooltip = will_join_allies_tt
+	}
+	option = {
+		trigger = { OR = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 6 } } } }
+		name = worldstage.78.pactofsteel
+		custom_effect_tooltip = metropolis_scope_usa
+		custom_effect_tooltip = will_join_allies_tt
+	}
+	option = {
+		trigger = { OR = { tag = AMC tag = OKI } }
+		name = worldstage.78.usa
+		custom_effect_tooltip = metropolis_scope_usa
+		custom_effect_tooltip = will_join_allies_tt
+	}
+	option = {
+		trigger = {
+			NOT = {
+				tag = AMC tag = OKI
+				var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
+				var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } }
+				var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } }
+				var:world_stage_metropolis = { check_variable = { world_stage_coalition = 5 } }
+				var:world_stage_metropolis = { check_variable = { world_stage_coalition = 6 } }
+			}
+		}
+		name = worldstage.78.other
+		custom_effect_tooltip = metropolis_scope_usa
+		custom_effect_tooltip = will_join_allies_tt
+	}
+}
+
 ########################################################################
 ########################## worldstage_automatic ########################
 ########################################################################
