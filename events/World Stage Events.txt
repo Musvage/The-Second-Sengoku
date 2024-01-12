@@ -2722,6 +2722,7 @@ country_event = {
 			country_event = worldstage.74
 		}
 		custom_effect_tooltip = worldstage.73.b2
+		hidden_effect = { 108 = { set_variable = { world_stage_coalition = 1 } } PRT = { set_variable = { world_stage_coalition = 1 } } }	# there is redundancy with the next event, I'll keep both as a fail-safe
 	}
 	option = {	# We fight alone
 		name = worldstage.73.c
@@ -2759,6 +2760,8 @@ country_event = {
 	is_triggered_only = yes
 	
 	major = yes
+	
+	immediate = { hidden_effect = { 108 = { set_variable = { world_stage_coalition = 1 } } PRT = { set_variable = { world_stage_coalition = 1 } } } }
 	
 	show_major = {
 		OR = {
@@ -2805,6 +2808,59 @@ country_event = {
 		name = worldstage.74.other
 		custom_effect_tooltip = metropolis_scope_portugal
 		custom_effect_tooltip = world_stage_join_allies_tt
+	}
+}
+
+# GENERIC EVENT FOR JOINING FACTION
+country_event = {
+	id = worldstage.75
+	title = worldstage.75.t
+	desc = worldstage.75.d
+	picture = GFX_report_event_military_planning
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	show_major = {
+		OR = {
+			NOT = { has_country_flag = hide_worldstage_notification }
+			tag = ROOT
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = global.worldstage75 } }
+			AND = {
+				check_variable = { global.worldstage75 = 1 }
+				var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } }
+			}
+			AND = {
+				check_variable = { global.worldstage75 = 3 }
+				var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
+			}
+			is_neighbor_of = ROOT
+		}
+	}
+	
+	option = {
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = global.worldstage75 } } NOT = { tag = ROOT } }
+		name = worldstage.75.a
+	}
+	option = {
+		trigger = {
+			var:world_stage_metropolis = {
+				NOT = { check_variable = { world_stage_coalition = global.worldstage75 } }
+				NOT = { check_variable = { world_stage_coalition = 4 } }
+			}
+			NOT = { tag = ROOT }
+		}
+		name = worldstage.75.b
+	}
+	option = {
+		trigger = { OR = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } NOT = { has_variable = world_stage_coalition } } NOT = { tag = ROOT } }
+		name = worldstage.75.c
+	}
+	option = {
+		trigger = { tag = ROOT }
+		name = worldstage.75.self
+		add_political_power = var:global.worldstage75
 	}
 }
 ########################################################################
