@@ -352,6 +352,11 @@ news_event = {
 				limit = { tag = OSA }
 				country_event = { id = britishosaka.1 days = 120 random = 60 }	# Churchil or Chamberlain? Note: replace this event being fired by the OSA tree itself, when we make its Expansion DLC
 			}
+			if = {
+				limit = { ROC = { NOT = { has_war_with = OSA has_war_with = OKI  has_war_with = AMC  has_war_with = KOB has_war_with = REI has_war_with = HIR has_war_with = PRT } } }
+				set_global_flag = modus_vivendi_pacific
+				ROC = { country_event = { id = worldstage.79 hours = 12 } }
+			}
 			every_country = {
 				limit = { check_variable = { world_stage_metropolis > 100 } }
 				if = {
@@ -1607,18 +1612,23 @@ country_event = {
 	immediate = {
 		clr_global_flag = phoney_war_rages_on
 		if = {
-			limit = { country_exists = REI }
-			every_country = {
-				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
-				REI = {	declare_war_on = { target = PREV type = annex_everything } }
-			}
-		} else = {
-			random_country = {
-				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes }
-				set_temp_variable = { axis_leader = THIS.id }
+			limit = { has_global_flag = modus_vivendi_pacific }
+			clr_global_flag = modus_vivendi_pacific
+			country_event = worldstage.80
+			if = {
+				limit = { country_exists = REI }
 				every_country = {
 					limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
-					var:axis_leader = {	declare_war_on = { target = PREV type = annex_everything } }
+					REI = {	declare_war_on = { target = PREV type = annex_everything } }
+				}
+			} else = {
+				random_country = {
+					limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes }
+					set_temp_variable = { axis_leader = THIS.id }
+					every_country = {
+						limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
+						var:axis_leader = {	declare_war_on = { target = PREV type = annex_everything } }
+					}
 				}
 			}
 		}
@@ -2735,16 +2745,10 @@ country_event = {
 		}
 		add_war_support = 0.05
 		hidden_effect = {
-			add_ai_strategy = {
-				type = alliance
-				id = OSA
-				value = -100
-			}
-			add_ai_strategy = {
-				type = alliance
-				id = KOB
-				value = -100
-			}
+			add_ai_strategy = { type = alliance id = OSA value = -100 }
+			add_ai_strategy = { type = alliance id = KOB value = -100 }
+			OSA = { add_ai_strategy = { type = alliance id = PRT value = -100 } }
+			KOB = { add_ai_strategy = { type = alliance id = PRT value = -100 } }
 		}
 		custom_effect_tooltip = worldstage.73.b2
 	}
@@ -2775,13 +2779,13 @@ country_event = {
 	}
 	
 	option = {
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } NOT = { tag = PRT } }
 		name = worldstage.74.allies
 		custom_effect_tooltip = metropolis_scope_portugal
 		custom_effect_tooltip = world_stage_join_allies_tt_good
 	}
 	option = {
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } NOT = { tag = ROC } }
 		name = worldstage.74.axis
 		custom_effect_tooltip = metropolis_scope_portugal
 		custom_effect_tooltip = world_stage_join_allies_tt_bad
@@ -2897,7 +2901,7 @@ news_event = {
 	}
 }
 
-# United States Join the Allies: China Invaded Taiwan
+# United States Join the Allies: China Invaded Formosa
 news_event = {
 	id = worldstage.77
 	title = worldstage.77.t
@@ -3009,6 +3013,31 @@ news_event = {
 	}
 }
 
+# WW2 does not reaches Pacific - Cosmetic
+country_event = {
+	id = worldstage.79
+	title = worldstage.79.t
+	desc = worldstage.79.d
+	picture = GFX_report_event_military_planning
+	
+	is_triggered_only = yes
+	major = yes	# this one is shown to everyone
+	
+	option = { name = worldstage.79.a }
+}
+
+# WW2 reaches Pacific - Cosmetic
+country_event = {
+	id = worldstage.80
+	title = worldstage.80.t
+	desc = worldstage.80.d
+	picture = GFX_report_event_military_planning
+	
+	is_triggered_only = yes
+	major = yes	# this one is shown to everyone
+	
+	option = { name = worldstage.80.a }
+}
 ########################################################################
 ########################## worldstage_automatic ########################
 ########################################################################

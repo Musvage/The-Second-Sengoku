@@ -268,23 +268,17 @@ focus_tree = {
 			add_political_power = 150
 			if = {
 				limit = { has_global_flag = league_of_nations_exists }	# therefore, Pact of Steel exists
-				if = {
-					limit = { country_exists = STL ROC = { NOT = { tag = STL } } }
-					STL = { add_to_faction = ROC }
-					hidden_effect = { add_to_array = { global.array_pactofsteel = THIS.id } }
-				} else = {
-					create_faction = coalition_name_pactofsteel_short
-					hidden_effect = { add_to_array = { global.array_pactofsteel = THIS.id } }
-				}
+				world_stage_join_pactofsteel = yes
 			} else = {
-				if = {
-					limit = { country_exists = AXS ROC = { NOT = { tag = AXS } } }
-					AXS = { add_to_faction = ROC }
-					hidden_effect = { add_to_array = { global.array_axis = THIS.id } }
-				} else = {
-					create_faction = coalition_name_axis_short
-					hidden_effect = { add_to_array = { global.array_axis = THIS.id } }
-				}
+				world_stage_join_axis = yes								# this is a bit redundant but I'll keep this way as a fail-safe
+			}
+			if = {
+				limit = { REI = { exists = yes has_war = no } }
+				ROC = { give_guarantee = REI }
+			}
+			if = {
+				limit = { ROC = { exists = yes has_war = no } }
+				REI = { give_guarantee = ROC }
 			}
 			if = {
 				limit = { has_idea = SS_lon_member }
@@ -494,6 +488,10 @@ focus_tree = {
 					2.attacker_strategic_advantage = 0.5
 					tooltip = world_stage_add_strategic_advantage_attacker
 				}
+			}
+			if = {
+				limit = { has_global_variable = world_stage_world_war_2_is_active}
+				custom_effect_tooltip = china_will_join_axis_ww2
 			}
 		}
 	}
@@ -1071,7 +1069,7 @@ focus_tree = {
 		completion_reward = {
 			# antagonize the Allied nations
 			every_other_country = {
-				limit = { has_world_stage_coalition_allies = yes }
+				limit = { OR = { has_world_stage_coalition_allies = yes has_world_stage_coalition_leagueofnations = yes } }
 				add_opinion_modifier = {
 					target = ROC
 					modifier = ROC_opinion_imperial_ambitions
@@ -1137,9 +1135,9 @@ focus_tree = {
 						}
 					}
 				}
-				hidden_event = { news_event = republic_of_china.41 }	# EVENT FOR ONLY HONG KONG'S ANNEXATION
+				hidden_effect = { news_event = republic_of_china.41 }	# EVENT FOR ONLY HONG KONG'S ANNEXATION
 			} else = {
-				hidden_event = { news_event = republic_of_china.4 }	# EVENT FOR BOTH ANNEXATIONS
+				hidden_effect = { news_event = republic_of_china.4 }	# EVENT FOR BOTH ANNEXATIONS
 				if = {
 					limit = { country_exists = PRT }
 					PRT = { effect_tooltip = { country_event = worldstage.73 } }
@@ -1175,6 +1173,9 @@ focus_tree = {
 					threat = 10
 					name = ROC_threat_denounce_treaties
 				}
+				clr_global_variable = modus_vivendi_pacific
+				hidden_effect = { country_event = worldstage.80 }
+				declare_war_on = { target = ALY type = annex_everything }
 			} else = {
 				add_named_threat = { 
 					threat = 1
@@ -3663,7 +3664,7 @@ focus_tree = {
 		y = 1
 		cost = 10
 		
-		text_icon = locked_style	# combine this with the grey icons
+		text_icon = worlstage_style
 		
 		available_if_capitulated = yes
 		
