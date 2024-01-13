@@ -129,6 +129,19 @@ country_event = {
 			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 6 } }
 		}
 	}
+	
+	immediate = {
+		hidden_effect = {
+			if = {
+				limit = {
+					NOT = { country_exists = PRT }	# Portugal is off-map and neutral (and is currently being attacked by ROC)
+					108 = { check_variable = { world_stage_coalition = 4 } }
+					# add check for will_join_allies here					#### TODO TO-DO TO DO
+				}	
+				set_global_flag = delayed_event_worldstage74
+			}
+		}
+	}
 
 	option = {
 		name = republic_of_china.4.allies	# it's .4 because it's the same loc as before
@@ -162,12 +175,15 @@ country_event = {
 	}
 	option = {
 		name = republic_of_china.4.osa_prt
-		trigger = { OR = { tag = OSA tag = PRT } has_global_flag = world_stage_world_war_2_is_active }
+		trigger = { OR = { tag = OSA tag = PRT } }
 		custom_effect_tooltip = metropolis_scope_portugal_space
 		effect_tooltip = { add_to_variable = { var = world_stage_power value = 1 tooltip = remove_world_stage_power_no_scope_tt } }
 		if = {
 			limit = { country_exists = PRT tag = PRT }
-			country_event = { id = worldstage.73 hours = 6 }
+			if = {
+				limit = { has_global_variable = has_global_flag = world_stage_world_war_2_is_active }
+				set_global_flag = delayed_event_worldstage73
+			} else = { country_event = { id = worldstage.73 hours = 6 } }
 		}
 		custom_effect_tooltip = metropolis_scope_england_space
 		effect_tooltip = { add_to_variable = { var = world_stage_power value = 1 tooltip = remove_world_stage_power_no_scope_tt } }
