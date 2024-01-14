@@ -268,12 +268,11 @@ focus_tree = {
 		}
 
 		completion_reward = {
-
 			add_doctrine_cost_reduction = {
-				name = air_doc_bonus
+				name = naval_doc_bonus
 				cost_reduction = 0.5
-				uses = 2
-				category = air_doctrine
+				uses = 1
+				category = naval_doctrine
 			}
 		}
 	}
@@ -959,7 +958,6 @@ create_corps_commander = {
 			factor = 10
 		}	
 		completion_reward = {
-		add_political_power = -25
 		add_tech_bonus = {
 				name = industrial_bonus
 				bonus = 1.0
@@ -1013,7 +1011,6 @@ create_corps_commander = {
 			factor = 10
 		}	
 		completion_reward = {
-		add_political_power = -25
 		random_owned_controlled_state = {
 				limit = {
 					free_building_slots = {
@@ -1062,7 +1059,6 @@ create_corps_commander = {
 		}	
 		completion_reward = {
 		
-		add_political_power = -25
 		random_owned_controlled_state = {
 				limit = {
 					free_building_slots = {
@@ -1152,7 +1148,6 @@ create_corps_commander = {
 		}	
 		completion_reward = {
 		
-		add_political_power = -25
 		random_owned_controlled_state = {
 				limit = {
 					free_building_slots = {
@@ -1244,7 +1239,6 @@ create_corps_commander = {
 		}	
 		completion_reward = {
 		
-		add_political_power = -25
 		random_owned_controlled_state = {
 				limit = {
 					free_building_slots = {
@@ -1292,9 +1286,8 @@ create_corps_commander = {
 			factor = 10
 		}	
 		completion_reward = {
-		add_ideas = SHI_factory_retooling
-		add_political_power = -25
-		random_owned_controlled_state = {
+			add_ideas = SHI_factory_retooling
+			random_owned_controlled_state = {
 				limit = {
 					free_building_slots = {
 						building = arms_factory
@@ -1913,26 +1906,36 @@ create_corps_commander = {
 	
 	focus = {
 		id = SHI_seek_friends
-		icon = GFX_focus_SHI_seek_friends 
+		icon = GFX_goal_generic_dangerous_deal
 		x = -2
 		y = 1
 		cost = 5
 		relative_position_id = SHI_foreign_policy
-		prerequisite = { focus = SHI_foreign_policy}
+		prerequisite = { focus = SHI_foreign_policy }
+		mutually_exclusive = { focus = SHI_seek_enemies }
 		available = {
 		}
 		ai_will_do = {
 			factor = 10
 		}	
 		completion_reward = {
-		add_ideas = ROM_flexible_foreign_policy
+			add_ideas = SHI_idea_smooth_talk
+			hidden_effect = {
+				every_possible_country = {
+					limit = { NOT = { tag = SHI } }
+					add_opinion_modifier = {
+						target = SHI
+						modifier = SHI_smooth_talk_opinion
+					}
+				}
+			}
 		}
 	}
 	
 	focus = {
 		id = SHI_split_chugoku
 		icon = GFX_focus_generic_provoke_border_clashes 
-		x = 3
+		x = 2
 		y = 1
 		cost = 5
 		relative_position_id = SHI_seek_friends
@@ -1965,7 +1968,7 @@ create_corps_commander = {
 	focus = {
 		id = SHI_align_with_chugoku
 		icon = GFX_focus_chi_collaboration_with_the_japanese 
-		x = 1
+		x = 0
 		y = 1
 		cost = 5
 		relative_position_id = SHI_seek_friends
@@ -2025,7 +2028,7 @@ create_corps_commander = {
 		icon = { value = GFX_focus_SHI_friends_in_the_west_UNCENSORED trigger = { has_global_flag = has_uncensored_german_flag } }
 		icon = GFX_focus_SHI_friends_in_the_west
 		
-		x = -1
+		x = -2
 		y = 1
 		cost = 5
 		relative_position_id = SHI_seek_friends
@@ -2034,18 +2037,24 @@ create_corps_commander = {
 		mutually_exclusive = { focus = SHI_split_chugoku }
 		mutually_exclusive = { focus = SHI_align_with_chugoku}
 		
-		available = {
-			REI = {
-				NOT = {
-					has_war_with = SHI
-				}	
-				exists = yes					 
+		bypass = {
+			OR = {
+				is_in_faction_with = REI
+				has_world_stage_coalition_axis = yes
+				has_world_stage_coalition_pactofsteel = yes
 			}
-			is_in_faction = no 
 		}
 		
-		bypass = {
-			is_in_faction_with = REI
+		available = {
+			if = {
+				limit = { OR = { country_exists = AXS country_exists = STL } }
+				REI = {
+					NOT = { has_war_with = SHI }	
+					exists = yes	
+					is_in_faction = yes
+				}
+			}
+			is_in_faction = no 
 		}
 			
 		ai_will_do = {
@@ -2053,8 +2062,11 @@ create_corps_commander = {
 		}
 		
 		completion_reward = {
-			REI = {
-				country_event = shikoku.6
+			if = {
+				limit = { OR = { country_exists = AXS country_exists = STL } }
+				REI = { country_event = shikoku.6 }
+			} else = {
+				world_stage_join_axis = yes
 			}
 		}
 	}
@@ -2114,76 +2126,44 @@ create_corps_commander = {
 		search_filters = { FOCUS_FILTER_RESEARCH }
 
 		completion_reward = {
-			add_ideas = ITA_german_millitary_cooperation_focus
-		}
-	}
-	
-	focus = {
-		id = SHI_wolf_pack_alt
-		icon = GFX_focus_SHI_wolf_packs
-		prerequisite = { focus = SHI_friends_in_the_west_alt }
-		available = {
-			is_in_faction_with = REI
-		}
-		x = 1
-		y = 1
-		relative_position_id = SHI_friends_in_the_west_alt
-		cost = 10
-		ai_will_do = {
-			factor = 1
-		}
-
-		available_if_capitulated = yes
-		search_filters = { FOCUS_FILTER_RESEARCH }
-
-		completion_reward = {
-			navy_experience = 25
-			add_tech_bonus = {
-				name = ITA_sea_wolves
-				bonus = 1.0
-				uses = 1
-				category = ss_tech
+			effect_tooltip = {
+				add_tech_bonus = {
+					name = land_equipment_bonus
+					bonus = 2.0
+					uses = 1
+					category = land_equipment_category
+				}
+			}
+			hidden_effect = {
+				add_tech_bonus = {
+					name = land_equipment_bonus
+					bonus = 2.0
+					uses = 1
+					category = armor
+					category = artillery
+					category = infantry_weapons
+					category = cat_mechanized_equipment
+					category = mot_rockets
+				}
 			}
 			add_doctrine_cost_reduction = {
-				name = ITA_sea_wolves
+				name = land_doc_bonus
 				cost_reduction = 0.5
-				uses = 2
-				category = submarine_doctrine
+				uses = 1
+				category = land_doctrine
 			}
-		}
-	}
-	
-	focus = {
-		id = SHI_german_millitary_mission_alt
-		icon = GFX_focus_SHI_german_military_mission
-		prerequisite = { focus = SHI_friends_in_the_west_alt }
-
-		available = {
-			is_in_faction_with = REI
-		}
-		
-		x = -1
-		y = 1
-		relative_position_id = SHI_friends_in_the_west_alt
-		cost = 10
-		ai_will_do = {
-			factor = 10
-		}	
-		search_filters = { FOCUS_FILTER_RESEARCH }
-
-		completion_reward = {
-			add_ideas = ITA_german_millitary_cooperation_focus
 		}
 	}
 	
 	focus = {
 		id = SHI_seek_enemies
-		icon = GFX_focus_SHI_seek_enemies 
+		icon = GFX_goal_generic_political_pressure_eastern 
 		x = 2
 		y = 1
 		cost = 20
 		relative_position_id = SHI_foreign_policy
 		prerequisite = { focus = SHI_foreign_policy}
+		mutually_exclusive = { focus = SHI_seek_friends }
 		available = {
                 threat > 0.5
 		}
@@ -2191,7 +2171,7 @@ create_corps_commander = {
 			factor = 10
 		}	
 		completion_reward = {
-		add_ideas = SHI_seek_enemies
+			add_ideas = SHI_idea_seek_enemies
 		}
 	}
 	
