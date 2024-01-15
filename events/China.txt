@@ -19,7 +19,7 @@ news_event = {
 }
 
 #China Closes Ranks with Germany
-country_event = {
+news_event = {
 	id = republic_of_china.2
 	title = republic_of_china.2.t
 	desc = republic_of_china.2.d
@@ -29,7 +29,10 @@ country_event = {
 
 	option = {
 		name = republic_of_china.2.allies
-		trigger = { NOT = { has_global_flag = world_stage_world_war_2_is_active } }
+		trigger = {
+			NOT = { has_global_flag = world_stage_world_war_2_is_active }
+			var:world_stage_metropolis = { OR = { check_variable = { world_stage_coalition = 1 } check_variable = { world_stage_coalition = 5 } } }
+		}
 		if = {
 			limit = { has_global_flag = league_of_nations_exists }
 			custom_effect_tooltip = metropolis_scope_china custom_effect_tooltip = join_coalition_pactofsteel_bad
@@ -37,7 +40,10 @@ country_event = {
 	}
 	option = {
 		name = republic_of_china.2.allies_war
-		trigger = { has_global_flag = world_stage_world_war_2_is_active }
+		trigger = {
+			has_global_flag = world_stage_world_war_2_is_active
+			var:world_stage_metropolis = { OR = { check_variable = { world_stage_coalition = 1 } check_variable = { world_stage_coalition = 5 } } }
+		}
 		if = {
 			limit = { has_global_flag = league_of_nations_exists }
 			custom_effect_tooltip = metropolis_scope_china custom_effect_tooltip = join_coalition_pactofsteel_bad
@@ -45,7 +51,10 @@ country_event = {
 	}
 	option = {
 		name = republic_of_china.2.axis
-		trigger = { NOT = { has_global_flag = world_stage_world_war_2_is_active } }
+		trigger = {
+			NOT = { has_global_flag = world_stage_world_war_2_is_active }
+			var:world_stage_metropolis = { OR = { check_variable = { world_stage_coalition = 3 } check_variable = { world_stage_coalition = 6 } } }
+		}
 		if = {
 			limit = { has_global_flag = league_of_nations_exists }
 			custom_effect_tooltip = metropolis_scope_china custom_effect_tooltip = join_coalition_pactofsteel
@@ -53,7 +62,10 @@ country_event = {
 	}
 	option = {
 		name = republic_of_china.2.axis_war
-		trigger = { has_global_flag = world_stage_world_war_2_is_active }
+		trigger = {
+			has_global_flag = world_stage_world_war_2_is_active
+			var:world_stage_metropolis = { OR = { check_variable = { world_stage_coalition = 3 } check_variable = { world_stage_coalition = 6 } } }
+		}
 		if = {
 			limit = { has_global_flag = league_of_nations_exists }
 			custom_effect_tooltip = metropolis_scope_china custom_effect_tooltip = join_coalition_pactofsteel
@@ -61,6 +73,12 @@ country_event = {
 	}
 	option = {
 		name = republic_of_china.2.other
+		trigger = {
+			NOT = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
+			NOT = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+			NOT = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 5 } } }
+			NOT = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 6 } } }
+		}
 		if = {
 			limit = { has_global_flag = league_of_nations_exists }
 			custom_effect_tooltip = metropolis_scope_china custom_effect_tooltip = join_coalition_pactofsteel
@@ -210,7 +228,7 @@ country_event = {
 	title = republic_of_china.41.t
 	desc = { text = republic_of_china.41.d1 trigger = { has_global_flag = world_stage_world_war_2_is_active } }
 	desc = { text = republic_of_china.41.d2 trigger = { NOT = { has_global_flag = world_stage_world_war_2_is_active } } }
-	picture = GFX_news_event_chinese_soldiers_city_ruin
+	picture = GFX_report_event_chinese_soldiers_running
 	
 	is_triggered_only = yes
 	
@@ -233,7 +251,7 @@ country_event = {
 		name = republic_of_china.4.allies	# it's .4 because it's the same loc as before
 		trigger = {
 			var:world_stage_metropolis = { OR = { check_variable = { world_stage_coalition = 1 } check_variable = { world_stage_coalition = 5 } } }
-			NOT = { tag = OSA tag = PRT }
+			NOT = { tag = OSA tag = PRT tag = ROC }
 		}
 		custom_effect_tooltip = metropolis_scope_england_space
 		effect_tooltip = { add_to_variable = { var = world_stage_power value = 1 tooltip = remove_world_stage_power_no_scope_tt } }
@@ -300,9 +318,20 @@ country_event = {
 	
 	option = {
 		name = republic_of_china.5.a
+		trigger = { OR = { tag = ROC is_in_faction_with = ROC } }
+		ROC = {
+			effect_tooltip = {
+				create_corps_commander = {
+					name = "Alexander von Falkenhausen"
+				}
+			}
+			custom_effect_tooltip = ROC_call_army_tt_1
+			custom_effect_tooltip = ROC_call_army_tt_2
+		}
 	}
 	option = {
 		name = republic_of_china.5.b
+		trigger = { has_war_with = ROC }
 		
 	}
 }
@@ -363,14 +392,14 @@ country_event = {
 	}
 }
 
-#Siberian Offensive
-country_event = {
+#Siberian Offensive	- Barbarossa did not happen yet
+news_event = {
 	id = republic_of_china.8
 	title = republic_of_china.8.t
 	desc = republic_of_china.8.d
 	picture = GFX_news_china_siberia
 	
-	is_triggered_only = yes
+	is_triggered_only = yes major = yes
 
 	option = {
 		name = republic_of_china.8.a
@@ -381,8 +410,26 @@ country_event = {
 	}
 }
 
-#China Invades East Indies
-country_event = {
+#Siberian Offensive - Barbarossa happened already
+news_event = {
+	id = republic_of_china.81
+	title = republic_of_china.81.t
+	desc = republic_of_china.81.d
+	picture = GFX_news_china_siberia
+	
+	is_triggered_only = yes major = yes
+
+	option = {
+		name = republic_of_china.81.a
+	}
+	option = {
+		name = republic_of_china.81.b
+		
+	}
+}
+
+#China Invades East Indies	##### NOT IMPLEMENT YET, WILL BE ADDED WHEN THE FOCUS ROC_east_indies IS IMPLEMENTED TODO TO-DO TO DO
+news_event = {
 	id = republic_of_china.9
 	title = republic_of_china.9.t
 	desc = republic_of_china.9.d
@@ -399,14 +446,16 @@ country_event = {
 	}
 }
 
-#China Invades Formosa
-country_event = {
+#China Invades Formosa	- USA was neutral / Day of Infamy
+news_event = {
 	id = republic_of_china.10
 	title = republic_of_china.10.t
 	desc = republic_of_china.10.d
 	picture = GFX_news_china_invades_taiwan
 	
 	is_triggered_only = yes
+	
+	major = yes
 
 	option = {
 		name = republic_of_china.10.a
@@ -417,20 +466,22 @@ country_event = {
 	}
 }
 
-# China Joins WW2
-country_event = {
+#China Invades Formosa	- USA is Allies / Day of You Saw That Coming
+news_event = {
 	id = republic_of_china.11
-	title = republic_of_china.8.t
-	desc = republic_of_china.8.d
-	picture = GFX_news_china_siberia
+	title = republic_of_china.11.t
+	desc = republic_of_china.11.d
+	picture = GFX_news_china_invades_taiwan
 	
 	is_triggered_only = yes
+	
+	major = yes
 
 	option = {
-		name = republic_of_china.8.a
+		name = republic_of_china.10.a
 	}
 	option = {
-		name = republic_of_china.8.b
+		name = republic_of_china.10.b
 		
 	}
 }
