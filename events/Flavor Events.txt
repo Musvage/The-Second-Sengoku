@@ -3,6 +3,7 @@
 ###########################
 
 add_namespace = flavor
+add_namespace = flavor_generic
 add_namespace = season
 
 #Previously Generic.26 from Generic.txt, moved by request
@@ -72,6 +73,209 @@ country_event = {
 	}
 	
 }
+
+### ### GENERIC FLAVOUR EVENTS
+
+### Change in government - democratic/social democratic
+country_event = {
+	id = flavor_generic.1
+	title = flavor_generic.1.t
+	desc = flavor_generic.1.d
+	picture = GFX_report_event_sanation_left_victory
+	
+	is_triggered_only = yes
+	major = yes
+	
+	option = {
+		trigger = { tag = FROM }
+		name = flavor_generic.1.self
+	}
+	option = {
+		trigger = { OR = { has_government = democratic has_government = democratic_socialism } NOT = { tag = FROM } }
+		name = flavor_generic.1.good
+	}
+	option = {
+		trigger = { NOT = { has_government = democratic has_government = democratic_socialism } NOT = { tag = FROM } }
+		name = flavor_generic.1.bad
+	}
+}
+### Change in government - communism
+country_event = {
+	id = flavor_generic.2
+	title = flavor_generic.2.t
+	desc = flavor_generic.2.d
+	picture = GFX_report_event_sanation_left_victory
+	
+	is_triggered_only = yes
+	major = yes
+	
+	option = {
+		trigger = { tag = FROM }
+		name = flavor_generic.1.self
+	}
+	option = {
+		trigger = { has_government = communism NOT = { tag = FROM } }
+		name = flavor_generic.1.good
+	}
+	option = {
+		trigger = { has_government = democratic_socialism NOT = { tag = FROM } }
+		name = flavor_generic.1.neutral
+	}
+	option = {
+		trigger = { NOT = { has_government = communism has_government = democratic_socialism } NOT = { tag = FROM } }
+		name = flavor_generic.1.bad
+	}
+}
+
+### Change in government - fascism/neutrality/autocracy
+country_event = {
+	id = flavor_generic.3
+	title = flavor_generic.3.t
+	desc = flavor_generic.3.d
+	picture = GFX_report_event_sanation_left_victory
+	
+	is_triggered_only = yes
+	major = yes
+	
+	option = {
+		trigger = { tag = FROM }
+		name = flavor_generic.1.self
+	}
+	option = {
+		trigger = { OR = { has_government = fascism has_government = autocracy has_government = neutrality } NOT = { tag = FROM } }
+		name = flavor_generic.1.neutral
+	}
+	option = {
+		trigger = { NOT = { has_government = fascism has_government = autocracy has_government = neutrality } NOT = { tag = FROM } }
+		name = flavor_generic.1.bad
+	}
+}
+
+### Volunteers / FROM: receiver, FROM.FROM: sender
+country_event = {
+	id = flavor_generic.4
+	title = flavor_generic.4.t
+	desc = flavor_generic.4.d
+	picture = GFX_report_event_japanese_soldiers_01
+	
+	is_triggered_only = yes
+	major = yes
+	
+	option = {
+		trigger = { OR = { tag = FROM is_in_faction_with = FROM } }
+		name = flavor_generic.4.receiver
+	}
+	option = {
+		trigger = { tag = FROM.FROM }
+		name = flavor_generic.4.sender
+	}
+	option = {
+		trigger = { has_war_with = FROM }
+		name = flavor_generic.4.enemy
+	}
+	option = {
+		trigger = { NOT = { has_war_with = FROM is_in_faction_with = FROM tag = FROM.FROM tag = FROM} }
+		name = flavor_generic.1.neutral
+	}
+}
+
+### Mobilization while at peace
+country_event = {
+	id = flavor_generic.5
+	title = flavor_generic.5.t
+	desc = flavor_generic.5.d
+	picture = GFX_report_event_japan_army_mountainside
+	
+	is_triggered_only = yes
+	major = yes show_major = { OR = { is_in_faction_with = FROM is_neighbor_of = FROM } }
+	immediate = { hidden_effect = { FROM = { set_country_flag = fired_f_g_5 } } }
+	fire_for_sender = no
+	
+	option = {
+		trigger = { is_in_faction_with = FROM NOT = { tag = FROM } }
+		name = flavor_generic.1.neutral
+	}
+	option = {
+		trigger = { NOT = { is_in_faction_with = FROM } is_neighbor_of = FROM NOT = { tag = FROM } }
+		name = flavor_generic.5.worried
+	}
+}
+
+### Conscription while at war
+country_event = {
+	id = flavor_generic.6
+	title = flavor_generic.6.t
+	desc = flavor_generic.6.d
+	picture = GFX_report_event_japanese_soldiers_02
+	
+	is_triggered_only = yes
+	major = yes show_major = { OR = { is_in_faction_with = FROM has_war_with = FROM } }
+	immediate = { hidden_effect = { FROM = { set_country_flag = fired_f_g_6 } } }
+	fire_for_sender = no
+	
+	option = {
+		trigger = { is_in_faction_with = FROM NOT = { tag = FROM } }
+		name = flavor_generic.5.worried
+	}
+	option = {
+		trigger = { NOT = { is_in_faction_with = FROM } has_war_with = FROM NOT = { tag = FROM } }
+		name = flavor_generic.6.good
+	}
+}
+
+### Nuclear research
+country_event = {
+	id = flavor_generic.7
+	title = flavor_generic.7.t
+	desc = flavor_generic.7.d
+	picture = GFX_report_event_physics_lab_01
+	
+	is_triggered_only = yes
+	major = yes
+	fire_for_sender = no
+	
+	option = {
+		trigger = { NOT = { tag = FROM } }
+		name = flavor_generic.5.worried
+	}
+}
+
+### Chems research
+country_event = {
+	id = flavor_generic.8
+	title = flavor_generic.8.t
+	desc = flavor_generic.8.d
+	picture = GFX_report_event_chemical_weapons_1
+	
+	is_triggered_only = yes
+	fire_for_sender = no
+	major = yes
+	
+	show_major = {
+		OR = {
+			has_intelligence_agency = yes
+			amount_taken_ideas = {
+				amount > 0
+				slots = { security_chief }
+			}
+		}
+	}
+	
+	option = {
+		trigger = { is_in_faction_with = FROM }
+		name = flavor_generic.1.neutral
+	}
+	option = {
+		trigger = { has_war_with = FROM  }
+		name = flavor_generic.1.bad
+	}
+	option = {
+		trigger = { NOT = { is_in_faction_with = FROM has_war_with = FROM } }
+		name = flavor_generic.5.worried
+	}
+}
+
+### ### SEASONS (DEPRICATED)
 
 ### SPRING, 1st march
 news_event = {
