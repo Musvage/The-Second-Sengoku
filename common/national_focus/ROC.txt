@@ -27,7 +27,11 @@ focus_tree = {
 			factor = 10
 		}
 		
+		bypass = { hidden_trigger = { NOT = { has_global_flag = ROC_temporary_provisions_completed } } }
+		available = { hidden_trigger = { NOT = { has_global_flag = ROC_aditional_articles_completed } } }
+		
 		completion_reward = {
+			set_global_flag = ROC_temporary_provisions_completed
 			add_ideas = ROC_idea_security_state
 		}
 	}
@@ -52,8 +56,11 @@ focus_tree = {
 		ai_will_do = {
 			factor = 10
 		}
+		
+		bypass = { hidden_trigger = { has_global_flag = ROC_whampoa_clique_completed } }
 	 
 		completion_reward = {
+			set_global_flag = ROC_whampoa_clique_completed
 			add_timed_idea = { idea = ROC_idea_whampoa_clique days = 1095 }
 		}
 	}
@@ -88,9 +95,11 @@ focus_tree = {
 		
 		bypass = {
 			has_government = fascism
+			hidden_trigger = { has_global_flag = ROC_march_on_beijing_completed }
 		}
 	 
 		completion_reward = {
+			set_global_flag = ROC_march_on_beijing_completed
 			set_politics = {
 				ruling_party = fascism
 				elections_allowed = no
@@ -112,6 +121,8 @@ focus_tree = {
 		cost = 10
 		
 		available_if_capitulated = yes
+		
+		available = { hidden_trigger = { NOT = { has_global_flag = ROC_accomodate_warlords_completed } } }
 		
 		ai_will_do = {
 			factor = 10
@@ -140,8 +151,11 @@ focus_tree = {
 		ai_will_do = {
 			factor = 10
 		}
+		
+		bypass = { hidden_trigger = { has_global_flag = ROC_accomodate_warlords_completed } }
 	 
 		completion_reward = {
+			set_global_flag = ROC_accomodate_warlords_completed
 			add_ideas = ROC_idea_warlord_support
 		}
 	}
@@ -208,8 +222,11 @@ focus_tree = {
 				has_government = neutrality
 			}
 		}
+		
+		bypass = { hidden_trigger = { has_global_flag = ROC_accomodate_warlords_completed } }
 	 
 		completion_reward = {
+			set_global_flag = ROC_militarised_society_completed
 			add_ideas = ROC_idea_militarised_society
 			hidden_effect = {
 				var:world_stage_metropolis = {
@@ -249,7 +266,9 @@ focus_tree = {
 		ai_will_do = {
 			factor = 10
 		}
-	 
+		
+		available = { hidden_trigger = { NOT = { has_global_flag = ROC_whampoa_clique_completed } } }
+		
 		completion_reward = {
 			#add_ideas = ROC_idea_favourable_treatment	# removed in favor of the man himself
 			add_political_power = 100
@@ -798,9 +817,12 @@ focus_tree = {
 		ai_will_do = {
 			factor = 10
 		}
+		
+		bypass = { hidden_trigger = { has_global_flag = ROC_imperial_ambitions_completed } }
 	 
 		completion_reward = {
 			# antagonize the Allied nations
+			set_global_flag = ROC_imperial_ambitions_completed
 			every_other_country = {
 				limit = { OR = { has_world_stage_coalition_allies = yes has_world_stage_coalition_leagueofnations = yes } }
 				add_opinion_modifier = {
@@ -835,7 +857,13 @@ focus_tree = {
 		}
 		
 		bypass = {
-			has_world_stage_coalition_axis = yes
+			custom_trigger_tooltip = {
+				tooltip = has_world_stage_coalition_axis_tt	# this seems cluncky, but we are using a custom trigger to hide the ROC_antikominternpakt_completed
+				OR = {
+					has_world_stage_coalition_axis = yes
+					has_global_flag = ROC_antikominternpakt_completed
+				}
+			}
 		}
 		
 		available = {
@@ -848,6 +876,7 @@ focus_tree = {
 	 
 		completion_reward = {
 			# sides with germany on wwii
+			set_global_flag = ROC_antikominternpakt_completed
 			add_political_power = 150
 			news_event = republic_of_china.2
 			if = {
@@ -1119,6 +1148,8 @@ focus_tree = {
 			factor = 10
 		}
 		
+		bypass = { hidden_trigger = { has_global_flag = ROC_denounce_treaties_completed } }
+		
 		available = {
 			OR = {
 				custom_trigger_tooltip = {
@@ -1137,6 +1168,7 @@ focus_tree = {
 		}
 	 
 		completion_reward = {
+			set_global_flag = ROC_denounce_treaties_completed
 			# seize off map trade ports in China (off map British and Portuguese)		
 			if = { limit = { has_government = autocracy } add_ideas = ROC_idea_nationalist_wave_autocracy }
 			else_if = { limit = { has_government = neutrality } add_ideas = ROC_idea_nationalist_wave_neutrality }
@@ -1212,40 +1244,6 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = ROC_east_indies
-		icon = GFX_focus_ROC_liberate_east_indies
-		search_filters = { FOCUS_FILTER_WORLD }
-		
-		prerequisite = { focus = ROC_denounce_treaties }
-		
-		relative_position_id = ROC_denounce_treaties
-		x = 1
-		y = 1
-		cost = 10
-		
-		text_icon = worldstage_style
-		
-		available_if_capitulated = yes
-		
-		ai_will_do = {
-			factor = 10
-		}
-		
-		allow_branch = { always = no }	### TODO TO-DO TO DO: this will be re-added when HIR or ROC get a rework
-		
-		available = {
-			world_stage_has_capitulated = no
-		}
-	 
-		completion_reward = {
-			add_named_threat = {
-				threat = 10
-				name = ROC_threat_east_indies
-			}
-		}
-	}
-	
-	focus = {
 		id = ROC_taiwan
 		icon = GFX_focus_ROC_liberate_taiwan
 		search_filters = { FOCUS_FILTER_WORLD }
@@ -1265,10 +1263,13 @@ focus_tree = {
 			factor = 10
 		}
 		
+		bypass = { hidden_trigger = { has_global_flag = ROC_taiwan_completed } }
+		
 		will_lead_to_war_with = MUS
 		will_lead_to_war_with = SUS
 		
 		available = {
+			set_global_flag = ROC_taiwan_completed
 			custom_trigger_tooltip = { 106 = { check_variable = { world_stage_power > 14 } } tooltip = china_has_world_stage_power_15 }
 			has_global_flag = world_stage_world_war_2_is_active
 			NOT = {
@@ -1336,6 +1337,40 @@ focus_tree = {
 		}
 	}
 	
+	focus = {
+		id = ROC_east_indies
+		icon = GFX_focus_ROC_liberate_east_indies
+		search_filters = { FOCUS_FILTER_WORLD }
+		
+		prerequisite = { focus = ROC_denounce_treaties }
+		
+		relative_position_id = ROC_denounce_treaties
+		x = 1
+		y = 1
+		cost = 10
+		
+		text_icon = worldstage_style
+		
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		allow_branch = { always = no }	### TODO TO-DO TO DO: this will be re-added when HIR or ROC get a rework
+		
+		available = {
+			world_stage_has_capitulated = no
+		}
+	 
+		completion_reward = {
+			add_named_threat = {
+				threat = 10
+				name = ROC_threat_east_indies
+			}
+		}
+	}
+	
 	### Rurals Reconstruction Branch
 	
 	focus = {
@@ -1364,8 +1399,11 @@ focus_tree = {
 		ai_will_do = {
 			factor = 10
 		}
+		
+		bypass = { hidden_trigger = { has_global_flag = ROC_rural_reconstruction_completed } }
 	 
 		completion_reward = {
+			set_global_flag = ROC_rural_reconstruction_completed
 			add_offsite_building = { type = industrial_complex level = 4 }
 			hidden_effect = {
 				var:world_stage_metropolis = {
@@ -1486,7 +1524,10 @@ focus_tree = {
 			controls_state = 228
 		}
 		
+		bypass = { hidden_trigger = { has_global_flag = ROC_communications_clique_completed } }
+		
 		completion_reward = {
+			set_global_flag = ROC_communications_clique_completed
 			# strengthens China in WWII, bonus to railways
 			hidden_effect = {
 				var:world_stage_metropolis = {
@@ -1542,7 +1583,10 @@ focus_tree = {
 			factor = 10
 		}
 		
+		bypass = { hidden_trigger = { has_global_flag = ROC_hanyang_arsenal_completed } }
+		
 		completion_reward = {
+			set_global_flag = ROC_hanyang_arsenal_completed
 			add_offsite_building = { type = arms_factory level = 4 }
 			hidden_effect = {
 				var:world_stage_metropolis = {
@@ -1658,7 +1702,10 @@ focus_tree = {
 			#NOT = { has_country_flag = lose_access_to_trade_resources_fengtian }	## TODO TO-DO TO DO fix this later, I guess we gotta check if we have access to resources from node
 		}
 		
+		bypass = { hidden_trigger = { has_global_flag = ROC_beijing_railway_completed } }
+		
 		completion_reward = {
+			set_global_flag = ROC_beijing_railway_completed
 			hidden_effect = {
 				var:world_stage_metropolis = {
 					add_to_variable = {
@@ -1711,7 +1758,10 @@ focus_tree = {
 			factor = 10
 		}
 		
+		bypass = { hidden_trigger = { has_global_flag = ROC_camco_completed } }
+		
 		completion_reward = {
+			set_global_flag = ROC_camco_completed
 			hidden_effect = {
 				var:world_stage_metropolis = {
 					add_to_variable = {
@@ -2269,7 +2319,10 @@ focus_tree = {
 		
 		available = {
 			custom_trigger_tooltip = { tooltip = requires_ROC_expansion always = no }	### CHINESE DLC
+			hidden_trigger = { NOT = { has_global_flag = ROC_temporary_provisions_completed } }
 		}
+		
+		bypass = { hidden_trigger = { NOT = { has_global_flag = ROC_aditional_articles_completed } } }
 		
 		completion_reward = {
 			add_timed_idea = { idea = ROC_idea_aditional_articles days = 730 }
