@@ -1693,27 +1693,43 @@ focus_tree = {
 		}
 
 		bypass = {
-			OR = {
-				custom_trigger_tooltip = {
-					tooltip = production_effort_tt
-					all_owned_state = {
-						free_building_slots = {
-							building = arms_factory
-							size < 1
-							include_locked = yes
-						}					
+			if = {
+				limit = { tag = EZO }
+				hidden_trigger = { always = no }
+			} else = {
+				OR = {
+					custom_trigger_tooltip = {
+						tooltip = production_effort_tt
+						all_owned_state = {
+							free_building_slots = {
+								building = arms_factory
+								size < 1
+								include_locked = yes
+							}					
+						}
 					}
+					hidden_trigger = { has_completed_focus = production_effort_3_western }
 				}
-				hidden_trigger = { has_completed_focus = production_effort_3_western }
 			}
 		}
 
 		complete_tooltip = {
-			add_extra_state_shared_building_slots = 1
-			add_building_construction = {
-				type = arms_factory
-				level = 1
-				instant_build = yes
+			
+			if = {
+				limit = { tag = EZO }
+				add_extra_state_shared_building_slots = 3
+				add_building_construction = {
+					type = arms_factory
+					level = 3
+					instant_build = yes
+				}
+			} else = {
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
 			}
 		}		
 
@@ -1747,6 +1763,70 @@ focus_tree = {
 					level = 1
 					instant_build = yes
 				}
+			}
+			if = {
+				limit = { tag = EZO }
+				random_owned_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = arms_factory
+							size > 0
+							include_locked = yes
+						}
+						OR = {
+							is_in_home_area = yes
+							NOT = {
+								owner = {
+									any_owned_state = {
+										free_building_slots = {
+											building = arms_factory
+											size > 0
+											include_locked = yes
+										}
+										is_in_home_area = yes
+									}
+								}
+							}
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = arms_factory
+						level = 1
+						instant_build = yes
+					}
+				}
+				random_owned_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = arms_factory
+							size > 0
+							include_locked = yes
+						}
+						OR = {
+							is_in_home_area = yes
+							NOT = {
+								owner = {
+									any_owned_state = {
+										free_building_slots = {
+											building = arms_factory
+											size > 0
+											include_locked = yes
+										}
+										is_in_home_area = yes
+									}
+								}
+							}
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = arms_factory
+						level = 1
+						instant_build = yes
+					}
+				}
+				remove_ideas = EZO_undeveloped_industry
 			}
 		}
 	}
@@ -3256,7 +3336,9 @@ focus_tree = {
 	
 	focus = {
 		id = ss_generic_government_autocratic
+		icon = { value = GFX_focus_EZO_matsumae_clan trigger = { tag = EZO } }
 		icon = GFX_focus_KYU_war_preparations
+		dynamic = yes
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = ss_generic_right }
@@ -3335,8 +3417,10 @@ focus_tree = {
 	
 	focus = {
 		id = ss_generic_religious_tolerance
+		icon = { value = GFX_focus_EZO_support_ainu_communities trigger = { tag = EZO } }
 		icon = GFX_focus_SHO_religious_tolerance_2
 		search_filters = { FOCUS_FILTER_STABILITY }
+		dynamic = yes
 		
 		prerequisite = { focus = ss_generic_government_democratic_socialism focus = ss_generic_government_democratic focus = ss_generic_government_communism }
 		mutually_exclusive = { focus = ss_generic_atheist_state }
@@ -3627,8 +3711,6 @@ focus_tree = {
 		
 		available_if_capitulated = yes
 		
-		text_icon = worldstage_style
-		
 		allow_branch = {
 			OR = {
 				NOT = { tag = REI tag = PRT tag = OSA tag = KOB tag = HIR tag = FER tag = AMC tag = OKI tag = KIT tag = SPR }
@@ -3653,6 +3735,10 @@ focus_tree = {
 			}	
 			set_rule = { can_send_volunteers = yes }
 			add_war_support = 0.1
+			if = {
+				limit = { has_idea = EZO_unrecognised_independence}
+				remove_ideas = EZO_unrecognised_independence
+			}
 		}
 	}
 	
@@ -4196,6 +4282,10 @@ focus_tree = {
 				}
 				add_political_power = 150
 			}
+			if = {
+				limit = { has_idea = EZO_unrecognised_independence}
+				remove_ideas = EZO_unrecognised_independence
+			}
 		}
 	}
 	
@@ -4328,6 +4418,10 @@ focus_tree = {
 					limit = { has_global_flag = league_of_nations_exists }	# therefore, Pact of Steel exists
 					world_stage_join_pactofsteel = yes set_variable = { global.worldstage75 = 6 } hidden_effect = { news_event = worldstage.75 }
 				} else = { world_stage_join_axis = yes set_variable = { global.worldstage75 = 3 } hidden_effect = { news_event = worldstage.75 } }
+			}
+			if = {
+				limit = { has_idea = EZO_unrecognised_independence}
+				remove_ideas = EZO_unrecognised_independence
 			}
 		}
 	}
