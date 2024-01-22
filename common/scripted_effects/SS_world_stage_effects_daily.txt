@@ -1,10 +1,10 @@
 ###
 ###	these effects are exectued on on_actions/daily by one random country
 ### for simplicity, all possible axis and allies countries will be featured in each theater
-### since kominter will never go to war with allies, the code will treat komintern as allies
+### since kominter will never go to war with allies, the code will treat komintern as allies	# NOTE FROM DUKE FROM THE FUTURE: I'M NOT SURE THIS COMMENT IS TRUE ANYMORE. I DON"T KNOW ANYTHING ANYMORE. THIS IS ALL MADNESS.
 ###
 ### each country has it's own doctrine modifiers
-### off-map-only countries have a 'generic' doctrine modifier updated yearly
+### off-map-only countries will update their doctrines with time, but they work the same way as regular TAGs
 ### japanese nations/Korea/Manchuria do not appear here since they have no off-map presence
 ###
 
@@ -26,8 +26,11 @@ world_stage_state_daily_effect = {
 			if = {
 				var:this_metropolis = {
 					if = {
-						limit = { check_variable = { world_stage_coalition = PREV.theater_owner_coalition } }	# it's a defender
+						limit = { check_variable = { world_stage_coalition = PREV.theater_owner_coalition } }	# it's a defender		
+						set_temp_variable = { doctrine_power = deployed_power }
+						multiply_temp_variable = { doctrine_power = doctrine_bonus_land }
 						add_to_variable = { PREV.defender_deployed_power = deployed_power }
+						add_to_variable = { PREV.defender_doctrine_power = doctrine_power }
 					}
 				}
 			}
@@ -35,7 +38,10 @@ world_stage_state_daily_effect = {
 				var:this_metropolis = {
 					if = {
 						limit = { check_variable = { world_stage_coalition = PREV.coalition_side_attack } }	# it's an attacker
+						set_temp_variable = { doctrine_power = deployed_power }
+						multiply_temp_variable = { doctrine_power = doctrine_bonus_land }
 						add_to_variable = { PREV.attacker_deployed_power = deployed_power }
+						add_to_variable = { PREV.attacker_doctrine_power = doctrine_power }
 					}
 				}
 			}

@@ -237,7 +237,7 @@ world_stage_update_metropolis = {	# scope is a tag, manipulates its proxy
 	if = {
 		limit = { has_variable = world_stage_metropolis }
 		var:world_stage_metropolis = {
-			set_variable = { world_stage_coalition = PREV.world_stage_coalition }
+			set_variable = { world_stage_coalition = PREV.world_stage_coalition }					############# DEPRICATED
 			set_variable = { doctrine_bonus_land = PREV.doctrine_bonus_land }
 			set_variable = { doctrine_bonus_navy = PREV.doctrine_bonus_navy }
 		}
@@ -288,13 +288,30 @@ clear_from_coalition_arrays = {
 
 ### } DOCTRINE LEVEL {
 
-add_army_doctrine_level = { log = "add_army_doctrine_level" }
-add_navy_doctrine_level = { log = "add_navy_doctrine_level"  }
-add_air_doctrine_level = { log = "add_air_doctrine_level"  }
+add_army_doctrine_level = {	# this is a multiplier, so increments of 0.1 means a 10% multiplier
+	if = {
+		limit = { has_variable = world_stage_metropolis }
+		var:world_stage_metropolis = { add_to_variable = { doctrine_bonus_land = 0.1 } } log = "add_army_doctrine_level"
+	}
+}
 
-add_offmap_land_doctrine_level = { log = "add_offmap_land_doctrine_level" }
-add_offmap_navy_land_doctrine_level = { log = "add_offmap_navy_land_doctrine_level" }
-add_offmap_air_land_doctrine_level = { log = "add_offmap_air_land_doctrine_level" }
+add_navy_doctrine_level = {
+	if = {
+		limit = { has_variable = world_stage_metropolis }
+		var:world_stage_metropolis = { add_to_variable = { doctrine_bonus_navy = 0.1 } log = "add_navy_doctrine_level"
+	}
+}
+add_air_doctrine_level = {
+	if = {
+		limit = { has_variable = world_stage_metropolis }
+		var:world_stage_metropolis = { add_to_variable = { doctrine_bonus_land = 0.1 }  log = "add_air_doctrine_level" 	### AIR DOCTRINE COUNTS FOR BOTH SCENARIOS
+		var:world_stage_metropolis = { add_to_variable = { doctrine_bonus_navy = 0.1 }
+	}
+}
+
+add_offmap_land_doctrine_level 		= { add_to_variable = { doctrine_bonus_land = 0.1 }	log = "add_offmap_land_doctrine_level" }	# this is added directly to the proxy, no need to change scope
+add_offmap_navy_land_doctrine_level	= { add_to_variable = { doctrine_bonus_navy = 0.1 }	log = "add_offmap_navy_land_doctrine_level" }
+add_offmap_air_land_doctrine_level	= { add_to_variable = { doctrine_bonus_air = 0.1 }	log = "add_offmap_air_land_doctrine_level" }
 ### } EVENTS {
 ### }
 
