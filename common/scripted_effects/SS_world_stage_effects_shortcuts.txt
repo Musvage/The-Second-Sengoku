@@ -3,6 +3,15 @@
 
 ### WORLD STAGE 2.0
 ### NEW CODE STARTS HERE
+
+#	Sections
+#		METROPOLIS/TAG MANIPULATION
+#		THEATER MANIPULATION
+#		COALIITON
+#		DOCTRINE LEVEL
+#		OFFMAP AI
+#		EVENTS
+
 ### METROPOLIS/TAG MANIPULATION {
 
 
@@ -298,20 +307,39 @@ add_army_doctrine_level = {	# this is a multiplier, so increments of 0.1 means a
 add_navy_doctrine_level = {
 	if = {
 		limit = { has_variable = world_stage_metropolis }
-		var:world_stage_metropolis = { add_to_variable = { doctrine_bonus_navy = 0.1 } log = "add_navy_doctrine_level"
+		var:world_stage_metropolis = { add_to_variable = { doctrine_bonus_navy = 0.1 } } log = "add_navy_doctrine_level"
 	}
 }
 add_air_doctrine_level = {
 	if = {
 		limit = { has_variable = world_stage_metropolis }
-		var:world_stage_metropolis = { add_to_variable = { doctrine_bonus_land = 0.1 }  log = "add_air_doctrine_level" 	### AIR DOCTRINE COUNTS FOR BOTH SCENARIOS
-		var:world_stage_metropolis = { add_to_variable = { doctrine_bonus_navy = 0.1 }
+		var:world_stage_metropolis = { add_to_variable = { doctrine_bonus_land = 0.1 } }  log = "add_air_doctrine_level" 	### AIR DOCTRINE COUNTS FOR BOTH SCENARIOS
+		var:world_stage_metropolis = { add_to_variable = { doctrine_bonus_navy = 0.1 } }
 	}
 }
 
 add_offmap_land_doctrine_level 		= { add_to_variable = { doctrine_bonus_land = 0.1 }	log = "add_offmap_land_doctrine_level" }	# this is added directly to the proxy, no need to change scope
 add_offmap_navy_land_doctrine_level	= { add_to_variable = { doctrine_bonus_navy = 0.1 }	log = "add_offmap_navy_land_doctrine_level" }
 add_offmap_air_land_doctrine_level	= { add_to_variable = { doctrine_bonus_air = 0.1 }	log = "add_offmap_air_land_doctrine_level" }
+### } OFFMAP AI {
+
+REI_ai_save_strength_sealion = {
+	hidden_effect = {
+		101 = {
+			if = {
+				limit = {
+					has_global_flag = REI_blitzkrieg_completed has_global_flag = REI_barbarossa_completed
+					check_variable = { world_stage_power > 5 }	# if it's too low, don't even try
+				}
+				set_variable = { ai_save_strength = 30 }	log = "REI_ai_save_strength_sealion (30)"
+			}
+		}
+	}
+}
+
+ai_save_strength_minimum = {
+	set_variable = { ai_save_strength = 5 }	
+}
 ### } EVENTS {
 ### }
 

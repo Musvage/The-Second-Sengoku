@@ -91,6 +91,7 @@ set_up_ai_for_world_stage = {
 		set_variable = { ai_prefers_offensive = 1.25 }	# Germany does not have that much raw power, prefers to use it intelligently
 		set_variable = { ai_prefers_defenses = 1.25 }
 		#set_variable = { ai_prefers_retreat = }
+		set_variable = { ai_save_strength = 90 }	# barbarossa and blitzkrieg
 	}
 	102 = {	# England
 		# priority
@@ -208,6 +209,8 @@ set_up_ai_for_world_stage = {
 		add_to_array = { world_stage_ignore_theater = @france }
 		add_to_array = { world_stage_ignore_theater = @germany }
 		add_to_array = { world_stage_ignore_theater = @england }
+		#
+		set_variable = { ai_save_strength = 40 }	# invasion of formosa + siberian offensive
 	}
 	107 = {	# Netherlands
 		# priority
@@ -413,7 +416,15 @@ choose_an_action = {
 		limit = { check_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis > 10 } }	# if it has too few deployed troops in theater, preparing offensives is not very effective
 		multiply_variable = { want_to_offensive = 0.1 }
 	}
-	
+	if = {
+		limit = { 
+			NOT = {
+				check_variable = { world_stage_power > ai_save_strength }	# if it does not have more power than what it wants to save for focuses, it will not reinforce (except capital)
+				check_variable = { selected_theater = world_stage_priority_theater^0 }
+			}
+		}	
+		multiply_variable = { want_to_reinforce = 0 }
+	}
 		# these are dynamic and depend on whether the AI is attacking or defending
 	var:selected_theater = { set_temp_variable = { defending_coalition = theater_owner_coalition } log = "[GetTheaterName] defending_coalition [?defending_coalition]" }
 	if = {
