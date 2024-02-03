@@ -3204,6 +3204,89 @@ state_event = {
 	option = { name = worldstage_automatic.6.a custom_effect_tooltip = worldstage_automatic.6.tt }
 }
 
+# Berlin is taken, Germany falls
+news_event = {
+	id = worldstage_automatic.101
+	title = worldstage_automatic.101.t
+	desc = worldstage_automatic.101.d 
+	picture = GFX_news_ww2_germany_capitulates_wide
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			101 = { set_temp_variable = { occupier_coalition = theater_owner_coalition } }# figure out if Berlin was taken by Allies or Comintern
+			101 = { set_state_flag = metropolis_capitulated }	# set_global_flag = world_stage_england_capitulated
+			every_state = {
+				limit = { check_variable = { theater_owner = 101 } }
+				set_variable = { theater_owner_coalition = occupier_coalition }
+				world_stage_end_round_partial = yes
+				clr_state_flag = theater_is_active
+			}
+			every_state = {
+				limit = { has_variable = theater_owner }
+				divide_variable = { world_stage_power_deployed_by^101 = 4 }
+				round_variable = world_stage_power_deployed_by^101
+			}
+			101 = { set_variable = { world_stage_power = 0 } }
+			every_possible_country = {									# this effect is convoluted but necessary in order to cut resources from REI if Germany is defeated while REI is annexed
+				limit = { tag = REI }
+				if = {
+					limit = { country_exists = REI }
+					news_event = { id = worldstage_surrender.101 hours = 24 random = 24 }
+				} else = { clr_country_flag = tc_yawatahama_has_access }
+			}
+		}
+	}
+
+	option = {
+		name = worldstage_automatic.102.axis
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		effect_tooltip = {
+			if = { limit = { country_exists = REI }	REI = { add_war_support = -0.1 } }
+			every_country = { limit = { NOT = { tag = REI } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } } add_war_support = -0.05 }
+		}
+	}
+	option = {
+		name = worldstage_automatic.102.komin
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+		effect_tooltip = {
+			if = { limit = { country_exists = REI }	REI = { add_war_support = -0.1 } }
+			every_country = { limit = { NOT = { tag = REI } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } } add_war_support = -0.05 }
+		}
+	}
+	option = {
+		name = worldstage_automatic.102.rei
+		trigger = { tag = REI }
+		add_war_support = -0.1
+		effect_tooltip = {
+			every_country = { limit = { NOT = { tag = REI } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } } add_war_support = -0.05 }
+		}
+	}
+	option = {
+		name = worldstage_automatic.102.allies
+		trigger = {
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
+			NOT = { tag = REI }
+		}
+		effect_tooltip = {
+			if = { limit = { country_exists = REI }	add_war_support = -0.1 }
+			every_country = { limit = { NOT = { tag = REI } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } } add_war_support = -0.05 }
+		}
+		hidden_effect = { add_war_support = -0.05 }
+	}
+	option = {
+		name = worldstage_automatic.102.other
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
+		effect_tooltip = {
+			if = { limit = { country_exists = REI }	add_war_support = -0.1 }
+			every_country = { limit = { NOT = { tag = REI } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } } add_war_support = -0.05 }
+		}
+	}
+}
+
 # London is taken, England falls
 news_event = {
 	id = worldstage_automatic.102
@@ -3217,7 +3300,7 @@ news_event = {
 	
 	immediate = {
 		hidden_effect = {
-			102 = { set_state_flag = metropolis_capitulated }	# set_global_flag = world_stage_england_capitulated
+			102 = { set_state_flag = metropolis_capitulated }
 			every_state = {
 				limit = { check_variable = { theater_owner = 102 } }
 				set_variable = { theater_owner_coalition = 3 }
@@ -3265,10 +3348,7 @@ news_event = {
 	}
 	option = {
 		name = worldstage_automatic.102.osa
-		trigger = {
-			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
-			tag = OSA
-		}
+		trigger = { tag = OSA }
 		add_war_support = -0.1
 		effect_tooltip = {
 			every_country = { limit = { NOT = { tag = OSA } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
@@ -3309,7 +3389,7 @@ news_event = {
 	
 	immediate = {
 		hidden_effect = {
-			103 = { set_state_flag = metropolis_capitulated } #set_global_flag = world_stage_france_capitulated
+			103 = { set_state_flag = metropolis_capitulated }
 			#clr_global_flag = world_stage_france_exists
 			set_global_flag = world_stage_vichy_exists
 			every_state = {
@@ -3335,8 +3415,6 @@ news_event = {
 					news_event = { id = worldstage_surrender.103 hours = 24 random = 24 }
 				} else = { clr_country_flag = tc_kobe_has_access }
 			}
-			#### PROVISORY! DEBUG! TO-DO! TODO!
-			set_global_flag = OSA_operation_overlord_completed	# remove this when OSA gets a rework and proper focuses are added
 		}
 	}
 
@@ -3404,31 +3482,172 @@ news_event = {
 	}
 }
 
-# SCOPE TEST	### FOR DEBUG DELETE LATER	### FOR DEBUG DELETE LATER	### FOR DEBUG DELETE LATER
-state_event = {
-	id = worldstage_automatic.7777
-	title = worldstage_automatic.7777.t
-	desc = worldstage_automatic.7777.d 
-	picture = GFX_news_ww2_starts_wide
+# Moscow is taken, Soviet Union falls
+news_event = {
+	id = worldstage_automatic.104
+	title = worldstage_automatic.104.t
+	desc = worldstage_automatic.104.d 
+	picture = GFX_news_ww2_sovietunion_capitulades_wide
 
 	is_triggered_only = yes
-	
+
 	major = yes
 	
-	show_major = {
-		OR = {
-			NOT = { has_country_flag = hide_worldstage_notification }
-			AND = { check_variable = { ROOT.theater_owner = THIS.world_stage_metropolis } }
+	immediate = {
+		hidden_effect = {
+			104 = { set_state_flag = metropolis_capitulated }
+			every_state = {
+				limit = { check_variable = { theater_owner = 104 } }
+				set_variable = { theater_owner_coalition = 3 }
+				world_stage_end_round_partial = yes
+				clr_state_flag = theater_is_active
+			}
+			every_state = {
+				limit = { has_variable = theater_owner }
+				divide_variable = { world_stage_power_deployed_by^104 = 4 }
+				round_variable = world_stage_power_deployed_by^104
+			}
+			104 = { set_variable = { world_stage_power = 0 } }
+			every_possible_country = {									# this effect is convoluted but necessary in order to cut resources from FER if SovietUnion is defeated while FER is annexed
+				limit = { tag = FER }
+				if = {
+					limit = { country_exists = FER }
+					news_event = { id = worldstage_surrender.104 hours = 24 random = 24 }
+				} else = { clr_country_flag = tc_yawatahama_has_access }
+			}
+		}
+	}
+
+	option = {
+		name = worldstage_automatic.102.axis
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		effect_tooltip = {
+			if = { limit = { country_exists = FER }	FER = { add_war_support = -0.1 } }
+			every_country = { limit = { NOT = { tag = FER } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } } add_war_support = -0.05 }
 		}
 	}
 	option = {
-		name = "test"
-		log = "ROOT [ROOT.GetName]"
-		log = "THIS [THIS.GetName]"
-		log = "PREV [PREV.GetName]"
+		name = worldstage_automatic.102.komin
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+		effect_tooltip = {
+			if = { limit = { country_exists = FER }	FER = { add_war_support = -0.1 } }
+			every_country = { limit = { NOT = { tag = FER } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } } add_war_support = -0.05 }
+		}
 	}
-}	### FOR DEBUG DELETE LATER	### FOR DEBUG DELETE LATER	### FOR DEBUG DELETE LATER
+	option = {
+		name = worldstage_automatic.102.fer
+		trigger = { tag = FER }
+		add_war_support = -0.1
+		effect_tooltip = {
+			every_country = { limit = { NOT = { tag = FER } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } } add_war_support = -0.05 }
+		}
+	}
+	option = {
+		name = worldstage_automatic.102.allies
+		trigger = {
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
+			NOT = { tag = FER }
+		}
+		effect_tooltip = {
+			if = { limit = { country_exists = FER }	add_war_support = -0.1 }
+			every_country = { limit = { NOT = { tag = FER } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } } add_war_support = -0.05 }
+		}
+		hidden_effect = { add_war_support = -0.05 }
+	}
+	option = {
+		name = worldstage_automatic.102.other
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
+		effect_tooltip = {
+			if = { limit = { country_exists = FER }	add_war_support = -0.1 }
+			every_country = { limit = { NOT = { tag = FER } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } } add_war_support = -0.05 }
+		}
+	}
+}
 
+# no "Washington is taken, USA falls" event... yet?
+
+# Beijing is taken, China falls
+news_event = {
+	id = worldstage_automatic.106
+	title = worldstage_automatic.106.t
+	desc = worldstage_automatic.106.d 
+	picture = GFX_news_ww2_china_capitulades_wide
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			101 = { set_temp_variable = { occupier_coalition = theater_owner_coalition } }# figure out if Beijing was taken by Allies, Axis or Comintern
+			106 = { set_state_flag = metropolis_capitulated }
+			every_state = {
+				limit = { check_variable = { theater_owner = 106 } }
+				set_variable = { theater_owner_coalition = metropolis_capitulated }
+				world_stage_end_round_partial = yes
+				clr_state_flag = theater_is_active
+			}
+			every_state = {
+				limit = { has_variable = theater_owner }
+				divide_variable = { world_stage_power_deployed_by^106 = 4 }
+				round_variable = world_stage_power_deployed_by^106
+			}
+			106 = { set_variable = { world_stage_power = 0 } }
+			every_possible_country = {									# this effect is convoluted but necessary in order to cut resources from ROC if China is defeated while ROC is annexed
+				limit = { tag = ROC }
+				if = {
+					limit = { country_exists = ROC }
+					news_event = { id = worldstage_surrender.106 hours = 24 random = 24 }
+				} else = { clr_country_flag = tc_fengtian_has_access }
+			}
+		}
+	}
+
+	option = {
+		name = worldstage_automatic.102.axis
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		effect_tooltip = {
+			if = { limit = { country_exists = ROC }	ROC = { add_war_support = -0.1 } }
+			every_country = { limit = { NOT = { tag = ROC } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } } add_war_support = -0.05 }
+		}
+	}
+	option = {
+		name = worldstage_automatic.102.komin
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+		effect_tooltip = {
+			if = { limit = { country_exists = ROC }	ROC = { add_war_support = -0.1 } }
+			every_country = { limit = { NOT = { tag = ROC } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } } add_war_support = -0.05 }
+		}
+	}
+	option = {
+		name = worldstage_automatic.102.roc
+		trigger = { tag = ROC }
+		add_war_support = -0.1
+		effect_tooltip = {
+			every_country = { limit = { NOT = { tag = ROC } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } } add_war_support = -0.05 }
+		}
+	}
+	option = {
+		name = worldstage_automatic.102.allies
+		trigger = {
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
+			NOT = { tag = ROC }
+		}
+		effect_tooltip = {
+			if = { limit = { country_exists = ROC }	add_war_support = -0.1 }
+			every_country = { limit = { NOT = { tag = ROC } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } } add_war_support = -0.05 }
+		}
+		hidden_effect = { add_war_support = -0.05 }
+	}
+	option = {
+		name = worldstage_automatic.102.other
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
+		effect_tooltip = {
+			if = { limit = { country_exists = ROC }	add_war_support = -0.1 }
+			every_country = { limit = { NOT = { tag = ROC } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } } add_war_support = -0.05 }
+		}
+	}
+}
 
 ########################################################################
 ########################## worldstage_surrender ########################
@@ -3447,7 +3666,7 @@ country_event = {
 
 	major = no	# this is REI-only
 	
-	immediate = { hidden_effect = { 101 = { set_state_flag = metropolis_capitulated clr_state_flag = worldstage_AI_active }  every_possible_country = { limit = { tag = REI } set_cosmetic_tag = REI_AOZ } } }	#AOZ Allied Occupied Zone	# set_global_flag = world_stage_germany_capitulated
+	immediate = { hidden_effect = { 101 = { set_state_flag = metropolis_capitulated clr_state_flag = worldstage_AI_active }  every_possible_country = { limit = { tag = REI } set_cosmetic_tag = REI_AOZ } } }	#AOZ Allied Occupied Zone
 	
 	option = {
 		name = worldstage_surrender.101.a	# fight, prefered human option
