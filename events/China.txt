@@ -32,6 +32,7 @@ news_event = {
 		trigger = {
 			NOT = { has_global_flag = world_stage_world_war_2_is_active }
 			var:world_stage_metropolis = { OR = { check_variable = { world_stage_coalition = 1 } check_variable = { world_stage_coalition = 5 } } }
+			NOT = { tag = ROC }
 		}
 		if = {
 			limit = { has_global_flag = league_of_nations_exists }
@@ -43,6 +44,7 @@ news_event = {
 		trigger = {
 			has_global_flag = world_stage_world_war_2_is_active
 			var:world_stage_metropolis = { OR = { check_variable = { world_stage_coalition = 1 } check_variable = { world_stage_coalition = 5 } } }
+			NOT = { tag = ROC }
 		}
 		if = {
 			limit = { has_global_flag = league_of_nations_exists }
@@ -53,7 +55,10 @@ news_event = {
 		name = republic_of_china.2.axis
 		trigger = {
 			NOT = { has_global_flag = world_stage_world_war_2_is_active }
-			var:world_stage_metropolis = { OR = { check_variable = { world_stage_coalition = 3 } check_variable = { world_stage_coalition = 6 } } }
+			OR = {
+				var:world_stage_metropolis = { OR = { check_variable = { world_stage_coalition = 3 } check_variable = { world_stage_coalition = 6 } } }
+				tag = ROC
+			}
 		}
 		if = {
 			limit = { has_global_flag = league_of_nations_exists }
@@ -64,7 +69,10 @@ news_event = {
 		name = republic_of_china.2.axis_war
 		trigger = {
 			has_global_flag = world_stage_world_war_2_is_active
-			var:world_stage_metropolis = { OR = { check_variable = { world_stage_coalition = 3 } check_variable = { world_stage_coalition = 6 } } }
+			OR = {
+				var:world_stage_metropolis = { OR = { check_variable = { world_stage_coalition = 3 } check_variable = { world_stage_coalition = 6 } } }
+				tag = ROC
+			}
 		}
 		if = {
 			limit = { has_global_flag = league_of_nations_exists }
@@ -78,6 +86,7 @@ news_event = {
 			NOT = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
 			NOT = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 5 } } }
 			NOT = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 6 } } }
+			NOT = { tag = ROC }
 		}
 		if = {
 			limit = { has_global_flag = league_of_nations_exists }
@@ -202,11 +211,19 @@ country_event = {
 				tag = PRT 
 			}
 			if = {
-				limit = { #has_global_variable = no idea what war supposed to be here/Deprecated
+				limit = {
 					has_global_flag = world_stage_world_war_2_is_active 
+					has_global_flag = league_of_nations_exists 
 				}
 				set_global_flag = delayed_event_worldstage73
-			} else = { country_event = { id = worldstage.73 hours = 6 } }
+			}
+			if = {
+				limit = {
+					has_global_flag = world_stage_world_war_2_is_active 
+					NOT = { has_global_flag = league_of_nations_exists }
+				}
+				country_event = { id = worldstage.73 hours = 6 }
+			}
 		}
 		custom_effect_tooltip = metropolis_scope_england_space
 		effect_tooltip = { add_to_variable = { var = world_stage_power value = 1 tooltip = remove_world_stage_power_no_scope_tt } }
