@@ -1314,6 +1314,10 @@ news_event = {
 				tooltip = world_stage_deploy_power_belarus_space
 			}
 		}
+		if = {
+			limit = { tag = FER has_idea = FER_international_isolation }
+			remove_ideas = FER_international_isolation
+		}
 	}
 	option = {
 		name = worldstage.35.allies
@@ -1335,6 +1339,10 @@ news_event = {
 				104.world_stage_power = 9.world_stage_power_deployed_by^104
 				tooltip = world_stage_deploy_power_belarus_space
 			}
+		}
+		if = {
+			limit = { tag = FER has_idea = FER_international_isolation }
+			remove_ideas = FER_international_isolation
 		}
 	}
 	option = {
@@ -1637,7 +1645,7 @@ country_event = {
 	}
 }
 
-# URSS is expelled from the League of Nations
+# URSS is expelled from the League of Nations - Invasion of Finland
 news_event = {
 	id = worldstage.54
 	title = worldstage.54.t
@@ -1674,13 +1682,70 @@ news_event = {
 	}
 	option = {
 		name = worldstage.54.komin
-		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
-		effect_tooltip = {
-			
-		}
+		trigger = { OR = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } tag = FER } }
 		custom_effect_tooltip = worldstage.54.tooltip
 		if = {
-			limit = { tag = FER has_game_rule = { rule = censored_or_uncensored_german_flag option = UNCENSORED } }
+			limit = { tag = FER has_global_flag = eastereggs_enabled }
+			custom_effect_tooltip = worldstage.54.special
+		}
+	}
+	option = {
+		name = worldstage.54.allies
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
+		effect_tooltip = {
+			custom_effect_tooltip = worldstage.54.tooltip
+		}
+	}
+	option = {
+		name = worldstage.54.other
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
+		effect_tooltip = {
+			custom_effect_tooltip = worldstage.54.tooltip
+		}
+	}
+}
+
+# URSS is expelled from the League of Nations - Annexation of Baltic States
+news_event = {
+	id = worldstage.541
+	title = worldstage.54.t
+	desc = worldstage.541.d 
+	picture = GFX_news_lon_ends_wide
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			set_global_flag = SOV_expelled_from_lon
+			every_country = {
+				limit = { check_variable = { world_stage_metropolis = 104 } }
+				set_variable = { world_stage_coalition = 2 }
+			}
+			every_state = {
+				limit = { check_variable = { theater_owner = 104 } }	# proxy for sovietunion
+				set_variable = { theater_owner_coalition = 2 }
+			}
+			### arrays for tag aliases ###
+			remove_from_array = { array = global.array_leagueofnations value = FER }
+			add_to_array = { global.array_komintern = FER }
+		}
+	}
+	
+	option = {
+		name = worldstage.54.axis
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		effect_tooltip = {
+			custom_effect_tooltip = worldstage.54.tooltip
+		}
+	}
+	option = {
+		name = worldstage.54.komin
+		trigger = { OR = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } tag = FER } }
+		custom_effect_tooltip = worldstage.54.tooltip
+		if = {
+			limit = { tag = FER has_global_flag = eastereggs_enabled }
 			custom_effect_tooltip = worldstage.54.special
 		}
 	}

@@ -3002,25 +3002,65 @@ focus_tree = {
 		prerequisite = { 
 			focus = FER_take_actions
 		}
-		available = {
-			#custom_trigger_tooltip = {
-			#	tooltip = FER_molotov_ribbentrop_pact_signed_tt
-			#	has_global_flag = molotov_ribbentrop_pact_signed
+		
+		text_icon = worldstage_style 
+		
+		bypass = {
+			#OR = {
+				has_global_flag = world_stage_world_war_2_is_active
+				#has_global_flag = sovietunion_joined_ww2
 			#}
-			REI = {
-				has_completed_focus = REI_molotov_ribbentrop
+		}
+		
+		available = {
+			OR = { has_government = communism has_government = democratic_socialism }
+			world_stage_has_capitulated = no
+			custom_trigger_tooltip = {
+				tooltip = theater_not_active_belarus
+				NOT = { 9 = { has_state_flag = theater_is_active } }
+			}
+			custom_trigger_tooltip = {
+				9 = { check_variable = { theater_owner = 104 } }
+				tooltip = theater_belarus_controlled_by_sovietunion
+			}
+			custom_trigger_tooltip = {
+				tooltip = theater_not_active_smolensk
+				NOT = { 10 = { has_state_flag = theater_is_active } }
+			}
+			custom_trigger_tooltip = {
+				10 = { check_variable = { theater_owner = 104 } }
+				tooltip = theater_smolensk_controlled_by_sovietunion
+			}
+			custom_trigger_tooltip = {
+				tooltip = theater_not_active_russia
+				NOT = { 11 = { has_state_flag = theater_is_active } }
+			}
+			custom_trigger_tooltip = {
+				11 = { check_variable = { theater_owner = 104 } }
+				tooltip = theater_russia_controlled_by_sovietunion
 			}
 		}
-		bypass = {
-			REI = {
-				NOT = {
-					has_completed_focus = REI_molotov_ribbentrop
+		
+		completion_reward = {
+			hidden_effect = {
+				var:world_stage_metropolis = {
+					add_to_variable = { var = world_stage_power value = 10 }
 				}
 			}
-			date > 1940.2.10
-		}
-		completion_reward = {
-			country_event = primorski.11
+			effect_tooltip = {
+				add_to_variable = {
+					var = world_stage_power
+					value = 10
+					tooltip = add_world_stage_power_no_scope_tt
+				}
+			}
+			if = {
+				limit = { REI = { has_completed_focus = REI_molotov_ribbentrop } }
+				# something here?
+			} else = {
+				add_timed_idea = { idea = FER_international_isolation days = 730 }
+				custom_effect_tooltip = FER_molotov_ribbentrop_avoid_penalty_tt
+			}
 			hidden_effect = {
 				add_to_variable = { ROOT.AI_focus_count_A = 60 }
 			}
@@ -3040,13 +3080,34 @@ focus_tree = {
 			}
 		}
 		relative_position_id = FER_soviet_expansion_in_europe
-		search_filters = { FOCUS_FILTER_WORLD FOCUS_FILTER_DIPLOMACY }
+		search_filters = { FOCUS_FILTER_WORLD FOCUS_FILTER_WAR_SUPPORT }
 		prerequisite = { 
 			focus = FER_soviet_expansion_in_europe
 		}
+		text_icon = worldstage_style 
 		available = {
+			OR = { has_government = communism has_government = democratic_socialism }
+			world_stage_has_capitulated = no
 		}
 		completion_reward = {
+			hidden_effect = {
+				var:world_stage_metropolis = {
+					add_to_variable = { var = world_stage_power value = 5 }
+				}
+			}
+			effect_tooltip = {
+				add_to_variable = {
+					var = world_stage_power
+					value = 5
+					tooltip = add_world_stage_power_no_scope_tt
+				}
+			}
+			add_war_support = 0.05
+			if = {
+				limit = { has_idea = FER_international_isolation }
+				modify_timed_idea = { idea = FER_international_isolation days = 90 }
+				custom_effect_tooltip = FER_molotov_ribbentrop_avoid_penalty_tt
+			}
 		}
 	}
 
@@ -3064,14 +3125,16 @@ focus_tree = {
 		}
 		relative_position_id = FER_soviet_expansion_in_europe
 		search_filters = { FOCUS_FILTER_WORLD FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WAR_SUPPORT }
+		text_icon = worldstage_style
 		prerequisite = { 
 			focus = FER_pressure_fins
 		}
 		available = {
-			date > 1939.12.15
+			OR = { has_government = communism has_government = democratic_socialism }
+			world_stage_has_capitulated = no
 		}
 		completion_reward = {
-			add_threat = 5
+			add_named_threat = { threat = 5 name = FER_threat_finland }
 			if = {
 				limit = {
 					REI = {
@@ -3107,26 +3170,24 @@ focus_tree = {
 					}
 				}
 			}
+			add_doctrine_cost_reduction = {
+				name = land_doc_bonus
+				cost_reduction = 0.5
+				uses = 1
+				category = land_doctrine
+			}
 			if = {
-				limit = {
-					NOT = {
-						has_global_flag = SOV_expelled_from_lon
-					}
-					has_global_flag = league_of_nations_exists
-				}
-				country_event = worldstage.54
-				set_global_flag = SOV_expelled_from_lon
+				limit = { has_idea = FER_international_isolation }
+				modify_timed_idea = { idea = FER_international_isolation days = 180 }
+				custom_effect_tooltip = FER_molotov_ribbentrop_avoid_penalty_tt
 			}
 			if = {
 				limit = {
-					NOT = {
-						has_global_flag = SOV_expelled_from_lon
-					}
-					NOT = {
-						has_global_flag = league_of_nations_exists
-					}
+					NOT = { has_global_flag = SOV_expelled_from_lon }
+					has_global_flag = league_of_nations_exists
 				}
-				country_event = worldstage.54
+				hidden_effect = { country_event = worldstage.54 }
+				custom_effect_tooltip = will_be_expelled_from_lon
 			}
 		}
 	}
@@ -3144,13 +3205,22 @@ focus_tree = {
 			}
 		}
 		relative_position_id = FER_soviet_expansion_in_europe
-		search_filters = { FOCUS_FILTER_WORLD FOCUS_FILTER_DIPLOMACY }
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
 		prerequisite = { 
 			focus = FER_soviet_expansion_in_europe
 		}
 		available = {
+			OR = { has_government = communism has_government = democratic_socialism }
+			world_stage_has_capitulated = no
 		}
 		completion_reward = {
+			add_political_power = 90
+			add_stability = 0.05
+			if = {
+				limit = { has_idea = FER_international_isolation }
+				modify_timed_idea = { idea = FER_international_isolation days = 90 }
+				custom_effect_tooltip = FER_molotov_ribbentrop_avoid_penalty_tt
+			}
 		}
 	}
 
@@ -3171,32 +3241,47 @@ focus_tree = {
 		prerequisite = { 
 			focus = FER_soviet_diplomacy_in_baltic
 		}
+		text_icon = worldstage_style
 		available = {
-			date > 1940.5.10
+			custom_trigger_tooltip = {
+				tooltip = theater_not_active_belarus
+				NOT = { 9 = { has_state_flag = theater_is_active } }
+			}
+			custom_trigger_tooltip = {
+				9 = { check_variable = { theater_owner = 104 } }
+				tooltip = theater_belarus_controlled_by_sovietunion
+			}
+			OR = { has_government = communism has_government = democratic_socialism }
+			world_stage_has_capitulated = no
 		}
 		completion_reward = {
+			add_named_threat = { threat = 5 name = FER_threat_baltic }
 			country_event = primorski.15
 			set_global_flag = worldstage_menu_annex_baltic
-			if = {
-				limit = {
-					NOT = {
-						has_global_flag = SOV_expelled_from_lon
-					}
-					has_global_flag = league_of_nations_exists
+			hidden_effect = {
+				var:world_stage_metropolis = {
+					add_to_variable = { var = world_stage_power value = 5 }
 				}
-				country_event = worldstage.54
-				set_global_flag = SOV_expelled_from_lon
+			}
+			effect_tooltip = {
+				add_to_variable = {
+					var = world_stage_power
+					value = 5
+					tooltip = add_world_stage_power_no_scope_tt
+				}
+			}
+			if = {
+				limit = { has_idea = FER_international_isolation }
+				modify_timed_idea = { idea = FER_international_isolation days = 180 }
+				custom_effect_tooltip = FER_molotov_ribbentrop_avoid_penalty_tt
 			}
 			if = {
 				limit = {
-					NOT = {
-						has_global_flag = SOV_expelled_from_lon
-					}
-					NOT = {
-						has_global_flag = league_of_nations_exists
-					}
+					NOT = { has_global_flag = SOV_expelled_from_lon }
+					has_global_flag = league_of_nations_exists
 				}
-				country_event = worldstage.54
+				hidden_effect = { country_event = worldstage.541 }
+				custom_effect_tooltip = will_be_expelled_from_lon
 			}
 		}
 	}
@@ -3213,6 +3298,7 @@ focus_tree = {
 				add = var:AI_focus_count_A_priority
 			}
 		}
+		allow_branch = { always = no }
 		relative_position_id = FER_soviet_expansion_in_europe
 		search_filters = { FOCUS_FILTER_WORLD FOCUS_FILTER_DIPLOMACY }
 		prerequisite = { 
