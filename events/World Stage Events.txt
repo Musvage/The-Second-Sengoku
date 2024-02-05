@@ -4044,6 +4044,7 @@ country_event = {
 				if = { limit = { has_ideology_group = neutrality } set_character_flag = dual_leader_id_philippe_petain set_character_flag = dual_leader_second_title_prime_minister }
 				# chancing AI behaviour
 				103 = { set_variable = { ai_prefers_retreat = 1 } }	# no more running from now on!
+				103 = { set_variable = { ai_save_strength = 5 } }	# default
 			}
 		}
 	}
@@ -4107,10 +4108,13 @@ country_event = {
 			if = {
 				limit = { country_exists = KOB }
 				country_event = worldstage_surrender.1032
-				add_ai_strategy = {
-					type = alliance
-					id = REI
-					value = 50
+				if = {
+					limit = { country_exists = AXS }
+					add_ai_strategy = {
+						type = alliance
+						id = AXS
+						value = 100
+					}
 				}
 				every_other_country = {
 					limit = { has_country_flag = is_not_japan }
@@ -4142,14 +4146,24 @@ country_event = {
 		}		
 		if = {
 			limit = { country_exists = KOB }
-			random_country = {
-				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes }
-				white_peace = {
-					tag = KOB
-					message = worldstage_surrender.103.kob
+			#random_country = {
+			#	limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes }
+			#	white_peace = {
+			#		tag = KOB
+			#		message = worldstage_surrender.103.kob
+			#	}
+			#	add_to_faction = KOB
+			#}
+			if = {
+				limit = { country_exists = AXS AXS = { has_war_with = KOB} }	# they SHOULD be at war but I'll throw a check anyway as a failsafe (and coding is free)
+				AXS = {
+					white_peace = {
+						tag = KOB
+						message = worldstage_surrender.103.kob
+					}
 				}
-				add_to_faction = KOB
 			}
+			world_stage_join_axis = yes
 			set_country_flag = lost_original_focus_tree load_focus_tree = generic_focus
 		}
 		ai_chance = { base = 100 } log = "FRANCE SURRENDERS, imagine my shock! option: worldstage_surrender.103.b	# surrender, prefered AI option"
@@ -4179,14 +4193,24 @@ country_event = {
 			}
 			if = {
 				limit = { country_exists = KOB }
-				random_country = {
-					limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes }
-					white_peace = {
-						tag = KOB
-						message = worldstage_surrender.103.kob
+				#random_country = {
+				#	limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } is_faction_leader = yes }
+				#	white_peace = {
+				#		tag = KOB
+				#		message = worldstage_surrender.103.kob
+				#	}
+				#	add_to_faction = KOB
+				#}
+				if = {
+					limit = { country_exists = AXS AXS = { has_war_with = KOB} }	# they SHOULD be at war but I'll throw a check anyway as a failsafe (and coding is free)
+					AXS = {
+						white_peace = {
+							tag = KOB
+							message = worldstage_surrender.103.kob
+						}
 					}
-					add_to_faction = KOB
 				}
+				world_stage_join_axis = yes
 				set_country_flag = lost_original_focus_tree load_focus_tree = generic_focus
 			}
 			hidden_effect = {
@@ -4194,10 +4218,13 @@ country_event = {
 					limit = { country_exists = KOB }
 					country_event = worldstage_surrender.1032
 				}
-				add_ai_strategy = {
-					type = alliance
-					id = REI
-					value = 50
+				if = {
+					limit = { country_exists = AXS }
+					add_ai_strategy = {
+						type = alliance
+						id = AXS
+						value = 100
+					}
 				}
 				every_other_country = {
 					limit = { has_country_flag = is_not_japan }
