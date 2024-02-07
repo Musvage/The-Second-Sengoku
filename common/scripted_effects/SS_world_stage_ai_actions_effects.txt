@@ -403,18 +403,15 @@ choose_an_action = {
 	
 		# these are dynamic
 	if = {
-		limit = { check_variable = { var:world_stage_metropolis.world_stage_power < 50 } }	# if AI doesn't have lots of power, it prefers denfenses/offensive preparations rather than deploying more power
+		limit = { var:world_stage_metropolis = { check_variable = { world_stage_power < 50 } } }	# if AI doesn't have lots of power, it prefers denfenses/offensive preparations rather than deploying more power
 		multiply_variable = { want_to_defenses = 2 }
 		multiply_variable = { want_to_offensive = 2 }
 		multiply_variable = { want_to_reinforce = 0.5 }
 	}
 	if = {
-		limit = { check_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis > 50 } }	# if it has lots of deployed troops in this theater, AI will prefere to prepare offensives
+		limit = { var:selected_theater = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 50 } } }	# if it has lots of deployed troops in this theater, AI will prefere to prepare offensives or defenses
 		multiply_variable = { want_to_offensive = 2 }
-	}
-	if = {
-		limit = { check_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis > 10 } }	# if it has too few deployed troops in theater, preparing offensives is not very effective
-		multiply_variable = { want_to_offensive = 0.1 }
+		multiply_variable = { want_to_defenses = 2 }
 	}
 	if = {
 		limit = { 
@@ -433,26 +430,17 @@ choose_an_action = {
 		log = "it's defending!"
 		if = {
 			limit = {
-				check_variable = { var:selected_theater.defender_deployed_power > var:selected_theater.attacker_deployed_power }
-				check_variable = { var:selected_theater.attacker_strategic_advantage < 0.5 }
+				var:selected_theater = { check_variable = { defender_deployed_power > attacker_deployed_power } }
+				var:selected_theater = { check_variable = { attacker_strategic_advantage < 0.5 } }
 			}
 			set_variable = { want_to_retreat = 0 }	log = "defender_deployed_power > attacker_deployed_power, attacker_strategic_advantage < 0.5"	# "Are you winning, son?" // never retreat if AI is winning
 		}
 		if = {
 			limit = {
-				check_variable = { var:selected_theater.attacker_deployed_power > var:selected_theater.defender_deployed_power }
-				check_variable = { var:selected_theater.attacker_strategic_advantage > 0.5 }
+				var:selected_theater = { check_variable = { defender_deployed_power > attacker_deployed_power } }
+				var:selected_theater = { check_variable = { attacker_strategic_advantage > 2 } }
 			}
-			multiply_variable = { want_to_defenses = 2 }	log = "attacker_deployed_power > defender_deployed_power, attacker_strategic_advantage > 0.5"	# if enemy has lots of strat.adv., do defensive preparations!
-			multiply_variable = { want_to_reinforce = 0.5 }
-			set_variable = { want_to_offensive = 0 }
-		}
-		if = {
-			limit = {
-				check_variable = { var:selected_theater.attacker_deployed_power > var:selected_theater.defender_deployed_power }	# note that if this condition is met, the one abote is too
-				check_variable = { var:selected_theater.attacker_strategic_advantage > 1 }
-			}
-			multiply_variable = { want_to_retreat = 2 }	log = "attacker_deployed_power > defender_deployed_power, attacker_strategic_advantage > 1"	# if such powerful blow is about to be dealt, AI will consider simply retreating
+			multiply_variable = { want_to_retreat = 2 }	log = "attacker_deployed_power > defender_deployed_power, attacker_strategic_advantage > 2"	# if such powerful blow is about to be dealt, AI will consider simply retreating
 			set_variable = { want_to_reinforce = 0 }
 		}
 	} else = {
@@ -460,26 +448,17 @@ choose_an_action = {
 		log = "it's attacking!"
 		if = {
 			limit = {
-				check_variable = { var:selected_theater.attacker_deployed_power > var:selected_theater.defender_deployed_power }
-				check_variable = { var:selected_theater.defender_strategic_advantage < 0.5 }
+				var:selected_theater = { check_variable = { attacker_deployed_power > defender_deployed_power } }
+				var:selected_theater = { check_variable = { efender_strategic_advantage < 0.5 } }
 			}
 			set_variable = { want_to_retreat = 0 }	log = "attacker_deployed_power > defender_deployed_power, defender_strategic_advantage < 0.5"	# "Are you winning, son?" // never retreat if AI is winning
 		}
 		if = {
 			limit = {
-				check_variable = { var:selected_theater.defender_deployed_power > var:selected_theater.attacker_deployed_power }
-				check_variable = { var:selected_theater.defender_strategic_advantage > 0.5 }
+				var:selected_theater = { check_variable = { attacker_deployed_power > defender_deployed_power } }
+				var:selected_theater = { check_variable = { efender_strategic_advantage > 2 } }
 			}
-			multiply_variable = { want_to_defenses = 2 }	log = "defender_deployed_power > attacker_deployed_power, defender_strategic_advantage > 0.5"	# if enemy has lots of strat.adv., do defensive preparations!
-			multiply_variable = { want_to_reinforce = 0.5 }
-			set_variable = { want_to_offensive = 0 }
-		}
-		if = {
-			limit = {
-				check_variable = { var:selected_theater.defender_deployed_power > var:selected_theater.attacker_deployed_power }	# note that if this condition is met, the one abote is too
-				check_variable = { var:selected_theater.defender_strategic_advantage > 1 }
-			}
-			multiply_variable = { want_to_retreat = 2 }	log = "defender_deployed_power > attacker_deployed_power, defender_strategic_advantage > 1"	# if such powerful blow is about to be dealt, AI will consider simply retreating
+			multiply_variable = { want_to_retreat = 2 }	log = "defender_deployed_power > attacker_deployed_power, defender_strategic_advantage > 2"	# if such powerful blow is about to be dealt, AI will consider simply retreating
 			set_variable = { want_to_reinforce = 0 }
 		}
 	}
@@ -488,7 +467,7 @@ choose_an_action = {
 	if = {
 		limit = { 
 			var:world_stage_priority_theater^0 = { has_state_flag = theater_is_active }
-			check_variable = { var:world_stage_priority_theater^0.attacker_deployed_power > var:world_stage_priority_theater^0.defender_deployed_power } 	# AI is necessarily defender here
+			var:world_stage_priority_theater^0 = { check_variable = { attacker_deployed_power > var:world_stage_priority_theater^0.defender_deployed_power } } 	# AI is necessarily defender here
 		}
 		random_state = {
 			limit = {
@@ -501,9 +480,9 @@ choose_an_action = {
 			set_variable = { array_worldstage_action_ongoing^var:selected_theater = @action_retreat } # type of action taken
 			set_temp_variable = { retreat_value = var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis }
 			set_temp_variable = { rear_guard = 1 }
-			if = { limit = { check_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis > 49 } set_temp_variable = { rear_guard = 5 } } }
-			if = { limit = { check_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis > 100 } set_temp_variable = { rear_guard = 10 } } }
-			if = { limit = { check_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis > 110 } set_temp_variable = { retreat_value = 100 } } set_temp_variable = { rear_guard = 0 } }
+			if = { limit = { var:selected_theater = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 49 } } set_temp_variable = { rear_guard = 5 } } }
+			if = { limit = { var:selected_theater = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 100 } } set_temp_variable = { rear_guard = 10 } } }
+			if = { limit = { var:selected_theater = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 110 } } set_temp_variable = { retreat_value = 100 } } set_temp_variable = { rear_guard = 0 } }
 			subtract_from_temp_variable = { retreat_value = rear_guard }
 			subtract_from_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis = retreat_value }
 			var:world_stage_metropolis = { add_to_variable = { world_stage_power = retreat_value } }
@@ -530,7 +509,7 @@ choose_an_action = {
 	if = {
 		limit = { check_variable = { array_worldstage_action_cooldown^var:selected_theater < 1 } }	# CHECK COOLDOWN
 		if = {	# REINFORCE
-			limit = { check_variable = { var:world_stage_metropolis:world_stage_power > 0 } }
+			limit = { var:world_stage_metropolis = { check_variable = { world_stage_power > 0 } } }
 			# action is possible, nothing happens yet
 		} else = { set_temp_variable = { want_to_reinforce = 0 } }
 	#	if = {	# SUPPLY
@@ -541,15 +520,15 @@ choose_an_action = {
 	#		# action is possible, nothing happens yet
 	#	} else = { set_temp_variable = { want_to_supply = 0 } }
 		if = {	# OFFENSIVE
-			limit = { check_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis > 1 } }
+			limit = { var:selected_theater = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 1 } } }
 			# action is possible, nothing happens yet
 		} else = { set_temp_variable = { want_to_offensive = 0 } }
 		if = {	# DEFENSES
-			limit = { check_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis > 1 } }
+			limit = { var:selected_theater = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 1 } } }
 			# action is possible, nothing happens yet
 		} else = { set_temp_variable = { want_to_defenses = 0 } }
 		if = {	# RETREAT
-			limit = { check_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis > 1.1 } }	# min = 2
+			limit = { var:selected_theater = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 1.1 } } }	# min = 2
 			# action is possible, nothing happens yet
 		} else = { set_temp_variable = { want_to_retreat = 0 } }
 	} else = { log = "This theater has action cooldown" }
@@ -588,9 +567,9 @@ choose_an_action = {
 				set_variable = { array_worldstage_action_cooldown^var:selected_theater = @reinforce_cooldown } # number of days of cooldown
 				set_variable = { array_worldstage_action_ongoing^var:selected_theater = @action_reinforce } # type of action taken
 				set_temp_variable = { reinforce_value = 1 }
-				if = { limit = { check_variable = { var:world_stage_metropolis:world_stage_power > 10 } } add_to_temp_variable = { reinforce_value = 4 } }	# easier to add values step by step
-				if = { limit = { check_variable = { var:world_stage_metropolis:world_stage_power > 50 } } add_to_temp_variable = { reinforce_value = 5 } }
-				if = { limit = { check_variable = { var:world_stage_metropolis:world_stage_power > 100 } } add_to_temp_variable = { reinforce_value = 5 } }
+				if = { limit = { var:world_stage_metropolis = { check_variable = { world_stage_power > 10 } } } add_to_temp_variable = { reinforce_value = 4 } }	# easier to add values step by step
+				if = { limit = { var:world_stage_metropolis = { check_variable = { world_stage_power > 50 } } } add_to_temp_variable = { reinforce_value = 5 } }
+				if = { limit = { var:world_stage_metropolis = { check_variable = { world_stage_power > 100 } } } add_to_temp_variable = { reinforce_value = 5 } }
 				subtract_from_variable = { var:world_stage_metropolis:world_stage_power = reinforce_value }
 				add_to_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis = reinforce_value }
 				var:selected_theater = { world_stage_state_update_current_day = yes }
@@ -642,9 +621,9 @@ choose_an_action = {
 				set_variable = { array_worldstage_action_ongoing^var:selected_theater = @action_retreat } # type of action taken
 				set_temp_variable = { retreat_value = var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis }
 				set_temp_variable = { rear_guard = 1 }
-				if = { limit = { check_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis > 49 } set_temp_variable = { rear_guard = 5 } } }
-				if = { limit = { check_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis > 100 } set_temp_variable = { rear_guard = 10 } } }
-				if = { limit = { check_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis > 110 } set_temp_variable = { retreat_value = 100 } } set_temp_variable = { rear_guard = 0 } }
+				if = { limit = { var:selected_theater = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 49 } } set_temp_variable = { rear_guard = 5 } } }
+				if = { limit = { var:selected_theater = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 100 } } set_temp_variable = { rear_guard = 10 } } }
+				if = { limit = { var:selected_theater = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 110 } } set_temp_variable = { retreat_value = 100 } } set_temp_variable = { rear_guard = 0 } }
 				subtract_from_temp_variable = { retreat_value = rear_guard }
 				subtract_from_variable = { var:selected_theater:world_stage_power_deployed_by^world_stage_metropolis = retreat_value }
 				var:world_stage_metropolis = { add_to_variable = { world_stage_power = retreat_value } }
