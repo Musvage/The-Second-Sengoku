@@ -10,9 +10,9 @@ scripted_gui = {
 	# costs of World Stage actions	# reinforce/reatread will use some more dynamic variables, specific overall strength costs are not shown here
 	@reinforce_cp = 10
 	@reinforce_cooldown = 7
-	@supply_cp = 10
-	@supply_cooldown = 7
-	@supply_amount = 1000
+	@equipment_cp = 10
+	@equipment_cooldown = 7
+	@equipment_amount = 1000
 	@reinforce_cooldown_near = 7
 	@reinforce_cooldown_mid = 21
 	@reinforce_cooldown_distant = 42
@@ -451,7 +451,20 @@ scripted_gui = {
 				var:current_theater = { has_state_flag = theater_is_active }
 				check_variable = { array_worldstage_action_cooldown^var:current_theater < 1 }
 				command_power > 24.9
-				has_equipment = { infantry_equipment_1 > 999  }
+				has_equipment = { infantry_equipment > 499 }
+				has_equipment = { convoy > 4 }
+				has_manpower > 4999
+				OR = {
+					check_variable = { current_theater = 16 }
+					check_variable = { current_theater = 17 }
+					check_variable = { current_theater = 18 }
+					check_variable = { current_theater = 19 }
+					check_variable = { current_theater = 20 }
+					check_variable = { current_theater = 21 }
+					check_variable = { current_theater = 22 }
+					check_variable = { current_theater = 28 }
+					check_variable = { current_theater = 33 }
+				}
 			}
 			button_offensive_click_enabled = {
 				var:current_theater = { has_state_flag = theater_is_active }
@@ -520,10 +533,73 @@ scripted_gui = {
 			button_equipment_click = {
 				if = {
 					limit = { command_power > 24.9 }
-					set_variable = { array_worldstage_action_cooldown^var:current_theater = 5 } # number of days of cooldown
-					set_variable = { array_worldstage_action_ongoing^var:current_theater = @action_equipment } # type of action taken
+					set_variable = { array_worldstage_action_cooldown^var:current_theater = @equipment_cooldown } # number of days of cooldown
+					set_variable = { array_worldstage_action_ongoing^var:current_theater = @actionsupply } # type of action taken
 					add_command_power = -25
-					log = "debug: button_equipment theater nº[?var:current_theater], cooldown: [?array_worldstage_action_cooldown^var:current_theater] days"
+					add_equipment_to_stockpile = { type = infantry_equipment amount = -500 }
+					add_equipment_to_stockpile = {
+						type = convoy_1
+						amount = -5
+					}
+					add_manpower = -5000
+					if = {
+						limit = { check_variable = { world_stage_metropolis > 100 } }	# has a presence outside Japan
+						add_to_variable = { var:current_theater:world_stage_power_deployed_by^world_stage_metropolis = 5 }
+						var:current_theater = { world_stage_state_update_current_day = yes }
+					} else = {
+						# this tag does not have a presence outside Japan: it will pick a suitable ally and reinforce it
+						if = {
+							limit = { check_variable = { PREV.world_stage_coalition = theater_owner_coalition } }	# it's a defender
+							var:current_theater = {
+								for_each_loop = {
+									array = world_stage_power_deployed_by
+									index = this_metropolis
+									value = deployed_power
+									break = end_loop
+									if = {
+										limit = { check_variable = { this_metropolis > 100 } }	# unspecified minors DO NOT count here
+										if = {
+											var:this_metropolis = {
+												if = {
+													limit = {
+														check_variable = { world_stage_coalition = PREV.theater_owner_coalition }	# it's a defender
+														check_variable = { PREV.world_stage_power_deployed_by^this_metropolis > 0 }
+													}
+													PREV.world_stage_power_deployed_by^this_metropolis = 5
+													set_temp_variable = { end_loop = 1 }
+												}
+											}
+										}
+									}
+								}
+							}
+						} else = {																# it's an attacker
+							var:current_theater = {
+								for_each_loop = {
+									array = world_stage_power_deployed_by
+									index = this_metropolis
+									value = deployed_power
+									break = end_loop
+									if = {
+										limit = { check_variable = { this_metropolis > 100 } }	# unspecified minors DO NOT count here
+										if = {
+											var:this_metropolis = {
+												if = {
+													limit = {
+														check_variable = { world_stage_coalition = PREV.coalition_side_attack }	# it's an attacker
+														check_variable = { PREV.world_stage_power_deployed_by^this_metropolis > 0 }
+													}
+													PREV.world_stage_power_deployed_by^this_metropolis = 5
+													set_temp_variable = { end_loop = 1 }
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					log = "debug: button_equipment theater nº[?var:current_theater] by [?5], cooldown: [?array_worldstage_action_cooldown^var:current_theater] days"
 				}
 			}
 			button_offensive_click = {
@@ -672,7 +748,20 @@ scripted_gui = {
 				var:current_theater = { has_state_flag = theater_is_active }
 				check_variable = { array_worldstage_action_cooldown^var:current_theater < 1 }
 				command_power > 24.9
-				has_equipment = { infantry_equipment_1 > 999  }
+				has_equipment = { infantry_equipment > 499 }
+				has_equipment = { convoy > 4 }
+				has_manpower > 4999
+				OR = {
+					check_variable = { current_theater = 16 }
+					check_variable = { current_theater = 17 }
+					check_variable = { current_theater = 18 }
+					check_variable = { current_theater = 19 }
+					check_variable = { current_theater = 20 }
+					check_variable = { current_theater = 21 }
+					check_variable = { current_theater = 22 }
+					check_variable = { current_theater = 28 }
+					check_variable = { current_theater = 33 }
+				}
 			}
 			button_offensive_click_enabled = {
 				var:current_theater = { has_state_flag = theater_is_active }
@@ -741,10 +830,70 @@ scripted_gui = {
 			button_equipment_click = {
 				if = {
 					limit = { command_power > 24.9 }
-					set_variable = { array_worldstage_action_cooldown^var:current_theater = 5 } # number of days of cooldown
-					set_variable = { array_worldstage_action_ongoing^var:current_theater = @action_equipment } # type of action taken
+					set_variable = { array_worldstage_action_cooldown^var:current_theater = @equipment_cooldown } # number of days of cooldown
+					set_variable = { array_worldstage_action_ongoing^var:current_theater = @actionsupply } # type of action taken
 					add_command_power = -25
-					log = "debug: button_equipment theater nº[?var:current_theater], cooldown: [?array_worldstage_action_cooldown^var:current_theater] days"
+					add_equipment_to_stockpile = { type = infantry_equipment amount = -500 }
+					add_equipment_to_stockpile = { type = convoy_1 amount = -5 }
+					add_manpower = -5000
+					if = {
+						limit = { check_variable = { world_stage_metropolis > 100 } }	# has a presence outside Japan
+						add_to_variable = { var:current_theater:world_stage_power_deployed_by^world_stage_metropolis = 5 }
+						var:current_theater = { world_stage_state_update_current_day = yes }
+					} else = {
+						# this tag does not have a presence outside Japan: it will pick a suitable ally and reinforce it
+						if = {
+							limit = { check_variable = { PREV.world_stage_coalition = theater_owner_coalition } }	# it's a defender
+							var:current_theater = {
+								for_each_loop = {
+									array = world_stage_power_deployed_by
+									index = this_metropolis
+									value = deployed_power
+									break = end_loop
+									if = {
+										limit = { check_variable = { this_metropolis > 100 } }	# unspecified minors DO NOT count here
+										if = {
+											var:this_metropolis = {
+												if = {
+													limit = {
+														check_variable = { world_stage_coalition = PREV.theater_owner_coalition }	# it's a defender
+														check_variable = { PREV.world_stage_power_deployed_by^this_metropolis > 0 }
+													}
+													PREV.world_stage_power_deployed_by^this_metropolis = 5
+													set_temp_variable = { end_loop = 1 }
+												}
+											}
+										}
+									}
+								}
+							}
+						} else = {																# it's an attacker
+							var:current_theater = {
+								for_each_loop = {
+									array = world_stage_power_deployed_by
+									index = this_metropolis
+									value = deployed_power
+									break = end_loop
+									if = {
+										limit = { check_variable = { this_metropolis > 100 } }	# unspecified minors DO NOT count here
+										if = {
+											var:this_metropolis = {
+												if = {
+													limit = {
+														check_variable = { world_stage_coalition = PREV.coalition_side_attack }	# it's an attacker
+														check_variable = { PREV.world_stage_power_deployed_by^this_metropolis > 0 }
+													}
+													PREV.world_stage_power_deployed_by^this_metropolis = 5
+													set_temp_variable = { end_loop = 1 }
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					log = "debug: button_equipment theater nº[?var:current_theater] by [?5], cooldown: [?array_worldstage_action_cooldown^var:current_theater] days"
 				}
 			}
 			button_offensive_click = {
