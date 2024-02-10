@@ -7,9 +7,41 @@ news_event = {	# Cosmetic event setting the state for the brawl
 	picture = GFX_news_set_islands
 	
 	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			set_variable_to_random = {
+				var = time_random
+				min = 30
+				max = 90
+				integer = yes
+			}
+			activate_decision = IMS_choose_path
+			add_days_remove  = {
+				decision = IMS_choose_path
+				days = var:time_random
+			}
+			CHU = {
+				activate_decision = IMS_choose_path
+				add_days_remove  = {
+					decision = IMS_choose_path
+					days = var:time_random
+				}
+			}
+			SHI = {
+				activate_decision = IMS_choose_path
+				add_days_remove  = {
+					decision = IMS_choose_path
+					days = var:time_random
+				}
+			}
+			clear_variable = time_random
+		}
+	}
 
 	option = {
 		name = seto_islands.0.a
+		effect_tooltip = { activate_decision = IMS_choose_path }
 	}
 }
 
@@ -281,16 +313,32 @@ news_event = {	# SHI or CHU accepts IMS' choice, IMS is annexed
 	picture = GFX_news_set_islands
 	
 	is_triggered_only = yes
+	
+	immediate = { hidden_effect = { clr_global_flag = seto_crisis_active } }
 
 	option = {	# 
 		name = seto_islands.2.winner
 		trigger = { has_global_flag = IMS_chose_CHU tag = CHU }
 		annex_country = { target = IMS transfer_troops = yes }
+		hidden_effect = {
+			every_controlled_state = {
+				limit = { is_core_of = IMS }
+				remove_core_of = IMS
+				set_compliance  = 100
+			}
+		}
 	}
 	option = {	# 
 		name = seto_islands.2.winner
 		trigger = { has_global_flag = IMS_chose_SHI tag = SHI }
 		annex_country = { target = IMS transfer_troops = yes }
+		hidden_effect = {
+			every_controlled_state = {
+				limit = { is_core_of = IMS }
+				remove_core_of = IMS
+				set_compliance  = 100
+			}
+		}
 	}
 	option = {	# 
 		name = seto_islands.2.looser
@@ -324,6 +372,8 @@ news_event = {	# SHI and CHU accept an independent IMS
 	
 	is_triggered_only = yes
 
+	immediate = { hidden_effect = { clr_global_flag = seto_crisis_active } }
+	
 	option = {	# 
 		trigger = { tag = IMS }
 		name = seto_islands.6.ims
@@ -347,22 +397,45 @@ news_event = {	# SHI or CHU did not accept an independent IMS
 	major = yes
 	
 	is_triggered_only = yes
+	
+	immediate = {
+		hidden_effect = {
+			IMS = {
+				set_variable_to_random = {
+					var = time_random
+					min = 15
+					max = 45
+					integer = yes
+				}
+				activate_decision = IMS_maintain_independence
+				add_days_remove  = {
+					decision = IMS_choose_path
+					days = var:time_random
+				}
+				clear_variable = time_random
+			}
+		}
+	}
 
 	option = {	# 
-		trigger = { tag = SHI }
+		trigger = { tag = IMS }
 		name = seto_islands.61.ims
+		effect_tooltip = { IMS = { activate_decision = IMS_maintain_independence } }
 	}
 	option = {	# 
 		trigger = { tag = { has_country_flag = accepts_IMS } }
 		name = seto_islands.61.accepted
+		effect_tooltip = { IMS = { activate_decision = IMS_maintain_independence } }
 	}
 	option = {	# 
 		trigger = { tag = { has_country_flag = challanged_IMS } }
 		name = seto_islands.61.challanger
+		effect_tooltip = { IMS = { activate_decision = IMS_maintain_independence } }
 	}
 	option = {
 		trigger = { NOT = { tag = IMS tag = CHU tag = SHI } }
 		name = seto_islands.61.other
+		effect_tooltip = { IMS = { activate_decision = IMS_maintain_independence } }
 	}
 }
 
@@ -565,6 +638,13 @@ country_event = {	# SHI or CHU: annexation is challanged
 					type = take_state_focus
 					generator = { 23 25 26 34 }
 				}
+			}
+		}
+		hidden_effect = {
+			every_controlled_state = {
+				limit = { is_core_of = IMS }
+				remove_core_of = IMS
+				set_compliance  = 100
 			}
 		}
 	}
