@@ -1,0 +1,630 @@
+add_namespace = seto_islands
+
+news_event = {	# Cosmetic event setting the state for the brawl
+	id = seto_islands.0
+	title = seto_islands.0.t
+	desc = seto_islands.0.d
+	picture = GFX_news_set_islands
+	
+	is_triggered_only = yes
+
+	option = {
+		name = seto_islands.0.a
+	}
+}
+
+country_event = {	# IMS: Choose a path
+	id = seto_islands.1
+	title = seto_islands.1.t
+	desc = seto_islands.1.d
+	picture = GFX_report_event_seto_islands
+	
+	is_triggered_only = yes
+
+	option = {	# independence
+		name = seto_islands.1.a
+		every_owned_state = { remove_claim_by = CHU remove_claim_by = SHI }
+		CHU = { country_event = { id = seto_islands.3 hours = 48 } }
+		SHI = { country_event = { id = seto_islands.3 hours = 48 } }
+		set_global_flag = IMS_chose_IMS
+		ai_chance = {
+			base = 1
+			modifier = {
+				factor = 2
+				SHI = { has_war = yes }
+			}
+			modifier = {
+				factor = 2
+				CHU = { has_war = yes }
+			}
+		}
+	}
+	option = {	# chugoku
+		name = seto_islands.1.b
+		every_owned_state = { remove_claim_by = CHU }
+		CHU = { news_event = seto_islands.2 }
+		SHI = { country_event = { id = seto_islands.2 hours = 24 } }
+		set_global_flag = IMS_chose_CHU
+		ai_chance = {
+			base = 1
+			modifier = {
+				factor = 0
+				CHU = { has_war = yes }
+			}
+		}
+	}
+	option = {	# shikoku
+		name = seto_islands.1.c
+		every_owned_state = { remove_claim_by = SHI }
+		CHU = { country_event = { id = seto_islands.4 hours = 24 } }
+		SHI = { news_event = seto_islands.4 }
+		set_global_flag = IMS_chose_SHI
+		ai_chance = {
+			base = 1
+			modifier = {
+				factor = 0
+				SHI = { has_war = yes }
+			}
+		}
+	}
+}
+
+country_event = {	# IMS: Chose CHU
+	id = seto_islands.2
+	title = seto_islands.2.t
+	desc = seto_islands.2.d
+	picture = GFX_report_event_seto_islands
+	
+	major = yes
+	
+	is_triggered_only = yes
+
+	option = {	# 
+		name = seto_islands.2.ims
+	}
+	option = {	# 
+		name = seto_islands.2.chu
+		effect_tooltip = {
+			every_state = {
+				limit = { is_owned_by = IMS }
+				remove_claim_by = SHI
+			}
+		}
+	}
+	option = {	# 
+		name = seto_islands.2.accept
+		effect_tooltip = {
+			every_state = {
+				limit = { is_owned_by = IMS }
+				remove_claim_by = SHI
+			}
+		}
+		CHU = { country_event = { id = seto_islands.5 } }
+		ai_chance = {
+			base = 1
+			modifier = {
+				factor = 0
+				CHU = { has_war = yes }
+			}
+		}
+	}
+	option = {	# 
+		name = seto_islands.2.challange
+		effect_tooltip = {
+			every_state = {
+				limit = { is_owned_by = IMS }
+				remove_claim_by = SHI
+			}
+		}
+		CHU = { country_event = { id = seto_islands.13 hours = 24 } }
+		set_country_flag = challanges_annexation
+		ai_chance = {
+			base = 1
+			modifier = {
+				factor = 0
+				has_war = yes
+			}
+		}
+	}
+	option = {
+		name = seto_islands.2.other
+		effect_tooltip = {
+			every_state = {
+				limit = { is_owned_by = IMS }
+				remove_claim_by = SHI
+			}
+		}
+	}
+}
+
+country_event = {	# IMS: Chose independency
+	id = seto_islands.3
+	title = seto_islands.3.t
+	desc = seto_islands.3.d
+	picture = GFX_report_event_seto_islands
+	
+	major = yes
+	
+	is_triggered_only = yes
+
+	option = {	# 
+		name = seto_islands.2.ims
+	}
+	option = {	# 
+		name = seto_islands.2.accept
+		effect_tooltip = {
+			every_state = {
+				limit = { is_owned_by = IMS }
+				remove_claim_by = CHU
+				remove_claim_by = SHI
+			}
+		}
+		set_country_flag = decided_abt_IMS
+		set_country_flag = accepts_IMS
+		if = {
+			limit = { CHU = { has_country_flag = decided_abt_IMS } SHI = { has_country_flag = decided_abt_IMS } }
+			if = {
+				limit = { CHU = { has_country_flag = accepts_IMS } SHI = { has_country_flag = accepts_IMS } }
+				hidden_effect = { IMS = { news_event = seto_islands.6 } }
+			}
+		}
+		ai_chance = {
+			base = 2
+		}
+	}
+	option = {	# 
+		name = seto_islands.2.challange
+		effect_tooltip = {
+			every_state = {
+				limit = { is_owned_by = IMS }
+				remove_claim_by = CHU
+				remove_claim_by = SHI
+			}
+		}
+		set_country_flag = decided_abt_IMS
+		set_country_flag = challanged_IMS
+		hidden_effect = { IMS = { news_event = seto_islands.61 } }
+		ai_chance = {
+			base = 1
+			modifier = {
+				factor = 0
+				has_war = yes
+			}
+		}
+	}
+	option = {
+		name = seto_islands.2.other
+		effect_tooltip = {
+			every_state = {
+				limit = { is_owned_by = IMS }
+				remove_claim_by = CHU
+				remove_claim_by = SHI
+			}
+		}
+	}
+}
+
+country_event = {	# IMS: Chose SHI
+	id = seto_islands.4
+	title = seto_islands.4.t
+	desc = seto_islands.4.d
+	picture = GFX_report_event_seto_islands
+	
+	major = yes
+	
+	is_triggered_only = yes
+
+	option = {	# 
+		name = seto_islands.2.ims
+	}
+	option = {	# 
+		name = seto_islands.2.shi
+		effect_tooltip = {
+			every_state = {
+				limit = { is_owned_by = IMS }
+				remove_claim_by = CHU
+			}
+		}
+	}
+	option = {	# 
+		name = seto_islands.2.accept
+		effect_tooltip = {
+			every_state = {
+				limit = { is_owned_by = IMS }
+				remove_claim_by = CHU
+			}
+		}
+		SHI = { country_event = { id = seto_islands.5 } }
+		ai_chance = {
+			base = 1
+			modifier = {
+				factor = 0
+				SHI = { has_war = yes }
+			}
+		}
+	}
+	option = {	# 
+		name = seto_islands.2.challange
+		effect_tooltip = {
+			every_state = {
+				limit = { is_owned_by = IMS }
+				remove_claim_by = CHU
+			}
+		}
+		SHI = { country_event = { id = seto_islands.13 hours = 24 } }
+		set_country_flag = challanges_annexation
+		ai_chance = {
+			base = 1
+			modifier = {
+				factor = 0
+				has_war = yes
+			}
+		}
+	}
+	option = {
+		name = seto_islands.2.other
+		effect_tooltip = {
+			every_state = {
+				limit = { is_owned_by = IMS }
+				remove_claim_by = CHU
+			}
+		}
+	}
+}
+
+news_event = {	# SHI or CHU accepts IMS' choice, IMS is annexed
+	id = seto_islands.5
+	title = seto_islands.5.t
+	desc = seto_islands.5.d
+	picture = GFX_news_set_islands
+	
+	is_triggered_only = yes
+
+	option = {	# 
+		name = seto_islands.2.winner
+		trigger = { has_global_flag = IMS_chose_CHU tag = CHU }
+		annex_country = { target = IMS transfer_troops = yes }
+	}
+	option = {	# 
+		name = seto_islands.2.winner
+		trigger = { has_global_flag = IMS_chose_SHI tag = SHI }
+		annex_country = { target = IMS transfer_troops = yes }
+	}
+	option = {	# 
+		name = seto_islands.2.looser
+		trigger = { has_global_flag = IMS_chose_CHU tag = SHI }
+		effect_tooltip = { CHU = { annex_country = { target = IMS transfer_troops = yes } } }
+	}
+	option = {	# 
+		name = seto_islands.2.looser
+		trigger = { has_global_flag = IMS_chose_SHI tag = CHU }
+		effect_tooltip = { SHI = { annex_country = { target = IMS transfer_troops = yes } } }
+	}
+	option = {	# 
+		name = seto_islands.2.other
+		trigger = { NOT = { tag = IMS tag = CHU tag = SHI } }
+		if = {
+			limit = { has_global_flag = IMS_chose_CHU }
+			effect_tooltip = { CHU = { annex_country = { target = IMS transfer_troops = yes } } }
+		} else = {
+			effect_tooltip = { SHI = { annex_country = { target = IMS transfer_troops = yes } } }
+		}
+	}
+}
+
+news_event = {	# SHI and CHU accept an independent IMS
+	id = seto_islands.6
+	title = seto_islands.6.t
+	desc = seto_islands.6.d
+	picture = GFX_news_set_islands
+	
+	major = yes
+	
+	is_triggered_only = yes
+
+	option = {	# 
+		trigger = { tag = IMS }
+		name = seto_islands.6.ims
+	}
+	option = {	# 
+		trigger = { OR = { tag = CHU tag = SHI } }
+		name = seto_islands.6.shichu
+	}
+	option = {
+		trigger = { NOT = { tag = IMS tag = CHU tag = SHI } }
+		name = seto_islands.2.other
+	}
+}
+
+news_event = {	# SHI or CHU did not accept an independent IMS
+	id = seto_islands.61
+	title = seto_islands.61.t
+	desc = seto_islands.61.d
+	picture = GFX_news_set_islands
+	
+	major = yes
+	
+	is_triggered_only = yes
+
+	option = {	# 
+		trigger = { tag = SHI }
+		name = seto_islands.6.ims
+	}
+	option = {	# 
+		trigger = { tag = { has_country_flag = accepts_IMS } }
+		name = seto_islands.6.accepted
+	}
+	option = {	# 
+		trigger = { tag = { has_country_flag = challanged_IMS } }
+		name = seto_islands.6.challanger
+	}
+	option = {
+		trigger = { NOT = { tag = IMS tag = CHU tag = SHI } }
+		name = seto_islands.2.other
+	}
+}
+
+news_event = {	# SHI or CHU can demmand annexation
+	id = seto_islands.7
+	title = seto_islands.7.t
+	desc = seto_islands.7.d
+	picture = GFX_news_set_islands
+	
+	is_triggered_only = yes
+
+	option = {	# 
+		name = seto_islands.7.a
+		IMS = { country_event = { id = seto_islands.9 hours = 24 } }
+		set_country_flag = sent_ultimatum_IMS
+	}
+}
+
+news_event = {	# Not SHI nor CHU can demmand annexation
+	id = seto_islands.8
+	title = seto_islands.8.t
+	desc = seto_islands.8.d
+	picture = GFX_news_set_islands
+	
+	is_triggered_only = yes
+	
+	major = yes
+
+	option = {	# 
+		name = seto_islands.8.a
+	}
+}
+
+news_event = {	# IMS managed to secure its independence
+	id = seto_islands.91
+	title = seto_islands.91.t
+	desc = seto_islands.91.d
+	picture = GFX_news_set_islands
+	
+	is_triggered_only = yes
+	
+	major = yes
+
+	option = {	# 
+		name = seto_islands.91.ims
+		trigger = { tag = IMS }
+	}
+	option = {	# 
+		name = seto_islands.91.shicju
+		trigger = { OR = { tag = CHU tag = SHI } }
+	}
+	option = {	# 
+		name = seto_islands.91.other
+		trigger = { NOT = { tag = IMS tag = CHU tag = SHI } }
+	}
+}
+
+
+country_event = {	# IMS: receives an ultimatum
+	id = seto_islands.9
+	title = seto_islands.9.t
+	desc = seto_islands.9.d
+	picture = GFX_report_event_seto_islands
+	
+	is_triggered_only = yes
+
+	option = {	# 
+		name = seto_islands.2.refuse
+		FROM = {
+			country_event = { id = seto_islands.10 hours = 24 }
+			effect_tooltip = { declare_war_on = { target = IMS type = annex_everything } }
+		}
+		ai_chance = {
+			base = 1
+			modifier = {
+				factor = 2
+				is_in_faction = yes
+			}
+			modifier = {
+				factor = 5
+				FROM = { has_war = yes }
+			}
+			modifier = {
+				factor = 0.5
+				FROM = { is_in_faction = yes }
+			}
+		}
+	}
+	option = {	# 
+		name = seto_islands.2.accept
+		FROM = { country_event = { id = seto_islands.11 } }
+		custom_effect_tooltip = seto_islands.9.warning
+		ai_chance = {
+			base = 1
+			modifier = {
+				factor = 0
+				any_other_country = { has_guaranteed = IMS is_major = yes }
+			}
+			modifier = {
+				factor = 0
+				FROM = {
+					has_war = yes
+					is_in_faction = no
+				}
+			}
+		}
+	}
+}
+
+news_event = {	# IMS: resists an ultimatum
+	id = seto_islands.10
+	title = seto_islands.10.t
+	desc = seto_islands.10.d
+	picture = GFX_news_set_islands
+	
+	major = yes
+	fire_for_sender = no
+	
+	is_triggered_only = yes
+
+	option = {	# 
+		trigger = { has_country_flag = sent_ultimatum_IMS }
+		name = seto_islands.10.enemy
+		hidden_effect = {
+			create_wargoal = {
+				type = annex_everything
+				target = IMS
+			}
+			IMS = { news_event = seto_islands.12 }
+		}
+		declare_war_on = { target = IMS type = annex_everything }
+	}
+	option = {	# 
+		trigger = { NOT = { has_country_flag = sent_ultimatum_IMS } }
+		name = seto_islands.10.other
+	}
+}
+
+news_event = {	# IMS: accepted an ultimatum
+	id = seto_islands.11
+	title = seto_islands.11.t
+	desc = seto_islands.11.d
+	picture = GFX_news_set_islands
+	
+	major = yes
+	
+	is_triggered_only = yes
+
+	option = {	# 
+		trigger = { has_country_flag = sent_ultimatum_IMS }
+		name = seto_islands.11.enemy
+	}
+	option = {	# 
+		trigger = { NOT = { has_country_flag = sent_ultimatum_IMS } }
+		name = seto_islands.11.other
+	}
+}
+
+news_event = {	# IMS: resists an ultimatum, fucks around, find out (war)
+	id = seto_islands.12
+	title = seto_islands.12.t
+	desc = seto_islands.12.d
+	picture = GFX_news_set_islands
+	
+	is_triggered_only = yes
+	
+	major = yes
+
+	option = {	# 
+		trigger = { tag = IMS }
+		name = seto_islands.12.ims
+	}
+	option = {	# 
+		trigger = { has_country_flag = sent_ultimatum_IMS }
+		name = seto_islands.12.enemy
+		declare_war_on = { target = IMS type = annex_everything }
+	}
+	option = {	# 
+		trigger = { NOT = { has_country_flag = sent_ultimatum_IMS tag = IMS  } }
+		name = seto_islands.12.other
+	}
+}
+
+country_event = {	# SHI or CHU: annexation is challanged
+	id = seto_islands.13
+	title = seto_islands.13.t
+	desc = seto_islands.13.d
+	picture = GFX_report_event_seto_islands
+	
+	is_triggered_only = yes
+
+	option = {	# 
+		name = seto_islands.13.war
+		annex_country = { target = IMS transfer_troops = yes }
+		FROM = {
+			news_event = { id = seto_islands.15 hours = 1 }
+			effect_tooltip = {
+				declare_war_on = {
+					target = ROOT
+					type = take_state_focus
+					generator = { 23 25 26 34 }
+				}
+			}
+		}
+	}
+	option = {	# 
+		name = seto_islands.13.peace
+		news_event = { id = seto_islands.14 }
+	}
+}
+
+news_event = {	# IMS: remains independent
+	id = seto_islands.14
+	title = seto_islands.14.t
+	desc = seto_islands.14.d
+	picture = GFX_news_set_islands
+	
+	is_triggered_only = yes
+	
+	major = yes
+
+	option = {	# 
+		trigger = { tag = IMS }
+		name = seto_islands.14.ims
+	}
+	option = {	# 
+		trigger = { OR = { tag = CHU tag = SHI } NOT = { has_counrty_flag = challanges_annexation } }
+		name = seto_islands.14.favored
+	}
+	option = {	# 
+		trigger = { OR = { tag = CHU tag = SHI } has_counrty_flag = challanges_annexation }
+		name = seto_islands.14.challanger
+	}
+	option = {	# 
+		trigger = { NOT = { tag = IMS tag = CHU tag = SHI } }
+		name = seto_islands.14.other
+	}
+}
+
+news_event = {	# IMS is annexed, war starts
+	id = seto_islands.15
+	title = seto_islands.15.t
+	desc = seto_islands.15.d
+	picture = GFX_news_set_islands
+	
+	is_triggered_only = yes
+	
+	major = yes
+
+	option = {	# 
+		trigger = { OR = { tag = CHU tag = SHI } NOT = { has_counrty_flag = challanges_annexation } }
+		name = seto_islands.15.favored
+	}
+	option = {	# 
+		trigger = { has_country_flag = challanges_annexation }
+		name = seto_islands.15.challanger
+		declare_war_on = {
+			target = ROOT
+			type = take_state_focus
+			generator = { 23 25 26 34 }
+		}
+	}
+	option = {	# 
+		trigger = { NOT = { tag = CHU tag = SHI } }
+		name = seto_islands.14.other
+	}
+}
