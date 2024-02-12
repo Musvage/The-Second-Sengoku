@@ -2835,7 +2835,8 @@ focus_tree = {
 
 	focus = {
 		id = ss_generic_modernisation
-		icon = GFX_focus_generic_idea
+		icon = { value = GFX_goal_generic_demand_territory trigger = { tag = IMS } }
+		icon = { value = GFX_focus_generic_idea }
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
 		mutually_exclusive = { focus = ss_generic_tradition }
@@ -2879,16 +2880,37 @@ focus_tree = {
 					has_government = neutrality
 				}
 			}
+			if = {
+				limit = { tag = IMS }
+				NOT = {
+					has_global_flag = IMS_chose_CHU
+					has_global_flag = IMS_chose_SHI
+				}
+			}
+		}
+		
+		bypass = {
+			if = {
+				limit = { tag = IMS }
+				NOT = { has_global_flag = seto_crisis_active }
+			} else = { hidden_trigger = { always = no } }
 		}
 
 		completion_reward = {
 			add_political_power = 120
+			if = {
+				limit = { tag = IMS }
+				add_to_variable = { global.IMS_favor_CHU_other = -25 tooltip = IMS_chose_CHU_tooltip_negative }
+				add_to_variable = { global.IMS_favor_SHI_other = -25 tooltip = IMS_chose_SHI_tooltip_negative }
+				IMS_get_favor_all = yes
+			}
 		}
 	}
 	
 	focus = {
 		id = ss_generic_tradition
-		icon = GFX_focus_ROC_reject_modernity
+		icon = { value = GFX_goal_molotov_ribbentrop_pact trigger = { tag = IMS } }
+		icon = { value = GFX_focus_ROC_reject_modernity }
 		search_filters = { FOCUS_FILTER_STABILITY }
 		
 		mutually_exclusive = { focus = ss_generic_modernisation }
@@ -2909,6 +2931,19 @@ focus_tree = {
 					has_government = fascism
 				}
 			}
+			if = {
+				limit = { tag = IMS }
+				NOT = {
+					has_global_flag = IMS_chose_IMS
+				}
+			}
+		}
+		
+		bypass = {
+			if = {
+				limit = { tag = IMS }
+				NOT = { has_global_flag = seto_crisis_active }
+			} else = { hidden_trigger = { always = no } }
 		}
 		
 		ai_will_do = {
@@ -2929,6 +2964,11 @@ focus_tree = {
 
 		completion_reward = {
 			add_stability = 0.1
+			if = {
+				limit = { tag = IMS }
+				add_to_variable = { global.IMS_favor_IMS_other = -25 tooltip = IMS_chose_IMS_tooltip_negative }
+				IMS_get_favor_all = yes
+			}
 		}
 	}
 	
@@ -2938,7 +2978,7 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = ss_generic_modernisation }
-		mutually_exclusive = { focus = ss_generic_center focus = ss_generic_right }
+		mutually_exclusive = { focus = ss_generic_center focus = ss_generic_right focus = IMS_generic_join_lon }
 		x = -2
 		y = 1
 		relative_position_id = ss_generic_modernisation
@@ -2970,6 +3010,10 @@ focus_tree = {
 				has_idea_with_trait = welfare_proponent
 				has_idea_with_trait = communist_revolutionary
 			}
+			modifier = {
+				factor = 0
+				tag = IMS
+			}
 		}
 
 		available_if_capitulated = yes
@@ -2993,6 +3037,8 @@ focus_tree = {
 		relative_position_id = ss_generic_modernisation
 		
 		cost = 10
+		
+		allow_branch = { NOT = { tag = IMS } }
 		
 		available = {
 			if = {
@@ -3035,10 +3081,14 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = ss_generic_tradition }
-		mutually_exclusive = { focus = ss_generic_left focus = ss_generic_center }
+		mutually_exclusive = { focus = ss_generic_left focus = ss_generic_center focus = IMS_generic_join_lon }
 		relative_position_id = ss_generic_tradition
 		x = 2
 		y = 1
+		offset = {
+			x = -2 y = 0
+			trigger = { tag = IMS }
+		}
 		
 		cost = 10
 		
@@ -3070,12 +3120,150 @@ focus_tree = {
 				has_idea_with_trait = persuasive_monarchist
 				has_idea_with_trait = fascist_demagogue
 			}
+			modifier = {
+				factor = 0
+				tag = IMS
+				has_global_flag = IMS_chose_IMS
+			}
 		}
 
 		completion_reward = {
-			add_timed_idea = { idea = generic_idea_right days = 1095 } 
+			if = {
+				limit = { NOT = { tag = IMS } }
+				add_timed_idea = { idea = generic_idea_right days = 1095 } 
+			} else = { add_timed_idea = { idea = generic_idea_right_alt days = 1095 } }
 			set_country_flag = allowed_path_autocracy
 			set_country_flag = allowed_path_fascism
+		}
+	}
+	
+	focus = {
+		id = IMS_generic_join_lon
+		icon = GFX_focus_generic_league_of_nations
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		
+		prerequisite = { focus = ss_generic_modernisation }
+		mutually_exclusive = { focus = ss_generic_left focus = ss_generic_right }
+		x = 1
+		y = 1
+		relative_position_id = ss_generic_modernisation
+		
+		cost = 10
+
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				has_idea_with_trait = welfare_proponent
+				has_idea_with_trait = establishment_mouthpiece
+				has_idea_with_trait = persuasive_monarchist
+				has_idea_with_trait = fascist_demagogue
+				has_idea_with_trait = communist_revolutionary
+			}
+			modifier = {
+				factor = 0
+				tag = IMS
+				OR = {
+					has_global_flag = IMS_chose_CHU
+					has_global_flag = IMS_chose_SHI
+				}
+			}
+		}
+		
+		allow_branch = { tag = IMS }
+		
+		available = {
+			has_government = democratic
+			has_global_flag = league_of_nations_exists
+		}
+		
+		bypass = { NOT = { has_global_flag = league_of_nations_exists } }
+
+		completion_reward = {
+			effect_tooltip = {
+				add_ideas = SS_lon_member_japan
+				add_to_variable = { global.IMS_favor_IMS_other = 25 tooltip = IMS_chose_IMS_tooltip }
+			}
+			hidden_effect = {
+				world_stage_set_leagueofnations_spirit = yes
+				add_to_array = { global.array_leagueofnations = THIS.id }
+				IMS_get_favor_all = yes
+			}
+		}
+	}
+	
+	focus = {
+		id = IMS_generic_prepare_for_war
+		icon = GFX_goal_generic_military_sphere
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_MANPOWER FOCUS_FILTER_INDUSTRY }
+		
+		prerequisite = { focus = IMS_generic_join_lon }
+		x = 0
+		y = 1
+		relative_position_id = IMS_generic_join_lon
+		
+		cost = 10
+
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 50
+		}
+		
+		allow_branch = { tag = IMS }
+		
+		available = {
+			has_war_support > 0.50
+		}
+		
+
+		completion_reward = {
+			if = {
+				limit = {
+					NOT = {
+						has_idea = limited_conscription
+						has_idea = extensive_conscription
+						has_idea = service_by_requirement
+						has_idea = all_adults_serve
+						has_idea = scraping_the_barrel
+					}
+				}
+				add_to_variable = { global.IMS_favor_IMS_other = 10 tooltip = IMS_chose_IMS_tooltip }
+			} else = { add_to_variable = { global.IMS_favor_IMS_other = 20 tooltip = IMS_chose_IMS_tooltip } }
+			if = {
+				limit = {
+					NOT = {
+						has_idea = partial_economic_mobilisation
+						has_idea = war_economy
+						has_idea = tot_economic_mobilisation
+					}
+				}
+				add_offsite_building = { type = arms_factory level = 1 }
+			} else = { add_offsite_building = { type = arms_factory level = 2 } }
+			if = {
+				limit = {
+					NOT = {
+						has_idea = limited_conscription
+						has_idea = extensive_conscription
+						has_idea = service_by_requirement
+						has_idea = all_adults_serve
+						has_idea = scraping_the_barrel
+					}
+				}
+				add_ideas = limited_conscription
+			}
+			if = {
+				limit = {
+					NOT = {
+						has_idea = partial_economic_mobilisation
+						has_idea = war_economy
+						has_idea = tot_economic_mobilisation
+					}
+				}
+				add_ideas = partial_economic_mobilisation	# this looks convoluted but helps with more readable tooltip
+			}
 		}
 	}
 	
@@ -3214,6 +3402,8 @@ focus_tree = {
 			}
 		}
 		
+		allow_branch = { NOT = { tag = IMS } }
+		
 		available = {
 			democratic > 0.33
 			NOT = { has_government = democratic }
@@ -3249,6 +3439,8 @@ focus_tree = {
 		cost = 10
 
 		available_if_capitulated = yes
+		
+		allow_branch = { NOT = { tag = IMS } }
 		
 		ai_will_do = {
 			factor = 1
@@ -3288,15 +3480,69 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = IMS_generic_government_neutrality
+		icon = GFX_focus_PRO_executive_takeover
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		
+		prerequisite = { focus = ss_generic_right }
+		mutually_exclusive = { focus = ss_generic_government_autocratic focus = ss_generic_government_fascism  focus = ss_generic_government_democratic }
+		x = 1
+		y = 1
+		relative_position_id = ss_generic_center
+		
+		cost = 10
+
+		available_if_capitulated = yes
+		
+		allow_branch = { tag = IMS }
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				has_idea_with_trait = welfare_proponent
+				has_idea_with_trait = democratic_reformer
+				has_idea_with_trait = persuasive_monarchist
+				has_idea_with_trait = fascist_demagogue
+				has_idea_with_trait = communist_revolutionary
+			}
+			modifier = {
+				factor = 0
+				tag = IMS
+				has_global_flag = IMS_chose_SHI
+			}
+		}
+		
+		available = {
+			neutrality > 0.20
+		}
+
+		completion_reward = {
+			if = {
+				limit = { NOT = { has_government = neutrality } }
+				set_politics = {
+					ruling_party = neutrality
+					elections_allowed = no
+				}
+			} else = { add_political_power = 120 }
+			add_to_variable = { global.IMS_favor_CHU_other = 10 tooltip = IMS_chose_CHU_tooltip }
+		}
+	}
+	
+	focus = {
 		id = ss_generic_government_fascism
 		icon = GFX_focus_generic_martial_law
 		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_WORLD }
 		
 		prerequisite = { focus = ss_generic_right }
-		mutually_exclusive = { focus = ss_generic_government_autocratic focus = ss_generic_government_neutrality }
+		mutually_exclusive = { focus = ss_generic_government_autocratic focus = IMS_generic_government_neutrality focus = ss_generic_government_neutrality }
 		x = -1
 		y = 1
 		relative_position_id = ss_generic_right
+		offset = {
+			x = 2 y = 0
+			trigger = { tag = IMS }
+		}
 		
 		cost = 10
 
@@ -3312,24 +3558,47 @@ focus_tree = {
 				has_idea_with_trait = democratic_reformer
 				has_idea_with_trait = communist_revolutionary
 			}
+			modifier = {
+				factor = 0
+				tag = IMS
+				has_global_flag = IMS_chose_CHU
+			}
 		}
 		
 		available = {
-			fascism > 0.33
-			NOT = { has_government = fascism }
+			if = {
+				limit = { NOT = { tag = IMS } }
+				fascism > 0.33
+				has_government = fascism
+			} else = { fascism > 0.20 }
 			OR = {
 				is_subject = no
 				OVERLORD = { has_government = fascism }
 			}
 		}
 		bypass = {
-			has_government = fascism
+			if = {
+				limit = { NOT = { tag = IMS } }
+				has_government = fascism
+			} else = { hidden_trigger = { always = no } }
 		}
 
 		completion_reward = {
-			set_politics = {
-				ruling_party = fascism
-				elections_allowed = no
+			if = {
+				limit = { NOT = { tag = IMS } }
+				set_politics = {
+					ruling_party = fascism
+					elections_allowed = no
+				}
+			} else = {
+				if = {
+					limit = { NOT = { has_government = fascism } }
+					set_politics = {
+						ruling_party = fascism
+						elections_allowed = no
+					}
+				} else = { add_political_power = 120 }
+				add_to_variable = { global.IMS_favor_SHI_other = 10 tooltip = IMS_chose_SHI_tooltip }
 			}
 		}
 	}
@@ -3342,10 +3611,14 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = ss_generic_right }
-		mutually_exclusive = { focus = ss_generic_government_neutrality focus = ss_generic_government_fascism }
+		mutually_exclusive = { focus = ss_generic_government_neutrality focus = IMS_generic_government_neutrality focus = ss_generic_government_fascism }
 		x = 1
 		y = 1
 		relative_position_id = ss_generic_right
+		offset = {
+			x = 2 y = 0
+			trigger = { tag = IMS }
+		}
 		
 		cost = 10
 
@@ -3360,6 +3633,10 @@ focus_tree = {
 				has_idea_with_trait = democratic_reformer
 				has_idea_with_trait = fascist_demagogue
 				has_idea_with_trait = communist_revolutionary
+			}
+			modifier = {
+				factor = 0
+				tag = IMS
 			}
 		}
 		
@@ -3430,7 +3707,7 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_STABILITY }
 		dynamic = yes
 		
-		prerequisite = { focus = ss_generic_government_democratic_socialism focus = ss_generic_government_democratic focus = ss_generic_government_communism }
+		prerequisite = { focus = ss_generic_government_democratic_socialism focus = ss_generic_government_democratic focus = ss_generic_government_communism focus = IMS_generic_join_lon}
 		mutually_exclusive = { focus = ss_generic_atheist_state }
 		x = 1
 		y = 1
@@ -3665,7 +3942,7 @@ focus_tree = {
 		icon = GFX_goal_generic_improve_relations
 		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
 		
-		prerequisite = { focus = ss_generic_government_democratic focus = ss_generic_government_democratic_socialism }
+		prerequisite = { focus = ss_generic_government_democratic focus = ss_generic_government_democratic_socialism focus = IMS_generic_join_lon }
 		x = 1
 		y = 1
 		relative_position_id = ss_generic_government_democratic
