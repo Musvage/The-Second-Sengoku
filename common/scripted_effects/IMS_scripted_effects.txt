@@ -27,8 +27,8 @@ IMS_get_favor_CHU = {
 		set_variable = { global.IMS_favor_CHU_threshold = global.IMS_favor_CHU }
 		divide_variable = { global.IMS_favor_CHU_threshold = 2 }
 		log = "IMS_favor_CHU [?global.IMS_favor_CHU]"
-		clamp_variable = { var = global.IMS_favor_CHU min = 0 }
-		clamp_variable = { var = global.IMS_favor_CHU_threshold min = 0 }
+		clamp_variable = { var = global.IMS_favor_CHU min = 0 max = 150 }
+		clamp_variable = { var = global.IMS_favor_CHU_threshold min = 0 max = 75 }
 	}
 } d_IMS_get_favor_CHU = { log = "IMS_get_favor_CHU " IMS_get_favor_CHU = yes }
 
@@ -61,8 +61,8 @@ IMS_get_favor_SHI = {
 		set_variable = { global.IMS_favor_SHI_threshold = global.IMS_favor_SHI }
 		divide_variable = { global.IMS_favor_SHI_threshold = 2 }
 		log = "IMS_favor_SHI [?global.IMS_favor_SHI]"
-		clamp_variable = { var = global.IMS_favor_SHI min = 0 }
-		clamp_variable = { var = global.IMS_favor_SHI_threshold min = 0 }
+		clamp_variable = { var = global.IMS_favor_SHI min = 0 max = 150 }
+		clamp_variable = { var = global.IMS_favor_SHI_threshold min = 0 max = 75 }
 	}
 } d_IMS_get_favor_SHI = { log = "IMS_get_favor_SHI" IMS_get_favor_SHI = yes }
 
@@ -90,8 +90,8 @@ IMS_get_favor_IMS = {
 		set_variable = { global.IMS_favor_IMS_threshold = global.IMS_favor_IMS }
 		divide_variable = { global.IMS_favor_IMS_threshold = 2 }
 		log = "IMS_favor_IMS [?global.IMS_favor_IMS]"
-		clamp_variable = { var = global.IMS_favor_IMS min = 0 }
-		clamp_variable = { var = global.IMS_favor_IMS_threshold min = 0 }
+		clamp_variable = { var = global.IMS_favor_IMS min = 0 max = 150 }
+		clamp_variable = { var = global.IMS_favor_IMS_threshold min = 0 max = 75 }
 	}
 } d_IMS_get_favor_IMS = { log = "IMS_get_favor_IMS" IMS_get_favor_IMS = yes }
 
@@ -100,3 +100,61 @@ IMS_get_favor_all = {
 	d_IMS_get_favor_SHI = yes
 	d_IMS_get_favor_IMS = yes
 } d_IMS_get_favor_all = { log = "IMS_get_favor_all " IMS_get_favor_all = yes }
+
+IMS_crisis_AI_CHU_decision_to_contest = {
+	hidden_effect = {
+		if = {
+			limit = { has_global_flag = IMS_chose_IMS }
+			set_temp_variable = { desire_to_contest = global.IMS_favor_CHU }
+			subtract_from_variable = { desire_to_contest = global.IMS_favor_IMS }
+			if = {
+				limit = {
+					check_variable = { desire_to_contest > -25 }
+					check_variable = { global.IMS_favor_CHU > global.IMS_favor_SHI }
+				}
+				set_country_flag = ai_will_contest_IMS log = "[THIS.GetName] ai_will_contest_IMS"
+			}	
+		}
+		if = {
+			limit = { has_global_flag = IMS_chose_SHI }
+			set_temp_variable = { desire_to_contest = global.IMS_favor_CHU }
+			subtract_from_variable = { desire_to_contest = global.IMS_favor_SHI }
+			add_to_variable = { desire_to_contest = global.IMS_favor_IMS }
+			if = {
+				limit = {
+					check_variable = { desire_to_contest > -25 }
+				}
+				set_country_flag = ai_will_contest_IMS log = "[THIS.GetName] ai_will_contest_IMS"
+			}	
+		}
+	}
+}
+
+IMS_crisis_AI_SHI_decision_to_contest = {
+	hidden_effect = {
+		if = {
+			limit = { has_global_flag = IMS_chose_IMS }
+			set_temp_variable = { desire_to_contest = global.IMS_favor_SHI }
+			subtract_from_variable = { desire_to_contest = global.IMS_favor_IMS }
+			if = {
+				limit = {
+					check_variable = { desire_to_contest > -25 }
+					check_variable = { global.IMS_favor_SHI > global.IMS_favor_CHU }
+				}
+				set_country_flag = ai_will_contest_IMS log = "[THIS.GetName] ai_will_contest_IMS"
+			}	
+		}
+		if = {
+			limit = { has_global_flag = IMS_chose_CHU }
+			set_temp_variable = { desire_to_contest = global.IMS_favor_SHI }
+			subtract_from_variable = { desire_to_contest = global.IMS_favor_CHU }
+			add_to_variable = { desire_to_contest = global.IMS_favor_IMS }
+			if = {
+				limit = {
+					check_variable = { desire_to_contest > -25 }
+				}
+				set_country_flag = ai_will_contest_IMS log = "[THIS.GetName] ai_will_contest_IMS"
+			}	
+		}
+	}
+}

@@ -55,7 +55,6 @@ country_event = {	# IMS: Choose a path
 
 	option = {	# independence
 		name = seto_islands.1.a
-		country_event = { id = seto_islands.3 hours = 12 random = 24 }
 		#effect_tooltip = {
 		#	every_country = {
 		#		limit = { OR = { tag = SHI tag = CHU } }	# this looks convoluted but helps to display a better tooltip
@@ -77,18 +76,24 @@ country_event = {	# IMS: Choose a path
 		set_global_flag = IMS_chose_IMS
 		add_to_variable = { global.IMS_favor_IMS_other = 25 tooltip = IMS_chose_IMS_tooltip }
 		IMS_get_favor_all = yes
+		IMS_crisis_AI_SHI_decision_to_contest = yes
+		IMS_crisis_AI_CHU_decision_to_contest = yes
+		country_event = { id = seto_islands.3 hours = 12 random = 24 }
 		ai_chance = {
 			base = var:global.IMS_favor_IMS
 			modifier = {
 				factor = 0.1
 				has_war = yes
 			}
+			modifier = {
+				factor = 2
+				has_completed_focus = ss_generic_modernisation
+			}
 		}
 	}
 	option = {	# chugoku
 		name = seto_islands.1.b
 		trigger = { country_exists = CHU }
-		country_event = { id = seto_islands.2 hours = 3 random = 3 }
 #		effect_tooltip = {
 #			every_country = {
 #				limit = { OR = { tag = SHI tag = CHU } }	# this looks convoluted but helps to display a better tooltip
@@ -102,14 +107,28 @@ country_event = {	# IMS: Choose a path
 		set_global_flag = IMS_chose_CHU
 		add_to_variable = { global.IMS_favor_CHU_other = 25 tooltip = IMS_chose_CHU_tooltip }
 		IMS_get_favor_all = yes
+		IMS_crisis_AI_SHI_decision_to_contest = yes
+		country_event = { id = seto_islands.2 hours = 3 random = 3 }
+		ai_strategy = {
+			type = befriend
+			id = CHU
+			value = 100
+		}
 		ai_chance = {
 			base = var:global.IMS_favor_CHU
+			modifier = {
+				factor = 2
+				has_completed_focus = ss_generic_tradition
+			}
+			modifier = {
+				factor = 2
+				has_completed_focus = IMS_generic_government_neutrality
+			}
 		}
 	}
 	option = {	# shikoku
 		name = seto_islands.1.c
 		trigger = { country_exists = SHI }
-		country_event = { id = seto_islands.4 hours = 3 random = 3 }
 #		effect_tooltip = {
 #			every_country = {
 #				limit = { OR = { tag = SHI tag = CHU } }	# this looks convoluted but helps to display a better tooltip
@@ -123,8 +142,23 @@ country_event = {	# IMS: Choose a path
 		set_global_flag = IMS_chose_SHI
 		add_to_variable = { global.IMS_favor_SHI_other = 25 tooltip = IMS_chose_SHI_tooltip }
 		IMS_get_favor_all = yes
+		IMS_crisis_AI_CHU_decision_to_contest = yes
+		country_event = { id = seto_islands.4 hours = 3 random = 3 }
+		ai_strategy = {
+			type = befriend
+			id = SHI
+			value = 100
+		}
 		ai_chance = {
 			base = var:global.IMS_favor_SHI
+			modifier = {
+				factor = 2
+				has_completed_focus = ss_generic_tradition
+			}
+			modifier = {
+				factor = 2
+				has_completed_focus = ss_generic_government_fascism
+			}
 		}
 	}
 }
@@ -152,7 +186,11 @@ country_event = {	# IMS: Chose CHU
 		name = seto_islands.2.accept
 		CHU = { country_event = { id = seto_islands.5 hours = 18 random = 6 } }
 		ai_chance = {
-			base = var:global.IMS_favor_CHU
+			base = 1
+			modifier = {
+				factor = 0
+				has_country_flag = ai_will_contest_IMS
+			}
 		}
 	}
 	option = {	# 
@@ -161,7 +199,11 @@ country_event = {	# IMS: Chose CHU
 		CHU = { country_event = { id = seto_islands.13 hours = 18 random = 6 } }
 		set_country_flag = challanges_annexation
 		ai_chance = {
-			base = var:global.IMS_favor_SHI
+			base = 1
+			modifier = {
+				factor = 0
+				NOT = { has_country_flag = ai_will_contest_IMS }
+			}
 		}
 	}
 	option = {
@@ -197,7 +239,11 @@ country_event = {	# IMS: Chose independency
 			}
 		}
 		ai_chance = {
-			base = var:global.IMS_favor_IMS
+			base = 1
+			modifier = {
+				factor = 0
+				has_country_flag = ai_will_contest_IMS
+			}
 		}
 	}
 	option = {	# 
@@ -210,14 +256,10 @@ country_event = {	# IMS: Chose independency
 			hidden_effect = { IMS = { news_event = seto_islands.61 hours = 12 random = 24 } }
 		}
 		ai_chance = {
-			base = 0
+			base = 1
 			modifier = {
-				add = var:global.IMS_favor_SHI
-				tag = SHI
-			}
-			modifier = {
-				add = var:global.IMS_favor_CHU
-				tag = CHU
+				factor = 0
+				NOT = { has_country_flag = ai_will_contest_IMS }
 			}
 		}
 	}
@@ -250,7 +292,11 @@ country_event = {	# IMS: Chose SHI
 		name = seto_islands.4.accept
 		SHI = { country_event = { id = seto_islands.5hours = 18 random = 6 } }
 		ai_chance = {
-			base = var:global.IMS_favor_SHI
+			base = 1
+			modifier = {
+				factor = 0
+				has_country_flag = ai_will_contest_IMS
+			}
 		}
 	}
 	option = {	# 
@@ -259,7 +305,11 @@ country_event = {	# IMS: Chose SHI
 		SHI = { country_event = { id = seto_islands.13 hours = 18 random = 6 } }
 		set_country_flag = challanges_annexation
 		ai_chance = {
-			base = var:global.IMS_favor_CHU
+			base = 1
+			modifier = {
+				factor = 0
+				NOT = { has_country_flag = ai_will_contest_IMS }
+			}
 		}
 	}
 	option = {
@@ -536,6 +586,8 @@ news_event = {	# IMS: resists an ultimatum
 	fire_for_sender = no
 	
 	is_triggered_only = yes
+	
+	immediate = { hidden_effect = { clr_global_flag = seto_crisis_active } }
 
 	option = {	# 
 		trigger = { has_country_flag = sent_ultimatum_IMS }
@@ -673,6 +725,8 @@ news_event = {	# IMS is annexed, war starts
 	is_triggered_only = yes
 	
 	major = yes
+	
+	immediate = { hidden_effect = { clr_global_flag = seto_crisis_active } }
 
 	option = {	# 
 		trigger = { OR = { tag = CHU tag = SHI } NOT = { has_counrty_flag = challanges_annexation } }
