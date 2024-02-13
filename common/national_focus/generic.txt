@@ -107,6 +107,11 @@ focus_tree = {
 				uses = 1
 				category = land_doctrine
 			}
+			if = {
+				limit = { tag = IMS has_idea = IMS_precarious_army_3 }
+				hidden_effect = { swap_ideas = { remove_idea = IMS_precarious_army_3 add_idea = IMS_precarious_army_2 } calculate_division_limit = yes }
+				custom_effect_tooltip = IMS_swap_ideas_3_2
+			}
 		}
 	}
 
@@ -185,6 +190,11 @@ focus_tree = {
 				uses = 1
 				category = land_doctrine
 			}
+			if = {
+				limit = { tag = IMS OR = { has_idea = IMS_precarious_army_2 has_idea = IMS_precarious_army_3 } }
+				hidden_effect = { swap_ideas = { remove_idea = IMS_precarious_army_2 add_idea = IMS_precarious_army_1 } calculate_division_limit = yes }
+				custom_effect_tooltip = IMS_swap_ideas_2_1
+			}
 		}
 	}
 
@@ -238,6 +248,7 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_RESEARCH }
 		icon = GFX_focus_KAN_small_arms_modernization
 		prerequisite = { focus = equipment_effort_3  focus = doctrine_effort_2 focus = armor_effort }
+		dynamic = yes
 		x = 1
 		y = 1
 		relative_position_id = equipment_effort_3
@@ -245,7 +256,7 @@ focus_tree = {
 
 		available_if_capitulated = yes
 		
-		allow_branch = { NOT = { tag = OSA tag = FRA tag = AMC tag = OKI } }
+		allow_branch = { NOT = { tag = OSA tag = FRA tag = AMC tag = OKI tag = IMS } }
 
 		completion_reward = {
 			add_ideas = special_forces
@@ -266,6 +277,39 @@ focus_tree = {
 					category = marine_tech
 					category = mountaineers_tech
 				}
+			}
+		}
+	}
+	
+	focus = {
+		id = IMS_generic_professional_army
+		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_MANPOWER }
+		icon = GFX_focus_KAN_sway_the_generals
+		prerequisite = { focus = doctrine_effort_2}
+		dynamic = yes
+		x = 1
+		y = 1
+		relative_position_id = equipment_effort_3
+		cost = 10
+
+		available_if_capitulated = yes
+		
+		allow_branch = {tag = IMS }
+
+		completion_reward = {
+			army_experience = 5
+			add_ideas = special_forces
+			if = {
+				limit = { tag = IMS has_idea = IMS_precarious_army_3 }
+				remove_ideas = IMS_precarious_army_3 hidden_effect = { calculate_division_limit = yes }
+			}
+			if = {
+				limit = { tag = IMS has_idea = IMS_precarious_army_2 }
+				remove_ideas = IMS_precarious_army_2 hidden_effect = { calculate_division_limit = yes }
+			}
+			if = {
+				limit = { tag = IMS has_idea = IMS_precarious_army_1 }
+				remove_ideas = IMS_precarious_army_1 hidden_effect = { calculate_division_limit = yes }
 			}
 		}
 	}
@@ -2835,10 +2879,10 @@ focus_tree = {
 
 	focus = {
 		id = ss_generic_modernisation
-		icon = { value = GFX_goal_generic_demand_territory trigger = { tag = IMS } }
+		icon = { value = GFX_goal_anschluss trigger = { tag = IMS } }
 		icon = { value = GFX_focus_generic_idea }
 		search_filters = { FOCUS_FILTER_POLITICAL }
-		
+		dynamic = yes
 		mutually_exclusive = { focus = ss_generic_tradition }
 		#relative_position_id	# NO RELATIVE POSITION since the top focus of the branch to the left has allow_branch and may not be visible!
 		x = 19
@@ -2917,7 +2961,7 @@ focus_tree = {
 		icon = { value = GFX_goal_molotov_ribbentrop_pact trigger = { tag = IMS } }
 		icon = { value = GFX_focus_ROC_reject_modernity }
 		search_filters = { FOCUS_FILTER_STABILITY }
-		
+		dynamic = yes
 		mutually_exclusive = { focus = ss_generic_modernisation }
 		relative_position_id = ss_generic_modernisation
 		x = 6
