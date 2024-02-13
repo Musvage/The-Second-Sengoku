@@ -842,3 +842,149 @@ world_stage_torch_category = {
 		}
 	}
 }
+
+foreign_politics = {
+
+	# Conditional surrenders: They leave the war but the colonies are left intact (no occupation/exiled government)
+
+	worldstage_china_conditional_surrender = {	# China surrenders on its own
+	
+		icon = GFX_decision_generic_ban_party
+	
+		allowed = { tag = ROC }
+		
+		visible = {
+			if = {
+				limit = { is_debug = no }
+				NOT = { tag = ALY }
+				NOT = { has_global_flag = world_stage_phoney_war_rages_on }
+				has_global_flag = world_stage_world_war_2_is_active
+			} else = { always = yes }
+		}
+
+		available = {
+			has_global_flag = world_stage_world_war_2_is_active
+			custom_trigger_tooltip = { tooltip = world_stage_china_did_not_capitulate_trigger 106 = { has_state_flag = metropolis_capitulated } }
+			OR = {
+				custom_trigger_tooltip = {
+					tooltip = theater_active_china
+					19 = { has_state_flag = theater_is_active }
+				}
+				custom_trigger_tooltip = {
+					tooltip = has_world_stage_power_5_max
+					106 = { check_variable = { world_stage_power < 6 } }
+				}
+			}
+		}
+
+		complete_effect = {
+			custom_effect_tooltip = "fire event for asking to surrender"
+			if = {
+				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+				custom_effect_tooltip = "china is axis and surrenders to allies or comintern"
+				if = {
+					limit = { has_global_flag = sovietunion_joined_ww2 }
+					custom_effect_tooltip = "all territories north of china go to soviets"
+				} else = { custom_effect_tooltip = "mongolia is neutral again" }
+				if = {
+					limit = { unitedstates_joined_ww2 }
+					custom_effect_tooltip = "all territories in the indian/pacific go to USA, on land goes to ENG/FRA"
+				} else = { custom_effect_tooltip = "all territory in the indian/pacific, land or sea, go to ENG/FRA" }
+			}
+		}
+
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	worldstage_england_conditional_surrender = {
+	
+		icon = GFX_decision_generic_ban_party
+	
+		allowed = { OR = { tag = KOB tag = OSA tag = MUS tag = ROC } }
+		
+		visible = {
+			if = {
+				limit = { is_debug = no }
+				tag = ALY
+				NOT = { has_global_flag = world_stage_phoney_war_rages_on }
+				has_global_flag = world_stage_world_war_2_is_active
+			} else = { always = yes }
+		}
+
+		available = {
+			has_global_flag = world_stage_world_war_2_is_active
+			custom_trigger_tooltip = { tooltip = world_stage_france_capitulated 103 = { has_state_flag = metropolis_capitulated } }
+			custom_trigger_tooltip = { tooltip = world_stage_england_did_not_capitulate_trigger 102 = { has_state_flag = metropolis_capitulated } }
+			is_tag_ALY = yes
+		}
+
+		complete_effect = {
+			custom_effect_tooltip = "fire event for asking to surrender"
+		}
+
+		ai_will_do = {
+			base = 1
+		}
+	}
+
+	worldstage_soviet_conditional_surrender_ww2 = {
+	
+		icon = GFX_decision_generic_ban_party
+	
+		allowed = { tag = FER }	# on a distant future we can add communist china
+		
+		visible = {
+			if = {
+				limit = { is_debug = no }
+				NOT = { has_global_flag = world_stage_phoney_war_rages_on }
+				has_global_flag = world_stage_world_war_2_is_active
+			} else = { always = yes }
+		}
+
+		available = {
+			has_global_flag = world_stage_world_war_2_is_active
+			custom_trigger_tooltip = { tooltip = world_stage_france_capitulated 103 = { has_state_flag = metropolis_capitulated } }
+			custom_trigger_tooltip = { tooltip = world_stage_england_capitulated 102 = { has_state_flag = metropolis_capitulated } }
+			custom_trigger_tooltip = { tooltip = world_stage_sovietunion_did_not_capitulate_trigger_trigger 104 = { has_state_flag = metropolis_capitulated } }
+			is_tag_ALY = yes
+		}
+
+		complete_effect = {
+			custom_effect_tooltip = "fire event for asking to surrender"
+		}
+
+		ai_will_do = {
+			base = 1
+		}
+	}
+	
+	worldstage_soviet_conditional_surrender_ww3 = {
+	
+		icon = GFX_decision_generic_ban_party
+	
+		allowed = { tag = FER }	# on a distant future we can add communist china
+		
+		visible = {
+			if = {
+				limit = { is_debug = no }
+				has_global_flag = world_stage_world_war_3_is_active
+			} else = { always = yes }
+		}
+
+		available = {
+			has_global_flag = world_stage_world_war_3_is_active
+			custom_trigger_tooltip = { tooltip = world_stage_sovietunion_did_not_capitulate_trigger_trigger 104 = { has_state_flag = metropolis_capitulated } }
+			is_tag_COM = yes
+		}
+
+		complete_effect = {
+			custom_effect_tooltip = "fire event for asking to surrender"
+		}
+
+		ai_will_do = {
+			base = 1
+		}
+	}
+}
