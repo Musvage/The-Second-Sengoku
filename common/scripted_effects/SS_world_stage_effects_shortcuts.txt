@@ -14,7 +14,6 @@
 
 ### METROPOLIS/TAG MANIPULATION {
 
-
 world_stage_set_leagueofnations_spirit = {	# scope is a tag
 	if = {
 		limit = { unification_candidate = yes }
@@ -300,6 +299,34 @@ world_stage_activate_theater = {	# scope is a state	# this effect does not have 
 		limit = { has_variable = theater_owner }
 		set_state_flag = theater_is_active
 	} else = { log = "world_stage_get_theater_info_from_metropolis: [THIS.GetName] is not a proxy for theater"}
+}
+
+get_main_attacker_metropolis = {	# THE LOOP CHECKS INFO THAT GETS UPDATED DAILY
+	if = {
+		limit = { has_state_flag = theater_is_active }
+		set_variable = { main_attacker_metropolis = 100 }
+		set_temp_variable = { main_attacker_value = 0 }
+		for_each_loop = {
+			array = world_stage_power_deployed_by
+			index = this_metropolis
+			value = deployed_power
+			if = {
+				limit = { check_variable = { this_metropolis > 100 } }	# unspecified minors DO NOT count here
+				if = {
+					var:this_metropolis = {
+						if = {
+							limit = { check_variable = { world_stage_coalition = PREV.coalition_side_attack } }	# it's an attacker
+							if = {
+								limit = { check_variable = { deployed_power > main_attacker_value } }
+								set_variable = { PREV.main_attacker_metropolis = var:this_metropolis }
+								set_temp_variable = { main_attacker_value = deployed_power }
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 ### } COALIITON {
@@ -997,3 +1024,4 @@ world_stage_get_tag_info_from_metropolis = {
 		log = "world_stage_power: [?world_stage_power]"
 	}
 } d_world_stage_get_tag_info_from_metropolis = { world_stage_get_tag_info_from_metropolis = yes log = "get all tag info from metropolis" }
+

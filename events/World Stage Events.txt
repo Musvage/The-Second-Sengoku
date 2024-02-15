@@ -4780,9 +4780,46 @@ country_event = {
 
 	major = no	# this is ROC-only
 
-	immediate = { hidden_effect = { 106 = { set_state_flag = metropolis_capitulated clr_state_flag = worldstage_AI_active } every_possible_country = { limit = { tag = ROC } set_cosmetic_tag = ROC_MAN } } }	#set_global_flag = world_stage_china_capitulated 	### TODO TO-DO TO DO add correct cosmetic tag 
+	immediate = {
+		hidden_effect = {
+			106 = {
+				set_state_flag = metropolis_capitulated clr_state_flag = worldstage_AI_active # ROC only changes tag if it recgnizes the occupation government # every_possible_country = { limit = { tag = ROC } set_cosmetic_tag = ROC_MAN } } }	#set_global_flag = world_stage_china_capitulated 	### TODO TO-DO TO DO add correct cosmetic tag 
+				if = { limit = { check_variable = { world_stage_coalition = 1 } set_global_flag = china_allies_capitulated }		# currently not implemented
+				if = { limit = { check_variable = { world_stage_coalition = 2 } set_global_flag = china_komintern_capitulated }		# currently not implemented
+				if = { limit = { check_variable = { world_stage_coalition = 3 } set_global_flag = china_axis_capitulated }
+			}
+			19 = {
+				if = { limit = { OR = { check_variable = { theather_owner_coalition = 2 } check_variable = { main_attacker_metropolis = 104 } } } set_global_flag = china_defeated_by_communism }
+				else = { set_global_flag = china_defeated_by_allies }
+			}
+		}
+	}
 	
 	option = {
+		name = worldstage_surrender.106.a	# fight, prefered human option
+		trigger = { is_subject = no }		# puppets don't get to decide
+		every_possible_country = {
+			limit = { tag = ROC }
+			custom_effect_tooltip = lose_access_to_trade_resources_fengtian
+			clr_country_flag = tc_fengtian_has_access
+		}
+		if = {
+			limit = { has_global_flag = china_allies_capitulated } log = "china_allies_capitulated --> this should not happen...yet
+		}
+		if = {
+			limit = { has_global_flag = china_komintern_capitulated } log = "china_komintern_capitulated --> this should not happen...yet
+		}
+		if = {
+			limit = { has_global_flag = china_axis_capitulated } log = "china_axis_capitulated"
+			every_character = {
+				limit = { can_be_country_leader = yes }
+				dual_leader_clear_secondary_leader = yes
+				#if = { limit = { has_ideology_group = autocracy } set_character_flag = dual_leader_id_y set_character_flag = dual_leader_second_title_ }
+				#if = { limit = { has_ideology_group = fascism } set_character_flag = dual_leader_id_ set_character_flag = dual_leader_second_title_ }
+				#if = { limit = { has_ideology_group = neutrality } set_character_flag = dual_leader_id_ set_character_flag = dual_leader_second_title_ }
+			}
+		}
+		ai_chance = { base = 0 } log = "CHINA SURRENDER! option: worldstage_surrender.106.a	# fight, prefered human option"
 	}
 }
 
