@@ -4784,33 +4784,24 @@ country_event = {
 		hidden_effect = {
 			106 = {
 				set_state_flag = metropolis_capitulated clr_state_flag = worldstage_AI_active # ROC only changes tag if it recgnizes the occupation government # every_possible_country = { limit = { tag = ROC } set_cosmetic_tag = ROC_MAN } } }	#set_global_flag = world_stage_china_capitulated 	### TODO TO-DO TO DO add correct cosmetic tag 
-				if = { limit = { check_variable = { world_stage_coalition = 1 } set_global_flag = china_allies_capitulated }		# currently not implemented
+				if = { limit = { check_variable = { world_stage_coalition = 1 } set_global_flag = china_allies_capitulated }		# currently not implemented	# maybe this flags wont be necessary
 				if = { limit = { check_variable = { world_stage_coalition = 2 } set_global_flag = china_komintern_capitulated }		# currently not implemented
 				if = { limit = { check_variable = { world_stage_coalition = 3 } set_global_flag = china_axis_capitulated }
-			}
-			19 = {
-				if = { limit = { OR = { check_variable = { theather_owner_coalition = 2 } check_variable = { main_attacker_metropolis = 104 } } } set_global_flag = china_defeated_by_communism }
-				else = { set_global_flag = china_defeated_by_allies }
 			}
 		}
 	}
 	
 	option = {
 		name = worldstage_surrender.106.a	# fight, prefered human option
-		trigger = { is_subject = no }		# puppets don't get to decide
+		trigger = {
+			is_subject = no		# puppets don't get to decide
+			19 = { NOT = { check_variable = { theather_owner_coalition = 2 } check_variable = { main_attacker_metropolis = 104 } } }	# China did not loose to Soviets
+		}
 		every_possible_country = {
 			limit = { tag = ROC }
 			custom_effect_tooltip = lose_access_to_trade_resources_fengtian
 			clr_country_flag = tc_fengtian_has_access
-		}
-		if = {
-			limit = { has_global_flag = china_allies_capitulated } log = "china_allies_capitulated --> this should not happen...yet
-		}
-		if = {
-			limit = { has_global_flag = china_komintern_capitulated } log = "china_komintern_capitulated --> this should not happen...yet
-		}
-		if = {
-			limit = { has_global_flag = china_axis_capitulated } log = "china_axis_capitulated"
+			promote_character = ROC_prince_pujie
 			every_character = {
 				limit = { can_be_country_leader = yes }
 				dual_leader_clear_secondary_leader = yes
@@ -4820,6 +4811,129 @@ country_event = {
 			}
 		}
 		ai_chance = { base = 0 } log = "CHINA SURRENDER! option: worldstage_surrender.106.a	# fight, prefered human option"
+	}
+	option = {
+		name = worldstage_surrender.106.a	# fight, prefered human option
+		trigger = {
+			is_subject = no		# puppets don't get to decide
+			19 = { OR = { check_variable = { theather_owner_coalition = 2 } check_variable = { main_attacker_metropolis = 104 } } }	# China lost to Soviets
+		}
+		every_possible_country = {
+			limit = { tag = ROC }
+			custom_effect_tooltip = lose_access_to_trade_resources_fengtian
+			clr_country_flag = tc_fengtian_has_access
+			promote_character = ROC_prince_pujie
+			every_character = {
+				limit = { can_be_country_leader = yes }
+				dual_leader_clear_secondary_leader = yes
+				#if = { limit = { has_ideology_group = autocracy } set_character_flag = dual_leader_id_y set_character_flag = dual_leader_second_title_ }
+				#if = { limit = { has_ideology_group = fascism } set_character_flag = dual_leader_id_ set_character_flag = dual_leader_second_title_ }
+				#if = { limit = { has_ideology_group = neutrality } set_character_flag = dual_leader_id_ set_character_flag = dual_leader_second_title_ }
+			}
+		}
+		ai_chance = { base = 0 } log = "CHINA SURRENDER! option: worldstage_surrender.106.a	# fight, prefered human option"
+	}
+	option = {
+		name = worldstage_surrender.106.b	# surrender, preferred AI option
+		trigger = { 19 = { NOT = { check_variable = { theather_owner_coalition = 2 } check_variable = { main_attacker_metropolis = 104 } } } }	# China did not loose to Soviets
+		hidden_effect = { if = { limit = { is_in_faction = yes } leave_faction = yes } }			# the faction here SHOULD be the Axis. Let's hope for the best
+		ALY = {
+			set_temp_variable = { new_ideology = current_party_ideology_group }
+		}
+		every_possible_country = {
+			limit = { tag = ROC }
+			set_politics = {
+				ruling_party = var:new_ideology?democratic
+				elections_allowed = no
+				last_election = "1939.09.1"
+				election_frequency = 48
+			}
+			add_ideas = SS_restricted_foreign_policy
+		}
+		hidden_effect = {
+			if = {
+				limit = { country_exists = HIR }
+				country_event = worldstage_surrender.1062
+				add_ai_strategy = {
+					type = alliance
+					id = COM
+					value = 50
+				}
+				every_other_country = {
+					limit = { has_country_flag = is_not_japan }
+					HIR = {
+						add_ai_strategy = {
+							type = alliance
+							id = PREV
+							value = -100
+						}
+					}
+				}
+			}
+		}	
+		if = {
+			limit = { country_exists = ROC country_exists = ALY }
+			ALY = {
+				white_peace = {
+					tag = ROC
+					message = worldstage_surrender.106.roc
+				}
+				add_to_faction = ROC
+			}
+			set_country_flag = lost_original_focus_tree load_focus_tree = generic_focus
+		}
+		ai_chance = { base = 100 } log = "CHINA SURRENDER! option: worldstage_surrender.106.a	# surrender, preferred AI option
+	}
+	option = {
+		name = worldstage_surrender.106.b	# surrender, preferred AI option
+		trigger = { 19 = { OR = { check_variable = { theather_owner_coalition = 2 } check_variable = { main_attacker_metropolis = 104 } } } }	# China lost to Soviets
+		hidden_effect = { if = { limit = { is_in_faction = yes } leave_faction = yes } }			# the faction here SHOULD be the Axis. Let's hope for the best
+		COM = {
+			set_temp_variable = { new_ideology = current_party_ideology_group }
+		}
+		every_possible_country = {
+			limit = { tag = HIR }
+			set_politics = {
+				ruling_party = var:new_ideology?communism
+				elections_allowed = no
+				last_election = "1939.09.1"
+				election_frequency = 48
+			}
+			add_ideas = SS_restricted_foreign_policy
+		}
+		hidden_effect = {
+			if = {
+				limit = { country_exists = ROC }
+				country_event = worldstage_surrender.1062
+				add_ai_strategy = {
+					type = alliance
+					id = COM
+					value = 50
+				}
+				every_other_country = {
+					limit = { has_country_flag = is_not_japan }
+					ROC = {
+						add_ai_strategy = {
+							type = alliance
+							id = PREV
+							value = -100
+						}
+					}
+				}
+			}
+		}	
+		if = {
+			limit = { country_exists = ROC country_exists = COM }
+			COM = {
+				white_peace = {
+					tag = ROC
+					message = worldstage_surrender.106.roc
+				}
+				add_to_faction = ROC
+			}
+			set_country_flag = lost_original_focus_tree load_focus_tree = generic_focus
+		}
+		ai_chance = { base = 100 } log = "CHINA SURRENDER! option: worldstage_surrender.106.a	# surrender, preferred AI option
 	}
 }
 
@@ -4976,9 +5090,8 @@ country_event = {
 			}
 		}	
 		if = {
-			limit = { country_exists = HIR }
-			random_country = {
-				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } is_faction_leader = yes }	# update this later... (use tag aliases)
+			limit = { country_exists = HIR country_exists = ALY }
+			ALY = {
 				white_peace = {
 					tag = HIR
 					message = worldstage_surrender.103.hir
@@ -5031,9 +5144,8 @@ country_event = {
 			}
 		}	
 		if = {
-			limit = { country_exists = HIR }
-			random_country = {
-				limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } is_faction_leader = yes }	# update this later... (use tag aliases)
+			limit = { country_exists = HIR country_exists = COM }
+			COM = {
 				white_peace = {
 					tag = HIR
 					message = worldstage_surrender.103.hir
