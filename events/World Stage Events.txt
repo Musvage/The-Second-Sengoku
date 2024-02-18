@@ -4360,7 +4360,7 @@ country_event = {
 	}
 	desc = {
 		text = worldstage_surrender.104.d2
-		trigger = { 106 = { check_variable = { world_stage_coalition = 3 } } }
+		trigger = { 106 = { check_variable = { world_stage_coalition = 3 } } }	# the difference of loosing to Axis with or without China in it is that if China is Axis, then they puppet FER instead of REI
 	}
 	picture = GFX_news_ww2_sovietunion_capitulades
 
@@ -4783,10 +4783,7 @@ country_event = {
 	immediate = {
 		hidden_effect = {
 			106 = {
-				set_state_flag = metropolis_capitulated clr_state_flag = worldstage_AI_active # ROC only changes tag if it recgnizes the occupation government # every_possible_country = { limit = { tag = ROC } set_cosmetic_tag = ROC_MAN } } }	#set_global_flag = world_stage_china_capitulated 	### TODO TO-DO TO DO add correct cosmetic tag 
-				if = { limit = { check_variable = { world_stage_coalition = 1 } set_global_flag = china_allies_capitulated }		# currently not implemented	# maybe this flags wont be necessary
-				if = { limit = { check_variable = { world_stage_coalition = 2 } set_global_flag = china_komintern_capitulated }		# currently not implemented
-				if = { limit = { check_variable = { world_stage_coalition = 3 } set_global_flag = china_axis_capitulated }
+				set_state_flag = metropolis_capitulated clr_state_flag = worldstage_AI_active # ROC only changes tag if it recgnizes the occupation government
 			}
 		}
 	}
@@ -4801,7 +4798,6 @@ country_event = {
 			limit = { tag = ROC }
 			custom_effect_tooltip = lose_access_to_trade_resources_fengtian
 			clr_country_flag = tc_fengtian_has_access
-			promote_character = ROC_prince_pujie
 			every_character = {
 				limit = { can_be_country_leader = yes }
 				dual_leader_clear_secondary_leader = yes
@@ -4822,7 +4818,6 @@ country_event = {
 			limit = { tag = ROC }
 			custom_effect_tooltip = lose_access_to_trade_resources_fengtian
 			clr_country_flag = tc_fengtian_has_access
-			promote_character = ROC_prince_pujie
 			every_character = {
 				limit = { can_be_country_leader = yes }
 				dual_leader_clear_secondary_leader = yes
@@ -4835,7 +4830,7 @@ country_event = {
 	}
 	option = {
 		name = worldstage_surrender.106.b	# surrender, preferred AI option
-		trigger = { 19 = { NOT = { check_variable = { theather_owner_coalition = 2 } check_variable = { main_attacker_metropolis = 104 } } } }	# China did not loose to Soviets
+		trigger = { 19 = { NOT = { check_variable = { theather_owner_coalition = 2 } check_variable = { main_attacker_metropolis = 104 } } } }	# China did not loose to Soviets (so it was Allies)
 		hidden_effect = { if = { limit = { is_in_faction = yes } leave_faction = yes } }			# the faction here SHOULD be the Axis. Let's hope for the best
 		ALY = {
 			set_temp_variable = { new_ideology = current_party_ideology_group }
@@ -4848,20 +4843,22 @@ country_event = {
 				last_election = "1939.09.1"
 				election_frequency = 48
 			}
+			set_cosmetic_tag = ROC_RNG	# Reorganized National Government
 			add_ideas = SS_restricted_foreign_policy
+			hidden_character = { promote_character = ROC_prince_pujie }
 		}
 		hidden_effect = {
 			if = {
-				limit = { country_exists = HIR }
+				limit = { country_exists = ROC }
 				country_event = worldstage_surrender.1062
 				add_ai_strategy = {
 					type = alliance
-					id = COM
+					id = ALY
 					value = 50
 				}
 				every_other_country = {
 					limit = { has_country_flag = is_not_japan }
-					HIR = {
+					ROC = {
 						add_ai_strategy = {
 							type = alliance
 							id = PREV
@@ -4892,14 +4889,16 @@ country_event = {
 			set_temp_variable = { new_ideology = current_party_ideology_group }
 		}
 		every_possible_country = {
-			limit = { tag = HIR }
+			limit = { tag = ROC }
 			set_politics = {
 				ruling_party = var:new_ideology?communism
 				elections_allowed = no
 				last_election = "1939.09.1"
 				election_frequency = 48
 			}
+			set_cosmetic_tag = ROC_RNG	# Reorganized National Government
 			add_ideas = SS_restricted_foreign_policy
+			hidden_character = { promote_character = ROC_prince_pujie }
 		}
 		hidden_effect = {
 			if = {
