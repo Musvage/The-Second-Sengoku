@@ -4785,6 +4785,23 @@ country_event = {
 			106 = {
 				set_state_flag = metropolis_capitulated clr_state_flag = worldstage_AI_active # ROC only changes tag if it recgnizes the occupation government
 			}
+			if = {
+				limit = { 19 = { OR = { check_variable = { theather_owner_coalition = 2 } check_variable = { main_attacker_metropolis = 104 } } }	# lost to Soviets
+				set_global_flag = china_left_is_rng	# left: communist/democratic-socialism // rng: reorganized national government
+				if = {
+					limit = { has_global_flag = sovietunion_joined_ww2 }	# Soviets are Allies
+					set_global_flag = china_center_is_rng	# center: democratic/neutrality // rng: reorganized national government
+				}
+			} else_if = {		# lost to NOT-Axis (and no soviets, therefore Allies/Rio Treaty)
+				limit = { 19 = { NOT = { check_variable = { theather_owner_coalition = 3 } var:main_attacker_metropolis = { check_variable = {  world_stage_coalition = 3 } } } } }
+				set_global_flag = china_center_is_rng	# center: democratic/neutrality // rng: reorganized national government
+				if = {
+					limit = { has_global_flag = sovietunion_joined_ww2 }	# Soviets are Allies
+					set_global_flag = china_left_is_rng	# left: communist/democratic-socialism // rng: reorganized national government
+				}
+			} else = {	# Lost to Axis
+				set_global_flag = china_right_is_rng	# center: fascism/autocracy // rng: reorganized national government
+			}
 		}
 	}
 	
