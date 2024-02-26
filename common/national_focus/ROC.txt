@@ -396,47 +396,11 @@ focus_tree = {
 						has_global_flag = eastereggs_enabled	#has_game_rule = { rule = allow_easteregg_characters option = EASTERGG_ALLOWED }
 						has_religion_4 = yes
 					}
-					set_country_flag = allow_lo_pan_branch
-					unlock_national_focus = ROC_execute_puyi_alt
-					mark_focus_tree_layout_dirty = yes
+					country_event = { id = lo_pan.1 hours = 12 random = 36 }
+					#set_country_flag = allow_lo_pan_branch
+					#mark_focus_tree_layout_dirty = yes
 				}
 			}
-		}
-	}
-	
-	focus = {
-		id = ROC_execute_puyi_alt
-		icon = GFX_focus_ROC_execute_puyi
-		search_filters = { FOCUS_FILTER_POLITICAL }
-		
-		mutually_exclusive = { focus = ROC_favourable_treatment focus = ROC_whampoa_clique }
-		prerequisite = { focus = ROC_temporary_provisions }
-		
-		relative_position_id = ROC_temporary_provisions
-		x = -3
-		y = 1
-		cost = 10
-		
-		available_if_capitulated = yes
-		
-		ai_will_do = {
-			factor = 10
-		}
-		
-		allow_branch = {
-			has_country_flag = allow_lo_pan_branch
-		}
-		
-		available = {
-			NOT = {
-				has_government = autocracy
-				has_idea_with_trait = persuasive_monarchist
-				autocracy < 0.01
-			}
-		}
-	 
-		completion_reward = {
-			# no effects here!
 		}
 	}
 	
@@ -451,19 +415,24 @@ focus_tree = {
 		x = 1
 		y = 1
 		cost = 10
+		offset = {
+			trigger = { has_country_flag = allow_lo_pan_branch  } 
+			x = 1 y = 0
+		}
 		
 		available_if_capitulated = yes
-		
-		allow_branch = {
-			NOT = { has_country_flag = allow_lo_pan_branch }
-		}
 		
 		ai_will_do = {
 			factor = 10
 		}
 		
 		available = {
-			has_religion_5 = yes
+			if = {
+				limit = { has_country_flag = allow_lo_pan_branch }
+				has_religion_4 = yes
+			} else = {
+				has_religion_6 = no
+			}
 			NOT = {
 				has_government = communism
 				has_government = democratic
@@ -472,43 +441,18 @@ focus_tree = {
 		}
 	 
 		completion_reward = {
-			add_ideas = ROC_idea_reverse_modernization
-		}
-	}
-	
-	focus = {
-		id = ROC_traditionalism_alt
-		icon = GFX_focus_ROC_reject_modernity
-		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_RELIGION }
-		
-		prerequisite = { focus = ROC_execute_puyi_alt }
-		
-		relative_position_id = ROC_favourable_treatment
-		x = 2
-		y = 1
-		cost = 10
-		
-		available_if_capitulated = yes
-		
-		allow_branch = {
-			has_country_flag = allow_lo_pan_branch
-		}
-		
-		ai_will_do = {
-			factor = 10
-		}
-		
-		available = {
-			has_religion_4 = yes
-			NOT = {
-				has_government = communism
-				has_government = democratic
-				has_government = democratic_socialism
+			if = {
+				limit = { has_religion_5 = yes }
+				add_ideas = ROC_idea_reverse_modernization
+			} else_if = {
+				limit = { has_religion_4 = yes }
+				add_ideas = ROC_idea_reverse_modernization_alt
+			} else = {
+				if = { limit = { has_government = neutrality } add_popularity = { ideology = neutrality popularity = 0.1 } }
+				if = { limit = { has_government = fascism } add_popularity = { ideology = fascism  popularity = 0.1 } }
+				if = { limit = { has_government = autocracy } add_popularity = { ideology = autocracy  popularity = 0.1 } }
+				add_political_power = 120
 			}
-		}
-	 
-		completion_reward = {
-			add_ideas = ROC_idea_reverse_modernization_alt
 		}
 	}
 	
@@ -523,29 +467,10 @@ focus_tree = {
 		x = 0
 		y = 1
 		cost = 10
-		
-		available_if_capitulated = yes
-		
-		ai_will_do = {
-			factor = 10
+		offset = {
+			trigger = { has_country_flag = allow_lo_pan_branch }
+			x = -1 y = 0
 		}
-	 
-		completion_reward = {
-			add_ideas = ROC_idea_red_swastika_society
-		}
-	}
-	
-	focus = {
-		id = ROC_red_swastika_society_alt
-		icon = GFX_focus_ROC_red_swastika
-		search_filters = { FOCUS_FILTER_STABILITY }
-		
-		prerequisite = { focus = ROC_traditionalism_alt }
-		
-		relative_position_id = ROC_traditionalism_alt
-		x = -1
-		y = 1
-		cost = 10
 		
 		available_if_capitulated = yes
 		
@@ -563,14 +488,16 @@ focus_tree = {
 		icon = GFX_focus_PRO_social_democratic_majority	### MISSING GFX! (or not)
 		search_filters = { }
 		
-		prerequisite = { focus = ROC_traditionalism_alt }
+		prerequisite = { focus = ROC_traditionalism }
 		
-		relative_position_id = ROC_traditionalism_alt
+		relative_position_id = ROC_traditionalism
 		x = 0
 		y = 2
 		cost = 10
 		
 		available_if_capitulated = yes
+		
+		allow_branch = { has_country_flag = allow_lo_pan_branch }
 		
 		ai_will_do = {
 			factor = 10
@@ -582,6 +509,7 @@ focus_tree = {
 	 
 		completion_reward = {
 			# event for Lo Pan's bride
+			country_event = lo_pan.2
 			add_ideas = ROC_idea_miao_yin
 		}
 	}
