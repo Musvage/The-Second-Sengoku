@@ -325,10 +325,6 @@ focus_tree = {
 				autocracy < 0.01
 			}
 		}
-		
-		allow_branch = {
-			NOT = { has_country_flag = allow_lo_pan_branch }
-		}
 	 
 		completion_reward = {
 			hidden_effect = { news_event = republic_of_china.3 }
@@ -396,9 +392,8 @@ focus_tree = {
 						has_global_flag = eastereggs_enabled	#has_game_rule = { rule = allow_easteregg_characters option = EASTERGG_ALLOWED }
 						has_religion_4 = yes
 					}
-					country_event = { id = lo_pan.1 hours = 12 random = 36 }
-					#set_country_flag = allow_lo_pan_branch
-					#mark_focus_tree_layout_dirty = yes
+					set_country_flag = alt_tradition_path
+					mark_focus_tree_layout_dirty = yes
 				}
 			}
 		}
@@ -425,6 +420,8 @@ focus_tree = {
 		ai_will_do = {
 			factor = 10
 		}
+		
+		allow_branch = { NOT = { has_country_flag = alt_tradition_path } }
 		
 		available = {
 			if = {
@@ -484,13 +481,97 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = ROC_traditionalism_alt
+		icon = GFX_focus_ROC_reject_modernity
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_RELIGION }
+		
+		prerequisite = { focus = ROC_execute_puyi focus = ROC_favourable_treatment }
+		
+		relative_position_id = ROC_favourable_treatment
+		x = 1
+		y = 1
+		cost = 10
+		offset = {
+			trigger = { has_country_flag = allow_lo_pan_branch }
+			x = 1 y = 0
+		}
+		
+		available_if_capitulated = yes
+		
+		allow_branch = {
+			has_country_flag = alt_tradition_path
+		}
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		available = {
+			if = {
+				limit = { has_country_flag = allow_lo_pan_branch }
+				has_religion_4 = yes
+			} else = {
+				has_religion_6 = no
+			}
+			NOT = {
+				has_government = communism
+				has_government = democratic
+				has_government = democratic_socialism
+			}
+		}
+	 
+		completion_reward = {
+			if = {
+				limit = { has_religion_5 = yes }
+				add_ideas = ROC_idea_reverse_modernization
+			} else_if = {
+				limit = { has_religion_4 = yes }
+				add_ideas = ROC_idea_reverse_modernization_alt
+				hidden_effect = { country_event = { id = lo_pan.1 hours = 12 random = 36 } }
+			} else = {
+				if = { limit = { has_government = neutrality } add_popularity = { ideology = neutrality popularity = 0.1 } }
+				if = { limit = { has_government = fascism } add_popularity = { ideology = fascism  popularity = 0.1 } }
+				if = { limit = { has_government = autocracy } add_popularity = { ideology = autocracy  popularity = 0.1 } }
+				add_political_power = 120
+			}
+		}
+	}
+	
+	focus = {
+		id = ROC_red_swastika_society_alt
+		icon = GFX_focus_ROC_red_swastika
+		search_filters = { FOCUS_FILTER_STABILITY }
+		
+		prerequisite = { focus = ROC_traditionalism_alt }
+		
+		relative_position_id = ROC_traditionalism_alt
+		x = 0
+		y = 1
+		cost = 10
+		offset = {
+			trigger = { has_country_flag = allow_lo_pan_branch }
+			x = -1 y = 0
+		}
+		
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 10
+		}
+	 
+		completion_reward = {
+			add_ideas = ROC_idea_red_swastika_society
+		}
+	}
+	
+	focus = {
 		id = ROC_green_eyed_bride
 		icon = GFX_focus_PRO_social_democratic_majority	### MISSING GFX! (or not)
 		search_filters = { }
 		
-		prerequisite = { focus = ROC_traditionalism }
+		prerequisite = { focus = ROC_traditionalism_alt}
 		
-		relative_position_id = ROC_traditionalism
+		relative_position_id = ROC_traditionalism_alt
 		x = 0
 		y = 2
 		cost = 10
@@ -544,6 +625,7 @@ focus_tree = {
 						ideology = autocracy_supernatural
 						expire = "1999.1.1.12"
 						id = 62971	# 5 first numbers of MD5 hashing of 'Lo Pan'
+						traits = { ROC_lo_pan_sorcerer }
 					}
 					promote_leader = yes
 				}
@@ -558,7 +640,7 @@ focus_tree = {
 				long_name = ROC_lo_pan_court 
 				name = ROC_lo_pan_court 
 			}
-			hidden_effect = { remove_ideas = ROC_idea_miao_yin }
+			hidden_effect = { remove_ideas = ROC_idea_miao_yin news_event = lo_pan.3 }
 		}
 	}
 	
@@ -615,7 +697,7 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = ROC_lo_pan_arcane_knowledge
+		id = ROC_lo_pan_arcane_knowledge 
 		icon = GFX_focus_ROC_lo_pan_arcane
 		search_filters = { FOCUS_FILTER_RESEARCH }
 		
@@ -667,7 +749,7 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = ROC_lo_pan_thunder_lightning_storm
+		id = ROC_lo_pan_thunder_lightning_storm 
 		icon = GFX_focus_ROC_lo_powers
 		search_filters = { FOCUS_FILTER_MILITARY }
 		
@@ -714,6 +796,43 @@ focus_tree = {
 						tooltip = add_world_stage_power_no_scope_tt
 					}
 				}
+			}
+		}
+	}
+	
+	focus = {
+		id = ROC_lo_pan_religious_authority
+		icon = GFX_focus_ROC_religious_authority
+		search_filters = { FOCUS_FILTER_RELIGION }
+		
+		prerequisite = { focus = ROC_lo_pan_thunder_lightning_storm focus = ROC_lo_pan_arcane_knowledge focus = ROC_lo_pan_clairvoyance }
+		
+		relative_position_id = ROC_lo_pan_arcane_knowledge
+		x = 0
+		y = 1
+		cost = 10
+		
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		available = {
+			has_country_leader = {
+				id = 62971	# Lo Pan
+			}
+		}
+	 
+		completion_reward = {
+			if = {
+				limit = {
+					has_country_leader = {
+						id = 62971	# Lo Pan
+						ruling_only = yes
+					}
+				}
+				add_country_leader_trait = ROC_supernatural_persuasion
 			}
 		}
 	}
@@ -1324,13 +1443,6 @@ focus_tree = {
 		relative_position_id = ROC_temporary_provisions
 		x = -1
 		y = 1
-		offset = {
-			x = 1
-			y = 0
-			trigger = {
-				has_country_flag = allow_lo_pan_branch
-			}
-		}
 		cost = 10
 		
 		available_if_capitulated = yes
