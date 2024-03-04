@@ -25,32 +25,32 @@ scripted_gui = {
 
 	##### POLITICS MENU INTERFACE #####
 	
-	SS_worldstage_hidden_button = {
-		context_type = player_context
-		window_name = "SS_worldstage_hidden_button_container"
-		parent_window_token = top_bar
-		
-		visible = {
-			is_ai = no
-			OR = {
-				check_variable = { show_SS_trade = 1 }
-				check_variable = { show_SS_religion = 1 }
-				check_variable = { show_SS_unification = 1 }
-				check_variable = { show_SS_worldstage = 1 }
-			}
-		}
-		
-		effects = {
-			button_off_ui_click = {
-				set_variable = { show_SS_trade = 0 }
-				set_variable = { show_SS_religion = 0 }
-				set_variable = { show_SS_unification = 0 }
-				set_variable = { show_SS_worldstage = 0 }
-				set_variable = { current_theater = 0 }
-				clear_alternative_theater = yes	# this bit may be redundant but we'll run it here just for safety
-			}
-		}
-	}
+#	SS_worldstage_hidden_button = {
+#		context_type = player_context
+#		window_name = "SS_worldstage_hidden_button_container"
+#		parent_window_token = top_bar
+#		
+#		visible = {
+#			is_ai = no
+#			OR = {
+#				check_variable = { show_SS_trade = 1 }
+#				check_variable = { show_SS_religion = 1 }
+#				check_variable = { show_SS_unification = 1 }
+#				check_variable = { show_SS_worldstage = 1 }
+#			}
+#		}
+#		
+#		effects = {
+#			button_off_ui_click = {
+#				set_variable = { show_SS_trade = 0 }
+#				set_variable = { show_SS_religion = 0 }
+#				set_variable = { show_SS_unification = 0 }
+#				set_variable = { show_SS_worldstage = 0 }
+#				set_variable = { current_theater = 0 }
+#				clear_alternative_theater = yes	# this bit may be redundant but we'll run it here just for safety
+#			}
+#		}
+#	}
 		
 	SS_worldstage_open = {
 		context_type = player_context
@@ -167,6 +167,13 @@ scripted_gui = {
 				NOT = { check_variable = { world_stage_metropolis = 100 } }	# should be redundant, but just in case...
 				NOT = { check_variable = { world_stage_metropolis = 111 } }	# internationally recognized Japan
 			}
+			map_faction_display_allies_visible = { NOT = { has_global_flag = league_of_nations_exists } }
+			map_faction_display_komintern_visible = { OR = { has_global_flag = SOV_expelled_from_lon has_global_flag = world_stage_world_war_2_happened } }
+			map_faction_display_komintern_disabled_visible = { NOT = { has_global_flag = SOV_expelled_from_lon has_global_flag = world_stage_world_war_2_happened } }
+			map_faction_display_axis_visible = { NOT = { has_global_flag = league_of_nations_exists } }
+			#map_faction_display_nonaligned_visible = { always = yes }
+			map_faction_display_leagueofnations_visible = { has_global_flag = league_of_nations_exists }
+			map_faction_display_pactofsteel_visible = { has_global_flag = league_of_nations_exists }
 	#		theater_icon_england_visible = { NOT = { has_country_flag = worldstage_menu_show_asia } }
 	#		theater_icon_france_visible = { NOT = { has_country_flag = worldstage_menu_show_asia } }
 	#		theater_icon_germany_visible = { NOT = { has_country_flag = worldstage_menu_show_asia } }
@@ -264,9 +271,6 @@ scripted_gui = {
 				}
 				set_country_flag = worldstage_menu_show_asia
 			}
-			switch_ledger_button_click = {
-				set_country_flag = worldstage_menu_show_ledger
-			}
 		}
 	}
 	
@@ -295,6 +299,13 @@ scripted_gui = {
 				NOT = { check_variable = { world_stage_metropolis = 100 } }	# should be redundant, but just in case...
 				NOT = { check_variable = { world_stage_metropolis = 111 } }	# internationally recognized Japan
 			}
+			map_faction_display_allies_visible = { NOT = { has_global_flag = league_of_nations_exists } }
+			map_faction_display_komintern_visible = { OR = { has_global_flag = SOV_expelled_from_lon has_global_flag = world_stage_world_war_2_happened } }
+			map_faction_display_komintern_disabled_visible = { NOT = { has_global_flag = SOV_expelled_from_lon has_global_flag = world_stage_world_war_2_happened } }
+			map_faction_display_axis_visible = { NOT = { has_global_flag = league_of_nations_exists } }
+			#map_faction_display_nonaligned_visible = { always = yes }
+			map_faction_display_leagueofnations_visible = { has_global_flag = league_of_nations_exists }
+			map_faction_display_pactofsteel_visible = { has_global_flag = league_of_nations_exists }
 	#		theater_icon_urals_visible = { has_country_flag = worldstage_menu_show_asia }
 	#		theater_icon_siberia_visible = { has_country_flag = worldstage_menu_show_asia }
 	#		theater_icon_mongolia_visible = { has_country_flag = worldstage_menu_show_asia }
@@ -342,9 +353,6 @@ scripted_gui = {
 				}
 				set_country_flag = worldstage_menu_show_europe
 			}
-			switch_ledger_button_click = {
-				set_country_flag = worldstage_menu_show_ledger
-			}
 		}
 		
 		properties = {
@@ -362,43 +370,6 @@ scripted_gui = {
 			theater_icon_indies = { frame = var:20.theater_owner_coalition }
 			theater_icon_philipines = { frame = var:21.theater_owner_coalition }
 			theater_icon_taiwan = { frame = var:33.theater_owner_coalition }
-		}
-	}
-	
-	SS_worldstage_ledger = {
-		context_type = player_context
-		window_name = "SS_worldstage_container_ledger"
-		parent_window_token = politics_tab
-		#dirty = show_SS_worldstage
-
-		visible = {
-			check_variable = { show_SS_worldstage = 1 }
-			has_country_flag = worldstage_menu_show_ledger
-		}
-		
-		effects = {
-			switch_europe_button_click = {
-				if = {
-					limit = { has_country_flag = worldstage_menu_show_asia }
-					clr_country_flag = worldstage_menu_show_asia
-				}
-				if = {
-					limit = { has_country_flag = worldstage_menu_show_ledger }
-					clr_country_flag = worldstage_menu_show_ledger
-				}
-				set_country_flag = worldstage_menu_show_europe
-			}
-			switch_asia_button_click = {
-				if = {
-					limit = { has_country_flag = worldstage_menu_show_europe }
-					clr_country_flag = worldstage_menu_show_europe
-				}
-				if = {
-					limit = { has_country_flag = worldstage_menu_show_ledger }
-					clr_country_flag = worldstage_menu_show_ledger
-				}
-				set_country_flag = worldstage_menu_show_asia
-			}
 		}
 	}
 	

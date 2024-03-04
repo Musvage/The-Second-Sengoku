@@ -348,6 +348,7 @@ news_event = {
 				OSA = { add_to_faction = KOB }
 			}
 			set_global_flag = world_stage_phoney_war_rages_on
+			set_global_flag = world_stage_world_war_2_happened
 			every_possible_country = {
 				limit = { tag = OSA }
 				country_event = { id = britishosaka.1 days = 120 random = 60 }	# Churchil or Chamberlain? Note: replace this event being fired by the OSA tree itself, when we make its Expansion DLC
@@ -5614,6 +5615,11 @@ news_event = {
 	option = {
 		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
 		name = worldstage_end.1.win
+		if = {
+			limit = { tag = ALY country_exists = AXS }
+			set_temp_variable = { score_boost = 10 } divide_temp_variable = { score_boost = num_faction_members } clamp_temp_variable = { var = score_boost min = 1 }
+			start_peace_conference = { tag = AXS winner_scope = FACTION loser_scope = FACTION message = axis_surrender_to_allies_message score_factor = var:score_boost }
+		}
 	}
 	option = {
 		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
@@ -5667,6 +5673,11 @@ news_event = {
 	option = {
 		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
 		name = worldstage_end.1.loss
+		if = {
+			limit = { tag = AXS country_exists = ALY }
+			set_temp_variable = { score_boost = 10 } divide_temp_variable = { score_boost = num_faction_members } clamp_temp_variable = { var = score_boost min = 1 }
+			start_peace_conference = { tag = ALY winner_scope = FACTION loser_scope = FACTION message = allies_surrender_to_axis_message score_factor = var:score_boost }
+		}
 	}
 	option = {
 		trigger = { NOT = {
@@ -5715,6 +5726,11 @@ news_event = {
 	option = {
 		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
 		name = worldstage_end.1.win
+		if = {
+			limit = { tag = ALY country_exists = AXS }
+			set_temp_variable = { score_boost = 10 } divide_temp_variable = { score_boost = num_faction_members } clamp_temp_variable = { var = score_boost min = 1 }
+			start_peace_conference = { tag = AXS winner_scope = FACTION loser_scope = FACTION message = axis_surrender_to_allies_message score_factor = var:score_boost }
+		}
 	}
 	option = {
 		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
@@ -5763,6 +5779,11 @@ news_event = {
 	option = {
 		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
 		name = worldstage_end.1.win
+		if = {
+			limit = { tag = AXS country_exists = ALY }
+			set_temp_variable = { score_boost = 10 } divide_temp_variable = { score_boost = num_faction_members } clamp_temp_variable = { var = score_boost min = 1 }
+			start_peace_conference = { tag = ALY winner_scope = FACTION loser_scope = FACTION message = allies_surrender_to_axis_message score_factor = var:score_boost }
+		}
 	}
 	option = {
 		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
@@ -5815,6 +5836,11 @@ news_event = {
 	option = {
 		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
 		name = worldstage_end.1.win
+		if = {
+			limit = { tag = COM country_exists = AXS }
+			set_temp_variable = { score_boost = 10 } divide_temp_variable = { score_boost = num_faction_members } clamp_temp_variable = { var = score_boost min = 1 }
+			start_peace_conference = { tag = AXS winner_scope = FACTION loser_scope = FACTION message = axis_surrender_to_kominter_message score_factor = var:score_boost }
+		}
 	}
 	option = {
 		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
@@ -5863,6 +5889,11 @@ news_event = {
 	option = {
 		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
 		name = worldstage_end.1.win
+		if = {
+			limit = { tag = AXS country_exists = COM }
+			set_temp_variable = { score_boost = 10 } divide_temp_variable = { score_boost = num_faction_members } clamp_temp_variable = { var = score_boost min = 1 }
+			start_peace_conference = { tag = COM winner_scope = FACTION loser_scope = FACTION message = kominter_surrender_to_axis_message score_factor = var:score_boost }
+		}
 	}
 	option = {
 		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
@@ -5911,7 +5942,7 @@ country_event = {
 	}
 	
 	option = {
-		trigger = { ROC = { exists = yes NOT = { has_government = democratic has_government = democratic_socialism has_government = communism } } }
+		trigger = { ROC = { exists = yes is_ai = yes NOT = { has_government = democratic has_government = democratic_socialism has_government = communism } } }
 		name = worldstage_end.101.a
 		every_character = {
 			limit = { OR = { has_trait = foreign_general has_trait = foreign_admiral } }
@@ -5950,7 +5981,7 @@ country_event = {
 		ai_chance = { base = 0 }
 	}
 	option = {
-		trigger = { SHI = { exists = yes NOT = { has_government = democratic has_government = democratic_socialism has_government = communism } } }
+		trigger = { SHI = { exists = yes is_ai = yes NOT = { has_government = democratic has_government = democratic_socialism has_government = communism } } }
 		name = worldstage_end.101.b
 		every_character = {
 			limit = { OR = { has_trait = foreign_general has_trait = foreign_admiral } }
@@ -6001,6 +6032,7 @@ country_event = {
 		hidden_effect = { random_country = { country_event = { id = worldstage_end.1012 hours = 2 } } }
 		hidden_effect = { every_state = { limit = { is_core_of = REI } remove_core_of = REI } }
 		hidden_effect = { every_state = { limit = { is_claimed_by = REI } remove_claim_by = REI } }
+		custom_effect_tooltip = GAME_OVER_TT
 		ai_chance = { base = 1 }
 	}
 }
