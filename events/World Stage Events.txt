@@ -444,6 +444,7 @@ news_event = {
 		hidden_effect = {
 			 3 = { world_stage_end_round_axis_victory = yes }
 			 115 = { clr_state_flag = worldstage_AI_active }	# poland
+			 115 = { set_state_flag = metropolis_capitulated }	# poland
 		}
 	}
 	
@@ -645,7 +646,8 @@ news_event = {
 		name = worldstage.22.axis
 		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
 		effect_tooltip = {
-			custom_effect_tooltip = world_stage_theater_lybia_is_active_tt
+			custom_effect_tooltip = theater_scope_egypt
+			custom_effect_tooltip = world_stage_activate_theater_tt
 			#custom_effect_tooltip = world_stage_theater_alpes_is_active_tt
 			#custom_effect_tooltip = world_stage_theater_ethiopia_is_active_tt
 		}
@@ -654,7 +656,8 @@ news_event = {
 		name = worldstage.22.komin
 		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
 		effect_tooltip = {
-			custom_effect_tooltip = world_stage_theater_lybia_is_active_tt
+			custom_effect_tooltip = theater_scope_egypt
+			custom_effect_tooltip = world_stage_activate_theater_tt
 			#custom_effect_tooltip = world_stage_theater_alpes_is_active_tt
 			#custom_effect_tooltip = world_stage_theater_ethiopia_is_active_tt
 		}
@@ -663,7 +666,8 @@ news_event = {
 		name = worldstage.22.allies
 		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
 		effect_tooltip = {
-			custom_effect_tooltip = world_stage_theater_lybia_is_active_tt
+			custom_effect_tooltip = theater_scope_egypt
+			custom_effect_tooltip = world_stage_activate_theater_tt
 			#custom_effect_tooltip = world_stage_theater_alpes_is_active_tt
 			#custom_effect_tooltip = world_stage_theater_ethiopia_is_active_tt
 		}
@@ -672,7 +676,8 @@ news_event = {
 		name = worldstage.22.other
 		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
 		effect_tooltip = {
-			custom_effect_tooltip = world_stage_theater_lybia_is_active_tt
+			custom_effect_tooltip = theater_scope_egypt
+			custom_effect_tooltip = world_stage_activate_theater_tt
 			#custom_effect_tooltip = world_stage_theater_alpes_is_active_tt
 			#custom_effect_tooltip = world_stage_theater_ethiopia_is_active_tt
 		}
@@ -794,8 +799,7 @@ country_event = {
 	
 	immediate = {
 		hidden_effect = {
-			clr_global_flag = world_stage_france_exists
-			set_global_flag = world_stage_vichy_exists
+			set_global_flag = world_stage_vichy_exists	# only after WW2 ends that "clr_global_flag = world_stage_france_exists" happens
 			every_state = {
 				limit = { check_variable = { theater_owner = 103 } }
 				set_variable = { theater_owner = 120 }
@@ -2989,6 +2993,10 @@ news_event = {
 	
 	major = yes	# this one is shown to everyone
 	
+	immediate = {
+		hidden_effect = { 105 = { set_state_flag = worldstage_AI_active } set_global_flag = usa_joined_ww2 }
+	}
+	
 	option = {
 		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } NOT = { tag = AMC tag = OKI } }
 		name = worldstage.77.allies
@@ -3046,6 +3054,10 @@ news_event = {
 	
 	major = yes	# this one is shown to everyone
 	
+	immediate = {
+		hidden_effect = { 105 = { set_state_flag = worldstage_AI_active } set_global_flag = usa_joined_ww2 }
+	}
+	
 	option = {
 		trigger = {
 			NOT = { tag = AMC tag = OKI }
@@ -3087,6 +3099,60 @@ news_event = {
 		name = worldstage.78.other
 		custom_effect_tooltip = metropolis_scope_usa
 		custom_effect_tooltip = will_join_allies_tt
+	}
+}
+
+# United States Join the Allies: AMC/OKI Joined Allies
+news_event = {
+	id = worldstage.81	# it's out of order, 79 is after this one
+	title = worldstage.81.t
+	desc = worldstage.81.d
+	picture = GFX_news_ww2_usa_joins_war
+
+	is_triggered_only = yes
+	
+	major = yes	# this one is shown to everyone
+	
+	immediate = {
+		hidden_effect = { 105 = { set_state_flag = worldstage_AI_active } set_global_flag = usa_joined_ww2 }
+	}
+	
+	option = {
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } NOT = { tag = AMC tag = OKI } }
+		name = worldstage.76.allies
+		custom_effect_tooltip = metropolis_scope_usa
+		custom_effect_tooltip = world_stage_join_allies_tt_good
+	}
+	option = {
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+		name = worldstage.76.komintern
+		custom_effect_tooltip = metropolis_scope_usa
+		custom_effect_tooltip = world_stage_join_allies_tt
+	}
+	option = {
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		name = worldstage.76.axis
+		custom_effect_tooltip = metropolis_scope_usa
+		custom_effect_tooltip = world_stage_join_allies_tt_bad
+	}
+	option = {
+		trigger = { OR = { tag = AMC tag = OKI } }
+		name = worldstage.76.usa
+		custom_effect_tooltip = metropolis_scope_usa
+		custom_effect_tooltip = world_stage_join_allies_tt
+	}
+	option = {
+		trigger = {
+			NOT = {
+				tag = AMC tag = OKI
+				var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
+				var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } }
+				var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } }
+			}
+		}
+		name = worldstage.76.other
+		custom_effect_tooltip = metropolis_scope_usa
+		custom_effect_tooltip = world_stage_join_allies_tt
 	}
 }
 
@@ -3820,7 +3886,7 @@ news_event = {
 
 # No event for Portugal yet
 
-# Rome is taken, Italy fall
+# Rome is taken, Italy falls
 news_event = {
 	id = worldstage_automatic.109
 	title = worldstage_automatic.109.t
@@ -3906,6 +3972,69 @@ news_event = {
 		effect_tooltip = {
 			if = { limit = { country_exists = KIT }	add_war_support = -0.1 }
 			every_country = { limit = { NOT = { tag = KIT } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } } add_war_support = -0.05 }
+		}
+	}
+}
+
+# Warsaw is taken, Poland falls
+news_event = {
+	id = worldstage_automatic.115
+	title = worldstage_automatic.115.t
+	desc = worldstage_automatic.115.d 
+	picture = GFX_news_ww2_barbarossa_success_wide
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			115 = { set_state_flag = metropolis_capitulated }
+			115 = { set_variable = { world_stage_power = 0 } }
+			every_state = {
+				limit = { check_variable = { theater_owner = 115 } }
+				set_variable = { theater_owner_coalition = 3 }
+				world_stage_end_round_partial = yes
+				clr_state_flag = theater_is_active
+			}
+			every_state = {
+				limit = { has_variable = theater_owner }
+				divide_variable = { world_stage_power_deployed_by^115 = 4 }
+				round_variable = world_stage_power_deployed_by^115
+			}
+			every_country = { limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
+		}
+	}
+
+	option = {
+		name = worldstage_automatic.115.axis
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		effect_tooltip = {
+			every_country = { limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
+		}
+	}
+	option = {
+		name = worldstage_automatic.115.komin
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+		effect_tooltip = {
+			every_country = { limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
+		}
+	}
+	option = {
+		name = worldstage_automatic.115.allies
+		effect_tooltip = {
+			every_country = { limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
+		}
+	}
+	option = {
+		name = worldstage_automatic.115.other
+		trigger = { 
+			NOT = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
+			NOT = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+			NOT = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		}
+		effect_tooltip = {
+			every_country = { limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
 		}
 	}
 }
@@ -5605,6 +5734,7 @@ news_event = {
 		hidden_effect = {
 			clr_global_flag = sovietunion_joined_ww2
 			clr_global_flag = world_stage_world_war_2_is_active
+			clr_global_flag = world_stage_vichy_exists
 			if = {
 				limit = { country_exists = REI }
 				country_event =  { id = worldstage_end.101 days = 1 }
@@ -5663,6 +5793,7 @@ news_event = {
 		hidden_effect = {
 			clr_global_flag = sovietunion_joined_ww2
 			clr_global_flag = world_stage_world_war_2_is_active
+			clr_global_flag = world_stage_france_exists
 		}
 	}
 	
@@ -5716,6 +5847,7 @@ news_event = {
 	immediate = {
 		hidden_effect = {
 			clr_global_flag = world_stage_world_war_2_is_active
+			clr_global_flag = world_stage_vichy_exists
 			if = {
 				limit = { country_exists = REI }
 				country_event =  { id = worldstage_end.101 days = 1 }
@@ -5773,6 +5905,7 @@ news_event = {
 	immediate = {
 		hidden_effect = {
 			clr_global_flag = world_stage_world_war_2_is_active
+			clr_global_flag = world_stage_france_exists
 		}
 	}
 	
@@ -5826,6 +5959,7 @@ news_event = {
 	immediate = {
 		hidden_effect = {
 			clr_global_flag = world_stage_world_war_3_is_active
+			clr_global_flag = world_stage_vichy_exists
 			if = {
 				limit = { country_exists = REI }
 				country_event =  { id = worldstage_end.101 days = 1 }
