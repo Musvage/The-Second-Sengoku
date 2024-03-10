@@ -1964,10 +1964,48 @@ focus_tree = {
 			hidden_trigger = { has_global_flag = REI_sea_lion_completed }
 		}
 		
+		select_effect = { news_event = worldstage.60 }
+		
 		completion_reward = {
 			set_global_flag = REI_sea_lion_completed
-			unlock_decision_category_tooltip = world_stage_sealion_category
-			set_variable = { global.sealion_strength = 50 }
+			news_event = worldstage.61
+			#set_variable = { global.sealion_strength = 50 }
+			#unlock_decision_category_tooltip = world_stage_sealion_category
+			#### TODO TO-DO TO DO: complete operation decisions later
+			hidden_effect = {
+				set_temp_variable = { england_army = var:102.world_stage_power }
+				divide_temp_variable = { england_army = 2 }
+				round_temp_variable = england_army
+				subtract_from_variable = { var:102.world_stage_power = england_army }
+				subtract_from_variable = { var:101.world_stage_power = 30 }
+				add_to_variable = { 30.attacker_strategic_advantage = 0.25 }
+				30 = {
+					set_state_flag = theater_is_active
+					add_to_variable = { world_stage_power_deployed_by^102 = england_army } log = "Sealion: england_army: [?england_army] X german army: 30"
+					add_to_variable = { world_stage_power_deployed_by^101 = 30 }
+					set_variable = { coalition_side_attack = 3 }
+					world_stage_state_update_current_day = yes
+				}
+				101 = { set_variable = { ai_save_strength = 0 } } does not need to save strength
+			}
+			effect_tooltip = {
+				custom_effect_tooltip = theater_scope_england
+				custom_effect_tooltip = world_stage_activate_theater_tt
+				add_to_variable = {
+					30.attacker_strategic_advantage = 0.25
+					tooltip = world_stage_add_strategic_advantage_attacker
+				}
+				custom_effect_tooltip = metropolis_scope_germany_space
+				subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the focus effect
+					101.world_stage_power = 30
+					tooltip = world_stage_deploy_power_england_space
+				}
+			}
+			hidden_effect = {
+				8 = { add_to_array = { connects_to = 30 } }
+			}
+			custom_effect_tooltip = theater_scope_france
+			custom_effect_tooltip = theater_enable_connection_england
 		}
 	}
 	

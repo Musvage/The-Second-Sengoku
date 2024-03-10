@@ -384,9 +384,31 @@ REI_ai_save_strength_sealion = {
 			if = {
 				limit = {
 					has_global_flag = REI_blitzkrieg_completed has_global_flag = REI_barbarossa_completed
-					check_variable = { world_stage_power > 5 }	# if it's too low, don't even try
+					check_variable = { world_stage_power > 5 }			# if it's too low, don't even try
+					NOT = { has_global_flag = REI_sea_lion_completed }	# if already did the focus, dont bother any more
 				}
-				set_variable = { ai_save_strength = 30 }	log = "REI_ai_save_strength_sealion (30)"
+				set_variable = { ai_save_strength = 30 } log = "REI_ai_save_strength_sealion (30)"
+			} else = { set_variable = { ai_save_strength = 30 }	log = "REI_ai_save_strength_sealion (0)" }
+		}
+	}
+}
+
+OSA_ai_save_strength_overlord_husky = {
+	hidden_effect = {
+		102 = {
+			if = {
+				limit = {
+					check_variable = { world_stage_power > 5 }			# if it's too low, don't even try
+				}
+				if = {
+					limit = {  has_global_flag = OSA_operaion_overlord_completed has_global_flag = OSA_operaion_husky_completed }	# save strength for both
+					set_variable = { ai_save_strength = 60 } log = "OSA_ai_save_strength_overlord_husky (60)"
+				} else_if = {
+					limit = { OR = { has_global_flag = OSA_operaion_overlord_completed has_global_flag = OSA_operaion_husky_completed } }	# save strength for one
+					set_variable = { ai_save_strength = 30 } log = "OSA_ai_save_strength_overlord_husky (30)"
+				} else = {
+					set_variable = { ai_save_strength = 0 } log = "OSA_ai_save_strength_overlord_husky (0)"
+				}
 			}
 		}
 	}
