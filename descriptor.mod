@@ -50,5 +50,5 @@ tags={
 	"Technologies"
 }
 picture="Thumbnail.png"
-supported_version="1.13.*"
+supported_version="1.14.*"
 remote_file_id="2826603870"
