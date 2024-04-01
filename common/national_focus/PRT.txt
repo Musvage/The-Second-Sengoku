@@ -3,15 +3,310 @@ focus_tree = {
 	country = {
 		factor = 0
 		modifier = {
-			add = -10
+			add = 10
 			tag = PRT
+			is_debug = yes
 		}
 	}
+	
+	
+	# MILITARY BRANCH
+	focus = {
+		id = PRT_military_reform_1	# Escola Central de Oficiais
+		icon = GFX_goal_generic_army_doctrines
+		search_filters = { FOCUS_FILTER_MILITARY }
+		
+		x = 0
+		y = 0
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			if = {
+				limit = { has_dlc = "No Step Back" }
+				custom_effect_tooltip = free_army_academy_one_time_tt
+				hidden_effect = { add_ideas = PRT_free_army_academy_spirit }
+				custom_effect_tooltip = free_naval_academy_one_time_tt
+				hidden_effect = { add_ideas = PRT_free_navy_academy_spirit }
+			} else = {
+				add_ideas = PRT_military_reform_spirit
+			}
+		}
+	}
+	
+	focus = {
+		id = PRT_create_ogma
+		icon = GFX_focus_PRT_expand_ogma
+		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_INDUSTRY FOCUS_FILTER_WORLD }
+		
+		prerequisite = { focus = PRT_military_reform_1 }
+		relative_position_id = PRT_military_reform_1
+		x = -4
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		text_icon = worldstage_style
+		
+		completion_reward = {
+			add_offsite_building = { type = arms_factory level = 2 }
+			add_to_variable = {
+				var = 101.world_stage_power
+				value = 2
+				tooltip = add_world_stage_power_no_scope_tt
+			}
+			air_experience = 5
+		}
+	}
+	
+	focus = {
+		id = PRT_create_ogme
+		icon = GFX_focus_PRT_expand_ogme
+		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_INDUSTRY FOCUS_FILTER_WORLD }
+		
+		prerequisite = { focus = PRT_military_reform_1 }
+		relative_position_id = PRT_military_reform_1
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		text_icon = worldstage_style
+		
+		completion_reward = {
+			add_offsite_building = { type = arms_factory level = 2 }
+			custom_effect_tooltip = metropolis_scope_germany
+			add_to_variable = {
+				var = 108.world_stage_power
+				value = 2
+				tooltip = add_world_stage_power_no_scope_tt
+			}
+			army_experience = 5
+		}
+	}
+	
+	focus = {
+		id = PRT_local_ogef_branch
+		icon = GFX_focus_generic_western_factory
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		
+		prerequisite = { focus = PRT_create_ogme }
+		relative_position_id = PRT_create_ogme
+		x = 0
+		y = 1
+		cost = 10
+
+		available_if_capitulated = yes
+
+
+		ai_will_do = {
+			factor = 10			
+		}
+
+		bypass = {
+			custom_trigger_tooltip = {
+				tooltip = production_effort_tt
+				all_controlled_state = {
+					free_building_slots = {
+						building = arms_factory
+						size < 1
+						include_locked = yes
+					}
+				}
+			}
+		}
+		
+		completion_reward = {
+			random_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				if = {
+					limit = {
+						free_building_slots = {
+							building = arms_factory
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_building_construction = {
+						type = arms_factory
+						level = 2
+						instant_build = yes
+					}
+					add_extra_state_shared_building_slots = 2
+				} else = {
+					add_building_construction = {
+						type = arms_factory
+						level = 1
+						instant_build = yes
+					}
+					add_extra_state_shared_building_slots = 1
+					if = {
+						limit = { ROOT = { num_of_controlled_states > 1 } }
+						ROOT = {
+							random_controlled_state = {
+								limit = {
+									free_building_slots = {
+										building = arms_factory
+										size > 0
+										include_locked = yes
+									}
+								}
+								add_building_construction = {
+									type = arms_factory
+									level = 1
+									instant_build = yes
+								}
+								add_extra_state_shared_building_slots = 1
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = PRT_infantry_equipment_effort
+		icon = GFX_focus_PRT_army_effort
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = PRT_create_ogme }
+		relative_position_id = PRT_create_ogme
+		x = -1
+		y = 2
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_tech_bonus = {
+				name = infantry_artillery_bonus
+				bonus = 2.0
+				uses = 1
+				category = infantry_weapons
+				category = artillery
+			}
+		}
+	}
+	
+	focus = {
+		id = PRT_motorization_effort
+		icon = GFX_focus_generic_army_motorized2
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = PRT_infantry_equipment_effort }
+		relative_position_id = PRT_infantry_equipment_effort
+		x = 0
+		y = 1
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_tech_bonus = {
+				name = infantry_artillery_bonus
+				bonus = 2.0
+				uses = 1
+				category = motorized_equipment
+			}
+		}
+	}
+	
+	focus = {
+		id = PRT_armor_effort
+		icon = GFX_goal_generic_build_tank
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = PRT_motorization_effort }
+		relative_position_id = PRT_motorization_effort
+		x = 0
+		y = 1
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_tech_bonus = {
+				name = armor_bonus
+				bonus = 2.0
+				uses = 1
+				category = armor
+			}
+		}
+	}
+	
+	focus = {
+		id = PRT_military_reform_2	# Instituto de Altos Estudos Militares
+		icon = GFX_goal_generic_army_doctrines
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = PRT_create_ogme }
+		relative_position_id = PRT_create_ogme
+		x = 1
+		y = 2
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			add_doctrine_cost_reduction = {
+				name = land_doc_bonus
+				cost_reduction = 0.5
+				uses = 1
+				category = land_doctrine
+			}
+		}
+	}
+	
+	focus = {
+		id = PRT_create_arsenal_alfeite
+		icon = GFX_focus_PRT_expand_alfeite
+		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_INDUSTRY FOCUS_FILTER_WORLD }
+		
+		prerequisite = { focus = PRT_military_reform_1 }
+		relative_position_id = PRT_military_reform_1
+		x = 4
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		text_icon = worldstage_style
+		
+		completion_reward = {
+			add_offsite_building = { type = dockyeard level = 2 }
+			add_to_variable = {
+				var = 101.world_stage_power
+				value = 2
+				tooltip = add_world_stage_power_no_scope_tt
+			}
+			navy_experience = 5
+		}
+	}
+	
+	
 	#MAIN
 	focus = {
 		id = PRT_o_acto_colonial
 		icon = GFX_focus_PRT_o_acto_colonial
-		x = 5
+		x = 25
 		y = 0
 		cost = 10
 		available = {
@@ -212,7 +507,7 @@ focus_tree = {
 		}			
 	}
 	
-		focus = {
+	focus = {
 		id = PRT_new_nanbam_period
 		icon = GFX_goal_generic_trade
 		x = 0
@@ -694,7 +989,6 @@ focus_tree = {
 		add_research_slot = 1	
 		}
 	}
-	shared_focus = SS_colonial_board
 }
 #FOCUS_FILTER_SPY
 #FOCUS_FILTER_ANNEXATION
