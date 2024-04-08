@@ -924,46 +924,28 @@ focus_tree = {
 	focus = {
 		id = PRT_integrate_market
 		icon = GFX_focus_PRO_invest_in_outer_kanto
-		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_STABILITY }
+		search_filters = { FOCUS_FILTER_INTERNATIONAL_TRADE }
 		
 		ai_will_do = { factor = 10 }
 		
 		prerequisite = { focus = PRT_investments_opportunities }
+		prerequisite = { focus = PRT_cultural_syncretism }
 		relative_position_id = PRT_investments_opportunities
-		x = 0
+		x = 1
 		y = 1
 
 		cost = 10
 		
 		available_if_capitulated = yes
-		
-		available = {
-			num_of_controlled_states > 1
-			any_owned_state = {
-				free_building_slots = {
-					building = industrial_complex
-					size > 0
-					include_locked = yes
-				}
-			}
-		}
 
 		completion_reward = {
-			add_stability = 0.05
-			random_owned_controlled_state = {
-				limit = {
-					free_building_slots = {
-						building = industrial_complex
-						size > 0
-						include_locked = yes
+			custom_effect_tooltip = PRT_integrate_market_tt
+			hidden_effect = {
+				every_possible_country = {
+					limit = {
+						NOT = { tag = ROC tag = OSA tag = HIR tag = KOB tag = REI tag = FER tag = JOS tag = AMC tag = OKI tag = PRT tag = GAN tag = WIT tag = KIT tag = SPR }
 					}
-				}
-				prioritize = { 140 }
-				add_extra_state_shared_building_slots = 1
-				add_building_construction = {
-					type = industrial_complex
-					level = 1
-					instant_build = yes
+					add_ideas = PRT_integrated_markets_spirit
 				}
 			}
 		}
@@ -972,15 +954,15 @@ focus_tree = {
 	# LOCAL POLITICS
 	
 	focus = {
-		id = PRT_expand_self_rule	# Repeal Colinal Act
+		id = PRT_expand_self_rule	# Reform Colonial Act
 		icon = GFX_focus_PRT_self_rule
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
 		ai_will_do = { factor = 10 }
 		
-		prerequisite = { focus = PRT_industrial_development }
+		mutually_exclusive = { focus = PRT_centralized_administration }
 		relative_position_id = PRT_industrial_development
-		x = 10
+		x = 4
 		y = 0
 
 		cost = 10
@@ -996,11 +978,249 @@ focus_tree = {
 		}
 	}
 	
+	focus = {
+		id = PRT_centralized_administration	# Reafirm Colonial Act
+		icon = GFX_focus_PRT_o_acto_colonial
+		search_filters = { FOCUS_FILTER_WAR_SUPPORT }
+		
+		ai_will_do = { factor = 10 }
+		
+		mutually_exclusive = { focus = PRT_expand_self_rule }
+		relative_position_id = PRT_expand_self_rule
+		x = 2
+		y = 0
+
+		cost = 10
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_ideas = PRT_ministry_of_colonies_spirit
+		}
+	}
+	
+	focus = {
+		id = PRT_reorganize_governorate
+		icon = GFX_focus_PRT_reorgonise_governorate
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		
+		ai_will_do = { factor = 10 }
+		
+		prerequisite = { focus = PRT_expand_self_rule }
+		relative_position_id = PRT_expand_self_rule
+		x = -2
+		y = 1
+
+		cost = 10
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_political_power = 150
+		}
+	}
+	
+	focus = {
+		id = PRT_expand_local_forces
+		icon = GFX_focus_REI_local_volunteers
+		search_filters = { FOCUS_FILTER_MANPOWER }
+		
+		ai_will_do = { factor = 10 }
+		
+		mutually_exclusive = { focus = PRT_unify_armed_forces }
+		prerequisite = { focus = PRT_expand_self_rule focus = PRT_centralized_administration }
+		relative_position_id = PRT_expand_self_rule
+		x = 0
+		y = 1
+
+		cost = 10
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_ideas = PRT_local_armed_forces_spirit
+		}
+	}
+	
+	focus = {
+		id = PRT_unify_armed_forces
+		icon = GFX_goal_generic_defence
+		search_filters = { FOCUS_FILTER_MILITARY }
+		
+		ai_will_do = { factor = 10 }
+		
+		mutually_exclusive = { focus = PRT_expand_local_forces }
+		prerequisite = { focus = PRT_expand_self_rule focus = PRT_centralized_administration  }
+		relative_position_id = PRT_expand_self_rule
+		x = 2
+		y = 1
+
+		cost = 10
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_ideas = PRT_unified_armed_forces_spirit
+		}
+	}
+	
+	focus = {
+		id = PRT_cultural_syncretism
+		icon = GFX_focus_PRT_cultural_syncretism
+		search_filters = { FOCUS_FILTER_RELIGION FOCUS_FILTER_DIPLOMACY }
+		
+		ai_will_do = { factor = 10 }
+		
+		prerequisite = { focus = PRT_expand_self_rule }
+		relative_position_id = PRT_expand_self_rule
+		x = -1
+		y = 2
+
+		cost = 10
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_ideas = PRT_cultural_syncretism_spirit
+			every_country = {
+				limit = {
+					NOT = { tag = ROC tag = OSA tag = HIR tag = KOB tag = REI tag = FER tag = JOS tag = AMC tag = OKI tag = PRT tag = GAN tag = WIT tag = KIT tag = SPR }
+				}
+				add_opinion_modifier = { target = ROOT modifier = PRT_opinion_cultural_syncretism }
+			}
+			hidden_effect = {
+				every_possible_country = {
+					limit = {
+						NOT = { tag = ROC tag = OSA tag = HIR tag = KOB tag = REI tag = FER tag = JOS tag = AMC tag = OKI tag = PRT tag = GAN tag = WIT tag = KIT tag = SPR }
+						exists = no
+					}
+					add_opinion_modifier = { target = ROOT modifier = PRT_opinion_cultural_syncretism }
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = PRT_religious_syncretism
+		icon = GFX_focus_generic_treaty
+		search_filters = { FOCUS_FILTER_RELIGION FOCUS_FILTER_STABILITY }
+		
+		ai_will_do = { factor = 10 }
+		
+		prerequisite = { focus = PRT_cultural_syncretism }
+		relative_position_id = PRT_cultural_syncretism
+		x = 1
+		y = 1
+
+		cost = 10
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_ideas = PRT_religious_syncretism_spirit
+		}
+	}
+	
+	focus = {
+		id = PRT_assimilation_policy	# Estatuto do Indígena
+		icon = GFX_focus_por_luso_tropicalism
+		search_filters = { FOCUS_FILTER_RELIGION FOCUS_FILTER_MANPOWER }
+		
+		ai_will_do = { factor = 10 }
+		
+		prerequisite = { focus = PRT_centralized_administration }
+		relative_position_id = PRT_centralized_administration
+		x = 1
+		y = 2
+
+		cost = 10
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_ideas = PRT_assimilation_policy_spirit
+		}
+	}
+	
+	focus = {
+		id = PRT_conversion_effort
+		icon = GFX_focus_PRT_jesuits_effort
+		search_filters = { FOCUS_FILTER_RELIGION }
+		
+		ai_will_do = { factor = 10 }
+		
+		prerequisite = { focus = PRT_assimilation_policy }
+		relative_position_id = PRT_assimilation_policy
+		x = -1
+		y = 1
+
+		cost = 10
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			custom_effect_tooltip = PRT_conversion_effort_tt
+			show_ideas_tooltip = education_law_jesuits
+		}
+	}
+	
+	focus = {
+		id = PRT_conversion_effort_2
+		icon = GFX_focus_PRT_jesus_triumphs
+		search_filters = { FOCUS_FILTER_RELIGION FOCUS_FILTER_ANNEXATION }
+		
+		ai_will_do = { factor = 10 }
+		
+		prerequisite = { focus = PRT_assimilation_policy }
+		relative_position_id = PRT_assimilation_policy
+		x = 1
+		y = 1
+
+		cost = 10
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			custom_effect_tooltip = religion_can_core_with_religion
+			hidden_effect = {
+				swap_ideas = {
+					add_idea = PRT_catholic_state_2
+					remove_idea = PRT_catholic_state
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = PRT_catholic_univerties
+		icon = GFX_focus_PRT_catholic_universities
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = PRT_conversion_effort }
+		prerequisite = { focus = PRT_conversion_effort_2 }
+		relative_position_id = PRT_conversion_effort
+		x = 1
+		y = 1
+		cost = 10
+		
+		available = {
+			num_of_factories > 10
+		}
+		
+		ai_will_do = {
+			factor = 10
+		}	
+		
+		completion_reward = {
+			add_research_slot = 1	
+		}
+	}
+	
 	#MAIN
 	focus = {
 		id = PRT_o_acto_colonial
 		icon = GFX_focus_PRT_o_acto_colonial
-		x = 25
+		x = 50
 		y = 0
 		cost = 10
 		available = {
@@ -1060,7 +1280,7 @@ focus_tree = {
 			}
 		}
 	}
-		focus = {
+	focus = {
 		id = PRT_estatuto_do_indigena
 		icon = GFX_goal_generic_national_unity
 		x = 0
@@ -1081,7 +1301,7 @@ focus_tree = {
 		}
 	}
 	
-		focus = {
+	focus = {
 		id = PRT_adress_the_crisis
 		icon = GFX_focus_REI_german_engineering
 		x = -4
@@ -1600,7 +1820,7 @@ focus_tree = {
 		y = 1
 		cost = 10
 		prerequisite = { focus = PRT_our_modern_knights }
-		prerequisite = { focus = PRT_catholic_univerties }
+		prerequisite = { focus = PRT_catholic_univerties_old }
 		relative_position_id = PRT_our_modern_knights
 		available = {
 	
@@ -1666,7 +1886,7 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = PRT_catholic_univerties
+		id = PRT_catholic_univerties_old
 		icon = GFX_focus_PRT_catholic_universities
 		x = 0
 		y = 1
@@ -1697,3 +1917,4 @@ focus_tree = {
 #FOCUS_FILTER_WAR_SUPPORT
 #FOCUS_FILTER_RELIGION
 #FOCUS_FILTER_WORLD
+#FOCUS_FILTER_INTERNATIONAL_TRADE
