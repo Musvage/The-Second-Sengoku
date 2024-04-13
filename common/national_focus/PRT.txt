@@ -1380,6 +1380,32 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = PRT_free_election
+		icon = GFX_focus_PRT_free_elections
+		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		
+		ai_will_do = { factor = 0 }
+		
+		available = {
+		}
+		
+		bypass = { has_government = democratic }
+		
+		prerequisite = { focus = PRT_maintain_neutrality focus = PRT_help_spanish_republica }
+		relative_position_id = PRT_maintain_neutrality
+		x = 1
+		y = 1
+
+		cost = 10
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			
+		}
+	}
+	
+	focus = {
 		id = PRT_antifascism_coalition
 		icon = GFX_goal_generic_anti_fascist_diplomacy_red
 		search_filters = { FOCUS_FILTER_DIPLOMACY }
@@ -1437,9 +1463,9 @@ focus_tree = {
 			has_world_stage_coalition_allies = yes
 		}
 		
-		prerequisite = { focus = PRT_antifascism_coalition }
-		relative_position_id = PRT_antifascism_coalition
-		x = 0
+		prerequisite = { focus = PRT_antifascism_coalition focus = PRT_free_election }
+		relative_position_id = PRT_free_election
+		x = 1
 		y = 1
 
 		cost = 10
@@ -1447,7 +1473,10 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		completion_reward = {
-			world_stage_join_allies = yes
+			if = {
+				limit = { NOT = { has_global_flag = league_of_nations_exists } }
+				world_stage_join_allies = yes
+			} else = { custom_effect_tooltip = world_stage_join_allies_tt }	# this seems clumsy but it helps keep the tooltip from the actual effect more straighforward
 			# event for joining allies (not by annexation of macau)
 			
 		}
@@ -1471,16 +1500,33 @@ focus_tree = {
 		text_icon = worldstage_style
 		
 		available = {
-			NOT = { has_government = fascism  }
 			if = {  has_idea = PRT_political_backlash_spirit_democratic 			limit = { has_government = democratic } }
 			if = {  has_idea = PRT_political_backlash_spirit_communism 				limit = { has_government = communism } }
 			if = {  has_idea = PRT_political_backlash_spirit_autocracy 				limit = { has_government = autocracy } }
 			if = {  has_idea = PRT_political_backlash_spirit_fascism 				limit = { has_government = fascism } }
 			if = {  has_idea = PRT_political_backlash_spirit_neutrality 			limit = { has_government = neutrality } }
 			if = {  has_idea = PRT_political_backlash_spirit_democratic_socialism	limit = { has_government = democratic_socialism } }
+			world_stage_has_capitulated = no
+			custom_trigger_tooltip = {
+				tooltip = world_stage_germany_did_not_capitulate_trigger
+				101 = { NOT = { has_state_flag = metropolis_capitulated } }
+			}
 		}
 		
-		bypass = { has_global_flag = world_stage_theater_spanish_cw_is_over }
+		bypass = {
+			OR = {
+				has_global_flag = world_stage_theater_spanish_cw_is_over
+				bypass = {
+					custom_trigger_tooltip = {
+						tooltip = has_world_stage_coalition_axis_tt	# this seems cluncky, but we are using a custom trigger to hide the ROC_antikominternpakt_completed
+						OR = {
+							has_world_stage_coalition_axis = yes
+							has_global_flag = PRT_antikomintern_pact_completed
+						}
+					}
+				}
+			}
+		}
 		
 		prerequisite = { focus = PRT_help_spanish_falange }
 		relative_position_id = PRT_help_spanish_falange
@@ -1491,7 +1537,26 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		completion_reward = {
-			
+			set_global_flag = PRT_antikomintern_pact_completed
+			if = {
+				limit = { has_global_flag = league_of_nations_exists }	# therefore, Pact of Steel exists
+				world_stage_join_pactofsteel = yes
+				if = {
+					limit = { REI = { exists = yes has_war = no } }
+					PRT = { give_guarantee = REI }
+				}
+				if = {
+					limit = { PRT = { exists = yes has_war = no } }
+					REI = { give_guarantee = PRT }
+				}
+			} else = {
+				world_stage_join_axis = yes								# this is a bit redundant but I'll keep this way as a fail-safe
+			}
+			if = {
+				limit = { has_idea = SS_lon_member }
+				remove_ideas = SS_lon_member
+			}
+			set_global_flag = portugal_aligned_axis					# this is useful for checking coalitions when a country capitulates
 		}
 	}
 	
@@ -1599,15 +1664,15 @@ focus_tree = {
 			if = {
 				limit = { fascism < 0.3 }
 				add_stability = -0.15
-				custom_effect_tooltip = PRT_autocracy_coup_tt3
+				custom_effect_tooltip = PRT_fascist_coup_tt3
 			} else_if = {
 				limit = { fascism < 0.4 }
 				add_stability = -0.10
-				custom_effect_tooltip = PRT_autocracy_coup_tt2
+				custom_effect_tooltip = PRT_fascist_coup_tt2
 			} else_if = {
 				limit = { fascism < 0.5 }
 				add_stability = -0.05
-				custom_effect_tooltip = PRT_autocracy_coup_tt1
+				custom_effect_tooltip = PRT_fascist_coup_tt1
 			}
 		}
 	}
