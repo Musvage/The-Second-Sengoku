@@ -1292,6 +1292,8 @@ focus_tree = {
 		
 		ai_will_do = { factor = 10 }
 		
+		available = { has_religion_3 = yes }
+		
 		prerequisite = { focus = PRT_centralized_administration }
 		relative_position_id = PRT_centralized_administration
 		x = 3
@@ -1313,6 +1315,9 @@ focus_tree = {
 		
 		ai_will_do = { factor = 10 }
 		
+		available = { has_religion_3 = yes }
+		
+		mutually_exclusive = { focus = PRT_military_order_of_christ }
 		prerequisite = { focus = PRT_assimilation_policy }
 		relative_position_id = PRT_assimilation_policy
 		x = -1
@@ -1323,8 +1328,41 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		completion_reward = {
+			if = {
+				limit = { has_idea = PRT_adviser_catholic }
+				hidden_effect = { deactivate_advisor = PRT_adviser_catholic }
+				activate_advisor = PRT_adviser_jesuit
+			} else = {
+				effect_tooltip = { recruit_character = PRT_adviser_jesuit }
+				show_ideas_tooltip = PRT_adviser_jesuit
+			}
 			custom_effect_tooltip = PRT_conversion_effort_tt
+			custom_effect_tooltip = PRT_conversion_effort_tt2
 			show_ideas_tooltip = education_law_jesuits
+		}
+	}
+	
+	focus = {
+		id = PRT_military_order_of_christ
+		icon = GFX_focus_PRT_military_order_of_christ
+		search_filters = { FOCUS_FILTER_RELIGION }
+		
+		ai_will_do = { factor = 10 }
+		
+		available = { has_religion_3 = yes }
+		
+		mutually_exclusive = { focus = PRT_conversion_effort }
+		prerequisite = { focus = PRT_assimilation_policy }
+		relative_position_id = PRT_assimilation_policy
+		x = 1
+		y = 1
+
+		cost = 10
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_ideas = generic_idea_religious_zeal_3	# add something else later
 		}
 	}
 	
@@ -1335,11 +1373,13 @@ focus_tree = {
 		
 		ai_will_do = { factor = 10 }
 		
+		available = { has_religion_3 = yes }
+		
 		prerequisite = { focus = PRT_assimilation_policy }
 		prerequisite = { focus = PRT_rerum_novarum }
 		relative_position_id = PRT_assimilation_policy
-		x = 1
-		y = 1
+		x = 2
+		y = 2
 
 		cost = 10
 		
@@ -1361,14 +1401,15 @@ focus_tree = {
 		icon = GFX_focus_PRT_catholic_universities
 		search_filters = { FOCUS_FILTER_RESEARCH }
 		
-		prerequisite = { focus = PRT_conversion_effort }
+		prerequisite = { focus = PRT_conversion_effort focus = PRT_military_order_of_christ }
 		relative_position_id = PRT_conversion_effort
-		x = 0
+		x = 1
 		y = 1
 		cost = 10
 		
 		available = {
 			num_of_factories > 10
+			has_religion_3 = yes
 		}
 		
 		ai_will_do = {
