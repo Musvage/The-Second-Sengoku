@@ -23,6 +23,8 @@ on_actions = {
 				limit = { has_game_rule = { rule = allow_easteregg_characters option = EASTERGG_ALLOWED } }
 				set_global_flag = eastereggs_enabled
 				log = "recruit easter egg characters"
+				PRT = { fernando_pessoa_heteronym_rotation = yes }
+				# old code
 				#FER = { recruit_character = FER_alexei_ivanov }	# chemical warfare
 				#AMC = {
 				#	recruit_character = AMC_indiana_niedell	# media personality
@@ -57,12 +59,22 @@ on_actions = {
 				if = {
 					limit = {
 						NOT = {
+							# generic ideas
 							has_idea_with_trait = coalition_with_democratic
 							has_idea_with_trait = coalition_with_democratic_socialism
 							has_idea_with_trait = coalition_with_communism
 							has_idea_with_trait = coalition_with_neutrality
 							has_idea_with_trait = coalition_with_autocracy
 							has_idea_with_trait = coalition_with_fascism
+							# generic characters
+							has_idea_with_trait = coalition_with_democratic_char
+							has_idea_with_trait = coalition_with_democratic_socialism_char
+							has_idea_with_trait = coalition_with_communism_char
+							has_idea_with_trait = coalition_with_neutrality_char
+							has_idea_with_trait = coalition_with_autocracy_char
+							has_idea_with_trait = coalition_with_fascism_char
+							# special characters
+							has_idea_with_trait = PRT_monarchist_writer	# special character rule
 						}
 					}
 					set_variable = { coalition_stability_bonus = 0 }
@@ -90,6 +102,34 @@ on_actions = {
 				if = {
 					limit = { has_idea_with_trait = coalition_with_communism }
 					set_variable = { coalition_stability_bonus = party_popularity@communism }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_democratic_char }
+					set_variable = { coalition_stability_bonus = party_popularity@democratic }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_democratic_socialism_char }
+					set_variable = { coalition_stability_bonus = party_popularity@democratic_socialism }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_neutrality_char }
+					set_variable = { coalition_stability_bonus = party_popularityneutrality}
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_autocracy_char }
+					set_variable = { coalition_stability_bonus = party_popularity@autocracy }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_fascism_char }
+					set_variable = { coalition_stability_bonus = party_popularity@fascism }
+				}
+				if = {
+					limit = { has_idea_with_trait = coalition_with_communism_char }
+					set_variable = { coalition_stability_bonus = party_popularity@communism }
+				}
+				if = {
+					limit = { has_idea_with_trait = PRT_monarchist_writer }
+					set_variable = { coalition_stability_bonus = party_popularity@autocracy }
 				}
 				multiply_variable = { coalition_stability_bonus = 0.15 }
 			}
@@ -854,22 +894,30 @@ on_actions = {
 					limit = { has_idea_with_trait = coalition_with_communism_char NOT = { has_government = communism } }
 					set_variable = { coalition_stability_bonus = party_popularity@communism }
 				}
+				if = {
+					limit = { has_idea_with_trait = PRT_monarchist_writer NOT = { has_government = autocracy } }
+					set_variable = { coalition_stability_bonus = party_popularity@autocracy }
+				}
 				multiply_variable = { coalition_stability_bonus = 0.15 }
 				if = {
 					limit = {
 						NOT = {
+							# generic ideas
 							has_idea_with_trait = coalition_with_democratic
 							has_idea_with_trait = coalition_with_democratic_socialism
 							has_idea_with_trait = coalition_with_communism
 							has_idea_with_trait = coalition_with_neutrality
 							has_idea_with_trait = coalition_with_autocracy
 							has_idea_with_trait = coalition_with_fascism
+							# generic character
 							has_idea_with_trait = coalition_with_democratic_char
 							has_idea_with_trait = coalition_with_democratic_socialism_char
 							has_idea_with_trait = coalition_with_communism_char
 							has_idea_with_trait = coalition_with_neutrality_char
 							has_idea_with_trait = coalition_with_autocracy_char
 							has_idea_with_trait = coalition_with_fascism_char
+							# special character
+							has_idea_with_trait = PRT_monarchist_writer
 						}
 					}
 					set_variable = { coalition_stability_bonus = 0 }
@@ -1251,22 +1299,30 @@ on_actions = {
 					limit = { has_idea_with_trait = coalition_with_communism_char NOT = { has_government = communism } }
 					set_variable = { coalition_stability_bonus = party_popularity@communism }
 				}
+				if = {
+					limit = { has_idea_with_trait = PRT_monarchist_writer NOT = { has_government = autocracy } }
+					set_variable = { coalition_stability_bonus = party_popularity@autocracy }
+				}
 				multiply_variable = { coalition_stability_bonus = 0.15 }
 				if = {
 					limit = {
 						NOT = {
+							# generic ideas
 							has_idea_with_trait = coalition_with_democratic
 							has_idea_with_trait = coalition_with_democratic_socialism
 							has_idea_with_trait = coalition_with_communism
 							has_idea_with_trait = coalition_with_neutrality
 							has_idea_with_trait = coalition_with_autocracy
 							has_idea_with_trait = coalition_with_fascism
+							# generic character
 							has_idea_with_trait = coalition_with_democratic_char
 							has_idea_with_trait = coalition_with_democratic_socialism_char
 							has_idea_with_trait = coalition_with_communism_char
 							has_idea_with_trait = coalition_with_neutrality_char
 							has_idea_with_trait = coalition_with_autocracy_char
 							has_idea_with_trait = coalition_with_fascism_char
+							# special character
+							has_idea_with_trait = PRT_monarchist_writer
 						}
 					}
 					set_variable = { coalition_stability_bonus = 0 }
@@ -1306,6 +1362,217 @@ on_actions = {
 					log = "[THIS.GetName]: theater nº [?this_theater], cooldown = [?array_worldstage_action_cooldown^this_theater]"
 				}
 				world_stage_get_timer_frame_daily = yes	# timer for each theater resolving
+			}
+		}
+	}
+	
+	on_monthly = {
+		effect = {
+		### TRADE CITIES 2.0	###
+			every_country = {
+				check_trade_cities = yes
+			}
+		}
+		effect = {
+		### RELIGION 2.0 ###
+			every_controlled_state = {
+				state_drift_religion = yes
+			}
+		}
+		### PLANNED ECONOMY ###
+		effect = {
+			if = {
+				limit = { is_ai = yes }	### AI MONTHLY EFFECTS (THESE ARE WEEKLY FOR PLAYERS)
+				if = {
+					limit = { has_government = communism }
+					if = {
+						limit = { NOT = { has_dynamic_modifier = { modifier = planned_economy_modifier } } }
+						add_dynamic_modifier = { modifier = planned_economy_modifier }
+					}
+					set_variable = { planned_economy_minimum_goods = 0.3 }
+					set_variable = { war_support_goods_modifier = 0 }
+					if = {
+						limit = {
+							has_war = yes
+							has_war_support > 0.5
+						}
+						set_variable = { war_support_goods_modifier = has_war_support }
+						multiply_variable = { war_support_goods_modifier = 0.2 }
+						subtract_from_variable = { planned_economy_minimum_goods = war_support_goods_modifier }
+					}
+					set_variable = { planned_economy_political_power = modifier@consumer_goods_factor }
+					subtract_from_variable = { planned_economy_political_power = planned_economy_minimum_goods }
+					multiply_variable = { planned_economy_political_power = 2 }
+					set_variable = { planned_economy_party_popularity = modifier@consumer_goods_factor }
+					subtract_from_variable = { planned_economy_party_popularity = planned_economy_minimum_goods }
+				} else = {
+					if = {
+						limit = { has_dynamic_modifier = { modifier = planned_economy_modifier } }
+						remove_dynamic_modifier = { modifier = planned_economy_modifier }
+					}
+				}
+			}
+		}
+		### WORLD STAGE ###
+		effect = {
+			if = {
+				limit = { controls_state = 1 }
+				### update generic doctrines			##### THIS WHOLE TIHNG MAY BE UNCESSARY, CAN BE REPLACED BY A SCHEDULE EFFECT WITH OFF-MAP AI
+				random_list = {
+					1 = { add_to_variable = { global.generic_doctrine_bonus_land = 0.1 } }		# updates land doctrine
+					17 = {	}																	# nothing happens
+				}
+				random_list = {
+					1 = { add_to_variable = { global.generic_doctrine_bonus_navy = 0.1 } }		# updates navy doctrine
+					17 = {	}																	# nothing happens
+				}
+				random_list = {
+					1 = {
+						add_to_variable = { global.generic_doctrine_bonus_land = 0.05 }			# updates "air" doctrine
+						add_to_variable = { global.generic_doctrine_bonus_navy = 0.05 }
+					}
+					17 = {	}																	# nothing happens
+				}
+				clamp_variable = { var = global.generic_doctrine_bonus_land min = 0 max = 1 }
+				clamp_variable = { var = global.generic_doctrine_bonus_navy min = 0 max = 1 }
+			}
+		}
+	}
+	
+	on_war = {
+		effect = {
+			### PLANNED ECONOMY ###
+			if = {
+				limit = { has_government = communism }
+				planned_economy_update = yes
+			}
+		}
+	}
+	
+	on_peace = {
+		effect = {
+			### PLANNED ECONOMY ###
+			if = {
+				limit = { has_government = communism }
+				planned_economy_update = yes
+			}
+		}
+	}
+	
+	on_capitulation = {
+		effect = {
+			if = {
+				limit = { ROOT = { tag = IMS } }
+				clr_global_flag = seto_crisis_active
+			}
+		}
+	}
+	
+	on_ruling_party_change = {
+		effect = {
+			### SET OR RESET 1929 CRASH ###
+			if = {
+				limit = { has_global_flag = crash_1929_global_enabled }
+				if = {
+					limit = { has_government = communism }
+					remove_dynamic_modifier = { modifier = crash_1929_national_spirit }
+					if = {
+						limit = { has_active_mission = automatic_economic_recovery }
+						remove_mission = automatic_economic_recovery
+					}
+				} else = {
+					crash_1929_calculate_effect = yes
+					add_dynamic_modifier = {
+						modifier = crash_1929_national_spirit
+					}
+				}
+			}
+			### PLANNED ECONOMY ###
+			if = {
+				limit = { has_government = communism }
+				planned_economy_set_up = yes
+			} else = {
+				planned_economy_remove = yes
+			}
+			### OPINION MODIFIERS
+			if = {
+				limit = { has_country_leader_with_trait = SHI_tannenbergbund_member_trait NOT = { REI = { has_opinion_modifier = SHI_tannenbergbund_member_modifier } } }
+				REI = {
+					add_opinion_modifier = {
+						target = PREV
+						modifier = SHI_tannenbergbund_member_modifier
+					}
+				}
+			}
+			if = {
+				limit = { has_country_leader_with_trait = KYU_martyrs_of_nagaoka_trait NOT = { SHO = { has_opinion_modifier = KYU_martyrs_of_nagaoka_modifier } } }
+				SHO = {
+					add_opinion_modifier = {
+						target = PREV
+						modifier = KYU_martyrs_of_nagaoka_modifier
+					}
+				}
+			}
+		}
+	}
+	
+	on_unit_leader_created = {
+		effect = {
+			ROOT = {
+				if = {
+					limit = { FROM = { has_idea = advanced_training_spirit } }
+					random_list = {
+						50 = { }	# nothing happens
+						25 = {
+							add_unit_leader_trait = commando
+							remove_unit_leader_trait = old_guard
+							remove_unit_leader_trait = cavalry_officer
+							remove_unit_leader_trait = armor_officer
+							remove_unit_leader_trait = engineer_officer
+							remove_unit_leader_trait = irregulars_officer
+							remove_unit_leader_trait = ascari_officer
+							remove_unit_leader_trait = militias_officer
+							remove_unit_leader_trait = jaeger
+						}
+						25 = {
+							add_unit_leader_trait = hunter_jager
+							remove_unit_leader_trait = old_guard
+							remove_unit_leader_trait = cavalry_officer
+							remove_unit_leader_trait = armor_officer
+							remove_unit_leader_trait = engineer_officer
+							remove_unit_leader_trait = irregulars_officer
+							remove_unit_leader_trait = ascari_officer
+							remove_unit_leader_trait = militias_officer
+							remove_unit_leader_trait = jaeger
+						}
+					}
+					remove_unit_leader_trait = old_guard
+					remove_unit_leader_trait = politically_connected
+				}
+			}
+		}
+	}
+	
+	### TAG-SPECIFIC EFFECTS
+	
+	on_monthly_PRT = {
+		effect = {
+			# Rotate Fernando Pessoa's heteronym
+			if = {
+				limit = {
+					has_global_flag = eastereggs_enabled
+					NOT = {
+						has_idea = PRT_fernando_pessoa_rafael_baldaya
+						has_idea = PRT_fernando_pessoa_rafael_baldaya_cthulhu
+						has_idea = PRT_fernando_pessoa_alvaro_campos
+						has_idea = PRT_fernando_pessoa_joaquim_costa
+						has_idea = PRT_fernando_pessoa_joao_craveiro
+						has_idea = PRT_fernando_pessoa_ricardo_reis
+						has_country_flag = PRT_stop_rotation
+						has_country_leader = { character = PRT_fernando_pessoa ruling_only = no }
+					}
+				}
+				fernando_pessoa_heteronym_rotation = yes
 			}
 		}
 	}
@@ -1416,193 +1683,6 @@ on_actions = {
 				}
 					KYU = { clr_country_flag = chugoku_democracy_revolt }
 					CHU = { clr_country_flag = chugoku_democracy_revolt }
-			}
-		}
-	}
-	
-	on_monthly = {
-		effect = {
-		### TRADE CITIES 2.0	###
-			every_country = {
-				check_trade_cities = yes
-			}
-		}
-		effect = {
-		### RELIGION 2.0 ###
-			every_controlled_state = {
-				state_drift_religion = yes
-			}
-		}
-		### PLANNED ECONOMY ###
-		effect = {
-			if = {
-				limit = { is_ai = yes }	### AI MONTHLY EFFECTS (THESE ARE WEEKLY FOR PLAYERS)
-				if = {
-					limit = { has_government = communism }
-					if = {
-						limit = { NOT = { has_dynamic_modifier = { modifier = planned_economy_modifier } } }
-						add_dynamic_modifier = { modifier = planned_economy_modifier }
-					}
-					set_variable = { planned_economy_minimum_goods = 0.3 }
-					set_variable = { war_support_goods_modifier = 0 }
-					if = {
-						limit = {
-							has_war = yes
-							has_war_support > 0.5
-						}
-						set_variable = { war_support_goods_modifier = has_war_support }
-						multiply_variable = { war_support_goods_modifier = 0.2 }
-						subtract_from_variable = { planned_economy_minimum_goods = war_support_goods_modifier }
-					}
-					set_variable = { planned_economy_political_power = modifier@consumer_goods_factor }
-					subtract_from_variable = { planned_economy_political_power = planned_economy_minimum_goods }
-					multiply_variable = { planned_economy_political_power = 2 }
-					set_variable = { planned_economy_party_popularity = modifier@consumer_goods_factor }
-					subtract_from_variable = { planned_economy_party_popularity = planned_economy_minimum_goods }
-				} else = {
-					if = {
-						limit = { has_dynamic_modifier = { modifier = planned_economy_modifier } }
-						remove_dynamic_modifier = { modifier = planned_economy_modifier }
-					}
-				}
-			}
-		}
-		### WORLD STAGE ###
-		effect = {
-			if = {
-				limit = { controls_state = 1 }
-				### update generic doctrines			##### THIS WHOLE TIHNG MAY BE UNCESSARY, CAN BE REPLACED BY A SCHEDULE EFFECT WITH OFF-MAP AI
-				random_list = {
-					1 = { add_to_variable = { global.generic_doctrine_bonus_land = 0.1 } }		# updates land doctrine
-					17 = {	}																	# nothing happens
-				}
-				random_list = {
-					1 = { add_to_variable = { global.generic_doctrine_bonus_navy = 0.1 } }		# updates navy doctrine
-					17 = {	}																	# nothing happens
-				}
-				random_list = {
-					1 = {
-						add_to_variable = { global.generic_doctrine_bonus_land = 0.05 }			# updates "air" doctrine
-						add_to_variable = { global.generic_doctrine_bonus_navy = 0.05 }
-					}
-					17 = {	}																	# nothing happens
-				}
-				clamp_variable = { var = global.generic_doctrine_bonus_land min = 0 max = 1 }
-				clamp_variable = { var = global.generic_doctrine_bonus_navy min = 0 max = 1 }
-			}
-		}
-	}
-	
-	on_war = {
-		effect = {
-			### PLANNED ECONOMY ###
-			if = {
-				limit = { has_government = communism }
-				planned_economy_update = yes
-			}
-		}
-	}
-	
-	on_peace = {
-		effect = {
-			### PLANNED ECONOMY ###
-			if = {
-				limit = { has_government = communism }
-				planned_economy_update = yes
-			}
-		}
-	}
-	
-	on_capitulation = {
-		effect = {
-			if = {
-				limit = { ROOT = { tag = IMS } }
-				clr_global_flag = seto_crisis_active
-			}
-		}
-	}
-	
-	on_ruling_party_change = {	
-		effect = {
-			### SET OR RESET 1929 CRASH ###
-			if = {
-				limit = { has_global_flag = crash_1929_global_enabled }
-				if = {
-					limit = { has_government = communism }
-					remove_dynamic_modifier = { modifier = crash_1929_national_spirit }
-					if = {
-						limit = { has_active_mission = automatic_economic_recovery }
-						remove_mission = automatic_economic_recovery
-					}
-				} else = {
-					crash_1929_calculate_effect = yes
-					add_dynamic_modifier = {
-						modifier = crash_1929_national_spirit
-					}
-				}
-			}
-			### PLANNED ECONOMY ###
-			if = {
-				limit = { has_government = communism }
-				planned_economy_set_up = yes
-			} else = {
-				planned_economy_remove = yes
-			}
-			### OPINION MODIFIERS
-			if = {
-				limit = { has_country_leader_with_trait = SHI_tannenbergbund_member_trait NOT = { REI = { has_opinion_modifier = SHI_tannenbergbund_member_modifier } } }
-				REI = {
-					add_opinion_modifier = {
-						target = PREV
-						modifier = SHI_tannenbergbund_member_modifier
-					}
-				}
-			}
-			if = {
-				limit = { has_country_leader_with_trait = KYU_martyrs_of_nagaoka_trait NOT = { SHO = { has_opinion_modifier = KYU_martyrs_of_nagaoka_modifier } } }
-				SHO = {
-					add_opinion_modifier = {
-						target = PREV
-						modifier = KYU_martyrs_of_nagaoka_modifier
-					}
-				}
-			}
-		}
-	}
-	
-	on_unit_leader_created = {
-		effect = {
-			ROOT = {
-				if = {
-					limit = { FROM = { has_idea = advanced_training_spirit } }
-					random_list = {
-						50 = { }	# nothing happens
-						25 = {
-							add_unit_leader_trait = commando
-							remove_unit_leader_trait = old_guard
-							remove_unit_leader_trait = cavalry_officer
-							remove_unit_leader_trait = armor_officer
-							remove_unit_leader_trait = engineer_officer
-							remove_unit_leader_trait = irregulars_officer
-							remove_unit_leader_trait = ascari_officer
-							remove_unit_leader_trait = militias_officer
-							remove_unit_leader_trait = jaeger
-						}
-						25 = {
-							add_unit_leader_trait = hunter_jager
-							remove_unit_leader_trait = old_guard
-							remove_unit_leader_trait = cavalry_officer
-							remove_unit_leader_trait = armor_officer
-							remove_unit_leader_trait = engineer_officer
-							remove_unit_leader_trait = irregulars_officer
-							remove_unit_leader_trait = ascari_officer
-							remove_unit_leader_trait = militias_officer
-							remove_unit_leader_trait = jaeger
-						}
-					}
-					remove_unit_leader_trait = old_guard
-					remove_unit_leader_trait = politically_connected
-				}
 			}
 		}
 	}
