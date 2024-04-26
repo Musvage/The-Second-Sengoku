@@ -349,7 +349,7 @@ focus_tree = {
 		
 		prerequisite = { focus = PRT_motorization_effort }
 		relative_position_id = PRT_motorization_effort
-		x = 0
+		x = -1
 		y = 1
 		cost = 10
 
@@ -361,6 +361,29 @@ focus_tree = {
 				bonus = 2.0
 				uses = 1
 				category = armor
+			}
+		}
+	}
+	
+	focus = {
+		id = PRT_doctrine_effort
+		icon = GFX_focus_generic_army_doctrine_2
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = PRT_motorization_effort }
+		relative_position_id = PRT_motorization_effort
+		x = 1
+		y = 1
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_doctrine_cost_reduction = {
+				name = land_doc_bonus
+				cost_reduction = 0.5
+				uses = 1
+				category = land_doctrine
 			}
 		}
 	}
@@ -653,6 +676,30 @@ focus_tree = {
 				category = bc_tech
 				category = bb_tech
 				category = cv_tech
+			}
+		}
+	}
+	
+	focus = {
+		id = PRT_the_lusiads
+		icon = GFX_focus_PRT_the_lusiads
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = PRT_battleships_effort }
+		relative_position_id = PRT_battleships_effort
+		x = 0
+		y = 1
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			navy_experience = 15
+			add_doctrine_cost_reduction = {
+				name = naval_doc_bonus
+				cost_reduction = 0.5
+				uses = 1
+				category = naval_doctrine
 			}
 		}
 	}
@@ -1010,8 +1057,6 @@ focus_tree = {
 		relative_position_id = PRT_expand_self_rule
 		x = -2
 		y = 1
-		
-		allow_branch = { always = no }	# it was just a filler that has no place currently
 
 		cost = 10
 		
@@ -1124,6 +1169,7 @@ focus_tree = {
 		icon = { value = GFX_focus_generic_diplomacy_HIR_fascism trigger = 				{ HIR = { has_government = fascism } } }
 		icon = { value = GFX_focus_generic_diplomacy_HIR_neutrality trigger = 			{ HIR = { has_government = neutrality } } }
 		icon = GFX_goal_generic_dangerous_deal
+		dynamic = yes
 		search_filters = { FOCUS_FILTER_DIPLOMACY }
 		
 		ai_will_do = { factor = 10 }
@@ -1161,6 +1207,7 @@ focus_tree = {
 		icon = { value = GFX_focus_generic_diplomacy_KYU_fascism trigger = 				{ KYU = { has_government = fascism } } }
 		icon = { value = GFX_focus_generic_diplomacy_KYU_neutrality trigger = 			{ KYU = { has_government = neutrality } } }
 		icon = GFX_goal_generic_dangerous_deal
+		dynamic = yes
 		search_filters = { FOCUS_FILTER_DIPLOMACY }
 		
 		ai_will_do = { factor = 10 }
@@ -1493,6 +1540,10 @@ focus_tree = {
 
 		completion_reward = {
 			add_war_support = 0.05
+			add_timed_idea = { idea = PRT_falangist_influence_spirit days = 365 }
+			custom_effect_tooltip = unlock_characters_tt
+			show_ideas_tooltip = PRT_jose_hipolito_raposo
+			show_ideas_tooltip = PRT_paiva_couceiro
 		}
 	}
 	
@@ -1614,6 +1665,10 @@ focus_tree = {
 
 		completion_reward = {
 			add_war_support = 0.05
+			add_timed_idea = { idea = PRT_republican_influence_spirit days = 365 }
+			custom_effect_tooltip = unlock_characters_tt
+			show_ideas_tooltip = PRT_jose_maria_magalhaes
+			show_ideas_tooltip = PRT_Bento_Jesus
 		}
 	}
 	
@@ -1660,20 +1715,18 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = PRT_free_elections
-		icon = GFX_focus_PRT_free_elections
-		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		id = PRT_economic_orthodoxy
+		icon = GFX_focus_PRT_economic_orthodoxy
+		search_filters = { FOCUS_FILTER_STABILITY }
 		
 		ai_will_do = { factor = 0 }
 		
-		available = {
-		}
+		available = { has_government = neutrality }
 		
-		bypass = { has_government = democratic }
-		
-		prerequisite = { focus = PRT_maintain_neutrality focus = PRT_help_spanish_republica }
-		relative_position_id = PRT_help_spanish_republica
-		x = -2
+		mutually_exclusive = { focus = PRT_free_elections }
+		prerequisite = { focus = PRT_maintain_neutrality }
+		relative_position_id = PRT_maintain_neutrality
+		x = 1
 		y = 1
 
 		cost = 10
@@ -1681,31 +1734,22 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		completion_reward = {
-			
+			add_stability = 0.1
 		}
 	}
 	
 	focus = {
-		id = PRT_antifascism_coalition
-		icon = GFX_goal_generic_anti_fascist_diplomacy_red
-		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		id = PRT_cult_of_personality
+		icon = GFX_focus_PRT_cult_of_personality
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		
 		ai_will_do = { factor = 0 }
 		
-		available = {
-			NOT = { has_government = fascism  }
-			if = {  NOT = { has_idea = PRT_political_backlash_spirit_democratic 			} limit = { has_government = democratic } }
-			if = {  NOT = { has_idea = PRT_political_backlash_spirit_communism 				} limit = { has_government = communism } }
-			if = {  NOT = { has_idea = PRT_political_backlash_spirit_autocracy 				} limit = { has_government = autocracy } }
-			if = {  NOT = { has_idea = PRT_political_backlash_spirit_fascism 				} limit = { has_government = fascism } }
-			if = {  NOT = { has_idea = PRT_political_backlash_spirit_neutrality 			} limit = { has_government = neutrality } }
-			if = {  NOT = { has_idea = PRT_political_backlash_spirit_democratic_socialism	} limit = { has_government = democratic_socialism } }
-		}
 		
-		bypass = { has_global_flag = world_stage_theater_spanish_cw_is_over }
+		available = { has_government = neutrality }
 		
-		prerequisite = { focus = PRT_help_spanish_republica }
-		relative_position_id = PRT_help_spanish_republica
+		prerequisite = { focus = PRT_economic_orthodoxy }
+		relative_position_id = PRT_economic_orthodoxy
 		x = 0
 		y = 1
 
@@ -1714,7 +1758,74 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		completion_reward = {
-			
+			add_timed_idea = { idea = PRT_cult_of_personality_spirit days = 730 }
+		}
+	}
+	
+	focus = {
+		id = PRT_free_elections
+		icon = GFX_focus_PRT_free_elections
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		
+		ai_will_do = { factor = 0 }
+		
+		available = {
+		}
+		
+		bypass = { has_government = democratic }
+		
+		mutually_exclusive = { focus = PRT_economic_orthodoxy }
+		prerequisite = { focus = PRT_maintain_neutrality focus = PRT_help_spanish_republica }
+		relative_position_id = PRT_help_spanish_republica
+		x = -1
+		y = 1
+
+		cost = 10
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			custom_effect_tooltip = PRT_free_elections_tt
+		}
+	}
+	
+	focus = {
+		id = PRT_antifascism_coalition
+		icon = GFX_goal_generic_anti_fascist_diplomacy_red
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		
+		ai_will_do = { factor = 0 }
+		
+		available = {
+			NOT = { has_government = fascism }
+		}
+		
+		prerequisite = { focus = PRT_help_spanish_republica }
+		relative_position_id = PRT_help_spanish_republica
+		x = 1
+		y = 1
+
+		cost = 10
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			custom_effect_tooltip = PRT_antifascism_coalition_tt
+			if = {
+				limit = { has_government = democratic }
+				add_ideas = { PRT_antifascism_democratic_spirit }
+			} else = {
+				add_ideas = { PRT_antifascism_generic_spirit }
+			}
+			if = {
+				limit = { has_idea = PRT_republican_influence_spirit }
+				modify_timed_idea = {
+					idea = PRT_republican_influence_spirit
+					days = 730
+				}
+			} else = {
+				add_timed_idea = { idea = PRT_republican_influence_spirit days = 730 }
+			}
 		}
 	}
 	
@@ -1739,7 +1850,7 @@ focus_tree = {
 		prerequisite = { focus = PRT_help_spanish_republica }
 		relative_position_id = PRT_help_spanish_republica
 		x = 2
-		y = 1
+		y = 2
 
 		cost = 10
 		
@@ -1823,6 +1934,7 @@ focus_tree = {
 		icon = { value = GFX_focus_PRT_join_axis_na trigger = { NOT = { has_government = autocracy has_government = fascism } REI = { has_government = autocracy } } }
 		icon = { value = GFX_focus_PRT_join_axis_nf trigger = { NOT = { has_government = autocracy has_government = fascism }   REI = { has_government = fascism } has_global_flag = has_uncensored_german_flag } }
 		icon = GFX_focus_PRT_join_axis_nn
+		dynamic = yes
 		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WORLD }
 		
 		ai_will_do = { factor = 0 }
@@ -2010,13 +2122,74 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = PRT_national_unity
+		icon = GFX_goal_generic_dangerous_deal
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		
+		prerequisite = { focus = PRT_monarchist_coup focus = PRT_fascist_coup }
+		relative_position_id = PRT_monarchist_coup
+		x = 1
+		y = 1
+		cost = 10
+		
+		available = {
+			OR = { has_government = autocracy has_government = fascism }
+		}
+		
+		ai_will_do = { factor = 10 }	
+		
+		completion_reward = {
+			if = {
+				limit = { has_completed_focus = PRT_monarchist_coup }
+				 add_ideas = { PRT_national_unity_autocracy_spirit }
+			}
+			if = {
+				limit = { has_completed_focus = PRT_fascist_coup }
+				add_ideas = { PRT_national_unity_fascism_spirit }
+			}
+			if = {
+				limit = { NOT = { has_completed_focus = PRT_monarchist_coup has_completed_focus = PRT_fascist_coup } }
+				custom_effect_tooltip = PRT_national_unity_1
+				add_ideas = { PRT_national_unity_fascism_spirit }
+				custom_effect_tooltip = PRT_national_unity_2
+				add_ideas = { PRT_national_unity_autocracy_spirit }
+			}
+		}
+	}
+	
+	focus = {
+		id = PRT_fith_empire
+		icon = { value = GFX_focus_PRT_fith_empire_fascism trigger = { has_government = fascism } }
+		icon = { value = GFX_focus_PRT_fith_empire_autocracy trigger = { has_government = autocracy } }
+		icon = GFX_focus_PRT_fith_empire_neutrality
+		dynamic = yes
+		search_filters = { FOCUS_FILTER_WAR_SUPPORT }
+		
+		prerequisite = { focus = PRT_national_unity }
+		relative_position_id = PRT_national_unity
+		x = 0
+		y = 1
+		cost = 10
+		
+		available = {
+			OR = { has_government = neutrality has_government = autocracy has_government = fascism }
+		}
+		
+		ai_will_do = { factor = 10 }	
+		
+		completion_reward = {
+			add_ideas = { PRT_fith_empire_spirit }
+		}
+	}
+	
+	focus = {
 		id = PRT_war_effort
 		icon = GFX_focus_PRT_prepare_for_more
 		search_filters = { FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_WORLD }
 		
 		ai_will_do = { factor = 10 }
 		
-		prerequisite = { focus = PRT_antikomintern_pact focus = PRT_maintain_neutrality focus = PRT_join_allies  }
+		prerequisite = { focus = PRT_antikomintern_pact focus = PRT_cult_of_personality focus = PRT_join_allies  }
 		relative_position_id = PRT_antikomintern_pact
 		x = 2
 		y = 1
