@@ -1769,10 +1769,9 @@ focus_tree = {
 		
 		ai_will_do = { factor = 0 }
 		
-		available = {
-		}
+		available = { NOT = { has_government = communism has_government = autocracy has_government = fascism } }
 		
-		bypass = { has_government = democratic }
+		bypass = { OR = { has_government = democratic has_government = democratic_socialism } }
 		
 		mutually_exclusive = { focus = PRT_economic_orthodoxy }
 		prerequisite = { focus = PRT_maintain_neutrality focus = PRT_help_spanish_republica }
@@ -1785,14 +1784,15 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		completion_reward = {
+			country_event =  portuguese.3
 			custom_effect_tooltip = PRT_free_elections_tt
 		}
 	}
 	
 	focus = {
-		id = PRT_antifascism_coalition
+		id = PRT_antifascism_coalition	# Movement of National Antifascist Unity
 		icon = GFX_goal_generic_anti_fascist_diplomacy_red
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_WAR_SUPPORT }
 		
 		ai_will_do = { factor = 0 }
 		
@@ -1810,13 +1810,16 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		completion_reward = {
-			custom_effect_tooltip = PRT_antifascism_coalition_tt
 			if = {
-				limit = { has_government = democratic }
-				add_ideas = { PRT_antifascism_democratic_spirit }
-			} else = {
-				add_ideas = { PRT_antifascism_generic_spirit }
+				limit = { NOT = { has_completed_focus = PRT_free_elections } }
+				custom_effect_tooltip = PRT_antifascism_coalition_tt
+				set_country_flag = PRT_free_elections_socdems
 			}
+			if = {
+				limit = { has_completed_focus = PRT_antifascism_coalition has_country_flag = PRT_free_elections_socdems }
+				custom_effect_tooltip = PRT_antifascism_coalition_tt2
+			}
+			add_ideas = { PRT_antifascism_generic_spirit }
 			if = {
 				limit = { has_idea = PRT_republican_influence_spirit }
 				modify_timed_idea = {
@@ -1825,6 +1828,23 @@ focus_tree = {
 				}
 			} else = {
 				add_timed_idea = { idea = PRT_republican_influence_spirit days = 730 }
+			}
+			hidden_effect = {
+				REI = {
+					add_ai_strategy = {
+						type = antagonize
+						id = PRT
+						value = 50
+					}
+					every_other_country = {
+						limit = { has_government = fascism }
+						add_ai_strategy = {
+							type = antagonize
+							id = PRT
+							value = 50
+						}
+					}
+				}
 			}
 		}
 	}
@@ -1999,6 +2019,23 @@ focus_tree = {
 				remove_ideas = SS_lon_member
 			}
 			set_global_flag = portugal_aligned_axis					# this is useful for checking coalitions when a country capitulates
+			hidden_effect = {
+				FER = {
+					add_ai_strategy = {
+						type = antagonize
+						id = PRT
+						value = 50
+					}
+					every_other_country = {
+						limit = { has_government = communism }
+						add_ai_strategy = {
+							type = antagonize
+							id = PRT
+							value = 50
+						}
+					}
+				}
+			}
 		}
 	}
 	
@@ -2124,7 +2161,7 @@ focus_tree = {
 	focus = {
 		id = PRT_national_unity
 		icon = GFX_goal_generic_dangerous_deal
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_STABILITY }
 		
 		prerequisite = { focus = PRT_monarchist_coup focus = PRT_fascist_coup }
 		relative_position_id = PRT_monarchist_coup
