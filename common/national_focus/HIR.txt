@@ -21,9 +21,498 @@ focus_tree = {
 		x = 20
 		y = 0
 	}
+	### MILITARY BRANCH
 	
-	# NAV: navigators, pseudo-shared branch
-	# NAV: navigators, pseudo-shared branch
+	focus = {
+		id = HIR_army
+		icon = GFX_focus_HIR_army
+		search_filters = { FOCUS_FILTER_STABILITY }
+		
+		ai_will_do = { factor = 10 }
+		
+		x = 0
+		y = 0
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		completion_reward = {
+			navy_experience = 25
+			army_experience = 25
+			air_experience = 25
+		}
+	}
+
+	focus = {
+		id = HIR_land_army
+		icon = GFX_focus_HIR_land_army
+		search_filters = { FOCUS_FILTER_STABILITY }
+		
+		prerequisite = { focus = HIR_army }
+		relative_position_id = HIR_army
+		x = -3
+		y = 1
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+			add_doctrine_cost_reduction  = {
+				name = land_doc_bonus
+				cost_reduction = 0.5
+				uses = 1
+				category = land_doctrine
+			}
+			add_tech_bonus = {
+				name = infantry_artillery_bonus
+				ahead_reduction = 1
+				uses = 1
+				category = infantry_weapons
+				category = artillery
+			}
+		}
+	}
+	
+	focus = {
+		id = HIR_land_army_doctrine
+		icon = GFX_focus_generic_army_expansion_3
+		search_filters = { FOCUS_FILTER_STABILITY }
+		
+		ai_will_do = { factor = 10 }
+		
+		prerequisite = { focus = HIR_land_army }
+		relative_position_id = HIR_land_army
+		x = 0
+		y = 1
+
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		completion_reward = {
+			add_ideas = HIR_product_infantry_eq
+			add_equipment_to_stockpile = {
+				type = infantry_equipment
+				amount = 2000
+				producer = HIR
+			}
+		}
+	}
+
+	focus = {
+		id = HIR_land_army_modernized
+		icon = GFX_focus_HIR_land_army_modernized
+		search_filters = { FOCUS_FILTER_STABILITY }
+		
+		ai_will_do = { factor = 10 }
+		
+		available_if_capitulated = yes
+		
+		prerequisite = { focus = HIR_land_army_doctrine }
+		relative_position_id = HIR_land_army_doctrine
+		x = 0
+		y = 1
+		
+		cost = 10
+				
+		completion_reward = {
+			add_tech_bonus = {
+				name = HIR_land_army_modernized
+				bonus = 2.0
+				uses = 2
+				category = support_tech
+			}
+			add_tech_bonus = {
+				name = HIR_land_army_modernized
+				bonus = 1.0
+				uses = 2
+				category = cat_small_arms
+			}
+		}
+	}
+	
+	focus = {
+		id = HIR_naval
+		icon = GFX_focus_HIR_naval
+		search_filters = { FOCUS_FILTER_STABILITY }
+		
+		prerequisite = { focus = HIR_army }
+		relative_position_id = HIR_army
+		x = 0
+		y = 1
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+			add_doctrine_cost_reduction = {
+				name = naval_doc_bonus
+				cost_reduction = 0.5
+				uses = 3
+				category = naval_doctrine
+			}
+			add_equipment_to_stockpile = {
+   				type = convoy
+   				amount = 50
+    			producer = HIR
+			}
+			custom_effect_tooltip = unlock_naval_decisions
+		}
+	}
+
+	focus = {
+		id = HIR_naval_force
+		icon = GFX_goal_generic_construct_naval_dockyard
+		search_filters = { FOCUS_FILTER_STABILITY }
+		
+		prerequisite = { focus = HIR_naval }
+		relative_position_id = HIR_naval
+		x = -1
+		y = 1
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+			random_owned_controlled_state = {
+				limit = {
+					is_core_of = HIR
+					free_building_slots = {
+						building = industrial_complex
+						size > 2
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = dockyard
+					level = 2
+					instant_build = yes
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = HIR_create_naval_force
+		icon = GFX_goal_generic_construct_naval_dockyard
+		search_filters = { FOCUS_FILTER_STABILITY }
+		
+		available_if_capitulated = yes
+		
+		prerequisite = { focus = HIR_naval_force }
+		relative_position_id = HIR_naval_force
+		x = 0
+		y = 1
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+			random_owned_controlled_state = {
+				limit = {
+					is_core_of = HIR
+					free_building_slots = {
+						building = industrial_complex
+						size > 2
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 2
+				add_building_construction = {
+					type = dockyard
+					level = 2
+					instant_build = yes
+				}
+			}
+		}
+	}
+
+	focus = {
+		id = HIR_naval_doctrine
+		icon = GFX_focus_generic_submarine_effort_2
+		search_filters = { FOCUS_FILTER_STABILITY }
+		
+		prerequisite = { focus = HIR_naval }
+		relative_position_id = HIR_naval
+		x = 1
+		y = 1
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+			add_tech_bonus = {
+				name = HIR_naval_doctrine
+				bonus = 0.75
+				uses = 3
+				category = ss_tech
+			}
+		}
+	}
+
+	focus = {
+		id = HIR_naval_modernized
+		icon = GFX_focus_HIR_naval_modernized
+		search_filters = { FOCUS_FILTER_STABILITY }
+		
+		available_if_capitulated = yes
+		
+		prerequisite = { focus = HIR_naval_doctrine }
+		relative_position_id = HIR_naval_doctrine
+		x = 0
+		y = 1
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+			add_tech_bonus = {
+				name = HIR_naval_modernized
+				bonus = 1.00
+				uses = 2
+				category = cl_tech
+			}
+			add_tech_bonus = {
+				name = HIR_naval_modernized
+				bonus = 1.50
+				uses = 3
+				category = trade_interdiction_tree
+			}
+			navy_experience = 50
+			add_doctrine_cost_reduction = {
+				name = HOL_naval_heritage
+				cost_reduction = 0.5
+				uses = 2
+				category = naval_doctrine
+			}
+		}
+	}
+
+	focus = {
+		id = HIR_air_force
+		icon = GFX_focus_HIR_air_force
+		search_filters = { FOCUS_FILTER_STABILITY }
+		
+		prerequisite = { focus = HIR_army }
+		relative_position_id = HIR_naval
+		x = 4
+		y = 0
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+			add_doctrine_cost_reduction  = {
+				name = air_doc_bonus
+				cost_reduction = 0.5
+				uses = 2
+				category = air_doctrine
+			}
+			add_equipment_to_stockpile = {
+				type =  fighter_equipment #there is no 'light_fighter' equipment
+				amount = 200 #changed from 2000 because OP
+				producer = HIR
+			}
+		}
+	}
+
+	focus = {
+		id = HIR_air_force_base
+		icon = GFX_goal_generic_air_production
+		search_filters = { FOCUS_FILTER_STABILITY }
+		
+		prerequisite = { focus = HIR_air_force }
+		relative_position_id = HIR_air_force
+		x = 1
+		y = 1
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+				random_owned_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = air_base
+							size > 3
+							include_locked = yes
+						}	
+					}
+					add_building_construction = {
+						type = air_base
+						level = 3
+						instant_build = yes
+					}
+				}
+			
+				
+		}
+	}
+
+	focus = {
+		id = HIR_air_force_new_planes
+		icon = GFX_goal_generic_air_fighter2
+		search_filters = { FOCUS_FILTER_STABILITY }
+		
+		prerequisite = { focus = HIR_air_force }
+		relative_position_id = HIR_air_force_base
+		x = -2
+		y = 0
+		
+		available_if_capitulated = yes
+		
+		cost = 5
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+			add_ideas = HIR_air_force_new_planes
+		}
+	}
+
+	focus = {
+		id = HIR_air_force_modernized
+		icon = GFX_focus_HIR_air_force_modernized
+		search_filters = { FOCUS_FILTER_STABILITY }
+		
+		prerequisite = { focus = HIR_air_force_new_planes }
+		prerequisite = { focus = HIR_air_force_base }
+		relative_position_id = HIR_air_force_new_planes
+		x = 1
+		y = 1
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+			add_tech_bonus = {
+				name = HIR_air_force_modernized
+				bonus = 2.0
+				uses = 2
+				category = light_fighter
+			}
+			hidden_effect = {
+    		if = {
+				limit = {
+					NOT = {
+						has_tech = fighter1
+					}
+				}
+				set_technology = { fighter1 = 1 }
+			}
+			add_equipment_to_stockpile = { type =  fighter_equipment_1 amount = 25 }
+			}
+			custom_effect_tooltip = unlock_fighter_1
+
+			add_doctrine_cost_reduction = {
+				name = HOL_aviatic_aspirations
+				cost_reduction = 0.5
+				uses = 2
+				category = air_doctrine
+			}
+			HOL_domestic_jet_engine_designs_level_up = yes
+		}
+	}
+	
+	### POLITICAL BRANCH 
+	
+	focus = {
+		id = HIR_crisis_self_rule
+		icon = GFX_goal_GENERIC_neutrality_2
+		search_filters = { FOCUS_FILTER_MANPOWER FOCUS_FILTER_POLITICAL }
+		
+		ai_will_do = { factor = 10 }
+		
+		mutually_exclusive = { focus = HIR_crisis_help focus = HIR_crisis_repression }
+		relative_position_id = HIR_army
+		x = 10
+		y = 0
+
+		cost = 10
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			swap_ideas = {
+				add_idea = HIR_natives_of_hirado_self_rule_spirit
+				remove_idea = HIR_natives_of_hirado_spirit
+			}
+		}
+	}
+	
+	focus = {
+		id = HIR_crisis_help
+		icon = GFX_goal_GENERIC_neutrality_2
+		search_filters = { FOCUS_FILTER_STABILITY FOCUS_FILTER_MANPOWER }
+		
+		ai_will_do = { factor = 10 }
+		
+		mutually_exclusive = { focus = HIR_crisis_self_rule focus = HIR_crisis_repression }
+		relative_position_id = HIR_crisis_self_rule
+		x = 2
+		y = 0
+
+		cost = 10
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			swap_ideas = {
+				add_idea = HIR_natives_of_hirado_aid_spirit
+				remove_idea = HIR_natives_of_hirado_spirit
+			}
+		}
+	}
+	
+	focus = {
+		id = HIR_crisis_repression
+		icon = GFX_goal_GENERIC_neutrality_2
+		search_filters = { FOCUS_FILTER_STABILITY FOCUS_FILTER_POLITICAL }
+		
+		ai_will_do = { factor = 10 }
+		
+		mutually_exclusive = { focus = HIR_NAV_active_diplomacy }
+		relative_position_id = HIR_crisis_help
+		x = 2
+		y = 0
+
+		cost = 10
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			swap_ideas = {
+				add_idea = HIR_natives_of_hirado_suppressed_spirit
+				remove_idea = HIR_natives_of_hirado_spirit
+			}
+		}
+	}
+	
+	
 	# NAV: navigators, pseudo-shared branch
 	
 	focus = {
@@ -34,10 +523,10 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		
 		mutually_exclusive = { focus = HIR_NAV_active_diplomacy }
-		#prerequisite = { focus = HIR_expand_self_rule focus = PRT_centralized_administration }
-		#relative_position_id = PRT_expand_self_rule
-		x = 25
-		y = 0
+		prerequisite = { focus = HIR_crisis_self_rule focus = HIR_crisis_help focus = HIR_crisis_repression }
+		relative_position_id = HIR_crisis_self_rule
+		x = 0
+		y = 1
 		
 	#	available = {
 	#		if = {  NOT = { has_idea = PRT_political_backlash_spirit_democratic 			} limit = { has_government = democratic } }
@@ -101,7 +590,7 @@ focus_tree = {
 		
 		prerequisite = { focus = HIR_NAV_neutrality focus = HIR_NAV_active_diplomacy }
 		relative_position_id = HIR_NAV_neutrality
-		x = 1
+		x = 0
 		y = 1
 		
 		available = {
@@ -213,20 +702,61 @@ focus_tree = {
 			
 		}
 	}
+	
+	focus = {
+		id = HIR_focus_homeland_development
+		icon = GFX_focus_HIR_domestic_politics
+		search_filters = { FOCUS_FILTER_STABILITY }
+		
+		mutually_exclusive = { focus = HIR_focus_colonial_development }
+		relative_position_id = HIR_crisis_repression
+		x = 4
+		y = 0
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+			
+		}
+	}
+	
+	focus = {
+		id = HIR_focus_colonial_development
+		icon = GFX_focus_HIR_colony_state_recovery
+		search_filters = { FOCUS_FILTER_STABILITY }
+		
+		mutually_exclusive = { focus = HIR_focus_homeland_development }
+		relative_position_id = HIR_focus_homeland_development
+		x = 6
+		y = 0
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+			
+		}
+	}
+	
+	####### OLD FOCUSES
 
 	#MAIN
 
 	focus = {
 		id = HIR_colony_state_recovery
 		icon = GFX_focus_HIR_colony_state_recovery
-		x = -7
+		x = 40
 		y = 0
 		cost = 8
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			add_timed_idea = {
 				idea = HIR_indonesian_volinteer
@@ -245,11 +775,8 @@ focus_tree = {
 		prerequisite = { focus = HIR_colony_state_recovery }
 		mutually_exclusive = { focus = HIR_no_extra_food }
 		cost = 8
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			swap_ideas = {
 				remove_idea = HIR_natives_of_hirado
@@ -267,11 +794,8 @@ focus_tree = {
 		prerequisite = { focus = HIR_colony_state_recovery }
 		mutually_exclusive = { focus = HIR_extra_food }
 		cost = 8
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			swap_ideas = {
 				remove_idea = HIR_natives_of_hirado
@@ -291,9 +815,7 @@ focus_tree = {
 		available = {
 			NOT = { has_global_flag = world_stage_netherlands_exists }
 		}
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			add_dynamic_modifier = {
 				modifier = HIR_homeland_first
@@ -313,9 +835,7 @@ focus_tree = {
 		available = {
 			NOT = { has_global_flag = world_stage_netherlands_exists }
 		}
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			custom_effect_tooltip = "All Motherland buffs fall by -2%."
 			# Hirado Homeland Variables
@@ -341,9 +861,7 @@ focus_tree = {
 		available = {
 			NOT = { has_global_flag = world_stage_netherlands_exists }
 		}
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			
 			
@@ -364,11 +882,8 @@ focus_tree = {
 		relative_position_id = HIR_invite_homeland_companies
 		prerequisite = { focus = HIR_invite_homeland_companies }
 		cost = 5
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			custom_effect_tooltip = "All Motherland buffs fall by -2%."
 			# Hirado Homeland Variables
@@ -388,11 +903,8 @@ focus_tree = {
 		relative_position_id = HIR_invite_homeland_companies
 		prerequisite = { focus = HIR_invite_homeland_companies }
 		cost = 5
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			custom_effect_tooltip = "All Motherland buffs fall by -2%."
 			# Hirado Homeland Variables
@@ -413,11 +925,8 @@ focus_tree = {
 		prerequisite = { focus = HIR_homeland_exile_navy }
 		prerequisite = { focus = HIR_homeland_refugees }
 		cost = 8
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			custom_effect_tooltip = "All Motherland buffs fall by -2%."
 			# Hirado Homeland Variables
@@ -444,9 +953,7 @@ focus_tree = {
 		available = {
 			NOT = { has_global_flag = world_stage_netherlands_exists }
 		}
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			custom_effect_tooltip = "All Motherland buffs fall by -2%."
 			# Hirado Homeland Variables
@@ -472,9 +979,7 @@ focus_tree = {
 				infrastructure < 5
 			}
 		}
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			custom_effect_tooltip = "All Motherland buffs fall by +2%."
 			# Hirado Homeland Variables
@@ -535,9 +1040,7 @@ focus_tree = {
 		available = {
 			
 		}
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			custom_effect_tooltip = "All Motherland buffs fall by +2%."
 			# Hirado Homeland Variables
@@ -572,11 +1075,8 @@ focus_tree = {
 		relative_position_id = HIR_military
 		prerequisite = { focus = HIR_military }
 		cost = 5
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			custom_effect_tooltip = "All Motherland buffs fall by -2%."
 			# Hirado Homeland Variables
@@ -596,11 +1096,8 @@ focus_tree = {
 		relative_position_id = HIR_military
 		prerequisite = { focus = HIR_military }
 		cost = 5
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			custom_effect_tooltip = "All Motherland buffs fall by -2%."
 			# Hirado Homeland Variables
@@ -622,11 +1119,8 @@ focus_tree = {
 		prerequisite = { focus = HIR_invite_artillerie_inrichtingen }
 		prerequisite = { focus = HIR_invite_daf }
 		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			custom_effect_tooltip = "All Motherland buffs fall by +2%."
 			# Hirado Homeland Variables
@@ -661,11 +1155,8 @@ focus_tree = {
 		relative_position_id = HIR_military_factory
 		prerequisite = { focus = HIR_military_factory }
 		cost = 5
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			custom_effect_tooltip = "All Motherland buffs fall by -2%."
 			# Hirado Homeland Variables
@@ -677,110 +1168,6 @@ focus_tree = {
 		}
 	}
 
-	focus = {
-		id = HIR_army
-		icon = GFX_focus_HIR_army
-		x = -10
-		y = 1
-		available_if_capitulated = yes
-		relative_position_id = HIR_colony_state_recovery
-		prerequisite = { focus = HIR_colony_state_recovery }
-		cost = 10
-		available = {
-			NOT = { has_global_flag = world_stage_netherlands_exists }
-		}
-		ai_will_do = {
-			factor = 10
-		}	
-		completion_reward = {
-			navy_experience = 25
-			army_experience = 25
-			air_experience = 25
-		}
-	}
-
-	focus = {
-		id = HIR_land_army
-		icon = GFX_focus_HIR_land_army
-		x = -3
-		y = 1
-		relative_position_id = HIR_army
-		available_if_capitulated = yes
-		prerequisite = { focus = HIR_army }
-		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
-		completion_reward = {
-			add_doctrine_cost_reduction  = {				name = land_doc_bonus				cost_reduction = 0.5
-				uses = 1
-				category = land_doctrine
-			}
-			add_tech_bonus = {
-				name = infantry_artillery_bonus
-				ahead_reduction = 1
-				uses = 1
-				category = infantry_weapons
-				category = artillery
-			}
-		}
-	}
-
-	focus = {
-		id = HIR_land_army_doctrine
-		icon = GFX_focus_generic_army_expansion_3
-		x = 0
-		y = 1
-		relative_position_id = HIR_land_army
-		available_if_capitulated = yes
-		prerequisite = { focus = HIR_land_army }
-		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
-		completion_reward = {
-			add_ideas = HIR_product_infantry_eq
-			add_equipment_to_stockpile = {
-				type = infantry_equipment
-				amount = 2000
-				producer = HIR
-			}
-		}
-	}
-
-	focus = {
-		id = HIR_land_army_modernized
-		icon = GFX_focus_HIR_land_army_modernized
-		x = 0
-		y = 1
-		relative_position_id = HIR_land_army_doctrine
-		available_if_capitulated = yes
-		prerequisite = { focus = HIR_land_army_doctrine }
-		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
-		completion_reward = {
-			add_tech_bonus = {
-				name = HIR_land_army_modernized
-				bonus = 2.0
-				uses = 2
-				category = support_tech
-			}
-			add_tech_bonus = {
-				name = HIR_land_army_modernized
-				bonus = 1.0
-				uses = 2
-				category = cat_small_arms
-			}
-		}
-	}
 
 	focus = {
 		id = HIR_civilian
@@ -792,11 +1179,8 @@ focus_tree = {
 		prerequisite = { focus = HIR_invite_homeland_companies }
 		prerequisite = { focus = HIR_invite_fokker }
 		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			custom_effect_tooltip = "All Motherland buffs fall by +2%."
 			# Hirado Homeland Variables
@@ -831,11 +1215,8 @@ focus_tree = {
 		relative_position_id = HIR_civilian
 		prerequisite = { focus = HIR_civilian }
 		cost = 5
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			custom_effect_tooltip = "All Motherland buffs fall by -2%."
 			# Hirado Homeland Variables
@@ -855,11 +1236,8 @@ focus_tree = {
 		relative_position_id = HIR_civilian
 		prerequisite = { focus = HIR_civilian }
 		cost = 5
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			custom_effect_tooltip = "All Motherland buffs fall by -2%."
 			# Hirado Homeland Variables
@@ -881,11 +1259,8 @@ focus_tree = {
 		prerequisite = { focus = HOL_invite_philips }
 		prerequisite = { focus = HIR_invite_shell }
 		cost = 5
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			custom_effect_tooltip = "All Motherland buffs fall by +2%."
 			# Hirado Homeland Variables
@@ -922,11 +1297,8 @@ focus_tree = {
 		prerequisite = { focus = HIR_military_factory }
 		prerequisite = { focus = HIR_civilian_factory }
 		cost = 5
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			custom_effect_tooltip = "All Motherland buffs fall by -2%."
 			# Hirado Homeland Variables
@@ -935,292 +1307,6 @@ focus_tree = {
 			add_to_variable  = { var = HIR_resources value = -0.02 }
 			add_to_variable  = { var = HIR_recrutable_population value = -0.02 }
 			add_research_slot = 1
-		}
-	}
-
-
-
-	focus = {
-		id = HIR_naval
-		icon = GFX_focus_HIR_naval
-		x = 0
-		y = 1
-		prerequisite = { focus = HIR_army }
-		available_if_capitulated = yes
-		relative_position_id = HIR_army
-		cost = 8
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
-		completion_reward = {
-			add_doctrine_cost_reduction = {
-				name = naval_doc_bonus
-				cost_reduction = 0.5
-				uses = 3
-				category = naval_doctrine
-			}
-			add_equipment_to_stockpile = {
-   				type = convoy
-   				amount = 50
-    			producer = HIR
-			}
-			custom_effect_tooltip = unlock_naval_decisions
-		}
-	}
-
-	focus = {
-		id = HIR_naval_force
-		icon = GFX_goal_generic_construct_naval_dockyard
-		x = -1
-		y = 1
-		relative_position_id = HIR_naval
-		available_if_capitulated = yes
-		prerequisite = { focus = HIR_naval }
-		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
-		completion_reward = {
-			random_owned_controlled_state = {
-				limit = {
-					is_core_of = HIR
-					free_building_slots = {
-						building = industrial_complex
-						size > 2
-						include_locked = yes
-					}
-				}
-				add_extra_state_shared_building_slots = 2
-				add_building_construction = {
-					type = dockyard
-					level = 2
-					instant_build = yes
-				}
-			}
-		}
-	}
-
-	focus = {
-		id = HIR_create_naval_force
-		icon = GFX_goal_generic_construct_naval_dockyard
-		x = 0
-		y = 1
-		relative_position_id = HIR_naval_force
-		available_if_capitulated = yes
-		prerequisite = { focus = HIR_naval_force }
-		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
-		completion_reward = {
-			random_owned_controlled_state = {
-				limit = {
-					is_core_of = HIR
-					free_building_slots = {
-						building = industrial_complex
-						size > 2
-						include_locked = yes
-					}
-				}
-				add_extra_state_shared_building_slots = 2
-				add_building_construction = {
-					type = dockyard
-					level = 2
-					instant_build = yes
-				}
-			}
-		}
-	}
-
-	focus = {
-		id = HIR_naval_doctrine
-		icon = GFX_focus_generic_submarine_effort_2
-		x = 1
-		y = 1
-		relative_position_id = HIR_naval
-		available_if_capitulated = yes
-		prerequisite = { focus = HIR_naval }
-		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
-		completion_reward = {
-			add_tech_bonus = {
-				name = HIR_naval_doctrine
-				bonus = 0.75
-				uses = 3
-				category = ss_tech
-			}
-		}
-	}
-
-	focus = {
-		id = HIR_naval_modernized
-		icon = GFX_focus_HIR_naval_modernized
-		x = 0
-		y = 1
-		relative_position_id = HIR_naval_doctrine
-		available_if_capitulated = yes
-		prerequisite = { focus = HIR_naval_doctrine }
-		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
-		completion_reward = {
-			add_tech_bonus = {
-				name = HIR_naval_modernized
-				bonus = 1.00
-				uses = 2
-				category = cl_tech
-			}
-			add_tech_bonus = {
-				name = HIR_naval_modernized
-				bonus = 1.50
-				uses = 3
-				category = trade_interdiction_tree
-			}
-			navy_experience = 50
-			add_doctrine_cost_reduction = {
-				name = HOL_naval_heritage
-				cost_reduction = 0.5
-				uses = 2
-				category = naval_doctrine
-			}
-		}
-	}
-
-	focus = {
-		id = HIR_air_force
-		icon = GFX_focus_HIR_air_force
-		x = 4
-		y = 0
-		relative_position_id = HIR_naval
-		available_if_capitulated = yes
-		prerequisite = { focus = HIR_army }
-		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
-		completion_reward = {
-			add_doctrine_cost_reduction  = {				name = air_doc_bonus				cost_reduction = 0.5
-				uses = 2
-				category = air_doctrine
-			}
-			add_equipment_to_stockpile = {
-				type =  fighter_equipment #there is no 'light_fighter' equipment
-				amount = 200 #changed from 2000 because OP
-				producer = HIR
-			}
-		}
-	}
-
-	focus = {
-		id = HIR_air_force_base
-		icon = GFX_goal_generic_air_production
-		x = 1
-		y = 1
-		relative_position_id = HIR_air_force
-		available_if_capitulated = yes
-		prerequisite = { focus = HIR_air_force }
-		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
-		completion_reward = {
-				random_owned_controlled_state = {
-					limit = {
-						free_building_slots = {
-							building = air_base
-							size > 3
-							include_locked = yes
-						}	
-					}
-					add_building_construction = {
-						type = air_base
-						level = 3
-						instant_build = yes
-					}
-				}
-			
-				
-		}
-	}
-
-	focus = {
-		id = HIR_air_force_new_planes
-		icon = GFX_goal_generic_air_fighter2
-		x = -2
-		y = 0
-		relative_position_id = HIR_air_force_base
-		available_if_capitulated = yes
-		prerequisite = { focus = HIR_air_force }
-		cost = 5
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
-		completion_reward = {
-			add_ideas = HIR_air_force_new_planes
-		}
-	}
-
-	focus = {
-		id = HIR_air_force_modernized
-		icon = GFX_focus_HIR_air_force_modernized
-		x = 1
-		y = 1
-		relative_position_id = HIR_air_force_new_planes
-		available_if_capitulated = yes
-		prerequisite = { focus = HIR_air_force_base }
-		prerequisite = { focus = HIR_air_force_new_planes }
-		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
-		completion_reward = {
-			add_tech_bonus = {
-				name = HIR_air_force_modernized
-				bonus = 2.0
-				uses = 2
-				category = light_fighter
-			}
-			hidden_effect = {
-    		if = {
-				limit = {
-					NOT = {
-						has_tech = fighter1
-					}
-				}
-				set_technology = { fighter1 = 1 }
-			}
-			add_equipment_to_stockpile = { type =  fighter_equipment_1 amount = 25 }
-			}
-			custom_effect_tooltip = unlock_fighter_1
-
-			add_doctrine_cost_reduction = {
-				name = HOL_aviatic_aspirations
-				cost_reduction = 0.5
-				uses = 2
-				category = air_doctrine
-			}
-			HOL_domestic_jet_engine_designs_level_up = yes
 		}
 	}
 
@@ -1233,8 +1319,7 @@ focus_tree = {
 		prerequisite = { focus = HIR_colony_state_recovery }
 		relative_position_id = HIR_colony_state_recovery
 		cost = 10
-		available = {
-		}
+		
 		ai_will_do = {
 			factor = 5
 		}	
@@ -1254,8 +1339,7 @@ focus_tree = {
 		relative_position_id = HIR_Domestic_Politics
 		mutually_exclusive = { focus = HIR_not_deal_for_americans }
 		cost = 10
-		available = {
-		}
+		
 		ai_will_do = {
 			factor = 5
 		}	
@@ -1298,8 +1382,7 @@ focus_tree = {
 		prerequisite = { focus = HIR_deal_for_americans }
 		relative_position_id = HIR_deal_for_americans
 		cost = 10
-		available = {
-		}
+		
 		ai_will_do = {
 			factor = 5
 		}	
@@ -1368,9 +1451,7 @@ focus_tree = {
 		available = {
 			has_global_flag = crash_1929_global_enabled
 		}
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			crash_1929_decrease_level = yes
 			add_political_power = 50
@@ -1388,8 +1469,7 @@ focus_tree = {
 		relative_position_id = HIR_Domestic_Politics
 		mutually_exclusive = { focus = HIR_deal_for_americans }
 		cost = 10
-		available = {
-		}
+		
 		ai_will_do = {
 			factor = 5
 		}	
@@ -1432,8 +1512,7 @@ focus_tree = {
 		prerequisite = { focus = HIR_not_deal_for_americans }
 		relative_position_id = HIR_not_deal_for_americans
 		cost = 10
-		available = {
-		}
+		
 		ai_will_do = {
 			factor = 5
 		}	
@@ -1454,8 +1533,7 @@ focus_tree = {
 		prerequisite = { focus = HIR_not_deal_for_americans }
 		relative_position_id = HIR_not_deal_for_americans
 		cost = 10
-		available = {
-		}
+		
 		ai_will_do = {
 			factor = 5
 		}	
@@ -1497,11 +1575,8 @@ focus_tree = {
 		prerequisite = { focus = HIR_restoring_order }
 		mutually_exclusive = { focus = HIR_western_path focus = HIR_new_ideology_path }
 		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			leave_faction = yes
 			add_popularity = { 
@@ -1527,9 +1602,7 @@ focus_tree = {
 				has_completed_focus = HIR_ally_junta
 			}
 		}
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			add_ideas = HIR_create_new_army
 			army_experience = 10
@@ -1546,11 +1619,8 @@ focus_tree = {
 		available_if_capitulated = yes
 		prerequisite = { focus = HIR_create_new_army }
 		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			add_manpower = 10000
 		}
@@ -1565,11 +1635,8 @@ focus_tree = {
 		available_if_capitulated = yes
 		prerequisite = { focus = HIR_more_manpower }
 		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			add_equipment_to_stockpile = {
 				type = infantry_equipment
@@ -1588,11 +1655,8 @@ focus_tree = {
 		available_if_capitulated = yes
 		prerequisite = { focus = HIR_ally_junta }
 		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			add_timed_idea = {
 				idea = HIR_rise_junta
@@ -1617,9 +1681,7 @@ focus_tree = {
 		available = {
 			neutrality > 0.3
 		}
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			add_popularity = { 
 				ideology = neutrality
@@ -1643,9 +1705,7 @@ focus_tree = {
 		available = {
 			neutrality > 0.3
 		}
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 	
 		completion_reward = {
 			if = {
@@ -1690,11 +1750,8 @@ focus_tree = {
 		available_if_capitulated = yes
 		prerequisite = { focus = HIR_social_democrat_path focus = HIR_communist_path focus = HIR_monarchist_path focus = HIR_democrat_path }
 		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			add_manpower = 100000
 			16 = {
@@ -1720,11 +1777,8 @@ focus_tree = {
 		available_if_capitulated = yes
 		prerequisite = { focus = HIR_defend_main_land }
 		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			16 = {
 				add_building_construction = {
@@ -1745,11 +1799,8 @@ focus_tree = {
 		available_if_capitulated = yes
 		prerequisite = { focus = HIR_attack_democrats focus = HIR_defend_air_force }
 		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			16 = {
 				if = {
@@ -1794,9 +1845,7 @@ focus_tree = {
 		available = {
 			
 		}
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			add_popularity = {
 				popularity = 0.07
@@ -1826,9 +1875,7 @@ focus_tree = {
 		available = {
 			is_in_faction_with = OSA
 		}
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			add_popularity = {
 				popularity = 0.1
@@ -1851,9 +1898,7 @@ focus_tree = {
 		available = {
 			is_in_faction_with = OSA
 		}
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			add_popularity = {
 				popularity = 0.1
@@ -1872,11 +1917,8 @@ focus_tree = {
 		available_if_capitulated = yes
 		prerequisite = { focus = HIR_social_democrat_path focus = HIR_democrat_path }
 		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			if = {
 				limit = {
@@ -1919,9 +1961,7 @@ focus_tree = {
 		available = {
 			democratic > 0.3
 		}
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			
 			if = {
@@ -1957,11 +1997,8 @@ focus_tree = {
 		prerequisite = { focus = HIR_western_path }
 		mutually_exclusive = { focus = HIR_social_democrat_path focus = HIR_democrat_path }
 		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			leave_faction = yes
 			add_popularity = {
@@ -1981,11 +2018,8 @@ focus_tree = {
 		available_if_capitulated = yes
 		prerequisite = { focus = HIR_monarchist_path }
 		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			add_timed_idea = {
 				idea = HIR_rise_monarchy
@@ -2010,9 +2044,7 @@ focus_tree = {
 		available = {
 			autocracy > 0.3
 		}
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			set_politics = {
 				ruling_party = autocracy
@@ -2087,9 +2119,7 @@ focus_tree = {
 				}
 			}
 		}
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 
 		bypass = {
 			is_in_faction = yes
@@ -2201,11 +2231,8 @@ focus_tree = {
 		prerequisite = { focus = HIR_defend_agreement }
 		mutually_exclusive = { focus = HIR_ally_junta focus = HIR_western_path }
 		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			leave_faction = yes
 			add_popularity = { 
@@ -2229,11 +2256,8 @@ focus_tree = {
 		prerequisite = { focus = HIR_new_ideology_path }
 		mutually_exclusive = { focus = HIR_communist_path }
 		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			add_popularity = { 
 				ideology = fascism
@@ -2252,11 +2276,8 @@ focus_tree = {
 		available_if_capitulated = yes
 		prerequisite = { focus = HIR_axis_path }
 		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			add_timed_idea = {
 				idea = HIR_rise_fascism
@@ -2281,9 +2302,7 @@ focus_tree = {
 		available = {
 			fascism > 0.3
 		}
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			set_politics = {
 				ruling_party = fascism
@@ -2304,9 +2323,7 @@ focus_tree = {
 		available = {
 			
 		}
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			add_war_support = 0.10
 			every_other_country = {
@@ -2334,11 +2351,8 @@ focus_tree = {
 		prerequisite = { focus = HIR_new_ideology_path }
 		mutually_exclusive = { focus = HIR_axis_path }
 		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			add_popularity = { 
 				ideology = communism
@@ -2357,11 +2371,8 @@ focus_tree = {
 		available_if_capitulated = yes
 		prerequisite = { focus = HIR_communist_path }
 		cost = 10
-		available = {
-		}
-		ai_will_do = {
-			factor = 10
-		}	
+		
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			add_timed_idea = {
 				idea = HIR_rise_communism
@@ -2386,9 +2397,7 @@ focus_tree = {
 		available = {
 			communism > 0.3
 		}
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			set_politics = {
 				ruling_party = communism
@@ -2483,9 +2492,7 @@ focus_tree = {
 				}
 			}
 		}
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 
 		bypass = {
 			OR = {
@@ -2636,9 +2643,7 @@ focus_tree = {
 		relative_position_id = HIR_join_new_ally
 		available_if_capitulated = yes
 		prerequisite = { focus = HIR_Relations_with_juntas focus = HIR_join_new_ally }
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			if = {
 				limit = {
@@ -2676,9 +2681,7 @@ focus_tree = {
 		available_if_capitulated = yes
 		prerequisite = { focus = HIR_Deal_for_islands focus = HIR_unite_all_junta }
 		prerequisite = { focus = HIR_Deal_for_islands }
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			if = {
 				limit = {
@@ -2729,9 +2732,7 @@ focus_tree = {
 		relative_position_id = HIR_join_new_ally
 		available_if_capitulated = yes
 		prerequisite = { focus = HIR_join_new_ally }
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 		bypass = {
 			is_in_faction = no
 		}
@@ -2762,9 +2763,7 @@ focus_tree = {
 		relative_position_id = HIR_request_support
 		available_if_capitulated = yes
 		prerequisite = { focus = HIR_Payment_for_islands focus = HIR_request_support }
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			add_stability = 0.10
 			add_war_support = 0.10
@@ -2815,9 +2814,7 @@ focus_tree = {
 				}
 			}
 		}
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			if = {
    				limit = {
@@ -2898,9 +2895,7 @@ focus_tree = {
 		relative_position_id = HIR_join_new_ally
 		available_if_capitulated = yes
 		prerequisite = { focus = HIR_join_ally focus = HIR_join_new_ally }
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			add_war_support = 0.1
 		}
@@ -2921,9 +2916,7 @@ focus_tree = {
 		relative_position_id = HIR_new_colony_area
 		available_if_capitulated = yes
 		prerequisite = { focus = HIR_new_colony_area }
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 
 		completion_reward = {
 			if = {
@@ -2957,9 +2950,7 @@ focus_tree = {
 		relative_position_id = HIR_new_colony_area
 		available_if_capitulated = yes
 		prerequisite = { focus = HIR_new_colony_area }
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 
 		completion_reward = {
 			if = {
@@ -2990,9 +2981,7 @@ focus_tree = {
 		relative_position_id = HIR_take_goto_and_koshikijima_island
 		available_if_capitulated = yes
 		prerequisite = { focus = HIR_take_goto_and_koshikijima_island focus = HIR_take_iki_and_tsushima_island }
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			if = {
    				limit = {
@@ -3022,9 +3011,7 @@ focus_tree = {
 		relative_position_id = HIR_take_jeju_island
 		available_if_capitulated = yes
 		prerequisite = { focus = HIR_take_jeju_island }
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			for_each_scope_loop = {
 				array = faction_members
@@ -3062,9 +3049,7 @@ focus_tree = {
 		available_if_capitulated = yes
 		prerequisite = { focus = HIR_project_combined_colony focus = HIR_take_jeju_island }
 		prerequisite = {  }
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			if = {
 				limit = {
@@ -3099,9 +3084,7 @@ focus_tree = {
 		relative_position_id = HIR_Merge_Colonies
 		available_if_capitulated = yes
 		prerequisite = { focus = HIR_Merge_Colonies }
-		ai_will_do = {
-			factor = 10
-		}	
+		ai_will_do = { factor = 10 }
 		completion_reward = {
 			declare_war_on = {
 				type = take_state_focus
