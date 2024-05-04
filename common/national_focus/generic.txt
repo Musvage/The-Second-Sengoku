@@ -18,6 +18,7 @@ focus_tree = {
 		icon = { value = GFX_focus_PRT_army_effort						trigger = { tag = PRT } }
 		icon = { value = GFX_goal_generic_axis_build_infantry			trigger = { tag = REI } }
 		icon = { value = GFX_focus_generic_army }						# default, no trigger
+		dynamic = yes
 		search_filters = { FOCUS_FILTER_MILITARY }
 		x = 1
 		y = 0
@@ -3530,8 +3531,10 @@ focus_tree = {
 	
 	focus = {
 		id = ss_generic_government_neutrality
+		icon = { value = GFX_focus_PRT_cult_of_personality trigger = { tag = PRT } }
 		icon = GFX_focus_TOH_army_primacy
 		search_filters = { FOCUS_FILTER_POLITICAL }
+		dynamic = yes
 		
 		prerequisite = { focus = ss_generic_center }
 		mutually_exclusive = { focus = ss_generic_government_democratic }
@@ -3558,26 +3561,42 @@ focus_tree = {
 		}
 		
 		available = {
-			neutrality > 0.33
-			NOT = { has_government = neutrality }
-			OR = {
-				is_subject = no
-				OVERLORD = { has_government = neutrality }
+			if = {
+				limit = { NOT = { tag = PRT } }
+				neutrality > 0.33
+				NOT = { has_government = neutrality }
+				OR = {
+					is_subject = no
+					OVERLORD = { has_government = neutrality }
+				}
+				if = { limit = { tag = OSA } NOT = { tag = OSA } }
+				if = { limit = { tag = KOB } NOT = { tag = KOB } }
+				if = { limit = { tag = AMC } NOT = { tag = AMC } }
+				if = { limit = { tag = OKI } NOT = { tag = OKI } }
+			} else = {
+				has_government = neutrality
 			}
-			if = { limit = { tag = OSA } NOT = { tag = OSA } }
-			if = { limit = { tag = KOB } NOT = { tag = KOB } }
-			if = { limit = { tag = AMC } NOT = { tag = AMC } }
-			if = { limit = { tag = OKI } NOT = { tag = OKI } }
 		}
 		
 		bypass = {
-			has_government = neutrality
+			if = {
+				limit = { NOT = { tag = PRT } }
+				has_government = neutrality
+			} else = {
+				always = no
+			}
 		}
 
 		completion_reward = {
-			set_politics = {
-				ruling_party = neutrality
-				elections_allowed = no
+			if = {
+				limit = { NOT = { tag = PRT } }
+				set_politics = {
+					ruling_party = neutrality
+					elections_allowed = no
+				}
+			} else = {
+				add_ideas = PRT_cult_of_personality_spirit
+				add_political_power = 90
 			}
 		}
 	}
@@ -3708,6 +3727,7 @@ focus_tree = {
 	
 	focus = {
 		id = ss_generic_government_autocratic
+		icon = { value = GFX_focus_PRT_restore_monarchy trigger = { tag = PRT } }
 		icon = { value = GFX_focus_EZO_matsumae_clan trigger = { tag = EZO } }
 		icon = GFX_focus_KYU_war_preparations
 		dynamic = yes
@@ -3792,6 +3812,8 @@ focus_tree = {
 
 		available_if_capitulated = yes
 		
+		allow_branch = { NOT = { tag = PRT } }
+		
 		ai_will_do = {
 			factor = 1
 			modifier = {
@@ -3823,7 +3845,8 @@ focus_tree = {
 			x = 1 y = 0
 			trigger = { tag = IMS }
 		}
-		
+
+		allow_branch = { NOT = { tag = PRT } }
 		cost = 10
 
 		available_if_capitulated = yes
@@ -3838,6 +3861,49 @@ focus_tree = {
 
 		completion_reward = {
 			add_stability = 0.1
+		}
+	}
+	
+	focus = {
+		id = PRT_generic_religious_tolerance
+		icon = GFX_focus_PRT_cultural_syncretism
+		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_RELIGION }
+		
+		prerequisite = { focus = ss_generic_government_democratic_socialism focus = ss_generic_government_democratic focus = ss_generic_government_communism }
+		x = -1
+		y = 1
+		relative_position_id = ss_generic_government_democratic_socialism
+
+		allow_branch = { tag = PRT }
+		cost = 10
+
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 1
+			modifier =  {
+				factor = 5
+				has_government = democratic
+			}
+		}
+
+		completion_reward = {
+			add_ideas = PRT_cultural_syncretism_spirit
+			every_country = {
+				limit = {
+					NOT = { tag = ROC tag = OSA tag = HIR tag = KOB tag = REI tag = FER tag = JOS tag = AMC tag = OKI tag = PRT tag = GAN tag = WIT tag = KIT tag = SPR }
+				}
+				add_opinion_modifier = { target = ROOT modifier = PRT_opinion_cultural_syncretism }
+			}
+			hidden_effect = {
+				every_possible_country = {
+					limit = {
+						NOT = { tag = ROC tag = OSA tag = HIR tag = KOB tag = REI tag = FER tag = JOS tag = AMC tag = OKI tag = PRT tag = GAN tag = WIT tag = KIT tag = SPR }
+						exists = no
+					}
+					add_opinion_modifier = { target = ROOT modifier = PRT_opinion_cultural_syncretism }
+				}
+			}
 		}
 	}
 	
@@ -3952,8 +4018,10 @@ focus_tree = {
 	
 	focus = {
 		id = ss_generic_religious_zeal2
+		icon = { value = GFX_focus_PRT_military_order_of_christ trigger = { tag = PRT } }
 		icon = GFX_focus_SHO_conditional_tsujigiri
 		search_filters = { FOCUS_FILTER_WAR_SUPPORT }
+		dynamic = yes
 		
 		prerequisite = { focus = ss_generic_religious_zeal }
 		mutually_exclusive = { focus = ss_generic_religious_zeal3 }
@@ -4050,7 +4118,9 @@ focus_tree = {
 	
 	focus = {
 		id = ss_generic_government_freedoms
+		icon = { value = GFX_focus_PRT_free_elections trigger = { tag = PRT } }
 		icon = GFX_goal_generic_improve_relations
+		dynamic = yes
 		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
 		
 		prerequisite = { focus = ss_generic_government_democratic focus = ss_generic_government_democratic_socialism focus = IMS_generic_join_lon }
@@ -4060,6 +4130,10 @@ focus_tree = {
 		offset = {
 			x = 1 y = 0
 			trigger = { tag = IMS }
+		}
+		offset = {
+			x = -1 y = 0
+			trigger = { tag = PRT }
 		}
 		cost = 10
 
@@ -4158,6 +4232,10 @@ focus_tree = {
 		relative_position_id = ss_generic_government_freedoms
 		x = 0
 		y = 1
+		offset = {
+			x = 1 y = 0
+			trigger = { tag = PRT }
+		}
 		
 		available_if_capitulated = yes
 		
@@ -4735,6 +4813,10 @@ focus_tree = {
 			x = -1 y = 0
 			trigger = { tag = IMS }
 		}
+		offset = {
+			x = 1 y = 0
+			trigger = { tag = PRT }
+		}
 		cost = 10
 
 		available_if_capitulated = yes
@@ -4799,6 +4881,10 @@ focus_tree = {
 			x = 1 y = 0
 			trigger = { tag = IMS }
 		}
+		offset = {
+			x = 0 y = -1
+			trigger = { tag = PRT }
+		}
 		cost = 10
 
 		available_if_capitulated = yes
@@ -4834,10 +4920,12 @@ focus_tree = {
 	
 	focus = {
 		id = military_youth
+		icon = { value = GFX_focus_PRT_portuguese_youth trigger = { tag = PRT } }
 		icon = GFX_goal_generic_more_territorial_claims
 		search_filters = { FOCUS_FILTER_MANPOWER }
 		prerequisite = { focus = ss_generic_government_autocratic focus = ss_generic_government_fascism focus = ss_generic_government_neutrality focus = IMS_generic_government_neutrality }
 		mutually_exclusive = { focus = ss_generic_religious_zeal2 }
+		dynamic = yes
 		
 		relative_position_id = ss_generic_government_neutrality
 		x = 0
