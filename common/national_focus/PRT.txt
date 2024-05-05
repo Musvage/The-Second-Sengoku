@@ -1634,7 +1634,7 @@ focus_tree = {
 
 		completion_reward = {
 			add_war_support = 0.05
-			add_timed_idea = { idea = PRT_falangist_influence_spirit days = 365 }
+			add_ideas = PRT_falangist_influence_spirit
 			custom_effect_tooltip = unlock_characters_tt
 			show_ideas_tooltip = PRT_jose_hipolito_raposo
 			show_ideas_tooltip = PRT_paiva_couceiro
@@ -1759,7 +1759,7 @@ focus_tree = {
 
 		completion_reward = {
 			add_war_support = 0.05
-			add_timed_idea = { idea = PRT_republican_influence_spirit days = 365 }
+			add_ideas = PRT_republican_influence_spirit
 			custom_effect_tooltip = unlock_characters_tt
 			show_ideas_tooltip = PRT_jose_maria_magalhaes
 			show_ideas_tooltip = PRT_Bento_Jesus
@@ -1936,12 +1936,17 @@ focus_tree = {
 	focus = {
 		id = PRT_antifascism_coalition	# Movement of National Antifascist Unity
 		icon = GFX_goal_generic_anti_fascist_diplomacy_red
-		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_WAR_SUPPORT }
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
 		
 		ai_will_do = { factor = 0 }
 		
 		available = {
 			NOT = { has_government = fascism }
+			OR = {
+				has_government = democratic
+				has_government = democratic_socialism
+				NOT = { has_country_flag = PRT_had_general_election }
+			}
 		}
 		
 		prerequisite = { focus = PRT_help_spanish_republica }
@@ -1953,25 +1958,37 @@ focus_tree = {
 		
 		available_if_capitulated = yes
 
-		completion_reward = {
-			if = {
-				limit = { NOT = { has_completed_focus = PRT_free_elections has_country_flag = PRT_free_elections_socdems } }
-				custom_effect_tooltip = PRT_antifascism_coalition_tt
-				set_country_flag = PRT_free_elections_socdems
+		completion_reward = {		#### THE EFFECTS SEEM CONVOLUTED BUT THEY ARE LIKE THIS TO PROVIDE STABLE AND READABLE TOOLTIPS
+			swap_ideas = {
+				remove_idea = PRT_republican_influence_spirit
+				add_idea = PRT_republican_influence2_spirit
 			}
 			if = {
-				limit = { has_completed_focus = PRT_antifascism_coalition has_country_flag = PRT_free_elections_socdems }
+				limit = {
+					NOT = { has_country_flag = PRT_campaign_for_election_begun }
+					NOT = { has_country_flag = PRT_free_elections_socdems }
+				}
+				set_country_flag = PRT_free_elections_socdems
+				custom_effect_tooltip = PRT_antifascism_coalition_tt
+			}
+			if = {
+				limit = { has_country_flag = PRT_free_elections_socdems }
 				custom_effect_tooltip = PRT_antifascism_coalition_tt2
 			}
-			add_ideas = { PRT_antifascism_generic_spirit }
 			if = {
-				limit = { has_idea = PRT_republican_influence_spirit }
-				modify_timed_idea = {
-					idea = PRT_republican_influence_spirit
-					days = 730
+				limit = {
+					NOT = { has_country_flag = PRT_had_general_election }
+				}
+				custom_effect_tooltip = PRT_antifascism_coalition_tt3
+				effect_tooltip = {
+					if = {
+						limit = { check_variable = { party_popularity@democratic_socialism > party_popularity@democratic } }
+						add_ideas = PRT_democratic_socialism_unity_spirit
+					} else = { add_ideas = PRT_democratic_unity_spirit }
 				}
 			} else = {
-				add_timed_idea = { idea = PRT_republican_influence_spirit days = 730 }
+				if = { limit = { has_government = democratic_socialism } add_ideas = PRT_democratic_socialism_unity_spirit }
+				else = { add_ideas = PRT_democratic_unity_spirit }
 			}
 			hidden_effect = {
 				REI = {

@@ -184,8 +184,11 @@ country_event = {
 	
 	is_triggered_only = yes
 	
+	immediate = { hidden_effect = { set_country_flag = PRT_campaign_for_election_begun } }
+	
 	option = {
 		name = portuguese.300.a	# do nothing
+		custom_effect_tooltip = PRT_campaign_random
 		random_list = {
 			1 = { country_event = { id = portuguese.301 days = 13 random_days = 6 } }	# right-wing loses popularity
 			1 = { country_event = { id = portuguese.302 days = 13 random_days = 6 } }	# Salazar loses popularity
@@ -205,6 +208,7 @@ country_event = {
 	option = {
 		name = portuguese.300.b	# favour Salazar
 		add_political_power = -100
+		custom_effect_tooltip = PRT_campaign_random
 		random_list = {
 			1 = { country_event = { id = portuguese.301 days = 13 random_days = 6 } }	# right-wing loses popularity
 			#1 = { country_event = { id = portuguese.302 days = 13 random_days = 6 } }	# Salazar loses popularity
@@ -225,6 +229,7 @@ country_event = {
 	option = {
 		name = portuguese.300.c	# favour left
 		add_political_power = -100
+		custom_effect_tooltip = PRT_campaign_random
 		random_list = {
 			1 = { country_event = { id = portuguese.301 days = 13 random_days = 6 } }	# right-wing loses popularity
 			1 = { country_event = { id = portuguese.302 days = 13 random_days = 6 } }	# Salazar loses popularity
@@ -317,7 +322,7 @@ country_event = {
 	
 	option = {
 		name = portuguese.302.a
-		add_popularity = { ideology = neutrality popularity = 0.05 }
+		add_popularity = { ideology = neutrality popularity = 0.1 }
 	}
 }
 
@@ -355,17 +360,20 @@ country_event = {
 		trigger = { tag = PRT }
 		name = portuguese.311.a
 		effect_tooltip = { set_politics = { ruling_party = democratic elections_allowed = yes election_frequency = 48 } }
-		add_ideas = PRT_democratic_unity_spirit
+		if = {
+			limit = { has_completed_focus = PRT_antifascism_coalition }
+			add_ideas = PRT_democratic_unity_spirit
+		}
 	}
 	option = {
 		trigger = { NOT = { tag = PRT } OR = { has_government = democratic has_government = democratic_socialism } }
 		name = portuguese.311.b
-		effect_tooltip = { PRT = { set_politics = { ruling_party = democratic elections_allowed = yes election_frequency = 48 } add_ideas = PRT_democratic_unity_spirit } }
+		effect_tooltip = { PRT = { set_politics = { ruling_party = democratic elections_allowed = yes election_frequency = 48 } } }
 	}
 	option = {
 		trigger = { NOT = { tag = PRT } NOT = { has_government = democratic has_government = democratic_socialism } }
 		name = portuguese.311.c
-		effect_tooltip = { PRT = { set_politics = { ruling_party = democratic elections_allowed = yes election_frequency = 48 } add_ideas = PRT_democratic_unity_spirit } }
+		effect_tooltip = { PRT = { set_politics = { ruling_party = democratic elections_allowed = yes election_frequency = 48 } } }
 	}
 }
 
@@ -385,17 +393,20 @@ country_event = {
 		trigger = { tag = PRT }
 		name = portuguese.312.a
 		effect_tooltip = { set_politics = { ruling_party = democratic_socialism elections_allowed = yes election_frequency = 48 } }
-		add_ideas = PRT_democratic_socialism_unity_spirit
+		if = {
+			limit = { has_completed_focus = PRT_antifascism_coalition }
+			add_ideas = PRT_democratic_socialism_unity_spirit
+		}
 	}
 	option = {
 		trigger = { NOT = { tag = PRT } OR = { has_government = democratic has_government = democratic_socialism } }
 		name = portuguese.312.b
-		effect_tooltip = { PRT = { set_politics = { ruling_party = democratic_socialism elections_allowed = yes election_frequency = 48 } add_ideas = PRT_democratic_socialism_unity_spirit } }
+		effect_tooltip = { PRT = { set_politics = { ruling_party = democratic_socialism elections_allowed = yes election_frequency = 48 } } }
 	}
 	option = {
 		trigger = { NOT = { tag = PRT } NOT = { has_government = democratic has_government = democratic_socialism } }
 		name = portuguese.312.c
-		effect_tooltip = { PRT = { set_politics = { ruling_party = democratic_socialism elections_allowed = yes election_frequency = 48 } add_ideas = PRT_democratic_socialism_unity_spirit } }
+		effect_tooltip = { PRT = { set_politics = { ruling_party = democratic_socialism elections_allowed = yes election_frequency = 48 } } }
 	}
 }
 
@@ -475,6 +486,7 @@ country_event = {
 		trigger = { tag = PRT }
 		name = portuguese.315.a
 		if = { limit = { NOT = { has_government = neutrality } } effect_tooltip = { set_politics = { ruling_party = neutrality elections_allowed = no } } }
+		unlock_national_focus = PRT_cult_of_personality
 		add_ideas = PRT_cult_of_personality_spirit
 	}
 	option = {
@@ -482,7 +494,6 @@ country_event = {
 		name = portuguese.315.b
 		effect_tooltip = {
 			if = { limit = { PRT = { NOT = { has_government = neutrality } } } PRT = { set_politics = { ruling_party = neutrality elections_allowed = no } } }
-			PRT = { add_ideas = PRT_cult_of_personality_spirit }
 		}
 	}
 	option = {
@@ -490,7 +501,6 @@ country_event = {
 		name = portuguese.315.c
 		effect_tooltip = {
 			if = { limit = { PRT = { NOT = { has_government = neutrality } } } set_politics = { ruling_party = neutrality elections_allowed = no } }
-			PRT = { add_ideas = PRT_cult_of_personality_spirit }
 		}
 	}
 }
@@ -505,6 +515,7 @@ country_event = {
 	hidden = yes
 
 	immediate = {
+		set_global_flag = PRT_had_general_election
 		set_temp_variable = { opposition_popularity = party_popularity@democratic_socialism }
 		add_to_temp_variable = { opposition_popularity = party_popularity@democratic }
 		if = {
