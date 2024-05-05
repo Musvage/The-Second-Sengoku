@@ -114,25 +114,47 @@ country_event = {
 	option = {	# PRT: favour neutrality
 		name = portuguese.3.a
 		trigger = { tag = PRT }
+		add_political_power = 120
+		custom_effect_tooltip = PRT_campaign_in_150_days
+		#effect_tooltip = { country_event = { id = portuguese.300 days = 150 } }
 		custom_effect_tooltip = portuguese.3.tt1
 		custom_effect_tooltip = portuguese.3.tt2
-		effect_tooltip = { add_political_power = 240 }
+		effect_tooltip = { add_ideas = PRT_cult_of_personality_spirit }
+		ai_chance = { base = 0 }	# AI will never really pick this option
 	}
 	option = {	# PRT: favour democracy
 		name = portuguese.3.b
 		trigger = { tag = PRT }
-		custom_effect_tooltip = portuguese.3.tt1
 		add_timed_idea = { idea = PRT_support_democracy_spirit days = 180 }
+		custom_effect_tooltip = PRT_campaign_in_150_days
+		#effect_tooltip = { country_event = { id = portuguese.300 days = 150 } }
+		custom_effect_tooltip = portuguese.3.tt1
 		custom_effect_tooltip = portuguese.3.tt3
 		effect_tooltip = { add_ideas = PRT_democratic_unity_spirit }
+		ai_chance = { 
+			base = 1
+			modifier = {
+				factor = 10
+				has_idea_with_trait = democratic_reformer
+			}
+		}
 	}
 	option = {	# PRT: favour social democracy
 		name = portuguese.3.c
 		trigger = { tag = PRT PRT = { has_country_flag = PRT_free_elections_socdems } }
-		custom_effect_tooltip = portuguese.3.tt1
 		add_timed_idea = { idea = PRT_support_socialdemocracy_spirit days = 180 }
+		custom_effect_tooltip = PRT_campaign_in_150_days
+		#effect_tooltip = { country_event = { id = portuguese.300 days = 150 } }
+		custom_effect_tooltip = portuguese.3.tt1
 		custom_effect_tooltip = portuguese.3.tt4
 		effect_tooltip = { add_ideas = PRT_democratic_socialism_unity_spirit }
+		ai_chance = { 
+			base = 1
+			modifier = {
+				factor = 10
+				has_idea_with_trait = welfare_proponent
+			}
+		}
 	}
 	option = {	# OTHERS: GOOD
 		name = portuguese.3.e
@@ -140,6 +162,7 @@ country_event = {
 		PRT = {
 			custom_effect_tooltip = portuguese.3.tt1
 		}
+		effect_tooltip = { PRT = { country_event = { id = portuguese.300 days = 150 } } }
 	}
 	option = {	# OTHERS: NOT GOOD
 		name = portuguese.3.f
@@ -148,8 +171,378 @@ country_event = {
 		PRT = {
 			custom_effect_tooltip = portuguese.3.tt1
 		}
+		effect_tooltip = { PRT = { country_event = { id = portuguese.300 days = 150 } } }
 	}
+}
 
+# PRT: electoral campaign begins
+country_event = {
+    id = portuguese.300
+	title = portuguese.300.t
+	desc = portuguese.300.d
+	picture = GFX_report_event_election_vote
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = portuguese.300.a	# do nothing
+		random_list = {
+			1 = { country_event = { id = portuguese.301 days = 13 random_days = 6 } }	# right-wing loses popularity
+			1 = { country_event = { id = portuguese.302 days = 13 random_days = 6 } }	# Salazar loses popularity
+			1 = { country_event = { id = portuguese.303 days = 13 random_days = 6 } }	# left-wing loses popularity
+			1 = { country_event = { id = portuguese.304 days = 13 random_days = 6 } }	# right-wing gains popularity
+			1 = { country_event = { id = portuguese.305 days = 13 random_days = 6 } }	# Salazar gains popularity
+			1 = { country_event = { id = portuguese.306 days = 13 random_days = 6 } }	# left-wing gains popularity
+		}
+		hidden_effect = { country_event = { id = portuguese.3000 days = 30 } }
+		ai_chance = { 
+			base = 1
+			modifier = {
+				factor = 0
+			}
+		}
+	}
+	option = {
+		name = portuguese.300.b	# favour Salazar
+		add_political_power = -100
+		random_list = {
+			1 = { country_event = { id = portuguese.301 days = 13 random_days = 6 } }	# right-wing loses popularity
+			#1 = { country_event = { id = portuguese.302 days = 13 random_days = 6 } }	# Salazar loses popularity
+			1 = { country_event = { id = portuguese.303 days = 13 random_days = 6 } }	# left-wing loses popularity
+			1 = { country_event = { id = portuguese.304 days = 13 random_days = 6 } }	# right-wing gains popularity
+			4 = { country_event = { id = portuguese.305 days = 13 random_days = 6 } }	# Salazar gains popularity
+			1 = { country_event = { id = portuguese.306 days = 13 random_days = 6 } }	# left-wing gains popularity
+		}
+		hidden_effect = { country_event = { id = portuguese.3000 days = 30 } }
+		ai_chance = { 
+			base = 1
+			modifier = {
+				factor = 10
+				has_idea_with_trait = welfare_proponent
+			}
+		}
+	}
+	option = {
+		name = portuguese.300.c	# favour left
+		add_political_power = -100
+		random_list = {
+			1 = { country_event = { id = portuguese.301 days = 13 random_days = 6 } }	# right-wing loses popularity
+			1 = { country_event = { id = portuguese.302 days = 13 random_days = 6 } }	# Salazar loses popularity
+			#1 = { country_event = { id = portuguese.303 days = 13 random_days = 6 } }	# left-wing loses popularity
+			1 = { country_event = { id = portuguese.304 days = 13 random_days = 6 } }	# right-wing gains popularity
+			1 = { country_event = { id = portuguese.305 days = 13 random_days = 6 } }	# Salazar gains popularity
+			4 = { country_event = { id = portuguese.306 days = 13 random_days = 6 } }	# left-wing gains popularity
+		}
+		hidden_effect = { country_event = { id = portuguese.3000 days = 30 } }
+	}
+}
+
+# PRT: right-wing loses popularity (election random event)
+country_event = {
+    id = portuguese.301
+	title = portuguese.301.t
+	desc = portuguese.301.d
+	picture = GFX_report_event_election_vote
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = portuguese.301.a
+		random_list = {
+			1 = { add_popularity = { ideology = fascism popularity = -0.05 } }
+			1 = { add_popularity = { ideology = autocracy popularity = -0.05 } }
+		}
+	}
+}
+
+# PRT: Salazar loses popularity (election random event)
+country_event = {
+    id = portuguese.302
+	title = portuguese.302.t
+	desc = portuguese.302.d
+	picture = GFX_report_event_election_vote
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = portuguese.302.a
+		add_popularity = { ideology = neutrality popularity = -0.05 }
+	}
+}
+
+# PRT: left-wing loses popularity (election random event)
+country_event = {
+    id = portuguese.303
+	title = portuguese.303.t
+	desc = portuguese.303.d
+	picture = GFX_report_event_election_vote
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = portuguese.303.a
+		random_list = {
+			1 = { add_popularity = { ideology = democratic popularity = -0.05 } }
+			1 = { add_popularity = { ideology = democratic_socialism popularity = -0.05 } }
+		}
+	}
+}
+
+# PRT: right-wing gains popularity (election random event)
+country_event = {
+    id = portuguese.304
+	title = portuguese.304.t
+	desc = portuguese.304.d
+	picture = GFX_report_event_election_vote
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = portuguese.304.a
+		random_list = {
+			1 = { add_popularity = { ideology = fascism popularity = 0.05 } }
+			1 = { add_popularity = { ideology = autocracy popularity = 0.05 } }
+		}
+	}
+}
+
+# PRT: Salazar gains popularity (election random event)
+country_event = {
+    id = portuguese.305
+	title = portuguese.305.t
+	desc = portuguese.305.d
+	picture = GFX_report_event_election_vote
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = portuguese.302.a
+		add_popularity = { ideology = neutrality popularity = 0.05 }
+	}
+}
+
+# PRT: left-wing gains popularity (election random event)
+country_event = {
+    id = portuguese.306
+	title = portuguese.306.t
+	desc = portuguese.306.d
+	picture = GFX_report_event_election_vote
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = portuguese.306.a
+		random_list = {
+			1 = { add_popularity = { ideology = democratic popularity = 0.05 } }
+			1 = { add_popularity = { ideology = democratic_socialism popularity = 0.05 } }
+		}
+	}
+}
+
+# PRT: DEMOCRATIC WINS
+country_event = {
+    id = portuguese.311
+	title = portuguese.311.t
+	desc = portuguese.311.d
+	picture = GFX_report_event_election_vote
+	
+	is_triggered_only = yes
+	major = yes
+	
+	immediate = { hidden_effects = { set_politics = { ruling_party = democratic elections_allowed = yes election_frequency = 48 } } }
+	
+	option = {
+		trigger = { tag = PRT }
+		name = portuguese.311.a
+		effect_tooltip = { set_politics = { ruling_party = democratic elections_allowed = yes election_frequency = 48 } }
+		add_ideas = PRT_democratic_unity_spirit
+	}
+	option = {
+		trigger = { NOT = { tag = PRT } OR = { has_government = democratic has_government = democratic_socialism } }
+		name = portuguese.311.b
+		effect_tooltip = { PRT = { set_politics = { ruling_party = democratic elections_allowed = yes election_frequency = 48 } add_ideas = PRT_democratic_unity_spirit } }
+	}
+	option = {
+		trigger = { NOT = { tag = PRT } NOT = { has_government = democratic has_government = democratic_socialism } }
+		name = portuguese.311.c
+		effect_tooltip = { PRT = { set_politics = { ruling_party = democratic elections_allowed = yes election_frequency = 48 } add_ideas = PRT_democratic_unity_spirit } }
+	}
+}
+
+# PRT: SOC DEMS WINS
+country_event = {
+    id = portuguese.312
+	title = portuguese.312.t
+	desc = portuguese.312.d
+	picture = GFX_report_event_election_vote
+	
+	is_triggered_only = yes
+	major = yes
+	
+	immediate = { hidden_effects = { set_politics = { ruling_party = democratic_socialism elections_allowed = yes election_frequency = 48 } } }
+	
+	option = {
+		trigger = { tag = PRT }
+		name = portuguese.312.a
+		effect_tooltip = { set_politics = { ruling_party = democratic_socialism elections_allowed = yes election_frequency = 48 } }
+		add_ideas = PRT_democratic_socialism_unity_spirit
+	}
+	option = {
+		trigger = { NOT = { tag = PRT } OR = { has_government = democratic has_government = democratic_socialism } }
+		name = portuguese.312.b
+		effect_tooltip = { PRT = { set_politics = { ruling_party = democratic_socialism elections_allowed = yes election_frequency = 48 } add_ideas = PRT_democratic_socialism_unity_spirit } }
+	}
+	option = {
+		trigger = { NOT = { tag = PRT } NOT = { has_government = democratic has_government = democratic_socialism } }
+		name = portuguese.312.c
+		effect_tooltip = { PRT = { set_politics = { ruling_party = democratic_socialism elections_allowed = yes election_frequency = 48 } add_ideas = PRT_democratic_socialism_unity_spirit } }
+	}
+}
+
+# PRT: MONARCHY WINS
+country_event = {
+    id = portuguese.313
+	title = portuguese.313.t
+	desc = portuguese.313.d
+	picture = GFX_report_event_election_vote
+	
+	is_triggered_only = yes
+	major = yes
+	
+	immediate = { hidden_effects = { set_politics = { ruling_party = autocracy elections_allowed = no } } }
+	
+	option = {
+		trigger = { tag = PRT }
+		name = portuguese.313.a
+		effect_tooltip = { set_politics = { ruling_party = autocracy elections_allowed = no } }
+		unlock_national_focus = PRT_monarchist_coup
+	}
+	option = {
+		trigger = { NOT = { tag = PRT } OR = { has_government = democratic has_government = democratic_socialism } }
+		name = portuguese.313.b
+		effect_tooltip = { PRT = { set_politics = { ruling_party = autocracy elections_allowed = no } } }
+	}
+	option = {
+		trigger = { NOT = { tag = PRT } NOT = { has_government = democratic has_government = democratic_socialism } }
+		name = portuguese.313.c
+		effect_tooltip = { PRT = { set_politics = { ruling_party = autocracy elections_allowed = no } } }
+	}
+}
+
+# PRT: NATIONAL SYNDICALISTS WINS
+country_event = {
+    id = portuguese.314
+	title = portuguese.314.t
+	desc = portuguese.314.d
+	picture = GFX_report_event_election_vote
+	
+	is_triggered_only = yes
+	major = yes
+	
+	immediate = { hidden_effects = { set_politics = { ruling_party = fascism elections_allowed = no } } }
+	
+	option = {
+		trigger = { tag = PRT }
+		name = portuguese.314.a
+		effect_tooltip = { set_politics = { ruling_party = fascism elections_allowed = no } }
+		unlock_national_focus = PRT_fascist_coup
+	}
+	option = {
+		trigger = { NOT = { tag = PRT } has_government = fascism }
+		name = portuguese.314.b
+		effect_tooltip = { PRT = { set_politics = { ruling_party = fascism elections_allowed = no } } }
+	}
+	option = {
+		trigger = { NOT = { tag = PRT } NOT = { has_government = fascism } }
+		name = portuguese.314.c
+		effect_tooltip = { PRT = { set_politics = { ruling_party = fascism elections_allowed = no } } }
+	}
+}
+
+# PRT: SALAZAR WINS
+country_event = {
+    id = portuguese.315
+	title = portuguese.315.t
+	desc = portuguese.315.d
+	picture = GFX_report_event_election_vote
+	
+	is_triggered_only = yes
+	major = yes
+	
+	 immediate = { hidden_effects = { PRT = { if = { limit = { NOT = { has_government = neutrality } } set_politics = { ruling_party = neutrality elections_allowed = no } } } } }
+	
+	option = {
+		trigger = { tag = PRT }
+		name = portuguese.315.a
+		if = { limit = { NOT = { has_government = neutrality } } effect_tooltip = { set_politics = { ruling_party = neutrality elections_allowed = no } } }
+		add_ideas = PRT_cult_of_personality_spirit
+	}
+	option = {
+		trigger = { NOT = { tag = PRT } has_government = neutrality }
+		name = portuguese.315.b
+		effect_tooltip = {
+			if = { limit = { PRT = { NOT = { has_government = neutrality } } } PRT = { set_politics = { ruling_party = neutrality elections_allowed = no } } }
+			PRT = { add_ideas = PRT_cult_of_personality_spirit }
+		}
+	}
+	option = {
+		trigger = { NOT = { tag = PRT } NOT = { has_government = neutrality } }
+		name = portuguese.315.c
+		effect_tooltip = {
+			if = { limit = { PRT = { NOT = { has_government = neutrality } } } set_politics = { ruling_party = neutrality elections_allowed = no } }
+			PRT = { add_ideas = PRT_cult_of_personality_spirit }
+		}
+	}
+}
+
+country_event = {
+    id = portuguese.3000
+	title = "election hidden event"
+	desc = "checks the parties popularitys and adjudicates on the winner. this is a hiden event, by the way. (DuKe rules)"
+	picture = GFX_report_event_election_vote
+
+	is_triggered_only = yes
+	hidden = yes
+
+	immediate = {
+		set_temp_variable = { opposition_popularity = party_popularity@democratic_socialism }
+		add_to_temp_variable = { opposition_popularity = party_popularity@democratic }
+		if = {
+			limit = {
+				check_variable = { opposition_popularity > party_popularity@autocracy }	### OPOSITION WINS
+				check_variable = { opposition_popularity > party_popularity@fascism }
+				check_variable = { opposition_popularity > party_popularity@neutrality }
+			}
+			if = {
+				limit = { has_country_flag = PRT_free_elections_socdems }
+				set_temp_variable = { soc_dem_votes = party_popularity@democratic_socialism }
+				add_to_temp_variable = { soc_dem_votes = party_popularity@communism }
+				if = {
+					limit = { check_variable = { soc_dem_votes > party_popularity@democratic } }
+					country_event = portuguese.312												### SOC DEM WINS
+				} else = { country_event = portuguese.311 }										### DEM WINS
+			} else = {
+				country_event = portuguese.311													### DEM WINS
+			}
+		} else_if = {
+			limit = {
+				check_variable = { party_popularity@autocracy > opposition_popularity }	### MONARCHY WINS
+				check_variable = { party_popularity@autocracy > party_popularity@fascism }
+				check_variable = { party_popularity@autocracy > party_popularity@neutrality }
+			}
+			country_event = portuguese.313
+		} else_if = {
+			limit = {
+				check_variable = { party_popularity@fascism > party_popularity@autocracy }	### NAT-SYN WINS
+				check_variable = { party_popularity@fascism > opposition_popularity}
+				check_variable = { party_popularity@fascism > party_popularity@neutrality }
+			}
+			country_event = portuguese.314
+		} else = {																			### SALAZAR WINS
+
+			country_event = portuguese.315
+		}
+	}
 }
 
 # The Devolution of Macau (ROC event)
@@ -187,6 +580,7 @@ country_event = {
 		}
 	}
 }
+
 	
 	
 ### OLD 
