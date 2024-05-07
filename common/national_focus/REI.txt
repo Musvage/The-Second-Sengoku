@@ -739,10 +739,6 @@ focus_tree = {
 			has_global_flag = world_stage_spanish_cw_over
 		}
 		
-		allow_branch = {
-			always = no 
-		}
-		
 		completion_reward = {
 			subtract_from_variable = {
 				var = 101.world_stage_power
@@ -755,6 +751,56 @@ focus_tree = {
 			}
 			set_country_flag = world_stage_spanish_cw_helped_falange
 			news_event = worldstage.7
+		}
+	}
+	
+	focus = {
+		id = REI_help_spanish_falange_2 
+		icon = GFX_focus_generic_exiled_falangist_officers
+		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_RESEARCH }
+		
+		ai_will_do = { factor = 0 }
+		
+		available = {
+			NOT = { has_government = communism has_government = democratic_socialism has_government = democratic }
+			has_global_flag = world_stage_theater_spanish_cw_republica_won
+			if = {  NOT = { has_idea = PRT_political_backlash_spirit_democratic 			} limit = { has_government = democratic } }
+			if = {  NOT = { has_idea = PRT_political_backlash_spirit_communism 				} limit = { has_government = communism } }
+			if = {  NOT = { has_idea = PRT_political_backlash_spirit_autocracy 				} limit = { has_government = autocracy } }
+			if = {  NOT = { has_idea = PRT_political_backlash_spirit_fascism 				} limit = { has_government = fascism } }
+			if = {  NOT = { has_idea = PRT_political_backlash_spirit_neutrality 			} limit = { has_government = neutrality } }
+			if = {  NOT = { has_idea = PRT_political_backlash_spirit_democratic_socialism	} limit = { has_government = democratic_socialism } }
+		}
+		
+		prerequisite = { focus = REI_help_spain }
+		relative_position_id = REI_help_spain
+		x = -1
+		y = 1
+
+		cost = 10
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			# add Spanish commanders
+			add_doctrine_cost_reduction = {
+				name = land_doc_bonus
+				cost_reduction = 0.33
+				uses = 1
+				category = land_doctrine
+			}
+			add_doctrine_cost_reduction = {
+				name = air_doc_bonus				
+				cost_reduction = 0.33
+				uses = 1
+				category = air_doctrine
+			}
+			add_doctrine_cost_reduction = {
+				name = naval_doc_bonus
+				cost_reduction = 0.33
+				uses = 1
+				category = naval_doctrine
+			}
 		}
 	}
 	
@@ -2425,9 +2471,9 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = REI_reichskommissariats
-		icon = GFX_focus_REI_reichskommissariat
-		search_filters = { FOCUS_FILTER_WORLD FOCUS_FILTER_POLITICAL }
+		id = REI_reichskommissariats2	# I switched the order, #2 now comes first
+		icon = GFX_goal_demand_sudetenland
+		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WAR_SUPPORT }
 		
 		prerequisite = { focus = REI_home_infrastructure }
 		prerequisite = { focus = REI_attack_poland }
@@ -2435,7 +2481,50 @@ focus_tree = {
 		relative_position_id = REI_home_infrastructure
 		x = 0
 		y = 3
-		cost = 10
+		cost = 5
+		
+		available_if_capitulated = yes
+		
+		available = { world_stage_has_capitulated = no is_puppet = no }
+		
+		ai_will_do = { factor = 10 }
+		
+		bypass = {
+			if = {
+				limit = { has_idea = REI_idea_generalkommissariat }
+				NOT = { has_idea = REI_idea_generalkommissariat }
+			} else = {
+				NOT = { has_idea = REI_idea_generalkommissariat2 }
+			}
+		}
+		
+		completion_reward = {
+			hidden_effect = {
+				swap_ideas = {
+					remove_idea = REI_idea_generalkommissariat
+					add_idea = REI_idea_generalkommissariat2
+				}
+			}
+			effect_tooltip = { 
+				set_rule = {
+					can_not_declare_war = no
+				}
+			}
+			add_war_support = 0.05
+		}
+	}
+	
+	focus = {
+		id = REI_reichskommissariats
+		icon = GFX_focus_REI_reichskommissariat
+		search_filters = { FOCUS_FILTER_WORLD FOCUS_FILTER_POLITICAL }
+		
+		prerequisite = { focus = REI_reichskommissariats2 }
+		
+		relative_position_id = REI_reichskommissariats2
+		x = 0
+		y = 1
+		cost = 5
 		
 		available_if_capitulated = yes
 		
@@ -2447,7 +2536,7 @@ focus_tree = {
 		
 		completion_reward = {
 			swap_ideas = {
-				remove_idea = REI_idea_generalkommissariat
+				remove_idea = REI_idea_generalkommissariat2
 				add_idea = REI_idea_reichskommissariat
 			}
 			add_political_power = 100
@@ -2464,33 +2553,6 @@ focus_tree = {
 				value = 5
 				tooltip = add_world_stage_power_no_scope_tt
 			}
-		}
-	}
-	
-	focus = {
-		id = REI_reichskommissariats2
-		icon = GFX_goal_demand_sudetenland
-		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WAR_SUPPORT }
-		
-		prerequisite = { focus = REI_reichskommissariats }
-		
-		relative_position_id = REI_reichskommissariats
-		x = 0
-		y = 1
-		cost = 10
-		
-		available_if_capitulated = yes
-		
-		available = { world_stage_has_capitulated = no is_puppet = no }
-		
-		ai_will_do = { factor = 10 }
-		
-		completion_reward = {
-			swap_ideas = {
-				remove_idea = REI_idea_reichskommissariat
-				add_idea = REI_idea_reichskommissariat2
-			}
-			add_war_support = 0.05
 		}
 	}
 	
