@@ -24,7 +24,25 @@ news_event = {
 	major = yes
 	
 	immediate = {
-		set_global_flag = world_stage_theater_spanish_cw_is_active
+		hidden_effect = {
+			set_global_flag = world_stage_theater_spanish_cw_is_active
+			# 111 republican spain, coalition 8
+			# 121 falangist spain, coalition 9
+			35 = {															# proxy for Madrid
+				set_variable = { theater_owner_coalition = 8 }				# Republican coalition
+				add_to_variable = { world_stage_power_deployed_by^111 = 5 }	
+				add_to_variable = { world_stage_power_deployed_by^121 = 5 }
+				set_variable = { coalition_side_attack = 9 }				# Falange, looks like Non-Aligned
+				add_to_variable = { attacker_strategic_advantage = 1 }
+				set_state_flag = theater_is_active
+				world_stage_state_update_current_day = yes 
+			}
+			111 = { set_variable = { world_stage_power = -15 } }			# manually deploying initial forces, subtracting units that switch to falangists
+			121 = { set_variable = { world_stage_power = 10 } }				# adding units that switch from republicans, minus the ones deployed in Madrid
+			36 = { set_variable = { theater_owner = 121 } }					# Zaragoza, Falangist capital
+			36 = { set_variable = { theater_owner_coalition = 9 } }			# Falangist coalition
+			37 = { set_variable = { theater_owner_coalition = 8 } }			# Republican coalition
+		}
 	}
 	
 	option = {
@@ -32,19 +50,73 @@ news_event = {
 		trigger = {
 			has_government = fascism
 		}
+		custom_effect_tooltip = worldstage.4.tt
+		custom_effect_tooltip = theater_scope_madrid
+		custom_effect_tooltip = world_stage_activate_theater_tt
+		effect_tooltip = {
+			custom_effect_tooltip = metropolis_scope_spain_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the tooltips
+				111.world_stage_power = 5
+				tooltip = world_stage_deploy_power_madrid_space
+			}
+			custom_effect_tooltip = metropolis_scope_falange_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the tooltips
+				121.world_stage_power = 5
+				tooltip = world_stage_deploy_power_madrid_space
+			}
+			add_to_variable = {
+				attacker_strategic_advantage = 1
+				tooltip = world_stage_add_strategic_advantage_attacker
+			}
+		}
 	}
 	option = {
 		name = worldstage.4.komin
 		trigger = {
-			has_government = communism
+			OR = { has_government = communism has_government = democratic has_government = democratic_socialism }
+		}
+		custom_effect_tooltip = worldstage.4.tt
+		custom_effect_tooltip = theater_scope_madrid
+		custom_effect_tooltip = world_stage_activate_theater_tt
+		effect_tooltip = {
+			custom_effect_tooltip = metropolis_scope_spain_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the tooltips
+				111.world_stage_power = 5
+				tooltip = world_stage_deploy_power_madrid_space
+			}
+			custom_effect_tooltip = metropolis_scope_falange_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the tooltips
+				121.world_stage_power = 5
+				tooltip = world_stage_deploy_power_madrid_space
+			}
+			add_to_variable = {
+				attacker_strategic_advantage = 1
+				tooltip = world_stage_add_strategic_advantage_attacker
+			}
 		}
 	}
 	option = {
 		name = worldstage.4.other
 		trigger = {
-			NOT = {
-				has_government = communism
-				has_government = fascism
+			OR = { has_government = autocracy has_government = neutrality }
+		}
+		custom_effect_tooltip = worldstage.4.tt
+		custom_effect_tooltip = theater_scope_madrid
+		custom_effect_tooltip = world_stage_activate_theater_tt
+		effect_tooltip = {
+			custom_effect_tooltip = metropolis_scope_spain_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the tooltips
+				111.world_stage_power = 5
+				tooltip = world_stage_deploy_power_madrid_space
+			}
+			custom_effect_tooltip = metropolis_scope_falange_space
+			subtract_from_variable = {	# this operation's tooltip IS the deployment tooltip, actual deployment is hidden to avoid the wrong scope appering in the tooltips
+				121.world_stage_power = 5
+				tooltip = world_stage_deploy_power_madrid_space
+			}
+			add_to_variable = {
+				attacker_strategic_advantage = 1
+				tooltip = world_stage_add_strategic_advantage_attacker
 			}
 		}
 	}
@@ -6388,7 +6460,14 @@ news_event = {
 
 	is_triggered_only = yes
 
-	major = yes show_major = { NOT = { has_country_flag = hide_worldstage_notification } }
+	major = yes
+	
+	show_major = {
+		OR = {
+			NOT = { has_country_flag = hide_worldstage_notification }
+			is_trade_city = yes
+		}
+	}
 	
 	# immediate: none, effect handled by focus
 	
@@ -6397,24 +6476,114 @@ news_event = {
 		trigger = {
 			has_government = fascism
 		}
-		# effect_tooltip = {
-			# add_to_variable = {
-				# global.FAL_strength_spain_bonus = 10
-				# tooltip = world_stage_add_help_fal_power
-			# }
-		# }
+		effect_tooltip = {
+			if = {
+				limit = { 35 = { has_state_flag = theater_is_active } }
+				custom_effect_tooltip = theater_scope_madrid
+				if = {
+					limit = { var:world_stage_metropolis = { check_variable = { 35.coalition_side_attack = 9 } } }
+					add_to_variable = {
+						35.defender_strategic_advantage = bonus_to_falange
+						tooltip = world_stage_add_strategic_advantage_attacker
+					}
+				} else = {
+					add_to_variable = {
+						35.defender_strategic_advantage = bonus_to_falange
+						tooltip = world_stage_add_strategic_advantage_defender
+					}
+				}
+			}
+			
+			if = {
+				limit = { 36 = { has_state_flag = theater_is_active } }
+				custom_effect_tooltip = theater_scope_zaragoza
+				if = {
+					limit = { var:world_stage_metropolis = { check_variable = { 36.coalition_side_attack = 9 } } }
+					add_to_variable = {
+						36.defender_strategic_advantage = bonus_to_falange
+						tooltip = world_stage_add_strategic_advantage_attacker
+					}
+				} else = {
+					add_to_variable = {
+						36.defender_strategic_advantage = bonus_to_falange
+						tooltip = world_stage_add_strategic_advantage_defender
+					}
+				}
+			}
+			if = {
+				limit = { 37 = { has_state_flag = theater_is_active } }
+				custom_effect_tooltip = theater_scope_barcelona
+				if = {
+					limit = { var:world_stage_metropolis = { check_variable = { 37.coalition_side_attack = 9 } } }
+					add_to_variable = {
+						37.defender_strategic_advantage = bonus_to_falange
+						tooltip = world_stage_add_strategic_advantage_attacker
+					}
+				} else = {
+					add_to_variable = {
+						37.defender_strategic_advantage = bonus_to_falange
+						tooltip = world_stage_add_strategic_advantage_defender
+					}
+				}
+			}
+		}
 	}
 	option = {
 		name = worldstage.7.komin
 		trigger = {
 			has_government = communism
 		}
-		# effect_tooltip = {
-			# add_to_variable = {
-				# global.FAL_strength_spain_bonus = 10
-				# tooltip = world_stage_add_help_fal_power
-			# }
-		# }
+		effect_tooltip = {
+			if = {
+				limit = { 35 = { has_state_flag = theater_is_active } }
+				custom_effect_tooltip = theater_scope_madrid
+				if = {
+					limit = { var:world_stage_metropolis = { check_variable = { 35.coalition_side_attack = 9 } } }
+					add_to_variable = {
+						35.defender_strategic_advantage = bonus_to_falange
+						tooltip = world_stage_add_strategic_advantage_attacker
+					}
+				} else = {
+					add_to_variable = {
+						35.defender_strategic_advantage = bonus_to_falange
+						tooltip = world_stage_add_strategic_advantage_defender
+					}
+				}
+			}
+			
+			if = {
+				limit = { 36 = { has_state_flag = theater_is_active } }
+				custom_effect_tooltip = theater_scope_zaragoza
+				if = {
+					limit = { var:world_stage_metropolis = { check_variable = { 36.coalition_side_attack = 9 } } }
+					add_to_variable = {
+						36.defender_strategic_advantage = bonus_to_falange
+						tooltip = world_stage_add_strategic_advantage_attacker
+					}
+				} else = {
+					add_to_variable = {
+						36.defender_strategic_advantage = bonus_to_falange
+						tooltip = world_stage_add_strategic_advantage_defender
+					}
+				}
+			}
+			if = {
+				limit = { 37 = { has_state_flag = theater_is_active } }
+				custom_effect_tooltip = theater_scope_barcelona
+				if = {
+					limit = { var:world_stage_metropolis = { check_variable = { 37.coalition_side_attack = 9 } } }
+					add_to_variable = {
+						37.defender_strategic_advantage = bonus_to_falange
+						tooltip = world_stage_add_strategic_advantage_attacker
+					}
+				} else = {
+					add_to_variable = {
+						37.defender_strategic_advantage = bonus_to_falange
+						tooltip = world_stage_add_strategic_advantage_defender
+					}
+				}
+			}
+		}
 	}
 	option = {
 		name = worldstage.7.other
@@ -6424,12 +6593,57 @@ news_event = {
 				has_government = fascism
 			}
 		}
-		# effect_tooltip = {
-			# add_to_variable = {
-				# global.FAL_strength_spain_bonus = 10
-				# tooltip = world_stage_add_help_fal_power
-			# }
-		# }
+		effect_tooltip = {
+			if = {
+				limit = { 35 = { has_state_flag = theater_is_active } }
+				custom_effect_tooltip = theater_scope_madrid
+				if = {
+					limit = { var:world_stage_metropolis = { check_variable = { 35.coalition_side_attack = 9 } } }
+					add_to_variable = {
+						35.defender_strategic_advantage = bonus_to_falange
+						tooltip = world_stage_add_strategic_advantage_attacker
+					}
+				} else = {
+					add_to_variable = {
+						35.defender_strategic_advantage = bonus_to_falange
+						tooltip = world_stage_add_strategic_advantage_defender
+					}
+				}
+			}
+			
+			if = {
+				limit = { 36 = { has_state_flag = theater_is_active } }
+				custom_effect_tooltip = theater_scope_zaragoza
+				if = {
+					limit = { var:world_stage_metropolis = { check_variable = { 36.coalition_side_attack = 9 } } }
+					add_to_variable = {
+						36.defender_strategic_advantage = bonus_to_falange
+						tooltip = world_stage_add_strategic_advantage_attacker
+					}
+				} else = {
+					add_to_variable = {
+						36.defender_strategic_advantage = bonus_to_falange
+						tooltip = world_stage_add_strategic_advantage_defender
+					}
+				}
+			}
+			if = {
+				limit = { 37 = { has_state_flag = theater_is_active } }
+				custom_effect_tooltip = theater_scope_barcelona
+				if = {
+					limit = { var:world_stage_metropolis = { check_variable = { 37.coalition_side_attack = 9 } } }
+					add_to_variable = {
+						37.defender_strategic_advantage = bonus_to_falange
+						tooltip = world_stage_add_strategic_advantage_attacker
+					}
+				} else = {
+					add_to_variable = {
+						37.defender_strategic_advantage = bonus_to_falange
+						tooltip = world_stage_add_strategic_advantage_defender
+					}
+				}
+			}
+		}
 	}
 }
 
