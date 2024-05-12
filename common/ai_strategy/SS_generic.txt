@@ -289,6 +289,9 @@ warlords_dont_join_nanban = {
 			original_tag = AMC
 			original_tag = FER
 			original_tag = PRT
+			original_tag = WIT
+			original_tag = KIT
+			original_tag = SPR
 		}
 	}
 	abort = { always = no }	### TODO TO-DO TO DO add proper triggers later (maybe flags related to AI behaviour)
@@ -345,6 +348,21 @@ warlords_dont_join_nanban = {
 	ai_strategy = {
 		type = alliance
 		id = "REI"
+		value = -100
+	}
+	ai_strategy = {
+		type = alliance
+		id = "WIT"
+		value = -100
+	}
+	ai_strategy = {
+		type = alliance
+		id = "KIT"
+		value = -100
+	}
+	ai_strategy = {
+		type = alliance
+		id = "SPR"
 		value = -100
 	}
 }
@@ -541,7 +559,7 @@ seto_islands_crisis = {
 	abort = {
 		OR = {
 			NOT = { country_exists = IMS }
-			# seto islands crisis is over
+			NOT = { has_global_flag = seto_crisis_active }
 		}
 	}
 	ai_strategy = {
@@ -719,13 +737,15 @@ AMO_prepare_for_war = {
 
 am_i_a_joke_to_you = {
 	enable = {
-		OR = {
-			capital_scope = {
-				is_on_continent = honshu
+		OR = {	# basically everyone outside honshu except any clans
+			NOT = {
+				capital_scope = {
+					is_on_continent = honshu
+				}
 			}
 			is_trade_city = yes
-			is_clan = no	# basically everyone outside honshu except any clans
 		}
+		is_clan = no
 	}
 	abort = {
 		AMO = { num_of_controlled_states > 4 }
@@ -880,6 +900,11 @@ asian_isolationism = {
 		value = 100
 	}
 	ai_strategy = {
+		type = dont_join_wars_with
+		id  = IMS
+		value = 100
+	}
+	ai_strategy = {
 		type = send_volunteers_desire
 		id  = KYU
 		value = 50
@@ -917,6 +942,11 @@ asian_isolationism = {
 	ai_strategy = {
 		type = send_volunteers_desire
 		id  = EZO
+		value = 50
+	}
+	ai_strategy = {
+		type = send_volunteers_desire
+		id  = IMS
 		value = 50
 	}
 }
@@ -1134,7 +1164,6 @@ support_tech_design_priority_3 = {
 
 hague_convention = {
 	enable = {
-		NOT = { has_global_flag = chemical_weapons_in_use }
 		OR = {
 			has_government = democratic
 			has_government = democratic_socialism
@@ -1156,7 +1185,6 @@ hague_convention = {
 
 hague_convention_kind_of = {
 	enable = {
-		NOT = { has_global_flag = chemical_weapons_in_use }
 		OR = {
 			has_government = neutrality
 			has_government = autocracy
@@ -1178,6 +1206,24 @@ hague_convention_kind_of = {
 }
 
 what_hague_convention = {
+	enable = {
+		has_government = fascism
+	}
+	abort = { has_global_flag = chemical_weapons_in_use }
+
+	ai_strategy = {
+		type = template_prio
+		id = artillery_chem
+		value = -15
+	}
+	ai_strategy = {
+		type = template_prio
+		id = rocket_artillery_chem
+		value = -15
+	}
+}
+
+i_like_big_canisters_and_i_cant_deny = {
 	enable = {
 		has_global_flag = chemical_weapons_in_use
 		has_government = fascism
