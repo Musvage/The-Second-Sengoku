@@ -579,7 +579,7 @@ focus_tree = {
 		
 		prerequisite = { focus = HIR_NAV_neutrality focus = HIR_NAV_active_diplomacy }
 		relative_position_id = HIR_NAV_neutrality
-		x = 0
+		x = -1
 		y = 1
 		
 		available = {
@@ -705,6 +705,137 @@ focus_tree = {
 		}
 	}
 	
+	focus = {
+		id = HIR_allow_migration
+		icon = GFX_focus_generic_population_growth
+		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		
+		ai_will_do = { factor = 10 }
+		
+		prerequisite = { focus = HIR_NAV_neutrality focus = HIR_NAV_active_diplomacy }
+		relative_position_id = HIR_NAV_neutrality
+		x = 1
+		y = 1
+		
+		available = {
+			threat > 0.25
+		}
+
+		cost = 10
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_ideas = HIR_migration_wave_spirit
+			set_temp_variable = { manpower_bonus = 5000 }
+			set_temp_variable = { mult_bonus = global.crash_1929_level }
+			multiply_temp_variable = { mult_bonus  = 0.05 }
+			add_to_temp_variable = { mult_bonus = global.threat }
+			add_to_temp_variable = { mult_bonus = 1 }
+			multiply_temp_variable = { manpower_bonus = mult_bonus }
+			add_manpower = var:manpower_bonus
+			custom_effect_tooltip = HIR_allow_migration_tt
+		}
+	}
+	
+	focus = {
+		id = HIR_sell_land
+		icon = GFX_focus_generic_modernize_industry
+		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		
+		ai_will_do = { factor = 10 }
+		
+		prerequisite = { focus = HIR_allow_migration }
+		relative_position_id = HIR_allow_migration
+		x = -1
+		y = 1
+
+		cost = 10
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			if = {
+				limit = { has_idea = HIR_migration_wave_spirit_a }
+				swap_ideas = {
+					remove_idea = HIR_migration_wave_spirit_a
+					add_idea = HIR_migration_wave_spirit_ab
+				}
+			} else = {
+				swap_ideas = {
+					remove_idea = HIR_migration_wave_spirit
+					add_idea = HIR_migration_wave_spirit_b
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = HIR_integration_policy
+		icon = GFX_goal_generic_national_unity
+		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		
+		ai_will_do = { factor = 10 }
+		
+		prerequisite = { focus = HIR_allow_migration }
+		relative_position_id = HIR_allow_migration
+		x = 1
+		y = 1
+
+		cost = 10
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			if = {
+				limit = { has_idea = HIR_migration_wave_spirit_b }
+				swap_ideas = {
+					remove_idea = HIR_migration_wave_spirit_b
+					add_idea = HIR_migration_wave_spirit_ab
+				}
+			} else = {
+				swap_ideas = {
+					remove_idea = HIR_migration_wave_spirit
+					add_idea = HIR_migration_wave_spirit_a
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = HIR_end_crisis
+		icon = GFX_goal_generic_major_alliance
+		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		
+		ai_will_do = { factor = 10 }
+		
+		prerequisite = { focus = HIR_integration_policy focus = HIR_sell_land }
+		relative_position_id = HIR_sell_land
+		x = 1
+		y = 1
+
+		cost = 10
+		
+		available = { OR = { has_war = no has_stability > 0.5 } }
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			if = {
+				limit = { has_idea = HIR_natives_of_hirado_suppressed_spirit }
+				remove_ideas = HIR_natives_of_hirado_suppressed_spirit
+			} else_if = {
+				limit = { has_idea = HIR_natives_of_hirado_aid_spirit }
+				remove_ideas = HIR_natives_of_hirado_aid_spirit
+			} else_if = {
+				limit = { has_idea = HIR_natives_of_hirado_self_rule_spirit }
+				remove_ideas = HIR_natives_of_hirado_self_rule_spirit
+			} else = {
+				remove_ideas = HIR_natives_of_hirado_spirit
+			}
+		}
+	}
+	
 	# } HOMELAND POLITICAL BRANHC {
 	
 	focus = {
@@ -802,8 +933,8 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = HIR_join_allies
-		icon = GFX_goal_GENERIC_join_allies	# defensive pact
+		id = HIR_join_allies	# defensive pact
+		icon = GFX_focus_generic_anti_fascist_diplomacy
 		search_filters = { FOCUS_FILTER_WORLD }
 		
 		prerequisite = { focus = HIR_align_england }
@@ -911,6 +1042,19 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		
 		completion_reward = {
+			set_politics = {
+				ruling_party = autocracy
+				elections_allowed = no
+			}
+			swap_ideas = {
+				remove_idea = HIR_free_trade_policy_spirit
+				add_idea = HIR_chartered_company_spirit
+			}
+			if = {
+				add_cic = 16200
+			} else = {
+				add_timed_idea = { idea = HIR_chartered_company_2_spirit days = 365 }
+			}
 		}
 	}
 	
