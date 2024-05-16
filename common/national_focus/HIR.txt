@@ -1022,7 +1022,7 @@ focus_tree = {
 	focus = {
 		id = HIR_reafirm_european_neutrality
 		icon = GFX_goal_generic_neutrality_focus
-		search_filters = { FOCUS_FILTER_STABILITY }
+		search_filters = { FOCUS_FILTER_STABILITY FOCUS_FILTER_DIPLOMACY }
 		
 		prerequisite = { focus = HIR_focus_colonial_development }
 		mutually_exclusive = { focus = HIR_align_england }
@@ -1037,20 +1037,45 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		
 		completion_reward = {
-			
+			add_stability = 0.1
+			add_ideas = HIR_european_neutrlaity_self_spirit
+			hidden_effect = {
+				every_possible_country = {
+					limit = { is_trade_city = yes NOT = { tag = HIR } }
+					add_ideas = HIR_european_neutrlaity_other_spirit
+					add_ai_strategy = {
+						type = antagonize
+						id = HIR
+						value = -25
+					}
+					add_ai_strategy = {
+						type = conquer
+						id = HIR
+						value = -25
+					}
+				}
+			}
 		}
 	}
 	
 	focus = {
 		id = HIR_align_england
 		icon = GFX_focus_HIR_side_with_democracy
-		search_filters = { FOCUS_FILTER_STABILITY }
+		search_filters = { FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_DIPLOMACY }
 		
 		prerequisite = { focus = HIR_focus_colonial_development }
 		mutually_exclusive = { focus = HIR_reafirm_european_neutrality }
 		relative_position_id = HIR_focus_colonial_development
 		x = 1
 		y = 1
+		
+		available = {
+			OR = {
+				has_government = democratic
+				has_government = democratic_socialism
+			}
+			world_stage_has_capitulated = no
+		}
 		
 		available_if_capitulated = yes
 		
@@ -1059,7 +1084,31 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		
 		completion_reward = {
-			
+			add_war_support = 0.1
+			add_ideas = HIR_pick_a_side_spirit
+			hidden_effect = {
+				REI = {
+					add_ai_strategy = {
+						type = antagonize
+						id = HIR
+						value = 50
+					}
+					every_other_country = {
+						limit = {
+							OR = {
+								is_in_faction_with = REI
+								has_world_stage_coalition_axis = yes
+								has_world_stage_coalition_pactofsteel = yes
+							}
+						}
+						add_ai_strategy = {
+							type = antagonize
+							id = HIR
+							value = 50
+						}
+					}
+				}
+			}
 		}
 	}
 	
@@ -1104,11 +1153,9 @@ focus_tree = {
 		cost = 10
 		
 		available = {
-			NOT = {
-				custom_trigger_tooltip = {
-					tooltip = theater_active_netherlands
-					27 = { has_state_flag = theater_is_active }
-				}
+			custom_trigger_tooltip = {
+				tooltip = theater_not_active_netherlands
+				NOT = { 27 = { has_state_flag = theater_is_active } }
 			}
 			world_stage_has_capitulated = no
 		}
