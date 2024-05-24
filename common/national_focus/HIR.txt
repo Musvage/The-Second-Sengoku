@@ -24,33 +24,33 @@ focus_tree = {
 	### MILITARY BRANCH {
 	
 	focus = {
-		id = HIR_army
-		icon = GFX_focus_HIR_army
-		search_filters = { FOCUS_FILTER_STABILITY }
-		
-		ai_will_do = { factor = 10 }
+		id = HIR_land_army_effort
+		icon = GFX_focus_HIR_land_army
+		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_INDUSTRY }
 		
 		x = 0
 		y = 0
+		
 		available_if_capitulated = yes
 		
 		cost = 10
 		
+		ai_will_do = { factor = 10 }
+		
 		completion_reward = {
-			navy_experience = 25
-			army_experience = 25
-			air_experience = 25
+			army_experience = 5
+			add_offsite_building = { type = arms_factory level = 1 }
 		}
 	}
-
+	
 	focus = {
-		id = HIR_land_army
-		icon = GFX_focus_HIR_land_army
-		search_filters = { FOCUS_FILTER_STABILITY }
+		id = HIR_home_army_effort
+		icon = GFX_focus_HIR_focus_home_army
+		search_filters = { FOCUS_FILTER_HIR_HOME }
 		
-		prerequisite = { focus = HIR_army }
-		relative_position_id = HIR_army
-		x = -3
+		prerequisite = { focus = HIR_land_army_effort }
+		relative_position_id = HIR_land_army_effort
+		x = -1
 		y = 1
 		
 		available_if_capitulated = yes
@@ -60,87 +60,341 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		
 		completion_reward = {
-			add_doctrine_cost_reduction  = {
-				name = land_doc_bonus
-				cost_reduction = 0.5
-				uses = 1
-				category = land_doctrine
-			}
+			
+		}
+	}
+	
+	focus = {
+		id = HIR_colony_army_effort
+		icon = GFX_focus_HIR_focus_colony_army
+		search_filters = { FOCUS_FILTER_HIR_COLONY }
+		
+		prerequisite = { focus = HIR_land_army_effort }
+		relative_position_id = HIR_land_army_effort
+		x = 1
+		y = 1
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+			
+		}
+	}
+	
+	focus = {
+		id = HIR_focus_tech_artillery
+		icon = GFX_focus_HIR_tech_artillery
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = HIR_home_army_effort }
+		relative_position_id = HIR_home_army_effort
+		x = 0
+		y = 1
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
 			add_tech_bonus = {
-				name = infantry_artillery_bonus
-				ahead_reduction = 1
-				uses = 1
-				category = infantry_weapons
+				name = artillery_bonus
+				bonus = 2.0
+				uses = 2
 				category = artillery
 			}
 		}
 	}
 	
 	focus = {
-		id = HIR_land_army_doctrine
-		icon = GFX_focus_generic_army_expansion_3
-		search_filters = { FOCUS_FILTER_STABILITY }
+		id = HIR_focus_tech_armor
+		icon = GFX_goal_generic_build_tank
+		search_filters = { FOCUS_FILTER_RESEARCH }
 		
-		ai_will_do = { factor = 10 }
-		
-		prerequisite = { focus = HIR_land_army }
-		relative_position_id = HIR_land_army
+		prerequisite = { focus = HIR_focus_tech_artillery }
+		relative_position_id = HIR_focus_tech_artillery
 		x = 0
 		y = 1
-
+		
 		available_if_capitulated = yes
 		
 		cost = 10
 		
-		completion_reward = {
-			add_ideas = HIR_product_infantry_eq
-			add_equipment_to_stockpile = {
-				type = infantry_equipment
-				amount = 2000
-				producer = HIR
-			}
-		}
-	}
-
-	focus = {
-		id = HIR_land_army_modernized
-		icon = GFX_focus_HIR_land_army_modernized
-		search_filters = { FOCUS_FILTER_STABILITY }
-		
 		ai_will_do = { factor = 10 }
 		
-		available_if_capitulated = yes
-		
-		prerequisite = { focus = HIR_land_army_doctrine }
-		relative_position_id = HIR_land_army_doctrine
-		x = 0
-		y = 1
-		
-		cost = 10
-				
 		completion_reward = {
 			add_tech_bonus = {
-				name = HIR_land_army_modernized
+				name = armor_bonus
 				bonus = 2.0
 				uses = 2
-				category = support_tech
-			}
-			add_tech_bonus = {
-				name = HIR_land_army_modernized
-				bonus = 1.0
-				uses = 2
-				category = cat_small_arms
+				category = armor
 			}
 		}
 	}
 	
 	focus = {
-		id = HIR_naval
+		id = HIR_focus_tech_rifles
+		icon = GFX_focus_HIR_army
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = HIR_colony_army_effort }
+		relative_position_id = HIR_colony_army_effort
+		x = 0
+		y = 1
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+			add_tech_bonus = {
+				name = infantry_bonus
+				bonus = 2.0
+				uses = 2
+				category = infantry_weapons
+			}
+		}
+	}
+	
+	focus = {
+		id = HIR_focus_tech_support
+		icon = GFX_focus_HIR_tech_support
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = HIR_focus_tech_rifles }
+		relative_position_id = HIR_focus_tech_rifles
+		x = 0
+		y = 1
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+			add_tech_bonus = {
+				name = support_bonus
+				bonus = 2.0
+				uses = 2
+				category = support_tech
+			}
+		}
+	}
+	
+	focus = {
+		id = HIR_land_army_modernized
+		icon = GFX_focus_HIR_land_army_modernized
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = HIR_focus_tech_rifles focus = HIR_focus_tech_artillery }
+		relative_position_id = HIR_focus_tech_artillery
+		x = 1
+		y = 2
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+			add_doctrine_cost_reduction = {
+				name = land_doc_bonus
+				cost_reduction = 0.5
+				uses = 1
+				category = land_doctrine
+			}
+		}
+	}
+	
+	## Navy Sub Branch
+	focus = {
+		id = HIR_naval_effort
 		icon = GFX_focus_HIR_naval
 		search_filters = { FOCUS_FILTER_STABILITY }
 		
-		prerequisite = { focus = HIR_army }
-		relative_position_id = HIR_army
+		relative_position_id = HIR_land_army_effort
+		x = 4
+		y = 0
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+			navy_experience = 5
+			add_offsite_building = { type = dockyard level = 1 }
+		}
+	}
+	
+	focus = {
+		id = HIR_naval_tech_submarine
+		icon = GFX_focus_HIR_tech_sub
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = HIR_naval_effort }
+		relative_position_id = HIR_naval_effort
+		x = -1
+		y = 1
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+			add_tech_bonus = {
+				name = support_bonus
+				bonus = 2.0
+				uses = 2
+				category = support_tech
+			}
+		}
+	}
+	
+	focus = {
+		id = HIR_naval_marines
+		icon = GFX_goal_generic_special_forces
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = HIR_naval_tech_submarine }
+		relative_position_id = HIR_naval_tech_submarine
+		x = 0
+		y = 1
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+			add_ideas = special_forces
+			if = {
+				limit = { has_dlc = "Arms Against Tyranny" }
+				add_doctrine_cost_reduction = {
+					name = marines_doc_bonus
+					cost_reduction = 1
+					uses = 1
+					category = cat_marines_doctrine
+				}
+			} else = {
+				add_tech_bonus = {
+					name = special_forces_bonus
+					bonus = 2.0
+					uses = 1
+					technology = marines
+					technology = marines2
+					technology = marines3
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = HIR_naval_tech_anti_sub
+		icon = GFX_focus_HIR_tech_anti_sub
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = HIR_naval_effort }
+		relative_position_id = HIR_naval_effort
+		x = 1
+		y = 1
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+			add_tech_bonus = {
+				name = support_bonus
+				bonus = 2.0
+				uses = 2
+				category = support_tech
+			}
+		}
+	}
+	
+	focus = {
+		id = HIR_naval_merchant_fleet
+		icon = GFX_focus_generic_merchant_fleet
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = HIR_naval_tech_anti_sub }
+		relative_position_id = HIR_naval_tech_anti_sub
+		x = 0
+		y = 1
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+			add_ideas = PRT_merchant_fleet_spirit
+			set_temp_variable = { num_of_convoys = num_of_naval_factories }
+			clamp_variable = { var = num_of_convoys max = 20 }
+			multiply_temp_variable = { num_of_convoys = 10 }
+			set_temp_variable = { convoy_bonus = modifier@industrial_capacity_dockyard }
+			add_to_temp_variable = { convoy_bonus = 1 }
+			multiply_temp_variable = { num_of_convoys = convoy_bonus }		
+			#custom_effect_tooltip = "industrial_capacity_dockyard [?modifier@industrial_capacity_dockyard]"
+			#custom_effect_tooltip = "num_of_naval_factories [?num_of_naval_factories]"
+			add_equipment_to_stockpile = {
+				type = convoy_1
+				amount = var:num_of_convoys
+			}
+			custom_effect_tooltip = PRT_merchant_fleet_tt
+		}
+	}
+	
+	focus = {
+		id = HIR_naval_tech_capital
+		icon = GFX_focus_HIR_tech_capital
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = HIR_naval_tech_submarine focus = HIR_naval_tech_anti_sub }
+		relative_position_id = HIR_naval_tech_submarine
+		x = 1
+		y = 2
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+			add_tech_bonus = {
+				name = support_bonus
+				bonus = 2.0
+				uses = 2
+				category = support_tech
+			}
+		}
+	}
+	
+	focus = {
+		id = HIR_navy_modernized
+		icon = GFX_focus_HIR_naval_modernized
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = HIR_naval_tech_capital }
+		relative_position_id = HIR_naval_tech_capital
 		x = 0
 		y = 1
 		
@@ -154,162 +408,19 @@ focus_tree = {
 			add_doctrine_cost_reduction = {
 				name = naval_doc_bonus
 				cost_reduction = 0.5
-				uses = 3
-				category = naval_doctrine
-			}
-			add_equipment_to_stockpile = {
-   				type = convoy
-   				amount = 50
-    			producer = HIR
-			}
-			custom_effect_tooltip = unlock_naval_decisions
-		}
-	}
-
-	focus = {
-		id = HIR_naval_force
-		icon = GFX_goal_generic_construct_naval_dockyard
-		search_filters = { FOCUS_FILTER_STABILITY }
-		
-		prerequisite = { focus = HIR_naval }
-		relative_position_id = HIR_naval
-		x = -1
-		y = 1
-		
-		available_if_capitulated = yes
-		
-		cost = 10
-		
-		ai_will_do = { factor = 10 }
-		
-		completion_reward = {
-			random_owned_controlled_state = {
-				limit = {
-					is_core_of = HIR
-					free_building_slots = {
-						building = industrial_complex
-						size > 2
-						include_locked = yes
-					}
-				}
-				add_extra_state_shared_building_slots = 2
-				add_building_construction = {
-					type = dockyard
-					level = 2
-					instant_build = yes
-				}
-			}
-		}
-	}
-
-	focus = {
-		id = HIR_create_naval_force
-		icon = GFX_goal_generic_construct_naval_dockyard
-		search_filters = { FOCUS_FILTER_STABILITY }
-		
-		available_if_capitulated = yes
-		
-		prerequisite = { focus = HIR_naval_force }
-		relative_position_id = HIR_naval_force
-		x = 0
-		y = 1
-		
-		cost = 10
-		
-		ai_will_do = { factor = 10 }
-		
-		completion_reward = {
-			random_owned_controlled_state = {
-				limit = {
-					is_core_of = HIR
-					free_building_slots = {
-						building = industrial_complex
-						size > 2
-						include_locked = yes
-					}
-				}
-				add_extra_state_shared_building_slots = 2
-				add_building_construction = {
-					type = dockyard
-					level = 2
-					instant_build = yes
-				}
-			}
-		}
-	}
-
-	focus = {
-		id = HIR_naval_doctrine
-		icon = GFX_focus_generic_submarine_effort_2
-		search_filters = { FOCUS_FILTER_STABILITY }
-		
-		prerequisite = { focus = HIR_naval }
-		relative_position_id = HIR_naval
-		x = 1
-		y = 1
-		
-		available_if_capitulated = yes
-		
-		cost = 10
-		
-		ai_will_do = { factor = 10 }
-		
-		completion_reward = {
-			add_tech_bonus = {
-				name = HIR_naval_doctrine
-				bonus = 0.75
-				uses = 3
-				category = ss_tech
-			}
-		}
-	}
-
-	focus = {
-		id = HIR_naval_modernized
-		icon = GFX_focus_HIR_naval_modernized
-		search_filters = { FOCUS_FILTER_STABILITY }
-		
-		available_if_capitulated = yes
-		
-		prerequisite = { focus = HIR_naval_doctrine }
-		relative_position_id = HIR_naval_doctrine
-		x = 0
-		y = 1
-		
-		cost = 10
-		
-		ai_will_do = { factor = 10 }
-		
-		completion_reward = {
-			add_tech_bonus = {
-				name = HIR_naval_modernized
-				bonus = 1.00
-				uses = 2
-				category = cl_tech
-			}
-			add_tech_bonus = {
-				name = HIR_naval_modernized
-				bonus = 1.50
-				uses = 3
-				category = trade_interdiction_tree
-			}
-			navy_experience = 50
-			add_doctrine_cost_reduction = {
-				name = HOL_naval_heritage
-				cost_reduction = 0.5
-				uses = 2
+				uses = 1
 				category = naval_doctrine
 			}
 		}
 	}
 
+	## Air Sub Branch
 	focus = {
-		id = HIR_air_force
+		id = HIR_air_force_effort
 		icon = GFX_focus_HIR_air_force
 		search_filters = { FOCUS_FILTER_STABILITY }
 		
-		prerequisite = { focus = HIR_army }
-		relative_position_id = HIR_naval
+		relative_position_id = HIR_naval_effort
 		x = 4
 		y = 0
 		
@@ -320,28 +431,19 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		
 		completion_reward = {
-			add_doctrine_cost_reduction  = {
-				name = air_doc_bonus
-				cost_reduction = 0.5
-				uses = 2
-				category = air_doctrine
-			}
-			add_equipment_to_stockpile = {
-				type = fighter_equipment #there is no 'light_fighter' equipment
-				amount = 200 #changed from 2000 because OP
-				producer = HIR
-			}
+			air_experience = 5
+			add_offsite_building = { type = arms_factory level = 1 }
 		}
 	}
 
 	focus = {
-		id = HIR_air_force_base
-		icon = GFX_goal_generic_air_production
-		search_filters = { FOCUS_FILTER_STABILITY }
+		id = HIR_air_tech_fighter
+		icon = GFX_focus_HIR_tech_fighter
+		search_filters = { FOCUS_FILTER_RESEARCH }
 		
-		prerequisite = { focus = HIR_air_force }
-		relative_position_id = HIR_air_force
-		x = 1
+		prerequisite = { focus = HIR_air_force_effort }
+		relative_position_id = HIR_air_force_effort
+		x = 0
 		y = 1
 		
 		available_if_capitulated = yes
@@ -351,54 +453,48 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		
 		completion_reward = {
-				random_owned_controlled_state = {
-					limit = {
-						free_building_slots = {
-							building = air_base
-							size > 3
-							include_locked = yes
-						}	
-					}
-					add_building_construction = {
-						type = air_base
-						level = 3
-						instant_build = yes
-					}
-				}
-			
-				
+			add_tech_bonus = {
+				name = support_bonus
+				bonus = 2.0
+				uses = 2
+				category = support_tech
+			}
 		}
 	}
-
+	
 	focus = {
-		id = HIR_air_force_new_planes
-		icon = GFX_goal_generic_air_fighter2
-		search_filters = { FOCUS_FILTER_STABILITY }
+		id = HIR_air_tech_nav
+		icon = GFX_focus_HIR_tech_nav
+		search_filters = { FOCUS_FILTER_RESEARCH }
 		
-		prerequisite = { focus = HIR_air_force }
-		relative_position_id = HIR_air_force_base
-		x = -2
-		y = 0
+		prerequisite = { focus = HIR_air_tech_fighter }
+		relative_position_id = HIR_air_tech_fighter
+		x = -1
+		y = 1
 		
 		available_if_capitulated = yes
 		
-		cost = 5
+		cost = 10
 		
 		ai_will_do = { factor = 10 }
 		
 		completion_reward = {
-			add_ideas = HIR_air_force_new_planes
+			add_tech_bonus = {
+				name = support_bonus
+				bonus = 2.0
+				uses = 2
+				category = support_tech
+			}
 		}
 	}
-
+	
 	focus = {
-		id = HIR_air_force_modernized
-		icon = GFX_focus_HIR_air_force_modernized
-		search_filters = { FOCUS_FILTER_STABILITY }
+		id = HIR_air_tech_cas
+		icon = GFX_focus_HIR_tech_cas
+		search_filters = { FOCUS_FILTER_RESEARCH }
 		
-		prerequisite = { focus = HIR_air_force_new_planes }
-		prerequisite = { focus = HIR_air_force_base }
-		relative_position_id = HIR_air_force_new_planes
+		prerequisite = { focus = HIR_air_tech_fighter }
+		relative_position_id = HIR_air_tech_fighter
 		x = 1
 		y = 1
 		
@@ -410,31 +506,89 @@ focus_tree = {
 		
 		completion_reward = {
 			add_tech_bonus = {
-				name = HIR_air_force_modernized
+				name = support_bonus
 				bonus = 2.0
 				uses = 2
-				category = light_fighter
+				category = support_tech
 			}
-			hidden_effect = {
-    		if = {
-				limit = {
-					NOT = {
-						has_tech = fighter1
-					}
-				}
-				set_technology = { fighter1 = 1 }
-			}
-			add_equipment_to_stockpile = { type = fighter_equipment_1 amount = 25 }
-			}
-			custom_effect_tooltip = unlock_fighter_1
-
-			add_doctrine_cost_reduction = {
-				name = HOL_aviatic_aspirations
-				cost_reduction = 0.5
+		}
+	}
+	
+	focus = {
+		id = HIR_air_tech_radar
+		icon = GFX_focus_GENERIC_radar_effort
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = HIR_air_tech_cas focus = HIR_air_tech_nav }
+		relative_position_id = HIR_air_tech_nav
+		x = 0
+		y = 1
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+			add_tech_bonus = {
+				name = support_bonus
+				bonus = 2.0
 				uses = 2
+				category = support_tech
+			}
+		}
+	}
+	
+	focus = {
+		id = HIR_air_tech_rocket
+		icon = GFX_focus_rocketry
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = HIR_air_tech_nav focus = HIR_air_tech_nav }
+		relative_position_id = HIR_air_tech_cas
+		x = 0
+		y = 1
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+			add_tech_bonus = {
+				name = support_bonus
+				bonus = 2.0
+				uses = 2
+				category = support_tech
+			}
+		}
+	}
+	
+	focus = {
+		id = HIR_air_force_modernized
+		icon = GFX_focus_HIR_air_force_modernized
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = HIR_air_tech_cas focus = HIR_air_tech_nav }
+		relative_position_id = HIR_air_tech_nav
+		x = 1
+		y = 2
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+			add_doctrine_cost_reduction = {
+				name = air_doc_bonus
+				cost_reduction = 0.5
+				uses = 1
 				category = air_doctrine
 			}
-			HOL_domestic_jet_engine_designs_level_up = yes
 		}
 	}
 	
@@ -445,11 +599,17 @@ focus_tree = {
 		icon = GFX_focus_HIR_crisis_suppression
 		search_filters = { FOCUS_FILTER_STABILITY FOCUS_FILTER_POLITICAL }
 		
-		ai_will_do = { factor = 10 }
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				OR = { has_government = democratic has_government = democratic_socialism }
+				factor = 0.1
+			}
+		}
 		
 		mutually_exclusive = { focus = HIR_crisis_help focus = HIR_crisis_self_rule }
-		relative_position_id = HIR_army
-		x = 10
+		relative_position_id = HIR_air_force_effort
+		x = 3
 		y = 0
 
 		cost = 10
@@ -476,7 +636,13 @@ focus_tree = {
 		icon = GFX_focus_HIR_crisis_aid
 		search_filters = { FOCUS_FILTER_STABILITY FOCUS_FILTER_MANPOWER }
 		
-		ai_will_do = { factor = 10 }
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				OR = { has_government = communism has_government = democratic_socialism }
+				factor = 2
+			}
+		}
 		
 		mutually_exclusive = { focus = HIR_crisis_self_rule focus = HIR_crisis_repression }
 		relative_position_id = HIR_crisis_repression
@@ -516,7 +682,12 @@ focus_tree = {
 		icon = GFX_focus_HIR_crisis_self_rule
 		search_filters = { FOCUS_FILTER_MANPOWER FOCUS_FILTER_POLITICAL }
 		
-		ai_will_do = { factor = 10 }
+		ai_will_do = {
+			modifier = {
+				OR = { has_government = autocracy has_government = fascism }
+				factor = 0.1
+			}
+		}
 		
 		mutually_exclusive = { focus = HIR_crisis_help focus = HIR_crisis_repression }
 		relative_position_id = HIR_crisis_help
@@ -1429,15 +1600,113 @@ focus_tree = {
 	####### } HOMELAND POLITICAL BRANHC - NEUTRALITY / ALLIES {
 	
 	focus = {
+		id = HIR_discredit_democracy	# War on Pacifism?
+		icon = GFX_goal_generic_political_pressure
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		
+		prerequisite = { focus = HIR_focus_homeland_development }
+		relative_position_id = HIR_focus_homeland_development
+		x = 0
+		y = 1
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		text_icon = worldstage_style
+		
+		ai_will_do = { factor = 10 }
+		
+		available = {
+			world_stage_has_capitulated = no
+		}
+		
+		bypass = { has_world_stage_coalition_axis = yes }
+		
+		completion_reward = {
+			
+		}
+	}
+	
+	focus = {
+		id = HIR_nationalist_government
+		icon = GFX_focus_HIR_government_fascism
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		
+		prerequisite = { focus = HIR_discredit_democracy }
+		relative_position_id = HIR_discredit_democracy
+		mutually_exclusive = { focus = HIR_monarchist_government }
+		x = -1
+		y = 1
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		text_icon = worldstage_style
+		
+		ai_will_do = { factor = 10 }
+		
+		available = {
+			world_stage_has_capitulated = no
+			is_in_faction = no
+		}
+		
+		bypass = { has_government = fascism }
+		
+		completion_reward = {
+			#set_country_flag = ignore_flavour_event	# Add event later
+			set_politics = {
+				ruling_party = fascism
+				elections_allowed = no
+			}
+		}
+	}
+	
+	focus = {
+		id = HIR_monarchist_government
+		icon = GFX_focus_KYU_war_preparations
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		
+		prerequisite = { focus = HIR_discredit_democracy }
+		relative_position_id = HIR_discredit_democracy
+		mutually_exclusive = { focus = HIR_nationalist_government }
+		x = 1
+		y = 1
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		text_icon = worldstage_style
+		
+		ai_will_do = { factor = 10 }
+		
+		available = {
+			world_stage_has_capitulated = no
+		}
+		
+		bypass = { has_government = autocracy }
+		
+		completion_reward = {
+			#set_country_flag = ignore_flavour_event	# Add event later
+			set_politics = {
+				ruling_party = autocracy
+				elections_allowed = no
+			}
+		}
+	}
+	
+	focus = {
 		id = HIR_join_axis	#
 		icon = { value = GFX_focus_HIR_join_axis_autocracy trigger = { REI = { has_government = autocracy } } }
 		icon = { value = GFX_focus_HIR_join_axis_mustache trigger = { REI = { has_government = autocracy } has_global_flag = has_uncensored_german_flag } }
 		icon = GFX_focus_HIR_join_axis_neutrality
 		search_filters = { FOCUS_FILTER_WORLD }
 		
-		prerequisite = { focus = HIR_focus_homeland_development }
-		relative_position_id = HIR_focus_homeland_development
-		x = 0
+		prerequisite = { focus = HIR_monarchist_government focus = HIR_nationalist_government }
+		relative_position_id = HIR_nationalist_government
+		x = 1
 		y = 1
 		
 		available_if_capitulated = yes
