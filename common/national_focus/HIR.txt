@@ -835,7 +835,7 @@ focus_tree = {
 	
 	focus = {
 		id = HIR_allow_migration
-		icon = GFX_focus_generic_population_growth
+		icon = GFX_focus_HIR_migration
 		search_filters = { FOCUS_FILTER_DIPLOMACY }
 		
 		ai_will_do = { factor = 10 }
@@ -967,7 +967,7 @@ focus_tree = {
 		}
 	}
 	
-	# } HOMELAND POLITICAL BRANHC {
+	# } HOMELAND POLITICAL BRANHC - NEUTRALITY / ALLIES {
 	
 	focus = {
 		id = HIR_focus_colonial_development
@@ -1113,8 +1113,8 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = HIR_join_allies	# defensive pact
-		icon = GFX_focus_EZO_reopen_talks_with_the_junta
+		id = HIR_join_allies	# Mutual Defense Plan with Belgium & France
+		icon = GFX_focus_HIR_defense_plan
 		search_filters = { FOCUS_FILTER_WORLD }
 		
 		prerequisite = { focus = HIR_align_england }
@@ -1130,8 +1130,21 @@ focus_tree = {
 		
 		ai_will_do = { factor = 10 }
 		
+		available = {
+			world_stage_has_capitulated = no
+			is_in_faction = no
+		}
+		
+		bypass = { has_world_stage_coalition_allies = yes }
+		
 		completion_reward = {
-			
+			if = {
+				limit = { has_global_flag = world_stage_world_war_2_is_active }
+				world_stage_join_allies = yes
+			} else = {
+				set_country_flag = will_join_allies
+				custom_effect_tooltip = will_join_allies_tt
+			}
 		}
 	}
 	
@@ -1413,8 +1426,47 @@ focus_tree = {
 		}
 	}
 	
-	####### } OLD FOCUSES
+	####### } HOMELAND POLITICAL BRANHC - NEUTRALITY / ALLIES {
+	
+	focus = {
+		id = HIR_join_axis	#
+		icon = { value = GFX_focus_HIR_join_axis_autocracy trigger = { REI = { has_government = autocracy } } }
+		icon = { value = GFX_focus_HIR_join_axis_mustache trigger = { REI = { has_government = autocracy } has_global_flag = has_uncensored_german_flag } }
+		icon = GFX_focus_HIR_join_axis_neutrality
+		search_filters = { FOCUS_FILTER_WORLD }
+		
+		prerequisite = { focus = HIR_focus_homeland_development }
+		relative_position_id = HIR_focus_homeland_development
+		x = 0
+		y = 1
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		text_icon = worldstage_style
+		
+		ai_will_do = { factor = 10 }
+		
+		available = {
+			world_stage_has_capitulated = no
+			is_in_faction = no
+		}
+		
+		bypass = { has_world_stage_coalition_axis = yes }
+		
+		completion_reward = {
+			if = {
+				limit = { has_global_flag = world_stage_world_war_2_is_active }
+				world_stage_join_axis = yes
+			} else = {
+				set_country_flag = will_join_axis
+				custom_effect_tooltip = will_join_axis_tt
+			}
+		}
+	}
 
+	### } OLD FOCUSES
 	#MAIN
 
 	focus = {
@@ -2721,7 +2773,7 @@ focus_tree = {
 	}
 
 	focus = {
-		id = HIR_join_ally	# Mutual Defense Plan with Belgium & France
+		id = HIR_join_ally
 		icon = GFX_focus_HIR_defense_plan
 		x = -1
 		y = 1
