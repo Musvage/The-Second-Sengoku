@@ -58,7 +58,7 @@ focus_tree = {
 	focus = {
 		id = HIR_home_army_effort
 		icon = GFX_focus_HIR_focus_home_army
-		search_filters = { FOCUS_FILTER_HIR_HOME }
+		search_filters = { FOCUS_FILTER_HIR_HOME FOCUS_FILTER_INDUSTRY FOCUS_FILTER_RESEARCH }
 		
 		prerequisite = { focus = HIR_land_army_effort }
 		relative_position_id = HIR_land_army_effort
@@ -72,7 +72,22 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		
 		completion_reward = {
-			
+			add_to_variable = {
+				var = 107.world_stage_power
+				value = 5
+				tooltip = add_world_stage_power_no_scope_tt
+			}
+			add_offsite_building = { type = arms_factory level = 1 }
+			if = {
+				limit = { has_completed_focus = HIR_focus_homeland_development }
+				custom_effect_tooltip = HIR_focus_homeland_development_effect
+				add_offsite_building = { type = arms_factory level = 1 }
+			} else = {
+				custom_effect_tooltip = HIR_focus_homeland_development_trigger
+				effect_tooltip = {
+					add_offsite_building = { type = arms_factory level = 1 }
+				}
+			}
 		}
 	}
 	
@@ -93,7 +108,56 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		
 		completion_reward = {
-			
+			add_ideas = HIR_idea_colonial_army_spirit
+			set_temp_variable = { equip_bonus_rifle_t = var:max_available_manpower_k }
+			set_temp_variable = { equip_bonus_rifle_0 = var:max_available_manpower_k }
+			set_temp_variable = { equip_bonus_arty_t = var:max_available_manpower_k }
+			set_temp_variable = { equip_bonus_arty_0 = var:max_available_manpower_k }
+			multiply_temp_variable = { equip_bonus_rifle_t = 200 }
+			multiply_temp_variable = { equip_bonus_rifle_0 = 150 }
+			multiply_temp_variable = { equip_bonus_arty_t = 6 }
+			multiply_temp_variable = { equip_bonus_arty_0 = 4 }
+			clamp_temp_variable = { var = equip_bonus_rifle_t min = 800 }
+			clamp_temp_variable = { var = equip_bonus_rifle_0 min = 650 }
+			clamp_temp_variable = { var = equip_bonus_arty_t min = 12 }
+			clamp_temp_variable = { var = equip_bonus_arty_0 min = 8 }
+			add_equipment_to_stockpile = {
+				type = infantry_equipment_traditional
+				amount = var:equip_bonus_rifle_t
+			}
+			add_equipment_to_stockpile = {
+				type = artillery_equipment_traditional
+				amount = var:equip_bonus_arty_t
+			}
+			custom_effect_tooltip = effect_scales_with_max_available_manpower
+			if = {
+				limit = { has_completed_focus = HIR_focus_colonial_development }
+				custom_effect_tooltip = HIR_focus_colonial_development_effect
+				add_equipment_to_stockpile = {
+					type = infantry_equipment_0
+					amount = var:equip_bonus_rifle_0
+				}
+				effect_tooltip = {
+					add_equipment_to_stockpile = {
+						type = artillery_equipment_1
+						amount = var:equip_bonus_arty_0
+					}
+				}
+			} else = {
+				custom_effect_tooltip = HIR_focus_colonial_development_trigger
+				effect_tooltip = {
+					add_equipment_to_stockpile = {
+						type = infantry_equipment_0
+						amount = var:equip_bonus_rifle_0
+					}
+				}
+				effect_tooltip = {
+					add_equipment_to_stockpile = {
+						type = artillery_equipment_1
+						amount = var:equip_bonus_arty_0
+					}
+				}
+			}
 		}
 	}
 	
