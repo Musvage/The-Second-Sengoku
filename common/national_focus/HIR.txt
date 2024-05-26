@@ -96,7 +96,7 @@ focus_tree = {
 	focus = {
 		id = HIR_home_army_effort
 		icon = GFX_focus_HIR_focus_home_army
-		search_filters = { FOCUS_FILTER_HIR_HOME FOCUS_FILTER_INDUSTRY FOCUS_FILTER_RESEARCH }
+		search_filters = { FOCUS_FILTER_HIR_HOME FOCUS_FILTER_INDUSTRY FOCUS_FILTER_RESEARCH FOCUS_FILTER_WORLD }
 		
 		prerequisite = { focus = HIR_land_army_effort }
 		relative_position_id = HIR_land_army_effort
@@ -108,6 +108,8 @@ focus_tree = {
 		cost = 10
 		
 		ai_will_do = { factor = 10 }
+		
+		text_icon = worldstage_style
 		
 		completion_reward = {
 			add_to_variable = {
@@ -315,7 +317,7 @@ focus_tree = {
 	focus = {
 		id = HIR_naval_effort
 		icon = GFX_focus_HIR_naval
-		search_filters = { FOCUS_FILTER_STABILITY }
+		search_filters = { FOCUS_FILTER_MILITARY }
 		
 		relative_position_id = HIR_land_army_effort
 		x = 4
@@ -411,10 +413,10 @@ focus_tree = {
 	
 	focus = {
 		id = HIR_naval_marines
-		icon = GFX_goal_generic_special_forces
-		search_filters = { FOCUS_FILTER_RESEARCH }
+		icon = GFX_focus_HIR_marines_focus
+		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_MILITARY }
 		
-		prerequisite = { focus = HIR_naval_tech_submarine }
+		prerequisite = { focus = HIR_naval_tech_submarine focus = HIR_naval_tech_anti_sub }
 		relative_position_id = HIR_naval_tech_submarine
 		x = 0
 		y = 1
@@ -426,7 +428,7 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		
 		completion_reward = {
-			add_ideas = special_forces
+			add_ideas = HIR_marine_corps_spirit
 			if = {
 				limit = { has_dlc = "Arms Against Tyranny" }
 				add_doctrine_cost_reduction = {
@@ -477,11 +479,11 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = HIR_naval_merchant_fleet
-		icon = GFX_focus_generic_merchant_fleet
-		search_filters = { FOCUS_FILTER_RESEARCH }
+		id = HIR_amphibious_invasion_effort
+		icon = GFX_focus_HIR_amphibious_assault
+		search_filters = { FOCUS_FILTER_MILITARY }
 		
-		prerequisite = { focus = HIR_naval_tech_anti_sub }
+		prerequisite = { focus = HIR_naval_tech_anti_sub focus = HIR_naval_tech_submarine }
 		relative_position_id = HIR_naval_tech_anti_sub
 		x = 0
 		y = 1
@@ -493,20 +495,7 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		
 		completion_reward = {
-			add_ideas = PRT_merchant_fleet_spirit
-			set_temp_variable = { num_of_convoys = num_of_naval_factories }
-			clamp_variable = { var = num_of_convoys max = 20 }
-			multiply_temp_variable = { num_of_convoys = 10 }
-			set_temp_variable = { convoy_bonus = modifier@industrial_capacity_dockyard }
-			add_to_temp_variable = { convoy_bonus = 1 }
-			multiply_temp_variable = { num_of_convoys = convoy_bonus }		
-			#custom_effect_tooltip = "industrial_capacity_dockyard [?modifier@industrial_capacity_dockyard]"
-			#custom_effect_tooltip = "num_of_naval_factories [?num_of_naval_factories]"
-			add_equipment_to_stockpile = {
-				type = convoy_1
-				amount = var:num_of_convoys
-			}
-			custom_effect_tooltip = PRT_merchant_fleet_tt
+			add_ideas = HIR_amphibious_operations_spirit
 		}
 	}
 	
@@ -568,7 +557,7 @@ focus_tree = {
 	focus = {
 		id = HIR_air_force_effort
 		icon = GFX_focus_HIR_air_force
-		search_filters = { FOCUS_FILTER_STABILITY }
+		search_filters = { FOCUS_FILTER_MILITARY }
 		
 		relative_position_id = HIR_naval_effort
 		x = 4
@@ -654,10 +643,10 @@ focus_tree = {
 		
 		completion_reward = {
 			add_tech_bonus = {
-				name = support_bonus
-				bonus = 1.0
+				name = fighter_bonus
+				bonus = 1
 				uses = 2
-				category = support_tech
+				category = light_air
 			}
 		}
 	}
@@ -733,10 +722,9 @@ focus_tree = {
 		completion_reward = {
 			add_tech_bonus = {
 				name = advanced_techs_bonus
-				bonus = 1.0
+				bonus = 2.0
 				uses = 2
 				category = radar_tech
-				category = nuclear
 				category = electronics
 			}
 		}
