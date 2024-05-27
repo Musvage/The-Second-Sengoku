@@ -502,7 +502,7 @@ focus_tree = {
 	focus = {
 		id = HIR_naval_tech_capital
 		icon = GFX_focus_HIR_tech_capital
-		search_filters = { FOCUS_FILTER_RESEARCH }
+		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_INDUSTRY }
 		
 		prerequisite = { focus = HIR_naval_tech_submarine focus = HIR_naval_tech_anti_sub }
 		relative_position_id = HIR_naval_tech_submarine
@@ -516,13 +516,13 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		
 		completion_reward = {
+			add_offsite_building = { type = dockyard level = 1 }
 			add_tech_bonus = {
 				name = capital_ships_bonus
 				bonus = 2.0
 				uses = 1
 				category = bc_tech
 				category = bb_tech
-				#category = cv_tech
 			}
 		}
 	}
@@ -1338,7 +1338,7 @@ focus_tree = {
 		
 		mutually_exclusive = { focus = HIR_focus_homeland_development }
 		relative_position_id = HIR_crisis_self_rule
-		x = 5
+		x = 7
 		y = 0
 		
 		available_if_capitulated = yes
@@ -1586,7 +1586,7 @@ focus_tree = {
 		prerequisite = { focus = HIR_reafirm_european_neutrality }
 		prerequisite = { focus = HIR_trade_with_all }
 		relative_position_id = HIR_trade_with_all
-		x = 1
+		x = 2
 		y = 1
 		
 		available_if_capitulated = yes
@@ -1596,6 +1596,7 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		
 		completion_reward = {
+			set_country_flag = ignore_flavour_event
 			set_cosmetic_tag = HIR_VOC
 			set_politics = {
 				ruling_party = neutrality
@@ -1606,9 +1607,214 @@ focus_tree = {
 				add_idea = HIR_chartered_company_spirit
 			}
 			if = {
+				limit = { has_dlc = "Arms Against Tyranny" }
 				add_cic = 16200
 			} else = {
 				add_timed_idea = { idea = HIR_chartered_company_2_spirit days = 365 }
+			}
+		}
+	}
+	
+	focus = {
+		id = HIR_voc_refit_ships
+		icon = GFX_focus_HIR_refit_ships
+		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_INDUSTRY }
+		
+		prerequisite = { focus = HIR_create_voc }
+		relative_position_id = HIR_create_voc
+		x = -1
+		y = 2
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		available = { has_equipment = { convoy > 2 } }
+		
+		completion_reward = {
+			hidden_effect = {
+				add_equipment_to_stockpile = {
+					type = convoy
+					amount = -3
+				}
+				if = {
+					limit = {
+						has_dlc = "Man the Guns"
+					}
+					create_equipment_variant = {
+						name = "Fluyt Class"
+						type = ship_hull_cruiser_1
+						name_group = HOL_CL_HISTORICAL
+						parent_version = 0
+						modules = {
+							fixed_ship_battery_slot = ship_light_medium_battery_1
+							fixed_ship_anti_air_slot = ship_anti_air_1
+							fixed_ship_fire_control_system_slot = ship_fire_control_system_0
+							fixed_ship_engine_slot = cruiser_ship_engine_coal
+							fixed_ship_secondaries_slot = ship_secondaries_1
+							fixed_ship_radar_slot = empty
+							mid_1_custom_slot = empty
+							mid_2_custom_slot = empty
+							rear_1_custom_slot = empty
+						}
+					}
+					add_equipment_production = {
+						equipment = {
+							type = ship_hull_cruiser_1
+							
+							version_name = "Fluyt Class"
+						}
+						requested_factories = 1
+						progress = 1
+						amount = 1
+					} add_manpower = 600
+					add_equipment_production = {
+						equipment = {
+							type = ship_hull_cruiser_1
+							
+							version_name = "Fluyt Class"
+						}
+						requested_factories = 1
+						progress = 1
+						amount = 1
+					} add_manpower = 600
+					add_equipment_production = {
+						equipment = {
+							type = ship_hull_cruiser_1
+							
+							version_name = "Fluyt Class"
+						}
+						requested_factories = 1
+						progress = 1
+						amount = 1
+					} add_manpower = 600
+				} 
+				else = {
+					add_equipment_production = {
+						equipment = {
+							type = light_cruiser_1
+							 
+						}
+						requested_factories = 1
+						progress = 1
+						amount = 1
+					} add_manpower = 600
+					add_equipment_production = {
+						equipment = {
+							type = light_cruiser_1
+							 
+						}
+						requested_factories = 1
+						progress = 1
+						amount = 1
+					} add_manpower = 600
+					add_equipment_production = {
+						equipment = {
+							type = light_cruiser_1
+							 
+						}
+						requested_factories = 1
+						progress = 1
+						amount = 1
+					} add_manpower = 600
+				}
+			}
+			custom_effect_tooltip = hir_spawn_3_light_cruiser
+			random_controlled_state = {
+				limit = {
+					is_coastal = yes
+					free_building_slots = {
+						building = dockyard
+						size > 0
+						include_locked = yes
+					}
+				}
+				prioritize = { 16 }
+				add_building_construction = {
+					type = dockyard
+					level = 1
+					instant_build = yes
+				}
+				add_extra_state_shared_building_slots = 1
+			}
+		}
+	}
+	
+	focus = {
+		id = HIR_voc_political_capital
+		icon = GFX_focus_HIR_political_capital
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_SPY FOCUS_FILTER_INDUSTRY }
+		
+		prerequisite = { focus = HIR_create_voc }
+		relative_position_id = HIR_create_voc
+		x = 0
+		y = 1
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+			add_dynamic_modifier = { modifier = HIR_political_capital_modifier }
+			random_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				prioritize = { 16 }
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+				add_extra_state_shared_building_slots = 1
+			}
+		}
+	}
+	
+	focus = {
+		id = HIR_voc_mercenaries
+		icon = GFX_focus_generic_manpower
+		search_filters = { FOCUS_FILTER_MANPOWER FOCUS_FILTER_INDUSTRY }
+		
+		prerequisite = { focus = HIR_create_voc }
+		relative_position_id = HIR_create_voc
+		x = 1
+		y = 2
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+			swap_ideas = {
+				remove_idea = HIR_chartered_company_spirit
+				add_idea = HIR_chartered_company_mercs_spirit
+			}
+			random_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				prioritize = { 16 }
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+				add_extra_state_shared_building_slots = 1
 			}
 		}
 	}
@@ -1835,6 +2041,8 @@ focus_tree = {
 					active = yes
 				}
 			}
+			custom_effect_tooltip = unlock_characters_tt
+			show_ideas_tooltip = HIR_luis_ferdinand
 		}
 	}
 	
