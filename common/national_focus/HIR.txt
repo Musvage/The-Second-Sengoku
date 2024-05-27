@@ -1791,9 +1791,9 @@ focus_tree = {
 	####### } HOMELAND POLITICAL BRANCH - AXIS {
 	
 	focus = {
-		id = HIR_discredit_democracy	# War on Pacifism?
-		icon = GFX_goal_generic_political_pressure
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		id = HIR_royal_wedding_germany
+		icon = GFX_focus_HIR_royal_wedding
+		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = HIR_focus_homeland_development }
 		relative_position_id = HIR_focus_homeland_development
@@ -1804,8 +1804,6 @@ focus_tree = {
 		
 		cost = 10
 		
-		text_icon = worldstage_style
-		
 		ai_will_do = { factor = 10 }
 		
 		available = {
@@ -1815,19 +1813,30 @@ focus_tree = {
 		bypass = { has_world_stage_coalition_axis = yes }
 		
 		completion_reward = {
-			
+			add_political_power = 120
+			diplomatic_relation = {
+				country = REI
+				relation = non_aggression_pact
+				active = yes
+			}
+			REI = {
+				diplomatic_relation = {
+					country = REI
+					relation = non_aggression_pact
+					active = yes
+				}
+			}
 		}
 	}
 	
 	focus = {
-		id = HIR_nationalist_government
-		icon = GFX_focus_HIR_government_fascism
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		id = HIR_abandon_lon
+		icon = GFX_focus_HIR_abandon_lon
+		search_filters = { FOCUS_FILTER_WORLD FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_DIPLOMACY }
 		
-		prerequisite = { focus = HIR_discredit_democracy }
-		relative_position_id = HIR_discredit_democracy
-		mutually_exclusive = { focus = HIR_monarchist_government }
-		x = -1
+		prerequisite = { focus = HIR_focus_homeland_development }
+		relative_position_id = HIR_focus_homeland_development
+		x = 2
 		y = 1
 		
 		available_if_capitulated = yes
@@ -1839,8 +1848,61 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		
 		available = {
+			has_world_stage_coalition_leagueofnations = yes
+		}
+		
+		bypass = {
+			OR = {
+				has_world_stage_coalition_leagueofnations = no
+				NOT = { has_global_flag = league_of_nations_exists }
+			}
+		}
+		
+		completion_reward = {
+			world_stage_join_nonaligned = yes
+			add_war_support = 0.1
+			every_other_country = {
+				limit = { has_world_stage_coalition_leagueofnations = yes }
+				add_opinion_modifier = {
+					target = HIR
+					modifier = hir_abandoned_lon_bad
+				}
+			}
+			every_other_country = {
+				limit = {
+					OR = { 
+						has_world_stage_coalition_pactofsteel = yes
+						has_world_stage_coalition_axis = yes
+						has_world_stage_coalition_komintern = yes
+					}
+				}
+				add_opinion_modifier = {
+					target = HIR
+					modifier = hir_abandoned_lon_good
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = HIR_nationalist_government	# Assassination of Wihelmina
+		icon = GFX_focus_HIR_wilhelmine_has_information_that_will_lead_to_the_arrest_of_hillary_clinton
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		
+		prerequisite = { focus = HIR_royal_wedding_germany }
+		relative_position_id = HIR_royal_wedding_germany
+		mutually_exclusive = { focus = HIR_monarchist_government }
+		x = -1
+		y = 1
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		available = {
 			world_stage_has_capitulated = no
-			is_in_faction = no
 		}
 		
 		bypass = { has_government = fascism }
@@ -1855,12 +1917,12 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = HIR_monarchist_government
-		icon = GFX_focus_KYU_war_preparations
+		id = HIR_monarchist_government	# Abdication of Wihelmina
+		icon = GFX_focus_HIR_queen_abdicates
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
-		prerequisite = { focus = HIR_discredit_democracy }
-		relative_position_id = HIR_discredit_democracy
+		prerequisite = { focus = HIR_royal_wedding_germany }
+		relative_position_id = HIR_royal_wedding_germany
 		mutually_exclusive = { focus = HIR_nationalist_government }
 		x = 1
 		y = 1
@@ -1868,8 +1930,6 @@ focus_tree = {
 		available_if_capitulated = yes
 		
 		cost = 10
-		
-		text_icon = worldstage_style
 		
 		ai_will_do = { factor = 10 }
 		
@@ -1895,9 +1955,10 @@ focus_tree = {
 		icon = GFX_focus_HIR_join_axis_neutrality
 		search_filters = { FOCUS_FILTER_WORLD }
 		
+		prerequisite = { focus = HIR_abandon_lon }
 		prerequisite = { focus = HIR_monarchist_government focus = HIR_nationalist_government }
 		relative_position_id = HIR_nationalist_government
-		x = 1
+		x = 3
 		y = 1
 		
 		available_if_capitulated = yes
