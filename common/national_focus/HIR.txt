@@ -551,7 +551,7 @@ focus_tree = {
 				uses = 1
 				category = naval_doctrine
 			}
-			add_offsite_building = { type = arms_factory level = 1 }
+			add_offsite_building = { type = dockyard level = 1 }
 		}
 	}
 
@@ -1358,6 +1358,7 @@ focus_tree = {
 		completion_reward = {
 			custom_effect_tooltip = HIR_focus_colonial_development_tt
 			add_political_power = 100
+			set_variable = { colonial_focus_cost = 5 }
 		}
 	}
 	
@@ -1525,10 +1526,10 @@ focus_tree = {
 		
 		ai_will_do = { factor = 10 }
 		
-		prerequisite = { focus = HIR_join_allies focus = HIR_create_voc }
+		prerequisite = { focus = HIR_align_england focus = HIR_reafirm_european_neutrality }
 		mutually_exclusive = { focus = HIR_relocate_capital }
 		relative_position_id = HIR_join_allies
-		x = -1
+		x = -2
 		y = 1
 		
 		text_icon = worldstage_style
@@ -1562,10 +1563,9 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_WORLD }
 		
 		prerequisite = { focus = HIR_join_allies }
-		prerequisite = { focus = HIR_colonial_development_2 }
 		mutually_exclusive = { focus = HIR_fortress_holland }
 		relative_position_id = HIR_join_allies
-		x = 1
+		x = 0
 		y = 1
 		
 		available_if_capitulated = yes
@@ -1831,8 +1831,8 @@ focus_tree = {
 	
 	focus = {
 		id = HIR_colonial_development_1
-		icon = GFX_focus_HIR_colonial_development
-		search_filters = { FOCUS_FILTER_HIR_COLONY }
+		icon = GFX_focus_HIR_colonial_development_welfare
+		search_filters = { FOCUS_FILTER_HIR_COLONY FOCUS_FILTER_STABILITY }
 		
 		prerequisite = { focus = HIR_focus_colonial_development focus = HIR_focus_homeland_development }
 		relative_position_id = HIR_focus_colonial_development
@@ -1845,28 +1845,29 @@ focus_tree = {
 		
 		ai_will_do = { factor = 10 }
 		
-		text_icon = worldstage_style
-		
 		completion_reward = {
 			if = {
 				limit = { has_completed_focus = HIR_focus_colonial_development }
 				custom_effect_tooltip = HIR_focus_colonial_development_effect
+				add_stability = 0.15
 			} else = {
+				add_stability = 0.1
 				custom_effect_tooltip = HIR_focus_colonial_development_trigger
-				effect_tooltip = { }
+				add_stability = 0.05
 			}
 		}
+			
 	}
 	
 	focus = {
 		id = HIR_colonial_development_2
-		icon = GFX_focus_HIR_colonial_development
-		search_filters = { FOCUS_FILTER_HIR_COLONY }
+		icon = GFX_focus_HIR_colonial_development_industry
+		search_filters = { FOCUS_FILTER_HIR_COLONY FOCUS_FILTER_INDUSTRY }
 		
 		prerequisite = { focus = HIR_colonial_development_1 }
 		relative_position_id = HIR_colonial_development_1
 		x = 0
-		y = 1
+		y = 2
 		
 		available_if_capitulated = yes
 		
@@ -1874,23 +1875,93 @@ focus_tree = {
 		
 		ai_will_do = { factor = 10 }
 		
-		text_icon = worldstage_style
+		bypass = {
+			if = {
+				limit = { NOT = { has_completed_focus = HIR_focus_colonial_development } }
+				NOT = {
+					any_controlled_state = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 0
+							include_locked = yes
+						}
+					}
+				}
+			}
+		}
 		
 		completion_reward = {
+			random_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				if = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+				}
+				if = {
+					limit = {
+						is_coastal = yes
+						free_building_slots = {
+							building = dockyard
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = dockyard
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
 			if = {
 				limit = { has_completed_focus = HIR_focus_colonial_development }
 				custom_effect_tooltip = HIR_focus_colonial_development_effect
+				add_tech_bonus = {
+					name = construction_industryorganization_bonus
+					bonus = 1
+					uses = 1
+					technology = construction_line_tech
+					technology = concentrated_industry_category
+					technology = dispersed_industry_category
+				}
 			} else = {
 				custom_effect_tooltip = HIR_focus_colonial_development_trigger
-				effect_tooltip = { }
+				effect_tooltip = {
+					add_tech_bonus = {
+						name = construction_industryorganization_bonus
+						bonus = 1
+						uses = 1
+						category = construction_line_tech
+						category = concentrated_industry_category
+						category = dispersed_industry_category
+					}
+				}
 			}
 		}
 	}
 	
 	focus = {
 		id = HIR_colonial_development_3
-		icon = GFX_focus_HIR_colonial_development
-		search_filters = { FOCUS_FILTER_HIR_COLONY }
+		icon = GFX_focus_HIR_colonial_development_oil
+		search_filters = { FOCUS_FILTER_HIR_COLONY FOCUS_FILTER_INDUSTRY }
 		
 		prerequisite = { focus = HIR_colonial_development_2 }
 		relative_position_id = HIR_colonial_development_2
@@ -1903,16 +1974,80 @@ focus_tree = {
 		
 		ai_will_do = { factor = 10 }
 		
-		text_icon = worldstage_style
-		
 		completion_reward = {
+			custom_effect_tooltip = HIR_colonial_development_3_tt
+			hidden_effect = {	# increases available resource from 'mainland China'
+				add_to_variable = { global.tc_base_hirado_rubber = 4 }
+				add_to_variable = { global.tc_base_hirado_oil = 4 }
+				add_to_variable = { global.tc_base_hirado_aluminium = 12 }
+				check_trade_cities = yes
+			}
 			if = {
 				limit = { has_completed_focus = HIR_focus_colonial_development }
 				custom_effect_tooltip = HIR_focus_colonial_development_effect
+				add_tech_bonus = {
+					name = excavation_synth_bonus
+					bonus = 1
+					uses = 1
+					category = excavation_tech
+					category = synth_resources
+				}
 			} else = {
 				custom_effect_tooltip = HIR_focus_colonial_development_trigger
-				effect_tooltip = { }
+				effect_tooltip = {
+					add_tech_bonus = {
+						name = excavation_synth_bonus
+						bonus = 1
+						uses = 1
+						category = excavation_tech
+						category = synth_resources
+					}
+				}
 			}
+		}
+	}
+	
+	focus = {
+		id = HIR_university_homeland
+		icon = GFX_focus_research
+		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_HIR_HOME }
+		
+		prerequisite = { focus = HIR_focus_colonial_development focus = HIR_focus_homeland_development }
+		relative_position_id = HIR_focus_colonial_development
+		x = 4
+		y = 2
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}	
+		
+		completion_reward = {
+			add_research_slot = 1	
+		}
+	}
+	
+	focus = {
+		id = HIR_university_colony
+		icon = GFX_focus_generic_research_eastern
+		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_HIR_COLONY }
+		
+		prerequisite = { focus = HIR_university_homeland }
+		relative_position_id = HIR_university_homeland
+		x = 0
+		y = 2
+		cost = 10
+		
+		available = {
+			num_of_factories > 10
+		}
+		
+		ai_will_do = {
+			factor = 10
+		}	
+		
+		completion_reward = {
+			add_research_slot = 1	
 		}
 	}
 	
@@ -1953,7 +2088,7 @@ focus_tree = {
 		prerequisite = { focus = HIR_homeland_development_1 }
 		relative_position_id = HIR_homeland_development_1
 		x = 0
-		y = 1
+		y = 2
 		
 		available_if_capitulated = yes
 		
