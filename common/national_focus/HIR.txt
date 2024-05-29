@@ -1359,6 +1359,7 @@ focus_tree = {
 			custom_effect_tooltip = HIR_focus_colonial_development_tt
 			add_political_power = 100
 			set_variable = { colonial_focus_cost = 5 }
+			hidden_effect = { country_event = hirado.999 }
 		}
 	}
 	
@@ -1387,6 +1388,7 @@ focus_tree = {
 				value = 5
 				tooltip = add_world_stage_power_no_scope_tt
 			}
+			hidden_effect = { country_event = hirado.999 }
 		}
 	}
 	
@@ -2018,12 +2020,22 @@ focus_tree = {
 		y = 2
 		cost = 10
 		
+		allow_branch = { NOT = { has_completed_focus = HIR_focus_homeland_development } }
+		
 		ai_will_do = {
 			factor = 10
 		}	
 		
 		completion_reward = {
-			add_research_slot = 1	
+			add_research_slot = 1
+			if = {
+				limit = { has_completed_focus = HIR_focus_homeland_development }
+				custom_effect_tooltip = HIR_focus_homeland_development_effect
+				custom_effect_tooltip = focus_cost_is_5
+			} else = {
+				custom_effect_tooltip = HIR_focus_homeland_development_trigger
+				custom_effect_tooltip = focus_cost_would_be_5
+			}
 		}
 	}
 	
@@ -2038,6 +2050,8 @@ focus_tree = {
 		y = 2
 		cost = 10
 		
+		allow_branch = { NOT = { has_completed_focus = HIR_focus_colonial_development } }
+		
 		available = {
 			num_of_factories > 10
 		}
@@ -2047,7 +2061,113 @@ focus_tree = {
 		}	
 		
 		completion_reward = {
-			add_research_slot = 1	
+			add_research_slot = 1
+			if = {
+				limit = { has_completed_focus = HIR_focus_colonial_development }
+				custom_effect_tooltip = HIR_focus_colonial_development_effect
+				custom_effect_tooltip = focus_cost_is_5
+			} else = {
+				custom_effect_tooltip = HIR_focus_colonial_development_trigger
+				custom_effect_tooltip = focus_cost_would_be_5
+			}
+		}
+	}
+	
+	focus = {
+		id = HIR_university_homeland_hf
+		icon = GFX_focus_research
+		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_HIR_HOME }
+		
+		prerequisite = { focus = HIR_focus_colonial_development focus = HIR_focus_homeland_development }
+		relative_position_id = HIR_focus_colonial_development
+		x = 4
+		y = 2
+		cost = 5
+		
+		allow_branch = { has_completed_focus = HIR_focus_homeland_development }
+		
+		ai_will_do = {
+			factor = 3
+		}	
+		
+		completion_reward = {
+			add_research_slot = 1
+			if = {
+				limit = { has_completed_focus = HIR_focus_homeland_development }
+				custom_effect_tooltip = HIR_focus_homeland_development_effect
+				custom_effect_tooltip = focus_cost_is_5
+			} else = {
+				custom_effect_tooltip = HIR_focus_homeland_development_trigger
+				custom_effect_tooltip = focus_cost_would_be_5
+			}
+		}
+	}
+	
+	focus = {
+		id = HIR_university_colony_hf
+		icon = GFX_focus_generic_research_eastern
+		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_HIR_COLONY }
+		
+		prerequisite = { focus = HIR_university_homeland_hf }
+		relative_position_id = HIR_university_homeland_hf
+		x = 0
+		y = 2
+		cost = 10
+		
+		allow_branch = { has_completed_focus = HIR_focus_homeland_development }
+		
+		available = {
+			num_of_factories > 10
+		}
+		
+		ai_will_do = {
+			factor = 10
+		}	
+		
+		completion_reward = {
+			add_research_slot = 1
+			if = {
+				limit = { has_completed_focus = HIR_focus_colonial_development }
+				custom_effect_tooltip = HIR_focus_colonial_development_effect
+				custom_effect_tooltip = focus_cost_is_5
+			} else = {
+				custom_effect_tooltip = HIR_focus_colonial_development_trigger
+				custom_effect_tooltip = focus_cost_would_be_5
+			}
+		}
+	}
+	
+	focus = {
+		id = HIR_university_colony_cf
+		icon = GFX_focus_generic_research_eastern
+		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_HIR_COLONY }
+		
+		prerequisite = { focus = HIR_university_homeland }
+		relative_position_id = HIR_university_homeland
+		x = 0
+		y = 2
+		cost = 5
+		
+		allow_branch = { has_completed_focus = HIR_focus_colonial_development }
+		
+		available = {
+			num_of_factories > 10
+		}
+		
+		ai_will_do = {
+			factor = 10
+		}	
+		
+		completion_reward = {
+			add_research_slot = 1
+			if = {
+				limit = { has_completed_focus = HIR_focus_colonial_development }
+				custom_effect_tooltip = HIR_focus_colonial_development_effect
+				custom_effect_tooltip = focus_cost_is_5
+			} else = {
+				custom_effect_tooltip = HIR_focus_colonial_development_trigger
+				custom_effect_tooltip = focus_cost_would_be_5
+			}
 		}
 	}
 	
@@ -2141,13 +2261,40 @@ focus_tree = {
 	####### } HOMELAND POLITICAL BRANCH - AXIS {
 	
 	focus = {
+		id = HIR_dutch_nationalism
+		icon = GFX_focus_HIR_government_fascism
+		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_POLITICAL }
+		
+		prerequisite = { focus = HIR_focus_homeland_development }
+		relative_position_id = HIR_focus_homeland_development
+		x = -1
+		y = 1
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		available = {
+			world_stage_has_capitulated = no
+		}
+		
+		bypass = { has_world_stage_coalition_axis = yes }
+		
+		completion_reward = {
+			
+		}
+	}
+	
+	focus = {
 		id = HIR_royal_wedding_germany
 		icon = GFX_focus_HIR_royal_wedding
 		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = HIR_focus_homeland_development }
 		relative_position_id = HIR_focus_homeland_development
-		x = 0
+		x = 1
 		y = 1
 		
 		available_if_capitulated = yes
@@ -2196,7 +2343,7 @@ focus_tree = {
 		
 		prerequisite = { focus = HIR_focus_homeland_development }
 		relative_position_id = HIR_focus_homeland_development
-		x = 2
+		x = 3
 		y = 1
 		
 		available_if_capitulated = yes
@@ -2249,7 +2396,7 @@ focus_tree = {
 		icon = GFX_focus_HIR_wilhelmine_has_information_that_will_lead_to_the_arrest_of_hillary_clinton
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
-		prerequisite = { focus = HIR_royal_wedding_germany }
+		prerequisite = { focus = HIR_royal_wedding_germany focus = HIR_dutch_nationalism }
 		relative_position_id = HIR_royal_wedding_germany
 		mutually_exclusive = { focus = HIR_monarchist_government }
 		x = -1
@@ -2262,11 +2409,18 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		
 		available = {
-			world_stage_has_capitulated = no
+			OR = {
+				AND = {
+					fascism > 0.33
+					has_stability < 0.5
+				}
+				fascism > 0.5
+			}
 			has_country_leader = {
 				character = HIR_wilhelmina
 				ruling_only = no
 			}
+			world_stage_has_capitulated = no
 		}
 		
 		bypass = { has_government = fascism }
