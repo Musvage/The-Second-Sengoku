@@ -2173,7 +2173,7 @@ focus_tree = {
 	
 	focus = {
 		id = HIR_homeland_development_1
-		icon = GFX_focus_HIR_homeland_development
+		icon = GFX_focus_HIR_homeland_development_works
 		search_filters = { FOCUS_FILTER_HIR_HOME }
 		
 		prerequisite = { focus = HIR_focus_colonial_development focus = HIR_focus_homeland_development }
@@ -2190,19 +2190,33 @@ focus_tree = {
 		text_icon = worldstage_style
 		
 		completion_reward = {
+			add_offsite_building = { type = industrial_complex level = 2 }
 			if = {
 				limit = { has_completed_focus = HIR_focus_homeland_development }
 				custom_effect_tooltip = HIR_focus_homeland_development_effect
+				if = {
+					limit = { has_dlc = "Arms Against Tyranny" }
+					
+				} else = {
+				
+				}
 			} else = {
 				custom_effect_tooltip = HIR_focus_homeland_development_trigger
-				effect_tooltip = { }
+				effect_tooltip = {
+					if = {
+						limit = { has_dlc = "Arms Against Tyranny" }
+						
+					} else = {
+					
+					}
+				}
 			}
 		}
 	}
 	
 	focus = {
 		id = HIR_homeland_development_2
-		icon = GFX_focus_HIR_homeland_development
+		icon = GFX_focus_HIR_homeland_development_military
 		search_filters = { FOCUS_FILTER_HIR_HOME }
 		
 		prerequisite = { focus = HIR_homeland_development_1 }
@@ -2219,19 +2233,33 @@ focus_tree = {
 		text_icon = worldstage_style
 		
 		completion_reward = {
+			add_offsite_building = { type = arms_factory level = 2 }
 			if = {
 				limit = { has_completed_focus = HIR_focus_homeland_development }
 				custom_effect_tooltip = HIR_focus_homeland_development_effect
+				if = {
+					limit = { has_dlc = "Arms Against Tyranny" }
+					
+				} else = {
+				
+				}
 			} else = {
 				custom_effect_tooltip = HIR_focus_homeland_development_trigger
-				effect_tooltip = { }
+				effect_tooltip = {
+					if = {
+						limit = { has_dlc = "Arms Against Tyranny" }
+						
+					} else = {
+					
+					}
+				}
 			}
 		}
 	}
 	
 	focus = {
 		id = HIR_homeland_development_3
-		icon = GFX_focus_HIR_homeland_development
+		icon = GFX_focus_HIR_homeland_development_navy
 		search_filters = { FOCUS_FILTER_HIR_HOME }
 		
 		prerequisite = { focus = HIR_homeland_development_2 }
@@ -2248,12 +2276,26 @@ focus_tree = {
 		text_icon = worldstage_style
 		
 		completion_reward = {
+			add_offsite_building = { type = dockyard level = 2 }
 			if = {
 				limit = { has_completed_focus = HIR_focus_homeland_development }
 				custom_effect_tooltip = HIR_focus_homeland_development_effect
+				if = {
+					limit = { has_dlc = "Arms Against Tyranny" }
+					
+				} else = {
+				
+				}
 			} else = {
 				custom_effect_tooltip = HIR_focus_homeland_development_trigger
-				effect_tooltip = { }
+				effect_tooltip = {
+					if = {
+						limit = { has_dlc = "Arms Against Tyranny" }
+						
+					} else = {
+					
+					}
+				}
 			}
 		}
 	}
@@ -2280,10 +2322,9 @@ focus_tree = {
 			world_stage_has_capitulated = no
 		}
 		
-		bypass = { has_world_stage_coalition_axis = yes }
-		
 		completion_reward = {
-			
+			custom_effect_tooltip = unlock_characters_tt
+			show_ideas_tooltip = HIR_george_kettmann
 		}
 	}
 	
@@ -2344,7 +2385,7 @@ focus_tree = {
 		prerequisite = { focus = HIR_focus_homeland_development }
 		relative_position_id = HIR_focus_homeland_development
 		x = 3
-		y = 1
+		y = 2
 		
 		available_if_capitulated = yes
 		
@@ -2396,10 +2437,10 @@ focus_tree = {
 		icon = GFX_focus_HIR_wilhelmine_has_information_that_will_lead_to_the_arrest_of_hillary_clinton
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
-		prerequisite = { focus = HIR_royal_wedding_germany focus = HIR_dutch_nationalism }
-		relative_position_id = HIR_royal_wedding_germany
+		prerequisite = { focus = HIR_dutch_nationalism }
+		relative_position_id = HIR_dutch_nationalism
 		mutually_exclusive = { focus = HIR_monarchist_government }
-		x = -1
+		x = 0
 		y = 1
 		
 		available_if_capitulated = yes
@@ -2443,7 +2484,7 @@ focus_tree = {
 		prerequisite = { focus = HIR_royal_wedding_germany }
 		relative_position_id = HIR_royal_wedding_germany
 		mutually_exclusive = { focus = HIR_nationalist_government }
-		x = 1
+		x = 0
 		y = 1
 		
 		available_if_capitulated = yes
@@ -2454,6 +2495,13 @@ focus_tree = {
 		
 		available = {
 			world_stage_has_capitulated = no
+			OR = {
+				AND = {
+					autocracy > 0.33
+					has_stability < 0.5
+				}
+				autocracy > 0.5
+			}
 		}
 		
 		bypass = { has_government = autocracy }
@@ -2478,6 +2526,45 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = HIR_dutch_nationalism2
+		icon = GFX_goal_generic_political_pressure
+		search_filters = { FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_WORLD }
+		
+		prerequisite = { focus = HIR_nationalist_government focus = HIR_monarchist_government }
+		relative_position_id = HIR_nationalist_government
+		x = 1
+		y = 1
+		
+		available_if_capitulated = yes
+		
+		text_icon = worldstage_style
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		available = {
+			world_stage_has_capitulated = no
+			OR = {
+				has_government = fascism
+				has_government = autocracy
+			}
+		}
+		
+		bypass = { has_world_stage_coalition_axis = yes }
+		
+		completion_reward = {
+			add_ideas = HIR_anti_pacifism_spirit
+			hidden_effect = { add_dynamic_modifier = { modifier = PRO_modifier_ruling_party_popularity } }
+			add_to_variable = {
+				var = 107.world_stage_power
+				value = 5
+				tooltip = add_world_stage_power_no_scope_tt
+			}
+		}
+	}
+	
+	focus = {
 		id = HIR_join_axis	#
 		icon = { value = GFX_focus_HIR_join_axis_autocracy trigger = { REI = { has_government = autocracy } } }
 		icon = { value = GFX_focus_HIR_join_axis_mustache trigger = { REI = { has_government = autocracy } has_global_flag = has_uncensored_german_flag } }
@@ -2486,8 +2573,8 @@ focus_tree = {
 		
 		prerequisite = { focus = HIR_abandon_lon }
 		prerequisite = { focus = HIR_monarchist_government focus = HIR_nationalist_government }
-		relative_position_id = HIR_nationalist_government
-		x = 3
+		relative_position_id = HIR_monarchist_government
+		x = 1
 		y = 1
 		
 		available_if_capitulated = yes
