@@ -20,11 +20,23 @@ country_event = {	# reafirm_european_neutrality
 	id = hirado.1
 	title = hirado.1.t
 	desc = hirado.1.d
-	picture = 
+	picture = GFX_report_event_europe_1939
 	
 	major = yes
 	is_triggered_only = yes
-
+	
+	option = {
+		name = hirado.self
+		trigger = { tag = HIR }
+		effect_tooltip = {
+			add_stability = 0.1
+			add_ideas = HIR_european_neutrlaity_self_spirit
+		}
+	}
+	option = {
+		name = hirado.other
+		trigger = { NOT = { tag = HIR } }
+	}
 }
 country_event = {	# align_england
 	id = hirado.2
@@ -34,6 +46,27 @@ country_event = {	# align_england
 	
 	major = yes
 	is_triggered_only = yes
+	
+	option = {
+		name = hirado.self
+		trigger = { tag = HIR }
+		effect_tooltip = {
+			add_war_support = 0.1
+			add_ideas = HIR_pick_a_side_spirit
+		}
+	}
+	option = {
+		name = hirado.osa
+		trigger = { tag = OSA }
+	}
+	option = {
+		name = hirado.good
+		trigger = { NOT = { tag = HIR tag = OSA } OR = { has_government = democratic has_government = democratic_socialism } }
+	}
+	option = {
+		name = hirado.other
+		trigger = { NOT = { tag = HIR tag = OSA } NOT = { has_government = democratic has_government = democratic_socialism } }
+	}
 }
 country_event = {	# join_allies (war is ongoing)
 	id = hirado.3
@@ -44,6 +77,22 @@ country_event = {	# join_allies (war is ongoing)
 	major = yes
 	is_triggered_only = yes
 
+	option = {
+		name = hirado.self
+		trigger = { tag = HIR }
+	}
+	option = {
+		name = hirado.allies
+		trigger = { NOT = { tag = HIR } has_world_stage_coalition_allies = yes }
+	}
+	option = {
+		name = hirado.axis
+		trigger = { NOT = { tag = HIR } has_world_stage_coalition_axis = yes }
+	}
+	option = {
+		name = hirado.other
+		trigger = { NOT = { tag = HIR } has_world_stage_coalition_allies = no has_world_stage_coalition_axis = no }
+	}
 }
 country_event = {	# join_allies (will join in the future)
 	id = hirado.4
@@ -54,6 +103,22 @@ country_event = {	# join_allies (will join in the future)
 	major = yes
 	is_triggered_only = yes
 
+	option = {
+		name = hirado.self
+		trigger = { tag = HIR }
+	}
+	option = {
+		name = hirado.allies
+		trigger = { NOT = { tag = HIR } has_world_stage_coalition_leagueofnations = yes }
+	}
+	option = {
+		name = hirado.axis
+		trigger = { NOT = { tag = HIR } has_world_stage_coalition_pactofsteel = no }
+	}
+	option = {
+		name = hirado.other
+		trigger = { NOT = { tag = HIR } has_world_stage_coalition_pactofsteel = no has_world_stage_coalition_leagueofnations = no }
+	}
 }
 country_event = {	# relocate_capital
 	id = hirado.5
@@ -64,6 +129,37 @@ country_event = {	# relocate_capital
 	major = yes
 	is_triggered_only = yes
 
+	option = {
+		name = hirado.self
+		trigger = { tag = HIR }
+		effect_tooltip = { add_ideas = HIR_relocated_capital_spirit }
+		custom_effect_tooltip = HIR_relocate_capital_tt
+	}
+	option = {
+		name = hirado.allies
+		trigger = { OR = { tag = OSA tag = KOB } }
+		HIR = { custom_effect_tooltip = HIR_relocate_capital_tt }
+	}
+	option = {
+		name = hirado.axis
+		trigger = { tag = REI }
+		HIR = { custom_effect_tooltip = HIR_relocate_capital_tt }
+	}
+	option = {
+		name = hirado.prt
+		trigger = { tag = PRT NOT = { has_global_flag = eastereggs_enabled } }
+		HIR = { custom_effect_tooltip = HIR_relocate_capital_tt }
+	}
+	option = {
+		name = hirado.prt2
+		trigger = { tag = PRT has_global_flag = eastereggs_enabled }
+		HIR = { custom_effect_tooltip = HIR_relocate_capital_tt }
+	}
+	option = {
+		name = hirado.other
+		trigger = { NOT = { tag = HIR tag = REI tag = OSA tag = KOB tag = PRT } }
+		HIR = { custom_effect_tooltip = HIR_relocate_capital_tt }
+	}
 }
 country_event = {	# create_voc
 	id = hirado.6
@@ -74,16 +170,84 @@ country_event = {	# create_voc
 	major = yes
 	is_triggered_only = yes
 
+	option = {
+		name = hirado.self
+		trigger = { tag = HIR }
+		effect_tooltip = {
+			set_cosmetic_tag = HIR_VOC
+			swap_ideas = {
+				remove_idea = HIR_free_trade_policy_spirit
+				add_idea = HIR_chartered_company_spirit
+			}
+			if = {
+				limit = { has_dlc = "Arms Against Tyranny" }
+				add_cic = 16200
+			} else = {
+				add_timed_idea = { idea = HIR_chartered_company_2_spirit days = 365 }
+			}
+		}
+	}
+	option = {
+		name = hirado.west
+		trigger = { NOT = { tag = HIR } is_trade_city = yes }
+		effect_tooltip = { HIR = { set_cosmetic_tag = HIR_VOC } }
+	}
+	option = {
+		name = hirado.japan
+		trigger = { NOT = { tag = HIR } is_trade_city = no }
+		effect_tooltip = { HIR = { set_cosmetic_tag = HIR_VOC } }
+	}
 }
 country_event = {	# royal_wedding_germany
 	id = hirado.7
 	title = hirado.7.t
 	desc = hirado.7.d
-	picture = 
+	picture = GFX_report_event_princess_juliana_marriage
 	
 	major = yes
 	is_triggered_only = yes
 
+	option = {
+		name = hirado.self
+		trigger = { tag = HIR }
+		effect_toooltip = {
+			add_timed_idea = { idea = HIR_surge_of_monarchism_spirit days = 730 }
+			REI = {
+				diplomatic_relation = {
+					country = HIR
+					relation = non_aggression_pact
+					active = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = hirado.rei
+		trigger = { tag = REI }
+		effect_tooltip = {
+			diplomatic_relation = {
+				country = HIR
+				relation = non_aggression_pact
+				active = yes
+			}
+		}
+	}
+	option = {
+		name = hirado.axis
+		trigger = { NOT = { tag = HIR } OR = { has_world_stage_coalition_allies = yes has_world_stage_coalition_leagueofnations = yes } }
+	}
+	option = {
+		name = hirado.allies
+		trigger = { NOT = { tag = HIR } OR = { has_world_stage_coalition_axis = yes has_world_stage_coalition_pactofsteel = yes } }
+	}
+	option = {
+		name = hirado.other
+		trigger = {
+			NOT = { tag = HIR }
+			has_world_stage_coalition_allies = no has_world_stage_coalition_leagueofnations = no
+			has_world_stage_coalition_axis = no has_world_stage_coalition_pactofsteel = no
+		}
+	}
 }
 country_event = {	# abandon_lon
 	id = hirado.8
@@ -94,16 +258,104 @@ country_event = {	# abandon_lon
 	major = yes
 	is_triggered_only = yes
 
+	option = {
+		name = hirado.self
+		trigger = { tag = HIR }
+		effect_tooltip = {
+			world_stage_join_nonaligned = yes
+			remove_ideas = SS_lon_member
+			add_war_support = 0.1
+		}
+	}
+	option = {
+		name = hirado.allies
+		trigger = { NOT = { tag = HIR } has_world_stage_coalition_leagueofnations = yes }
+		effect_tooltip = {
+			add_opinion_modifier = {
+				target = HIR
+				modifier = hir_abandoned_lon_bad
+			}
+		}
+	}
+	option = {
+		name = hirado.other
+		trigger = { NOT = { tag = HIR } has_world_stage_coalition_leagueofnations = no }
+		effect_tooltip = {
+			if = {
+				limit = {
+					OR = { 
+						has_world_stage_coalition_pactofsteel = yes
+						has_world_stage_coalition_axis = yes
+						has_world_stage_coalition_komintern = yes
+					}
+				}
+				add_opinion_modifier = {
+					target = HIR
+					modifier = hir_abandoned_lon_good
+				}
+			}
+		}
+	}
 }
 country_event = {	# nationalist_government
 	id = hirado.9
 	title = hirado.9.t
 	desc = hirado.9.d
-	picture = 
+	picture = GFX_report_event_wilhelmina_dies
 	
 	major = yes
 	is_triggered_only = yes
 
+	option = {
+		name = hirado.self
+		trigger = { tag = HIR }
+		effect_tooltip = {
+			kill_ideology_leader = autocracy
+			set_politics = {
+				ruling_party = fascism
+				elections_allowed = no
+			}
+		}
+	}
+	option = {
+		name = hirado.good
+		trigger = { NOT = { tag = HIR } OR = { has_government = fascism has_government = neutrality } }
+		effect_tooltip = {
+			HIR = {
+				kill_ideology_leader = autocracy
+				set_politics = {
+					ruling_party = fascism
+					elections_allowed = no
+				}
+			}
+		}
+	}
+	option = {
+		name = hirado.bad
+		trigger = { NOT = { tag = HIR } OR = { has_government = democratic has_government = democratic_socialism has_government = communism } }
+		effect_tooltip = {
+			HIR = {
+				kill_ideology_leader = autocracy
+				set_politics = {
+					ruling_party = fascism
+					elections_allowed = no
+				}
+			}
+		}
+	}
+	option = {
+		name = hirado.other
+		trigger = { NOT = { tag = HIR } has_government = autocracy }
+		effect_tooltip = {
+			HIR = {
+				kill_ideology_leader = autocracy
+				set_politics = {
+					ruling_party = fascism
+					elections_allowed = no
+				}
+			}
+		}
+	}
 }
 country_event = {	# monarchist_government
 	id = hirado.10
@@ -114,6 +366,60 @@ country_event = {	# monarchist_government
 	major = yes
 	is_triggered_only = yes
 
+	option = {
+		name = hirado.self
+		trigger = { tag = HIR }
+		effect_tooltip = {
+			retire_character = HIR_wilhelmina
+			promote_character = HIR_juliana
+			set_politics = {
+				ruling_party = autocracy
+				elections_allowed = no
+			}
+		}
+	}
+	option = {
+		name = hirado.good
+		trigger = { NOT = { tag = HIR } has_government = autocracy }
+		effect_tooltip = {
+			HIR = {
+				retire_character = HIR_wilhelmina
+				promote_character = HIR_juliana
+				set_politics = {
+					ruling_party = autocracy
+					elections_allowed = no
+				}
+			}
+		}
+	}
+	option = {
+		name = hirado.bad
+		trigger = { NOT = { tag = HIR } OR = { has_government = democratic has_government = democratic_socialism has_government = communism } }
+		effect_tooltip = {
+			HIR = {
+				retire_character = HIR_wilhelmina
+				promote_character = HIR_juliana
+				set_politics = {
+					ruling_party = autocracy
+					elections_allowed = no
+				}
+			}
+		}
+	}
+	option = {
+		name = hirado.other
+		trigger = { NOT = { tag = HIR } OR = { has_government = fascism has_government = neutrality } }
+		effect_tooltip = {
+			HIR = {
+				retire_character = HIR_wilhelmina
+				promote_character = HIR_juliana
+				set_politics = {
+					ruling_party = autocracy
+					elections_allowed = no
+				}
+			}
+		}
+	}
 }
 country_event = {	# join_axis (war is ongoing)
 	id = hirado.11
@@ -124,6 +430,22 @@ country_event = {	# join_axis (war is ongoing)
 	major = yes
 	is_triggered_only = yes
 
+	option = {
+		name = hirado.self
+		trigger = { tag = HIR }
+	}
+	option = {
+		name = hirado.allies
+		trigger = { NOT = { tag = HIR } has_world_stage_coalition_allies = yes }
+	}
+	option = {
+		name = hirado.axis
+		trigger = { NOT = { tag = HIR } has_world_stage_coalition_axis = yes }
+	}
+	option = {
+		name = hirado.other
+		trigger = { NOT = { tag = HIR } has_world_stage_coalition_allies = no has_world_stage_coalition_axis = no}
+	}
 }
 country_event = {	# join_axis (will join in the future)
 	id = hirado.12
@@ -134,4 +456,20 @@ country_event = {	# join_axis (will join in the future)
 	major = yes
 	is_triggered_only = yes
 
+	option = {
+		name = hirado.self
+		trigger = { tag = HIR }
+	}
+	option = {
+		name = hirado.axis
+		trigger = { NOT = { tag = HIR } has_world_stage_coalition_pactofsteel = no }
+	}
+	option = {
+		name = hirado.allies
+		trigger = { NOT = { tag = HIR } has_world_stage_coalition_leagueofnations = yes }
+	}
+	option = {
+		name = hirado.other
+		trigger = { NOT = { tag = HIR } has_world_stage_coalition_pactofsteel = no has_world_stage_coalition_leagueofnations = no }
+	}
 }
