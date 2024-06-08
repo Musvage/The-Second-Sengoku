@@ -19,16 +19,56 @@ country_event = {
 		name = navigator.1.a	# accept (complete focus)
 		if = {
 			limit = { has_focus_tree = HIR_focus_tree }
-			if = { limit = { FROM = { tag = PRT } } unlock_national_focus = HIR_NAV_befriend_PRT }
-			if = { limit = { FROM = { tag = KYU } } unlock_national_focus = HIR_NAV_befriend_KYU }
+			if = { limit = { FROM = { tag = PRT } }
+				unlock_national_focus = HIR_NAV_befriend_PRT
+				add_opinion_modifier = {
+					target = PRT
+					modifier = NAV_diplomatic_overture_opinion
+				}
+			}
+			if = { limit = { FROM = { tag = KYU } }
+				unlock_national_focus = HIR_NAV_befriend_KYU
+				add_opinion_modifier = {
+					target = KYU
+					modifier = NAV_diplomatic_overture_opinion
+				}
+			}
 		} if = {
 			limit = { has_focus_tree = PRT_focus_tree }
-			if = { limit = { FROM = { tag = HIR } } unlock_national_focus = PRT_NAV_befriend_HIR }
-			if = { limit = { FROM = { tag = KYU } } unlock_national_focus = PRT_NAV_befriend_KYU }
+			if = { limit = { FROM = { tag = HIR } }
+				unlock_national_focus = PRT_NAV_befriend_HIR
+				add_opinion_modifier = {
+					target = HIR
+					modifier = NAV_diplomatic_overture_opinion
+				}
+			}
+			if = { limit = { FROM = { tag = KYU } }
+				unlock_national_focus = PRT_NAV_befriend_KYU
+				add_opinion_modifier = {
+					target = KYU
+					modifier = NAV_diplomatic_overture_opinion
+				}
+			}
 		} if = {
 			limit = { has_focus_tree = KYU_focus_tree }
-			#if = { limit = { FROM = { tag = HIR } } unlock_national_focus = KYU_NAV_befriend_HIR }
-			#if = { limit = { FROM = { tag = PRT } } unlock_national_focus = KYU_NAV_befriend_PRT }
+			if = { limit = { FROM = { tag = HIR } }
+				#unlock_national_focus = KYU_NAV_befriend_HIR
+				add_ideas = NAV_diplomatic_overture_HIR_spirit
+				give_guarantee = HIR
+				add_opinion_modifier = {
+					target = HIR
+					modifier = NAV_diplomatic_overture_opinion
+				}
+			}
+			if = { limit = { FROM = { tag = PRT } }
+				#unlock_national_focus = KYU_NAV_befriend_PRT
+				add_ideas = NAV_diplomatic_overture_PRT_spirit
+				give_guarantee = PRT
+				add_opinion_modifier = {
+					target = PRT
+					modifier = NAV_diplomatic_overture_opinion
+				}
+			}
 		}
 		FROM = { country_event = navigator.2 }
 	}
@@ -39,7 +79,13 @@ country_event = {
 			if = {  limit = { tag = HIR } FROM = { set_country_flag = reject_overture_from_HIR } }
 			if = {  limit = { tag = KYU } FROM = { set_country_flag = reject_overture_from_KYU } }
 		}
-		FROM = { country_event = navigator.3 }
+		FROM = {
+			country_event = navigator.3
+			add_opinion_modifier = {
+				target = ROOT
+				modifier = NAV_diplomatic_overture_rejected_opinion
+			}
+		}
 	}
 }
 
@@ -57,11 +103,35 @@ country_event = {
 		if = {
 			limit = { has_focus_tree = HIR_focus_tree }
 			if = { limit = { FROM = { tag = PRT } } unlock_national_focus = HIR_NAV_befriend_PRT }
-			if = { limit = { FROM = { tag = KYU } } unlock_national_focus = HIR_NAV_befriend_KYU }
+			if = { limit = { FROM = { tag = KYU } }
+				unlock_national_focus = HIR_NAV_befriend_KYU
+				effect_tooltip = {
+					KYU = {
+						add_ideas = NAV_diplomatic_overture_HIR_spirit
+						give_guarantee = HIR
+						add_opinion_modifier = {
+							target = HIR
+							modifier = NAV_diplomatic_overture_opinion
+						}
+					}
+				}
+			}
 		} if = {
 			limit = { has_focus_tree = PRT_focus_tree }
 			if = { limit = { FROM = { tag = HIR } } unlock_national_focus = PRT_NAV_befriend_HIR }
-			if = { limit = { FROM = { tag = KYU } } unlock_national_focus = PRT_NAV_befriend_KYU }
+			if = { limit = { FROM = { tag = KYU } }
+				unlock_national_focus = PRT_NAV_befriend_KYU
+				effect_tooltip = {
+					KYU = {
+						add_ideas = NAV_diplomatic_overture_PRT_spirit
+						give_guarantee = PRT
+						add_opinion_modifier = {
+							target = PRT
+							modifier = NAV_diplomatic_overture_opinion
+						}
+					}
+				}
+			}
 		} if = {
 			limit = { has_focus_tree = KYU_focus_tree }
 			#if = { limit = { FROM = { tag = HIR } } unlock_national_focus = KYU_NAV_befriend_HIR }
@@ -95,6 +165,12 @@ country_event = {
 			limit = { has_focus_tree = KYU_focus_tree }
 			#if = { limit = { FROM = { tag = HIR } } uncomplete_national_focus = { focus = KYU_NAV_befriend_HIR } }
 			#if = { limit = { FROM = { tag = PRT } } uncomplete_national_focus = { focus = KYU_NAV_befriend_PRT } }
+		}
+		effect_tooltip = {
+			add_opinion_modifier = {
+				target = ROOT
+				modifier = NAV_diplomatic_overture_rejected_opinion
+			}
 		}
 	}
 }

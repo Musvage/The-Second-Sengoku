@@ -1154,7 +1154,7 @@ focus_tree = {
 	focus = {
 		id = PRT_NAV_active_diplomacy	# NAV: navigators, pseudo-shared branch
 		icon = GFX_goal_generic_improve_relations
-		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_DIPLOMACY }
 		
 		ai_will_do = { factor = 10 }
 		
@@ -1180,7 +1180,17 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		completion_reward = {
-			# add decisions
+			add_political_power = 100
+			add_ideas = NAV_active_diplomacy_spirit
+			hidden_effect = {
+				every_possible_country = {
+					limit = { NOT = { TAG = ROOT } }
+					add_opinion_modifier = {
+						target = ROOT
+						modifier  = NAV_active_diplomacy_opinion
+					}
+				}
+			}
 		}
 	}
 	
@@ -1312,7 +1322,6 @@ focus_tree = {
 		text_icon = navigators_style
 
 		completion_reward = {
-			add_political_power = 120
 			HIR = { country_event = navigator.1 }
 			# add decisions
 		}
@@ -1328,7 +1337,7 @@ focus_tree = {
 		icon = { value = GFX_focus_generic_diplomacy_KYU_neutrality trigger = 			{ KYU = { has_government = neutrality } } }
 		icon = GFX_goal_generic_dangerous_deal
 		dynamic = yes
-		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		
 		ai_will_do = { factor = 10 }
 		
@@ -1384,9 +1393,18 @@ focus_tree = {
 		text_icon = navigators_style
 
 		completion_reward = {
-			add_political_power = 120
 			KYU = { country_event = navigator.1 }
-			# add decisions
+			custom_effect_tooltip = loc_if_accept
+			effect_tooltip = {
+				KYU = {
+					add_ideas = NAV_diplomatic_overture_PRT_spirit
+					give_guarantee = PRT
+					add_opinion_modifier = {
+						target = PRT
+						modifier = NAV_diplomatic_overture_opinion
+					}
+				}
+			}
 		}
 	}
 	
