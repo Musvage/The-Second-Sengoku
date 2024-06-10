@@ -2205,7 +2205,7 @@ focus_tree = {
 	focus = {
 		id = HIR_homeland_development_1
 		icon = GFX_focus_HIR_homeland_development_works
-		search_filters = { FOCUS_FILTER_HIR_HOME }
+		search_filters = { FOCUS_FILTER_HIR_HOME FOCUS_FILTER_INDUSTRY }
 		
 		prerequisite = { focus = HIR_focus_colonial_development focus = HIR_focus_homeland_development }
 		relative_position_id = HIR_focus_homeland_development
@@ -2244,7 +2244,7 @@ focus_tree = {
 	focus = {
 		id = HIR_homeland_development_2
 		icon = GFX_focus_HIR_homeland_development_military
-		search_filters = { FOCUS_FILTER_HIR_HOME }
+		search_filters = { FOCUS_FILTER_HIR_HOME FOCUS_FILTER_INDUSTRY }
 		
 		prerequisite = { focus = HIR_homeland_development_1 }
 		relative_position_id = HIR_homeland_development_1
@@ -2312,9 +2312,10 @@ focus_tree = {
 	focus = {
 		id = HIR_homeland_development_3
 		icon = GFX_focus_HIR_homeland_development_navy
-		search_filters = { FOCUS_FILTER_HIR_HOME }
+		search_filters = { FOCUS_FILTER_HIR_HOME FOCUS_FILTER_INDUSTRY }
 		
 		prerequisite = { focus = HIR_homeland_development_2 }
+		mutually_exclusive = {focus = HIR_homeland_development_z }
 		relative_position_id = HIR_homeland_development_2
 		x = 0
 		y = 2
@@ -2356,6 +2357,53 @@ focus_tree = {
 							swap_ideas = { remove_idea = nsm_amsterdam add_idea = nsm_amsterdam_2 }
 							swap_ideas = { remove_idea = wilton_fijenoord add_idea = wilton_fijenoord_2 }
 						}
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = HIR_homeland_development_z
+		icon = GFX_focus_HIR_homeland_development_plan_z
+		search_filters = { FOCUS_FILTER_HIR_HOME }
+		
+		prerequisite = { focus = HIR_dutch_nationalism2 }
+		prerequisite = { focus = HIR_join_axis }
+		mutually_exclusive = {focus = HIR_homeland_development_3 }
+		relative_position_id = HIR_dutch_nationalism2
+		x = -1
+		y = 2
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+			REI = {
+				add_offsite_building = { type = dockyard level = 4 }
+				add_opinion_modifier = {
+					target = HIR
+					modifier = hir_plam_z
+				}
+			}
+			if = {
+				limit = { has_completed_focus = HIR_focus_homeland_development }
+				custom_effect_tooltip = HIR_focus_homeland_development_effect
+				add_to_variable = {
+					var = 107.world_stage_power
+					value = 5
+					tooltip = add_world_stage_power_no_scope_tt
+				}
+			} else = {
+				custom_effect_tooltip = HIR_focus_homeland_development_trigger
+				effect_tooltip = {
+					add_to_variable = {
+						var = 107.world_stage_power
+						value = 5
+						tooltip = add_world_stage_power_no_scope_tt
 					}
 				}
 			}
