@@ -9,6 +9,373 @@ focus_tree = {
 	}
 	continuous_focus_position = { x = 20 y = 2000 }
 	
+	### Political Branch {
+	
+	# Yamamoto/Monarchist Branch
+	
+	focus = {
+		id = KYU_back_yamamoto_1
+		icon = GFX_goal_generic_army_doctrines
+		search_filters = {  }
+		
+		x = 0
+		y = 0
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			
+		}
+	}
+	
+	# Koga/Junta Branch
+	
+	focus = {
+		id = KYU_back_koga_1
+		icon = GFX_goal_generic_army_doctrines
+		search_filters = {  }
+		
+		relative_position_id = KYU_back_yamamoto_1
+		x = 2
+		y = 0
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			
+		}
+	}
+	
+	# Nagano/Fascist Branch
+	
+	focus = {
+		id = KYU_invite_nagano_1
+		icon = GFX_goal_generic_army_doctrines
+		search_filters = {  }
+		
+		relative_position_id = KYU_back_koga_1
+		x = 2
+		y = 0
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			
+		}
+	}
+	
+	### } Economic Branch {
+	
+	focus = {
+		id = KYU_industrial_effort_1
+		icon = GFX_goal_generic_army_doctrines
+		search_filters = {  }
+		
+		relative_position_id = KYU_invite_nagano_1
+		x = 2
+		y = 0
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			
+		}
+	}
+	
+	### } Military Branch {
+	
+	focus = {
+		id = KYU_military_focus_1
+		icon = GFX_goal_generic_army_doctrines
+		search_filters = {  }
+		
+		relative_position_id = KYU_industrial_effort_1
+		x = 6
+		y = 0
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			
+		}
+	}
+	
+	### } NAV-shared branch {
+	
+	focus = {
+		id = KYU_NAV_active_diplomacy	# NAV: navigators, pseudo-shared branch
+		icon = GFX_goal_generic_improve_relations
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_DIPLOMACY }
+		
+		ai_will_do = { factor = 10 }
+		
+		mutually_exclusive = { focus = KYU_NAV_neutrality }
+		prerequisite = { focus = KYU_industrial_effort_1 }
+		relative_position_id = KYU_industrial_effort_1
+		x = 2
+		y = 1
+		
+		available = {
+			if = { NOT = { has_idea = PRT_political_backlash_spirit_democratic 			} limit = { has_government = democratic } }
+			if = { NOT = { has_idea = PRT_political_backlash_spirit_communism 				} limit = { has_government = communism } }
+			if = { NOT = { has_idea = PRT_political_backlash_spirit_autocracy 				} limit = { has_government = autocracy } }
+			if = { NOT = { has_idea = PRT_political_backlash_spirit_fascism 				} limit = { has_government = fascism } }
+			if = { NOT = { has_idea = PRT_political_backlash_spirit_neutrality 			} limit = { has_government = neutrality } }
+			if = { NOT = { has_idea = PRT_political_backlash_spirit_democratic_socialism	} limit = { has_government = democratic_socialism } }
+		}
+
+		cost = 10
+		
+		text_icon = navigators_style
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_political_power = 100
+			add_ideas = NAV_active_diplomacy_spirit
+			hidden_effect = {
+				every_possible_country = {
+					limit = { NOT = { TAG = ROOT } }
+					add_opinion_modifier = {
+						target = ROOT
+						modifier  = NAV_active_diplomacy_opinion
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = KYU_NAV_neutrality	# NAV: navigators, pseudo-shared branch
+		icon = GFX_goal_GENERIC_neutrality_2
+		search_filters = { FOCUS_FILTER_STABILITY }
+		
+		ai_will_do = { factor = 10 }
+		
+		mutually_exclusive = { focus = KYU_NAV_active_diplomacy }
+		prerequisite = { focus = KYU_military_focus_1 }
+		relative_position_id = KYU_military_focus_1
+		x = -2
+		y = 1
+		
+	#	available = {
+	#		if = { NOT = { has_idea = PRT_political_backlash_spirit_democratic 			} limit = { has_government = democratic } }
+	#		if = { NOT = { has_idea = PRT_political_backlash_spirit_communism 				} limit = { has_government = communism } }
+	#		if = { NOT = { has_idea = PRT_political_backlash_spirit_autocracy 				} limit = { has_government = autocracy } }
+	#		if = { NOT = { has_idea = PRT_political_backlash_spirit_fascism 				} limit = { has_government = fascism } }
+	#		if = { NOT = { has_idea = PRT_political_backlash_spirit_neutrality 			} limit = { has_government = neutrality } }
+	#		if = { NOT = { has_idea = PRT_political_backlash_spirit_democratic_socialism	} limit = { has_government = democratic_socialism } }
+	#	}
+
+		cost = 10
+		
+		available_if_capitulated = yes
+		
+		text_icon = navigators_style
+
+		completion_reward = {
+			add_stability = 0.1
+		}
+	}
+	
+	focus = {
+		id = KYU_NAV_aggressive	# NAV: navigators, pseudo-shared branch
+		icon = GFX_goal_generic_aggressive_western
+		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WAR_SUPPORT }
+		
+		ai_will_do = { factor = 10 }
+		
+		prerequisite = { focus = KYU_NAV_neutrality focus = KYU_NAV_active_diplomacy }
+		relative_position_id = KYU_NAV_neutrality
+		x = 1
+		y = 1
+		
+		available = {
+			if = {
+				limit = {
+					NOT = {
+						AND = {
+							has_completed_focus = KYU_NAV_befriend_PRT
+							has_completed_focus = KYU_NAV_befriend_HIR
+						}
+					}
+				}
+				custom_trigger_tooltip = {
+					tooltip = KYU_NAV_aggressive_trigger
+					NOT = {
+						AND = {
+							has_completed_focus = KYU_NAV_befriend_PRT
+							has_completed_focus = KYU_NAV_befriend_HIR
+						}
+					}
+				}
+			} else = {
+				custom_trigger_tooltip = {
+					tooltip = KYU_NAV_aggressive_trigger2
+					NOT = {
+						AND = {
+							has_completed_focus = KYU_NAV_befriend_PRT
+							has_completed_focus = KYU_NAV_befriend_HIR
+						}
+					}
+				}
+			}
+		}
+
+		cost = 10
+		
+		available_if_capitulated = yes
+		
+		text_icon = navigators_style
+
+		completion_reward = {
+			add_war_support = 0.05
+			# add decisions
+		}
+	}
+	
+	focus = {
+		id = KYU_NAV_befriend_HIR	# NAV: navigators, pseudo-shared branch
+		icon = { value = GFX_focus_generic_diplomacy_HIR_autocracy trigger = 			{ HIR = { has_government = autocracy } } }
+		icon = { value = GFX_focus_generic_diplomacy_HIR_communism trigger = 			{ HIR = { has_government = communism } } }
+		icon = { value = GFX_focus_generic_diplomacy_HIR_democratic trigger = 			{ HIR = { has_government = democratic } } }
+		icon = { value = GFX_focus_generic_diplomacy_HIR_democratic_socialism trigger = { HIR = { has_government = democratic_socialism } } }
+		icon = { value = GFX_focus_generic_diplomacy_HIR_fascism trigger = 				{ HIR = { has_government = fascism } } }
+		icon = { value = GFX_focus_generic_diplomacy_HIR_neutrality trigger = 			{ HIR = { has_government = neutrality } } }
+		icon = GFX_goal_generic_dangerous_deal
+		dynamic = yes
+		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_POLITICAL }
+		
+		ai_will_do = { factor = 10 }
+		
+		prerequisite = { focus = KYU_NAV_active_diplomacy }
+		relative_position_id = KYU_NAV_active_diplomacy
+		x = -1
+		y = 1
+		
+		available = {
+			NOT = { has_country_flag = reject_overture_from_HIR }
+			HIR = { NOT = { has_country_flag = reject_overture_from_PRT } }
+			if = {
+				limit = {
+					NOT = {
+						AND = {
+							has_completed_focus = KYU_NAV_befriend_PRT
+							has_completed_focus = KYU_NAV_aggressive
+						}
+					}
+				}
+				custom_trigger_tooltip = {
+					tooltip = KYU_NAV_befriend_HIR_trigger
+					NOT = {
+						AND = {
+							has_completed_focus = KYU_NAV_befriend_PRT
+							has_completed_focus = KYU_NAV_aggressive
+						}
+					}
+				}
+			} else = {
+				custom_trigger_tooltip = {
+					tooltip = KYU_NAV_befriend_HIR_trigger2
+					NOT = {
+						AND = {
+							has_completed_focus = KYU_NAV_befriend_PRT
+							has_completed_focus = KYU_NAV_aggressive
+						}
+					}
+				}
+			}
+		}
+
+		cost = 10
+		
+		available_if_capitulated = yes
+		
+		text_icon = navigators_style
+
+		completion_reward = {
+			
+		}
+	}
+	
+	focus = {
+		id = KYU_NAV_befriend_PRT	# NAV: navigators, pseudo-shared branch
+		icon = { value = GFX_focus_generic_diplomacy_PRT_autocracy trigger = 			{ PRT = { has_government = autocracy } } }
+		icon = { value = GFX_focus_generic_diplomacy_PRT_communism trigger = 			{ PRT = { has_government = communism } } }
+		icon = { value = GFX_focus_generic_diplomacy_PRT_democratic trigger = 			{ PRT = { has_government = democratic } } }
+		icon = { value = GFX_focus_generic_diplomacy_PRT_democratic_socialism trigger = { PRT = { has_government = democratic_socialism } } }
+		icon = { value = GFX_focus_generic_diplomacy_PRT_fascism trigger = 				{ PRT = { has_government = fascism } } }
+		icon = { value = GFX_focus_generic_diplomacy_PRT_neutrality trigger = 			{ PRT = { has_government = neutrality } } }
+		icon = GFX_goal_generic_dangerous_deal
+		dynamic = yes
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		
+		ai_will_do = { factor = 10 }
+		
+		prerequisite = { focus = KYU_NAV_active_diplomacy }
+		relative_position_id = KYU_NAV_active_diplomacy
+		x = 1
+		y = 1
+		
+		available = {
+			NOT = { has_country_flag = reject_overture_from_KYU }
+			KYU = { NOT = { has_country_flag = reject_overture_from_PRT } }
+			if = {
+				limit = {
+					NOT = {
+						AND = {
+							has_completed_focus = KYU_NAV_befriend_HIR
+							has_completed_focus = KYU_NAV_aggressive
+						}
+					}
+				}
+				custom_trigger_tooltip = {
+					tooltip = KYU_NAV_befriend_PRT_trigger
+					NOT = {
+						AND = {
+							has_completed_focus = KYU_NAV_befriend_HIR
+							has_completed_focus = KYU_NAV_aggressive
+						}
+					}
+				}
+			} else = {
+				custom_trigger_tooltip = {
+					tooltip = KYU_NAV_befriend_PRT_trigger2
+					NOT = {
+						AND = {
+							has_completed_focus = KYU_NAV_befriend_HIR
+							has_completed_focus = KYU_NAV_aggressive
+						}
+					}
+				}
+			}
+		}
+
+		cost = 10
+		
+		available_if_capitulated = yes
+		
+		text_icon = navigators_style
+
+		completion_reward = {
+			
+		}
+	}
+	
+	########### OLD TREE
+	########### OLD TREE
+	########### OLD TREE
+	
 	focus = {
 		id = KYU_industrial_effort
 		icon = GFX_focus_generic_industry
