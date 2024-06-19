@@ -129,7 +129,7 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = KYU_kyushu_shogunate
+		id = KYU_kyushu_shogunate	# Proclaim a new emperor
 		icon = GFX_goal_generic_army_doctrines
 		search_filters = { FOCUS_FILTER_YAMAMOTO FOCUS_FILTER_POLITICAL }
 		
@@ -177,9 +177,84 @@ focus_tree = {
 		
 		mutually_exclusive = { focus = KYU_back_yamamoto_1 focus = KYU_back_koga_1 }
 		relative_position_id = KYU_back_koga_1
+		x = 6
+		y = 0
+		cost = 10
+		
+		available = {
+			OR = {
+				PRO = { NOT = { has_government = fascism } }
+				PRO = { exists = no }
+			}
+		}
+		
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			
+		}
+	}
+	
+	### } Mini Seto Crisis Branch {
+	
+	focus = {
+		id = KYU_seto_crises_back_chu
+		icon = GFX_focus_KYU_back_chu
+		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		
+		prerequisite = { focus = KYU_back_koga_1 }
+		mutually_exclusive = { focus = KYU_seto_crises_back_ims focus = KYU_seto_crises_back_shi }
+		relative_position_id = KYU_back_koga_1
+		x = 1
+		y = 1
+		cost = 10
+		
+		available = { has_global_flag = seto_crisis_active }
+		
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			
+		}
+	}
+	
+	focus = {
+		id = KYU_seto_crises_back_ims
+		icon = GFX_focus_KYU_back_ims
+		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		
+		prerequisite = { focus = KYU_back_koga_1 focus = KYU_invite_nagano_1 }
+		mutually_exclusive = { focus = KYU_seto_crises_back_shi focus = KYU_seto_crises_back_chu }
+		relative_position_id = KYU_seto_crises_back_chu
 		x = 2
 		y = 0
 		cost = 10
+		
+		available = { has_global_flag = seto_crisis_active }
+		
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			
+		}
+	}
+	
+	focus = {
+		id = KYU_seto_crises_back_shi
+		icon = GFX_focus_KYU_back_shi
+		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		
+		prerequisite = { focus = KYU_invite_nagano_1 }
+		mutually_exclusive = { focus = KYU_seto_crises_back_ims focus = KYU_seto_crises_back_chu }
+		relative_position_id = KYU_seto_crises_back_ims
+		x = 2
+		y = 0
+		cost = 10
+		
+		available = { has_global_flag = seto_crisis_active }
 		
 		ai_will_do = {
 			factor = 10
@@ -209,6 +284,108 @@ focus_tree = {
 		}
 	}
 	
+	focus = {
+		id = KYU_solomonic_solution
+		icon = GFX_focus_KYU_solomonic_solution
+		search_filters = { FOCUS_FILTER_ANNEXATION }
+		
+		prerequisite = { focus = KYU_industrial_effort_1 focus = KYU_military_focus_1 }
+		mutually_exclusive = { focus = KYU_demand_okinawa }
+		relative_position_id = KYU_industrial_effort_1
+		x = 6
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			
+		}
+	}
+	
+	focus = {
+		id = KYU_tanegashima_factories
+		icon = GFX_focus_generic_arms_factory
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KYU_solomonic_solution focus = KYU_demand_okinawa }
+		relative_position_id = KYU_solomonic_solution
+		x = 1
+		y = 1
+		cost = 10
+		
+		available = { 42 = { OWNER = { OR = { tag = KYU is_subject_of = KYU } } } }
+		
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			add_tech_bonus = {
+				name = infantry_bonus
+				bonus = 1.0
+				uses = 1
+				category = infantry_weapons
+			}
+			if = {
+				limit = {
+					42 = {
+						free_building_slots = {
+							building = arms_factory
+							size > 0
+							include_locked = yes
+						}
+					}
+				}
+				if = {
+					limit = {
+						42 = {
+							free_building_slots = {
+								building = arms_factory
+								size > 1
+								include_locked = yes
+							}
+						}
+					}
+					42 = {
+						add_building_construction = {
+							type = arms_factory
+							level = 2
+							instant_build = yes
+						}
+						add_extra_state_shared_building_slots = 2
+					}
+				} else = {
+					42 = {
+						add_building_construction = {
+							type = arms_factory
+							level = 1
+							instant_build = yes
+						}
+						add_extra_state_shared_building_slots = 1
+					}
+					random_controlled_state = {
+						limit = {
+							is_coastal = yes
+							free_building_slots = {
+								building = dockyard
+								size > 0
+								include_locked = yes
+							}
+						}
+						prioritize = { 92 69 142 }
+						add_building_construction = {
+							type = arms_factory
+							level = 1
+							instant_build = yes
+						}
+						add_extra_state_shared_building_slots = 1
+					}
+				}
+			}
+		}
+	}
+	
 	### } Military Branch {
 	
 	focus = {
@@ -217,8 +394,28 @@ focus_tree = {
 		search_filters = {  }
 		
 		relative_position_id = KYU_industrial_effort_1
-		x = 6
+		x = 10
 		y = 0
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			
+		}
+	}
+	
+	focus = {
+		id = KYU_demand_okinawa
+		icon = GFX_focus_KYU_claim_okinawa
+		search_filters = { FOCUS_FILTER_ANNEXATION }
+		
+		prerequisite = { focus = KYU_military_focus_1 }
+		mutually_exclusive = { focus = KYU_solomonic_solution }
+		relative_position_id = KYU_military_focus_1
+		x = -2
+		y = 1
 		cost = 10
 		
 		ai_will_do = {
@@ -239,7 +436,7 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		
 		mutually_exclusive = { focus = KYU_NAV_neutrality }
-		prerequisite = { focus = KYU_industrial_effort_1 }
+		prerequisite = { focus = KYU_military_focus_1 focus = KYU_industrial_effort_1 }
 		relative_position_id = KYU_industrial_effort_1
 		x = 2
 		y = 1
@@ -273,9 +470,9 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		
 		mutually_exclusive = { focus = KYU_NAV_active_diplomacy }
-		prerequisite = { focus = KYU_military_focus_1 }
+		prerequisite = { focus = KYU_military_focus_1 focus = KYU_industrial_effort_1 }
 		relative_position_id = KYU_military_focus_1
-		x = -2
+		x = -6
 		y = 1
 
 		cost = 10
@@ -291,7 +488,7 @@ focus_tree = {
 	
 	focus = {
 		id = KYU_NAV_aggressive	# NAV: navigators, pseudo-shared branch
-		icon = GFX_goal_generic_aggressive_western
+		icon = GFX_goal_generic_aggressive_eastern
 		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WAR_SUPPORT }
 		
 		ai_will_do = { factor = 10 }
@@ -2075,7 +2272,7 @@ modifier = {
 		}
 	}	
 		completion_reward = {
-		country_event = kyushu.1
+		country_event = kyushuold.1
 		add_stability = 0.05
 		add_war_support = 0.05
 		add_political_power = 100
@@ -2190,7 +2387,7 @@ modifier = {
 				}
 			}
 		completion_reward = {
-		SHI = { country_event = kyushu.2 }
+		SHI = { country_event = kyushuold.2 }
 		}
 	}
 	
@@ -2310,7 +2507,7 @@ modifier = {
 		}	
 		will_lead_to_war_with = PRT
 		completion_reward = {
-		PRT = { country_event = kyushu.14 }
+		PRT = { country_event = kyushuold.14 }
 		}
 	}
 	
@@ -2777,8 +2974,8 @@ modifier = {
 			factor = 10
 		}	
 		completion_reward = {
-			EZO = {country_event = kyushu.16}
-			PRO = {country_event = kyushu.16}
+			EZO = {country_event = kyushuold.16}
+			PRO = {country_event = kyushuold.16}
 		}
 	}
 
@@ -2905,7 +3102,7 @@ modifier = {
 		}	
 		completion_reward = {
 		PRO = {create_faction = KYU_republican_front}
-		country_event = kyushu.4
+		country_event = kyushuold.4
 		
 	}
 }
@@ -2967,7 +3164,7 @@ modifier = {
 			factor = 10
 		}	
 		completion_reward = {
-		country_event = kyushu.5
+		country_event = kyushuold.5
 		news_event = { days = 2 id = SSnews.9 }
 		
 		}
@@ -3001,7 +3198,7 @@ modifier = {
 		}	
 		completion_reward = {
 		KAN = {create_faction = KYU_imperial_alliance}
-		country_event = kyushu.6
+		country_event = kyushuold.6
 		
 		}
 	}
@@ -3027,7 +3224,7 @@ modifier = {
 			factor = 10
 		}	
 		completion_reward = {
-			HIR = {country_event = kyushu.18}
+			HIR = {country_event = kyushuold.18}
 		}
 	}
 
@@ -3106,7 +3303,7 @@ modifier = {
 			factor = 10
 		}	
 		completion_reward = {
-			OSA = {country_event = kyushu.17}
+			OSA = {country_event = kyushuold.17}
 		}
 	}
 
@@ -3144,7 +3341,7 @@ modifier = {
 				limit = {
 					NOT = {HIR = {is_in_faction_with = OSA}}
 				}
-				HIR = {country_event = kyushu.18}
+				HIR = {country_event = kyushuold.18}
 			}
 		}
 	}
@@ -3239,7 +3436,7 @@ modifier = {
 		}	
 		completion_reward = {
 		add_ideas = KYU_the_unthinkable_option
-	CHU = { country_event = kyushu.7 }
+	CHU = { country_event = kyushuold.7 }
 		}
 	}
 	
@@ -3264,7 +3461,7 @@ modifier = {
 				add_idea = KYU_naval_junta2
 				remove_idea = KYU_naval_junta
 			}
-		 KYU = { country_event = kyushu.10 }
+		 KYU = { country_event = kyushuold.10 }
 		}
 	}
 	
@@ -3354,7 +3551,7 @@ available = {
 		}
 		
 		completion_reward = {
-		country_event = kyushu.12
+		country_event = kyushuold.12
 		}
 	}
 	
