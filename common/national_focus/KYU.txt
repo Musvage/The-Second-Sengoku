@@ -71,7 +71,7 @@ focus_tree = {
 	
 	focus = {
 		id = KYU_cult_of_personality
-		icon = GFX_goal_generic_army_doctrines
+		icon = GFX_focus_KYU_cult_of_personality
 		search_filters = { FOCUS_FILTER_YAMAMOTO FOCUS_FILTER_POLITICAL }
 		
 		mutually_exclusive = { focus = KYU_find_pretenders }
@@ -111,7 +111,7 @@ focus_tree = {
 	
 	focus = {
 		id = KYU_cross_rubicon
-		icon = GFX_goal_generic_army_doctrines
+		icon = GFX_goal_generic_demand_territory
 		search_filters = { FOCUS_FILTER_YAMAMOTO FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = KYU_cult_of_personality }
@@ -130,7 +130,7 @@ focus_tree = {
 	
 	focus = {
 		id = KYU_kyushu_shogunate	# Proclaim a new emperor
-		icon = GFX_goal_generic_army_doctrines
+		icon = GFX_focus_KAN_channalge_absolutists
 		search_filters = { FOCUS_FILTER_YAMAMOTO FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = KYU_find_pretenders }
@@ -151,7 +151,7 @@ focus_tree = {
 	
 	focus = {
 		id = KYU_back_koga_1
-		icon = GFX_goal_generic_army_doctrines
+		icon = GFX_focus_generic_military_mission
 		search_filters = { FOCUS_FILTER_KOGA FOCUS_FILTER_POLITICAL }
 		
 		mutually_exclusive = { focus = KYU_back_yamamoto_1 focus = KYU_invite_nagano_1 }
@@ -172,7 +172,7 @@ focus_tree = {
 	
 	focus = {
 		id = KYU_invite_nagano_1
-		icon = GFX_goal_generic_army_doctrines
+		icon = GFX_focus_KYU_the_black_dragon
 		search_filters = { FOCUS_FILTER_NAGANO FOCUS_FILTER_POLITICAL }
 		
 		mutually_exclusive = { focus = KYU_back_yamamoto_1 focus = KYU_back_koga_1 }
@@ -269,7 +269,7 @@ focus_tree = {
 	focus = {
 		id = KYU_industrial_effort_1
 		icon = GFX_goal_generic_army_doctrines
-		search_filters = {  }
+		search_filters = { FOCUS_FILTER_INDUSTRY }
 		
 		relative_position_id = KYU_invite_nagano_1
 		x = 2
@@ -278,9 +278,177 @@ focus_tree = {
 		
 		ai_will_do = {
 			factor = 10
-		}	
+		}
 		completion_reward = {
 			
+		}
+	}
+	
+	focus = {
+		id = KYU_industrial_effort_2	# Kodama Plan
+		icon = GFX_focus_generic_great_depression_4
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		
+		prerequisite = { focus = KYU_industrial_effort_1 }
+		relative_position_id = KYU_industrial_effort_1
+		x = -1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		bypass = {
+			custom_trigger_tooltip = {
+				tooltip = production_effort_tt
+				all_controlled_state = {
+					free_building_slots = {
+						building = industrial_complex
+						size < 1
+						include_locked = yes
+					}
+				}
+			}
+		}
+		
+		completion_reward = {
+			random_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				prioritize = { 202 }
+				if = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_building_construction = {
+						type = industrial_complex
+						level = 2
+						instant_build = yes
+					}
+					add_extra_state_shared_building_slots = 2
+				} else = {
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+					add_extra_state_shared_building_slots = 1
+					if = {
+						limit = { ROOT = { num_of_controlled_states > 1 } }
+						ROOT = {
+							random_controlled_state = {
+								limit = {
+									free_building_slots = {
+										building = industrial_complex
+										size > 0
+										include_locked = yes
+									}
+								}
+								add_building_construction = {
+									type = industrial_complex
+									level = 1
+									instant_build = yes
+								}
+								add_extra_state_shared_building_slots = 1
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = KYU_production_effort_1
+		icon = GFX_focus_generic_arms_factory
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		
+		prerequisite = { focus = KYU_industrial_effort_1 }
+		relative_position_id = KYU_industrial_effort_1
+		x = 1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		bypass = {
+			custom_trigger_tooltip = {
+				tooltip = production_effort_tt
+				all_controlled_state = {
+					free_building_slots = {
+						building = arms_factory
+						size < 1
+						include_locked = yes
+					}
+				}
+			}
+		}
+		
+		completion_reward = {
+			random_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				prioritize = { 202 }
+				if = {
+					limit = {
+						free_building_slots = {
+							building = arms_factory
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_building_construction = {
+						type = arms_factory
+						level = 2
+						instant_build = yes
+					}
+					add_extra_state_shared_building_slots = 2
+				} else = {
+					add_building_construction = {
+						type = arms_factory
+						level = 1
+						instant_build = yes
+					}
+					add_extra_state_shared_building_slots = 1
+					if = {
+						limit = { ROOT = { num_of_controlled_states > 1 } }
+						ROOT = {
+							random_controlled_state = {
+								limit = {
+									free_building_slots = {
+										building = arms_factory
+										size > 0
+										include_locked = yes
+									}
+								}
+								add_building_construction = {
+									type = arms_factory
+									level = 1
+									instant_build = yes
+								}
+								add_extra_state_shared_building_slots = 1
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 	
@@ -292,7 +460,7 @@ focus_tree = {
 		prerequisite = { focus = KYU_industrial_effort_1 focus = KYU_military_focus_1 }
 		mutually_exclusive = { focus = KYU_demand_okinawa }
 		relative_position_id = KYU_industrial_effort_1
-		x = 6
+		x = 7
 		y = 1
 		cost = 10
 		
@@ -390,17 +558,18 @@ focus_tree = {
 	
 	focus = {
 		id = KYU_military_focus_1
-		icon = GFX_goal_generic_army_doctrines
+		icon = GFX_focus_generic_army
 		search_filters = {  }
 		
 		relative_position_id = KYU_industrial_effort_1
-		x = 10
+		x = 11
 		y = 0
 		cost = 10
 		
 		ai_will_do = {
 			factor = 10
-		}	
+		}
+		
 		completion_reward = {
 			
 		}
@@ -438,7 +607,7 @@ focus_tree = {
 		mutually_exclusive = { focus = KYU_NAV_neutrality }
 		prerequisite = { focus = KYU_military_focus_1 focus = KYU_industrial_effort_1 }
 		relative_position_id = KYU_industrial_effort_1
-		x = 2
+		x = 3
 		y = 1
 
 		cost = 10
