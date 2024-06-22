@@ -269,7 +269,7 @@ focus_tree = {
 	
 	focus = {
 		id = KYU_industrial_effort_1
-		icon = GFX_focus_generic_western_production
+		icon = GFX_focus_generic_industry_effort
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		
 		relative_position_id = KYU_invite_nagano_1
@@ -458,7 +458,7 @@ focus_tree = {
 		icon = GFX_focus_KYU_solomonic_solution
 		search_filters = { FOCUS_FILTER_ANNEXATION }
 		
-		prerequisite = { focus = KYU_industrial_effort_1 focus = KYU_military_focus_1 }
+		prerequisite = { focus = KYU_industrial_effort_1 focus = KYU_war_council }
 		mutually_exclusive = { focus = KYU_demand_okinawa }
 		relative_position_id = KYU_industrial_effort_1
 		x = 8
@@ -467,15 +467,23 @@ focus_tree = {
 		
 		ai_will_do = {
 			factor = 10
-		}	
+		}
+		
+		available = {
+			NOT = {
+				has_war_with = MUS
+				has_war_with = SUS
+			}
+		}
+		
 		completion_reward = {
 			
 		}
 	}
 	
 	focus = {
-		id = KYU_western_advisers
-		icon = GFX_KYU_western_focus
+		id = KYU_become_lon_observer
+		icon = GFX_focus_GENERIC_lon_observer
 		search_filters = {  }
 		
 		prerequisite = { focus = KYU_solomonic_solution }
@@ -486,7 +494,64 @@ focus_tree = {
 		
 		ai_will_do = {
 			factor = 10
-		}	
+		}
+		
+		available = {
+			has_global_flag = league_of_nations_exists
+			OR = {
+				has_war = no
+				any_enemy_country = {
+					not_lon_member_observer = yes
+				}
+			}
+		}
+		
+		bypass = { NOT = { has_global_flag = league_of_nations_exists } }
+		
+		completion_reward = {
+			add_ideas = SS_lon_observer_japan
+			add_political_power = 100
+		}
+	}
+	
+	focus = {
+		id = KYU_western_advisers
+		icon = GFX_KYU_western_focus
+		search_filters = {  }
+		
+		prerequisite = { focus = KYU_become_lon_observer }
+		relative_position_id = KYU_become_lon_observer
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		available = {
+			OR = {
+				AND = {
+					NOT = { has_war_with = OSA }
+					OSA = {
+						has_opinion = {
+							target = ROOT
+							value > 49
+						}
+					}
+				}
+				AND = {
+					NOT = { has_war_with = KOB }
+					KOB = {
+						has_opinion = {
+							target = ROOT
+							value > 49
+						}
+					}
+				}
+			}
+		}
+		
 		completion_reward = {
 			
 		}
@@ -577,12 +642,12 @@ focus_tree = {
 	### } Military Branch {
 	
 	focus = {
-		id = KYU_military_focus_1
+		id = KYU_war_council
 		icon = GFX_focus_generic_army
 		search_filters = {  }
 		
 		relative_position_id = KYU_industrial_effort_1
-		x = 9
+		x = 10
 		y = 0
 		cost = 10
 		
@@ -600,7 +665,7 @@ focus_tree = {
 		icon = GFX_focus_KYU_claim_okinawa
 		search_filters = { FOCUS_FILTER_ANNEXATION }
 		
-		prerequisite = { focus = KYU_military_focus_1 }
+		prerequisite = { focus = KYU_war_council }
 		mutually_exclusive = { focus = KYU_solomonic_solution }
 		relative_position_id = KYU_solomonic_solution
 		x = 2
@@ -609,7 +674,43 @@ focus_tree = {
 		
 		ai_will_do = {
 			factor = 10
-		}	
+		}
+		
+		available = {
+			NOT = {
+				has_war_with = MUS
+				has_war_with = SUS
+			}
+		}
+		
+		bypass = {
+			available = {
+				OR = {
+					has_war_with = MUS
+					has_war_with = SUS
+				}
+			}
+		}
+		completion_reward = {
+			
+		}
+	}
+	
+	focus = {
+		id = KYU_defend_kyushu
+		icon = GFX_focus_HIR_tech_anti_sub
+		search_filters = {  }
+		
+		prerequisite = { focus = KYU_war_council}
+		relative_position_id = KYU_war_council
+		x = 2
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
 		completion_reward = {
 			
 		}
@@ -625,7 +726,7 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		
 		mutually_exclusive = { focus = KYU_NAV_neutrality }
-		prerequisite = { focus = KYU_military_focus_1 focus = KYU_industrial_effort_1 }
+		prerequisite = { focus = KYU_war_council focus = KYU_industrial_effort_1 }
 		relative_position_id = KYU_industrial_effort_1
 		x = 3
 		y = 1
@@ -659,8 +760,8 @@ focus_tree = {
 		ai_will_do = { factor = 10 }
 		
 		mutually_exclusive = { focus = KYU_NAV_active_diplomacy }
-		prerequisite = { focus = KYU_military_focus_1 focus = KYU_industrial_effort_1 }
-		relative_position_id = KYU_military_focus_1
+		prerequisite = { focus = KYU_war_council focus = KYU_industrial_effort_1 }
+		relative_position_id = KYU_war_council
 		x = -4
 		y = 1
 
@@ -868,7 +969,7 @@ focus_tree = {
 		icon = GFX_focus_generic_industry
 		x = 5
 		y = 0
-		relative_position_id = KYU_war_council
+		relative_position_id = KYU_war_council_old
 		cost = 10
 		available = {
 		}
@@ -2623,7 +2724,7 @@ modifier = {
 	}
 	
 	focus = {
-		id = KYU_war_council
+		id = KYU_war_council_old
 		icon = GFX_focus_generic_army
 		x = 9
 		y = 0
@@ -2661,8 +2762,8 @@ modifier = {
 		x = -1
 		y = 1
 		cost = 10
-		relative_position_id = KYU_war_council
-		prerequisite = { focus = KYU_war_council }
+		relative_position_id = KYU_war_council_old
+		prerequisite = { focus = KYU_war_council_old }
 		available = {
 		
 		}
@@ -2682,8 +2783,8 @@ modifier = {
 		x = 1
 		y = 1
 		cost = 10
-		relative_position_id = KYU_war_council
-		prerequisite = { focus = KYU_war_council }
+		relative_position_id = KYU_war_council_old
+		prerequisite = { focus = KYU_war_council_old }
 		available = {
 		has_army_manpower = { size > 175000 }
 		NOT = { has_war_with = RYU }
@@ -2736,7 +2837,7 @@ modifier = {
 		y = 0
 		cost = 10
 		relative_position_id = KYU_invite_shikoku
-		prerequisite = { focus = KYU_war_council }
+		prerequisite = { focus = KYU_war_council_old }
 		prerequisite = { focus = KYU_stabilize_the_nation }
 		mutually_exclusive = { focus = KYU_invite_shikoku }
 		available = {
@@ -3779,8 +3880,8 @@ available = {
 		x = 0
 		y = 2
 		cost = 10
-		relative_position_id = KYU_war_council
-		prerequisite = { focus = KYU_war_council }
+		relative_position_id = KYU_war_council_old
+		prerequisite = { focus = KYU_war_council_old }
 		available = {
 		}
 		ai_will_do = {
