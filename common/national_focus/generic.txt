@@ -2975,9 +2975,9 @@ focus_tree = {
 			add_political_power = 120
 			if = {
 				limit = { tag = IMS }
-				add_to_variable = { global.IMS_favor_CHU_other = -25 tooltip = IMS_chose_CHU_tooltip_negative }
-				add_to_variable = { global.IMS_favor_SHI_other = -25 tooltip = IMS_chose_SHI_tooltip_negative }
-				IMS_get_favor_all = yes
+				add_to_variable = { global.IMS_favor_CHU_other = -20 tooltip = IMS_chose_CHU_tooltip_negative }
+				add_to_variable = { global.IMS_favor_SHI_other = -20 tooltip = IMS_chose_SHI_tooltip_negative }
+				hidden_effect = { IMS_get_favor_all = yes }
 			}
 		}
 	}
@@ -3052,8 +3052,8 @@ focus_tree = {
 			add_stability = 0.1
 			if = {
 				limit = { tag = IMS }
-				add_to_variable = { global.IMS_favor_IMS_other = -25 tooltip = IMS_chose_IMS_tooltip_negative }
-				IMS_get_favor_all = yes
+				add_to_variable = { global.IMS_favor_IMS_other = -20 tooltip = IMS_chose_IMS_tooltip_negative }
+				hidden_effect = { IMS_get_favor_all = yes }
 			}
 		}
 	}
@@ -3729,6 +3729,7 @@ focus_tree = {
 		id = ss_generic_government_autocratic
 		icon = { value = GFX_focus_PRT_restore_monarchy trigger = { tag = PRT } }
 		icon = { value = GFX_focus_EZO_matsumae_clan trigger = { tag = EZO } }
+		icon = { value = GFX_focus_IMS_government_clan trigger = { tag = IMS } }
 		icon = GFX_focus_KYU_war_preparations
 		dynamic = yes
 		search_filters = { FOCUS_FILTER_POLITICAL }
@@ -3778,15 +3779,47 @@ focus_tree = {
 					is_core_of = MTS
 				}
 			}
+			if = {
+				limit = { tag = IMS }
+				NOT = { country_exists = IMA }
+			}
 		}
 		bypass = {
 			has_government = autocracy
 		}
 
 		completion_reward = {
-			set_politics = {
-				ruling_party = autocracy
-				elections_allowed = no
+			if = {
+				limit = { tag = IMS }
+				custom_effect_tooltip = ss_generic_government_autocratic_tt_IMS
+				every_possible_country = {
+					limit = { tag = IMA }
+					IMA_Imaban_Matsudaira_Ujimori = { set_nationality  = IMS }
+					IMA_Imaban_Matsudaira_Yoshikazu = { set_nationality  = IMS }
+				}
+				set_party_name = {
+					ideology = autocracy
+					long_name = "Imaban Matsudaira"
+					name = "Imaban Matsudaira"
+				}
+				promote_character = IMA_Imaban_Matsudaira_Ujimori
+				custom_effect_tooltip = ss_generic_government_autocratic_tt_IMS_2
+				hidden_effect = {
+					set_cosmetic_tag = IMS_IMA
+					every_state = {
+						limit = { is_core_of = IMA }
+						remove_core_of = IMA
+					}
+					set_politics = {
+						ruling_party = autocracy
+						elections_allowed = no
+					}
+				}
+			} else = {
+				set_politics = {
+					ruling_party = autocracy
+					elections_allowed = no
+				}
 			}
 		}
 	}
