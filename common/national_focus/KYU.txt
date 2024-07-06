@@ -66,7 +66,7 @@ focus_tree = {
 	focus = {
 		id = KYU_clan_generals
 		icon = GFX_focus_KYU_clan_generals
-		search_filters = { FOCUS_FILTER_YAMAMOTO FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_YAMAMOTO FOCUS_FILTER_ARMY_REFORM }
 		
 		prerequisite = { focus = KYU_ally_clans }
 		relative_position_id = KYU_ally_clans
@@ -596,7 +596,7 @@ focus_tree = {
 	focus = {
 		id = KYU_western_advisers
 		icon = GFX_KYU_western_focus
-		search_filters = {  }
+		search_filters = { FOCUS_FILTER_ARMY_REFORM }
 		
 		prerequisite = { focus = KYU_become_lon_observer }
 		relative_position_id = KYU_become_lon_observer
@@ -628,11 +628,79 @@ focus_tree = {
 						}
 					}
 				}
+				AND = {
+					NOT = { has_war_with = MUS }
+					MUS = {
+						has_opinion = {
+							target = ROOT
+							value > 49
+						}
+					}
+				}
 			}
 		}
 		
-		completion_reward = {
-			
+		completion_reward = {	# effect seems convoluted but it's for better tooltips
+			custom_effect_tooltip = KYU_western_advisers_tt
+
+			if = {
+				limit = { NOT = { has_war_with = OSA } OSA = { has_opinion = { target = ROOT value > 49 } } }
+				set_country_flag = hire_OSA_advisers
+				character_list_tooltip = { limit = { has_trait = foreign_adviser_OSA has_trait = army_cavalry_2 } }
+				character_list_tooltip = { limit = { has_trait = foreign_adviser_OSA has_trait = army_logistics_2 } }
+				hidden_effect = { retire_character = AMC_adviser_army_cavalry retire_character = KOB_adviser_army_cavalry retire_character = AMC_adviser_army_logistics retire_character = KOB_adviser_army_logistics }
+			} else_if = {
+				limit = { NOT = { has_war_with = KOB } KOB = { has_opinion = { target = ROOT value > 49 } } }
+				set_country_flag = hire_KOB_advisers
+				character_list_tooltip = { limit = { has_trait = foreign_adviser_KOB has_trait = army_cavalry_1 } }
+				character_list_tooltip = { limit = { has_trait = foreign_adviser_KOB has_trait = army_logistics_1 } }
+				hidden_effect = { retire_character = OSA_adviser_army_cavalry retire_character = OSA_adviser_army_logistics retire_character = AMC_adviser_army_cavalry retire_character = AMC_adviser_army_logistics }
+			} else_if = {
+				limit = { NOT = { has_war_with = MUS } MUS = { has_opinion = { target = ROOT value > 49 } } }
+				set_country_flag = hire_USA_advisers
+				character_list_tooltip = { limit = { has_trait = foreign_adviser_USA has_trait = army_cavalry_1 } }
+				character_list_tooltip = { limit = { has_trait = foreign_adviser_USA has_trait = army_logistics_1 } }
+				hidden_effect = { retire_character = OSA_adviser_army_cavalry retire_character = OSA_adviser_army_logistics retire_character = AMC_adviser_army_cavalry retire_character = AMC_adviser_army_logistics }
+			}
+			if = {
+				limit = { NOT = { has_war_with = KOB } KOB = { has_opinion = { target = ROOT value > 49 } } }
+				set_country_flag = hire_KOB_advisers
+				character_list_tooltip = { limit = { has_trait = foreign_adviser_KOB has_trait = army_division_limit_2 } }
+				character_list_tooltip = { limit = { has_trait = foreign_adviser_KOB has_trait = army_chief_defensive_2 } }
+				hidden_effect = { retire_character = AMC_adviser_division_limit retire_character = OSA_adviser_division_limit retire_character = AMC_adviser_army_chief_defensive retire_character = OSA_adviser_army_chief_defensive }
+			} else_if = {
+				limit = { NOT = { has_war_with = MUS } MUS = { has_opinion = { target = ROOT value > 49 } } }
+				set_country_flag = hire_USA_advisers
+				character_list_tooltip = { limit = { has_trait = foreign_adviser_USA has_trait = army_division_limit_1 } }
+				character_list_tooltip = { limit = { has_trait = foreign_adviser_USA has_trait = army_chief_defensive_1 } }
+				hidden_effect = { retire_character = KOB_adviser_division_limit retire_character = OSA_adviser_division_limit retire_character = KOB_adviser_army_chief_defensive retire_character = OSA_adviser_army_chief_defensive }
+			} else_if = {
+				limit = { NOT = { has_war_with = OSA } OSA = { has_opinion = { target = ROOT value > 49 } } }
+				set_country_flag = hire_OSA_advisers
+				character_list_tooltip = { limit = { has_trait = foreign_adviser_OSA has_trait = army_division_limit_1 } }
+				character_list_tooltip = { limit = { has_trait = foreign_adviser_OSA has_trait = army_chief_defensive_1 } }
+				hidden_effect = { retire_character = AMC_adviser_division_limit retire_character = KOB_adviser_division_limit retire_character = AMC_adviser_army_chief_defensive retire_character = KOB_adviser_army_chief_defensive }
+			}
+			if = {
+				limit = { NOT = { has_war_with = MUS } MUS = { has_opinion = { target = ROOT value > 49 } } }
+				set_country_flag = hire_USA_advisers
+				character_list_tooltip = { limit = { has_trait = foreign_adviser_USA has_trait = army_chief_offensive_2 } }
+				character_list_tooltip = { limit = { has_trait = foreign_adviser_USA has_trait = army_artillery_2 } }
+				hidden_effect = { retire_character = OSA_adviser_artillery retire_character = KOB_adviser_artillery retire_character = OSA_adviser_army_chief_offensive retire_character = KOB_adviser_army_chief_offensive }
+			} else_if = {
+				limit = { NOT = { has_war_with = OSA } OSA = { has_opinion = { target = ROOT value > 49 } } }
+				set_country_flag = hire_OSA_advisers
+				character_list_tooltip = { limit = { has_trait = foreign_adviser_OSA has_trait = army_chief_offensive_1 } }
+				character_list_tooltip = { limit = { has_trait = foreign_adviser_OSA has_trait = army_artillery_1 } }
+				hidden_effect = { retire_character = AMC_adviser_artillery retire_character = AMC_adviser_army_chief_offensive retire_character = KOB_adviser_artillery retire_character = KOB_adviser_army_chief_offensive }
+			} else_if = {
+				limit = { NOT = { has_war_with = KOB } KOB = { has_opinion = { target = ROOT value > 49 } } }
+				set_country_flag = hire_KOB_advisers
+				character_list_tooltip = { limit = { has_trait = foreign_adviser_KOB has_trait = army_chief_offensive_1 } }
+				character_list_tooltip = { limit = { has_trait = foreign_adviser_KOB has_trait = army_artillery_1 } }
+				hidden_effect = { retire_character = AMC_adviser_artillery retire_character = AMC_adviser_army_chief_offensive retire_character = OSA_adviser_artillery retire_character = OSA_adviser_army_chief_offensive }
+			}
+			# NOTICE: for this effect, the triggers refers to MUS, who is the Main US colony, but the characters themselves are always in the AMC scope
 		}
 	}
 	
@@ -766,11 +834,9 @@ focus_tree = {
 		}
 		
 		bypass = {
-			available = {
-				OR = {
-					has_war_with = MUS
-					has_war_with = SUS
-				}
+			OR = {
+				has_war_with = MUS
+				has_war_with = SUS
 			}
 		}
 		completion_reward = {
@@ -3829,10 +3895,10 @@ modifier = {
 		}
 		
 		completion_reward = {
-		swap_ideas = {
-				add_idea = KYU_naval_junta2
-				remove_idea = KYU_naval_junta
-			}
+		#swap_ideas = {
+		#		add_idea = KYU_naval_junta2
+		#		remove_idea = KYU_naval_junta
+		#	}
 		 KYU = { country_event = kyushuold.10 }
 		}
 	}
@@ -3854,10 +3920,10 @@ available = {
 		}
 		
 		completion_reward = {
-		swap_ideas = {
-				add_idea = KYU_naval_junta3
-				remove_idea = KYU_naval_junta2
-			}
+	#	swap_ideas = {
+	#			add_idea = KYU_naval_junta3
+	#			remove_idea = KYU_naval_junta2
+	#		}
 		}
 	}
 	
@@ -4708,6 +4774,7 @@ available = {
 		}
 	}
 }
+#FOCUS_FILTER_ARMY_REFORM
 #FOCUS_FILTER_YAMAMOTO
 #FOCUS_FILTER_NAGANO
 #FOCUS_FILTER_KOGA
