@@ -1002,7 +1002,7 @@ focus_tree = {
 	focus = {
 		id = HIR_NAV_aggressive	# NAV: navigators, pseudo-shared branch
 		icon = GFX_goal_generic_aggressive_western
-		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WAR_SUPPORT }
 		
 		ai_will_do = { factor = 10 }
 		
@@ -1012,10 +1012,17 @@ focus_tree = {
 		y = 1
 		
 		available = {
-			NOT = {
-				has_completed_focus = HIR_NAV_befriend_KYU
-				has_completed_focus = HIR_NAV_befriend_PRT
+			custom_trigger_tooltip = {
+				tooltip = HIR_NAV_aggressive_trigger
+				NOT = {
+					AND = {
+						has_completed_focus = HIR_NAV_befriend_PRT
+						has_completed_focus = HIR_NAV_befriend_KYU
+					}
+				}
 			}
+			NOT = { is_in_faction_with = PRT }
+			NOT = { is_in_faction_with = KYU }
 		}
 
 		cost = 10
@@ -1025,6 +1032,7 @@ focus_tree = {
 		text_icon = navigators_style
 
 		completion_reward = {
+			add_war_support = 0.05
 			unlock_decision_category_tooltip = NAV_aggressive_diplomacy_category
 		}
 	}
@@ -1050,10 +1058,25 @@ focus_tree = {
 		
 		available = {
 			NOT = { has_country_flag = reject_overture_from_PRT }
-			PRT = { NOT = { has_country_flag = reject_overture_from_HIR } }
-			NOT = {
-				has_completed_focus = HIR_NAV_befriend_KYU
-				has_completed_focus = HIR_NAV_aggressive
+			custom_trigger_tooltip = {
+				tooltip = HIR_NAV_befriend_PRT_trigger
+				NOT = {
+					AND = {
+						has_completed_focus = HIR_NAV_befriend_KYU
+						has_completed_focus = HIR_NAV_aggressive
+					}
+				}
+			}
+			PRT = {
+				custom_trigger_tooltip = {
+					tooltip = PRT_NAV_befriend_HIR_trigger
+					NOT = {
+						AND = {
+							has_completed_focus = PRT_NAV_befriend_KYU
+							has_completed_focus = PRT_NAV_aggressive
+						}
+					}
+				}
 			}
 		}
 
@@ -1091,10 +1114,25 @@ focus_tree = {
 		
 		available = {
 			NOT = { has_country_flag = reject_overture_from_KYU }
-			KYU = { NOT = { has_country_flag = reject_overture_from_HIR } }
-			NOT = {
-				has_completed_focus = PRT_NAV_befriend_HIR
-				has_completed_focus = PRT_NAV_aggressive
+			custom_trigger_tooltip = {
+				tooltip = HIR_NAV_befriend_KYU_trigger
+				NOT = {
+					AND = {
+						has_completed_focus = HIR_NAV_befriend_PRT
+						has_completed_focus = HIR_NAV_aggressive
+					}
+				}
+			}
+			KYU = {
+				custom_trigger_tooltip = {
+					tooltip = KYU_NAV_befriend_HIR_trigger
+					NOT = {
+						AND = {
+							has_completed_focus = KYU_NAV_befriend_PRT
+							has_completed_focus = KYU_NAV_aggressive
+						}
+					}
+				}
 			}
 		}
 
@@ -1109,8 +1147,8 @@ focus_tree = {
 			custom_effect_tooltip = loc_if_accept
 			effect_tooltip = {
 				KYU = {
-					add_ideas = NAV_diplomatic_overture_HIR_spirit
 					give_guarantee = HIR
+					add_ideas = NAV_diplomatic_overture_HIR_spirit
 					add_opinion_modifier = {
 						target = HIR
 						modifier = NAV_diplomatic_overture_opinion

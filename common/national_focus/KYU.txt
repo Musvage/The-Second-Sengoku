@@ -595,7 +595,7 @@ focus_tree = {
 	
 	focus = {
 		id = KYU_western_advisers
-		icon = GFX_KYU_western_focus
+		icon = GFX_focus_KYU_western_mission
 		search_filters = { FOCUS_FILTER_ARMY_REFORM }
 		
 		prerequisite = { focus = KYU_become_lon_observer }
@@ -642,7 +642,6 @@ focus_tree = {
 		
 		completion_reward = {	# effect seems convoluted but it's for better tooltips
 			custom_effect_tooltip = KYU_western_advisers_tt
-
 			if = {
 				limit = { NOT = { has_war_with = OSA } OSA = { has_opinion = { target = ROOT value > 49 } } }
 				set_country_flag = hire_OSA_advisers
@@ -937,35 +936,17 @@ focus_tree = {
 		y = 1
 		
 		available = {
-			if = {
-				limit = {
-					NOT = {
-						AND = {
-							has_completed_focus = KYU_NAV_befriend_PRT
-							has_completed_focus = KYU_NAV_befriend_HIR
-						}
-					}
-				}
-				custom_trigger_tooltip = {
-					tooltip = KYU_NAV_aggressive_trigger
-					NOT = {
-						AND = {
-							has_completed_focus = KYU_NAV_befriend_PRT
-							has_completed_focus = KYU_NAV_befriend_HIR
-						}
-					}
-				}
-			} else = {
-				custom_trigger_tooltip = {
-					tooltip = KYU_NAV_aggressive_trigger2
-					NOT = {
-						AND = {
-							has_completed_focus = KYU_NAV_befriend_PRT
-							has_completed_focus = KYU_NAV_befriend_HIR
-						}
+			custom_trigger_tooltip = {
+				tooltip = KYU_NAV_aggressive_trigger
+				NOT = {
+					AND = {
+						has_completed_focus = KYU_NAV_befriend_PRT
+						has_completed_focus = KYU_NAV_befriend_HIR
 					}
 				}
 			}
+			NOT = { is_in_faction_with = PRT }
+			NOT = { is_in_faction_with = HIR }
 		}
 
 		cost = 10
@@ -976,7 +957,7 @@ focus_tree = {
 
 		completion_reward = {
 			add_war_support = 0.05
-			# add decisions
+			unlock_decision_category_tooltip = NAV_aggressive_diplomacy_category
 		}
 	}
 	
@@ -1001,32 +982,22 @@ focus_tree = {
 		
 		available = {
 			NOT = { has_country_flag = reject_overture_from_HIR }
-			HIR = { NOT = { has_country_flag = reject_overture_from_PRT } }
-			if = {
-				limit = {
-					NOT = {
-						AND = {
-							has_completed_focus = KYU_NAV_befriend_PRT
-							has_completed_focus = KYU_NAV_aggressive
-						}
+			custom_trigger_tooltip = {
+				tooltip = KYU_NAV_befriend_HIR_trigger
+				NOT = {
+					AND = {
+						has_completed_focus = KYU_NAV_befriend_PRT
+						has_completed_focus = KYU_NAV_aggressive
 					}
 				}
+			}
+			HIR = {
 				custom_trigger_tooltip = {
-					tooltip = KYU_NAV_befriend_HIR_trigger
+					tooltip = HIR_NAV_befriend_KYU_trigger
 					NOT = {
 						AND = {
-							has_completed_focus = KYU_NAV_befriend_PRT
-							has_completed_focus = KYU_NAV_aggressive
-						}
-					}
-				}
-			} else = {
-				custom_trigger_tooltip = {
-					tooltip = KYU_NAV_befriend_HIR_trigger2
-					NOT = {
-						AND = {
-							has_completed_focus = KYU_NAV_befriend_PRT
-							has_completed_focus = KYU_NAV_aggressive
+							has_completed_focus = HIR_NAV_befriend_PRT
+							has_completed_focus = HIR_NAV_aggressive
 						}
 					}
 				}
@@ -1040,7 +1011,18 @@ focus_tree = {
 		text_icon = navigators_style
 
 		completion_reward = {
-			
+			HIR = { country_event = navigator.1 }
+			custom_effect_tooltip = loc_if_accept
+			effect_tooltip = {
+				give_guarantee = HIR
+				add_ideas = NAV_diplomatic_overture_HIR_spirit
+				HIR = {
+					add_opinion_modifier = {
+						target = KYU
+						modifier = NAV_diplomatic_overture_opinion
+					}
+				}
+			}
 		}
 	}
 	
@@ -1064,33 +1046,23 @@ focus_tree = {
 		y = 1
 		
 		available = {
-			NOT = { has_country_flag = reject_overture_from_KYU }
-			KYU = { NOT = { has_country_flag = reject_overture_from_PRT } }
-			if = {
-				limit = {
-					NOT = {
-						AND = {
-							has_completed_focus = KYU_NAV_befriend_HIR
-							has_completed_focus = KYU_NAV_aggressive
-						}
+			NOT = { has_country_flag = reject_overture_from_PRT }
+			custom_trigger_tooltip = {
+				tooltip = KYU_NAV_befriend_PRT_trigger
+				NOT = {
+					AND = {
+						has_completed_focus = KYU_NAV_befriend_PRT
+						has_completed_focus = KYU_NAV_aggressive
 					}
 				}
+			}
+			PRT = {
 				custom_trigger_tooltip = {
-					tooltip = KYU_NAV_befriend_PRT_trigger
+					tooltip = PRT_NAV_befriend_KYU_trigger
 					NOT = {
 						AND = {
-							has_completed_focus = KYU_NAV_befriend_HIR
-							has_completed_focus = KYU_NAV_aggressive
-						}
-					}
-				}
-			} else = {
-				custom_trigger_tooltip = {
-					tooltip = KYU_NAV_befriend_PRT_trigger2
-					NOT = {
-						AND = {
-							has_completed_focus = KYU_NAV_befriend_HIR
-							has_completed_focus = KYU_NAV_aggressive
+							has_completed_focus = PRT_NAV_befriend_KYU
+							has_completed_focus = PRT_NAV_aggressive
 						}
 					}
 				}
@@ -1104,7 +1076,18 @@ focus_tree = {
 		text_icon = navigators_style
 
 		completion_reward = {
-			
+			PRT = { country_event = navigator.1 }
+			custom_effect_tooltip = loc_if_accept
+			effect_tooltip = {
+				give_guarantee = PRT
+				add_ideas = NAV_diplomatic_overture_PRT_spirit
+				PRT = {
+					add_opinion_modifier = {
+						target = KYU
+						modifier = NAV_diplomatic_overture_opinion
+					}
+				}
+			}
 		}
 	}
 	
