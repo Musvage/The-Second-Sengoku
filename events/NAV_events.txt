@@ -18,12 +18,17 @@ country_event = {
 	option = {
 		name = navigator.1.a	# accept (complete focus)
 		if = {
-			limit = { has_focus_tree = HIR_focus_tree }
+			limit = { has_focus_tree = HIR_focus_tree }		## HIR RECEIVES PROPOSAL
 			if = { limit = { FROM = { tag = PRT } }
 				unlock_national_focus = HIR_NAV_befriend_PRT
+				add_ideas = NAV_trade_privileges_PRT
 				add_opinion_modifier = {
 					target = PRT
 					modifier = NAV_diplomatic_overture_opinion
+				}
+				add_opinion_modifier = {
+					target = PRT
+					modifier = NAV_diplomatic_overture_trade
 				}
 			}
 			if = { limit = { FROM = { tag = KYU } }
@@ -34,12 +39,16 @@ country_event = {
 				}
 			}
 		} if = {
-			limit = { has_focus_tree = PRT_focus_tree }
+			limit = { has_focus_tree = PRT_focus_tree }		### PRT RECEIVES PROPOSAL
 			if = { limit = { FROM = { tag = HIR } }
 				unlock_national_focus = PRT_NAV_befriend_HIR
 				add_opinion_modifier = {
 					target = HIR
 					modifier = NAV_diplomatic_overture_opinion
+				}
+				add_opinion_modifier = {
+					target = HIR
+					modifier = NAV_diplomatic_overture_trade
 				}
 			}
 			if = { limit = { FROM = { tag = KYU } }
@@ -50,9 +59,9 @@ country_event = {
 				}
 			}
 		} if = {
-			limit = { has_focus_tree = KYU_focus_tree }
+			limit = { has_focus_tree = KYU_focus_tree }		### KYU RECEIVES PROPOSAL
 			if = { limit = { FROM = { tag = HIR } }
-				#unlock_national_focus = KYU_NAV_befriend_HIR
+				unlock_national_focus = KYU_NAV_befriend_HIR
 				add_ideas = NAV_diplomatic_overture_HIR_spirit
 				give_guarantee = HIR
 				add_opinion_modifier = {
@@ -61,7 +70,7 @@ country_event = {
 				}
 			}
 			if = { limit = { FROM = { tag = PRT } }
-				#unlock_national_focus = KYU_NAV_befriend_PRT
+				unlock_national_focus = KYU_NAV_befriend_PRT
 				add_ideas = NAV_diplomatic_overture_PRT_spirit
 				give_guarantee = PRT
 				add_opinion_modifier = {
@@ -70,7 +79,7 @@ country_event = {
 				}
 			}
 		}
-		FROM = { country_event = navigator.2 }
+		hidden_effect = { FROM = { country_event = navigator.2 } }
 	}
 	option = {
 		name = navigator.1.b	# refuse (block focus)
@@ -80,7 +89,7 @@ country_event = {
 			if = {  limit = { tag = KYU } FROM = { set_country_flag = reject_overture_from_KYU } }
 		}
 		FROM = {
-			country_event = navigator.3
+			hidden_effect = { FROM = { country_event = navigator.3 } }
 			add_opinion_modifier = {
 				target = ROOT
 				modifier = NAV_diplomatic_overture_rejected_opinion
@@ -102,7 +111,7 @@ country_event = {
 		name = navigator.2.a
 		if = {
 			limit = { has_focus_tree = HIR_focus_tree }
-			if = { limit = { FROM = { tag = PRT } } unlock_national_focus = HIR_NAV_befriend_PRT }
+#			if = { limit = { FROM = { tag = PRT } } unlock_national_focus = HIR_NAV_befriend_PRT }	# unecessary?
 			if = { limit = { FROM = { tag = KYU } }
 				unlock_national_focus = HIR_NAV_befriend_KYU
 				effect_tooltip = {
@@ -118,7 +127,7 @@ country_event = {
 			}
 		} if = {
 			limit = { has_focus_tree = PRT_focus_tree }
-			if = { limit = { FROM = { tag = HIR } } unlock_national_focus = PRT_NAV_befriend_HIR }
+#			if = { limit = { FROM = { tag = HIR } } unlock_national_focus = PRT_NAV_befriend_HIR }	# unecessary?
 			if = { limit = { FROM = { tag = KYU } }
 				unlock_national_focus = PRT_NAV_befriend_KYU
 				effect_tooltip = {
@@ -134,8 +143,8 @@ country_event = {
 			}
 		} if = {
 			limit = { has_focus_tree = KYU_focus_tree }
-			#if = { limit = { FROM = { tag = HIR } } unlock_national_focus = KYU_NAV_befriend_HIR }
-			#if = { limit = { FROM = { tag = PRT } } unlock_national_focus = KYU_NAV_befriend_PRT }
+#			if = { limit = { FROM = { tag = HIR } } unlock_national_focus = KYU_NAV_befriend_HIR }	# unecessary?
+#			if = { limit = { FROM = { tag = PRT } } unlock_national_focus = KYU_NAV_befriend_PRT }	# unecessary?
 		}
 	}
 }
@@ -238,3 +247,120 @@ country_event = {
 		effect_tooltip = { ROOT = { add_timed_idea = { idea = NAV_pirate_problem_spirit days = 180 } } }
 	}
 }
+
+# Land/Trade, Offer
+country_event = {
+	id = navigator.6
+	title = navigator.6.t
+	desc = navigator.6.d
+	picture = GFX_report_news_kyushu_map
+
+	is_triggered_only = yes 
+	
+	option = {
+		name = navigator.6.a	# accept (complete focus)
+		if = {
+			limit = { has_focus_tree = HIR_focus_tree }		### HIR RECEIVES PROPOSAL
+			unlock_national_focus = HIR_NAV_befriend_KYU_2
+			KYU = {
+				every_controlled_state = {
+					limit = { OR = { state = 19 state = 14 } }
+					add_claim_by = HIR
+					transfer_state_to = HIR
+					set_compliance = 100
+					hidden_effect = { remove_core_of = KYU }
+				}
+				add_ideas = NAV_trade_privileges_HIR
+			}
+		} if = {
+			limit = { has_focus_tree = PRT_focus_tree }		### PRT RECEIVES PROPOSAL
+			unlock_national_focus = PRT_NAV_befriend_KYU_2
+			KYU = {
+				every_controlled_state = {
+					limit = { OR = { state = 17 } }
+					add_claim_by = PRT
+					transfer_state_to = PRT
+					set_compliance = 100
+					hidden_effect = { remove_core_of = KYU }
+				}
+				add_ideas = NAV_trade_privileges_PRT
+			}
+			
+		} if = {
+			limit = { has_focus_tree = KYU_focus_tree }		### KYU RECEIVES PROPOSAL
+			if = { limit = { FROM = { tag = HIR } }
+				unlock_national_focus = KYU_NAV_befriend_HIR_2
+				add_ideas = NAV_trade_privileges_HIR
+				every_controlled_state = {
+					limit = { OR = { state = 19 state = 14 } }
+					add_claim_by = HIR
+					transfer_state_to = HIR
+					set_compliance = 100
+					hidden_effect = { remove_core_of = KYU }
+				}
+			}
+			if = { limit = { FROM = { tag = PRT } }
+				unlock_national_focus = KYU_NAV_befriend_PRT_2
+				add_ideas = NAV_trade_privileges_PRT
+				every_controlled_state = {
+					limit = { OR = { state = 17 } }
+					add_claim_by = PRT
+					transfer_state_to = PRT
+					set_compliance = 100
+					hidden_effect = { remove_core_of = KYU }
+				}
+			}
+		}
+		FROM = { country_event = navigator.7 }
+	}
+	option = {
+		name = navigator.6.b	# refuse (block focus)
+		hidden_effect = {
+			FROM = { country_event = navigator.8 }
+		}
+	}
+}
+
+# Land/Trade, Accept
+country_event = {
+	id = navigator.7
+	title = {
+		text = navigator.7.t1
+		trigger = { ROOT = KYU }
+	}
+	title = {
+		text = navigator.7.t2
+		trigger = { NOT = { ROOT = KYU } }
+	}
+	desc = navigator.7.d
+	picture = GFX_report_news_kyushu_map
+	
+	major = yes
+	is_triggered_only = yes
+	
+	option = {
+		trigger = { tag = FROM }
+		name = navigator.7.a
+	}
+	option = {
+		trigger = { tag = ROOT }
+		name = navigator.7.b
+	}
+	option = {
+		trigger = { NOT = { tag = FROM tag = ROOT } }
+		name = navigator.7.c
+	}
+	
+}
+
+# Land/Trade, Refuse
+country_event = {
+	id = navigator.8
+	title = navigator.8.t
+	picture = GFX_report_news_kyushu_map
+	
+	is_triggered_only = yes
+	
+	option = { name = navigator.8.a }
+}
+	
