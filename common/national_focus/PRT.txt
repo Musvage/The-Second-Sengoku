@@ -1248,13 +1248,13 @@ focus_tree = {
 		icon = { value = GFX_focus_generic_diplomacy_HIR_neutrality trigger = 			{ HIR = { has_government = neutrality } } }
 		icon = GFX_goal_generic_dangerous_deal
 		dynamic = yes
-		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_INTERNATIONAL_TRADE }
 		
 		ai_will_do = { factor = 10 }
 		
 		prerequisite = { focus = PRT_NAV_active_diplomacy }
 		relative_position_id = PRT_NAV_active_diplomacy
-		x = -1
+		x = 1
 		y = 1
 		
 		available = {
@@ -1295,7 +1295,25 @@ focus_tree = {
 
 		completion_reward = {
 			HIR = { country_event = navigator.1 }
-			# add decisions
+			custom_effect_tooltip = loc_if_accept
+				effect_tooltip = {
+				add_ideas = NAV_trade_privileges_HIR
+				add_opinion_modifier = {
+					target = PRT
+					modifier = NAV_diplomatic_overture_trade
+				}
+				HIR = {
+					add_ideas = NAV_trade_privileges_PRT
+					add_opinion_modifier = {
+						target = PRT
+						modifier = NAV_diplomatic_overture_trade
+					}
+					add_opinion_modifier = {
+						target = PRT
+						modifier = NAV_diplomatic_overture_opinion
+					}
+				}
+			}
 		}
 	}
 	
@@ -1315,7 +1333,7 @@ focus_tree = {
 		
 		prerequisite = { focus = PRT_NAV_active_diplomacy }
 		relative_position_id = PRT_NAV_active_diplomacy
-		x = 1
+		x = -1
 		y = 1
 		
 		available = {
@@ -1365,6 +1383,53 @@ focus_tree = {
 						target = PRT
 						modifier = NAV_diplomatic_overture_opinion
 					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = PRT_NAV_befriend_KYU_2	# NAV: navigators, pseudo-shared branch
+		icon = { value = GFX_focus_generic_diplomacy_KYU_autocracy trigger = 			{ KYU = { has_government = autocracy } } }
+		icon = { value = GFX_focus_generic_diplomacy_KYU_communism trigger = 			{ KYU = { has_government = communism } } }
+		icon = { value = GFX_focus_generic_diplomacy_KYU_democratic trigger = 			{ KYU = { has_government = democratic } } }
+		icon = { value = GFX_focus_generic_diplomacy_KYU_democratic_socialism trigger = { KYU = { has_government = democratic_socialism } } }
+		icon = { value = GFX_focus_generic_diplomacy_KYU_fascism trigger = 				{ KYU = { has_government = fascism } } }
+		icon = { value = GFX_focus_generic_diplomacy_KYU_neutrality trigger = 			{ KYU = { has_government = neutrality } } }
+		icon = GFX_goal_generic_dangerous_deal
+		dynamic = yes
+		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_INTERNATIONAL_TRADE FOCUS_FILTER_POLITICAL }
+		
+		ai_will_do = { factor = 10 }
+		
+		prerequisite = { focus = PRT_NAV_befriend_KYU }
+		relative_position_id = PRT_NAV_befriend_KYU
+		x = 0
+		y = 1
+		
+		available = {
+			KYU = { has_opinion = { target = PRT value > 50 } }
+			17 = { is_controlled_by = KYU }
+		}
+
+		cost = 10
+		
+		available_if_capitulated = yes
+		
+		text_icon = navigators_style
+
+		completion_reward = {
+			add_political_power = 100
+			custom_effect_tooltip = loc_if_accept
+			effect_tooltip = {
+				KYU = {
+					every_controlled_state = {
+						limit = { state = 17 }
+						add_claim_by = PRT
+						transfer_state_to = PRT
+						set_compliance = 100
+					}
+					add_ideas = NAV_trade_privileges_PRT
 				}
 			}
 		}
