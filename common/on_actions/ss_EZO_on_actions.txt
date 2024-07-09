@@ -5,10 +5,8 @@ on_actions = {
 			log = "on_unit_leader_created"
 			if = {
 				limit = {
-					FROM = {
-						always = no	####
-						#tag = EZO
-					}
+					FROM = { tag = EZO }
+					NOT = { has_dlc = "By Blood Alone" }
 				}
 				random_list = {
 					100 = {}	# nothing happens
@@ -71,9 +69,9 @@ on_actions = {
 				limit = {
 					FROM = {
 						tag = EZO
-						NOT = { has_dlc = "By Blood Alone" }
 						NOT = { has_country_flag = stop_random_exiled_general }
 					}
+					NOT = { has_dlc = "By Blood Alone" }
 				}
 				FROM = { set_country_flag = stop_random_exiled_general }
 				random_list = {
@@ -119,62 +117,32 @@ on_actions = {
 		}
 	}
 	
-	on_unit_leader_promote_from_ranks_veteran = {
+	on_unit_leader_created = {
 		effect = {
 			if = {
 				limit = {
-					OWNER = {
+					FROM = {
 						tag = EZO
-						has_dlc = "By Blood Alone"
-						NOT = { has_country_flag = stop_random_exiled_general }
-					}
-					FROM = { has_template = "White Russian Regiment" }
-				}
-				FROM = {
-					add_officer = {
-						name = "Viktor Reznov"
-						portrait = GFX_portrait_white_russian_Land_1
-						add_unit_leader_trait = hunter_jager
-						add_unit_leader_trait = foreign_general
-						portraits={
-							army={
-								large = "GFX_portrait_white_russian_Land_3"
-								small = "GFX_portrait_white_russian_Land_3_small"
-							}
+						OR = {
+							has_country_flag = has_WIT_division_leader_1
+							has_country_flag = has_WIT_division_leader_2
+							has_country_flag = has_WIT_division_leader_3
 						}
 					}
 				}
-				ROOT = { add_unit_leader_trait = hunter_jager } #foreign_general
-			}
-		}
-	}
-	
-	on_unit_leader_promote_from_ranks_green = {
-		effect = {
-			if = {
-				limit = {
-					OWNER = {
-						tag = EZO
-						has_dlc = "By Blood Alone"
-						NOT = { has_country_flag = stop_random_exiled_general }
-					}
-					FROM = { has_template = "White Russian Regiment" }
-				}
-				FROM = {
-					add_officer = {
-						name = "Viktor Reznov"
-						portrait = GFX_portrait_white_russian_Land_1
-						add_unit_leader_trait = hunter_jager
-						add_unit_leader_trait = foreign_general
-						portraits={
-							army={
-								large = "GFX_portrait_white_russian_Land_3"
-								small = "GFX_portrait_white_russian_Land_3_small"
+				FROM = {	# nesting here is needed so the event can fetch the country
+					ROOT = {
+						add_country_leader_role = {
+							promote_leader = no
+							country_leader = {
+								ideology = special_ideology_flag
+								expire = "1965.1.1.1"
+								traits = { }
 							}
 						}
+						unit_leader_event = { id = EZO.998 hours = 1 }
 					}
 				}
-				ROOT = { add_unit_leader_trait = hunter_jager } #foreign_general
 			}
 		}
 	}
