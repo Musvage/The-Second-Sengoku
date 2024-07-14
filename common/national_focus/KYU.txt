@@ -1139,7 +1139,7 @@ focus_tree = {
 		icon = GFX_goal_generic_small_arms
 		search_filters = { FOCUS_FILTER_RESEARCH }
 		
-		prerequisite = { focus = KYU_ministry_decree }
+		prerequisite = { focus = KYU_ministry_decree focus = KYU_defend_kyushu }
 		relative_position_id = KYU_ministry_decree
 		x = 1
 		y = 1
@@ -1227,7 +1227,531 @@ focus_tree = {
 		}
 	}
 	
-	### } NAV-shared branch {
+	focus = {
+		id = KYU_defend_kyushu	# ketsugō sakusen
+		icon = GFX_focus_Generic_defence2
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		
+		prerequisite = { focus = KYU_war_council }
+		relative_position_id = KYU_war_council
+		x = 2
+		y = 1
+		cost = 10
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			random_controlled_state = {
+				limit = { is_on_continent = kyushu is_capital = yes }
+				add_building_construction = {
+					type = bunker
+					level = 2
+					instant_build = yes
+					province = {
+						all_provinces = yes
+						limit_to_victory_point = yes
+					}
+				}
+				add_building_construction = {
+					type = coastal_bunker
+					level = 2
+					instant_build = yes
+					province = {
+						all_provinces = yes
+						limit_to_naval_base = yes
+					}
+				}
+			}
+			every_controlled_state = {
+				limit = { is_on_continent = kyushu is_one_state_island = no is_capital = no }
+				add_building_construction = {
+					type = coastal_bunker
+					level = 2
+					instant_build = yes
+					province = {
+						all_provinces = yes
+						limit_to_naval_base = yes
+					}
+				}
+			}
+			if = {
+				limit = {
+					any_controlled_state = {
+						free_building_slots = {
+							building = dockyard
+							size > 0
+							include_locked = yes
+						}
+						is_coastal = yes
+						is_one_state_island = no
+					}
+				}
+				random_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = dockyard
+							size > 0
+							include_locked = yes
+						}
+						is_coastal = yes
+						is_one_state_island = no
+					}
+					add_building_construction = {
+						type = dockyard
+						level = 1
+						instant_build = yes
+					}
+					add_extra_state_shared_building_slots = 1
+				}
+			}
+			if = {
+				limit = {
+					any_controlled_state = {
+						free_building_slots = {
+							building = arms_factory
+							size > 0
+							include_locked = yes
+						}
+						is_one_state_island = no
+					}
+				}
+				random_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = arms_factory
+							size > 0
+							include_locked = yes
+						}
+						is_one_state_island = no
+					}
+					add_building_construction = {
+						type = arms_factory
+						level = 1
+						instant_build = yes
+					}
+					add_extra_state_shared_building_slots = 1
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = KYU_marines_effort
+		icon = GFX_focus_KYU_elite_marines
+		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_MILITARY }
+		
+		prerequisite = { focus = KYU_infantry_equipment_effort }
+		relative_position_id = KYU_infantry_equipment_effort
+		x = 0
+		y = 2
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_ideas = special_forces
+			if = {
+				limit = { has_dlc = "Arms Against Tyranny" }
+				add_doctrine_cost_reduction = {
+					name = marines_doc_bonus
+					cost_reduction = 1
+					uses = 1
+					category = cat_marines_doctrine
+				}
+			} else = {
+				add_tech_bonus = {
+					name = special_forces_bonus
+					bonus = 2.0
+					uses = 1
+					technology = marines
+					technology = marines2
+					technology = marines3
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = KYU_navy_doctrine_effort
+		icon = GFX_focus_generic_navy_doctrine
+		search_filters = { FOCUS_FILTER_MILITARY }
+		
+		prerequisite = { focus = KYU_war_council }
+		relative_position_id = KYU_war_council
+		x = 8
+		y = 1
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_doctrine_cost_reduction = {
+				name = naval_doc_bonus
+				cost_reduction = 0.75
+				uses = 1
+				category = naval_doctrine
+			}
+		}
+	}
+	
+	focus = {
+		id = KYU_heavy_ship_effort
+		icon = GFX_goal_generic_navy_battleship
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KYU_navy_doctrine_effort }
+		relative_position_id = KYU_navy_doctrine_effort
+		x = -3
+		y = 1
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+		}
+	}
+	
+	focus = {
+		id = KYU_light_ship_effort
+		icon = GFX_focus_generic_destroyer
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KYU_navy_doctrine_effort }
+		relative_position_id = KYU_navy_doctrine_effort
+		x = 2
+		y = 1
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+		}
+	}
+	
+	focus = {
+		id = KYU_cruiser_effort	# Torpedo Cruiser
+		icon = GFX_goal_generic_navy_cruiser
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KYU_light_ship_effort focus = KYU_heavy_ship_effort }
+		relative_position_id = KYU_heavy_ship_effort
+		x = 3
+		y = 1
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			if = {
+				limit = {
+					not = { has_dlc = "Man the Guns" }
+				}
+				set_technology = { torpedo_cruiser = 1 }
+			}
+			else = {
+				set_technology = { torpedo_cruiser_mtg = 1 }
+			}
+		}
+	}
+	
+	focus = {
+		id = KYU_submarine_effort
+		icon = GFX_goal_generic_navy_submarine
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KYU_light_ship_effort focus = KYU_heavy_ship_effort }
+		relative_position_id = KYU_heavy_ship_effort
+		x = 5
+		y = 1
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+		}
+	}
+	
+	focus = {
+		id = KYU_torpedo_effort	# Long Lance, Type 93 torpedo
+		icon = GFX_focus_KYU_long_lance_torpedoes
+		search_filters = { FOCUS_FILTER_MILITARY }
+		
+		prerequisite = { focus = KYU_submarine_effort focus = KYU_cruiser_effort }
+		relative_position_id = KYU_cruiser_effort
+		x = 1
+		y = 1
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_ideas = the_long_lance
+		}
+	}
+	
+	focus = {
+		id = KYU_carrier_effort
+		icon = GFX_focus_KYU_a_new_route
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KYU_heavy_ship_effort }
+		relative_position_id = KYU_heavy_ship_effort
+		x = -1
+		y = 1
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+		}
+	}
+	
+	focus = {
+		id = KYU_dockyard_effort
+		icon = GFX_focus_generic_dockyards
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		
+		prerequisite = { focus = KYU_light_ship_effort focus = KYU_heavy_ship_effort }
+		relative_position_id = KYU_heavy_ship_effort
+		x = 1
+		y = 1
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			if = {
+				limit = {
+					any_controlled_state = {
+						free_building_slots = {
+							building = dockyard
+							size > 0
+							include_locked = yes
+						}
+						NOT = { state = 17 }
+						is_coastal = yes
+						is_one_state_island = no
+					}
+				}
+				random_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = dockyard
+							size > 0
+							include_locked = yes
+						}
+						NOT = { state = 17 }
+						is_coastal = yes
+						is_one_state_island = no
+					}
+					add_building_construction = {
+						type = dockyard
+						level = 1
+						instant_build = yes
+					}
+					add_extra_state_shared_building_slots = 1
+				}
+			}
+			if = {
+				limit = {
+					any_controlled_state = {
+						free_building_slots = {
+							building = dockyard
+							size > 0
+							include_locked = yes
+						}
+						NOT = { state = 17 }
+						is_coastal = yes
+						is_one_state_island = no
+					}
+				}
+				random_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = dockyard
+							size > 0
+							include_locked = yes
+						}
+						NOT = { state = 17 }
+						is_coastal = yes
+						is_one_state_island = no
+					}
+					add_building_construction = {
+						type = dockyard
+						level = 1
+						instant_build = yes
+					}
+					add_extra_state_shared_building_slots = 1
+				}
+			}
+			if = {
+				limit = {
+					any_controlled_state = {
+						free_building_slots = {
+							building = dockyard
+							size > 0
+							include_locked = yes
+						}
+						NOT = { state = 17 }
+						is_coastal = yes
+						is_one_state_island = no
+					}
+				}
+				random_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = dockyard
+							size > 0
+							include_locked = yes
+						}
+						NOT = { state = 17 }
+						is_coastal = yes
+						is_one_state_island = no
+					}
+					add_building_construction = {
+						type = dockyard
+						level = 1
+						instant_build = yes
+					}
+					add_extra_state_shared_building_slots = 1
+				}
+			}
+			if = {
+				limit = {
+					any_controlled_state = {
+						free_building_slots = {
+							building = dockyard
+							size > 0
+							include_locked = yes
+						}
+						NOT = { state = 17 }
+						is_coastal = yes
+						is_one_state_island = no
+					}
+				}
+				random_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = dockyard
+							size > 0
+							include_locked = yes
+						}
+						NOT = { state = 17 }
+						is_coastal = yes
+						is_one_state_island = no
+					}
+					add_building_construction = {
+						type = dockyard
+						level = 1
+						instant_build = yes
+					}
+					add_extra_state_shared_building_slots = 1
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = KYU_nav_av_effort	# Naval Aviation
+		icon = GFX_focus_KYU_naval_aviation
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KYU_air_equipment_effort focus = KYU_carrier_effort }
+		relative_position_id = KYU_carrier_effort
+		x = -1
+		y = 1
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+		}
+	}
+	
+	focus = {
+		id = KYU_yamato_effort
+		icon = GFX_focus_KYU_super_battleship
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KYU_dockyard_effort }
+		prerequisite = { focus = KYU_heavy_ship_effort }
+		relative_position_id = KYU_heavy_ship_effort
+		x = 0
+		y = 2
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+		}
+	}
+	
+	focus = {
+		id = KYU_navy_doctrine_effort2
+		icon = GFX_focus_KYU_steady_sailing	
+		search_filters = { FOCUS_FILTER_MILITARY }
+		
+		prerequisite = { focus = KYU_carrier_effort focus = KYU_yamato_effort focus = KYU_torpedo_effort }
+		relative_position_id = KYU_carrier_effort
+		x = 0
+		y = 2
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_doctrine_cost_reduction = {
+				name = naval_doc_bonus
+				cost_reduction = 0.75
+				uses = 1
+				category = naval_doctrine
+			}
+		}
+	}
+	
+	focus = {
+		id = KYU_research_effort	# Navy Academy
+		icon = GFX_focus_KYU_naval_academy
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KYU_navy_doctrine_effort }
+		relative_position_id = KYU_navy_doctrine_effort
+		x = 4
+		y = 1
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_research_slot = 1
+		}
+	}
+	
+	focus = {
+		id = KYU_research_effort2	# Secret Weapons Program
+		icon = GFX_focus_rocketry
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KYU_research_effort }
+		relative_position_id = KYU_research_effort
+		x = 0
+		y = 1
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_tech_bonus = {
+				name = secret_bonus
+				bonus = 2.0
+				uses = 2
+				category = electronics
+				category = rocketry
+			}
+		}
+	}
+	
+	### } NAV-shared branch (and some other diplo) 
 	
 	focus = {
 		id = KYU_NAV_active_diplomacy	# NAV: navigators, pseudo-shared branch
@@ -1785,7 +2309,7 @@ focus_tree = {
 			}
 		}
 		
-		completion_reward = {	# effect seems convoluted but it's for better tooltips
+		completion_reward = {
 			custom_effect_tooltip = KYU_western_advisers2_tt
 			if = {
 				limit = { OSA = { has_opinion = { target = ROOT value > 49  } } }
@@ -1956,7 +2480,7 @@ focus_tree = {
 				category = air_doctrine
 			}
 		}
-	}
+	}		
 }
 #FOCUS_FILTER_ARMY_REFORM
 #FOCUS_FILTER_YAMAMOTO
