@@ -1012,7 +1012,7 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_WAR_SUPPORT }
 		
 		relative_position_id = KYU_industrial_effort_1
-		x = 10
+		x = 12
 		y = 0
 		cost = 10
 		
@@ -1030,12 +1030,12 @@ focus_tree = {
 	
 	focus = {
 		id = KYU_ministry_decree
-		icon = GFX_focus_HIR_tech_anti_sub	# GFX_focus_generic_army_quality
-		search_filters = {  }
+		icon = GFX_goal_generic_forceful_treaty
+		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_INDUSTRY }
 		
-		prerequisite = { focus = KYU_war_council}
+		prerequisite = { focus = KYU_war_council }
 		relative_position_id = KYU_war_council
-		x = 1
+		x = 0
 		y = 1
 		cost = 10
 		
@@ -1044,18 +1044,70 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			
+			add_ideas = KYU_ministerial_decree_spirit
+			random_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+				}
+				prioritize = { 202 122 127 }
+				if = {
+					limit = {
+						free_building_slots = {
+							building = arms_factory
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_building_construction = {
+						type = arms_factory
+						level = 2
+						instant_build = yes
+					}
+					add_extra_state_shared_building_slots = 2
+				} else = {
+					add_building_construction = {
+						type = arms_factory
+						level = 1
+						instant_build = yes
+					}
+					add_extra_state_shared_building_slots = 1
+					if = {
+						limit = { ROOT = { num_of_controlled_states > 1 } }
+						ROOT = {
+							random_controlled_state = {
+								limit = {
+									free_building_slots = {
+										building = arms_factory
+										size > 0
+										include_locked = yes
+									}
+								}
+								add_building_construction = {
+									type = arms_factory
+									level = 1
+									instant_build = yes
+								}
+								add_extra_state_shared_building_slots = 1
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 	
 	focus = {
-		id = KYU_ministry_decree_2
-		icon = GFX_focus_HIR_tech_anti_sub	# GFX_focus_generic_army_quality
-		search_filters = {  }
+		id = KYU_ministry_decree_2	# Reform Army Command
+		icon = GFX_focus_generic_officers2
+		search_filters = { FOCUS_FILTER_ARMY_REFORM FOCUS_FILTER_MILITARY }
 		
 		prerequisite = { focus = KYU_ministry_decree }
 		relative_position_id = KYU_ministry_decree
-		x = 0
+		x = -1
 		y = 1
 		cost = 10
 		
@@ -1076,6 +1128,102 @@ focus_tree = {
 					add_idea = KYU_naval_junta_2_spirit
 				}
 			}
+			KYU_jinzaburo_masaki = {
+				custom_effect_tooltip = KYU_reformed_military_tt
+			}
+		}
+	}
+	
+	focus = {
+		id = KYU_infantry_equipment_effort
+		icon = GFX_goal_generic_small_arms
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KYU_ministry_decree }
+		relative_position_id = KYU_ministry_decree
+		x = 1
+		y = 1
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_tech_bonus = {
+				name = infantry_artillery_bonus
+				bonus = 2.0
+				uses = 1
+				category = infantry_weapons
+				category = artillery
+			}
+		}
+	}
+	
+	focus = {
+		id = KYU_armor_equipment_effort
+		icon = GFX_goal_generic_army_tanks
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KYU_infantry_equipment_effort }
+		relative_position_id = KYU_infantry_equipment_effort
+		x = -1
+		y = 1
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_tech_bonus = {
+				name = armor_bonus
+				bonus = 1.5
+				uses = 1
+				category = armor
+			}
+			army_experience = 10
+		}
+	}
+	
+	focus = {
+		id = KYU_air_equipment_effort
+		icon = GFX_goal_generic_air_fighter
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KYU_infantry_equipment_effort }
+		relative_position_id = KYU_infantry_equipment_effort
+		x = 1
+		y = 1
+		cost = 10
+
+		available_if_capitulated = yes
+
+		completion_reward = {
+			if = {
+				limit = { has_dlc = "By Blood Alone" }
+				add_tech_bonus = {
+					name = fighter_bonus
+					bonus = 1
+					uses = 1
+					category = light_air
+				}
+				add_tech_bonus = {
+					name = fighter_bonus
+					bonus = 1
+					uses = 1
+					technology = aa_hmg
+					technology = aa_cannon_1
+					technology = aa_cannon_2
+					technology = aa_cannon_3
+				}
+			} else = {
+				add_tech_bonus = {
+					name = fighter_bonus
+					bonus = 1.5
+					uses = 1
+					technology = fighter1
+					technology = fighter2
+					technology = fighter3
+				}
+			}
+			air_experience = 10
 		}
 	}
 	
@@ -1590,6 +1738,99 @@ focus_tree = {
 		}
 	}
 	
+	focus = {
+		id = KYU_western_advisers2
+		icon = GFX_focus_REI_research
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KYU_western_advisers }
+		relative_position_id = KYU_western_advisers
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		available = {
+			OR = {
+				AND = {
+					NOT = { has_war_with = OSA }
+					OSA = {
+						has_opinion = {
+							target = ROOT
+							value > 49
+						}
+					}
+				}
+				AND = {
+					NOT = { has_war_with = KOB }
+					KOB = {
+						has_opinion = {
+							target = ROOT
+							value > 49
+						}
+					}
+				}
+				AND = {
+					NOT = { has_war_with = MUS }
+					MUS = {
+						has_opinion = {
+							target = ROOT
+							value > 49
+						}
+					}
+				}
+			}
+		}
+		
+		completion_reward = {	# effect seems convoluted but it's for better tooltips
+			custom_effect_tooltip = KYU_western_advisers2_tt
+			if = {
+				limit = { OSA = { has_opinion = { target = ROOT value > 49  } } }
+				if = {
+					limit = { has_dlc = "By Blood Alone" }
+					add_tech_bonus = {
+						name = fighter_bonus
+						bonus = 1.5
+						category = light_air
+					}
+				} else = {
+					add_tech_bonus = {
+						name = fighter_bonus
+						bonus = 1.5
+						technology = early_fighter
+						technology = fighter1
+						technology = fighter2
+						technology = fighter3
+						technology = heavy_fighter1
+						technology = heavy_fighter2
+						technology = heavy_fighter3
+					}
+				}
+			}
+			if = {
+				limit = { KOB = { has_opinion = { target = ROOT value > 49  } } }
+				add_tech_bonus = {
+					name = infantry_artillery_bonus
+					bonus = 1.5
+					uses = 1
+					category = infantry_weapons
+					category = artillery
+				}
+			}
+			if = {
+				limit = { MUS = { has_opinion = { target = ROOT value > 49  } } }
+				add_tech_bonus = {
+					name = armor_bonus
+					bonus = 1.5
+					category = armor
+				}
+			}
+		}
+	}
+	
 	
 	focus = {
 		id = KYU_demand_okinawa
@@ -1642,9 +1883,6 @@ focus_tree = {
 		}
 
 		completion_reward = {
-			KYU_jinzaburo_masaki = {
-				custom_effect_tooltip = KYU_reformed_military_tt
-			}
 			if = {
 				limit = {
 					any_character = {
@@ -1684,6 +1922,38 @@ focus_tree = {
 						category = land_doctrine
 					}
 				}
+			}
+		}
+	}
+	
+	focus = {
+		id = KYU_reformed_military_academy2
+		icon = GFX_goal_generic_army_doctrines
+		dynamic = yes
+		search_filters = { FOCUS_FILTER_MILITARY }
+		
+		prerequisite = { focus = KYU_reformed_military_academy focus = KYU_western_advisers }
+		relative_position_id = KYU_reformed_military_academy
+		x = -4
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}
+
+		completion_reward = {
+			add_doctrine_cost_reduction = {
+				name = land_doc_bonus
+				cost_reduction = 0.33
+				uses = 1
+				category = land_doctrine
+			}
+			add_doctrine_cost_reduction = {
+				name = air_doc_bonus
+				cost_reduction = 0.33
+				uses = 1
+				category = air_doctrine
 			}
 		}
 	}
