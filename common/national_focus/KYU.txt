@@ -394,6 +394,7 @@ focus_tree = {
 		ai_will_do = {
 			factor = 10
 		}
+		
 		completion_reward = {
 			add_stability = 0.05
 			if = {
@@ -1027,6 +1028,9 @@ focus_tree = {
 			army_experience = 5
 			navy_experience = 5
 			air_experience = 5
+			
+			# TODO TO-DO TO DO remove this later
+			clr_country_flag = plane_focus_first clr_country_flag = armor_focus_first
 		}
 	}
 	
@@ -1184,6 +1188,7 @@ focus_tree = {
 				category = armor
 			}
 			army_experience = 10
+			if = { limit = { NOT = { has_completed_focus = KYU_air_equipment_effort } } set_country_flag = armor_focus_first }
 		}
 	}
 	
@@ -1229,6 +1234,7 @@ focus_tree = {
 				}
 			}
 			air_experience = 10
+			if = { limit = { NOT = { has_completed_focus = KYU_armor_equipment_effort } } set_country_flag = plane_focus_first }
 		}
 	}
 	
@@ -1838,8 +1844,11 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = KYU_research_effort2	# Secret Weapons Program
-		icon = GFX_focus_rocketry
+		id = KYU_secret_project	# Secret Weapons Program / Daikon Project / Kaiju Project
+		icon = { value = GFX_focus_EZO_armor	trigger = { has_country_flag = armor_focus_first } }
+		icon = { value = GFX_focus_rocketry		trigger = { has_country_flag = plane_focus_first } }
+		icon = { value = GFX_goal_generic_secret_weapon } # trigger = { NOT = { has_country_flag = plane_focus_first has_country_flag = armor_focus_first } } }
+		dynamic = yes
 		search_filters = { FOCUS_FILTER_RESEARCH }
 		
 		prerequisite = { focus = KYU_research_effort }
@@ -1851,13 +1860,61 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		completion_reward = {
-			add_tech_bonus = {
-				name = secret_bonus
-				bonus = 2.0
-				uses = 2
-				category = electronics
-				category = rocketry
+			if = {
+				limit = {
+					NOT = { has_country_flag = armor_focus_first has_country_flag = plane_focus_first }
+				}
+				custom_effect_tooltip = "PLACEHOLDER TOOLTIP"
+				custom_effect_tooltip = KYU_secret_project_tt1
+				custom_effect_tooltip = "Project Kaiju (research bonus for super heavy tank)"
+				custom_effect_tooltip = KYU_secret_project_tt2
+				custom_effect_tooltip = "Project Daikon (research bonus for rockets/jets)"
 			}
+			if = {
+				limit = {
+					has_country_flag = armor_focus_first
+				}
+				if = {
+					limit = { has_dlc = "No Step Back" }
+					add_tech_bonus = {
+						name = super_heavy_armor_bonus
+						ahead_reduction = 1
+						bonus = 2
+						uses = 1
+						technology = super_heavy_tank_chassis
+					}
+				} else = {
+					add_tech_bonus = {
+						name = super_heavy_armor_bonus
+						ahead_reduction = 2
+						bonus = 1
+						uses = 2
+						technology = super_heavy_tank 
+						technology = super_heavy_td
+						technology = super_heavy_art
+						technology = super_heavy_spaa
+					}
+				}
+			}
+			f = {
+				limit = {
+					has_country_flag = plane_focus_first	# Just on the border of your waking mind, There lies another time. Where darkness and light are one. And as you thread the halls of sanity, You feel so glad to be unable to go beyond.
+				}
+				add_tech_bonus = {
+					name = jet_rocket_bonus
+					ahead_reduction = 2
+					bonus = 1
+					uses = 2
+					category = rocketry
+					category = jet_technology
+				}
+			}
+			#add_tech_bonus = {
+			#	name = electronics_tech_bonus
+			#	bonus = 2.0
+			#	uses = 1
+			#	category = electronics
+			#}
 		}
 	}
 	
