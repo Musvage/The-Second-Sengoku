@@ -690,7 +690,7 @@ focus_tree = {
 		
 		bypass = {
 			custom_trigger_tooltip = {
-				tooltip = production_effort_tt
+				tooltip = production_synth_effort_tt
 				all_controlled_state = {
 					free_building_slots = {
 						building = synthetic_refinery
@@ -1785,7 +1785,7 @@ focus_tree = {
 						fixed_ship_radar_slot = empty
 						fixed_ship_engine_slot = heavy_ship_engine_2
 						fixed_ship_secondaries_slot = ship_secondaries_2
-						fixed_ship_armor_slot = empty #ship_armor_shbb	# IS THIS A BUG? CHECK LATER -> TODO TO-DO TO DO
+						fixed_ship_armor_slot = ship_armor_shbb
 						front_1_custom_slot = ship_anti_air_1
 						front_2_custom_slot = empty
 						mid_1_custom_slot = empty
@@ -2307,9 +2307,11 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = KYU_become_lon_observer
+		id = KYU_join_league
+		icon = { value = GFX_focus_GENERIC_lon_observer trigger = { has_idea = all_internationally_recognised } }
 		icon = GFX_focus_GENERIC_lon_observer
-		search_filters = {  }
+		dynamic = yes
+		search_filters = { FOCUS_FILTER_DIPLOMACY }
 		
 		prerequisite = { focus = KYU_NAV_active_diplomacy }
 		relative_position_id = KYU_NAV_active_diplomacy
@@ -2334,7 +2336,12 @@ focus_tree = {
 		bypass = { NOT = { has_global_flag = league_of_nations_exists } }
 		
 		completion_reward = {
-			add_ideas = SS_lon_observer_japan
+			if = {
+				limit = { has_idea = all_internationally_recognised }
+				add_ideas = SS_lon_member_japan
+			} else = {
+				add_ideas = SS_lon_observer_japan
+			}
 			add_political_power = 100
 		}
 	}
@@ -2344,9 +2351,9 @@ focus_tree = {
 		icon = GFX_focus_KYU_solomonic_solution
 		search_filters = { FOCUS_FILTER_ANNEXATION }
 		
-		prerequisite = { focus = KYU_become_lon_observer }
+		prerequisite = { focus = KYU_join_league }
 		#mutually_exclusive = { focus = KYU_demand_okinawa }
-		relative_position_id = KYU_become_lon_observer
+		relative_position_id = KYU_join_league
 		x = -1
 		y = 1
 		cost = 10
@@ -2372,9 +2379,9 @@ focus_tree = {
 		icon = GFX_focus_KYU_western_mission
 		search_filters = { FOCUS_FILTER_ARMY_REFORM }
 		
-		prerequisite = { focus = KYU_become_lon_observer }
+		prerequisite = { focus = KYU_join_league }
 		mutually_exclusive = { focus = KYU_reformed_military_academy }
-		relative_position_id = KYU_become_lon_observer
+		relative_position_id = KYU_join_league
 		x = 0
 		y = 2
 		cost = 10
