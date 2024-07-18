@@ -3063,6 +3063,8 @@ focus_tree = {
 		icon = GFX_focus_TOH_the_spread_of_communism
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
+		allow_branch = { NOT = { tag = IMS } }
+		
 		prerequisite = { focus = ss_generic_modernisation }
 		mutually_exclusive = { focus = ss_generic_center focus = ss_generic_right focus = IMS_generic_join_lon }
 		x = -2
@@ -3233,7 +3235,7 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = ss_generic_modernisation }
-		mutually_exclusive = { focus = ss_generic_left }
+		mutually_exclusive = { focus = IMS_government_autocratic_1 }
 		x = 1
 		y = 1
 		relative_position_id = ss_generic_modernisation
@@ -3303,8 +3305,8 @@ focus_tree = {
 		icon = GFX_goal_generic_military_sphere
 		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_MANPOWER FOCUS_FILTER_INDUSTRY }
 		
-		prerequisite = { focus = IMS_generic_join_lon }
-		x = 0
+		prerequisite = { focus = IMS_generic_join_lon focus = IMS_government_autocratic_1 }
+		x = -1
 		y = 1
 		relative_position_id = IMS_generic_join_lon
 		
@@ -3608,7 +3610,7 @@ focus_tree = {
 		
 		prerequisite = { focus = ss_generic_right }
 		mutually_exclusive = { focus = ss_generic_government_autocratic focus = ss_generic_government_fascism }
-		x = 1
+		x = 2
 		y = 1
 		relative_position_id = ss_generic_center
 		
@@ -3729,7 +3731,6 @@ focus_tree = {
 		id = ss_generic_government_autocratic
 		icon = { value = GFX_focus_PRT_restore_monarchy trigger = { tag = PRT } }
 		icon = { value = GFX_focus_EZO_matsumae_clan trigger = { tag = EZO } }
-		icon = { value = GFX_focus_IMS_government_clan trigger = { tag = IMS } }
 		icon = GFX_focus_KYU_war_preparations
 		dynamic = yes
 		search_filters = { FOCUS_FILTER_POLITICAL }
@@ -3739,12 +3740,10 @@ focus_tree = {
 		x = 1
 		y = 1
 		relative_position_id = ss_generic_right
-		offset = {
-			x = 2 y = 0
-			trigger = { tag = IMS }
-		}
 		
 		cost = 10
+		
+		allow_branch = { NOT = { tag = IMS } }
 
 		available_if_capitulated = yes
 		
@@ -3779,48 +3778,273 @@ focus_tree = {
 					is_core_of = MTS
 				}
 			}
-			if = {
-				limit = { tag = IMS }
-				NOT = { country_exists = IMA }
-			}
 		}
 		bypass = {
 			has_government = autocracy
 		}
 
 		completion_reward = {
-			if = {
-				limit = { tag = IMS }
-				custom_effect_tooltip = ss_generic_government_autocratic_tt_IMS
-				hidden_effect = {
-					every_possible_country = {
-						limit = { tag = IMA }
-						IMA_Imaban_Matsudaira_Ujimori = { set_nationality  = IMS }
-						IMA_Imaban_Matsudaira_Yoshikazu = { set_nationality  = IMS }
-					}
+			set_politics = {
+				ruling_party = autocracy
+				elections_allowed = no
+			}
+		}
+	}
+	
+	focus = {
+		id = IMS_government_autocratic_1
+		icon = GFX_focus_IMS_imaban_matsuraida
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_WAR_SUPPORT }
+		
+		allow_branch = { tag = IMS }
+		
+		prerequisite = { focus = ss_generic_modernisation }
+		mutually_exclusive = { focus = IMS_generic_join_lon }
+		x = -2
+		y = 1
+		relative_position_id = ss_generic_modernisation
+		
+		cost = 10
+
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				has_idea_with_trait = welfare_proponent
+				has_idea_with_trait = establishment_mouthpiece
+				has_idea_with_trait = democratic_reformer
+				has_idea_with_trait = fascist_demagogue
+				has_idea_with_trait = communist_revolutionary
+			}
+		}
+
+		completion_reward = {
+				add_war_support = 0.1
+				add_timed_idea = { idea = generic_idea_clan_autocracy days = 730 }
+				set_country_flag = allowed_path_autocratic		# these are for allowing advisers
+				clr_country_flag = initial_ideology_democratic
+		}
+	}
+	
+	focus = {
+		id = IMS_government_autocratic_2
+		icon = GFX_focus_IMS_government_clan
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		
+		prerequisite = { focus = IMS_government_autocratic_1 }
+		relative_position_id = IMS_government_autocratic_1
+		x = 0
+		y = 1
+		
+		cost = 10
+
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 1
+		}
+		
+		available = {
+			autocracy > 0.33
+			OR = {
+				is_subject = no
+				OVERLORD = { has_government = autocracy }
+			}
+			NOT = { country_exists = IMA }
+		}
+
+		completion_reward = {
+			custom_effect_tooltip = ss_generic_government_autocratic_tt_IMS
+			hidden_effect = {
+				every_possible_country = {
+					limit = { tag = IMA }
+					IMA_Imaban_Matsudaira_Ujimori = { set_nationality  = IMS }
+					IMA_Imaban_Matsudaira_Yoshikazu = { set_nationality  = IMS }
 				}
-				set_party_name = {
-					ideology = autocracy
-					long_name = "Imaban Matsudaira"
-					name = "Imaban Matsudaira"
+			}
+			set_party_name = {
+				ideology = autocracy
+				long_name = "Imaban Matsudaira"
+				name = "Imaban Matsudaira"
+			}
+			promote_character = IMA_Imaban_Matsudaira_Ujimori
+			custom_effect_tooltip = ss_generic_government_autocratic_tt_IMS_2
+			hidden_effect = {
+				set_cosmetic_tag = IMS_IMA
+				every_state = {
+					limit = { is_core_of = IMA }
+					remove_core_of = IMA
 				}
-				promote_character = IMA_Imaban_Matsudaira_Ujimori
-				custom_effect_tooltip = ss_generic_government_autocratic_tt_IMS_2
-				hidden_effect = {
-					set_cosmetic_tag = IMS_IMA
-					every_state = {
-						limit = { is_core_of = IMA }
-						remove_core_of = IMA
-					}
-					set_politics = {
-						ruling_party = autocracy
-						elections_allowed = no
-					}
-				}
-			} else = {
 				set_politics = {
 					ruling_party = autocracy
 					elections_allowed = no
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = IMS_generic_religious_zeal
+		icon = { value = GFX_focus_generic_religion_buddhism		trigger = { check_variable = { country_religion = 1 } } }
+		icon = { value = GFX_focus_generic_religion_shinto			trigger = { check_variable = { country_religion = 2 } } }
+		icon = { value = GFX_focus_generic_religion_christianity	trigger = { check_variable = { country_religion = 3 } } }
+		icon = { value = GFX_focus_generic_religion_taoism			trigger = { check_variable = { country_religion = 4 } } }
+		icon = { value = GFX_focus_generic_religion_confucianism	trigger = { check_variable = { country_religion = 5 } } }
+		icon = { value = GFX_focus_generic_religion_cthulhu			trigger = { check_variable = { country_religion = 7 } } }
+		icon = GFX_focus_generic_religion
+		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_RELIGION }
+		
+		prerequisite = { focus = IMS_government_autocratic_2 }
+		mutually_exclusive = { focus = ss_generic_government_freedoms }
+		x = 0
+		y = 1
+		relative_position_id = IMS_government_autocratic_2
+		
+		cost = 10
+
+		available_if_capitulated = yes
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 5
+				OR = {
+					has_idea_with_trait = buddhist_monk
+					has_idea_with_trait = shinshoku
+					has_idea_with_trait = protestant_missionary
+					has_idea_with_trait = orthodox_priest
+					has_idea_with_trait = catholic_priest
+					has_idea_with_trait = daoshi
+					has_idea_with_trait = confucian_philosopher
+					has_idea_with_trait = mad_cultist
+				}
+			}
+		}
+		
+		available = { NOT = { has_religion_6 = yes } }
+
+		completion_reward = {
+			if = {
+				limit = { has_religion_1 = yes }
+				add_ideas = generic_idea_religious_zeal_1
+			}
+			if = {
+				limit = { has_religion_2 = yes }
+				add_ideas = generic_idea_religious_zeal_2
+			}
+			if = {
+				limit = { has_religion_3 = yes }
+				add_ideas = generic_idea_religious_zeal_3
+			}
+			if = {
+				limit = { has_religion_4 = yes }
+				add_ideas = generic_idea_religious_zeal_4
+			}
+			if = {
+				limit = { has_religion_5 = yes }
+				add_ideas = generic_idea_religious_zeal_5
+			}
+			if = {
+				limit = { has_religion_7 = yes }
+				add_ideas = generic_idea_religious_zeal_7
+			}
+		}
+	}
+	
+	focus = {
+		id = IMS_generic_religious_zeal2
+		icon = { value = GFX_focus_PRT_military_order_of_christ trigger = { tag = PRT } }
+		icon = GFX_focus_SHO_conditional_tsujigiri
+		search_filters = { FOCUS_FILTER_WAR_SUPPORT }
+		dynamic = yes
+		
+		prerequisite = { focus = IMS_generic_religious_zeal }
+		mutually_exclusive = { focus = ss_generic_religious_zeal3 }
+		relative_position_id = IMS_generic_religious_zeal
+		x = -1
+		y = 1
+		
+		cost = 10
+		
+		ai_will_do = { factor = 1 }
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_war_support = 0.1
+			custom_effect_tooltip = kamikaze_focus_tooltip
+		}
+	}
+	
+	focus = {
+		id = IMS_generic_religious_zeal3
+		icon = { value = GFX_focus_generic_religion2_buddhism		trigger = { check_variable = { country_religion = 1 } } }
+		icon = { value = GFX_focus_generic_religion2_shinto			trigger = { check_variable = { country_religion = 2 } } }
+		icon = { value = GFX_focus_generic_religion2_christianity	trigger = { check_variable = { country_religion = 3 } } }
+		icon = { value = GFX_focus_generic_religion2_taoism			trigger = { check_variable = { country_religion = 4 } } }
+		icon = { value = GFX_focus_generic_religion2_confucianism	trigger = { check_variable = { country_religion = 5 } } }
+		icon = { value = GFX_focus_generic_religion2_cthulhu		trigger = { check_variable = { country_religion = 7 } } }
+		icon = GFX_focus_generic_religion2
+		search_filters = { FOCUS_FILTER_ANNEXATION FOCUS_FILTER_RELIGION }
+		
+		prerequisite = { focus = IMS_generic_religious_zeal }
+		mutually_exclusive = { focus = IMS_generic_religious_zeal2 }
+		x = 1
+		y = 1
+		relative_position_id = IMS_generic_religious_zeal
+		
+		cost = 10
+		
+		ai_will_do = { factor = 1 }
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			custom_effect_tooltip = religion_can_core_with_religion
+			hidden_effect = {
+				if = {
+					limit = { has_idea = generic_idea_religious_zeal_1 }
+					swap_ideas = {
+						add_idea = generic_idea_religious_zeal_1_upgrade
+						remove_idea = generic_idea_religious_zeal_1
+					}
+				}
+				if = {
+					limit = { has_idea = generic_idea_religious_zeal_2 }
+					swap_ideas = {
+						add_idea = generic_idea_religious_zeal_2_upgrade
+						remove_idea = generic_idea_religious_zeal_2
+					}
+				}
+				if = {
+					limit = { has_idea = generic_idea_religious_zeal_3 }
+					swap_ideas = {
+						add_idea = generic_idea_religious_zeal_3_upgrade
+						remove_idea = generic_idea_religious_zeal_3
+					}
+				}
+				if = {
+					limit = { has_idea = generic_idea_religious_zeal_4 }
+					swap_ideas = {
+						add_idea = generic_idea_religious_zeal_4_upgrade
+						remove_idea = generic_idea_religious_zeal_4
+					}
+				}
+				if = {
+					limit = { has_idea = generic_idea_religious_zeal_5 }
+					swap_ideas = {
+						add_idea = generic_idea_religious_zeal_5_upgrade
+						remove_idea = generic_idea_religious_zeal_5
+					}
+				}
+				if = {
+					limit = { has_idea = generic_idea_religious_zeal_7 }
+					swap_ideas = {
+						add_idea = generic_idea_religious_zeal_7_upgrade
+						remove_idea = generic_idea_religious_zeal_7
+					}
 				}
 			}
 		}
@@ -3838,16 +4062,12 @@ focus_tree = {
 		x = 0
 		y = 1
 		relative_position_id = ss_generic_government_communism
-		offset = {
-			x = 1 y = 0
-			trigger = { tag = IMS }
-		}
 		
 		cost = 10
 
 		available_if_capitulated = yes
 		
-		allow_branch = { NOT = { tag = PRT } }
+		allow_branch = { NOT = { tag = PRT tag = IMS } }
 		
 		ai_will_do = {
 			factor = 1
@@ -3881,7 +4101,7 @@ focus_tree = {
 			trigger = { tag = IMS }
 		}
 
-		allow_branch = { NOT = { tag = PRT } }
+		allow_branch = { NOT = { tag = PRT tag = IMS } }
 		cost = 10
 
 		available_if_capitulated = yes
@@ -3946,11 +4166,17 @@ focus_tree = {
 		id = ideological_fanaticism
 		icon = GFX_goal_generic_demand_territory
 		search_filters = { FOCUS_FILTER_POLITICAL }
+		
 		prerequisite = { focus = ss_generic_government_neutrality focus = ss_generic_government_autocratic focus = ss_generic_government_fascism }
 		mutually_exclusive = { focus = ss_generic_religious_zeal }
 		relative_position_id = ss_generic_government_neutrality
 		x = 2
 		y = 1
+		offset = {
+			x = 1 y = 0
+			trigger = { tag = IMS }
+		}
+		
 		cost = 10
 
 		available_if_capitulated = yes
@@ -3991,6 +4217,8 @@ focus_tree = {
 		x = 1
 		y = 1
 		relative_position_id = ss_generic_government_fascism
+		
+		allow_branch = { NOT = { tag = IMS } }
 		
 		cost = 10
 
@@ -4159,6 +4387,7 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
 		
 		prerequisite = { focus = ss_generic_government_democratic focus = ss_generic_government_democratic_socialism focus = IMS_generic_join_lon }
+		mutually_exclusive = { focus = IMS_generic_religious_zeal }
 		x = 0
 		y = 1
 		relative_position_id = ss_generic_government_democratic
@@ -4176,7 +4405,13 @@ focus_tree = {
 		
 		ai_will_do = { factor = 1 }
 		
-		available = { OR = { has_government = democratic has_government = democratic_socialism } }
+		available = {
+			OR = {
+				has_government = democratic
+				has_government = democratic_socialism
+				if = { limit = { tag = IMS } has_government = autocracy }
+			}
+		}
 
 		completion_reward = {
 			add_ideas = generic_idea_freedoms
@@ -4216,10 +4451,6 @@ focus_tree = {
 		relative_position_id = ss_generic_government_freedoms
 		x = -1
 		y = 1
-		offset = {
-			x = -1 y = 0
-			trigger = { tag = IMS }
-		}
 		
 		available_if_capitulated = yes
 		
@@ -4845,10 +5076,6 @@ focus_tree = {
 		y = 1
 		relative_position_id = ss_generic_government_freedoms
 		offset = {
-			x = -1 y = 0
-			trigger = { tag = IMS }
-		}
-		offset = {
 			x = 1 y = 0
 			trigger = { tag = PRT }
 		}
@@ -4958,13 +5185,17 @@ focus_tree = {
 		icon = { value = GFX_focus_PRT_portuguese_youth trigger = { tag = PRT } }
 		icon = GFX_goal_generic_more_territorial_claims
 		search_filters = { FOCUS_FILTER_MANPOWER }
-		prerequisite = { focus = ss_generic_government_autocratic focus = ss_generic_government_fascism focus = ss_generic_government_neutrality focus = IMS_generic_government_neutrality }
-		mutually_exclusive = { focus = ss_generic_religious_zeal2 }
 		dynamic = yes
 		
+		prerequisite = { focus = ss_generic_government_autocratic focus = ss_generic_government_fascism focus = ss_generic_government_neutrality focus = IMS_generic_government_neutrality }
+		mutually_exclusive = { focus = ss_generic_religious_zeal2 }
 		relative_position_id = ss_generic_government_neutrality
 		x = 0
 		y = 1
+		offset = {
+			x = 1 y = 0
+			trigger = { tag = IMS }
+		}
 		cost = 10
 
 		available_if_capitulated = yes
@@ -5077,9 +5308,9 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_MANPOWER }
 		icon = GFX_focus_generic_infantry
 		prerequisite = { focus = interventionism_focus }
+		relative_position_id = interventionism_focus
 		x = -1
 		y = 1
-		relative_position_id = interventionism_focus
 		cost = 10
 
 		available_if_capitulated = yes
@@ -5095,10 +5326,12 @@ focus_tree = {
 		id = paramilitarism
 		icon = GFX_goal_generic_military_sphere
 		search_filters = { FOCUS_FILTER_MILITARY }
+		
 		prerequisite = { focus = militarism focus = ss_generic_religious_zeal2 focus = ss_generic_fascist_prime_minister }
+		relative_position_id = ss_generic_religious_zeal2
 		x = -1
 		y = 1
-		relative_position_id = ss_generic_religious_zeal2
+		
 		cost = 10
 		
 		allow_branch = {
