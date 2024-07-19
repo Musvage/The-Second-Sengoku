@@ -39,6 +39,7 @@ focus_tree = {
 				gfx = GFX_bop_KYU_koga_side
 			} set_country_flag = government_back_koga
 			set_country_flag = allowed_path_autocratic	# this is for allowing advisers
+			clr_country_flag = initial_ideology_neutrality
 			custom_effect_tooltip = KYU_back_yamamoto_1_tt
 			add_power_balance_value = {
 				id = KYU_fractured_government_balance
@@ -195,6 +196,36 @@ focus_tree = {
 		}
 	}
 	
+	focus = {
+		id = KYU_seto_crises_back_ima
+		icon = GFX_focus_IMS_imaban_matsuraida
+		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		
+		prerequisite = { focus = KYU_cross_rubicon focus = KYU_kyushu_shogunate }
+		relative_position_id = KYU_cross_rubicon
+		x = 1
+		y = 1
+		cost = 10
+		
+		available = {
+			OR = {
+				has_global_flag = seto_crisis_active
+				country_exists = IMS
+				if = { limit = { IMS = { NOT = { has_completed_focus = IMS_government_autocratic_2 } } } country_exists = IMA }
+			}
+		}
+		
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			### IF IMS CRISIS IS ACTIVE: GUARANTEE
+			### IF IMS CRISIS IS ACTIVE, IMS is on the auth path: complete IMA focus, become puppet
+			### IF IMS CISIS IS OVER, IMS is independent, IMS is on the auth path: complete IMA focus, become puppet
+			### IF IMS CISIS IS OVER, IMS is independent, IMS is not on the auth path: gain IMA characters, gain wargoal, offer annexation (or else), SHI/CHU can guarantee IMS
+		}
+	}
+	
 	# Koga/Junta Branch
 	
 	focus = {
@@ -256,13 +287,15 @@ focus_tree = {
 			factor = 10
 		}	
 		completion_reward = {
+			set_country_flag = allowed_path_fascism	# this is for allowing advisers
+			clr_country_flag = initial_ideology_neutrality
+			custom_effect_tooltip = KYU_back_nagano_1_tt
 			### THIS SHOULD ME MOVED DOWN TO TREE LATER
 			set_power_balance_gfx = {
 				id = KYU_fractured_government_balance
 				side = KYU_bop_government_side
 				gfx = GFX_bop_KYU_nagano_side
 			} set_country_flag = government_back_nagano
-			set_country_flag = allowed_path_fascism	# this is for allowing advisers
 		}
 	}
 	
@@ -284,7 +317,7 @@ focus_tree = {
 		
 		ai_will_do = {
 			factor = 10
-		}	
+		}
 		completion_reward = {
 			CHU = {
 				#country_event = ostasien.6
@@ -309,7 +342,13 @@ focus_tree = {
 		y = 0
 		cost = 10
 		
-		available = { has_global_flag = seto_crisis_active }
+		available = {
+			OR = {
+				has_global_flag = seto_crisis_active
+				country_exists = IMS
+				if = { limit = { IMS = { NOT = { has_completed_focus = IMS_government_autocratic_2 } } } country_exists = IMA }
+			}
+		}
 		
 		ai_will_do = {
 			factor = 10
@@ -1800,6 +1839,7 @@ focus_tree = {
 						type = ship_hull_super_heavy_1
 						version_name = "Yamato Class"
 					}
+					name = "Yamato"
 					requested_factories = 1
 					progress = 0.5
 					amount = 1
@@ -1825,6 +1865,7 @@ focus_tree = {
 						type = SH_battleship_1
 						version_name = "Yamato Class"
 					}
+					name = "Yamato"
 					requested_factories = 1
 					progress = 0.5
 					amount = 1
