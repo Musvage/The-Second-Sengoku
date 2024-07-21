@@ -247,6 +247,7 @@ focus_tree = {
 	focus = {
 		id = special_forces
 		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_RESEARCH }
+		icon = { value = GFX_focus_HIR_marines_focus trigger = { tag = HIR } }
 		icon = GFX_focus_KAN_small_arms_modernization
 		prerequisite = { focus = equipment_effort_3 focus = doctrine_effort_2 focus = armor_effort }
 		dynamic = yes
@@ -260,7 +261,12 @@ focus_tree = {
 		allow_branch = { NOT = { tag = OSA tag = FRA tag = AMC tag = OKI tag = IMS } }
 
 		completion_reward = {
-			add_ideas = special_forces
+			if = {
+				limit = { tag = HIR }
+				add_ideas = HIR_marine_corps_spirit
+			} else = {
+				add_ideas = special_forces
+			}
 			if = {
 				limit = { has_dlc = "Arms Against Tyranny" }
 				add_doctrine_cost_reduction = {
@@ -600,6 +606,7 @@ focus_tree = {
 	focus = {
 		id = fighter_focus
 		search_filters = { FOCUS_FILTER_RESEARCH }
+		icon = { value = GFX_goal_generic_air_fighter trigger = { is_initial_western = yes } }
 		icon = GFX_focus_generic_airplanes
 		prerequisite = { focus = aviation_effort }
 		mutually_exclusive = { focus = bomber_focus }
@@ -639,6 +646,7 @@ focus_tree = {
 	focus = {
 		id = bomber_focus
 		search_filters = { FOCUS_FILTER_RESEARCH }
+		icon = { value = GFX_goal_generic_air_bomber trigger = { is_initial_western = yes } }
 		icon = GFX_focus_generic_bomber
 		prerequisite = { focus = aviation_effort }
 		mutually_exclusive = { focus = fighter_focus }
@@ -765,6 +773,7 @@ focus_tree = {
 	focus = {
 		id = CAS_effort
 		search_filters = { FOCUS_FILTER_RESEARCH }
+		icon = { value = GFX_focus_HIR_tech_cas trigger = { tag = HIR } }
 		icon = GFX_focus_KYU_cas
 		prerequisite = { focus = aviation_effort_2 }
 		prerequisite = { focus = motorization_effort }
@@ -852,20 +861,7 @@ focus_tree = {
 		
 		bypass = { hidden_trigger = { has_completed_focus = rocket_effort } }
 		
-		allow_branch = {
-			OR = {
-				tag = REI
-				tag = PRT
-				tag = OSA
-				tag = KOB
-				tag = HIR
-				tag = FER
-				tag = AMC
-				tag = OKI
-				tag = KIT
-				tag = SPR
-			}
-		}
+		allow_branch = { is_initial_western = yes }
 
 		completion_reward = {
 			add_tech_bonus = {
@@ -888,6 +884,7 @@ focus_tree = {
 
 	focus = {
 		id = NAV_effort
+		icon = { value = GFX_focus_HIR_tech_nav trigger = { tag = HIR } }
 		icon = GFX_focus_KYU_naval_aviation
 		prerequisite = { focus = aviation_effort_2 }
 		prerequisite = { focus = flexible_navy }
@@ -912,6 +909,7 @@ focus_tree = {
 
 	focus = {
 		id = naval_effort
+		icon = { value = GFX_goal_generic_construct_naval_dockyard trigger = { is_initial_western = yes } }
 		icon = GFX_focus_generic_dockyards
 		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_MILITARY }
 		x = 9
@@ -1092,6 +1090,7 @@ focus_tree = {
 
 	focus = {
 		id = large_navy
+		icon = { value = GFX_goal_generic_navy_battleship trigger = { is_trade_city = yes } }
 		icon = GFX_focus_generic_battleship
 		search_filters = { FOCUS_FILTER_RESEARCH }
 		prerequisite = { focus = naval_effort }
@@ -2189,22 +2188,11 @@ focus_tree = {
 
 		available_if_capitulated = yes
 		
+		available = { is_initial_western = yes }
+		
 		bypass = { hidden_trigger = { has_completed_focus = industrial_effort } }
 		
-		allow_branch = {
-			OR = {
-				tag = REI
-				tag = PRT
-				tag = OSA
-				tag = KOB
-				tag = HIR
-				tag = FER
-				tag = AMC
-				tag = OKI
-				tag = KIT
-				tag = SPR
-			}
-		}
+		allow_branch = { is_initial_western = yes }
 		
 		offset = {
 			x = 1 y = 0
@@ -2287,6 +2275,7 @@ focus_tree = {
 	focus = {
 		id = construction_effort_western
 		search_filters = { FOCUS_FILTER_INDUSTRY }
+		icon = { value = GFX_focus_HIR_homeland_development_works trigger = { tag = HIR } }
 		icon = GFX_focus_generic_western_construction
 		cost = 10
 
@@ -2397,6 +2386,7 @@ focus_tree = {
 	focus = {
 		id = construction_effort_2_western
 		search_filters = { FOCUS_FILTER_INDUSTRY }
+		icon = { value = GFX_focus_HIR_colonial_development_industry trigger = { tag = HIR } }
 		icon = GFX_focus_generic_western_construction
 		prerequisite = { focus = construction_effort_western }
 		x = 0
@@ -2405,7 +2395,6 @@ focus_tree = {
 		cost = 10
 
 		available_if_capitulated = yes
-
 
 		ai_will_do = {
 			factor = 2
@@ -2541,6 +2530,7 @@ focus_tree = {
 	focus = {
 		id = infrastructure_effort_western	# Fuel effort
 		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_RESEARCH }
+		icon = { value = GFX_focus_HIR_colonial_development_oil trigger = { tag = HIR } }
 		icon = GFX_focus_generic_western_fuel
 		prerequisite = { focus = construction_effort_2_western }
 		x = 0
@@ -2553,12 +2543,30 @@ focus_tree = {
 		bypass = { hidden_trigger = { has_completed_focus = infrastructure_effort } }
 
 		completion_reward = {
-			add_offsite_building = { type = synthetic_refinery level = 1 }
-			add_tech_bonus = {
-				name = JAP_coal_liquification
-				bonus = 1.0
-				uses = 1
-				category = synth_resources	
+			if = {
+				limit = { tag = HIR }
+				custom_effect_tooltip = HIR_colonial_development_3_ttb
+				hidden_effect = {
+					add_to_variable = { global.tc_base_hirado_rubber = 4 }
+					add_to_variable = { global.tc_base_hirado_oil = 4 }
+					add_to_variable = { global.tc_base_hirado_aluminium = 12 }
+					check_trade_cities = yes
+				}
+				add_tech_bonus = {
+					name = JAP_coal_liquification
+					bonus = 2.0
+					uses = 1
+					category = synth_resources	
+				}
+
+			} else = {
+				add_offsite_building = { type = synthetic_refinery level = 1 }
+				add_tech_bonus = {
+					name = JAP_coal_liquification
+					bonus = 1.0
+					uses = 1
+					category = synth_resources	
+				}
 			}
 		}
 	}
@@ -2666,6 +2674,7 @@ focus_tree = {
 	focus = {
 		id = infrastructure_effort_2_western	# Dockyards Effort
 		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_WORLD }
+		icon = { value = GFX_focus_HIR_homeland_development_navy trigger = { tag = HIR } }
 		icon = GFX_focus_generic_western_dock
 		prerequisite = { focus = infrastructure_effort_western }
 		x = -1
@@ -2723,6 +2732,7 @@ focus_tree = {
 	focus = {
 		id = construction_effort_3_western
 		search_filters = { FOCUS_FILTER_INDUSTRY }
+		icon = { value = GFX_focus_HIR_homeland_development_military trigger = { tag = HIR } }
 		icon = GFX_focus_generic_western_construction
 		prerequisite = { focus = infrastructure_effort_western }
 		x = 0
@@ -3169,6 +3179,7 @@ focus_tree = {
 	
 	focus = {
 		id = ss_generic_right
+		icon = { value = GFX_focus_HIR_government_fascism trigger = { tag = HIR } }
 		icon = GFX_focus_SHO_tohokai
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
@@ -3733,6 +3744,7 @@ focus_tree = {
 	
 	focus = {
 		id = ss_generic_government_autocratic
+		icon = { value = GFX_focus_hol_the_only_man_in_the_dutch_government trigger = { tag = HIR } }
 		icon = { value = GFX_focus_PRT_restore_monarchy trigger = { tag = PRT } }
 		icon = { value = GFX_focus_EZO_matsumae_clan trigger = { tag = EZO } }
 		icon = GFX_focus_KYU_war_preparations
@@ -3963,9 +3975,8 @@ focus_tree = {
 	
 	focus = {
 		id = IMS_generic_religious_zeal2
-		icon = { value = GFX_focus_PRT_military_order_of_christ trigger = { tag = PRT } }
 		icon = GFX_focus_SHO_conditional_tsujigiri
-		search_filters = { FOCUS_FILTER_WAR_SUPPORT }
+		search_filters = { FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_POLITICAL FOCUS_FILTER_MILITARY }
 		dynamic = yes
 		
 		prerequisite = { focus = IMS_generic_religious_zeal }
@@ -3982,6 +3993,7 @@ focus_tree = {
 
 		completion_reward = {
 			add_war_support = 0.1
+			add_political_power = 150
 			custom_effect_tooltip = kamikaze_focus_tooltip
 		}
 	}
@@ -3995,7 +4007,7 @@ focus_tree = {
 		icon = { value = GFX_focus_generic_religion2_confucianism	trigger = { check_variable = { country_religion = 5 } } }
 		icon = { value = GFX_focus_generic_religion2_cthulhu		trigger = { check_variable = { country_religion = 7 } } }
 		icon = GFX_focus_generic_religion2
-		search_filters = { FOCUS_FILTER_ANNEXATION FOCUS_FILTER_RELIGION }
+		search_filters = { FOCUS_FILTER_ANNEXATION FOCUS_FILTER_RELIGION FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
 		
 		prerequisite = { focus = IMS_generic_religious_zeal }
 		mutually_exclusive = { focus = IMS_generic_religious_zeal2 }
@@ -4010,6 +4022,8 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		completion_reward = {
+			add_political_power = 150
+			add_stability = 0.1
 			custom_effect_tooltip = religion_can_core_with_religion
 			hidden_effect = {
 				if = {
@@ -4290,8 +4304,9 @@ focus_tree = {
 	focus = {
 		id = ss_generic_religious_zeal2
 		icon = { value = GFX_focus_PRT_military_order_of_christ trigger = { tag = PRT } }
+		icon = { value = GFX_focus_PRT_holy_war2 trigger = { is_initial_western = yes } }
 		icon = GFX_focus_SHO_conditional_tsujigiri
-		search_filters = { FOCUS_FILTER_WAR_SUPPORT }
+		search_filters = { FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_MILITARY }
 		dynamic = yes
 		
 		prerequisite = { focus = ss_generic_religious_zeal }
@@ -4389,6 +4404,7 @@ focus_tree = {
 	
 	focus = {
 		id = ss_generic_government_freedoms
+		icon = { value = GFX_focus_HIR_side_with_democracy trigger = { tag = HIR } }
 		icon = { value = GFX_focus_PRT_free_elections trigger = { tag = PRT } }
 		icon = GFX_goal_generic_improve_relations
 		dynamic = yes
@@ -4653,9 +4669,9 @@ focus_tree = {
 		text_icon = worldstage_style
 		
 		allow_branch = {
-			OR = { tag = REI tag = PRT tag = OSA tag = KOB tag = HIR tag = FER tag = KIT tag = SPR }
+			OR = { tag = REI tag = PRT tag = OSA tag = KOB tag = FER tag = KIT tag = SPR }
 			NOT = { has_country_flag = lost_original_focus_tree } # this is related to World Stage
-			NOT = { tag = AMC tag = OKI }
+			NOT = { tag = AMC tag = OKI tag = HIR }
 		}
 
 		ai_will_do = {
@@ -5231,6 +5247,7 @@ focus_tree = {
 	
 	focus = {
 		id = militarism
+		icon = { value = GFX_focus_HIR_crisis_suppression trigger = { tag = HIR } }
 		icon = { value = GFX_goal_generic_political_pressure trigger = { is_trade_city = yes } }
 		icon = { value = GFX_goal_generic_political_pressure_eastern }
 		search_filters = { FOCUS_FILTER_MANPOWER FOCUS_FILTER_MILITARY }
@@ -5369,7 +5386,8 @@ focus_tree = {
 		cost = 10
 		
 		allow_branch = {
-			OR = { tag = REI tag = PRT tag = OSA tag = KOB tag = HIR tag = FER tag = AMC tag = OKI tag = KIT tag = SPR }
+			OR = { tag = REI tag = PRT tag = OSA tag = KOB tag = FER tag = AMC tag = OKI tag = KIT tag = SPR }
+			NOT = { tag = HIR }
 			NOT = { has_country_flag = lost_original_focus_tree } # this is related to World Stage
 		}
 
@@ -5402,6 +5420,44 @@ focus_tree = {
 			}
 			custom_effect_tooltip = effect_scales_with_max_available_manpower
 			hidden_effect = { set_technology = { militia_tech = 1 popup = no } } custom_effect_tooltip = militia_tech_tooltip
+		}
+	}
+	
+	focus = {
+		id = HIR_colonial_armies
+		icon = GFX_focus_HIR_focus_colony_army
+		search_filters = { FOCUS_FILTER_HIR_COLONY FOCUS_FILTER_MANPOWER }
+		
+		prerequisite = { focus = interventionism_focus_western focus = neutrality_focus focus = militarism }
+		relative_position_id = neutrality_focus
+		x = 0
+		y = 1
+		
+		available_if_capitulated = yes
+		
+		allow_branch = { tag = HIR }
+		
+		cost = 10
+		
+		ai_will_do = { factor = 10 }
+		
+		completion_reward = {
+			add_ideas = HIR_colonial_army_spirit
+			set_temp_variable = { equip_bonus_rifle = var:max_available_manpower_k }
+			set_temp_variable = { equip_bonus_arty = var:max_available_manpower_k }
+			multiply_temp_variable = { equip_bonus_rifle = 150 }
+			multiply_temp_variable = { equip_bonus_arty = 4 }
+			clamp_temp_variable = { var = equip_bonus_rifle min = 300 }
+			clamp_temp_variable = { var = equip_bonus_arty min = 12 }
+			add_equipment_to_stockpile = {
+				type = infantry_equipment_1
+				amount = var:equip_bonus_rifle
+			}
+			add_equipment_to_stockpile = {
+				type = artillery_equipment_1
+				amount = var:equip_bonus_arty
+			}
+			custom_effect_tooltip = effect_scales_with_max_available_manpower
 		}
 	}
 
