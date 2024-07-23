@@ -281,7 +281,7 @@ focus_tree = {
 		
 		mutually_exclusive = { focus = KYU_back_yamamoto_1 focus = KYU_invite_nagano_1 }
 		relative_position_id = KYU_back_yamamoto_1
-		x = 2
+		x = 4
 		y = 0
 		cost = 10
 		
@@ -305,6 +305,77 @@ focus_tree = {
 				id = KYU_fractured_government_balance
 				value = -0.1
 				tooltip_side = KYU_bop_government_side
+			}
+		}
+	}
+	
+	focus = {
+		id = KYU_back_koga_2
+		icon = GFX_goal_generic_major_alliance
+		search_filters = { FOCUS_FILTER_KOGA FOCUS_FILTER_POLITICAL }
+		
+		prerequisite = { focus = KYU_back_koga_1 }
+		relative_position_id = KYU_back_koga_1
+		x = -1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			add_power_balance_value = {
+				id = KYU_fractured_government_balance
+				value = -0.1
+				tooltip_side = KYU_bop_government_side
+			}
+		}
+	}
+	
+	focus = {
+		id = KYU_disarm_clans
+		icon = GFX_focus_FIN_weapon_caches
+		search_filters = { FOCUS_FILTER_KOGA FOCUS_FILTER_POLITICAL }
+		
+		prerequisite = { focus = KYU_back_koga_2 }
+		relative_position_id = KYU_back_koga_2
+		x = -1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			custom_effect_tooltip = "RANDOM CHANCE: gains old weapons, reduce Clan's power OR clans revolt all at once. Chance depend on the current BOP"
+			custom_effect_tooltip = "If clans revolt, bypasses KYU_back_koga_3"
+		}
+	}
+	
+	focus = {
+		id = KYU_back_koga_3
+		icon = GFX_goal_generic_demand_territory
+		search_filters = { FOCUS_FILTER_KOGA FOCUS_FILTER_POLITICAL }
+		
+		prerequisite = { focus = KYU_back_koga_2 }
+		relative_position_id = KYU_back_koga_2
+		x = 1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			KYU_mineichi_koga = {
+				add_country_leader_role = {
+					promote_leader = yes
+					country_leader = {
+						ideology = junta
+						expire = "1965.1.1.1"
+						traits = {  }
+					}
+				}
 			}
 		}
 	}
@@ -336,16 +407,105 @@ focus_tree = {
 			set_country_flag = allowed_path_fascism	# this is for allowing advisers
 			clr_country_flag = initial_ideology_neutrality
 			custom_effect_tooltip = KYU_back_nagano_1_tt
-			### THIS SHOULD ME MOVED DOWN TO TREE LATER
+			add_power_balance_value = {
+				id = KYU_fractured_government_balance
+				value = -0.1
+				tooltip_side = KYU_bop_government_side
+			}
+			custom_effect_tooltip = unlock_characters_tt
+			character_list_tooltip = {
+				limit = { has_trait = fascist_demagogue }
+			}
+			set_power_balance_gfx = {
+				id = KYU_fractured_government_balance
+				side = KYU_bop_clans_side
+				gfx = GFX_bop_KYU_yamamoto_side
+			} set_country_flag = clans_back_yamamoto
+		}
+	}
+	
+	focus = {
+		id = KYU_press_propaganda
+		icon = GFX_focus_generic_fascist_propaganda
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_NAGANO }
+		
+		prerequisite = { focus = KYU_invite_nagano_1 }
+		relative_position_id = KYU_invite_nagano_1
+		x = 1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		completion_reward = {
+			add_political_power = 100
+			add_power_balance_value = {
+				id = KYU_fractured_government_balance
+				value = -0.1
+				tooltip_side = KYU_bop_government_side
+			}
+		}
+	}
+	
+	focus = {
+		id = KYU_invite_nagano_2
+		icon = GFX_focus_HIR_homeland_development_plan_z
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_NAGANO }
+		
+		prerequisite = { focus = KYU_press_propaganda focus = KYU_seto_crises_back_shi }
+		relative_position_id = KYU_press_propaganda
+		x = -1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		completion_reward = {
+			every_possible_country = {
+				limit = { has_character = PRO_osami_nagano }
+				PRO_osami_nagano = { set_nationality = KYU }
+			}
 			set_power_balance_gfx = {
 				id = KYU_fractured_government_balance
 				side = KYU_bop_government_side
 				gfx = GFX_bop_KYU_nagano_side
 			} set_country_flag = government_back_nagano
-			custom_effect_tooltip = unlock_characters_tt
-			character_list_tooltip = {
-				limit = { has_trait = fascist_demagogue }
+		}
+	}
+	
+	focus = {
+		id = KYU_depose_junta
+		icon = GFX_goal_support_fascism
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_NAGANO }
+		
+		prerequisite = { focus = KYU_invite_nagano_2 }
+		relative_position_id = KYU_invite_nagano_2
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		completion_reward = {
+			set_power_balance_gfx = {
+				id = KYU_fractured_government_balance
+				side = KYU_bop_government_side
+				gfx = GFX_bop_KYU_nagano_side
+			} set_country_flag = government_back_nagano
+			set_country_flag = ignore_flavour_event
+			set_politics = {
+				ruling_party = fascism
+				elections_allowed = no
+				last_election = "1936.1.1"
+				election_frequency = 60
 			}
+			add_ideas = KYU_double_leaf_society_spirit
 		}
 	}
 	
@@ -377,13 +537,14 @@ focus_tree = {
 					modifier = REI_opinion_back_SHI_on_seto
 				}
 			}
+			custom_effect_tooltip = KYU_seto_crises_back_chu_tt
 		}
 	}
 	
 	focus = {
 		id = KYU_seto_crises_back_ims
 		icon = GFX_focus_KYU_back_ims
-		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_NAGANO }
 		
 		prerequisite = { focus = KYU_back_koga_1 focus = KYU_invite_nagano_1 }
 		mutually_exclusive = { focus = KYU_seto_crises_back_shi focus = KYU_seto_crises_back_chu }
@@ -457,6 +618,7 @@ focus_tree = {
 			factor = 10
 		}	
 		completion_reward = {
+			add_timed_idea = { idea = KYU_right_wing_radicals_spirit days = 365 }
 			SHI = {
 				#country_event = ostasien.6
 				effect_tooltip = { add_political_power = 100 }
@@ -476,7 +638,7 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_STABILITY }
 		
 		relative_position_id = KYU_invite_nagano_1
-		x = 2
+		x = 5
 		y = 0
 		cost = 10
 		
