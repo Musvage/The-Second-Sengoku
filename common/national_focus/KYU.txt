@@ -184,9 +184,11 @@ focus_tree = {
 			factor = 10
 		}	
 		completion_reward = {
+			set_cosmetic_tag = KYU_EMP
 			KYU_isoroku_yamamoto = {
 				clr_character_flag = dual_leader_first_title_marshal_admiral
 				set_character_flag = dual_leader_first_title_emperor
+				set_character_name = { name = "Yamamoto I"} #  Yamamoto, first of his name, King of the Andals, and the Rhoynar, and the First Men Lord of the Seven Kingdoms - oops, wrong IP
 			}
 			set_country_flag = ignore_flavour_event
 			set_politics = {
@@ -216,6 +218,7 @@ focus_tree = {
 		}	
 		completion_reward = {
 			news_event = kyushu.8
+			set_cosmetic_tag = KYU_SHO
 			KYU_isoroku_yamamoto = {
 				clr_character_flag = dual_leader_first_title_marshal_admiral
 				set_character_flag = dual_leader_first_title_shogun
@@ -243,6 +246,48 @@ focus_tree = {
 					remove_idea = KYU_pretender_kuni_asaakira_spirit
 				}
 			}
+		}
+	}
+	
+	focus = {
+		id = KYU_independent_kyushu
+		icon = GFX_focus_KAN_channalge_absolutists
+		search_filters = { FOCUS_FILTER_YAMAMOTO FOCUS_FILTER_POLITICAL }
+		
+		prerequisite = { focus = KYU_cross_rubicon }
+		relative_position_id = KYU_cross_rubicon
+		x = -1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			# proclaims independent empire, gives up on unification
+			custom_effect_tooltip = KYU_independent_kyushu_tt
+			hidden_effect = {
+				every_state = {
+					limit = { is_on_continent = kyushu }
+					clr_state_flag = state_is_southern_japan
+				}
+			}
+			every_state = {
+				limit = {
+					is_on_continent = kyushu NOT = { is_core_of = KYU }
+					if = { limit = { owner = { tag = HIR } } KYU = { OR = { NOT = { has_completed_focus = KYU_NAV_befriend_HIR } has_war_with = KYU } } }
+					if = { limit = { owner = { tag = PRT } } KYU = { OR = { NOT = { has_completed_focus = KYU_NAV_befriend_PRT } has_war_with = PRT } } }
+				}
+				add_core_of = KYU
+			}
+			set_country_flag = can_not_form_japan
+			set_country_flag = can_not_gain_cores
+			remove_ideas = SS_the_second_sengoku
+			if = {
+				limit = { has_idea = all_internationally_recognised }
+				remove_ideas = all_internationally_recognised
+			}
+			add_ideas = KYU_independent_state_spirit
 		}
 	}
 	
@@ -338,7 +383,7 @@ focus_tree = {
 	
 	focus = {
 		id = KYU_disarm_clans
-		icon = GFX_focus_FIN_weapon_caches
+		icon = GFX_focus_KYU_seize_weapons
 		search_filters = { FOCUS_FILTER_KOGA FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = KYU_back_koga_2 }
@@ -369,7 +414,16 @@ focus_tree = {
 		
 		ai_will_do = {
 			factor = 10
-		}	
+		}
+		
+		available = {
+			NOT = { has_country_leader = { character = KYU_mineichi_koga ruling_only = yes } }
+		}
+		
+		bypass = {
+			has_country_leader = { character = KYU_mineichi_koga ruling_only = yes }
+		}
+		
 		completion_reward = {
 			KYU_mineichi_koga = {
 				add_country_leader_role = {
@@ -2098,10 +2152,15 @@ focus_tree = {
 					amount = 1
 				}
 			}
-			add_to_variable = {
-				var = country_unification_score_focus_bonus
-				value = 10
-				tooltip = add_country_unification_score_tt
+			if = {
+				limit = { has_country_flag = can_not_form_japan }
+				add_political_power = 100
+			} else = {
+				add_to_variable = {
+					var = country_unification_score_focus_bonus
+					value = 10
+					tooltip = add_country_unification_score_tt
+				}
 			}
 		}
 	}
