@@ -190,6 +190,19 @@ focus_tree = {
 				set_character_flag = dual_leader_first_title_emperor
 				set_character_name = { name = "Yamamoto I"} #  Yamamoto, first of his name, King of the Andals, and the Rhoynar, and the First Men Lord of the Seven Kingdoms - oops, wrong IP
 			}
+			remove_country_leader_role = {
+				character = KYU_isoroku_yamamoto
+				ideology = neutrality
+			}
+			add_country_leader_role = {
+				character = KYU_isoroku_yamamoto
+				promote_leader = yes
+				country_leader = {
+					ideology = autocracy_subtype
+					expire = "1965.1.1.1"
+					traits = { emperor_of_admiralty KYU_martyrs_of_nagaoka_trait }
+				}
+			}
 			set_portraits = {
 				character = KYU_isoroku_yamamoto
 				civilian = { large = "GFX_Portrait_KYU_Isoroku_Yamamoto_Emperor" }
@@ -226,6 +239,19 @@ focus_tree = {
 			set_portraits = {
 				character = KYU_isoroku_yamamoto
 				civilian = { large = "GFX_Portrait_KYU_Isoroku_Yamamoto_Emperor" }
+			}
+			remove_country_leader_role = {
+				character = KYU_isoroku_yamamoto
+				ideology = neutrality
+			}
+			add_country_leader_role = {
+				character = KYU_isoroku_yamamoto
+				promote_leader = yes
+				country_leader = {
+					ideology = autocracy_subtype
+					expire = "1965.1.1.1"
+					traits = { emperor_of_admiralty KYU_martyrs_of_nagaoka_trait }
+				}
 			}
 			KYU_isoroku_yamamoto = {
 				clr_character_flag = dual_leader_first_title_marshal_admiral
@@ -300,12 +326,86 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = KYU_abolish_parliament
+		icon = GFX_goal_generic_demand_territory
+		search_filters = { FOCUS_FILTER_YAMAMOTO FOCUS_FILTER_POLITICAL }
+		
+		prerequisite = { focus = KYU_cross_rubicon focus = KYU_kyushu_shogunate }
+		relative_position_id = KYU_cross_rubicon
+		x = 1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		available = { has_power_balance = { id = KYU_fractured_government_balance } }
+		
+		completion_reward = {
+			remove_power_balance = { id = KYU_fractured_government_balance }
+			every_state = {
+				limit = { has_dynamic_modifier = { modifier = KYU_clan_resistance_modifier } }
+				remove_dynamic_modifier = { modifier = KYU_clan_resistance_modifier }
+			}
+			set_temp_variable = { parliament_party = highest_party_ideology@exclude_ruling_party }
+			202 = { set_state_flag = kyushu_rebel_state}
+			if = { limit = { power_balance_value = { id = KYU_fractured_government_balance value < 0.9 } } 202 = { set_state_flag = kyushu_rebel_state} set_temp_variable = { rebel_force = 0.45 } }
+			if = { limit = { power_balance_value = { id = KYU_fractured_government_balance value < 0.7 } } 122 = { set_state_flag = kyushu_rebel_state} set_temp_variable = { rebel_force = 0.35 } }
+			if = { limit = { power_balance_value = { id = KYU_fractured_government_balance value < 0.5 } } 127 = { set_state_flag = kyushu_rebel_state} set_temp_variable = { rebel_force = 0.25 } }
+			if = { limit = { power_balance_value = { id = KYU_fractured_government_balance value < 0.3 } } 100 = { set_state_flag = kyushu_rebel_state} set_temp_variable = { rebel_force = 0.15 } }
+			if = { limit = { power_balance_value = { id = KYU_fractured_government_balance value < 0.3 } } 139 = { set_state_flag = kyushu_rebel_state} set_temp_variable = { rebel_force = 0.15 } }
+			set_temp_variable = { civil_war_change = 1 }
+			subtract_from_temp_variable = { civil_war_change = power_balance_value }
+			set_temp_variable = { no_civil_war_change = power_balance_value }
+			if = {
+				limit = { has_power_balance = { id = KYU_fractured_government_balance } }
+				random_list = {
+					var:no_civil_war_change = {
+						# The opposition goes gentle into that good night
+						custom_effect_tooltip = KYU_abolish_parliament_tt
+					}
+					var:civil_war_change = {
+						start_civil_war = {
+							ideology = var:parliament_party
+							size = 0.1
+							army_ratio = var:rebel_force
+							navy_ratio = 0
+							air_ratio = var:rebel_force
+							capital = 202
+							states = all
+							states_filter = { has_state_flag = kyushu_rebel_state }
+							set_cosmetic_tag = KYU_FKK
+							keep_all_characters = yes
+							KYU = {
+								set_nationality = {
+									target_country = PREV
+									character = KYU_mineichi_koga
+								}
+							}
+							add_country_leader_role = {
+								character = KYU_mineichi_koga
+								promote_leader = yes
+								country_leader = {
+									ideology = junta
+									expire = "1965.1.1.1"
+									traits = {  }
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
 		id = KYU_seto_crises_back_ima
 		icon = GFX_focus_IMS_imaban_matsuraida
 		search_filters = { FOCUS_FILTER_DIPLOMACY }
 		
-		prerequisite = { focus = KYU_cross_rubicon focus = KYU_kyushu_shogunate }
-		relative_position_id = KYU_cross_rubicon
+		prerequisite = { focus = KYU_kyushu_shogunate }
+		relative_position_id = KYU_kyushu_shogunate
 		x = 1
 		y = 1
 		cost = 10
