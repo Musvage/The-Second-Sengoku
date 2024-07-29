@@ -689,7 +689,91 @@ focus_tree = {
 		}
 	}
 	
-	# } shared focuses by Nagano & Koga to end the BoP {
+	# } shared focuses by political paths {
+	
+	focus = {
+		id = KYU_dangerous_coalition
+		icon = GFX_goal_generic_dangerous_deal
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_KOGA FOCUS_FILTER_NAGANO }
+		
+		prerequisite = { focus = KYU_ally_clans focus = KYU_back_koga_2 }
+		relative_position_id = KYU_ally_clans
+		x = 2
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		available = { NOT = { has_government = autocracy has_government = fascism } }
+		
+		completion_reward = {
+			KYU_tsuyoshi_yasuzumi = {
+				custom_effect_tooltip = become_secondary_leader
+				custom_effect_tooltip = add_trait_char_tt
+				custom_effect_tooltip = coalition_with_fascism_secondary_desc
+			}
+			add_timed_idea = { idea = nationalism days = 365 }
+			custom_effect_tooltip = paragraph_tt
+			if = {
+				limit = { NOT = { has_completed_focus = KYU_back_yamamoto_1 has_completed_focus = KYU_back_koga_1 } }
+				custom_effect_tooltip = KYU_dangerous_coalition_trigger_1
+			}
+			if = {
+				limit = { NOT = { has_completed_focus = KYU_back_koga_1 } }
+				add_power_balance_value = {
+					id = KYU_fractured_government_balance
+					value = 0.1
+					tooltip_side = KYU_bop_clans_side
+				}
+			}
+			if = {
+				limit = { NOT = { has_completed_focus = KYU_back_yamamoto_1 has_completed_focus = KYU_back_koga_1 } }
+				custom_effect_tooltip = paragraph_tt
+				custom_effect_tooltip = KYU_dangerous_coalition_trigger_2
+			}
+			if = {
+				limit = { NOT = { has_completed_focus = KYU_back_yamamoto_1 } }
+				add_power_balance_value = {
+					id = KYU_fractured_government_balance
+					value = -0.1
+					tooltip_side = KYU_bop_government_side
+				}
+			}
+			
+			hidden_effect = {
+				if = {
+					limit = { has_completed_focus = KYU_back_yamamoto_1 }
+					KYU_isoroku_yamamoto = {
+						clr_character_flag = dual_leader_id_jisaburo_ozawa
+						clr_character_flag = dual_leader_second_title_navy_minister
+						set_character_flag = dual_leader_id_tsuyoshi_yasuzumi
+						set_character_flag = dual_leader_second_title_prime_minister
+						set_character_flag = coalition_with_fascism_secondary
+					}
+				} else_if = {
+					limit = { has_completed_focus = KYU_back_koga_1 }
+					KYU_mineichi_koga = {
+						clr_character_flag = dual_leader_id_jisaburo_ozawa
+						clr_character_flag = dual_leader_second_title_navy_minister
+						set_character_flag = dual_leader_id_tsuyoshi_yasuzumi
+						set_character_flag = dual_leader_second_title_prime_minister
+						set_character_flag = coalition_with_fascism_secondary
+					}
+					
+				} else = {
+					random_character = {
+						limit = { is_country_leader = yes }
+						dual_leader_clear_secondary_leader = yes
+						set_character_flag = dual_leader_id_tsuyoshi_yasuzumi
+						set_character_flag = dual_leader_second_title_prime_minister
+						set_character_flag = coalition_with_fascism_secondary
+					}
+				}
+			}
+		}
+	}
 	
 	focus = {
 		id = KYU_disarm_clans
