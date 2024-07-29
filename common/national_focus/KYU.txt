@@ -15,7 +15,7 @@ focus_tree = {
 	
 	focus = {
 		id = KYU_back_yamamoto_1
-		icon = GFX_goal_generic_army_doctrines
+		icon = GFX_focus_KYU_yamamoto_clan
 		search_filters = { FOCUS_FILTER_YAMAMOTO FOCUS_FILTER_POLITICAL }
 		
 		mutually_exclusive = { focus = KYU_back_koga_1 focus = KYU_invite_nagano_1 }
@@ -28,7 +28,6 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			hidden_effect = { news_event = kyushu.1 }
 			set_power_balance_gfx = {
 				id = KYU_fractured_government_balance
 				side = KYU_bop_clans_side
@@ -42,14 +41,20 @@ focus_tree = {
 			set_country_flag = allowed_path_autocratic	# this is for allowing advisers
 			clr_country_flag = initial_ideology_neutrality
 			custom_effect_tooltip = KYU_back_yamamoto_1_tt
-			add_power_balance_value = {
-				id = KYU_fractured_government_balance
-				value = 0.1
-				tooltip_side = KYU_bop_clans_side
+			KYU_isoroku_yamamoto = {
+				add_country_leader_trait = KYU_has_clan_support
 			}
+			add_ideas = KYU_back_yamamoto_spirit
 			custom_effect_tooltip = unlock_characters_tt
 			character_list_tooltip = {
 				limit = { has_trait = persuasive_monarchist }
+			}
+			hidden_effect = {
+				news_event = kyushu.1
+				every_controlled_state = {
+					limit = { has_dynamic_modifier = { modifier = KYU_clan_resistance_modifier } }
+					get_KYU_clan_resistance_modifier = yes
+				}
 			}
 		}
 	}
@@ -98,9 +103,11 @@ focus_tree = {
 				value = 0.1
 				tooltip_side = KYU_bop_clans_side
 			}
-			 if = {
-				limit = { has_dlc = "No Step Back" }
+			if = {
+				limit = { has_dlc = "No Step Back" amount_taken_ideas = { amount < 1 slots = { academy_spirit } } }
 				add_ideas = samurai_families_spirit
+			} else = {
+				army_experience = 10
 			}
 			custom_effect_tooltip = KYU_clan_generals_tt
 			every_character = {
@@ -192,7 +199,7 @@ focus_tree = {
 			}
 			remove_country_leader_role = {
 				character = KYU_isoroku_yamamoto
-				ideology = neutrality
+				ideology = junta
 			}
 			add_country_leader_role = {
 				character = KYU_isoroku_yamamoto
@@ -242,7 +249,7 @@ focus_tree = {
 			}
 			remove_country_leader_role = {
 				character = KYU_isoroku_yamamoto
-				ideology = neutrality
+				ideology = junta
 			}
 			add_country_leader_role = {
 				character = KYU_isoroku_yamamoto
@@ -286,7 +293,7 @@ focus_tree = {
 	focus = {
 		id = KYU_independent_kyushu
 		icon = GFX_focus_KYU_independent_empire
-		search_filters = { FOCUS_FILTER_YAMAMOTO FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = KYU_cross_rubicon }
 		relative_position_id = KYU_cross_rubicon
@@ -326,8 +333,8 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = KYU_abolish_parliament
-		icon = GFX_goal_generic_political_pressure_eastern
+		id = KYU_order_66
+		icon = GFX_focus_PRO_executive_takeover
 		search_filters = { FOCUS_FILTER_YAMAMOTO FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = KYU_cross_rubicon focus = KYU_kyushu_shogunate }
@@ -340,10 +347,12 @@ focus_tree = {
 			factor = 10
 		}
 		
-		available = { has_power_balance = { id = KYU_fractured_government_balance } }
+		available = {
+			has_government = autocracy
+			has_power_balance = { id = KYU_fractured_government_balance }
+		}
 		
 		completion_reward = {
-			remove_power_balance = { id = KYU_fractured_government_balance }
 			every_state = {
 				limit = { has_dynamic_modifier = { modifier = KYU_clan_resistance_modifier } }
 				remove_dynamic_modifier = { modifier = KYU_clan_resistance_modifier }
@@ -358,12 +367,13 @@ focus_tree = {
 			set_temp_variable = { civil_war_change = 1 }
 			subtract_from_temp_variable = { civil_war_change = power_balance_value }
 			set_temp_variable = { no_civil_war_change = power_balance_value }
+			remove_power_balance = { id = KYU_fractured_government_balance }
 			if = {
 				limit = { has_power_balance = { id = KYU_fractured_government_balance } }
 				random_list = {
 					var:no_civil_war_change = {
 						# The opposition goes gentle into that good night
-						custom_effect_tooltip = KYU_abolish_parliament_tt
+						custom_effect_tooltip = KYU_order_66_tt
 					}
 					var:civil_war_change = {
 						start_civil_war = {
@@ -433,7 +443,7 @@ focus_tree = {
 	
 	focus = {
 		id = KYU_back_koga_1
-		icon = GFX_focus_generic_military_mission
+		icon = GFX_focus_KYU_disgruntled_officers
 		search_filters = { FOCUS_FILTER_KOGA FOCUS_FILTER_POLITICAL }
 		
 		mutually_exclusive = { focus = KYU_back_yamamoto_1 focus = KYU_invite_nagano_1 }
@@ -458,17 +468,13 @@ focus_tree = {
 			} set_country_flag = government_back_koga
 			set_country_flag = allowed_path_neutrality	# this is for allowing advisers
 			custom_effect_tooltip = KYU_back_koga_1_tt
-			add_power_balance_value = {
-				id = KYU_fractured_government_balance
-				value = -0.1
-				tooltip_side = KYU_bop_government_side
-			}
+			add_ideas = KYU_back_koga_spirit
 		}
 	}
 	
 	focus = {
 		id = KYU_back_koga_2
-		icon = GFX_goal_generic_major_alliance
+		icon = GFX_focus_generic_military_mission_eastern
 		search_filters = { FOCUS_FILTER_KOGA FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = KYU_back_koga_1 }
@@ -481,31 +487,20 @@ focus_tree = {
 			factor = 10
 		}	
 		completion_reward = {
+			if = {
+				limit = { has_dlc = "No Step Back" }
+				if = {
+					limit = { amount_taken_ideas = { amount < 1 slots = { academy_spirit } } }
+					add_ideas = political_loyalty_spirit
+				} else = { army_experience = 10 }
+			} else = {
+				add_ideas = KYU_political_loyalty_spirit
+			}
 			add_power_balance_value = {
 				id = KYU_fractured_government_balance
 				value = -0.1
 				tooltip_side = KYU_bop_government_side
 			}
-		}
-	}
-	
-	focus = {
-		id = KYU_disarm_clans
-		icon = GFX_focus_KYU_seize_weapons
-		search_filters = { FOCUS_FILTER_KOGA FOCUS_FILTER_POLITICAL }
-		
-		prerequisite = { focus = KYU_back_koga_2 }
-		relative_position_id = KYU_back_koga_2
-		x = -1
-		y = 1
-		cost = 10
-		
-		ai_will_do = {
-			factor = 10
-		}	
-		completion_reward = {
-			custom_effect_tooltip = "RANDOM CHANCE: gains old weapons, reduce Clan's power OR clans revolt all at once. Chance depend on the current BOP"
-			custom_effect_tooltip = "If clans revolt, bypasses KYU_back_koga_3"
 		}
 	}
 	
@@ -517,7 +512,7 @@ focus_tree = {
 		prerequisite = { focus = KYU_back_koga_2 }
 		relative_position_id = KYU_back_koga_2
 		x = 1
-		y = 1
+		y = 2
 		cost = 10
 		
 		ai_will_do = {
@@ -573,11 +568,7 @@ focus_tree = {
 			set_country_flag = allowed_path_fascism	# this is for allowing advisers
 			clr_country_flag = initial_ideology_neutrality
 			custom_effect_tooltip = KYU_back_nagano_1_tt
-			add_power_balance_value = {
-				id = KYU_fractured_government_balance
-				value = -0.1
-				tooltip_side = KYU_bop_government_side
-			}
+			add_ideas = KYU_back_nagano_spirit
 			custom_effect_tooltip = unlock_characters_tt
 			character_list_tooltip = {
 				limit = { has_trait = fascist_demagogue }
@@ -633,22 +624,34 @@ focus_tree = {
 		completion_reward = {
 			every_possible_country = {
 				limit = { has_character = PRO_osami_nagano }
-				PRO_osami_nagano = { set_nationality = KYU }
-			}
-			add_country_leader_role = {
-				character = PRO_osami_nagano
-				promote_leader = yes
-				country_leader = {
-					ideology = fascism_ideology
-					expire = "1965.1.1.1"
-					traits = {  }
+				effect_tooltip = {
+					PRO_osami_nagano = { set_nationality = KYU }
+					add_country_leader_role = {
+						character = PRO_osami_nagano
+						promote_leader = yes
+						country_leader = {
+							ideology = fascism_ideology
+							expire = "1965.1.1.1"
+							traits = {  }
+						}
+					}
 				}
+				hidden_effect = { PRO_osami_nagano = { set_nationality = KYU } }	### ACTUAL EFFECT HIDDEN FOR A READABLE TOOLTIP and THE RIGHT ORDER OF EFFECTS
 			}
 			hidden_effect = {
 				PRO_osami_nagano = {
 					set_character_flag = dual_leader_first_title_prime_minister
 					set_character_flag = dual_leader_id_jisaburo_ozawa
 					set_character_flag = dual_leader_second_title_marshal_admiral
+				}
+				add_country_leader_role = {
+					character = PRO_osami_nagano
+					promote_leader = yes
+					country_leader = {
+						ideology = fascism_ideology
+						expire = "1965.1.1.1"
+						traits = {  }
+					}																### SAME AS ABOVE
 				}
 			}
 			set_power_balance_gfx = {
@@ -683,6 +686,134 @@ focus_tree = {
 				election_frequency = 60
 			}
 			add_ideas = KYU_double_leaf_society_spirit
+		}
+	}
+	
+	# } shared focuses by Nagano & Koga to end the BoP {
+	
+	focus = {
+		id = KYU_disarm_clans
+		icon = GFX_focus_KYU_seize_weapons
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_KOGA FOCUS_FILTER_NAGANO }
+		
+		prerequisite = { focus = KYU_back_koga_3 focus = KYU_depose_junta }
+		relative_position_id = KYU_back_koga_3
+		x = 2
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}	
+		completion_reward = {
+			every_state = {
+				limit = { has_dynamic_modifier = { modifier = KYU_clan_resistance_modifier } }
+				remove_dynamic_modifier = { modifier = KYU_clan_resistance_modifier }
+			}
+		}
+	}
+	
+	focus = {
+		id = KYU_arrest_opposition
+		icon = GFX_focus_KYU_supress_dissidents
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_KOGA FOCUS_FILTER_NAGANO }
+		
+		prerequisite = { focus = KYU_back_koga_3 focus = KYU_depose_junta }
+		relative_position_id = KYU_depose_junta
+		x = -2
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		available = {
+	#		has_power_balance = { id = KYU_fractured_government_balance }
+		}
+		
+		completion_reward = {
+			hidden_effect = {
+				if = {
+					limit = { power_balance_value = { id = KYU_fractured_government_balance value < 0.6 } }
+					random_list = {
+						1 = { set_country_flag = revolt_NAI }
+						1 = { set_country_flag = revolt_HOS }
+						1 = { set_country_flag = revolt_NBS }
+					}
+				}
+				if = {
+					limit = { power_balance_value = { id = KYU_fractured_government_balance value < 0.4 } }
+					random_list = {
+						1 = { set_country_flag = revolt_OTO }
+						1 = { set_country_flag = revolt_SAR }
+						1 = { set_country_flag = revolt_KAR }
+					}
+				}
+			}
+			set_temp_variable = { civil_war_change = 1 }
+			subtract_from_temp_variable = { civil_war_change = power_balance_value }
+			set_temp_variable = { no_civil_war_change = power_balance_value }
+			remove_power_balance = { id = KYU_fractured_government_balance }
+			if = {
+				limit = { has_power_balance = { id = KYU_fractured_government_balance } }
+				random_list = {
+					var:no_civil_war_change = {
+						 The opposition goes gentle into that good night
+						custom_effect_tooltip = KYU_arrest_opposition_tt
+					}
+					var:civil_war_change = {
+						hidden_effect = {
+							release_on_controlled = SMZ
+							SMZ = {
+								declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
+							}
+							if = {
+								limit = { has_country_flag = revolt_KAR}
+								release_on_controlled = KAR
+								KAR = {
+									declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
+								}
+							}
+							if = {
+								limit = { has_country_flag = revolt_SAR}
+								release_on_controlled = SAR
+								SAR = {
+									declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
+								}
+							}
+							if = {
+								limit = { has_country_flag = revolt_NAI}
+								release_on_controlled = NAI
+								NAI = {
+									declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
+								}
+							}
+							if = {
+								limit = { has_country_flag = revolt_OTO}
+								release_on_controlled = OTO
+								OTO = {
+									declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
+								}
+							}
+							if = {
+								limit = { has_country_flag = revolt_NBS}
+								release_on_controlled = NBS
+								NBS = {
+									declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
+								}
+							}
+							if = {
+								limit = { has_country_flag = revolt_HOS}
+								release_on_controlled = HOS
+								HOS = {
+									declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 	
@@ -721,7 +852,7 @@ focus_tree = {
 	focus = {
 		id = KYU_seto_crises_back_ims
 		icon = GFX_focus_KYU_back_ims
-		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_NAGANO }
+		search_filters = { FOCUS_FILTER_DIPLOMACY }
 		
 		prerequisite = { focus = KYU_back_koga_1 focus = KYU_invite_nagano_1 }
 		mutually_exclusive = { focus = KYU_seto_crises_back_shi focus = KYU_seto_crises_back_chu }
@@ -780,7 +911,7 @@ focus_tree = {
 	focus = {
 		id = KYU_seto_crises_back_shi
 		icon = GFX_focus_KYU_back_shi
-		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_NAGANO }
 		
 		prerequisite = { focus = KYU_invite_nagano_1 }
 		mutually_exclusive = { focus = KYU_seto_crises_back_ims focus = KYU_seto_crises_back_chu }
