@@ -74,6 +74,7 @@ focus_tree = {
 			factor = 10
 		}	
 		completion_reward = {
+			add_political_power = 100
 			add_power_balance_value = {
 				id = KYU_fractured_government_balance
 				value = 0.1
@@ -125,12 +126,6 @@ focus_tree = {
 						hidden_effect = { add_unit_leader_trait = clan_general_SMZ }
 					}
 				}
-				custom_effect_tooltip = unlock_characters_tt
-			}
-			character_list_tooltip = {
-				limit = {
-					has_trait = foreign_adviser_clan
-				}
 			}
 		}
 	}
@@ -151,7 +146,14 @@ focus_tree = {
 			factor = 10
 		}	
 		completion_reward = {
-			
+			KYU_isoroku_yamamoto = {
+				add_country_leader_trait = KYU_yamamoto_cult_of_personality
+			}
+			add_power_balance_value = {
+				id = KYU_fractured_government_balance
+				value = 0.1
+				tooltip_side = KYU_bop_clans_side
+			}
 		}
 	}
 	
@@ -169,10 +171,16 @@ focus_tree = {
 		
 		ai_will_do = {
 			factor = 10
-		}	
+		}
+		
 		completion_reward = {
 			# event for picking a claimant to the Emperor's throne as 'puppet' for Yamamoto: Nashimoto Morimasa or Kuni Asaakira
 			news_event = kyushu.5
+			add_power_balance_value = {
+				id = KYU_fractured_government_balance
+				value = 0.1
+				tooltip_side = KYU_bop_clans_side
+			}
 		}
 	}
 	
@@ -189,7 +197,10 @@ focus_tree = {
 		
 		ai_will_do = {
 			factor = 10
-		}	
+		}
+		
+		available = { power_balance_value = { id = KYU_fractured_government_balance value > 0.75 } }
+		
 		completion_reward = {
 			set_cosmetic_tag = KYU_EMP
 			KYU_isoroku_yamamoto = {
@@ -239,7 +250,10 @@ focus_tree = {
 		
 		ai_will_do = {
 			factor = 10
-		}	
+		}
+		
+		available = { power_balance_value = { id = KYU_fractured_government_balance value > 0.5 } }
+		
 		completion_reward = {
 			news_event = kyushu.8
 			set_cosmetic_tag = KYU_SHO
@@ -359,6 +373,7 @@ focus_tree = {
 				remove_dynamic_modifier = { modifier = KYU_clan_resistance_modifier }
 			}
 			set_temp_variable = { parliament_party = highest_party_ideology@exclude_ruling_party }
+			custom_effect_tooltip = paragraph_tt
 			202 = { set_state_flag = kyushu_rebel_state}
 			if = { limit = { power_balance_value = { id = KYU_fractured_government_balance value < 0.9 } } 202 = { set_state_flag = kyushu_rebel_state} set_temp_variable = { rebel_force = 0.45 } }
 			if = { limit = { power_balance_value = { id = KYU_fractured_government_balance value < 0.7 } } 122 = { set_state_flag = kyushu_rebel_state} set_temp_variable = { rebel_force = 0.35 } }
@@ -369,38 +384,42 @@ focus_tree = {
 			subtract_from_temp_variable = { civil_war_chance = power_balance_value }
 			set_temp_variable = { no_civil_war_chance = power_balance_value }
 			remove_power_balance = { id = KYU_fractured_government_balance }
+			custom_effect_tooltip = paragraph_tt
 			if = {
 				limit = { has_power_balance = { id = KYU_fractured_government_balance } }
 				random_list = {
 					var:no_civil_war_chance = {
 						# The opposition goes gentle into that good night
-						custom_effect_tooltip = KYU_order_66_tt
+						custom_effect_tooltip = KYU_civil_war_1_tt
 					}
 					var:civil_war_chance = {
-						start_civil_war = {
-							ideology = var:parliament_party
-							size = 0.1
-							army_ratio = var:rebel_force
-							navy_ratio = 0
-							air_ratio = var:rebel_force
-							capital = 202
-							states = all
-							states_filter = { has_state_flag = kyushu_rebel_state }
-							set_cosmetic_tag = KYU_FKK
-							keep_all_characters = yes
-							KYU = {
-								set_nationality = {
-									target_country = PREV
-									character = KYU_mineichi_koga
+						custom_effect_tooltip = KYU_order_66_tt
+						hidden_effect = {
+							start_civil_war = {
+								ideology = var:parliament_party
+								size = 0.1
+								army_ratio = var:rebel_force
+								navy_ratio = 0
+								air_ratio = var:rebel_force
+								capital = 202
+								states = all
+								states_filter = { has_state_flag = kyushu_rebel_state }
+								set_cosmetic_tag = KYU_FKK
+								keep_all_characters = yes
+								KYU = {
+									set_nationality = {
+										target_country = PREV
+										character = KYU_mineichi_koga
+									}
 								}
-							}
-							add_country_leader_role = {
-								character = KYU_mineichi_koga
-								promote_leader = yes
-								country_leader = {
-									ideology = junta
-									expire = "1965.1.1.1"
-									traits = {  }
+								add_country_leader_role = {
+									character = KYU_mineichi_koga
+									promote_leader = yes
+									country_leader = {
+										ideology = junta
+										expire = "1965.1.1.1"
+										traits = {  }
+									}
 								}
 							}
 						}
@@ -522,6 +541,7 @@ focus_tree = {
 		
 		available = {
 			NOT = { has_country_leader = { character = KYU_mineichi_koga ruling_only = yes } }
+			power_balance_value = { id = KYU_fractured_government_balance value < 0.33 }
 		}
 		
 		bypass = {
@@ -604,7 +624,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			add_timed_idea = { idea = nationalism days = 730 }
+			add_timed_idea = { idea = KYU_fascism_rising_spirit days = 730 }
 			add_power_balance_value = {
 				id = KYU_fractured_government_balance
 				value = -0.1
@@ -657,6 +677,8 @@ focus_tree = {
 		ai_will_do = {
 			factor = 10
 		}
+		
+		available = { power_balance_value = { id = KYU_fractured_government_balance value < 0.33 } }
 		
 		completion_reward = {
 			every_possible_country = {
@@ -714,6 +736,17 @@ focus_tree = {
 			factor = 10
 		}
 		
+		available = {
+			set_temp_variable = { trigger_var = var:power_balance_value }
+			add_to_temp_variable = { trigger_var = party_popularity@fascism }
+			custom_trigger_tooltip = {
+				tooltip = KYU_depose_junta_tt
+				check_variable = { var = trigger_var value = 1 compare = greater_than_or_equals }
+			}
+		}
+		
+		bypass = { has_government = fascism}
+		
 		completion_reward = {
 			#set_country_flag = ignore_flavour_event
 			set_politics = {
@@ -757,7 +790,7 @@ focus_tree = {
 				custom_effect_tooltip = add_trait_char_tt
 				custom_effect_tooltip = coalition_with_fascism_secondary_desc
 			}
-			add_timed_idea = { idea = nationalism days = 365 }
+			add_timed_idea = { idea = KYU_fascism_rising_spirit days = 365 }
 			custom_effect_tooltip = paragraph_tt
 			if = {
 				limit = { NOT = { has_completed_focus = KYU_back_yamamoto_1 has_completed_focus = KYU_back_koga_1 } }
