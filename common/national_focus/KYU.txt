@@ -353,6 +353,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
+			hidden_effect = { remove_ideas = KYU_back_yamamoto_spirit }
 			every_state = {
 				limit = { has_dynamic_modifier = { modifier = KYU_clan_resistance_modifier } }
 				remove_dynamic_modifier = { modifier = KYU_clan_resistance_modifier }
@@ -364,18 +365,18 @@ focus_tree = {
 			if = { limit = { power_balance_value = { id = KYU_fractured_government_balance value < 0.5 } } 127 = { set_state_flag = kyushu_rebel_state} set_temp_variable = { rebel_force = 0.25 } }
 			if = { limit = { power_balance_value = { id = KYU_fractured_government_balance value < 0.3 } } 100 = { set_state_flag = kyushu_rebel_state} set_temp_variable = { rebel_force = 0.15 } }
 			if = { limit = { power_balance_value = { id = KYU_fractured_government_balance value < 0.3 } } 139 = { set_state_flag = kyushu_rebel_state} set_temp_variable = { rebel_force = 0.15 } }
-			set_temp_variable = { civil_war_change = 1 }
-			subtract_from_temp_variable = { civil_war_change = power_balance_value }
-			set_temp_variable = { no_civil_war_change = power_balance_value }
+			set_temp_variable = { civil_war_chance = 1 }
+			subtract_from_temp_variable = { civil_war_chance = power_balance_value }
+			set_temp_variable = { no_civil_war_chance = power_balance_value }
 			remove_power_balance = { id = KYU_fractured_government_balance }
 			if = {
 				limit = { has_power_balance = { id = KYU_fractured_government_balance } }
 				random_list = {
-					var:no_civil_war_change = {
+					var:no_civil_war_chance = {
 						# The opposition goes gentle into that good night
 						custom_effect_tooltip = KYU_order_66_tt
 					}
-					var:civil_war_change = {
+					var:civil_war_chance = {
 						start_civil_war = {
 							ideology = var:parliament_party
 							size = 0.1
@@ -538,6 +539,12 @@ focus_tree = {
 					}
 				}
 			}
+			add_power_balance_value = {
+				id = KYU_fractured_government_balance
+				value = -0.1
+				tooltip_side = KYU_bop_government_side
+			}
+			add_political_power = 120
 		}
 	}
 	
@@ -597,7 +604,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			add_political_power = 100
+			add_timed_idea = { idea = nationalism days = 730 }
 			add_power_balance_value = {
 				id = KYU_fractured_government_balance
 				value = -0.1
@@ -716,6 +723,12 @@ focus_tree = {
 				election_frequency = 60
 			}
 			add_ideas = KYU_double_leaf_society_spirit
+			hidden_ideas = {
+				swap_ideas = {
+					remove_idea = KYU_back_nagano_spirit
+					add_idea = KYU_back_nagano_2_spirit
+				}
+			}
 		}
 	}
 	
@@ -818,12 +831,109 @@ focus_tree = {
 		
 		ai_will_do = {
 			factor = 10
-		}	
+		}
+		
+		available = {
+			any_controlled_state = { has_dynamic_modifier = { modifier = KYU_clan_resistance_modifier } }
+		}
+		
 		completion_reward = {
-			every_state = {
+			every_controlled_state = {
 				limit = { has_dynamic_modifier = { modifier = KYU_clan_resistance_modifier } }
 				remove_dynamic_modifier = { modifier = KYU_clan_resistance_modifier }
 			}
+			custom_effect_tooltip = paragraph_tt
+			if = {
+				limit = { has_power_balance = { id = KYU_fractured_government_balance } }
+				add_power_balance_value = {
+					id = KYU_fractured_government_balance
+					value = -0.1
+					tooltip_side = KYU_bop_government_side
+				}
+				custom_effect_tooltip = paragraph_tt
+			}
+			hidden_effect = {
+				if = {
+					limit = { autocracy > 0.2 }
+					random_list = {
+						1 = { set_country_flag = revolt_NAI modifier = { factor = 0 country_exists = NAI } }
+						1 = { set_country_flag = revolt_HOS modifier = { factor = 0 country_exists = HOS } }
+						1 = { set_country_flag = revolt_NBS modifier = { factor = 0 country_exists = NBS } }
+					}
+				}
+				if = {
+					limit = { autocracy < 0.4 }
+					random_list = {
+						1 = { set_country_flag = revolt_OTO modifier = { factor = 0 country_exists = OTO } }
+						1 = { set_country_flag = revolt_SAR modifier = { factor = 0 country_exists = SAR } }
+						1 = { set_country_flag = revolt_KAR modifier = { factor = 0 country_exists = KAR } }
+					}
+				}
+			}
+			set_temp_variable = { civil_war_chance = party_popularity@autocracy }
+			set_temp_variable = { no_civil_war_chance = 1 }
+			subtract_from_temp_variable = { no_civil_war_chance =  party_popularity@autocracy }
+			random_list = {
+				var:no_civil_war_chance = {
+					# The opposition goes gentle into that good night
+					custom_effect_tooltip = KYU_civil_war_1_tt
+				}
+				var:civil_war_chance = {
+					custom_effect_tooltip = KYU_civil_war_2_tt
+					hidden_effect = {
+						if = {
+							limit = { NOT = { country_exists = SMZ } }
+							release_on_controlled = SMZ
+							SMZ = {
+								declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
+							}
+						}
+						if = {
+							limit = { has_country_flag = revolt_KAR }
+							release_on_controlled = KAR
+							KAR = {
+								declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
+							}
+						}
+						if = {
+							limit = { has_country_flag = revolt_SAR}
+							release_on_controlled = SAR
+							SAR = {
+								declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
+							}
+						}
+						if = {
+							limit = { has_country_flag = revolt_NAI }
+							release_on_controlled = NAI
+							NAI = {
+								declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
+							}
+						}
+						if = {
+							limit = { has_country_flag = revolt_OTO }
+							release_on_controlled = OTO
+							OTO = {
+								declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
+							}
+						}
+						if = {
+							limit = { has_country_flag = revolt_NBS }
+							release_on_controlled = NBS
+							NBS = {
+								declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
+							}
+						}
+						if = {
+							limit = { has_country_flag = revolt_HOS }
+							release_on_controlled = HOS
+							HOS = {
+								declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
+							}
+						}
+					}
+				}
+			}
+			clr_country_flag = revolt_NAI clr_country_flag = revolt_HOS clr_country_flag = revolt_NBS clr_country_flag = revolt_OTO clr_country_flag = revolt_SAR clr_country_flag = revolt_KAR 
 		}
 	}
 	
@@ -843,91 +953,105 @@ focus_tree = {
 		}
 		
 		available = {
-	#		has_power_balance = { id = KYU_fractured_government_balance }
+			has_power_balance = { id = KYU_fractured_government_balance }
 		}
 		
 		completion_reward = {
 			hidden_effect = {
+				remove_ideas = { KYU_back_nagano_spirit  KYU_back_koga_spirit }
 				if = {
 					limit = { power_balance_value = { id = KYU_fractured_government_balance value < 0.6 } }
 					random_list = {
-						1 = { set_country_flag = revolt_NAI }
-						1 = { set_country_flag = revolt_HOS }
-						1 = { set_country_flag = revolt_NBS }
+						1 = { set_country_flag = revolt_NAI modifier = { factor = 0 country_exists = NAI } }
+						1 = { set_country_flag = revolt_HOS modifier = { factor = 0 country_exists = HOS } }
+						1 = { set_country_flag = revolt_NBS modifier = { factor = 0 country_exists = NBS } }
 					}
 				}
 				if = {
 					limit = { power_balance_value = { id = KYU_fractured_government_balance value < 0.4 } }
 					random_list = {
-						1 = { set_country_flag = revolt_OTO }
-						1 = { set_country_flag = revolt_SAR }
-						1 = { set_country_flag = revolt_KAR }
+						1 = { set_country_flag = revolt_OTO modifier = { factor = 0 country_exists = OTO }}
+						1 = { set_country_flag = revolt_SAR modifier = { factor = 0 country_exists = SAR }}
+						1 = { set_country_flag = revolt_KAR modifier = { factor = 0 country_exists = KAR } }
 					}
 				}
 			}
-			set_temp_variable = { civil_war_change = 1 }
-			subtract_from_temp_variable = { civil_war_change = power_balance_value }
-			set_temp_variable = { no_civil_war_change = power_balance_value }
+			set_temp_variable = { civil_war_chance = 1 }
+			subtract_from_temp_variable = { civil_war_chance = power_balance_value }
+			set_temp_variable = { no_civil_war_chance = power_balance_value?1 }
 			remove_power_balance = { id = KYU_fractured_government_balance }
-			if = {
-				limit = { has_power_balance = { id = KYU_fractured_government_balance } }
-				random_list = {
-					var:no_civil_war_change = {
-						 The opposition goes gentle into that good night
-						custom_effect_tooltip = KYU_arrest_opposition_tt
-					}
-					var:civil_war_change = {
-						hidden_effect = {
+			custom_effect_tooltip = paragraph_tt
+			every_controlled_state = {
+				limit = { has_dynamic_modifier = { modifier = KYU_clan_resistance_modifier } }
+				hidden_effect = {
+					set_temp_variable = { resistance_bonus = var:resistance }
+					multiply_temp_variable = { resistance_bonus = -0.5 }
+					add_resistance = var:resistance_bonus
+				}
+				custom_effect_tooltip = KYU_arrest_opposition_tt
+				custom_effect_tooltip = paragraph_tt
+			}
+			random_list = {
+				var:no_civil_war_chance = {
+					# The opposition goes gentle into that good night
+					custom_effect_tooltip = KYU_civil_war_1_tt
+				}
+				var:civil_war_chance = {
+					custom_effect_tooltip = KYU_civil_war_2_tt
+					hidden_effect = {
+						if = {
+							limit = { NOT = { country_exists = SMZ } }
 							release_on_controlled = SMZ
 							SMZ = {
 								declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
 							}
-							if = {
-								limit = { has_country_flag = revolt_KAR}
-								release_on_controlled = KAR
-								KAR = {
-									declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
-								}
+						}
+						if = {
+							limit = { has_country_flag = revolt_KAR}
+							release_on_controlled = KAR
+							KAR = {
+								declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
 							}
-							if = {
-								limit = { has_country_flag = revolt_SAR}
-								release_on_controlled = SAR
-								SAR = {
-									declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
-								}
+						}
+						if = {
+							limit = { has_country_flag = revolt_SAR}
+							release_on_controlled = SAR
+							SAR = {
+								declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
 							}
-							if = {
-								limit = { has_country_flag = revolt_NAI}
-								release_on_controlled = NAI
-								NAI = {
-									declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
-								}
+						}
+						if = {
+							limit = { has_country_flag = revolt_NAI}
+							release_on_controlled = NAI
+							NAI = {
+								declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
 							}
-							if = {
-								limit = { has_country_flag = revolt_OTO}
-								release_on_controlled = OTO
-								OTO = {
-									declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
-								}
+						}
+						if = {
+							limit = { has_country_flag = revolt_OTO}
+							release_on_controlled = OTO
+							OTO = {
+								declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
 							}
-							if = {
-								limit = { has_country_flag = revolt_NBS}
-								release_on_controlled = NBS
-								NBS = {
-									declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
-								}
+						}
+						if = {
+							limit = { has_country_flag = revolt_NBS}
+							release_on_controlled = NBS
+							NBS = {
+								declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
 							}
-							if = {
-								limit = { has_country_flag = revolt_HOS}
-								release_on_controlled = HOS
-								HOS = {
-									declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
-								}
+						}
+						if = {
+							limit = { has_country_flag = revolt_HOS}
+							release_on_controlled = HOS
+							HOS = {
+								declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
 							}
 						}
 					}
 				}
 			}
+			clr_country_flag = revolt_NAI clr_country_flag = revolt_HOS clr_country_flag = revolt_NBS clr_country_flag = revolt_OTO clr_country_flag = revolt_SAR clr_country_flag = revolt_KAR
 		}
 	}
 	
