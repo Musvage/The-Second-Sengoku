@@ -206,7 +206,20 @@ focus_tree = {
 			KYU_isoroku_yamamoto = {
 				clr_character_flag = dual_leader_first_title_marshal_admiral
 				set_character_flag = dual_leader_first_title_emperor
+				clr_character_flag = dual_leader_id_jisaburo_ozawa
+				clr_character_flag = dual_leader_second_title_navy_minister
+				clr_character_flag = dual_leader_id_tsuyoshi_yasuzumi
+				clr_character_flag = dual_leader_second_title_prime_minister
 				set_character_name = { name = "Yamamoto I"} #  Yamamoto, first of his name, King of the Andals, and the Rhoynar, and the First Men Lord of the Seven Kingdoms - oops, wrong IP
+			}
+			hidden_effect = {
+				if = {
+					limit = { has_completed_focus = KYU_dangerous_coalition }
+					KYU_isoroku_yamamoto = {
+						clr_character_flag = coalition_with_fascism_secondary	# just in case the player completed the Dangerous Coalition focus before
+					}
+					add_ideas = generic_idea_fascist_prime_minister
+				}
 			}
 			remove_country_leader_role = {
 				character = KYU_isoroku_yamamoto
@@ -290,6 +303,10 @@ focus_tree = {
 			KYU_isoroku_yamamoto = {
 				clr_character_flag = dual_leader_first_title_marshal_admiral
 				set_character_flag = dual_leader_first_title_shogun
+				clr_character_flag = dual_leader_id_jisaburo_ozawa
+				clr_character_flag = dual_leader_second_title_navy_minister
+				clr_character_flag = dual_leader_id_tsuyoshi_yasuzumi
+				clr_character_flag = dual_leader_second_title_prime_minister
 			}
 			set_country_flag = ignore_flavour_event
 			set_politics = {
@@ -334,19 +351,12 @@ focus_tree = {
 		completion_reward = {
 			# proclaims independent empire, gives up on unification
 			custom_effect_tooltip = KYU_independent_kyushu_tt
+			custom_effect_tooltip = paragraph_tt
 			hidden_effect = {
 				every_state = {
 					limit = { is_on_continent = kyushu }
 					clr_state_flag = state_is_southern_japan
 				}
-			}
-			every_state = {
-				limit = {
-					is_on_continent = kyushu NOT = { is_core_of = KYU }
-					if = { limit = { owner = { tag = HIR } } KYU = { OR = { NOT = { has_completed_focus = KYU_NAV_befriend_HIR } has_war_with = KYU } } }
-					if = { limit = { owner = { tag = PRT } } KYU = { OR = { NOT = { has_completed_focus = KYU_NAV_befriend_PRT } has_war_with = PRT } } }
-				}
-				add_core_of = KYU
 			}
 			set_country_flag = can_not_form_japan
 			set_country_flag = can_not_gain_cores
@@ -356,6 +366,87 @@ focus_tree = {
 				remove_ideas = all_internationally_recognised
 			}
 			add_ideas = KYU_independent_state_spirit
+			every_state = {
+				limit = {
+					is_on_continent = kyushu NOT = { is_core_of = KYU }
+					if = { limit = { owner = { tag = HIR } } KYU = { OR = { NOT = { has_completed_focus = KYU_NAV_befriend_HIR } has_war_with = KYU } } }
+					if = { limit = { owner = { tag = PRT } } KYU = { OR = { NOT = { has_completed_focus = KYU_NAV_befriend_PRT } has_war_with = PRT } } }
+				}
+				add_core_of = KYU
+			}
+			if = {
+				limit = { NOT = { has_completed_focus = KYU_independent_kyushu has_completed_focus = KYU_dangerous_coalition } }
+				custom_effect_tooltip = paragraph_tt
+				custom_effect_tooltip = KYU_dangerous_coalition_first_trigger
+				remove_ideas = generic_idea_fascist_prime_minister
+				custom_effect_tooltip = KYU_independent_kyushu_tt2
+			}
+			if = {
+				limit = { has_completed_focus = KYU_dangerous_coalition }
+				custom_effect_tooltip = paragraph_tt
+				custom_effect_tooltip = KYU_dangerous_coalition_first_effect
+				remove_ideas = generic_idea_fascist_prime_minister
+				custom_effect_tooltip = KYU_independent_kyushu_tt2 add_political_power = 1
+				hidden_effect = {
+					random_list = {
+						1 = { add_political_power = 1
+							random_character = {
+								limit = {
+									NOT = { has_trait = fascist_demagogue }
+									NOT = { has_trait = foreign_adviser_clan has_trait = foreign_adviser_OSA has_trait = foreign_adviser_KOB has_trait = foreign_adviser_USA }
+									NOT = {
+										is_character = PRO_osami_nagano
+										is_character = KYU_isoroku_yamamoto
+										is_character = KYU_mitsumasa_yonai
+										is_character = KYU_bukichi_miki
+										is_character = KYU_chobyo_yara
+										is_character = KYU_kawano_shigeo
+										is_character = KYU_tsuyoshi_yasuzumi
+										is_character = KYU_nashimoto_morimasa
+										is_character = KYU_Kuni_Asaakira
+										is_character = KYU_council_of_daimyos
+										is_character = KYU_jinzaburo_masaki
+										is_character = KYU_jisaburo_ozawa
+										is_character = KYU_mineichi_koga
+										is_character = KYU_kondo_shunsuke
+										is_character = KYU_army_adviser_theorist
+										is_character = KYU_army_adviser_specops	# it's not an actual character
+									}	# These are unkillable
+								}
+								KYU = { set_variable = { char_kill_id = PREV } }
+								KYU = { country_event = { id = kyushu.902 days = 7 random_days = 21 } }
+							}
+						}
+						1 = {
+							random_character = {
+								limit = {
+									NOT = { has_trait = democratic_reformer has_trait = communist_revolutionary has_trait = welfare_proponent has_trait = persuasive_monarchist has_trait = establishment_mouthpiece }
+									NOT = { has_trait = foreign_adviser_clan has_trait = foreign_adviser_OSA has_trait = foreign_adviser_KOB has_trait = foreign_adviser_USA }
+									NOT = {
+										is_character = PRO_osami_nagano
+										is_character = KYU_isoroku_yamamoto
+										is_character = KYU_mitsumasa_yonai
+										is_character = KYU_bukichi_miki
+										is_character = KYU_chobyo_yara
+										is_character = KYU_kawano_shigeo
+										is_character = KYU_nashimoto_morimasa
+										is_character = KYU_Kuni_Asaakira
+										is_character = KYU_council_of_daimyos
+										is_character = KYU_jinzaburo_masaki
+										is_character = KYU_jisaburo_ozawa
+										is_character = KYU_mineichi_koga
+										is_character = KYU_kurashige_hisashie
+										is_character = KYU_army_adviser_theorist
+										is_character = KYU_army_adviser_specops	# it's not an actual character
+									}	# These are not DLS partisans or cannot be arrested
+								}
+								KYU = { set_variable = { char_kill_id = PREV } }
+								KYU = { country_event = { id = kyushu.904 days = 7 random_days = 21 } }
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 	
