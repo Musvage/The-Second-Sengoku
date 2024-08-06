@@ -389,6 +389,198 @@ news_event = {	# Parliament Revolt
 	}
 }
 
+country_event = {	# KYU backs CHU in Seto (global event)
+	id = kyushu.100
+	title = kyushu.100.t
+	desc = kyushu.100.d
+	picture = GFX_report_news_kyushu_map
+	
+	is_triggered_only = yes
+	major = yes
+	
+	option = {
+		trigger = { tag = KYU }
+		name = kyushu.100.self
+	}
+	option = {
+		trigger = { OR = { tag = IMS tag = SHI tag = IMA } }	# IMA is here just in the very unlikely scenario that it shows up
+		name = kyushu.100.enemy
+	}
+	option = {
+		trigger = { NOT = { tag = ROOT tag = IMS tag = SHI tag = IMA tag = CHU } }
+		name = kyushu.100.other
+	}
+	option = {
+		trigger = { tag = CHU }
+		name = kyushu.100.chu1	# trade political favours
+		add_political_power = 100
+		KYU = {
+			add_political_power = 100
+			hidden_effect = { country_event = kyushu.101 }
+		}
+	}
+	option = {
+		trigger = { tag = CHU }
+		name = kyushu.100.chu2	# military counsel
+		add_political_power = 100
+		KYU = {
+			army_experience = 20
+			hidden_effect = { country_event = kyushu.102 }
+		}
+	}
+	option = {
+		trigger = { tag = CHU KYU = { unification_candidate = yes } }	# is HIGHLY unlikely that KYU is not a candidate at this point... but code is for free, so just in case I'm writting this trigger
+		name = kyushu.100.chu3	# recognize legitimacy	(country_unification_score_other_bonus)
+		add_political_power = 100
+		KYU = {
+			add_to_variable = {
+				var = country_unification_score_other_bonus
+				value = 5
+				tooltip = add_country_unification_score_tt
+			}
+			hidden_effect = { country_event = kyushu.103 unification_get_score = yes }
+		}
+	}
+	option = {
+		trigger = { tag = CHU }	# do nothing!
+		name = kyushu.100.chu4
+		custom_effect_tooltip = kyushu.100.chu4b
+		every_other_country = {
+			add_opinion_modifier = {
+				target = CHU
+				modifier = KYU_diplomatic_blunder_opinion
+			}
+		}
+		hidden_effect = { KYU = { country_event = kyushu.104 } }
+	}
+}
+
+country_event = {	# KYU backs CHU in Seto, CHU does political favor
+	id = kyushu.101
+	title = kyushu.101.t
+	desc = kyushu.101.d
+	picture = GFX_report_news_kyushu_map
+	
+	is_triggered_only = yes
+	major = yes
+	
+	option = {
+		name = kyushu.101.self
+	}
+}
+
+country_event = {	# KYU backs CHU in Seto, CHU does military favor
+	id = kyushu.102
+	title = kyushu.102.t
+	desc = kyushu.102.d
+	picture = GFX_report_news_kyushu_map
+	
+	is_triggered_only = yes
+	major = yes
+	
+	option = {
+		name = kyushu.102.self
+	}
+}
+
+country_event = {	# KYU backs CHU in Seto, CHU does diplomatic favor (global)
+	id = kyushu.103
+	title = kyushu.103.t
+	desc = kyushu.103.d
+	picture = GFX_report_news_kyushu_map
+	
+	is_triggered_only = yes
+	major = yes
+	
+	option = {
+		trigger = { tag = KYU }
+		name = kyushu.103.kyu
+		effect_tooltip = {
+			add_to_variable = {
+				var = country_unification_score_other_bonus
+				value = 5
+				tooltip = add_country_unification_score_tt
+			}
+		}
+	}
+	option = {
+		trigger = { tag = CHU }
+		name = kyushu.103.chu
+	}
+	option = {
+		name = kyushu.104.enemy
+		trigger = { OR = { tag = IMS tag = SHI tag = IMA } }
+		effect_tooltip = {
+			KYU = {
+				add_to_variable = {
+					var = country_unification_score_other_bonus
+					value = 5
+					tooltip = add_country_unification_score_tt
+				}
+			}
+		}
+	}
+	option = {
+		name = kyushu.103.other
+		trigger = { NOT = { tag = ROOT tag = IMS tag = SHI tag = IMA tag = CHU } }
+		effect_tooltip = {
+			KYU = {
+				add_to_variable = {
+					var = country_unification_score_other_bonus
+					value = 5
+					tooltip = add_country_unification_score_tt
+				}
+			}
+		}
+	}
+}
+
+country_event = {	# KYU backs CHU in Seto, CHU does diplomatic favor (global)
+	id = kyushu.104
+	title = kyushu.104.t
+	desc = kyushu.104.d
+	picture = GFX_report_news_kyushu_map
+	
+	is_triggered_only = yes
+	major = yes
+	
+	option = {
+		trigger = { tag = KYU }
+		name = kyushu.104.kyu
+		effect_tooltip = {
+			CHU = { add_political_power = -100 }
+			add_opinion_modifier = {
+				target = CHU
+				modifier = KYU_diplomatic_blunder_opinion
+			}
+		}
+	}
+	option = {
+		trigger = { tag = CHU }
+		name = kyushu.103.chu
+	}
+	option = {
+		name = kyushu.104.enemy
+		trigger = { OR = { tag = IMS tag = SHI tag = IMA } }
+		effect_tooltip = {
+			add_opinion_modifier = {
+				target = CHU
+				modifier = KYU_diplomatic_blunder_opinion
+			}
+		}
+	}
+	option = {
+		name = kyushu.104.other
+		trigger = { NOT = { tag = ROOT tag = IMS tag = SHI tag = IMA tag = CHU } }
+		effect_tooltip = {
+			add_opinion_modifier = {
+				target = CHU
+				modifier = KYU_diplomatic_blunder_opinion
+			}
+		}
+	}
+}
+
 country_event = {	# Solomonic Solution (MUS/SUS event)
 	id = kyushu.200
 	title = kyushu.200.t
