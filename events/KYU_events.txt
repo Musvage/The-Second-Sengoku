@@ -389,7 +389,7 @@ news_event = {	# Parliament Revolt
 	}
 }
 
-country_event = {	# Solomonic Solution (MUS event)
+country_event = {	# Solomonic Solution (MUS/SUS event)
 	id = kyushu.200
 	title = kyushu.200.t
 	desc = kyushu.200.d
@@ -398,10 +398,48 @@ country_event = {	# Solomonic Solution (MUS event)
 	is_triggered_only = yes
 	
 	option = {
+		trigger = { tag = MUS }
 		name = kyushu.200.a	# Aceppt
+		KYU = {
+			country_event = { id = kyushu.201 hours = 24 }
+			custom_effect_tooltip = KYU_solomonic_solution_tt
+			effect_tooltip = {
+				MUS = {
+					every_controlled_state = {
+						limit = { or = { state = 42 } }
+						transfer_state_to = KYU
+						remove_core_of = MUS
+						add_core_of = KYU
+					}
+					every_controlled_state = {
+						limit = { or = { state = 142 state = 141 state = 144 } }
+						remove_claim_by = KYU
+					}
+				}
+				SUS = {
+					every_controlled_state = {
+						limit = { or = { state = 42 } }
+						transfer_state_to = KYU
+						remove_core_of = SUS
+						add_core_of = KYU
+					}
+					every_controlled_state = {
+						limit = { or = { state = 142 state = 141 state = 144 } }
+						remove_claim_by = KYU
+					}
+				}
+				custom_effect_tooltip = KYU_solomonic_solution_tt2
+			}
+		}
 	}
 	option = {
+		trigger = { tag = MUS }
 		name = kyushu.200.b	# Refuse
+		KYU = { country_event = { id = kyushu.202 hours = 24 } }
+	}
+	option = {
+		trigger = { tag = SUS }
+		name = kyushu.200.c	# no action allowed
 	}
 }
 
@@ -417,10 +455,60 @@ country_event = {	# Solomonic Solution Accepted (KYU event)
 	option = {
 		trigger = { tag = ROOT }
 		name = kyushu.201.self
+		MUS = {
+			every_controlled_state = {
+				limit = { or = { state = 42 } }
+				transfer_state_to = KYU
+				remove_core_of = MUS
+				add_core_of = KYU
+			}
+			every_controlled_state = {
+				limit = { or = { state = 142 state = 141 state = 144 } }
+				remove_claim_by = KYU
+			}
+		}
+		SUS = {
+			every_controlled_state = {
+				limit = { or = { state = 42 } }
+				transfer_state_to = KYU
+				remove_core_of = SUS
+				add_core_of = KYU
+			}
+			every_controlled_state = {
+				limit = { or = { state = 142 state = 141 state = 144 } }
+				remove_claim_by = KYU
+			}
+		}
 	}
 	option = {
 		trigger = { NOT = { tag = ROOT tag = MUS tag = SUS } }
 		name = kyushu.201.other
+		effect_tooltip = {
+			MUS = {
+				every_controlled_state = {
+					limit = { or = { state = 42 } }
+					transfer_state_to = KYU
+					remove_core_of = MUS
+					add_core_of = KYU
+				}
+				every_controlled_state = {
+					limit = { or = { state = 142 state = 141 state = 144 } }
+					remove_claim_by = KYU
+				}
+			}
+			SUS = {
+				every_controlled_state = {
+					limit = { or = { state = 42 } }
+					transfer_state_to = KYU
+					remove_core_of = SUS
+					add_core_of = KYU
+				}
+				every_controlled_state = {
+					limit = { or = { state = 142 state = 141 state = 144 } }
+					remove_claim_by = KYU
+				}
+			}
+		}
 	}
 	option = {
 		trigger = { OR = { tag = MUS tag = SUS } }
@@ -440,10 +528,29 @@ country_event = {	# Solomonic Solution Refused (KYU event)
 	option = {
 		trigger = { tag = ROOT }	# Peace was never an option
 		name = kyushu.202.a
+		create_wargoal = {
+			type = take_state_focus
+			target = MUS
+			generator = { 42 141 142 144 }
+			expire = 0
+		}
+		create_wargoal = {
+			type = take_state_focus
+			target = SUS
+			generator = { 42 141 142 144 }
+			expire = 0
+		}
 	}
 	option = {
 		trigger = { NOT = { tag = ROOT tag = MUS tag = SUS } }	# we didn't like that island anyway
 		name = kyushu.202.b
+		every_state = {
+			limit = {
+				owner = { OR = { tag = MUS tag = SUS } }
+				OR = { state = 42 state = 142 state = 141 state = 144 }
+			}
+			remove_claim_by = KYU
+		}
 	}
 }
 
@@ -493,7 +600,7 @@ country_event = {	# Solomonic Solution Refused, Give up (global event)
 	}
 }
 
-country_event = {	# Solomonic Solution Refused (global event)
+country_event = {	# Solomonic Solution Accepted (global event)
 	id = kyushu.205
 	title = kyushu.205.t
 	desc = kyushu.205.d
@@ -513,6 +620,59 @@ country_event = {	# Solomonic Solution Refused (global event)
 	option = {
 		trigger = { NOT = { tag = ROOT tag = MUS tag = SUS } }
 		name = kyushu.205.other
+	}
+}
+
+country_event = {	# Demand Okinawa (MUS/SUS event)
+	id = kyushu.206
+	title = kyushu.206.t
+	desc = kyushu.206.d
+	picture = GFX_report_news_kyushu_map
+	
+	is_triggered_only = yes
+	major = yes
+	
+	option = {
+		trigger = { tag = MUS }	# Accept
+		name = kyushu.206.a
+		effect_tooltip = {
+			MUS = {
+				every_controlled_state = {
+					limit = { OR = { state = 42 state = 141 state = 142 state = 144 } }
+					transfer_state_to = KYU
+					remove_core_of = MUS
+					add_core_of = KYU
+				}
+			}
+			SUS = {
+				if = {
+					limit = {
+						all_controlled_state = { OR = { state = 42 state = 141 state = 142 state = 144 } }
+					}
+					KYU = {
+						annex_country = {
+							target = SUS
+							transfer_troops = no
+						}
+					}
+				} else = {
+					every_controlled_state = {
+						limit = { OR = { state = 42 state = 141 state = 142 state = 144 } }
+						transfer_state_to = KYU
+						remove_core_of = MUS
+						add_core_of = KYU
+					}
+				}
+			}
+		}
+	}
+	option = {
+		trigger = { tag = MUS }	# Refuse
+		name = kyushu.206.b
+	}
+	option = {
+		trigger = { tag = SUS }	# no action allowed
+		name = kyushu.206.c
 	}
 }
 
