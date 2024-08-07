@@ -1,3 +1,161 @@
+unify_japan_category = {
+
+	declare_unification_war_candidate = {
+	
+		icon = generic_ignite_civil_war
+		
+		
+		target_root_trigger = { unification_candidate = yes }
+		
+		target_trigger = {
+			NOT = { is_justifying_wargoal_against = FROM }
+			FROM = {
+				unification_candidate = yes
+				NOT = { has_war_with = ROOT is_ally_with = ROOT }
+				any_controlled_state = {
+					OR = {
+						is_on_continent = kyushu
+						is_on_continent = hokkaido
+						is_on_continent = shikoku
+						is_on_continent = honshu
+					}
+					OR = {
+						ROOT = { is_neighbor_of = FROM }
+						AND = {	# Kyushu-Honshu
+							OR = { state = 138 state = 101 state = 117 }
+							ROOT = { any_controlled_state = { OR = { state = 122 state = 139 state = 100 state = 120 } } }
+						}
+						AND = {	# Kyushu-Shikoku
+							OR = { state = 143 state = 35 state = 254 state = 94 }
+							ROOT = { any_controlled_state = { OR = { state = 120 state = 30 state = 41 } } }
+						}
+						AND = {	# Kyushu-tsushima/iki
+							OR = { state = 11 state = 14 }
+							ROOT = { any_controlled_state = { OR = { state = 122 state = 202 state = 127 state = 16 } } }
+						}
+						AND = {	# Kyushu-osumi/amani
+							OR = { state = 42 state = 142 }
+							ROOT = { any_controlled_state = { OR = { state = 92 state = 69 state = 88 } } }
+						}
+						AND = {	# osumi/amani-okinawa/miyako
+							OR = { state = 141 state = 144 }
+							ROOT = { any_controlled_state = { OR = { state = 42 state = 142 } } }
+						}
+						AND = {	# Kyushu-goto/koshikijima
+							OR = { state = 19 state = 39 }
+							ROOT = { any_controlled_state = { OR = { state = 16 state = 127 state = 17 state = 140 state = 33 state = 92 } } }
+						}
+						AND = {	# Honshu-oki
+							state = 12
+							ROOT = { any_controlled_state = { OR = { state = 98 state = 110 state = 125 } } }
+						}
+						AND = {	# Honshu-sado
+							state = 15
+							ROOT = { any_controlled_state = { OR = { state = 37 state = 46 state = 119 } } }
+						}
+						AND = {	# Honshu-izu
+							state = 45
+							ROOT = { any_controlled_state = { OR = { state = 56 state = 60 state = 29 state = 53 state = 21 state = 55 } } }
+						}
+						AND = {	# Shikoku-Honshu (chugoku)
+							OR = { state = 35 state = 207 state = 201 state = 31 state = 200 state = 124 }
+							ROOT = { any_controlled_state = { OR = { state = 117 state = 116 state = 198 state = 123 state = 197 state = 40 state = 115 } } }
+						}
+						AND = {	# Shikoku-Honshu (kansai)
+							OR = { state = 52 state = 206 state = 2 state = 27 state = 205 state = 99 state = 91 state = 84 state = 38 }
+							ROOT = { any_controlled_state = { OR = { state = 124 state = 85 state = 36 } } }
+						}
+						AND = {	# Honshu (tohoku)-Ezo
+							OR = { state = 58 state = 51 state = 57 state = 72 }
+							ROOT = { any_controlled_state = { OR = { state = 65 state = 78 state = 7 } } }
+						}
+					}
+				}
+			}
+		}
+		
+		available = {	## A SERIES OF SPECIAL CHECKS FOR EACH COMBINATION ROOT/FROM
+			if = {
+				limit = { ROOT = { tag = KYU } }
+				if = { limit = { FROM = { tag = CHU } } OR = { NOT = { has_completed_focus = KYU_seto_crises_back_chu } has_opinion = { target = FROM value < -49 } } }
+				if = { limit = { FROM = { tag = IMS } } OR = { NOT = { has_completed_focus = KYU_seto_crises_back_ims } has_opinion = { target = FROM value < -49 } } }
+				if = { limit = { FROM = { tag = SHI } } OR = { NOT = { has_completed_focus = KYU_seto_crises_back_shi } has_opinion = { target = FROM value < -49 } } }
+			}
+		}
+		
+		targets_dynamic = yes
+		
+		cost = 50
+		
+		days_remove = 7
+		
+		war_with_target_on_remove = yes
+		
+		complete_effect = {
+			FROM = { country_event = unification.10 }
+		}
+		
+		remove_effect = {
+			create_wargoal = {
+				type = annex_everything
+				target = FROM
+			}
+		}
+	}
+	
+	declare_unification_war_foreigner = {
+	
+		icon = generic_ignite_civil_war
+		
+		target_root_trigger = { unification_candidate = yes }
+		
+		target_trigger = {
+			NOT = { is_justifying_wargoal_against = FROM }
+			FROM = {
+				unification_candidate = no
+				NOT = { has_war_with = ROOT is_ally_with = ROOT }
+				any_controlled_state = {
+					OR = {
+						is_on_continent = kyushu
+						is_on_continent = hokkaido
+						is_on_continent = shikoku
+						is_on_continent = honshu
+					}
+				}
+				is_neighbor_of = ROOT
+			}
+		}
+		
+		available = {	## A SERIES OF SPECIAL CHECKS FOR EACH COMBINATION ROOT/FROM
+			if = {
+				limit = { ROOT = { tag = KYU } }
+				if = { limit = { FROM = { tag = PRT } } OR = { NOT = { has_completed_focus = KYU_NAV_befriend_PRT } has_opinion = { target = FROM value < -49 } } }
+				if = { limit = { FROM = { tag = HIR } } OR = { NOT = { has_completed_focus = KYU_NAV_befriend_HIR } has_opinion = { target = FROM value < -49 } } }
+			}
+		}
+		
+		targets_dynamic = yes
+		
+		cost = 50
+		
+		days_remove = 7
+		
+		war_with_target_on_remove = yes
+		
+		complete_effect = {
+			FROM = { country_event = unification.20 }
+		}
+		
+		remove_effect = {
+			FROM = { country_event = unification.21 }
+			create_wargoal = {
+				type = annex_everything
+				target = FROM
+			}
+		}
+	}
+}
+
 foreign_politics = {
 
 	unification_of_japan_claim_international_recognition = {
@@ -77,6 +235,7 @@ foreign_politics = {
 		}
 	}
 }
+
 ss_placeholder_unification_of_japan_category = {
 
 	ui_placeholder_unification_goals = {

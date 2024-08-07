@@ -1,0 +1,129 @@
+add_namespace = unification
+
+country_event = {	# Justifying on Claimant	# ROOT is target, FROM is justifying
+	id = unification.10
+	title = unification.10.t
+	desc = unification.10.d
+	picture = GFX_report_news_kyushu_map
+	
+	is_triggered_only = yes
+	major = yes
+	show_major = {
+		NOT = { tag = FROM }
+		OR = {
+			interest_in_cosmetic_event = yes 
+			is_in_faction_with = FROM
+			is_subject_of = FROM
+		}		
+	}
+	
+	option = {
+		name = unification.10.self	# [chuckles] I'm in danger
+		trigger = { tag = ROOT }
+	}
+	option = {
+		name = unification.10.other
+		trigger = { NOT = { tag = ROOT has_war_with = ROOT } }
+	}
+	option = {
+		name = unification.10.enemy
+		trigger = { has_war_with = ROOT }
+	}
+}
+
+country_event = {	# Justifying on non-Claimant	# ROOT is target, FROM is justifying
+	id = unification.20
+	title = unification.20.t
+	desc = unification.20.d
+	picture = GFX_report_news_kyushu_map
+	
+	is_triggered_only = yes
+	major = yes
+	show_major = {
+		NOT = { tag = FROM }
+		OR = {
+			interest_in_cosmetic_event = yes 
+			is_in_faction_with = ROOT
+			is_subject_of = ROOT
+		}		
+	}
+	
+	option = {
+		name = unification.20.self	# [chuckles] I'm in danger
+		trigger = { tag = ROOT }
+	}
+	option = {
+		name = unification.20.other
+		trigger = { NOT = { tag = ROOT has_war_with = ROOT } }
+	}
+	option = {
+		name = unification.20.enemy
+		trigger = { has_war_with = ROOT }
+	}
+}
+
+country_event = {	# Ultimatum to non-Claimant	# ROOT is target, FROM is claimant
+	id = unification.21
+	title = unification.21.t
+	desc = unification.21.d
+	picture = GFX_report_news_kyushu_map
+	
+	is_triggered_only = yes
+	major = yes
+	show_major = {
+		NOT = { tag = FROM }
+		OR = {
+			interest_in_cosmetic_event = yes 
+			is_in_faction_with = ROOT
+			is_subject_of = ROOT
+		}		
+	}
+	
+	option = {
+		name = unification.21.a	# Refuse
+	}
+	option = {
+		name = unification.21.b
+		trigger = {
+			any_controlled_state = {
+				NOT = {
+					is_on_continent = kyushu
+					is_on_continent = hokkaido
+					is_on_continent = shikoku
+					is_on_continent = honshu
+				}
+			}
+		}
+		every_controlled_state = {
+			limit = {
+				OR = {
+					is_on_continent = kyushu
+					is_on_continent = hokkaido
+					is_on_continent = shikoku
+					is_on_continent = honshu
+				}
+			}
+			transfer_state_to = FROM
+		}
+	}
+	option = {
+		name = unification.21.c
+		trigger = {
+			all_controlled_state = {
+				OR = {
+					is_on_continent = kyushu
+					is_on_continent = hokkaido
+					is_on_continent = shikoku
+					is_on_continent = honshu
+				}
+			}
+		}
+		FROM = {
+			annex_country = {
+				target = ROOT
+				transfer_troops = no
+			}
+		}
+		custom_effect_tooltip = game_over_tt
+	}
+}
