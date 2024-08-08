@@ -1,6 +1,7 @@
 unification_get_score = {
 	set_variable = { country_unification_score = 0 }
 	set_variable = { country_unification_score_idea_bonus = 0 }
+	set_variable = { country_unification_score_other_multiplier = 0 }
 	### add linear modifiers
 	if = { limit = { unification_has_largest_army = yes } add_to_variable = { country_unification_score = 10 } }
 	if = { limit = { unification_has_largest_navy = yes } add_to_variable = { country_unification_score = 10 } }
@@ -24,17 +25,21 @@ unification_get_score = {
 	add_to_variable = { country_unification_score = country_unification_score_focus_bonus }	# this is affected direcly by focuses, does not need to be set dynamically,
 	add_to_variable = { country_unification_score = country_unification_score_other_bonus }	# this is affected direcly by events and other effects, does not need to be set dynamically
 	### calculate multiplier
-	set_temp_variable = { country_unification_score_multiplier = 1 }
+	set_variable = { country_unification_score_multiplier = 1 }
 		# generic modifiers
-	if = { limit = { is_puppet = yes } add_to_temp_variable = { country_unification_score_multiplier = -0.25 } }
-	if = { limit = { is_in_faction = yes num_faction_members > 1 } add_to_temp_variable = { country_unification_score_multiplier = 0.25 } }
-	if = { limit = { is_faction_leader = yes num_faction_members > 1 } add_to_temp_variable = { country_unification_score_multiplier = 0.25 } }
+	if = { limit = { is_puppet = yes } add_to_variable = { country_unification_score_multiplier = -0.25 } }
+	if = { limit = { is_in_faction = yes num_faction_members > 1 } add_to_variable = { country_unification_score_multiplier = 0.25 } }
+	if = { limit = { is_faction_leader = yes num_faction_members > 1 } add_to_variable = { country_unification_score_multiplier = 0.25 } }
 		# specific focuses, ideas and traits
-	if = { limit = { has_idea = SS_lon_member_japan } add_to_temp_variable = { country_unification_score_multiplier = 0.25 } }
-	else_if = { limit = { has_idea = SS_lon_observer_japan } add_to_temp_variable = { country_unification_score_multiplier = 0.10 } }	# else_if: these two should never stack!
-	if = { limit = { has_idea_with_trait = party_popularity_legitimacy_bonus } add_to_temp_variable = { country_unification_score_multiplier = legitimacy_popularity_bonus } }
+	if = { limit = { has_idea = SS_lon_member_japan } add_to_variable = { country_unification_score_multiplier = 0.25 } }
+	else_if = { limit = { has_idea = SS_lon_observer_japan } add_to_variable = { country_unification_score_multiplier = 0.10 } }	# else_if: these two should never stack!
+	if = { limit = { has_idea_with_trait = party_popularity_legitimacy_bonus } add_to_variable = { country_unification_score_multiplier = legitimacy_popularity_bonus } }
+		# other multipliers
+	if = { limit = { has_country_leader_with_trait = scaramouch_leader } add_to_variable = { country_unification_score_other_multiplier = -0.1 } }	
+	if = { limit = { has_country_leader_with_trait = buffoon_leader } add_to_variable = { country_unification_score_other_multiplier = -0.2 } }
+	add_to_variable = { country_unification_score_multiplier = country_unification_score_other_multiplier }
 		# capitulated!
-	if = { limit = { has_capitulated = yes } set_temp_variable = { country_unification_score_multiplier = 0 } }
+	if = { limit = { has_capitulated = yes } set_variable = { country_unification_score_multiplier = 0 } }
 	### calculate final score
 	multiply_variable = { country_unification_score = country_unification_score_multiplier }
 	### calculate bonus for SS_the_second_sengoku
