@@ -45,47 +45,35 @@ country_event = {	# Justifying on Claimant: Ultimatum	# ROOT is target, FROM is 
 	}
 	option = {
 		name = unification.11.b
-		hidden_effect = {
-			every_other_country = {
-				limit = { unification_candidate = yes NOT = { tag = FROM } }
-				set_variable = { chance_get_exiles = country_unification_score }	######### THIS BIT OF CODE DOES NOT SEEM TO BE WORKING, I"LL CHANGE LATER
-				if = {
-					limit = {
-						OR = {
-							AND = { has_government = democratic				FROM = { has_government = democratic } }
-							AND = { has_government = democratic_socialism	FROM = { has_government = democratic_socialism } }
-							AND = { has_government = communism				FROM = { has_government = communism } }
-							AND = { has_government = fascism				FROM = { has_government = fascism } }
-							AND = { has_government = neutrality				FROM = { has_government = neutrality } }
-							AND = { has_government = autocracy				FROM = { has_government = autocracy } }
-						}
-					}
-					add_to_variable = { chance_get_exiles = 10 }
-				}
-			}
-			if = {
-				limit = {
-					any_other_country = { NOT = { any_other_country = { check_variable = { chance_get_exiles > PREV.chance_get_exiles } } } }
-				}
-			} else = { random_other_country = { limit = { add_to_variable = { chance_get_exiles = 0.01 } } } }	# to avoid ties
+		if = {
+			limit = { any_other_country = { unification_candidate = yes NOT = { tag = FROM tag = ROOT } } }
 			random_other_country = {
-				limit = { unification_candidate = yes NOT = { any_other_country = { check_variable = { chance_get_exiles > PREV.chance_get_exiles } } } }
-				set_temp_variable = { exiles_destine = exiles_destine } set_country_flag = destine_exiles
+				limit = { unification_candidate = yes NOT = { tag = FROM tag = ROOT } }
+				set_temp_variable = { exiles_destine = THIS.id }
+				log = "first destine: [THIS.GetName] / [?country_unification_score]"
+				every_other_country = {
+					limit = { unification_candidate = yes NOT = { tag = FROM tag = ROOT }
+					log = "next check: [THIS.GetName] / [?country_unification_score]"
+					if = {
+						limit = { var:exiles_destine = { check_variable = { country_unification_score < PREV.country_unification_score } } }
+						set_temp_variable = { exiles_destine = THIS.id }
+						log = "new destine: [THIS.GetName] / [?country_unification_score]"
+					}
+				}
 			}
-		}
-		transfer_units_fraction= {
-			target = var:exiles_destine
-			size = 0.5
-			stockpile_ratio = 0.5
-			army_ratio = 0.5
-			navy_ratio = 0.5
-			air_ratio = 0.5
-			keep_unit_leaders_trigger = {
-				always = yes
+			transfer_units_fraction = {
+				target = var:exiles_destine
+				size = 0.5
+				stockpile_ratio = 0.5
+				army_ratio = 0.5
+				navy_ratio = 0.5
+				air_ratio = 0.5
+				keep_unit_leaders_trigger = {
+					always = yes
+				}
 			}
 		}
 		FROM = { hidden_effect = { country_event = unification.13 } annex_country = { target = ROOT transfer_troops = no } }
-		hidden_effect = { every_other_country = { clear_variable = chance_get_exiles } }
 	}
 	option = {
 		name = unification.11.c
