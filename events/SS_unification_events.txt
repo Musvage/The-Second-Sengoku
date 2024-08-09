@@ -31,6 +31,156 @@ country_event = {	# Justifying on Claimant	# ROOT is target, FROM is justifying
 	}
 }
 
+country_event = {	# Justifying on Claimant: Ultimatum	# ROOT is target, FROM is justifying
+	id = unification.11
+	title = unification.11.t
+	desc = unification.11.d
+	picture = GFX_report_news_kyushu_map
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = unification.11.a
+		FROM = { country_event = unification.12 }
+	}
+	option = {
+		name = unification.11.b
+		hidden_effect = {
+			every_other_country = {
+				limit = { unification_candidate = yes NOT = { tag = FROM } }
+				set_variable = { chance_get_exiles = country_unification_score }	######### THIS BIT OF CODE DOES NOT SEEM TO BE WORKING, I"LL CHANGE LATER
+				if = {
+					limit = {
+						OR = {
+							AND = { has_government = democratic				FROM = { has_government = democratic } }
+							AND = { has_government = democratic_socialism	FROM = { has_government = democratic_socialism } }
+							AND = { has_government = communism				FROM = { has_government = communism } }
+							AND = { has_government = fascism				FROM = { has_government = fascism } }
+							AND = { has_government = neutrality				FROM = { has_government = neutrality } }
+							AND = { has_government = autocracy				FROM = { has_government = autocracy } }
+						}
+					}
+					add_to_variable = { chance_get_exiles = 10 }
+				}
+			}
+			if = {
+				limit = {
+					any_other_country = { NOT = { any_other_country = { check_variable = { chance_get_exiles > PREV.chance_get_exiles } } } }
+				}
+			} else = { random_other_country = { limit = { add_to_variable = { chance_get_exiles = 0.01 } } } }	# to avoid ties
+			random_other_country = {
+				limit = { unification_candidate = yes NOT = { any_other_country = { check_variable = { chance_get_exiles > PREV.chance_get_exiles } } } }
+				set_temp_variable = { exiles_destine = exiles_destine } set_country_flag = destine_exiles
+			}
+		}
+		transfer_units_fraction= {
+			target = var:exiles_destine
+			size = 0.5
+			stockpile_ratio = 0.5
+			army_ratio = 0.5
+			navy_ratio = 0.5
+			air_ratio = 0.5
+			keep_unit_leaders_trigger = {
+				always = yes
+			}
+		}
+		FROM = { hidden_effect = { country_event = unification.13 } annex_country = { target = ROOT transfer_troops = no } }
+		hidden_effect = { every_other_country = { clear_variable = chance_get_exiles } }
+	}
+	option = {
+		name = unification.11.c
+		trigger = {
+			check_variable = { country_unification_score < FROM.country_unification_score }
+			OR = {
+				AND = { has_government = democratic				FROM = { has_government = democratic } }
+				AND = { has_government = democratic_socialism	FROM = { has_government = democratic_socialism } }
+				AND = { has_government = communism				FROM = { has_government = communism } }
+				AND = { has_government = fascism				FROM = { has_government = fascism } }
+				AND = { has_government = neutrality				FROM = { has_government = neutrality } }
+				AND = { has_government = autocracy				FROM = { has_government = autocracy } }
+			}
+		}
+		FROM = { hidden_effect = { country_event = unification.14 } annex_country = { target = ROOT transfer_troops = yes } }
+	}
+}
+
+country_event = {	# Justifying on Claimant: Refused Ultimatum	# ROOT is target, FROM is justifying
+	id = unification.12
+	title = unification.12.t
+	desc = unification.12.d
+	picture = GFX_report_news_kyushu_map
+	
+	is_triggered_only = yes
+	major = yes
+	
+	option = {
+		name = unification.12.1
+		trigger = { tag = ROOT }
+		declare_war_on = {
+			target = FROM
+			type = annex_everything
+		}
+	}
+	option = {
+		name = unification.12.b
+		trigger = { tag = FROM }
+		effect_tooltip = {
+			ROOT = {
+				declare_war_on = {
+					target = FROM
+					type = annex_everything
+				}
+			}
+		}
+	}
+	option = {
+		name = unification.12.c
+		trigger = { NOT = { tag = ROOT tag = FROM } }
+		effect_tooltip = {
+			ROOT = {
+				declare_war_on = {
+					target = FROM
+					type = annex_everything
+				}
+			}
+		}
+	}
+}
+
+country_event = {	# Justifying on Claimant: Accept Ultimatum, troops flee	# FROM is target, ROOT is justifying
+	id = unification.13
+	title = unification.13.t
+	desc = unification.13.d
+	picture = GFX_report_news_kyushu_map
+	
+	is_triggered_only = yes
+	major = yes
+	
+	option = {
+		name = unification.13.b
+	}
+	option = {
+		name = unification.13.a
+	}
+}
+
+country_event = {	# Justifying on Claimant: Accept Ultimatum, troops join 	# FROM is target, ROOT is justifying
+	id = unification.14
+	title = unification.14.t
+	desc = unification.14.d
+	picture = GFX_report_news_kyushu_map
+	
+	is_triggered_only = yes
+	major = yes
+	
+	option = {
+		name = unification.14.b
+	}
+	option = {
+		name = unification.14.a
+	}
+}
+
 country_event = {	# Justifying on non-Claimant	# ROOT is target, FROM is justifying
 	id = unification.20
 	title = unification.20.t
