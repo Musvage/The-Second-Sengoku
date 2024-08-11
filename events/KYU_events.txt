@@ -266,7 +266,7 @@ country_event = {	# Nagano Invited (PRO event)
 		add_command_power = -100
 		add_political_power = -100
 		random_list = {
-			1 = { custom_effect_tooltip = kyushu.12.tt_few_ships KYU = { set_country_flag = nagano_few_ships } }
+			1 = { custom_effect_tooltip = kyushu.12.tt_few_ships KYU = { set_global_flag = nagano_few_ships } }
 			2 = { custom_effect_tooltip = kyushu.12.tt_no_ships }
 		}
 	}
@@ -274,8 +274,8 @@ country_event = {	# Nagano Invited (PRO event)
 		name = kyushu.12.b
 		# ignore issue, + chance of losing ships, no cost
 		random_list = {
-			1 = { custom_effect_tooltip = kyushu.12.tt_many_ships KYU = { set_country_flag = nagano_many_ships } }
-			1 = { custom_effect_tooltip = kyushu.12.tt_few_ships KYU = { set_country_flag = nagano_few_ships } }
+			1 = { custom_effect_tooltip = kyushu.12.tt_many_ships KYU = { set_global_flag = nagano_many_ships } }
+			1 = { custom_effect_tooltip = kyushu.12.tt_few_ships KYU = { set_global_flag = nagano_few_ships } }
 			1 = { custom_effect_tooltip = kyushu.12.tt_no_ships }
 		}
 	}
@@ -284,7 +284,35 @@ country_event = {	# Nagano Invited (PRO event)
 news_event = {	# Nagano Defects
 	id = kyushu.13
 	title = kyushu.13.t
-	desc = kyushu.13.d
+	desc = {
+		trigger = {
+			has_global_flag = nagano_many_ships
+			has_navy_size = {
+				size > 9
+			}
+		}
+		text = kyushu.13.d1
+	}
+	desc = {
+		trigger = {
+			has_global_flag = nagano_few_ships
+			has_navy_size = {	# they get a smaller share, so there gotta be more ships
+				size > 19
+			}
+		}
+		text = kyushu.13.d2
+	}
+	desc = {
+		trigger = {
+			OR = {
+				NOT = { has_global_flag = nagano_few_ships has_global_flag = nagano_many_ships }
+				has_navy_size = {
+					size < 10
+				}
+			}
+		}
+		text = kyushu.13.d3
+	}
 	picture = GFX_report_news_kyushu_map_wide
 	
 	is_triggered_only = yes
@@ -292,10 +320,30 @@ news_event = {	# Nagano Defects
 	option = {
 		name = kyushu.13.self
 		trigger = { tag = ROOT }
+		PRO = {
+			if = {
+				limit = { has_global_flag = nagano_many_ships has_navy_size = { size > 9 } }
+				transfer_units_fraction= { navy_ratio = 0.1 target = KYU size = 0 stockpile_ratio = 0 army_ratio = 0 air_ratio = 0 keep_unit_leaders_trigger = { always = yes } }
+			}
+			if = {
+				limit = { has_global_flag = nagano_few_ships has_navy_size = { size > 19 } }
+				transfer_units_fraction= { navy_ratio = 0.05 target = KYU size = 0 stockpile_ratio = 0 army_ratio = 0 air_ratio = 0 keep_unit_leaders_trigger = { always = yes } }
+			}
+		}
 	}
 	option = {
 		name = kyushu.13.pro
 		trigger = { tag = PRO }
+		effect_tooltip = {
+			if = {
+				limit = { has_global_flag = nagano_many_ships has_navy_size = { size > 9 } }
+				transfer_units_fraction= { navy_ratio = 0.1 target = KYU size = 0 stockpile_ratio = 0 army_ratio = 0 air_ratio = 0 keep_unit_leaders_trigger = { always = yes } }
+			}
+			if = {
+				limit = { has_global_flag = nagano_few_ships has_navy_size = { size > 19 } }
+				transfer_units_fraction= { navy_ratio = 0.05 target = KYU size = 0 stockpile_ratio = 0 army_ratio = 0 air_ratio = 0 keep_unit_leaders_trigger = { always = yes } }
+			}
+		}
 	}
 	option = {
 		name = kyushu.13.other
