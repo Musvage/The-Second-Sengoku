@@ -47,17 +47,19 @@ country_event = {	# Justifying on Claimant: Ultimatum	# ROOT is target, FROM is 
 		name = unification.11.b
 		if = {
 			limit = { any_other_country = { unification_candidate = yes NOT = { tag = FROM tag = ROOT } } }
-			random_other_country = {
-				limit = { unification_candidate = yes NOT = { tag = FROM tag = ROOT } }
-				set_temp_variable = { exiles_destine = THIS.id }
-				log = "first destine: [THIS.GetName] / [?country_unification_score]"
-				every_other_country = {
-					limit = { unification_candidate = yes NOT = { tag = FROM tag = ROOT }
-					log = "next check: [THIS.GetName] / [?country_unification_score]"
-					if = {
-						limit = { var:exiles_destine = { check_variable = { country_unification_score < PREV.country_unification_score } } }
-						set_temp_variable = { exiles_destine = THIS.id }
-						log = "new destine: [THIS.GetName] / [?country_unification_score]"
+			hidden_effect = {
+				random_other_country = {
+					limit = { unification_candidate = yes NOT = { tag = FROM tag = ROOT } }
+					set_temp_variable = { exiles_destine = THIS.id }
+					log = "first destine: [THIS.GetName] / [?country_unification_score]"
+					every_other_country = {
+						limit = { unification_candidate = yes NOT = { tag = FROM tag = ROOT } }
+						log = "next check: [THIS.GetName] / [?country_unification_score]"
+						if = {
+							limit = { var:exiles_destine = { check_variable = { country_unification_score < PREV.country_unification_score } } }
+							set_temp_variable = { exiles_destine = THIS.id }
+							log = "new destine: [THIS.GetName] / [?country_unification_score]"
+						}
 					}
 				}
 			}
@@ -73,7 +75,10 @@ country_event = {	# Justifying on Claimant: Ultimatum	# ROOT is target, FROM is 
 				}
 			}
 		}
-		FROM = { hidden_effect = { country_event = unification.13 } annex_country = { target = ROOT transfer_troops = no } }
+			var:exiles_destine = { FROM = { hidden_effect = { country_event = unification.14 } annex_country = { target = ROOT transfer_troops = no } } }
+		} else = {
+			FROM = { hidden_effect = { country_event = unification.13 } annex_country = { target = ROOT transfer_troops = no } }
+		}
 	}
 	option = {
 		name = unification.11.c
@@ -88,7 +93,7 @@ country_event = {	# Justifying on Claimant: Ultimatum	# ROOT is target, FROM is 
 				AND = { has_government = autocracy				FROM = { has_government = autocracy } }
 			}
 		}
-		FROM = { hidden_effect = { country_event = unification.14 } annex_country = { target = ROOT transfer_troops = yes } }
+		FROM = { hidden_effect = { country_event = unification.15 } annex_country = { target = ROOT transfer_troops = yes } }
 	}
 }
 
@@ -135,7 +140,7 @@ country_event = {	# Justifying on Claimant: Refused Ultimatum	# ROOT is target, 
 	}
 }
 
-country_event = {	# Justifying on Claimant: Accept Ultimatum, troops flee	# FROM is target, ROOT is justifying
+country_event = {	# Justifying on Claimant: Accept Ultimatum, troops disband	# FROM is target, ROOT is justifying
 	id = unification.13
 	title = unification.13.t
 	desc = unification.13.d
@@ -152,7 +157,7 @@ country_event = {	# Justifying on Claimant: Accept Ultimatum, troops flee	# FROM
 	}
 }
 
-country_event = {	# Justifying on Claimant: Accept Ultimatum, troops join 	# FROM is target, ROOT is justifying
+country_event = {	# Justifying on Claimant: Accept Ultimatum, troops flee	# FROM is target, ROOT is justifying, FROM.FROM is the destine of the exiles
 	id = unification.14
 	title = unification.14.t
 	desc = unification.14.d
@@ -166,6 +171,23 @@ country_event = {	# Justifying on Claimant: Accept Ultimatum, troops join 	# FRO
 	}
 	option = {
 		name = unification.14.a
+	}
+}
+
+country_event = {	# Justifying on Claimant: Accept Ultimatum, troops join 	# FROM is target, ROOT is justifying
+	id = unification.15
+	title = unification.15.t
+	desc = unification.15.d
+	picture = GFX_report_news_kyushu_map
+	
+	is_triggered_only = yes
+	major = yes
+	
+	option = {
+		name = unification.15.b
+	}
+	option = {
+		name = unification.15.a
 	}
 }
 
