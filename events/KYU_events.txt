@@ -369,11 +369,11 @@ news_event = {	# Nagano Becomes Prime Minister
 	}
 }
 
-news_event = {	# Clans Revolt
+country_event = {	# Clans Revolt: Disarm
 	id = kyushu.15
 	title = kyushu.15.t
 	desc = kyushu.15.d
-	picture = GFX_report_news_kyushu_map_wide
+	picture = GFX_report_news_kyushu_map
 	
 	is_triggered_only = yes
 	
@@ -382,6 +382,17 @@ news_event = {	# Clans Revolt
 	option = {
 		name = kyushu.15.self
 		trigger = { tag = ROOT }
+	}
+	
+	option = {
+		name = kyushu.15.join
+		trigger = {
+			tag = ROOT is_ai = no
+			any_enemy_country = { tag = MCK }
+		}
+		MCK = {	# alias tag: main clan of kyushu
+			change_tag_from = KYU
+		}
 	}
 	option = {
 		name = kyushu.15.other
@@ -393,33 +404,11 @@ news_event = {	# Clans Revolt
 	}
 }
 
-news_event = {	# Clans Revolt Again
-	id = kyushu.151
-	title = kyushu.151.t
-	desc = kyushu.151.d
-	picture = GFX_report_news_kyushu_map_wide
-	
-	is_triggered_only = yes
-	
-	option = {
-		name = kyushu.151.self
-		trigger = { tag = ROOT }
-	}
-	option = {
-		name = kyushu.151.other
-		trigger = { NOT = { tag = ROOT has_war_with = ROOT } }
-	}
-	option = {
-		name = kyushu.151.enemy
-		trigger = { NOT = { tag = ROOT } has_war_with = ROOT }
-	}
-}
-
-news_event = {	# Parliament Revolt
+country_event = {	# Clans Revolt: Arrested Yamamoto's men
 	id = kyushu.16
 	title = kyushu.16.t
 	desc = kyushu.16.d
-	picture = GFX_report_news_kyushu_map_wide
+	picture = GFX_report_news_kyushu_map
 	
 	is_triggered_only = yes
 	
@@ -428,12 +417,140 @@ news_event = {	# Parliament Revolt
 		trigger = { tag = ROOT }
 	}
 	option = {
+		name = kyushu.16.join
+		trigger = {
+			tag = ROOT is_ai = no
+			any_enemy_country = { tag = MCK }
+		}
+		MCK = {	# alias tag: main clan of kyushu
+			change_tag_from = KYU
+		}
+	}
+	option = {
 		name = kyushu.16.other
 		trigger = { NOT = { tag = ROOT has_war_with = ROOT } }
 	}
 	option = {
 		name = kyushu.16.enemy
 		trigger = { NOT = { tag = ROOT } has_war_with = ROOT }
+	}
+}
+
+country_event = {	# Clans Revolt Again	# leader becomes the coold portrait of daymios looking on a map
+	id = kyushu.17
+	title = kyushu.17.t
+	desc = kyushu.17.d
+	picture = GFX_report_news_kyushu_map
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		KYU = {
+			set_nationality = {
+				target_country = MCK
+				character = KYU_council_of_daimyos
+			}
+		}
+		MCK = {
+			set_cosmetic_tag = KYU_MCK
+			every_other_country = {
+				limit = {
+					OR = { tag = SMZ tag = NBS tag = HOS tag = OTO tag = NAI tag = SAR tag = KAR }
+					has_war_with = KYU NOT = { has_war_with = MCK }
+					OR = {
+						is_subject = no
+						is_subject_of = MCK
+					}
+					OR = {
+						is_in_faction = no
+						is_in_faction_with = MCK
+					}
+				}
+				MCK = {
+					annex_country = {
+						target = PREV
+						transfer_troops = yes
+					}
+				}
+			}
+			KYU_council_of_daimyos = {
+				add_country_leader_role = {
+					promote_leader = yes
+					country_leader = {
+						ideology = autocracy_subtype
+						expire = "1965.1.1.1"
+						traits = { KYU_military_council }
+					}
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = kyushu.17.self
+		trigger = { tag = ROOT }
+		MCK = {		# alias tag: main clan of kyushu
+			custom_effect_tooltip = kyushu.17.tt
+			effect_tooltip = {
+				set_cosmetic_tag = KYU_MCK
+				create_country_leader = {
+					name = KYU_council_of_daimyos
+					desc = ""
+					picture = GFX_Portrait_KYU_Daimyo_Council
+					expire = "1965.1.1"
+					ideology = autocracy_subtype
+					traits = { KYU_military_council }
+				}
+			}
+		}
+	}
+	option = {
+		name = kyushu.15.join
+		trigger = {
+			tag = ROOT is_ai = no
+			any_enemy_country = { tag = MCK }
+		}
+		MCK = {	# alias tag: main clan of kyushu
+			custom_effect_tooltip = kyushu.17.tt
+			effect_tooltip = {
+				set_cosmetic_tag = KYU_MCK
+				create_country_leader = {
+					name = KYU_council_of_daimyos
+					desc = ""
+					picture = GFX_Portrait_KYU_Daimyo_Council
+					expire = "1965.1.1"
+					ideology = autocracy_subtype
+					traits = { KYU_military_council }
+				}
+			}
+			change_tag_from = KYU
+		}
+	}
+	option = {
+		name = kyushu.17.mck
+		trigger = { tag = MCK }
+		custom_effect_tooltip = kyushu.17.tt
+		effect_tooltip = {
+			set_cosmetic_tag = KYU_MCK
+			create_country_leader = {
+				name = KYU_council_of_daimyos
+				desc = ""
+				picture = GFX_Portrait_KYU_Daimyo_Council
+				expire = "1965.1.1"
+				ideology = autocracy_subtype
+				traits = { KYU_military_council }
+			}
+		}
+	}
+	option = {
+		name = kyushu.17.other
+		trigger = { NOT = { tag = ROOT tag = MCK has_war_with = ROOT } }
+		effect_tooltip = { MCK = { set_cosmetic_tag = KYU_MCK custom_effect_tooltip = kyushu.17.tt } }
+	}
+	option = {
+		name = kyushu.17.enemy
+		trigger = { NOT = { tag = ROOT tag = MCK } has_war_with = ROOT }
+		effect_tooltip = { MCK = { set_cosmetic_tag = KYU_MCK custom_effect_tooltip = kyushu.17.tt } }
 	}
 }
 
