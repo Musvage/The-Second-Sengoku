@@ -148,7 +148,7 @@ news_event = {	# Shogunate of Kyushu
 	id = kyushu.8
 	title = kyushu.8.t
 	desc = kyushu.8.d
-	picture = GFX_report_news_kyushu_map_wide
+	picture = GFX_news_kyushu_shogunate_wide
 	
 	major = yes
 	is_triggered_only = yes
@@ -788,11 +788,13 @@ country_event = {	# Solomonic Solution (MUS/SUS event)
 				custom_effect_tooltip = KYU_solomonic_solution_tt2
 			}
 		}
+		add_named_threat = { name = kyushu_ceded_okinawa threat = -1 }
 	}
 	option = {
 		trigger = { tag = MUS }
 		name = kyushu.200.b	# Refuse
 		KYU = { country_event = { id = kyushu.202 hours = 24 } }
+		add_named_threat = { name = kyushu_denied_okinawa threat = 1 }
 	}
 	option = {
 		trigger = { tag = SUS }
@@ -1137,1117 +1139,110 @@ country_event = {	#  Terrorist Attack: failure, someone is arrested
 	}
 }
 
-########### OLD 
-########### OLD 
-########### OLD 
-########### OLD 
-########### OLD 
-
-country_event = { #fullpower
-	id = kyushuold.1
-	title = kyushuold.1.t
-	desc = kyushuold.1.desc
-	picture = GFX_report_event_merchant_ship_01
-	is_triggered_only = yes
-	option = { 
-		name = kyushuold.1.a
-		ai_chance = {
-			base = 100
-		}
+country_event = {	# HIDDEN EVENT: spawn troops for rebellion
+	id = kyushu.1000
+	title = "Spawn troops"
+	desc = "Spawn troops for clan rebellion in Kyushu. This event should never be displayed"
+	picture = GFX_report_event_irregular_soldiers_japan
 	
-	add_popularity = {
-		popularity = 0.1
-		ideology = fascism
-	}
-	set_politics = {
-		ruling_party = fascism
-		elections_allowed = no
-	}
-	if = { 
-	limit = { fascism < 0.75
-    SMZ = { exists = no } 
-	NBS = { exists = no } }
-	country_event = { days = 10 id = kyushuold.9 }
-	SMZ = {
-			transfer_state = 92
-			transfer_state = 69
-		 }
-	NBS = {
-			transfer_state = 127
-             transfer_state = 17 }
-	hidden_effect = { 
-		NBS = {
+	is_triggered_only = yes
+	hidden = yes
+	
+	immediate = {
+		set_temp_variable = { num_guns = 2 }
+		set_temp_variable = { num_big_guns = 2 }
+		set_temp_variable = { num_manpower = 2 }
+		set_temp_variable = { num_convoy = 3 }
+		set_temp_variable = { num_train = 1 }
+		add_to_temp_variable = { num_guns = var:num_of_factories }
+		add_to_temp_variable = { num_big_guns = var:num_of_factories }
+		add_to_temp_variable = { num_manpower = var:num_of_factories }
+		add_to_temp_variable = { num_convoy = var:num_of_dockyards }
+		add_to_temp_variable = { num_train = var:num_controlled_states  }
+		multiply_temp_variable = { num_guns = 250 }
+		multiply_temp_variable = { num_big_guns = 12 }	# and other stuff
+		multiply_temp_variable = { num_manpower = 250 }
+		if = {
+			limit = { KYU = { has_country_variable = clan_weapons_siezed } }
+			multiply_temp_variable = { num_guns = 0.5 }
+			multiply_temp_variable = { num_big_guns = 0.5 }
+		}
+		add_manpower = var:num_manpower
+		add_equipment_to_stockpile = {
+			type = infantry_equipment_traditional
+			amount = var:num_guns
+		}
+		add_equipment_to_stockpile = {
+			type = artillery_equipment_traditional
+			amount = var:num_big_guns
+		}
+		add_equipment_to_stockpile = {
+			type = support_equipment_1
+			amount = var:num_big_guns
+		}
+		add_equipment_to_stockpile = {
+			type = convoy_1
+			amount = var:num_convoy
+		}
+		add_equipment_to_stockpile = {
+			type = train_equipment_1
+			amount = var:num_train
+		}
 		division_template = {
-	name = "Hohei Shidan" 			
-	division_names_group = JAP_INF_01
-									
-	regiments = {
-		infantry = { x = 0 y = 0 }
-		infantry = { x = 0 y = 1 }
-		infantry = { x = 0 y = 2 }
-		infantry = { x = 1 y = 0 }
-		infantry = { x = 1 y = 1 }
-		infantry = { x = 1 y = 2 }
-		infantry = { x = 2 y = 0 }
-		infantry = { x = 2 y = 1 }
-		infantry = { x = 2 y = 2 }
-		infantry = { x = 3 y = 0 }
-}
-}
-	127 = {
-					create_unit = {
-						division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 1.0" 
-						owner = NBS
+			name = "Ashigaru Brigade"
+			division_names_group = JAP_MLT_01
+			regiments = {
+				infantry = { x = 0 y = 0 }
+				infantry = { x = 0 y = 1 }
+				infantry = { x = 0 y = 0 }
+				infantry = { x = 0 y = 1 }
+			}
+			template_counter = 7
+			priority = 0
+		}
+		meta_effect = {
+			text = {
+				division_template = {
+					name = "[CLAN_NAME] Guards Brigade"
+					division_names_group = JAP_MLT_01
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 0 y = 2 }
+						infantry = { x = 1 y = 0 }
+						infantry = { x = 1 y = 1 }
+						infantry = { x = 1 y = 2 }
 					}
-				}
-	127 = {
-					create_unit = {
-						division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 1.0" 
-						owner = NBS
+					support = {
+						artillery = { x = 0 y = 0 }
 					}
+					template_counter = 0
+					priority = 2
 				}
-	127 = {
+				capital_scope = {
 					create_unit = {
-						division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 1.0" 
-						owner = NBS
+							division = "name = \"[CLAN_NAME] Guards Brigade\" division_template = \"[CLAN_NAME] Guards Brigade\" start_experience_factor = 0.5 start_equipment_factor = 0.05 start_manpower_factor = 1"
+							owner = ROOT
 					}
-				}
-    127 = {
 					create_unit = {
-						division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 1.0" 
-						owner = NBS
+							division = "name = \"Ashigaru Ryodan\" division_template = \"Ashigaru Brigade\" start_experience_factor = 0.1 start_equipment_factor = 0.05 start_manpower_factor = 0.1"
+							owner = ROOT
 					}
-				}
-	127 = {
-					create_unit = {
-						division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 1.0" 
-						owner = NBS
-					}
-				}
-	127 = {
-					create_unit = {
-						division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 1.0" 
-						owner = NBS
-					}
-				}
-127 = {
-					create_unit = {
-						division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 1.0" 
-						owner = NBS
-					}
-				}
-127 = {
-					create_unit = {
-						division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 1.0" 
-						owner = NBS
-					}
-				}
-}
-		SMZ = {
-			division_template = {
-				name = "Hohei Shidan" 			
-				division_names_group = JAP_INF_01
-				regiments = {
-					infantry = { x = 0 y = 0 }
-					infantry = { x = 0 y = 1 }
-					infantry = { x = 0 y = 2 }
-					infantry = { x = 1 y = 0 }
-					infantry = { x = 1 y = 1 }
-					infantry = { x = 1 y = 2 }
-					infantry = { x = 2 y = 0 }
-					infantry = { x = 2 y = 1 }
-					infantry = { x = 2 y = 2 }
-					infantry = { x = 3 y = 0 }
 				}
 			}
-
-			random_owned_controlled_state = {
-				create_unit = {
-					division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 1.0" 
-					owner = SMZ
-				}
+			CLAN_NAME = "[THIS.GetNonIdeologyName]"
+		}
+		every_controlled_state = {
+			create_unit = {
+					division = "name = \"Ashigaru Ryodan\" division_template = \"Ashigaru Brigade\" start_experience_factor = 0.1 start_equipment_factor = 0.05 start_manpower_factor = 0.1"
+					owner = ROOT
 			}
-			
-			random_owned_controlled_state = {
-				create_unit = {
-					division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 1.0" 
-					owner = SMZ
-				}
-			}
-			
-			random_owned_controlled_state = {
-				create_unit = {
-					division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 1.0" 
-					owner = SMZ
-				}
-			}
-			
-			random_owned_controlled_state = {
-				create_unit = {
-					division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 1.0" 
-					owner = SMZ
-				}
-			}
-			
-			random_owned_controlled_state = {
-				create_unit = {
-					division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 1.0" 
-					owner = SMZ
-				}
-			}
-			
-			random_owned_controlled_state = {
-				create_unit = {
-					division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 1.0" 
-					owner = SMZ
-				}
-			}
-			
-			random_owned_controlled_state = {
-				create_unit = {
-					division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 1.0" 
-					owner = SMZ
-				}
-			}
-		}
-		every_state = {
-				limit = { is_owned_by = SMZ }
-				add_core_of = SMZ
-			}
-		every_state = {
-				limit = { is_owned_by = NBS }
-				add_core_of = NBS
-			}
-		}
-		}
-	}
-}
-
-country_event = { #factioninvite
-	id = kyushuold.2
-	title = kyushuold.2.t
-	desc = kyushuold.2.desc
-	picture = GFX_report_event_generic_sign_treaty1
-	is_triggered_only = yes
-	option = { #sure
-		name = kyushuold.2.a
-		KYU = {
-			country_event = kyushuold.3
-			create_faction = KYU_nagasaki_pact
-		}
-		ai_chance = {
-			factor = 100
-		}
-	}
-	option = { #no
-		name = kyushuold.2.b
-		ai_chance = {
-			factor = 0
-		}	
-	}
-}
-
-country_event = {
-	id = kyushuold.3
-	title = kyushuold.3.t
-	desc = kyushuold.3.desc
-	picture = GFX_report_event_generic_sign_treaty1
-	
-	is_triggered_only = yes
-	
-	option = { #sure
-		name = kyushuold.3.a
-		ai_chance = {
-			factor = 100
-		}
-                add_to_faction = FROM
-		add_opinion_modifier = {
-			target = FROM
-			modifier = large_increase
-		}
-		hidden_effect = {
-			FROM = {
-				add_opinion_modifier = {
-					target = ROOT
-					modifier = large_increase
-				}
-			}
-		}
-	}
-}
-
-country_event = {
-	id = kyushuold.4
-	title = kyushuold.4.t
-	desc = kyushuold.4.desc
-	picture = GFX_report_event_generic_sign_treaty1
-	
-	is_triggered_only = yes
-	
-	option = { #sure
-		name = kyushuold.4.a
-		ai_chance = {
-			factor = 100
-		}
-    	add_stability = 0.1
-		add_war_support = 0.1
-		add_political_power = 50
-		PRO = {
-			add_to_faction = KYU
-		}
-	}
-}
-
-country_event = {
-	id = kyushuold.5
-	title = kyushuold.5.t
-	desc = kyushuold.5.desc
-	picture = GFX_report_event_japanese_army_parade
-	is_triggered_only = yes
-	option = { 
-		name = kyushuold.5.a
-    	add_stability = 0.1
-		add_war_support = 0.1
-		add_political_power = 50
-		add_popularity = {
-			ideology = autocracy
-			popularity = 0.2
-		}
-		set_politics = {
-			ruling_party = autocracy
-			elections_allowed = no
-		}
-	}
-}
-
-country_event = {
-	id = kyushuold.6
-	title = kyushuold.6.t
-	desc = kyushuold.6.desc
-	picture = GFX_report_event_jap_imperial_family
-	is_triggered_only = yes
-	option = { 
-		name = kyushuold.6.a
-   		add_stability = 0.1
-		add_war_support = 0.1
-		add_political_power = 50
-		KAN = { 
-			add_to_faction = KYU
-		}
-	}
-}
-
-country_event = {
-	id = kyushuold.7
-	title = kyushuold.7.t
-	desc = kyushuold.7.desc
-	picture = GFX_report_event_generic_sign_treaty1
-	is_triggered_only = yes
-	option = { #sure
-		name = kyushuold.7.a
-		ai_chance = {
-			factor = 100
-		}
-		KYU = {
-			country_event = kyushuold.8
-			swap_ideas = {
-			    remove_idea = KYU_the_unthinkable_option
-			    add_idea = KYU_negociations
-			}
-		}
-	}
-	option = { #no
-		name = kyushuold.7.b
-        KYU = {
-        	remove_ideas = KYU_the_unthinkable_option
-        }	
-	}
-}
-
-country_event = {
-	id = kyushuold.8
-	title = kyushuold.8.t
-	desc = kyushuold.8.desc
-	picture = GFX_report_event_generic_sign_treaty1
-	is_triggered_only = yes
-	option = { 
-		name = kyushuold.8.a
-		ai_chance = {
-			factor = 100
-		}
-		add_political_power = 50
-		add_opinion_modifier = {
-			target = FROM
-			modifier = large_increase
-		}
-		hidden_effect = {
-			FROM = {
-				add_opinion_modifier = {
-					target = ROOT
-					modifier = large_increase
-				}
-			}
-		}
-	}
-}
-
-country_event = { #powerfulamiliesprotest
-	id = kyushuold.9
-	title = kyushuold.9.t
-	desc = kyushuold.9.desc
-	picture = GFX_report_event_jap_imperial_family
-	is_triggered_only = yes
-	option = { 
-		name = kyushuold.9.a
-		ai_chance = {
-			factor = 100
-		}
-news_event = { days = 2 id = SSnews.14 }
-
-   		add_stability = -0.1
-		add_war_support = -0.1
-		NBS = {
-		declare_war_on = {
-		target = KYU
-		type = annex_everything
-		}
-		}
-		SMZ = {
-		declare_war_on = {
-		target = KYU
-		type = annex_everything
-		}
-	}
-}
-option = { 
-		name = kyushuold.9.b
-		ai_chance = {
-			factor = 0
-		}
-news_event = { days = 2 id = SSnews.14 }
-if = { 
-	limit = {SHO ={
-			OR = { has_government = autocracy
-		    has_government = fascism }			   
-		} 
-	}
-	SHO = { country_event = shogunate.26 }
-}
-   		add_stability = -0.1
-		add_war_support = -0.1
-		NBS = {
-		declare_war_on = {
-		target = KYU
-		type = annex_everything
-		}
-		}
-		SMZ = {
-		declare_war_on = {
-		target = KYU
-		type = annex_everything
-		}
-	}
-	NBS = { change_tag_from = KYU }
-}
-option = { 
-		name = kyushuold.9.c
-		ai_chance = {
-			factor = 0
-		}
-news_event = { days = 2 id = SSnews.14 }
-if = { 
-	limit = {SHO ={
-			OR = { has_government = autocracy
-		    has_government = fascism }			   
-		} 
-	}
-	SHO = { country_event = shogunate.26 }
-}
-   		add_stability = -0.1
-		add_war_support = -0.1
-		NBS = {
-		declare_war_on = {
-		target = KYU
-		type = annex_everything
-		}
-		}
-		SMZ = {
-		declare_war_on = {
-		target = KYU
-		type = annex_everything
-		}
-	}
-	SMZ = { change_tag_from = KYU }
-}
-}
-
-country_event = { #otomoseced
-	id = kyushuold.10
-	title = kyushuold.10.t
-	desc = kyushuold.10.desc
-	picture = GFX_report_event_merchant_ship_01
-	is_triggered_only = yes
-	option = { 
-		name = kyushuold.10.a
-		ai_chance = {
-			base = 100
-		}
-
-	country_event = { days = 10 id = kyushuold.11 }
-	OTO = {
-			transfer_state = 122 }
-	hidden_effect = { 
-		OTO = {
-		division_template = {
-	name = "Hohei Shidan" 			
-	division_names_group = JAP_INF_01
-									
-	regiments = {
-		infantry = { x = 0 y = 0 }
-		infantry = { x = 0 y = 1 }
-		infantry = { x = 0 y = 2 }
-		infantry = { x = 1 y = 0 }
-		infantry = { x = 1 y = 1 }
-		infantry = { x = 1 y = 2 }
-		infantry = { x = 2 y = 0 }
-		infantry = { x = 2 y = 1 }
-		infantry = { x = 2 y = 2 }
-		infantry = { x = 3 y = 0 }
-}
-}
-	random_owned_controlled_state = {
-					create_unit = {
-						division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 1.0" 
-						owner = OTO
-					}
-				}
-	random_owned_controlled_state = {
-					create_unit = {
-						division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 1.0" 
-						owner = OTO
-					}
-				}
-	random_owned_controlled_state = {
-					create_unit = {
-						division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 1.0" 
-						owner = OTO
-					}
-				}
-    random_owned_controlled_state = {
-					create_unit = {
-						division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 1.0" 
-						owner = OTO
-					}
-				}
-	random_owned_controlled_state = {
-					create_unit = {
-						division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 1.0" 
-						owner = OTO
-					}
-				}
-	random_owned_controlled_state = {
-					create_unit = {
-						division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 1.0" 
-						owner = OTO
-					}
-				}
-random_owned_controlled_state = {
-					create_unit = {
-						division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 1.0" 
-						owner = OTO
-					}
-				}
-random_owned_controlled_state = {
-					create_unit = {
-						division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 1.0" 
-						owner = OTO
-					}
-				}
-random_owned_controlled_state = {
-					create_unit = {
-						division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 1.0" 
-						owner = OTO
-					}
-				}
-	random_owned_controlled_state = {
-					create_unit = {
-						division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 1.0" 
-						owner = OTO
-					}
-				}
-	random_owned_controlled_state = {
-					create_unit = {
-						division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 1.0" 
-						owner = OTO
-					}
-				}
-	random_owned_controlled_state = {
-					create_unit = {
-						division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 1.0" 
-						owner = OTO
-					}
-				}
- 
-}
-}
-	every_state = {
-			limit = { is_owned_by = OTO }
-			add_core_of = OTO
-		}
-}
-}
-
-country_event = { #thegreatrebellion
-	id = kyushuold.11
-	title = kyushuold.11.t
-	desc = kyushuold.11.desc
-	picture = GFX_report_event_jap_imperial_family
-	is_triggered_only = yes
-	option = { 
-		name = kyushuold.11.a
-		ai_chance = {
-			factor = 100
-		}
-   		add_stability = -0.1
-		add_war_support = -0.1
-		OTO = {
-		declare_war_on = {
-		target = KYU
-		type = annex_everything
-		}
-		}
-	}
-option = { 
-		name = kyushuold.11.b
-		ai_chance = {
-			factor = 0
-		}
-   		add_stability = -0.1
-		add_war_support = -0.1
-		OTO = {
-		declare_war_on = {
-		target = KYU
-		type = annex_everything
-		}
-	}
-	OTO = { change_tag_from = KYU }
-}
-}
-
-country_event = { #unitedjuntas
-	id = kyushuold.12
-	title = kyushuold.12.t
-	desc = kyushuold.12.desc
-	picture = GFX_report_event_japanese_army_parade
-	is_triggered_only = yes
-	option = { 
-		name = kyushuold.12.a
-		ai_chance = {
-			factor = 100
-		}
-		add_timed_idea = {
-				idea = KYU_sudden_union
-				days = 365
-			}
-   		annex_country = { target = CHU transfer_troops = yes } 
-			CHU = {
-			every_unit_leader = {
-				set_nationality = KYU
-			}
-		add_stability = 0.1
-		add_war_support = 0.1
-		add_political_power = 100
-                remove_ideas = KYU_begin_navy_unification 
-                remove_ideas = KYU_begin_army_unification 
-                remove_ideas = KYU_begin_political_unification 
-		create_country_leader = {
-	name = "United Juntas"
-	desc = "POLITICS_COUNCIL_DESC"
-	picture = "portrait_kyu_military_junta.dds"
-	expire = "1965.1.1"
-	ideology = oligarchism
-	traits = {
-		united_juntas
-	}
-}
-		hidden_effect = { set_cosmetic_tag = KYU_united_juntas 
-			#UCK
-				UCK = {
-					transfer_state = 120
-					transfer_state = 30
-					transfer_state = 74
-					transfer_state = 100
-					division_template = {
-						name = "UCK Division"
-						priority = 1
-						division_names_group = UCK_INF_01
-						regiments = {
-							infantry = { x = 0 y = 0 }
-							infantry = { x = 0 y = 1 }
-							infantry = { x = 0 y = 2 }
-				
-							infantry = { x = 1 y = 0 }
-							infantry = { x = 1 y = 1 }
-							infantry = { x = 1 y = 2 }
-						}
-						support = {
-							engineer = { x = 0 y = 0 }
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCK Division\" division_template = \"UCK Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCK Division\" division_template = \"UCK Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCK Division\" division_template = \"UCK Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCK Division\" division_template = \"UCK Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCK Division\" division_template = \"UCK Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCK Division\" division_template = \"UCK Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCK Division\" division_template = \"UCK Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCK Division\" division_template = \"UCK Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCK Division\" division_template = \"UCK Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCK Division\" division_template = \"UCK Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCK Division\" division_template = \"UCK Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCK Division\" division_template = \"UCK Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCK Division\" division_template = \"UCK Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCK Division\" division_template = \"UCK Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCK Division\" division_template = \"UCK Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-				}
-				UCK = {
-					declare_war_on = {
-					target = KYU
-					type = annex_everything
-					}
-					set_rule = { can_create_factions = yes }
-					create_faction = United_Clans
-				}
-			#UCC
-				UCC = {
-					transfer_state = 40
-					division_template = {
-						name = "UCC Division"
-						priority = 1
-						division_names_group = UCC_INF_01
-						regiments = {
-							infantry = { x = 0 y = 0 }
-							infantry = { x = 0 y = 1 }
-							infantry = { x = 0 y = 2 }
-				
-							infantry = { x = 1 y = 0 }
-							infantry = { x = 1 y = 1 }
-							infantry = { x = 1 y = 2 }
-						}
-						support = {
-							engineer = { x = 0 y = 0 }
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCC Division\" division_template = \"UCC Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCC Division\" division_template = \"UCC Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCC Division\" division_template = \"UCC Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCC Division\" division_template = \"UCC Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCC Division\" division_template = \"UCC Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCC Division\" division_template = \"UCC Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCC Division\" division_template = \"UCC Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCC Division\" division_template = \"UCC Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCC Division\" division_template = \"UCC Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCC Division\" division_template = \"UCC Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCC Division\" division_template = \"UCC Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCC Division\" division_template = \"UCC Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCC Division\" division_template = \"UCC Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCC Division\" division_template = \"UCC Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-					random_owned_controlled_state = {
-						limit = { PREV = { has_full_control_of_state = PREV } }
-						create_unit = {
-							division = "name = \"UCC Division\" division_template = \"UCC Division\" start_experience_factor = 0.9" 
-							owner = PREV
-						}
-					}
-				}
-				UCC = {
-					declare_war_on = {
-					target = KYU
-					type = annex_everything
-					}
-				}
-				
-				UCC = {
-					UCK = {
-						country_event = { id = generic.2 }
-					}
-				}
-		}
-}
-
-}
-}
-
-country_event = { #elections
-	id = kyushuold.13
-	title = kyushuold.13.t
-	desc = kyushuold.13.desc
-	picture = GFX_report_event_japanese_army_parade
-	is_triggered_only = yes
-	option = { 
-		name = kyushuold.13.a
-		ai_chance = {
-			factor = 50
-		}
-		create_country_leader = {
-	name = "Jisaburo Osawa"
-	desc = "POLITICS_OSAWA_DESC"
-	picture = "Portrait_KYU_Jisaburo_Ozawa.dds"
-	expire = "1965.1.1"
-	ideology = conservatism
-	traits = {
-		gentleman_admiral
-	}
-}
-}
-	option = { 
-		name = kyushuold.13.b
-		ai_chance = {
-			factor = 50
-		}
-		create_country_leader = {
-	name = "Chobyo Yara"
-	desc = "POLITICS_YARA_DESC"
-	picture = "Portrait_KYU_Chobyo_Yara.dds"
-	expire = "1965.1.1"
-	ideology = dem_liberalism
-	traits = {
-		okinawan_exile
-	}
-}
-}
-
-}
-
-country_event = { #yaynay
-	id = kyushuold.14
-	title = kyushuold.14.t
-	desc = kyushuold.14.desc
-	picture = GFX_report_event_chinese_soldiers_01
-	is_triggered_only = yes
-	option = { 
-		name = kyushuold.14.a
-		ai_chance = {
-			factor = 100
-		}
-	KYU = { 
-			transfer_state = 140
-		add_timed_idea = { idea = KYU_nagasaki_payments days = 180 }	 
-		}
-news_event = { id = SSnews.23 days = 2 } 
-}
-	option = { 
-		name = kyushuold.14.b
-		ai_chance = {
-			factor = 0
-		}
-KYU = {	declare_war_on = {
-			type = annex_everything
-			target = PRT
-		}
-	}
-news_event = { id = SSnews.24 days = 2 } 
-}
-
-}
-
-country_event = { #yaynay
-	id = kyushuold.15
-	title = kyushuold.15.t
-	desc = kyushuold.15.desc
-	picture = GFX_report_event_chinese_soldiers_01
-	is_triggered_only = yes
-	option = { 
-		name = kyushuold.15.a
-		ai_chance = {
-			factor = 100
-		}
-add_stability = 0.05
-add_war_support = -0.05
-}
-
-	option = { 
-		name = kyushuold.15.b
-		ai_chance = {
-			factor = 100
-		}
-AMC = {	declare_war_on = {
-			type = annex_everything
-			target = KYU
-		}
-	}
-OKI = {	declare_war_on = {
-			type = annex_everything
-			target = KYU
-		}
-	}
-}
-
-}
-
-country_event = {
-	id = kyushuold.16
-	title = kyushuold.16.t
-	desc = kyushuold.16.desc
-	picture = GFX_report_event_generic_sign_treaty1
-	
-	is_triggered_only = yes
-	
-	option = { #sure
-		name = kyushuold.16.a
-		ai_chance = {
-			factor = 80
-		}
-		KYU = {
-			add_to_faction = ROOT
 		}
 	}
 	
-	option = { #no
-		name = kyushuold.16.b
-		ai_chance = {
-			factor = 20
-		}
-    	add_stability = 0.1
-		add_war_support = 0.1
-		add_political_power = 50
+	option = {
+		name = kyushu.1000.a
+		custom_effect_tooltip = kyushu.1000.t
 	}
-}
 
-country_event = {
-	id = kyushuold.17
-	title = kyushuold.17.t
-	desc = kyushuold.17.desc
-	picture = GFX_report_event_generic_sign_treaty1
-	
-	is_triggered_only = yes
-	
-	option = { #sure
-		name = kyushuold.17.a
-		ai_chance = {
-			factor = 80
-		}
-		HIR = {
-			leave_faction = yes
-		}
-	}
-	
-	option = { #no
-		name = kyushuold.17.b
-		ai_chance = {
-			factor = 20
-		}
-		KYU = {
-			declare_war_on = {
-				type = annex_everything
-				target = ROOT
-			}
-		}
-	}
-}
-
-country_event = {
-	id = kyushuold.18
-	title = kyushuold.18.t
-	desc = kyushuold.18.desc
-	picture = GFX_report_event_generic_sign_treaty1
-	
-	is_triggered_only = yes
-	
-	option = { #sure
-		name = kyushuold.18.a
-		ai_chance = {
-			factor = 80
-		}
-		KYU = {
-			transfer_state = 170
-		}
-	}
-	
-	option = { #no
-		name = kyushuold.18.b
-		ai_chance = {
-			factor = 20
-		}
-		KYU = {
-			declare_war_on = {
-				target = ROOT
-				type = annex_everything
-			}
-		}
-	}
 }
