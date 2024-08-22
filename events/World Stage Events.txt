@@ -5859,6 +5859,276 @@ country_event = {
 	}
 }
 
+# PORTUGAL SURRENDER
+country_event = {
+	id = worldstage_surrender.108
+	title = worldstage_surrender.108.t
+	desc = {
+		text = worldstage_surrender.108.d_axis
+		trigger = { 108 = { check_variable = { world_stage_coalition = 3 } } }
+	}
+	desc = {
+		text = worldstage_surrender.108.d_allies1
+		trigger = { 108 = { check_variable = { world_stage_coalition = 1 } } has_country_flag = will_join_allies }
+	}
+	desc = {
+		text = worldstage_surrender.108.d_allies2	# default, no trigger needed
+	}
+	picture = GFX_news_ww2_portugal_capitulates
+
+	is_triggered_only = yes
+
+	major = no	# this is PRT-only
+
+	immediate = {
+		hidden_effect = {
+			# this is mostly copied from .107, but we make a simpler check for initial ideology
+			every_possible_country = { limit = { tag = PRT } set_cosmetic_tag = PRT_CLB }	# CLB: Collaboration Government
+			every_character = {
+				limit = { can_be_country_leader = yes }
+				if = {
+					limit = { 34 = { OR = { check_variable = { theater_owner_coalition = 3 } check_variable = { theater_owner_coalition = 6 } } } }
+					if = { limit = { has_ideology_group = communism } set_character_flag = dual_leader_id_portuguese_junta set_character_flag = dual_leader_second_title_governing_body dual_leader_clear_secondary_leader = yes }
+					if = { limit = { has_ideology_group = democratic } set_character_flag = dual_leader_id_portuguese_junta set_character_flag = dual_leader_second_title_governing_body dual_leader_clear_secondary_leader = yes }
+					if = { limit = { has_ideology_group = democratic_socialism } set_character_flag = dual_leader_id_portuguese_junta set_character_flag = dual_leader_second_title_governing_body dual_leader_clear_secondary_leader = yes }
+					
+				} else = {
+					if = { limit = { has_ideology_group = fascism } set_character_flag = dual_leader_id_hugo_sperrle set_character_flag = dual_leader_second_title_reichskomissar dual_leader_clear_secondary_leader = yes }
+					if = { limit = { has_ideology_group = neutrality } set_character_flag = dual_leader_id_hugo_sperrle set_character_flag = dual_leader_second_title_reichskomissar dual_leader_clear_secondary_leader = yes }
+					if = { limit = { has_ideology_group = autocracy } set_character_flag = dual_leader_id_hugo_sperrle set_character_flag = dual_leader_second_title_reichskomissar dual_leader_clear_secondary_leader = yes }
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = worldstage_surrender.108.a_axis	# fight, prefered human option
+		trigger = {
+			NOT = {
+				34 = { check_variable = { theater_owner_coalition = 2 } }	# Portugal was conquered by Allies or TIAR
+				34 = { check_variable = { theater_owner_coalition = 3 } }
+			}
+			is_subject = no													# puppets don't get to decide
+		}
+		every_possible_country = {
+			limit = { tag = PRT }
+			custom_effect_tooltip = lose_access_to_trade_resources_nagasaki
+			clr_country_flag = tc_nagasaki_has_access
+		}
+		hidden_effect = {
+			if = {
+				limit = { country_exists = PRT }
+				country_event = worldstage_surrender.1081
+			}
+		}
+		ai_chance = { base = 0 } log = "PORTUGAL SURRENDER! option: worldstage_surrender.108.a	# fight, prefered human option"
+	}
+	option = {
+		name = worldstage_surrender.108.a_axis	# fight, prefered human option
+		trigger = {
+			34 = { check_variable = { theater_owner_coalition = 2 } }	# Netherlands was conquered by Comintern	# I'm not sure it needs a separated option, I'll keep it here just in case...
+			is_subject = no												# puppets don't get to decide
+		}
+		every_possible_country = {
+			limit = { tag = PRT }
+			custom_effect_tooltip = lose_access_to_trade_resources_nagasaki
+			clr_country_flag = tc_nagasaki_has_access
+		}
+		hidden_effect = {
+			if = {
+				limit = { country_exists = PRT }
+				country_event = worldstage_surrender.1081
+			}
+		}
+		ai_chance = { base = 0 } log = "PORTUGAL SURRENDER! option: worldstage_surrender.108.a	# fight, prefered human option"
+	}
+	option = {
+		name = worldstage_surrender.108.b_axis	# surrender, prefered AI option
+		trigger = {
+			NOT = {
+				34 = { check_variable = { theater_owner_coalition = 2 } }	# Netherlands was conquered by Allies or TIAR
+				34 = { check_variable = { theater_owner_coalition = 3 } }
+			}
+			is_subject = no													# puppets don't get to decide
+		}
+		hidden_effect = { if = { limit = { is_in_faction = yes } leave_faction = yes } }			# the faction here SHOULD be the Allies. Let's hope for the best
+		ALY = {
+			set_temp_variable = { new_ideology = current_party_ideology_group }
+		}
+		every_possible_country = {
+			limit = { tag = PRT }
+			set_politics = {
+				ruling_party = var:new_ideology?democratic
+				elections_allowed = no
+				last_election = "1939.09.1"
+				election_frequency = 48
+			}
+			add_ideas = SS_restricted_foreign_policy
+		}
+		hidden_effect = {
+			if = {
+				limit = { country_exists = PRT }
+				country_event = worldstage_surrender.1082
+				add_ai_strategy = {
+					type = alliance
+					id = ALY
+					value = 50
+				}
+				every_other_country = {
+					limit = { has_country_flag = is_not_japan }
+					PRT = {
+						add_ai_strategy = {
+							type = alliance
+							id = PREV
+							value = -100
+						}
+					}
+				}
+			}
+		}	
+		if = {
+			limit = { country_exists = PRT country_exists = ALY }
+			ALY = {
+				white_peace = {
+					tag = PRT
+					message = worldstage_surrender.108.whitepeace
+				}
+				add_to_faction = PRT
+			}
+			set_country_flag = lost_original_focus_tree load_focus_tree = generic_focus
+		}
+		ai_chance = { base = 100 } log = "PORTUGAL SURRENDER, option: worldstage_surrender.108.b	# surrender, prefered AI option"
+	}
+	option = {
+		name = worldstage_surrender.108.b_axis	# surrender, prefered AI option
+		trigger = {
+			34 = { check_variable = { theater_owner_coalition = 2 } }		# Portugal was conquered by Comintern
+			is_subject = no													# puppets don't get to decide
+		}
+		hidden_effect = { if = { limit = { is_in_faction = yes } leave_faction = yes } }			# the faction here SHOULD be the Allies. Let's hope for the best
+		COM = {
+			set_temp_variable = { new_ideology = current_party_ideology_group }
+		}
+		every_possible_country = {
+			limit = { tag = PRT }
+			set_politics = {
+				ruling_party = var:new_ideology?communism
+				elections_allowed = no
+				last_election = "1939.09.1"
+				election_frequency = 48
+			}
+			add_ideas = SS_restricted_foreign_policy
+		}
+		hidden_effect = {
+			if = {
+				limit = { country_exists = PRT }
+				country_event = worldstage_surrender.1082
+				add_ai_strategy = {
+					type = alliance
+					id = COM
+					value = 50
+				}
+				every_other_country = {
+					limit = { has_country_flag = is_not_japan }
+					PRT = {
+						add_ai_strategy = {
+							type = alliance
+							id = PREV
+							value = -100
+						}
+					}
+				}
+			}
+		}	
+		if = {
+			limit = { country_exists = PRT country_exists = COM }
+			COM = {
+				white_peace = {
+					tag = PRT
+					message = worldstage_surrender.108.whitepeace
+				}
+				add_to_faction = PRT
+			}
+			set_country_flag = lost_original_focus_tree load_focus_tree = generic_focus
+		}
+		ai_chance = { base = 100 } log = "PORTUGAL SURRENDER, option: worldstage_surrender.108.b	# surrender, prefered AI option"
+	}
+}
+
+# NAGASAKI DOES NOT SURRENDER
+country_event = {
+	id = worldstage_surrender.1081
+	title = worldstage_surrender.1081.t
+	desc = {
+		text = worldstage_surrender.1081.d1
+		trigger = { NOT = { PRT = { has_government = autocracy } } }
+	}
+	desc = {
+		text = worldstage_surrender.1081.d2
+		trigger = { PRT = { has_government = autocracy } }
+	}
+	picture = GFX_news_ww2_portugal_treaty_wide
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	option = {
+		name = worldstage_surrender.1081.PRT
+		trigger = { tag = PRT }
+	}
+	option = {
+		name = worldstage_surrender.1081.friend
+		trigger = { is_in_faction_with = PRT NOT = { tag = PRT } }
+	}
+	option = {
+		name = worldstage_surrender.1081.enemy
+		trigger = { has_war_with = PRT NOT = { tag = PRT } }
+	}
+	option = {
+		name = worldstage_surrender.1081.other
+		trigger = { NOT = { is_in_faction_with = PRT has_war_with = PRT TAG = PRT } }
+	}
+}
+
+# NAGASAKI SURRENDERS
+country_event = {
+	id = worldstage_surrender.1082
+	title = worldstage_surrender.1082.t
+	desc = {
+		text = worldstage_surrender.1082.d1
+		trigger = { NOT = { PRT = { has_government = autocracy } } }
+	}
+	desc = {
+		text = worldstage_surrender.1082.d2
+		trigger = { PRT = { has_government = autocracy } }
+	}
+	picture = GFX_news_ww2_portugal_treaty_wide
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	option = {
+		name = worldstage_surrender.1082.PRT
+		trigger = { tag = PRT }
+	}
+	option = {
+		name = worldstage_surrender.1082.friend
+		trigger = { is_in_faction_with = PRT NOT = { tag = PRT } }
+	}
+	option = {
+		name = worldstage_surrender.1082.enemy
+		trigger = { has_war_with = PRT NOT = { tag = PRT } }
+	}
+	option = {
+		name = worldstage_surrender.1082.other
+		trigger = { NOT = { is_in_faction_with = PRT has_war_with = PRT TAG = PRT } }
+	}
+}
+
+
+
 ########################################################################
 ############################ worldstage_end ############################
 ########################################################################
