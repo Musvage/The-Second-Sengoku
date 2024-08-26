@@ -774,6 +774,10 @@ news_event = {
 			102 = { set_state_flag = worldstage_AI_active } # england
 			103 = { set_state_flag = worldstage_AI_active } # france
 			109 = { set_state_flag = worldstage_AI_active } # italy
+			if = {
+				limit = { OR = { has_global_flag = blitzkrieg_invade_netherlands HIR = { has_country_flag = will_join_axis } HIR = { has_country_flag = will_join_allies } } }
+				107 = { set_state_flag = worldstage_AI_active } # netherlands
+			}
 			set_global_flag = blitzkrieg_happened
 		}
 	}
@@ -1023,6 +1027,166 @@ country_event = {
 			every_country = { limit = { NOT = { tag = KOB } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = 0.05 }
 		}
 	}
+}
+
+# NETHERLANDS: SUCCESSFUL SURPRISE ATTACK
+country_event = {
+	id = worldstage.27
+	title = worldstage.27.t
+	desc = worldstage.27.d 
+	picture = GFX_news_ww2_netherlands_capitulates
+	
+	is_triggered_only = yes
+
+	major = yes show_major = { NOT = { has_country_flag = hide_worldstage_notification } }
+	
+	option = {
+		name = worldstage.27.axis
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		effect_tooltip = {
+			custom_effect_tooltip = theater_scope_netherlands
+			add_to_variable = {
+				27.attacker_strategic_advantage = 2
+				tooltip = world_stage_add_strategic_advantage_attacker
+			}
+		}
+	}
+	option = {
+		name = worldstage.27.komin
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+		effect_tooltip = {
+			custom_effect_tooltip = theater_scope_netherlands
+			add_to_variable = {
+				27.attacker_strategic_advantage = 2
+				tooltip = world_stage_add_strategic_advantage_attacker_neutral
+			}
+		}
+	}
+	option = {
+		name = worldstage.27.hir
+		trigger = {
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
+			tag = HIR
+		}
+		effect_tooltip = {
+			custom_effect_tooltip = theater_scope_netherlands
+			add_to_variable = {
+				27.attacker_strategic_advantage = 2
+				tooltip = world_stage_add_strategic_advantage_attacker_bad
+			}
+		}
+	}
+	option = {
+		name = worldstage.27.allies
+		trigger = {
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
+			NOT = { tag = KOB }
+		}
+		effect_tooltip = {
+			custom_effect_tooltip = theater_scope_netherlands
+			add_to_variable = {
+				27.attacker_strategic_advantage = 2
+				tooltip = world_stage_add_strategic_advantage_attacker_bad
+			}
+		}
+	}
+	option = {
+		name = worldstage.27.other
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
+		effect_tooltip = {
+			custom_effect_tooltip = theater_scope_netherlands
+			add_to_variable = {
+				27.attacker_strategic_advantage = 2
+				tooltip = world_stage_add_strategic_advantage_attacker_neutral
+			}
+		}
+	}
+}
+
+# NETHERLANDS: SURPRISE ATTACK FAILS!
+country_event = {
+	id = worldstage.28
+	title = worldstage.28.t
+	desc = worldstage.28.d 
+	picture = GFX_news_ww2_netherlands_soldiers_west
+	
+	immediate = {
+		hidden_effect = {
+			set_temp_variable = { homeland_defence_bonus = 2 }
+			multiply_temp_variable = { homeland_defence_bonus = 107.homeland_defence }
+			divide_variable = {
+				27.attacker_strategic_advantage = homeland_defence_bonus
+			}
+		}
+	}
+	
+	option = {
+		name = worldstage.28.axis
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		effect_tooltip = {
+			custom_effect_tooltip = theater_scope_netherlands
+			custom_effect_tooltip = worldstage.28.special_bad
+			add_to_variable = {
+				27.attacker_strategic_advantage = 27.attacker_strategic_advantage
+				tooltip = world_stage_add_strategic_advantage_attacker
+			}
+		}
+	}
+	option = {
+		name = worldstage.28.komin
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+		effect_tooltip = {
+			custom_effect_tooltip = theater_scope_netherlands
+			custom_effect_tooltip = worldstage.28.special_neutral
+			add_to_variable = {
+				27.attacker_strategic_advantage = 27.attacker_strategic_advantage
+				tooltip = world_stage_add_strategic_advantage_attacker_neutral
+			}
+		}
+	}
+	option = {
+		name = worldstage.28.hir
+		trigger = {
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
+			tag = HIR
+		}
+		effect_tooltip = {
+			custom_effect_tooltip = theater_scope_netherlands
+			custom_effect_tooltip = worldstage.28.special_good
+			add_to_variable = {
+				27.attacker_strategic_advantage = 27.attacker_strategic_advantage
+				tooltip = world_stage_add_strategic_advantage_attacker_bad
+			}
+		}
+	}
+	option = {
+		name = worldstage.28.allies
+		trigger = {
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
+			NOT = { tag = KOB }
+		}
+		effect_tooltip = {
+			custom_effect_tooltip = theater_scope_netherlands
+			custom_effect_tooltip = worldstage.28.special_good
+			add_to_variable = {
+				27.attacker_strategic_advantage = 27.attacker_strategic_advantage
+				tooltip = world_stage_add_strategic_advantage_attacker_bad
+			}
+		}
+	}
+	option = {
+		name = worldstage.28.other
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
+		effect_tooltip = {
+			custom_effect_tooltip = theater_scope_netherlands
+			custom_effect_tooltip = worldstage.28.special_neutral
+			add_to_variable = {
+				27.attacker_strategic_advantage = 27.attacker_strategic_advantage
+				tooltip = world_stage_add_strategic_advantage_attacker_neutral
+			}
+		}
+	}
+	
 }
 
 # HIDDEN EVENT Barbarossa!

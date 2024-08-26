@@ -1564,10 +1564,40 @@ focus_tree = {
 		
 		ai_will_do = { factor = 10 }
 		
+		available = {
+			NOT = {
+				if = {
+					limit = { has_global_flag = league_of_nations_exists }
+					has_war_with = LON
+					has_war_with = STL
+				} else = {
+					has_war_with = ALY
+					has_war_with = AXS
+				}
+			}
+			OR = {
+				has_global_flag = world_stage_phoney_war_rages_on
+				NOT = { has_global_flag = world_stage_world_war_2_happened }
+				if = {
+					limit = { REI = { focus_progress = { focus = REI_blitzkrieg > 0 } } }
+					REI = { focus_progress = { focus = REI_blitzkrieg < 0.9 } }
+				} else = {
+					NOT = { REI = { has_completed_focus = REI_blitzkrieg } }
+				}
+			}
+			world_stage_has_capitulated = no
+		}
+		
 		completion_reward = {
 			add_stability = 0.1
 			add_ideas = HIR_european_neutrlaity_self_spirit
 			news_event = hirado.1
+			hidden_effect = {
+				if = {
+					limit = { REI = { focus_progress = { focus = REI_blitzkrieg > 0 } } }
+					news_event = hirado.15
+				}
+			}
 			hidden_effect = {
 				every_possible_country = {
 					limit = { is_trade_city = yes NOT = { tag = HIR } }
@@ -1602,6 +1632,14 @@ focus_tree = {
 			OR = {
 				has_government = democratic
 				has_government = democratic_socialism
+			}
+			NOT = {
+				if = {
+					limit = { has_global_flag = league_of_nations_exists }
+					has_war_with = LON
+				} else = {
+					has_war_with = ALY
+				}
 			}
 			world_stage_has_capitulated = no
 		}
@@ -1683,6 +1721,11 @@ focus_tree = {
 				custom_effect_tooltip = will_join_allies_tt
 				news_event = hirado.4
 			}
+			multiply_variable = {
+				var = 107.homeland_defence
+				value = 2
+			}
+			custom_effect_tooltip = homeland_defence_tt
 		}
 	}
 	
@@ -1721,6 +1764,11 @@ focus_tree = {
 				value = 5
 				tooltip = add_world_stage_power_no_scope_tt
 			}
+			multiply_variable = {
+				var = 107.homeland_defence
+				value = 2
+			}
+			custom_effect_tooltip = homeland_defence_tt
 		}
 	}
 	
@@ -2595,6 +2643,14 @@ focus_tree = {
 		
 		available = {
 			world_stage_has_capitulated = no
+			NOT = {
+				if = {
+					limit = { has_global_flag = league_of_nations_exists }
+					has_war_with = STL
+				} else = {
+					has_war_with = AXS
+				}
+			}
 		}
 		
 		bypass = { has_world_stage_coalition_axis = yes }
@@ -2624,6 +2680,7 @@ focus_tree = {
 			}
 			custom_effect_tooltip = unlock_characters_tt
 			show_ideas_tooltip = HIR_luis_ferdinand
+			set_global_flag = blitzkrieg_ignore_netherlands	# this is mainly for the correct requirement for REI's blitzkrieg
 		}
 	}
 	
