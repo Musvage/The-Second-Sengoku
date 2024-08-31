@@ -3072,7 +3072,7 @@ focus_tree = {
 		id = FER_pressure_fins
 		icon = GFX_goal_generic_dangerous_deal
 		cost = 5
-		x = -1
+		x = -2
 		y = 1
 		ai_will_do = {
 			base = 0
@@ -3116,15 +3116,15 @@ focus_tree = {
 		id = FER_soviet_finnish_war
 		icon = GFX_goal_generic_war_with_comintern
 		cost = 10
-		x = -1
-		y = 2
+		x = 0
+		y = 1
 		ai_will_do = {
 			base = 0
 			modifier = {
 				add = var:AI_focus_count_A_priority
 			}
 		}
-		relative_position_id = FER_soviet_expansion_in_europe
+		relative_position_id = FER_pressure_fins
 		search_filters = { FOCUS_FILTER_WORLD FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WAR_SUPPORT }
 		text_icon = worldstage_style
 		prerequisite = { 
@@ -3197,7 +3197,7 @@ focus_tree = {
 		id = FER_soviet_diplomacy_in_baltic
 		icon = GFX_goal_generic_intelligence_exchange
 		cost = 5
-		x = 1
+		x = 0
 		y = 1
 		ai_will_do = {
 			base = 0
@@ -3229,15 +3229,15 @@ focus_tree = {
 		id = FER_annex_batlic_states
 		icon = GFX_goal_generic_forceful_treaty
 		cost = 10
-		x = 1
-		y = 2
+		x = 0
+		y = 1
 		ai_will_do = {
 			base = 0
 			modifier = {
 				add = var:AI_focus_count_A_priority
 			}
 		}
-		relative_position_id = FER_soviet_expansion_in_europe
+		relative_position_id = FER_soviet_diplomacy_in_baltic
 		search_filters = { FOCUS_FILTER_WORLD FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WAR_SUPPORT }
 		prerequisite = { 
 			focus = FER_soviet_diplomacy_in_baltic
@@ -3286,7 +3286,153 @@ focus_tree = {
 			}
 		}
 	}
+	
+	focus = {
+		id = FER_help_spanish_republica 
+		icon = GFX_focus_PRT_help_republica
+		search_filters = { FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_WORLD }
+		
+		ai_will_do = { factor = 0 }
+		
+		available = {
+			OR = { has_government = communism has_government = democratic_socialism }
+			has_global_flag = world_stage_theater_spanish_cw_is_active
+		}
+		
+		bypass = {
+			has_global_flag = world_stage_theater_spanish_cw_is_over
+			OR = { has_government = communism has_government = democratic_socialism }
+		}
+		
+		text_icon = worldstage_style
 
+		prerequisite = { focus = FER_soviet_expansion_in_europe }
+		relative_position_id = FER_soviet_expansion_in_europe
+		x = 2
+		y = 1
+
+		cost = 10
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_war_support = 0.05
+			hidden_effect = {
+				set_temp_variable = { bonus_to_republica = 1 }
+				set_temp_variable = { bonus_to_xp = 2.5 }
+				if = { limit = { 35 = { has_state_flag = theater_is_active } } add_to_temp_variable = { bonus_to_xp = 2.5 } subtract_from_temp_variable = { bonus_to_republica = 0.25 } }
+			}
+			custom_effect_tooltip = theater_scope_madrid
+			if = {
+				limit = { 35 = { has_state_flag = theater_is_active } }
+				if = {
+					limit = { var:world_stage_metropolis = { check_variable = { 35.coalition_side_attack = 8 } } }
+					add_to_variable = {
+						35.defender_strategic_advantage = bonus_to_republica
+						tooltip = world_stage_add_strategic_advantage_attacker
+					}
+				} else = {
+					add_to_variable = {
+						35.defender_strategic_advantage = bonus_to_republica
+						tooltip = world_stage_add_strategic_advantage_defender
+					}
+				}
+			} else = { custom_effect_tooltip = world_stage_possibly_reinforce_here }
+			custom_effect_tooltip = theater_scope_zaragoza
+			if = {
+				limit = { 36 = { has_state_flag = theater_is_active } }
+				if = {
+					limit = { var:world_stage_metropolis = { check_variable = { 36.coalition_side_attack = 8 } } }
+					add_to_variable = {
+						36.defender_strategic_advantage = bonus_to_republica
+						tooltip = world_stage_add_strategic_advantage_attacker
+					}
+				} else = {
+					add_to_variable = {
+						36.defender_strategic_advantage = bonus_to_republica
+						tooltip = world_stage_add_strategic_advantage_defender
+					}
+				}
+			} else = { custom_effect_tooltip = world_stage_possibly_reinforce_here }
+			custom_effect_tooltip = theater_scope_barcelona
+			if = {
+				limit = { 37 = { has_state_flag = theater_is_active } }
+				if = {
+					limit = { var:world_stage_metropolis = { check_variable = { 37.coalition_side_attack = 8 } } }
+					add_to_variable = {
+						37.defender_strategic_advantage = bonus_to_republica
+						tooltip = world_stage_add_strategic_advantage_attacker
+					}
+				} else = {
+					add_to_variable = {
+						37.defender_strategic_advantage = bonus_to_republica
+						tooltip = world_stage_add_strategic_advantage_defender
+					}
+				}
+			} else = { custom_effect_tooltip = world_stage_possibly_reinforce_here }
+			if = {
+				limit = { check_variable = { bonus_to_xp > 3 } }
+				army_experience = bonus_to_xp
+				navy_experience = bonus_to_xp
+				air_experience = bonus_to_xp
+			} else = {
+				army_experience = 5
+				navy_experience = 5
+				air_experience = 5
+			}
+		}
+	}
+	
+	focus = {
+		id = FER_help_spanish_republica_2 
+		icon = GFX_focus_generic_exiled_republican_officers
+		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_RESEARCH }
+		
+		ai_will_do = { factor = 0 }
+		
+		available = {
+			OR = { has_government = communism has_government = democratic_socialism }
+			has_global_flag = world_stage_theater_spanish_cw_falange_won
+		}
+		
+		prerequisite = { focus = FER_help_spanish_republica }
+		relative_position_id = FER_help_spanish_republica
+		x = 0
+		y = 1
+
+		cost = 10
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			# add Spanish commanders
+			add_doctrine_cost_reduction = {
+				name = land_doc_bonus
+				cost_reduction = 0.33
+				uses = 1
+				category = land_doctrine
+			}
+			add_doctrine_cost_reduction = {
+				name = air_doc_bonus				
+				cost_reduction = 0.33
+				uses = 1
+				category = air_doctrine
+			}
+			add_doctrine_cost_reduction = {
+				name = naval_doc_bonus
+				cost_reduction = 0.33
+				uses = 1
+				category = naval_doctrine
+			}
+			if = {
+				limit = { NOT = { has_global_flag = republican_exiles_arrived } }
+				custom_effect_tooltip = spanish.1.trigger
+				news_event = spanish.1
+			}
+		}
+	}
+
+	# next two are currently depricated
 	focus = {
 		id = FER_pressure_romania
 		icon = GFX_goal_generic_dangerous_deal
