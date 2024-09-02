@@ -602,16 +602,68 @@ news_event = {	# plan Z
 country_event = {	# neutrality in Europe (GER event) / triggered when starting focus for Blitz or, while completing it, HIR does the neutrality focus
 	id = hirado.15
 	title = hirado.15.t
-	desc = hirado.15.d
+	desc = {
+		trigger = { HIR = { NOT = { has_completed_focus = HIR_reafirm_european_neutrality  has_completed_focus = HIR_align_england } } }
+		text = hirado.15.d1
+	}
+	desc = {
+		trigger = { HIR = { has_completed_focus = HIR_reafirm_european_neutrality } }
+		text = hirado.15.d2
+	}
+	desc = {
+		trigger = { HIR = { has_completed_focus = HIR_align_england } }
+		text = hirado.15.d3
+	}
 	picture = GFX_news_europe_netherlands
 	
 	option = {
+		trigger = { NOT = { HIR = { has_completed_focus = HIR_align_england } } }
 		name = hirado.15.a
 		custom_effect_tooltip = hirado.15.tt1
 		set_global_flag = blitzkrieg_ignore_netherlands
 	}
 	option = {
-		name = hirado.15.a
+		trigger = { NOT = { HIR = { has_completed_focus = HIR_align_england } } }
+		name = hirado.15.b
+		custom_effect_tooltip = hirado.15.tt2
+		set_global_flag = blitzkrieg_invade_netherlands
+		if = {
+			limit = { HIR = { has_completed_focus = HIR_reafirm_european_neutrality } }
+			add_political_power = -150
+			if = {
+				limit = { has_government = autocracy }
+				add_country_leader_trait = REI_untrustworthy_leader
+			} else = {
+				hidden_effect = {
+					every_character = {
+						limit = {
+							can_be_country_leader = yes
+							NOT = { is_character = REI_wilhelm_iii is_character = REI_august_hohenzollern }
+						}
+						set_character_flag = REI_untrustworthy_leader_secondary
+					}
+				}
+				effect_tooltip = {
+					every_character = {
+						limit = { OR = { is_character = REI_adolf_hitler is_character = REI_august_von_mackensen is_character = REI_hermann_goring is_character = REI_werner_blomberg is_character = REI_friedrich_von_schellendorf is_character = REI_alfred_rosenberg } }
+					}
+					add_country_leader_trait = REI_untrustworthy_leader
+				}
+			}
+			hidden_effect = {
+				every_possible_country = {
+					limit = { NOT = { has_opinion_modifier = REI_untrustworthy_leader_modifier tag = REI } }
+					add_opinion_modifier = {
+						target = REI
+						modifier = REI_untrustworthy_leader_modifier
+					}
+				}
+			}
+		}
+	}
+	option = {
+		trigger = { HIR = { has_completed_focus = HIR_align_england } }
+		name = hirado.15.c
 		custom_effect_tooltip = hirado.15.tt2
 		set_global_flag = blitzkrieg_invade_netherlands
 	}
