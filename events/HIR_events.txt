@@ -619,13 +619,28 @@ country_event = {	# neutrality in Europe (GER event) / triggered when starting f
 	is_triggered_only = yes
 	
 	option = {
-		trigger = { NOT = { HIR = { has_completed_focus = HIR_align_england } } }
+		trigger = { NOT = { HIR = { has_completed_focus = HIR_align_england } } }	# Do not attack Netherlands
 		name = hirado.15.a
 		custom_effect_tooltip = hirado.15.tt1
 		set_global_flag = blitzkrieg_ignore_netherlands
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 2
+				HIR = { OR = { has_government = neutrality has_government = fascism has_government = autocracy } }
+			}
+			modifier = {
+				factor = 2
+				has_opinion = { target = HIR value > 49.9 }
+			}
+			modifier = {
+				factor = 2
+				is_guaranteed_by = HIR
+			}
+		}
 	}
 	option = {
-		trigger = { NOT = { HIR = { has_completed_focus = HIR_align_england } } }
+		trigger = { NOT = { HIR = { has_completed_focus = HIR_align_england } } }	# Attack Netherlands
 		name = hirado.15.b
 		custom_effect_tooltip = hirado.15.tt2
 		set_global_flag = blitzkrieg_invade_netherlands
@@ -659,6 +674,24 @@ country_event = {	# neutrality in Europe (GER event) / triggered when starting f
 						target = REI
 						modifier = REI_untrustworthy_leader_modifier
 					}
+				}
+			}
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 2
+				has_opinion = { target = HIR value < 0 }
+			}
+			modifier = {
+				factor = 0
+				has_guaranteed = HIR
+			}
+			modifier = {
+				factor = 0
+				strength_ratio = {
+					tag = HIR
+					ratio < 1
 				}
 			}
 		}

@@ -96,11 +96,13 @@ country_event = {	# Choose a Pretender to the Throne
 		name = kyushu.5.a
 		add_ideas = KYU_pretender_nashimoto_morimasa_spirit
 		hidden_effect = { country_event = kyushu.6 }
+		ai_chance = { factor = 1 }
 	}
 	option = {	# Kuni Asaakira
 		name = kyushu.5.b		
 		add_ideas = KYU_pretender_kuni_asaakira_spirit
 		hidden_effect = { country_event = kyushu.7 }
+		ai_chance = { factor = 1 }
 	}
 }
 
@@ -269,6 +271,13 @@ country_event = {	# Nagano Invited (PRO event)
 			1 = { custom_effect_tooltip = kyushu.12.tt_few_ships KYU = { set_global_flag = nagano_few_ships } }
 			2 = { custom_effect_tooltip = kyushu.12.tt_no_ships }
 		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = var:difficulty
+				KYU = { is_ai = no }
+			}
+		}
 	}
 	option = {
 		name = kyushu.12.b
@@ -277,6 +286,9 @@ country_event = {	# Nagano Invited (PRO event)
 			1 = { custom_effect_tooltip = kyushu.12.tt_many_ships KYU = { set_global_flag = nagano_many_ships } }
 			1 = { custom_effect_tooltip = kyushu.12.tt_few_ships KYU = { set_global_flag = nagano_few_ships } }
 			1 = { custom_effect_tooltip = kyushu.12.tt_no_ships }
+		}
+		ai_chance = {
+			factor = 1
 		}
 	}
 }
@@ -902,12 +914,54 @@ country_event = {	# Solomonic Solution (MUS/SUS event)
 			}
 		}
 		add_named_threat = { name = kyushu_ceded_okinawa threat = -1 }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 2
+				has_war = yes
+			}
+			modifier = {
+				factor = 2
+				KYU = { has_idea = all_internationally_recognised }
+			}
+			modifier = {
+				factor = 4
+				has_opinion = { target = HIR value > 49.9 }
+			}
+			modifier = {
+				factor = 4
+				strength_ratio = {
+					tag = KYU
+					ratio < 1
+				}
+			}
+			modifier = {
+				factor = 4
+				MUS = { OR = { has_government = democratic has_government = democratic_socialism } }
+				KYU = { OR = { has_government = democratic has_government = democratic_socialism } }
+			}
+		}
 	}
 	option = {
 		trigger = { tag = MUS }
 		name = kyushu.200.b	# Refuse
 		KYU = { country_event = { id = kyushu.202 hours = 24 } }
 		add_named_threat = { name = kyushu_denied_okinawa threat = 1 }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = var:difficulty
+				KYU = { is_ai = no }
+			}
+			modifier = {
+				factor = 2
+				KYU = { has_war = yes }
+			}
+			modifier = {
+				factor = 0.1
+				tag = OKI	# AMC is more likely to give up Okinawa than... Okinawa is willing to give up Okinawa
+			}
+		}
 	}
 	option = {
 		trigger = { tag = SUS }
@@ -1186,10 +1240,59 @@ country_event = {	# Demand Okinawa (MUS/SUS event)
 				}
 			}
 		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 4
+				has_war = yes
+			}
+			modifier = {
+				factor = 2
+				KYU = { has_idea = all_internationally_recognised }
+			}
+			modifier = {
+				factor = 2
+				has_opinion = { target = HIR value > 49.9 }
+			}
+			modifier = {
+				factor = 4
+				strength_ratio = {
+					tag = KYU
+					ratio < 1
+				}
+			}
+			modifier = {
+				factor = 2
+				MUS = { OR = { has_government = democratic has_government = democratic_socialism } }
+				KYU = { OR = { has_government = democratic has_government = democratic_socialism } }
+			}
+		}
 	}
 	option = {
 		trigger = { tag = MUS }	# Refuse
 		name = kyushu.206.b
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = var:difficulty
+				KYU = { is_ai = no }
+			}
+			modifier = {
+				factor = 4
+				KYU = { has_war = yes }
+			}
+			modifier = {
+				factor = 4
+				OR = {
+					KYU = { has_country_leader_with_trait = scaramouch_leader }
+					KYU = { has_country_leader_with_trait = buffoon_leader }
+				}
+			}
+			modifier = {
+				factor = 0.1
+				tag = OKI	# AMC is more likely to give up Okinawa than... Okinawa is willing to give up Okinawa
+			}
+		}
 	}
 	option = {
 		trigger = { tag = SUS }	# no action allowed
@@ -1236,6 +1339,25 @@ country_event = {	# Demand Okinawa: Refused (KYU event)
 			generator = { 42 141 142 144 }
 		}
 		hidden_effect = { MUS = { country_event = kyushu.209 } }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 4
+				MUS = { has_war = yes }
+			}
+			modifier = {
+				factor = 4
+				strength_ratio = { tag = MUS ratio > 1 }
+			}
+			modifier = {
+				factor = 2
+				strength_ratio = { tag = SUS ratio > 1 }
+			}
+			modifier = {
+				factor = var:difficulty
+				MUS = { is_ai = no }
+			}
+		}
 	}
 	option = {
 		name = kyushu.208.b	# back down	# THIS IS THE SAME CODE AS SS_UNIFICATION_EVENTS.TXT, unification.22, but loses war support instead
@@ -1256,6 +1378,21 @@ country_event = {	# Demand Okinawa: Refused (KYU event)
 			}
 		}
 		hidden_effect = { MUS = { country_event = kyushu.210 } }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 4
+				has_war = yes
+			}
+			modifier = {
+				factor = 4
+				strength_ratio = { tag = MUS ratio < 1 }
+			}
+			modifier = {
+				factor = 2
+				strength_ratio = { tag = SUS ratio < 1 }
+			}
+		}
 	}
 }
 
