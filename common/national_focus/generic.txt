@@ -4532,6 +4532,10 @@ focus_tree = {
 			x = 1 y = 0
 			trigger = { tag = PRT }
 		}
+		offset = {
+			x = -2 y = 0
+			trigger = { tag = KOB }
+		}
 		
 		available_if_capitulated = yes
 		
@@ -4675,9 +4679,9 @@ focus_tree = {
 		text_icon = worldstage_style
 		
 		allow_branch = {
-			OR = { tag = REI tag = PRT tag = OSA tag = KOB tag = FER tag = KIT tag = SPR }
+			OR = { tag = REI tag = PRT tag = OSA tag = FER tag = KIT tag = SPR }
 			NOT = { has_country_flag = lost_original_focus_tree } # this is related to World Stage
-			NOT = { tag = AMC tag = OKI tag = HIR }
+			NOT = { tag = AMC tag = OKI tag = HIR tag = KOB }
 		}
 
 		ai_will_do = {
@@ -4936,6 +4940,193 @@ focus_tree = {
 				limit = { is_in_faction_with = KOB}
 				add_war_support = 0.05
 			}
+		}
+	}
+	
+	focus = {
+		id = KOB_help_spanish_republica 
+		icon = GFX_focus_PRT_help_republica
+		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_WORLD }
+		
+		ai_will_do = { factor = 0 }
+		
+		available = {
+			NOT = { has_government = fascism has_government = autocracy has_government = neutrality }
+			has_global_flag = world_stage_theater_spanish_cw_is_active
+		}
+		
+		allow_branch = { tag = KOB }
+		
+		text_icon = worldstage_style
+		
+		prerequisite = { focus = ss_generic_government_freedoms }
+		relative_position_id = ss_generic_government_freedoms
+		x = 1
+		y = 1
+
+		cost = 10
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_war_support = 0.05
+			hidden_effect = {
+				set_temp_variable = { bonus_to_republica = 1 }
+				set_temp_variable = { bonus_to_xp = 2.5 }
+				if = { limit = { 35 = { has_state_flag = theater_is_active } } add_to_temp_variable = { bonus_to_xp = 2.5 } subtract_from_temp_variable = { bonus_to_republica = 0.25 } }
+			}
+			custom_effect_tooltip = theater_scope_madrid
+			if = {
+				limit = { 35 = { has_state_flag = theater_is_active } }
+				if = {
+					limit = { var:world_stage_metropolis = { check_variable = { 35.coalition_side_attack = 8 } } }
+					add_to_variable = {
+						35.defender_strategic_advantage = bonus_to_republica
+						tooltip = world_stage_add_strategic_advantage_attacker
+					}
+				} else = {
+					add_to_variable = {
+						35.defender_strategic_advantage = bonus_to_republica
+						tooltip = world_stage_add_strategic_advantage_defender
+					}
+				}
+			} else = { custom_effect_tooltip = world_stage_possibly_reinforce_here }
+			custom_effect_tooltip = theater_scope_zaragoza
+			if = {
+				limit = { 36 = { has_state_flag = theater_is_active } }
+				if = {
+					limit = { var:world_stage_metropolis = { check_variable = { 36.coalition_side_attack = 8 } } }
+					add_to_variable = {
+						36.defender_strategic_advantage = bonus_to_republica
+						tooltip = world_stage_add_strategic_advantage_attacker
+					}
+				} else = {
+					add_to_variable = {
+						36.defender_strategic_advantage = bonus_to_republica
+						tooltip = world_stage_add_strategic_advantage_defender
+					}
+				}
+			} else = { custom_effect_tooltip = world_stage_possibly_reinforce_here }
+			custom_effect_tooltip = theater_scope_barcelona
+			if = {
+				limit = { 37 = { has_state_flag = theater_is_active } }
+				if = {
+					limit = { var:world_stage_metropolis = { check_variable = { 37.coalition_side_attack = 8 } } }
+					add_to_variable = {
+						37.defender_strategic_advantage = bonus_to_republica
+						tooltip = world_stage_add_strategic_advantage_attacker
+					}
+				} else = {
+					add_to_variable = {
+						37.defender_strategic_advantage = bonus_to_republica
+						tooltip = world_stage_add_strategic_advantage_defender
+					}
+				}
+			} else = { custom_effect_tooltip = world_stage_possibly_reinforce_here }
+			if = {
+				limit = { check_variable = { bonus_to_xp > 3 } }
+				army_experience = bonus_to_xp
+				navy_experience = bonus_to_xp
+				air_experience = bonus_to_xp
+			} else = {
+				army_experience = 5
+				navy_experience = 5
+				air_experience = 5
+			}
+			set_country_flag = world_stage_spanish_cw_helped_republica
+		}
+	}
+	
+	focus = {
+		id = KOB_help_spanish_republica_2 
+		icon = GFX_focus_generic_exiled_republican_officers
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		ai_will_do = { factor = 0 }
+		
+		available = {
+			NOT = { has_government = fascism has_government = autocracy has_government = neutrality }
+			has_global_flag = world_stage_theater_spanish_cw_falange_won
+		}
+		
+		prerequisite = { focus = KOB_help_spanish_republica }
+		relative_position_id = KOB_help_spanish_republica
+		x = 0
+		y = 1
+
+		cost = 10
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_doctrine_cost_reduction = {
+				name = land_doc_bonus
+				cost_reduction = 0.33
+				uses = 1
+				category = land_doctrine
+			}
+			add_doctrine_cost_reduction = {
+				name = air_doc_bonus				
+				cost_reduction = 0.33
+				uses = 1
+				category = air_doctrine
+			}
+			add_doctrine_cost_reduction = {
+				name = naval_doc_bonus
+				cost_reduction = 0.33
+				uses = 1
+				category = naval_doctrine
+			}
+			if = {
+				limit = { NOT = { has_global_flag = republican_exiles_arrived } }
+				custom_effect_tooltip = spanish.1.trigger
+				news_event = spanish.1
+				custom_effect_tooltip = unlock_characters_tt
+				SPR = {
+					SPR_juan_modesto = { set_nationality = REI }
+					SPR_miguel_buiza = { set_nationality = REI }
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = KOB_colonial_armies
+		icon = GFX_goal_GENERIC_colonal_army
+		prerequisite = { focus = interventionism_focus_western }
+		search_filters = { FOCUS_FILTER_MANPOWER FOCUS_FILTER_WORLD }
+		cost = 10
+
+		relative_position_id = interventionism_focus_western
+		x = 1
+		y = 1
+
+		available_if_capitulated = no
+		
+		text_icon = worldstage_style
+		
+		allow_branch = { tag = KOB }
+
+		ai_will_do = {
+			factor = 50
+		}
+
+		completion_reward = {
+			effect_tooltip = {
+				add_to_variable = {
+					var = world_stage_power
+					value = 15
+					tooltip = add_world_stage_power_no_scope_tt
+				}
+			}
+			var:world_stage_metropolis = {
+					add_to_variable = {
+						var = world_stage_power
+						value = 15
+					}
+				}
+			add_ideas = idea_colonial_armies
+			set_global_flag = KOB_GENERIC_colonial_armies_completed
 		}
 	}
 	
