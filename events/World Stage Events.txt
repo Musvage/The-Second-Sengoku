@@ -4255,7 +4255,88 @@ news_event = {
 	}
 }
 
-# No event for Portugal yet
+# Lisbon is taken, Portugal fall
+news_event = {
+	id = worldstage_automatic.108
+	title = worldstage_automatic.108.t
+	desc = worldstage_automatic.108.d 
+	picture = GFX_news_ww2_netherlands_capitulates_wide
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			34 = { set_temp_variable = { occupier_coalition = theater_owner_coalition } }# figure out if Amsterdam was taken by Allies, Axis or Comintern
+			108 = { set_state_flag = metropolis_capitulated }
+			every_state = {
+				limit = { check_variable = { theater_owner = 108 } }
+				set_variable = { theater_owner_coalition = metropolis_capitulated }
+				world_stage_end_round_partial = yes
+				clr_state_flag = theater_is_active
+			}
+			every_state = {
+				limit = { has_variable = theater_owner }
+				divide_variable = { world_stage_power_deployed_by^108 = 4 }
+				round_variable = world_stage_power_deployed_by^108
+			}
+			108 = { set_variable = { world_stage_power = 0 } }
+			every_possible_country = {									# this effect is convoluted but necessary in order to cut resources from PRT if Portugal is defeated while PRT is annexed
+				limit = { tag = PRT }
+				if = {
+					limit = { country_exists = PRT }
+					news_event = { id = worldstage_surrender.108 hours = 24 random = 24 }
+				} else = { clr_country_flag = tc_nagasaki_has_access }
+			}
+		}
+	}
+
+	option = {
+		name = worldstage_automatic.108.axis
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		effect_tooltip = {
+			if = { limit = { country_exists = PRT }	PRT = { add_war_support = -0.1 } }
+			every_country = { limit = { NOT = { tag = PRT } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } } add_war_support = -0.05 }
+		}
+	}
+	option = {
+		name = worldstage_automatic.108.komin
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+		effect_tooltip = {
+			if = { limit = { country_exists = PRT }	PRT = { add_war_support = -0.1 } }
+			every_country = { limit = { NOT = { tag = PRT } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } } add_war_support = -0.05 }
+		}
+	}
+	option = {
+		name = worldstage_automatic.108.PRT
+		trigger = { tag = PRT }
+		add_war_support = -0.1
+		effect_tooltip = {
+			every_country = { limit = { NOT = { tag = PRT } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } } add_war_support = -0.05 }
+		}
+	}
+	option = {
+		name = worldstage_automatic.108.allies
+		trigger = {
+			var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } }
+			NOT = { tag = PRT }
+		}
+		effect_tooltip = {
+			if = { limit = { country_exists = PRT }	add_war_support = -0.1 }
+			every_country = { limit = { NOT = { tag = PRT } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } } add_war_support = -0.05 }
+		}
+		hidden_effect = { add_war_support = -0.05 }
+	}
+	option = {
+		name = worldstage_automatic.108.other
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
+		effect_tooltip = {
+			if = { limit = { country_exists = PRT }	add_war_support = -0.1 }
+			every_country = { limit = { NOT = { tag = PRT } var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } } add_war_support = -0.05 }
+		}
+	}
+}
 
 # Rome is taken, Italy falls
 news_event = {
@@ -4347,6 +4428,69 @@ news_event = {
 	}
 }
 
+# Madrid is taken, Spanish Republica falls
+news_event = {
+	id = worldstage_automatic.111
+	title = worldstage_automatic.111.t
+	desc = worldstage_automatic.111.d 
+	picture = GFX_news_ww2_barbarossa_success_wide
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			111 = { set_state_flag = metropolis_capitulated }
+			111 = { set_variable = { world_stage_power = 0 } }
+			every_state = {
+				limit = { check_variable = { theater_owner = 111 } }
+				set_variable = { theater_owner_coalition = 3 }
+				world_stage_end_round_partial = yes
+				clr_state_flag = theater_is_active
+			}
+			every_state = {
+				limit = { has_variable = theater_owner }
+				divide_variable = { world_stage_power_deployed_by^111 = 4 }
+				round_variable = world_stage_power_deployed_by^111
+			}
+			every_country = { limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
+		}
+	}
+
+	option = {
+		name = worldstage_automatic.111.axis
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		effect_tooltip = {
+			every_country = { limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
+		}
+	}
+	option = {
+		name = worldstage_automatic.111.komin
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+		effect_tooltip = {
+			every_country = { limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
+		}
+	}
+	option = {
+		name = worldstage_automatic.111.allies
+		effect_tooltip = {
+			every_country = { limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
+		}
+	}
+	option = {
+		name = worldstage_automatic.111.other
+		trigger = { 
+			NOT = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
+			NOT = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+			NOT = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		}
+		effect_tooltip = {
+			every_country = { limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
+		}
+	}
+}
+
 # Warsaw is taken, Poland falls
 news_event = {
 	id = worldstage_automatic.115
@@ -4406,6 +4550,69 @@ news_event = {
 		}
 		effect_tooltip = {
 			every_country = { limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } } add_war_support = -0.05 }
+		}
+	}
+}
+
+# Madrid is taken, Spanish Falange falls
+news_event = {
+	id = worldstage_automatic.121
+	title = worldstage_automatic.121.t
+	desc = worldstage_automatic.121.d 
+	picture = GFX_news_ww2_barbarossa_success_wide
+
+	is_triggered_only = yes
+
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			121 = { set_state_flag = metropolis_capitulated }
+			121 = { set_variable = { world_stage_power = 0 } }
+			every_state = {
+				limit = { check_variable = { theater_owner = 121 } }
+				set_variable = { theater_owner_coalition = 1 }
+				world_stage_end_round_partial = yes
+				clr_state_flag = theater_is_active
+			}
+			every_state = {
+				limit = { has_variable = theater_owner }
+				divide_variable = { world_stage_power_deployed_by^121 = 4 }
+				round_variable = world_stage_power_deployed_by^121
+			}
+			every_country = { limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } } add_war_support = -0.05 }
+		}
+	}
+
+	option = {
+		name = worldstage_automatic.121.axis
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		effect_tooltip = {
+			every_country = { limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } } add_war_support = -0.05 }
+		}
+	}
+	option = {
+		name = worldstage_automatic.121.komin
+		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+		effect_tooltip = {
+			every_country = { limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } } add_war_support = -0.05 }
+		}
+	}
+	option = {
+		name = worldstage_automatic.121.allies
+		effect_tooltip = {
+			every_country = { limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } } add_war_support = -0.05 }
+		}
+	}
+	option = {
+		name = worldstage_automatic.121.other
+		trigger = { 
+			NOT = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
+			NOT = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
+			NOT = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } }
+		}
+		effect_tooltip = {
+			every_country = { limit = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 3 } } } add_war_support = -0.05 }
 		}
 	}
 }
