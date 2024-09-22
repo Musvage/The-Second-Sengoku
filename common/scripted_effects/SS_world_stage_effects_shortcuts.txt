@@ -37,16 +37,12 @@ world_stage_set_leagueofnations_spirit = {	# scope is a tag
 	}
 }
 
+# NOTE about the following effects: world_stage_coalition must be manually set BEFORE there is any change of faction, to prevent on_join_faction and on_offer_join_faction (SS_world_stage_on_action.txt) from firing, it should only fire by diplomatic action
+
 world_stage_join_allies = {	# scope is a tag
 	clear_from_coalition_arrays = yes
 	if = {
 		limit = { has_global_flag = league_of_nations_exists }	# therefore, the Allies do not exist yet
-		#if = {
-		#	limit = { country_exists = LON THIS = { NOT = { tag = LON } } }
-		#	LON = { add_to_faction = PREV }
-		#} else = { create_faction = coalition_name_leagueofnations_short }
-		world_stage_set_leagueofnations_spirit = yes
-		add_to_array = { global.array_leagueofnations = THIS.id }
 		if = {
 			limit = { has_variable = world_stage_metropolis }
 			hidden_effect = {
@@ -54,8 +50,21 @@ world_stage_join_allies = {	# scope is a tag
 				every_state = { limit = { check_variable = { theater_owner = PREV.world_stage_metropolis } } set_variable = { theater_owner_coalition = 5 } }
 			}
 		}
+		#if = {
+		#	limit = { country_exists = LON THIS = { NOT = { tag = LON } } }
+		#	LON = { add_to_faction = PREV }
+		#} else = { create_faction = coalition_name_leagueofnations_short }
+		world_stage_set_leagueofnations_spirit = yes
+		add_to_array = { global.array_leagueofnations = THIS.id }
 		log = "[THIS.GetName] tried to join the Axis before the League of Nations morphed into its final form"
 	} else = {
+		if = {
+			limit = { has_variable = world_stage_metropolis }
+			hidden_effect = {
+				var:world_stage_metropolis = { set_variable = { world_stage_coalition = 1 } } set_variable = { world_stage_coalition = 1 }
+				every_state = { limit = { check_variable = { theater_owner = PREV.world_stage_metropolis } } set_variable = { theater_owner_coalition = 1 } }
+			}
+		}
 		if = {
 			limit = { country_exists = ALY THIS = { NOT = { tag = ALY } } }
 			ALY = { add_to_faction = PREV }
@@ -63,13 +72,6 @@ world_stage_join_allies = {	# scope is a tag
 		} else = {
 			create_faction = coalition_name_allies_short
 			hidden_effect = { add_to_array = { global.array_allies = THIS.id } }
-		}
-		if = {
-			limit = { has_variable = world_stage_metropolis }
-			hidden_effect = {
-				var:world_stage_metropolis = { set_variable = { world_stage_coalition = 1 } } set_variable = { world_stage_coalition = 1 }
-				every_state = { limit = { check_variable = { theater_owner = PREV.world_stage_metropolis } } set_variable = { theater_owner_coalition = 1 } }
-			}
 		}
 	}
 } d_world_stage_join_allies = { world_stage_join_allies = yes log = "world_stage_join_allies" }
@@ -79,24 +81,19 @@ world_stage_join_komintern = {	# scope is a tag
 	if = {
 		limit = { has_global_flag = sovietunion_joined_ww2 }	# if so, then Comintern merged with Allies
 		if = {
-			limit = { country_exists = ALY THIS = { NOT = { tag = ALY } } }
-			ALY = { add_to_faction = PREV }
-		} else = { create_faction = coalition_name_allies_short }
-		add_to_array = { global.array_allies = THIS.id }
-		if = {
 			limit = { has_variable = world_stage_metropolis }
 			hidden_effect = {
 				var:world_stage_metropolis = { set_variable = { world_stage_coalition = 1 } } set_variable = { world_stage_coalition = 1 }
 				every_state = { limit = { check_variable = { theater_owner = PREV.world_stage_metropolis } } set_variable = { theater_owner_coalition = 1 } }
 			}
 		}
+		if = {
+			limit = { country_exists = ALY THIS = { NOT = { tag = ALY } } }
+			ALY = { add_to_faction = PREV }
+		} else = { create_faction = coalition_name_allies_short }
+		add_to_array = { global.array_allies = THIS.id }
 		log = "[THIS.GetName] tried to join the Comintern but it already merged with the Allies"
 	} else = {
-		if = {
-			limit = { country_exists = COM THIS = { NOT = { tag = COM } } }
-			COM = { add_to_faction = PREV }
-		} else = { create_faction = coalition_name_allies_short }
-		add_to_array = { global.array_komintern = THIS.id }
 		if = {
 			limit = { has_variable = world_stage_metropolis }
 			hidden_effect = {
@@ -104,6 +101,11 @@ world_stage_join_komintern = {	# scope is a tag
 				every_state = { limit = { check_variable = { theater_owner = PREV.world_stage_metropolis } } set_variable = { theater_owner_coalition = 2 } }
 			}
 		}
+		if = {
+			limit = { country_exists = COM THIS = { NOT = { tag = COM } } }
+			COM = { add_to_faction = PREV }
+		} else = { create_faction = coalition_name_allies_short }
+		add_to_array = { global.array_komintern = THIS.id }
 	}
 } d_world_stage_join_komintern = { world_stage_join_komintern = yes log = "world_stage_join_komintern" }
 
@@ -111,12 +113,6 @@ world_stage_join_axis = {	# scope is a tag
 	clear_from_coalition_arrays = yes
 	if = {
 		limit = { has_global_flag = league_of_nations_exists }	# therefore, Pact of Steel exists
-		#if = {
-		#	limit = { country_exists = STL THIS = { NOT = { tag = STL } } }
-		#	STL = { add_to_faction = PREV }
-		#} else = { create_faction = coalition_name_pactofsteel_short }
-		custom_effect_tooltip = world_stage_join_pactofsteel_tt
-		add_to_array = { global.array_pactofsteel = THIS.id }
 		if = {
 			limit = { has_variable = world_stage_metropolis }
 			hidden_effect = {
@@ -124,13 +120,14 @@ world_stage_join_axis = {	# scope is a tag
 				every_state = { limit = { check_variable = { theater_owner = PREV.world_stage_metropolis } } set_variable = { theater_owner_coalition = 6 } }
 			}
 		}
+		#if = {
+		#	limit = { country_exists = STL THIS = { NOT = { tag = STL } } }
+		#	STL = { add_to_faction = PREV }
+		#} else = { create_faction = coalition_name_pactofsteel_short }
+		custom_effect_tooltip = world_stage_join_pactofsteel_tt
+		add_to_array = { global.array_pactofsteel = THIS.id }
 		log = "[THIS.GetName] tried to join the Axis before the Pact of Steel morphed into its final form"
 	} else = {
-		if = {
-			limit = { country_exists = AXS THIS = { NOT = { tag = AXS } } }
-			AXS = { add_to_faction = PREV }
-		} else = { create_faction = coalition_name_axis_short }
-		add_to_array = { global.array_axis = THIS.id }
 		if = {
 			limit = { has_variable = world_stage_metropolis }
 			hidden_effect = {
@@ -138,6 +135,11 @@ world_stage_join_axis = {	# scope is a tag
 				every_state = { limit = { check_variable = { theater_owner = PREV.world_stage_metropolis } } set_variable = { theater_owner_coalition = 3 } }
 			}
 		}
+		if = {
+			limit = { country_exists = AXS THIS = { NOT = { tag = AXS } } }
+			AXS = { add_to_faction = PREV }
+		} else = { create_faction = coalition_name_axis_short }
+		add_to_array = { global.array_axis = THIS.id }
 	}
 } d_world_stage_join_axis = { world_stage_join_axis = yes log = "world_stage_join_axis" }
 
@@ -157,12 +159,6 @@ world_stage_join_leagueofnations = {	# scope is a tag	/// THIS IS EXACTLY THE SA
 	clear_from_coalition_arrays = yes
 	if = {
 		limit = { has_global_flag = league_of_nations_exists }	# therefore, the Allies do not exist yet
-		#if = {
-		#	limit = { country_exists = LON THIS = { NOT = { tag = LON } } }
-		#	LON = { add_to_faction = PREV }
-		#} else = { create_faction = coalition_name_leagueofnations_short }
-		world_stage_set_leagueofnations_spirit = yes
-		add_to_array = { global.array_leagueofnations = THIS.id }
 		if = {
 			limit = { has_variable = world_stage_metropolis }
 			hidden_effect = {
@@ -170,13 +166,14 @@ world_stage_join_leagueofnations = {	# scope is a tag	/// THIS IS EXACTLY THE SA
 				every_state = { limit = { check_variable = { theater_owner = PREV.world_stage_metropolis } } set_variable = { theater_owner_coalition = 5 } }
 			}
 		}
+		#if = {
+		#	limit = { country_exists = LON THIS = { NOT = { tag = LON } } }
+		#	LON = { add_to_faction = PREV }
+		#} else = { create_faction = coalition_name_leagueofnations_short }
+		world_stage_set_leagueofnations_spirit = yes
+		add_to_array = { global.array_leagueofnations = THIS.id }
 		log = "[THIS.GetName] tried to join the Axis before the League of Nations morphed into its final form"
 	} else = {
-		if = {
-			limit = { country_exists = ALY THIS = { NOT = { tag = ALY } } }
-			ALY = { add_to_faction = PREV }
-		} else = { create_faction = coalition_name_allies_short }
-		add_to_array = { global.array_allies = THIS.id }
 		if = {
 			limit = { has_variable = world_stage_metropolis }
 			hidden_effect = {
@@ -184,6 +181,11 @@ world_stage_join_leagueofnations = {	# scope is a tag	/// THIS IS EXACTLY THE SA
 				every_state = { limit = { check_variable = { theater_owner = PREV.world_stage_metropolis } } set_variable = { theater_owner_coalition = 1 } }
 			}
 		}
+		if = {
+			limit = { country_exists = ALY THIS = { NOT = { tag = ALY } } }
+			ALY = { add_to_faction = PREV }
+		} else = { create_faction = coalition_name_allies_short }
+		add_to_array = { global.array_allies = THIS.id }
 	}
 } d_world_stage_join_leagueofnations = { world_stage_join_leagueofnations = yes log = "world_stage_join_leagueofnations" }
 
@@ -191,12 +193,6 @@ world_stage_join_pactofsteel = {	# scope is a tag	/// THIS IS EXACTLY THE SAME A
 	clear_from_coalition_arrays = yes
 	if = {
 		limit = { has_global_flag = league_of_nations_exists }	# therefore, Pact of Steel exists
-		#if = {
-		#	limit = { country_exists = STL THIS = { NOT = { tag = STL } } }
-		#	STL = { add_to_faction = PREV }
-		#} else = { create_faction = coalition_name_pactofsteel_short }
-		custom_effect_tooltip = world_stage_join_pactofsteel_tt
-		add_to_array = { global.array_pactofsteel = THIS.id }
 		if = {
 			limit = { has_variable = world_stage_metropolis }
 			hidden_effect = {
@@ -204,12 +200,13 @@ world_stage_join_pactofsteel = {	# scope is a tag	/// THIS IS EXACTLY THE SAME A
 				every_state = { limit = { check_variable = { theater_owner = PREV.world_stage_metropolis } } set_variable = { theater_owner_coalition = 6 } }
 			}
 		}
+		#if = {
+		#	limit = { country_exists = STL THIS = { NOT = { tag = STL } } }
+		#	STL = { add_to_faction = PREV }
+		#} else = { create_faction = coalition_name_pactofsteel_short }
+		custom_effect_tooltip = world_stage_join_pactofsteel_tt
+		add_to_array = { global.array_pactofsteel = THIS.id }
 	} else = {
-		if = {
-			limit = { country_exists = AXS THIS = { NOT = { tag = AXS } } }
-			AXS = { add_to_faction = PREV }
-		} else = { create_faction = coalition_name_axis_short }
-		add_to_array = { global.array_axis = THIS.id }
 		if = {
 			limit = { has_variable = world_stage_metropolis }
 			hidden_effect = {
@@ -217,6 +214,11 @@ world_stage_join_pactofsteel = {	# scope is a tag	/// THIS IS EXACTLY THE SAME A
 				every_state = { limit = { check_variable = { theater_owner = PREV.world_stage_metropolis } } set_variable = { theater_owner_coalition = 3 } }
 			}
 		}
+		if = {
+			limit = { country_exists = AXS THIS = { NOT = { tag = AXS } } }
+			AXS = { add_to_faction = PREV }
+		} else = { create_faction = coalition_name_axis_short }
+		add_to_array = { global.array_axis = THIS.id }
 		log = "[THIS.GetName] tried to join the Pact of Steel after it became Axis"
 	}
 } d_world_stage_join_pactofsteel = { world_stage_join_pactofsteel = yes log = "world_stage_join_pactofsteel" }
@@ -225,32 +227,21 @@ world_stage_join_tiar = {	# scope is a tag
 	if = {
 		limit = { has_global_flag = tiar_exists }
 		if = {
-			limit = { country_exists = RIO THIS = { NOT = { tag = RIO } } }
-			RIO = { add_to_faction = PREV }
-		} else = {
-			create_faction = coalition_name_tiar_short
-		}
-		add_to_array = { global.array_tiar = THIS.id }
-		if = {
 			limit = { has_variable = world_stage_metropolis }
 			hidden_effect = {
 				var:world_stage_metropolis = { set_variable = { world_stage_coalition = 7 } } set_variable = { world_stage_coalition = 7 }
 				every_state = { limit = { check_variable = { theater_owner = PREV.world_stage_metropolis } } set_variable = { theater_owner_coalition = 7 } }
 			}
 		}
+		if = {
+			limit = { country_exists = RIO THIS = { NOT = { tag = RIO } } }
+			RIO = { add_to_faction = PREV }
+		} else = {
+			create_faction = coalition_name_tiar_short
+		}
+		add_to_array = { global.array_tiar = THIS.id }
 	} else = { log = "[THIS.GetName] tried to join the Rio Treaty but it does not exist" }
 } d_world_stage_join_tiar = { world_stage_join_tiar = yes log = "world_stage_join_pactofsteel" }
-
-world_stage_update_metropolis = {	# scope is a tag, manipulates its proxy
-	if = {
-		limit = { has_variable = world_stage_metropolis }
-		var:world_stage_metropolis = {
-			set_variable = { world_stage_coalition = PREV.world_stage_coalition }					############# DEPRICATED
-			set_variable = { doctrine_bonus_land = PREV.doctrine_bonus_land }
-			set_variable = { doctrine_bonus_navy = PREV.doctrine_bonus_navy }
-		}
-	}
-} d_world_stage_update_metropolis = { world_stage_update_metropolis = yes log = "world_stage_update_metropolis" }
 
 world_stage_update_tag = {	# scope is a tag, is manipulated by its proxy
 	if = {
@@ -492,632 +483,4 @@ check_end_ww2_komintern_defeated = {
 ###       ###      ###    #########     ###       ###    #####       ###
 ########################################################################
 
-### OLD CODE
-### OLD CODE
-### OLD CODE	### REMOVE THIS LATER, MAYBE
-# GERMANY
-
-add_world_stage_power_ger_1 = {
-	add_to_variable = {global.world_stage_power_ger = 1 }
-	custom_effect_tooltip = add_world_stage_power_ger_1_tt
-}
-
-add_world_stage_power_ger_2 = {
-	add_to_variable = {global.world_stage_power_ger = 2 }
-	custom_effect_tooltip = add_world_stage_power_ger_2_tt
-}
-
-add_world_stage_power_ger_5 = {
-	add_to_variable = {global.world_stage_power_ger = 5 }
-	custom_effect_tooltip = add_world_stage_power_ger_5_tt
-}
-
-add_world_stage_power_ger_10 = {
-	add_to_variable = {global.world_stage_power_ger = 10 }
-	custom_effect_tooltip = add_world_stage_power_ger_10_tt
-}
-
-add_world_stage_power_ger_15 = {
-	add_to_variable = {global.world_stage_power_ger = 15 }
-	custom_effect_tooltip = add_world_stage_power_ger_15_tt
-}
-
-add_world_stage_power_ger_20 = {
-	add_to_variable = {global.world_stage_power_ger = 20 }
-	custom_effect_tooltip = add_world_stage_power_ger_20_tt
-}
-
-remove_world_stage_power_ger_1 = {
-	add_to_variable = {global.world_stage_power_ger = -1 }
-	custom_effect_tooltip = remove_world_stage_power_ger_1_tt
-}
-
-remove_world_stage_power_ger_5 = {
-	add_to_variable = {global.world_stage_power_ger = -5 }
-	custom_effect_tooltip = remove_world_stage_power_ger_5_tt
-}
-
-remove_world_stage_power_ger_10 = {
-	add_to_variable = {global.world_stage_power_ger = -10 }
-	custom_effect_tooltip = remove_world_stage_power_ger_10_tt
-}
-
-remove_world_stage_power_ger_15 = {
-	add_to_variable = {global.world_stage_power_ger = -15 }
-	custom_effect_tooltip = remove_world_stage_power_ger_15_tt
-}
-
-remove_world_stage_power_ger_20 = {
-	add_to_variable = {global.world_stage_power_ger = -20 }
-	custom_effect_tooltip = remove_world_stage_power_ger_20_tt
-}
-
-# UNITED STATES
-
-add_world_stage_power_usa_1 = {
-	add_to_variable = {global.world_stage_power_usa = 1 }
-	custom_effect_tooltip = add_world_stage_power_usa_1_tt
-}
-
-add_world_stage_power_usa_5 = {
-	add_to_variable = {global.world_stage_power_usa = 5 }
-	custom_effect_tooltip = add_world_stage_power_usa_5_tt
-}
-
-add_world_stage_power_usa_10 = {
-	add_to_variable = {global.world_stage_power_usa = 10 }
-	custom_effect_tooltip = add_world_stage_power_usa_10_tt
-}
-
-add_world_stage_power_usa_15 = {
-	add_to_variable = {global.world_stage_power_usa = 15 }
-	custom_effect_tooltip = add_world_stage_power_usa_15_tt
-}
-
-add_world_stage_power_usa_20 = {
-	add_to_variable = {global.world_stage_power_usa = 20 }
-	custom_effect_tooltip = add_world_stage_power_usa_20_tt
-}
-
-remove_world_stage_power_usa_1 = {
-	add_to_variable = {global.world_stage_power_usa = -1 }
-	custom_effect_tooltip = remove_world_stage_power_usa_1_tt
-}
-
-remove_world_stage_power_usa_5 = {
-	add_to_variable = {global.world_stage_power_usa = -5 }
-	custom_effect_tooltip = remove_world_stage_power_usa_5_tt
-}
-
-remove_world_stage_power_usa_10 = {
-	add_to_variable = {global.world_stage_power_usa = -10 }
-	custom_effect_tooltip = remove_world_stage_power_usa_10_tt
-}
-
-remove_world_stage_power_usa_15 = {
-	add_to_variable = {global.world_stage_power_usa = -15 }
-	custom_effect_tooltip = remove_world_stage_power_usa_15_tt
-}
-
-remove_world_stage_power_usa_20 = {
-	add_to_variable = {global.world_stage_power_usa = -20 }
-	custom_effect_tooltip = remove_world_stage_power_usa_20_tt
-}
-
-# ENGLAND
-
-add_world_stage_power_eng_1 = {
-	add_to_variable = {global.world_stage_power_eng = 1 }
-	custom_effect_tooltip = add_world_stage_power_eng_1_tt
-}
-
-add_world_stage_power_eng_5 = {
-	add_to_variable = {global.world_stage_power_eng = 5 }
-	custom_effect_tooltip = add_world_stage_power_eng_5_tt
-}
-
-add_world_stage_power_eng_10 = {
-	add_to_variable = {global.world_stage_power_eng = 10 }
-	custom_effect_tooltip = add_world_stage_power_eng_10_tt
-}
-
-add_world_stage_power_eng_15 = {
-	add_to_variable = {global.world_stage_power_eng = 15 }
-	custom_effect_tooltip = add_world_stage_power_eng_15_tt
-}
-
-add_world_stage_power_eng_20 = {
-	add_to_variable = {global.world_stage_power_eng = 20 }
-	custom_effect_tooltip = add_world_stage_power_eng_20_tt
-}
-
-remove_world_stage_power_eng_1 = {
-	add_to_variable = {global.world_stage_power_eng = -1 }
-	custom_effect_tooltip = remove_world_stage_power_eng_1_tt
-}
-
-remove_world_stage_power_eng_5 = {
-	add_to_variable = {global.world_stage_power_eng = -5 }
-	custom_effect_tooltip = remove_world_stage_power_eng_5_tt
-}
-
-remove_world_stage_power_eng_10 = {
-	add_to_variable = {global.world_stage_power_eng = -10 }
-	custom_effect_tooltip = remove_world_stage_power_eng_10_tt
-}
-
-remove_world_stage_power_eng_15 = {
-	add_to_variable = {global.world_stage_power_eng = -15 }
-	custom_effect_tooltip = remove_world_stage_power_eng_15_tt
-}
-
-remove_world_stage_power_eng_20 = {
-	add_to_variable = {global.world_stage_power_eng = -20 }
-	custom_effect_tooltip = remove_world_stage_power_eng_20_tt
-}
-
-# FRANCE
-
-add_world_stage_power_fra_1 = {
-	add_to_variable = {global.world_stage_power_fra = 1 }
-	custom_effect_tooltip = add_world_stage_power_fra_1_tt
-}
-
-add_world_stage_power_fra_5 = {
-	add_to_variable = {global.world_stage_power_fra = 5 }
-	custom_effect_tooltip = add_world_stage_power_fra_5_tt
-}
-
-add_world_stage_power_fra_10 = {
-	add_to_variable = {global.world_stage_power_fra = 10 }
-	custom_effect_tooltip = add_world_stage_power_fra_10_tt
-}
-
-add_world_stage_power_fra_15 = {
-	add_to_variable = {global.world_stage_power_fra = 15 }
-	custom_effect_tooltip = add_world_stage_power_fra_15_tt
-}
-
-add_world_stage_power_fra_20 = {
-	add_to_variable = {global.world_stage_power_fra = 20 }
-	custom_effect_tooltip = add_world_stage_power_fra_20_tt
-}
-
-remove_world_stage_power_fra_1 = {
-	add_to_variable = {global.world_stage_power_fra = -1 }
-	custom_effect_tooltip = remove_world_stage_power_fra_1_tt
-}
-
-remove_world_stage_power_fra_5 = {
-	add_to_variable = {global.world_stage_power_fra = -5 }
-	custom_effect_tooltip = remove_world_stage_power_fra_5_tt
-}
-
-remove_world_stage_power_fra_10 = {
-	add_to_variable = {global.world_stage_power_fra = -10 }
-	custom_effect_tooltip = remove_world_stage_power_fra_10_tt
-}
-
-remove_world_stage_power_fra_15 = {
-	add_to_variable = {global.world_stage_power_fra = -15 }
-	custom_effect_tooltip = remove_world_stage_power_fra_15_tt
-}
-
-remove_world_stage_power_fra_20 = {
-	add_to_variable = {global.world_stage_power_fra = -20 }
-	custom_effect_tooltip = remove_world_stage_power_fra_20_tt
-}
-
-# SOVIET UNION	
-
-add_world_stage_power_sov_1 = {
-	add_to_variable = {global.world_stage_power_sov = 1 }
-	custom_effect_tooltip = add_world_stage_power_sov_1_tt
-}
-
-add_world_stage_power_sov_5 = {
-	add_to_variable = {global.world_stage_power_sov = 5 }
-	custom_effect_tooltip = add_world_stage_power_sov_5_tt
-}
-
-add_world_stage_power_sov_10 = {
-	add_to_variable = {global.world_stage_power_sov = 10 }
-	custom_effect_tooltip = add_world_stage_power_sov_10_tt
-}
-
-add_world_stage_power_sov_15 = {
-	add_to_variable = {global.world_stage_power_sov = 15 }
-	custom_effect_tooltip = add_world_stage_power_sov_15_tt
-}
-
-add_world_stage_power_sov_20 = {
-	add_to_variable = {global.world_stage_power_sov = 20 }
-	custom_effect_tooltip = add_world_stage_power_sov_20_tt
-}
-
-remove_world_stage_power_sov_1 = {
-	add_to_variable = {global.world_stage_power_sov = -1 }
-	custom_effect_tooltip = remove_world_stage_power_sov_1_tt
-}
-
-remove_world_stage_power_sov_5 = {
-	add_to_variable = {global.world_stage_power_sov = -5 }
-	custom_effect_tooltip = remove_world_stage_power_sov_5_tt
-}
-
-remove_world_stage_power_sov_10 = {
-	add_to_variable = {global.world_stage_power_sov = -10 }
-	custom_effect_tooltip = remove_world_stage_power_sov_10_tt
-}
-
-remove_world_stage_power_sov_15 = {
-	add_to_variable = {global.world_stage_power_sov = -15 }
-	custom_effect_tooltip = remove_world_stage_power_sov_15_tt
-}
-
-remove_world_stage_power_sov_20 = {
-	add_to_variable = {global.world_stage_power_sov = -20 }
-	custom_effect_tooltip = remove_world_stage_power_sov_20_tt
-}
-
-# PORTUGAL
-
-add_world_stage_power_prt_1 = {
-	add_to_variable = {global.world_stage_power_prt = 1 }
-	custom_effect_tooltip = add_world_stage_power_prt_1_tt
-}
-
-add_world_stage_power_prt_5 = {
-	add_to_variable = {global.world_stage_power_prt = 5 }
-	custom_effect_tooltip = add_world_stage_power_prt_5_tt
-}
-
-add_world_stage_power_prt_10 = {
-	add_to_variable = {global.world_stage_power_prt = 10 }
-	custom_effect_tooltip = add_world_stage_power_prt_10_tt
-}
-
-add_world_stage_power_prt_15 = {
-	add_to_variable = {global.world_stage_power_prt = 15 }
-	custom_effect_tooltip = add_world_stage_power_prt_15_tt
-}
-
-add_world_stage_power_prt_20 = {
-	add_to_variable = {global.world_stage_power_prt = 20 }
-	custom_effect_tooltip = add_world_stage_power_prt_20_tt
-}
-
-remove_world_stage_power_prt_1 = {
-	add_to_variable = {global.world_stage_power_prt = -1 }
-	custom_effect_tooltip = remove_world_stage_power_prt_1_tt
-}
-
-remove_world_stage_power_prt_5 = {
-	add_to_variable = {global.world_stage_power_prt = -5 }
-	custom_effect_tooltip = remove_world_stage_power_prt_5_tt
-}
-
-remove_world_stage_power_prt_10 = {
-	add_to_variable = {global.world_stage_power_prt = -10 }
-	custom_effect_tooltip = remove_world_stage_power_prt_10_tt
-}
-
-remove_world_stage_power_prt_15 = {
-	add_to_variable = {global.world_stage_power_prt = -15 }
-	custom_effect_tooltip = remove_world_stage_power_prt_15_tt
-}
-
-remove_world_stage_power_prt_20 = {
-	add_to_variable = {global.world_stage_power_prt = -20 }
-	custom_effect_tooltip = remove_world_stage_power_prt_20_tt
-}
-
-# NETHERLANDS
-
-add_world_stage_power_net_1 = {
-	add_to_variable = {global.world_stage_power_net = 1 }
-	custom_effect_tooltip = add_world_stage_power_net_1_tt
-}
-
-add_world_stage_power_net_5 = {
-	add_to_variable = {global.world_stage_power_net = 5 }
-	custom_effect_tooltip = add_world_stage_power_net_5_tt
-}
-
-add_world_stage_power_net_10 = {
-	add_to_variable = {global.world_stage_power_net = 10 }
-	custom_effect_tooltip = add_world_stage_power_net_10_tt
-}
-
-add_world_stage_power_net_15 = {
-	add_to_variable = {global.world_stage_power_net = 15 }
-	custom_effect_tooltip = add_world_stage_power_net_15_tt
-}
-
-add_world_stage_power_net_20 = {
-	add_to_variable = {global.world_stage_power_net = 20 }
-	custom_effect_tooltip = add_world_stage_power_net_20_tt
-}
-
-remove_world_stage_power_net_1 = {
-	add_to_variable = {global.world_stage_power_net = -1 }
-	custom_effect_tooltip = remove_world_stage_power_net_1_tt
-}
-
-remove_world_stage_power_net_5 = {
-	add_to_variable = {global.world_stage_power_net = -5 }
-	custom_effect_tooltip = remove_world_stage_power_net_5_tt
-}
-
-remove_world_stage_power_net_10 = {
-	add_to_variable = {global.world_stage_power_net = -10 }
-	custom_effect_tooltip = remove_world_stage_power_net_10_tt
-}
-
-remove_world_stage_power_net_15 = {
-	add_to_variable = {global.world_stage_power_net = -15 }
-	custom_effect_tooltip = remove_world_stage_power_net_15_tt
-}
-
-remove_world_stage_power_net_20 = {
-	add_to_variable = {global.world_stage_power_net = -20 }
-	custom_effect_tooltip = remove_world_stage_power_net_20_tt
-}
-
-# CHINA
-
-add_world_stage_power_chi_1 = {
-	add_to_variable = {global.world_stage_power_chi = 1 }
-	custom_effect_tooltip = add_world_stage_power_chi_1_tt
-}
-
-add_world_stage_power_chi_2 = {
-	add_to_variable = {global.world_stage_power_chi = 2 }
-	custom_effect_tooltip = add_world_stage_power_chi_2_tt
-}
-
-add_world_stage_power_chi_5 = {
-	add_to_variable = {global.world_stage_power_chi = 5 }
-	custom_effect_tooltip = add_world_stage_power_chi_5_tt
-}
-
-add_world_stage_power_chi_10 = {
-	add_to_variable = {global.world_stage_power_chi = 10 }
-	custom_effect_tooltip = add_world_stage_power_chi_10_tt
-}
-
-add_world_stage_power_chi_15 = {
-	add_to_variable = {global.world_stage_power_chi = 15 }
-	custom_effect_tooltip = add_world_stage_power_chi_15_tt
-}
-
-add_world_stage_power_chi_20 = {
-	add_to_variable = {global.world_stage_power_chi = 20 }
-	custom_effect_tooltip = add_world_stage_power_chi_20_tt
-}
-
-remove_world_stage_power_chi_1 = {
-	add_to_variable = {global.world_stage_power_chi = -1 }
-	custom_effect_tooltip = remove_world_stage_power_chi_1_tt
-}
-
-remove_world_stage_power_chi_5 = {
-	add_to_variable = {global.world_stage_power_chi = -5 }
-	custom_effect_tooltip = remove_world_stage_power_chi_5_tt
-}
-
-remove_world_stage_power_chi_10 = {
-	add_to_variable = {global.world_stage_power_chi = -10 }
-	custom_effect_tooltip = remove_world_stage_power_chi_10_tt
-}
-
-remove_world_stage_power_chi_15 = {
-	add_to_variable = {global.world_stage_power_chi = -15 }
-	custom_effect_tooltip = remove_world_stage_power_chi_15_tt
-}
-
-remove_world_stage_power_chi_20 = {
-	add_to_variable = {global.world_stage_power_chi = -20 }
-	custom_effect_tooltip = remove_world_stage_power_chi_20_tt
-}
-
-remove_world_stage_power_chi_25 = {
-	add_to_variable = {global.world_stage_power_chi = -25 }
-	custom_effect_tooltip = remove_world_stage_power_chi_25_tt
-}
-
-remove_world_stage_power_SELF_5 = {
-	if = { limit = { tag = ROC }
-		add_to_variable = {global.world_stage_power_chi = -5 }
-		custom_effect_tooltip = remove_world_stage_power_chi_5_tt
-	}
-	if = { limit = { tag = HIR }
-		add_to_variable = {global.world_stage_power_net = -5 }
-		custom_effect_tooltip = remove_world_stage_power_net_5_tt
-	}
-	if = { limit = { tag = PRT }
-		add_to_variable = {global.world_stage_power_prt = -5 }
-		custom_effect_tooltip = remove_world_stage_power_prt_5_tt
-	}
-	if = { limit = { tag = KOB }
-		add_to_variable = {global.world_stage_power_fra = -5 }
-		custom_effect_tooltip = remove_world_stage_power_fra_5_tt
-	}
-	if = { limit = { tag = OSA }
-		add_to_variable = {global.world_stage_power_eng = -5 }
-		custom_effect_tooltip = remove_world_stage_power_eng_5_tt
-	}
-	if = { limit = { tag = OKI }
-		add_to_variable = {global.world_stage_power_usa = -5 }
-		custom_effect_tooltip = remove_world_stage_power_usa_5_tt
-	}
-	if = { limit = { tag = AMC }
-		add_to_variable = {global.world_stage_power_usa = -5 }
-		custom_effect_tooltip = remove_world_stage_power_usa_5_tt
-	}
-	if = { limit = { tag = REI }
-		add_to_variable = {global.world_stage_power_ger = -5 }
-		custom_effect_tooltip = remove_world_stage_power_ger_5_tt
-	}
-	if = { limit = { tag = FER }
-		add_to_variable = {global.world_stage_power_sov = -5 }
-		custom_effect_tooltip = remove_world_stage_power_sov_5_tt
-	}
-}
-world_stage_get_coalitions = {	#### DEPRICATED
-	# Get Coalitions
-	hidden_effect = { 	# just so it does not pollute effect tooltips
-		set_variable = { global.world_stage_power_allies = 0 }		# Allies	-> 1
-		set_variable = { global.world_stage_power_komintern = 0 }	# Komintern	-> 2
-		set_variable = { global.world_stage_power_axis = 0 }		# Axis		-> 3
-		if = {
-			limit = { check_variable = { global.world_stage_coalition_usa = 1 } }
-			add_to_variable = { global.world_stage_power_allies = global.world_stage_power_usa }
-		}
-		if = {
-			limit = { check_variable = { global.world_stage_coalition_usa = 2 } }
-			add_to_variable = { global.world_stage_power_komintern = global.world_stage_power_usa }
-		}
-		if = {
-			limit = { check_variable = { global.world_stage_coalition_usa = 3 } }
-			add_to_variable = { global.world_stage_power_axis = global.world_stage_power_usa }
-		}
-		if = {
-			limit = { check_variable = { global.world_stage_coalition_eng = 1 } }
-			add_to_variable = { global.world_stage_power_allies = global.world_stage_power_eng }
-		}
-		if = {
-			limit = { check_variable = { global.world_stage_coalition_eng = 2 } }
-			add_to_variable = { global.world_stage_power_komintern = global.world_stage_power_eng }
-		}
-		if = {
-			limit = { check_variable = { global.world_stage_coalition_eng = 3 } }
-			add_to_variable = { global.world_stage_power_axis = global.world_stage_power_eng }
-		}
-		if = {
-			limit = { check_variable = { global.world_stage_coalition_fra = 1 } }
-			add_to_variable = { global.world_stage_power_allies = global.world_stage_power_fra }
-		}
-		if = {
-			limit = { check_variable = { global.world_stage_coalition_fra = 2 } }
-			add_to_variable = { global.world_stage_power_komintern = global.world_stage_power_fra }
-		}
-		if = {
-			limit = { check_variable = { global.world_stage_coalition_fra = 3 } }
-			add_to_variable = { global.world_stage_power_axis = global.world_stage_power_fra }
-		}
-		if = {
-			limit = { check_variable = { global.world_stage_coalition_sov = 1 } }
-			add_to_variable = { global.world_stage_power_allies = global.world_stage_power_sov }
-		}
-		if = {
-			limit = { check_variable = { global.world_stage_coalition_sov = 2 } }
-			add_to_variable = { global.world_stage_power_komintern = global.world_stage_power_sov }
-		}
-		if = {
-			limit = { check_variable = { global.world_stage_coalition_sov = 3 } }
-			add_to_variable = { global.world_stage_power_axis = global.world_stage_power_sov }
-		}
-		if = {
-			limit = { check_variable = { global.world_stage_coalition_ger = 1 } }
-			add_to_variable = { global.world_stage_power_allies = global.world_stage_power_ger }
-		}
-		if = {
-			limit = { check_variable = { global.world_stage_coalition_ger = 2 } }
-			add_to_variable = { global.world_stage_power_komintern = global.world_stage_power_ger }
-		}
-		if = {
-			limit = { check_variable = { global.world_stage_coalition_ger = 3 } }
-			add_to_variable = { global.world_stage_power_axis = global.world_stage_power_ger }
-		}
-		if = {
-			limit = { check_variable = { global.world_stage_coalition_prt = 1 } }
-			add_to_variable = { global.world_stage_power_allies = global.world_stage_power_prt }
-		}
-		if = {
-			limit = { check_variable = { global.world_stage_coalition_prt = 2 } }
-			add_to_variable = { global.world_stage_power_komintern = global.world_stage_power_prt }
-		}
-		if = {
-			limit = { check_variable = { global.world_stage_coalition_prt = 3 } }
-			add_to_variable = { global.world_stage_power_axis = global.world_stage_power_prt }
-		}
-		if = {
-			limit = { check_variable = { global.world_stage_coalition_net = 1 } }
-			add_to_variable = { global.world_stage_power_allies = global.world_stage_power_net }
-		}
-		if = {
-			limit = { check_variable = { global.world_stage_coalition_net = 2 } }
-			add_to_variable = { global.world_stage_power_komintern = global.world_stage_power_net }
-		}
-		if = {
-			limit = { check_variable = { global.world_stage_coalition_net = 3 } }
-			add_to_variable = { global.world_stage_power_axis = global.world_stage_power_net }
-		}
-		if = {
-			limit = { check_variable = { global.world_stage_coalition_chi = 1 } }
-			add_to_variable = { global.world_stage_power_allies = global.world_stage_power_chi }
-		}
-		if = {
-			limit = { check_variable = { global.world_stage_coalition_chi = 2 } }
-			add_to_variable = { global.world_stage_power_komintern = global.world_stage_power_chi }
-		}
-		if = {
-			limit = { check_variable = { global.world_stage_coalition_chi = 3 } }
-			add_to_variable = { global.world_stage_power_axis = global.world_stage_power_chi }
-		}
-		every_country = {
-			limit = { check_variable = { world_stage_coalition = 1 } }
-			add_to_variable = { global.world_stage_power_allies = world_stage_power }
-		}
-		every_country = {
-			limit = { check_variable = { world_stage_coalition = 1 } }
-			add_to_variable = { global.world_stage_power_allies = world_stage_power }
-		}
-		every_country = {
-			limit = { check_variable = { world_stage_coalition = 2 } }
-			add_to_variable = { global.world_stage_power_komintern = world_stage_power }
-		}
-		every_country = {
-			limit = { check_variable = { world_stage_coalition = 3 } }
-			add_to_variable = { global.world_stage_power_axis = world_stage_power }
-		}
-	}
-}
-world_stage_get_tag_info_from_metropolis = {
-	## depricated ## depricated ## depricated ## depricated ## depricated ## depricated ## depricated ## depricated ## depricated 
-	every_possible_country = {
-		set_variable = { world_stage_metropolis = 100 }
-		set_variable = { world_stage_coalition = 4 }
-		set_variable = { world_stage_power = 0 }
-		### TO-DO: ADD BELONGING TO FACTIONS LATER ### TO-DO: ADD BELONGING TO FACTIONS LATER ### TO-DO: ADD BELONGING TO FACTIONS LATER 
-	}
-	# starts with "hard coded" variables
-	REI = { set_variable = { world_stage_metropolis = 101 } }	# for these ones it should be enough to get them once in start-up, the redundancy here works as safety mechanism
-	OSA = { set_variable = { world_stage_metropolis = 102 } }
-	KOB = { set_variable = { world_stage_metropolis = 103 } }
-	FER = { set_variable = { world_stage_metropolis = 104 } }
-	AMC = { set_variable = { world_stage_metropolis = 105 } }	#
-	OKI = { set_variable = { world_stage_metropolis = 105 } }	# both are America	(NOTE: possibility of OKI becoming independent and not being USA anymore should be considered here)
-	ROC = { set_variable = { world_stage_metropolis = 106 } }
-	HIR = { set_variable = { world_stage_metropolis = 107 } }
-	PRT = { set_variable = { world_stage_metropolis = 108 } }
-	#KIT = { set_variable = { world_stage_metropolis = 109 } }	# Italy, not implemented
-	#SPR = { set_variable = { world_stage_metropolis = 111 } }	# Spain, not implemented
-	random_country = {
-		limit = { has_idea = all_internationally_recognised }
-		set_variable = { world_stage_metropolis = 100 }
-	}
-	# now imports variables from metropolis
-	every_country = {
-		limit = { check_variable = { world_stage_metropolis > 100 } }
-		var:world_stage_metropolis = {
-			set_variable = { PREV.world_stage_power = world_stage_power }
-			set_variable = { PREV.world_stage_coalition = world_stage_coalition }
-		}
-		log = "world_stage_metropolis: [?world_stage_metropolis]"
-		log = "world_stage_coalition: [?world_stage_coalition]"
-		log = "world_stage_power: [?world_stage_power]"
-	}
-} d_world_stage_get_tag_info_from_metropolis = { world_stage_get_tag_info_from_metropolis = yes log = "get all tag info from metropolis" }
-
+# aaaaaaaaaaaaaaaaaaaaaaand it's gone
