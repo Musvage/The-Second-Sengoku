@@ -1,0 +1,45 @@
+on_actions = {
+	# AI evaluate its strategy at startup, each 6 months and after each war/peace
+	on_startup = {
+		effect = {
+			every_country = {
+				random_list = {	# slightly different 
+					1 = { set_variable = { ai_strategy_cooldown = 7 } }
+					1 = { set_variable = { ai_strategy_cooldown = 6 } }
+					1 = { set_variable = { ai_strategy_cooldown = 5 } }
+				}
+			}
+		}
+	}
+
+	on_monthly = {
+		effect = {
+			if = {
+				limit = { is_ai = yes }
+				add_to_variable = { ai_strategy_cooldown = -1 }
+			}
+			if = {
+				limit = { check_variable = { ai_strategy_cooldown  < 0.9 } }
+				set_variable = { ai_strategy_cooldown = 6 }
+				if = { limit = { tag = HIR } HIR_choose_stategy_plan = yes }
+			}
+		}
+	}
+
+	on_war_relation_added = {
+		effect = {
+			ROOT = {
+				if = { limit = { tag = HIR } HIR_choose_stategy_plan = yes }
+			}
+			FROM = {
+				if = { limit = { tag = HIR } HIR_choose_stategy_plan = yes }
+			}
+		}
+	}
+
+	on_peace = {
+		effect = {
+			if = { limit = { tag = HIR } HIR_choose_stategy_plan = yes }
+		}
+	}
+}

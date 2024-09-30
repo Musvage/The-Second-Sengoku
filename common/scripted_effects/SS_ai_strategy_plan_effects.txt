@@ -1,0 +1,80 @@
+# These are mostly used once per game by the AI to determine the next strategy.
+# They are (mostly) activated by focuses, and will be written here lest the focus tree files are filled with repetitive code
+
+# Initial strategies are determined by game rules and on_action files
+
+# Flags used:
+# ai_path_neutrality
+# ai_path_democratic
+# ai_path_democratic_socialism
+# ai_path_fascism
+# ai_path_communism
+# ai_path_autocracy
+# initial_strategy_completed
+# ai_path_aggressive
+
+HIR_choose_stategy_plan = {
+	if = {
+		limit = { OR = { has_country_flag = ai_path_neutrality has_country_flag = ai_path_fascism } }	# V.O.C., fascist and monarchist path
+		if = {
+			limit = {
+				OR = {
+					any_other_country = { has_war_with_wargoal_against = { target = HIR } }
+					KYU = {
+						OR = {
+							has_country_flag = reject_overture_from_HIR
+							AND = { has_completed_focus = KYU_NAV_neutrality has_completed_focus = KYU_NAV_aggressive NOT = { has_completed_focus = KYU_NAV_befriend_HIR } }
+							has_opinion = { target = HIR value > -50 }
+							AND = { is_ai = yes difficulty > 4 }	# extra difficulty for human REI
+						}
+					}
+					PRT = {
+						OR = {
+							has_country_flag = reject_overture_from_HIR
+							AND = { has_completed_focus = PRT_NAV_neutrality has_completed_focus = PRT_NAV_aggressive NOT = { has_completed_focus = PRT_NAV_befriend_HIR } }
+							has_opinion = { target = HIR value > -50 }
+							AND = { is_ai = yes difficulty > 4 }	# extra difficulty for human REI
+						}
+					}
+				}
+			}
+			set_country_flag = ai_path_aggressive
+			log = "[THIS.GetName] chose alternative path / ai_path_aggressive"
+		} else = { log = "[THIS.GetName] chose alternative path / NOT ai_path_aggressive" }
+	} else = {	# default: democratic (same as before but also checks for aggressive REI)
+		if = {
+			limit = {
+				OR = {
+					any_other_country = { has_war_with_wargoal_against = { target = HIR } }
+					KYU = {
+						OR = {
+							has_country_flag = reject_overture_from_HIR
+							AND = { has_completed_focus = KYU_NAV_neutrality has_completed_focus = KYU_NAV_aggressive NOT = { has_completed_focus = KYU_NAV_befriend_HIR } }
+							has_opinion = { target = HIR value > -50 }
+						}
+					}
+					PRT = {
+						OR = {
+							has_country_flag = reject_overture_from_HIR
+							AND = { has_completed_focus = PRT_NAV_neutrality has_completed_focus = PRT_NAV_aggressive NOT = { has_completed_focus = PRT_NAV_befriend_HIR } }
+							has_opinion = { target = HIR value > -50 }
+						}
+					}
+					REI = {
+						OR = {
+							is_embargoing = HIR
+							has_war_with = HIR
+							has_opinion = { target = HIR value > -50 }
+							AND = { is_ai = yes difficulty > 4 }	# extra difficulty for human REI
+						}
+					}
+					is_embargoing = REI
+					has_opinion = { target = REI value > -50 }
+					has_world_stage_coalition_allies = yes
+				}
+			}
+			set_country_flag = ai_path_aggressive
+			log = "[THIS.GetName] chose default path / ai_path_aggressive"
+		} else = { log = "[THIS.GetName] chose default path / NOT ai_path_aggressive" }
+	}
+}
