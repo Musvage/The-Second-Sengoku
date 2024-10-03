@@ -955,6 +955,7 @@ focus_tree = {
 				add_idea = HIR_natives_of_hirado_suppressed_spirit
 				remove_idea = HIR_natives_of_hirado_spirit
 			}
+			clr_country_flag = ai_path_neutrality	# Remove flag for impossible path
 		}
 	}
 	
@@ -1001,6 +1002,7 @@ focus_tree = {
 				add_idea = HIR_natives_of_hirado_aid_spirit
 				remove_idea = HIR_natives_of_hirado_spirit
 			}
+			clr_country_flag = ai_path_neutrality	# Remove flag for impossible path
 		}
 	}
 	
@@ -1041,11 +1043,11 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_STABILITY }
 		
 		ai_will_do = {
-        factor = 10
-        modifier = {
-        factor = 2
-        has_war = no
-            }
+			factor = 10
+			modifier = {
+				factor = 2
+				has_war = no
+			}
         }
 		
 		mutually_exclusive = { focus = HIR_NAV_active_diplomacy focus = HIR_trade_with_all }
@@ -1055,7 +1057,13 @@ focus_tree = {
 		y = 1
 		
 		available = {
-			# add spirit to avoid embargos
+			# add spirit to avoid embargos (what was that again?)
+			hidden_trigger = {
+				if = {
+					limit = { us_ai = yes OR = { focus = HIR_crisis_self_rule focus = HIR_crisis_help focus = HIR_crisis_repression } NOT = { has_completed_focus = HIR_NAV_active_diplomacy } }
+					NOT = { has_country_flag = NAV_friendly_strategy }
+				}
+			}
 		}
 
 		cost = 10
@@ -1075,10 +1083,10 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_DIPLOMACY }
 		
 		ai_will_do = {
-        factor = 10
-        modifier = {
-        factor = 2
-        has_war = yes
+			factor = 10
+			modifier = {
+				factor = 2
+				has_war = yes
             }
         }
 		
@@ -1089,7 +1097,12 @@ focus_tree = {
 		y = 1
 		
 		available = {
-		
+			hidden_trigger = {
+				if = {
+					limit = { us_ai = yes OR = { has_completed_focus = HIR_crisis_self_rule has_completed_focus = HIR_crisis_help has_completed_focus = HIR_crisis_repression } NOT = { has_completed_focus = HIR_NAV_neutrality } }
+					NOT = { has_country_flag = NAV_aggressive_strategy }
+				}
+			}
 		}
 
 		cost = 10
