@@ -3,7 +3,7 @@
 
 # Initial strategies are determined by game rules and on_action files
 
-# Flags used:
+# Common flags used:
 # ai_path_neutrality
 # ai_path_democratic
 # ai_path_democratic_socialism
@@ -11,7 +11,9 @@
 # ai_path_communism
 # ai_path_autocracy
 # initial_strategy_completed
-# ai_path_aggressive
+# ai_path_aggressiv
+# hostile_to_[TAG]
+# friendly_to_[TAG]
 
 # EASTERNS {
 
@@ -19,164 +21,184 @@ SHO_choose_stategy_plan = {
 	SHO = {
 	
 	}
-}
+} d_SHO_choose_stategy_plan = { SHO_choose_stategy_plan = yes log = "SHO_choose_stategy_plan" }
 
 KAN_choose_stategy_plan = {
 	KAN = {
 	
 	}
-}
+} d_KAN_choose_stategy_plan = { KAN_choose_stategy_plan = yes log = "KAN_choose_stategy_plan" }
 
 EZO_choose_stategy_plan = {
 	EZO = {
 	
 	}
-}
+} d_EZO_choose_stategy_plan = { EZO_choose_stategy_plan = yes log = "EZO_choose_stategy_plan" }
 
 SHI_choose_stategy_plan = {
 	SHI = {
 	
 	}
-}
+} d_SHI_choose_stategy_plan = { SHI_choose_stategy_plan = yes log = "SHI_choose_stategy_plan" }
 
 KYU_choose_stategy_plan = {
 	KYU = {
-		# choose stance on PRT
-		if = {
-			limit = {
-				NOT = {
-					has_country_flag = hostile_to_PRT
-					focus_progress = { focus = PRT_NAV_befriend_KYU progress > 0.01 }
-				}
-				count_triggers = {
-					amount = 3
-					has_war_with = PRT has_war_with = PRT has_war_with = PRT	#it counts 3 times to fulfill trigger automatically
-					has_opinion = { target = PRT value < -50 }
-					has_opinion = { target = PRT value < -100 }
-					is_justifying_wargoal_against = PRT
-					PRT = { has_completed_focus = PRT_NAV_neutrality }
-					PRT = { has_completed_focus = PRT_NAV_aggressive }
-					PRT = { has_country_flag = reject_overture_from_KYU }
-					PRT = { has_opinion = { target = KYU value < -50 } }
-					PRT = { has_opinion = { target = KYU value < -100 } }
-					PRT = { is_justifying_wargoal_against = KYU }
-					AND = { OR = { has_government = democratic has_government = democratic_socialism has_government = communism } PRT = { OR = { has_government = fascism has_government = neutrality has_government = autocracy } } }
-				}
-			}
-			set_country_flag = hostile_to_PRT
-			log = "[THIS.GetName] chose hostile_to_PRT"
-		} else = { log = "[THIS.GetName] chose NOT hostile_to_PRT" }
 		# choose stance on HIR
+			# check opinion (positive relations decrease hostility)
+		set_temp_variable = { hostility_HIR = opinion@HIR }
+		HIR = { add_to_temp_variable = { hostility_HIR = opinion@KYU } }
+		multiply_temp_variable = { hostility_HIR = -1 }
+			# check ideology
+		if = { limit = { left_ideology = yes HIR = { left_ideology = yes } }		add_to_temp_variable = { hostility_HIR = -100 } }
+		if = { limit = { right_ideology = yes HIR = { right_ideology = yes } }		add_to_temp_variable = { hostility_HIR = -100 } }
+		if = { limit = { center_ideology = yes HIR = { center_ideology = yes } }	add_to_temp_variable = { hostility_HIR = -100 } }
+		if = { limit = { right_ideology = yes HIR = { left_ideology = yes } }		add_to_temp_variable = { hostility_HIR = 100 } }
+		if = { limit = { left_ideology = yes HIR = { right_ideology = yes } }		add_to_temp_variable = { hostility_HIR = 100 } }
+			# previous decisions
+		if = { limit = { has_country_flag = hostile_to_HIR }						add_to_temp_variable = { hostility_HIR = 100 } }
+		if = { limit = { has_country_flag = friendly_to_HIR }						add_to_temp_variable = { hostility_HIR = -100 } }
+			# check other factors
+		if = { limit = { has_war_with = HIR }										add_to_temp_variable = { hostility_HIR = 1000 } }
+		if = { limit = { has_country_flag = reject_overture_from_HIR }				add_to_temp_variable = { hostility_HIR = 100 } }
+		if = { limit = { is_justifying_wargoal_against = HIR }						add_to_temp_variable = { hostility_HIR = 100 } }
+		if = { limit = { has_wargoal_against = HIR }								add_to_temp_variable = { hostility_HIR = 200 } }
+		if = { limit = { is_in_faction_with = HIR }									add_to_temp_variable = { hostility_HIR = -500 } }
+		if = { limit = { has_completed_focus = KYU_NAV_befriend_HIR }				add_to_temp_variable = { hostility_HIR = -200 } }
+		if = { limit = { is_embargoing = HIR }										add_to_temp_variable = { hostility_HIR = 200 } }
+		if = { limit = { HIR = { has_completed_focus = HIR_NAV_active_diplomacy } }	add_to_temp_variable = { hostility_HIR = -100 } }
+		if = { limit = { HIR = { has_completed_focus = HIR_NAV_neutrality } }		add_to_temp_variable = { hostility_HIR = 200 } }
+		if = { limit = { HIR = { has_completed_focus = HIR_NAV_aggressive } }		add_to_temp_variable = { hostility_HIR = 400 } }
+		if = { limit = { HIR = { has_country_flag = reject_overture_from_KYU } }	add_to_temp_variable = { hostility_HIR = 200 } }
+		if = { limit = { HIR = { is_justifying_wargoal_against = KYU } }			add_to_temp_variable = { hostility_HIR = 200 } }
+		if = { limit = { HIR = { has_wargoal_against = KYU } }						add_to_temp_variable = { hostility_HIR = 400 } }
+		if = { limit = { HIR = { is_embargoing = KYU } }							add_to_temp_variable = { hostility_HIR = 200 } }
+			# final decision
 		if = {
-			limit = {
-				NOT = {
-					has_country_flag = HIR
-					focus_progress = { focus = HIR_NAV_befriend_KYU progress > 0.01 }
-				}
-				count_triggers = {
-					amount = 3
-					has_war_with = HIR has_war_with = HIR has_war_with = HIR	#it counts 3 times to fulfill trigger automatically
-					has_completed_focus = HIR_NAV_aggressive
-					has_opinion = { target = HIR value < -50 }
-					has_opinion = { target = HIR value < -100 }
-					is_justifying_wargoal_against = HIR
-					HIR = { has_completed_focus = HIR_NAV_neutrality }
-					HIR = { has_completed_focus = HIR_NAV_aggressive }
-					HIR = { has_country_flag = reject_overture_from_KYU }
-					HIR = { has_opinion = { target = KYU value < -50 } }
-					HIR = { has_opinion = { target = KYU value < -100 } }
-					HIR = { is_justifying_wargoal_against = KYU }
-					AND = { OR = { has_government = democratic has_government = democratic_socialism has_government = communism } HIR = { OR = { has_government = fascism has_government = neutrality has_government = autocracy } } }
-				}
-			}
-			set_country_flag = hostile_to_HIR
-			log = "[THIS.GetName] chose hostile_to_HIR"
-		} else = { log = "[THIS.GetName] chose NOT hostile_to_HIR" }
-		# choose NAV strategy
-		if = {
-			limit = { NOT = { has_country_flag = NAV_aggressive_strategy has_country_flag = NAV_friendly_strategy } }
-			if = {
-				limit = { has_country_flag = hostile_to_HIR has_country_flag = hostile_to_KYU }
-				set_country_flag = NAV_aggressive_strategy	log = "[THIS.GetName] chose NAV_aggressive_strategy"
-			} else_if = {
-				limit = {
-					has_country_flag = hostile_to_PRT
-					OR = {
-						has_war_with = HIR
-						has_completed_focus = KYU_NAV_aggressive
-						has_opinion = { target = HIR value < -50 }
-						is_justifying_wargoal_against = HIR
-						HIR = { has_country_flag = reject_overture_from_KYU }
-						HIR = { has_opinion = { target = KYU value < -50 } }
-						HIR = { is_justifying_wargoal_against = KYU }
-						AND = { OR = { has_government = democratic has_government = democratic_socialism has_government = communism } HIR = { OR = { has_government = fascism has_government = neutrality has_government = autocracy } } }
-					}
-				}
-				set_country_flag = NAV_aggressive_strategy	log = "[THIS.GetName] chose NAV_aggressive_strategy"
-			} else_if = {
-				limit = {
-					has_country_flag = hostile_to_HIR
-					OR = {
-						has_war_with = PRT
-						has_completed_focus = KYU_NAV_aggressive
-						has_opinion = { target = PRT value < -50 }
-						is_justifying_wargoal_against = PRT
-						PRT = { has_country_flag = reject_overture_from_KYU }
-						PRT = { has_opinion = { target = KYU value < -50 } }
-						PRT = { is_justifying_wargoal_against = KYU }
-						AND = { OR = { has_government = democratic has_government = democratic_socialism has_government = communism } PRT = { OR = { has_government = fascism has_government = neutrality has_government = autocracy } } }
-					}
-				}
-				set_country_flag = NAV_aggressive_strategy	log = "[THIS.GetName] chose NAV_aggressive_strategy"
-			} else_if = {
-				limit = {
-					NOT = { has_country_flag = hostile_to_HIR }
-					NOT = { has_country_flag = hostile_to_KYU }
-				}
-				set_country_flag = NAV_friendly_strategy	log = "[THIS.GetName] chose NAV_friendly_strategy"
-			}
+			limit = { check_variable = { hostility_HIR > 499 } }
+			clr_country_flag = friendly_to_HIR
+			set_country_flag = hostile_to_HIR log = "[THIS.GetName] is hostile towards [HIR.GetName]"
+		} else_if = {
+			limit = { check_variable = { hostility_HIR < -249 } }
+			clr_country_flag = hostile_to_HIR
+			set_country_flag = friendly_to_HIR log = "[THIS.GetName] is friendly towards [HIR.GetName]"
 		} else = {
-			if = { limit = { has_country_flag = NAV_friendly_strategy } log = "[THIS.GetName] chose NAV_friendly_strategy" }
-			if = { limit = { has_country_flag = NAV_aggressive_strategy } log = "[THIS.GetName] chose NAV_aggressive_strategy" }
+			clr_country_flag = hostile_to_HIR
+			clr_country_flag = friendly_to_HIR log = "[THIS.GetName] is neutral towards [HIR.GetName]"
+		}
+		# choose stance on PRT
+			# check opinion (positive relations decrease hostility)
+		set_temp_variable = { hostility_PRT = opinion@PRT }
+		PRT = { add_to_temp_variable = { hostility_PRT = opinion@KYU } }
+		multiply_temp_variable = { hostility_PRT = -1 }
+			# check ideology
+		if = { limit = { left_ideology = yes PRT = { left_ideology = yes } }		add_to_temp_variable = { hostility_PRT = -100 } }
+		if = { limit = { right_ideology = yes PRT = { right_ideology = yes } }		add_to_temp_variable = { hostility_PRT = -100 } }
+		if = { limit = { center_ideology = yes PRT = { center_ideology = yes } }	add_to_temp_variable = { hostility_PRT = -100 } }
+		if = { limit = { right_ideology = yes PRT = { left_ideology = yes } }		add_to_temp_variable = { hostility_PRT = 100 } }
+		if = { limit = { left_ideology = yes PRT = { right_ideology = yes } }		add_to_temp_variable = { hostility_PRT = 100 } }
+			# previous decisions
+		if = { limit = { has_country_flag = hostile_to_PRT }						add_to_temp_variable = { hostility_PRT = 100 } }
+		if = { limit = { has_country_flag = friendly_to_PRT }						add_to_temp_variable = { hostility_PRT = -100 } }
+			# check other factors
+		if = { limit = { has_war_with = PRT }										add_to_temp_variable = { hostility_PRT = 1000 } }
+		if = { limit = { has_country_flag = reject_overture_from_PRT }				add_to_temp_variable = { hostility_PRT = 100 } }
+		if = { limit = { is_justifying_wargoal_against = PRT }						add_to_temp_variable = { hostility_PRT = 100 } }
+		if = { limit = { has_wargoal_against = PRT }								add_to_temp_variable = { hostility_PRT = 200 } }
+		if = { limit = { is_in_faction_with = PRT }									add_to_temp_variable = { hostility_PRT = -500 } }
+		if = { limit = { has_completed_focus = KYU_NAV_befriend_PRT }				add_to_temp_variable = { hostility_PRT = -200 } }
+		if = { limit = { is_embargoing = PRT }										add_to_temp_variable = { hostility_PRT = 200 } }
+		if = { limit = { PRT = { has_completed_focus = PRT_NAV_active_diplomacy } }	add_to_temp_variable = { hostility_PRT = -100 } }
+		if = { limit = { PRT = { has_completed_focus = PRT_NAV_neutrality } }		add_to_temp_variable = { hostility_PRT = 200 } }
+		if = { limit = { PRT = { has_completed_focus = PRT_NAV_aggressive } }		add_to_temp_variable = { hostility_PRT = 400 } }
+		if = { limit = { PRT = { has_country_flag = reject_overture_from_KYU } }	add_to_temp_variable = { hostility_PRT = 200 } }
+		if = { limit = { PRT = { is_justifying_wargoal_against = KYU } }			add_to_temp_variable = { hostility_PRT = 200 } }
+		if = { limit = { PRT = { has_wargoal_against = KYU } }						add_to_temp_variable = { hostility_PRT = 400 } }
+		if = { limit = { PRT = { is_embargoing = KYU } }							add_to_temp_variable = { hostility_PRT = 200 } }
+			# final decision
+		if = {
+			limit = { check_variable = { hostility_PRT > 499 } }
+			clr_country_flag = friendly_to_PRT
+			set_country_flag = hostile_to_PRT log = "[THIS.GetName] is hostile towards [PRT.GetName]"
+		} else_if = {
+			limit = { check_variable = { hostility_PRT < -249 } }
+			clr_country_flag = hostile_to_PRT
+			set_country_flag = friendly_to_PRT log = "[THIS.GetName] is friendly towards [PRT.GetName]"
+		} else = {
+			clr_country_flag = hostile_to_PRT
+			clr_country_flag = friendly_to_PRT log = "[THIS.GetName] is neutral towards [PRT.GetName]"
+		}
+		# choose NAV strategy (besides PRT and HIR, KYU must check MUS/SUS since focuses about Okinawa depend on initial NAV focuses)
+		set_temp_variable = { NAV_aggressivenes = opinion@MUS }
+		MUS = { add_to_temp_variable = { NAV_aggressivenes = opinion@KYU } }
+		multiply_temp_variable = { NAV_aggressivenes = -1 }
+		add_to_temp_variable = { NAV_aggressivenes = hostility_HIR }
+		add_to_temp_variable = { NAV_aggressivenes = hostility_PRT }
+			# check ideology
+		if = { limit = { left_ideology = yes MUS = { left_ideology = yes } }		add_to_temp_variable = { NAV_aggressivenes = -100 } }
+		if = { limit = { right_ideology = yes MUS = { right_ideology = yes } }		add_to_temp_variable = { NAV_aggressivenes = -100 } }
+		if = { limit = { center_ideology = yes MUS = { center_ideology = yes } }	add_to_temp_variable = { NAV_aggressivenes = -100 } }
+		if = { limit = { right_ideology = yes MUS = { left_ideology = yes } }		add_to_temp_variable = { NAV_aggressivenes = 100 } }
+		if = { limit = { left_ideology = yes MUS = { right_ideology = yes } }		add_to_temp_variable = { NAV_aggressivenes = 100 } }
+			# previous decisions
+		if = { limit = { has_country_flag = NAV_aggressive_strategy }				add_to_temp_variable = { NAV_aggressivenes = 100 } }
+		if = { limit = { has_country_flag = NAV_friendly_strategy }					add_to_temp_variable = { NAV_aggressivenes = -100 } }
+			# check other factors
+		if = { limit = { has_war_with = MUS }										add_to_temp_variable = { NAV_aggressivenes = 1000 } }
+		if = { limit = { is_justifying_wargoal_against = MUS }						add_to_temp_variable = { NAV_aggressivenes = 100 } }
+		if = { limit = { has_wargoal_against = MUS }								add_to_temp_variable = { NAV_aggressivenes = 200 } }
+		if = { limit = { is_in_faction_with = MUS }									add_to_temp_variable = { NAV_aggressivenes = -500 } }
+		if = { limit = { is_embargoing = MUS }										add_to_temp_variable = { NAV_aggressivenes = 200 } }
+		#if = { limit = { MUS = { has_completed_focus =  } }						add_to_temp_variable = { NAV_aggressivenes =  } }
+		if = { limit = { MUS = { is_justifying_wargoal_against = KYU } }			add_to_temp_variable = { NAV_aggressivenes = 200 } }
+		if = { limit = { MUS = { has_wargoal_against = KYU } }						add_to_temp_variable = { NAV_aggressivenes = 400 } }
+		if = { limit = { MUS = { is_embargoing = KYU } }							add_to_temp_variable = { NAV_aggressivenes = 200 } }
+			# final decision
+		if = {
+			limit = { check_variable = { NAV_aggressivenes > 0 } }
+			clr_country_flag = NAV_friendly_strategy
+			set_country_flag = NAV_aggressive_strategy log = "[THIS.GetName] chose aggressive strategy (NAV)"
+		} else = {
+			clr_country_flag = NAV_aggressive_strategy
+			set_country_flag = NAV_friendly_strategy log = "[THIS.GetName] chose friendly strategy (NAV)"
 		}
 	}
-}
+} d_KYU_choose_stategy_plan = { KYU_choose_stategy_plan = yes log = "KYU_choose_stategy_plan" }
 
 CHU_choose_stategy_plan = {
 	CHU = {
 	
 	}
-}
+} d_CHU_choose_stategy_plan = { CHU_choose_stategy_plan = yes log = "CHU_choose_stategy_plan" }
 
 PRO_choose_stategy_plan = {
 	PRO = {
 	
 	}
-}
+} d_PRO_choose_stategy_plan = { PRO_choose_stategy_plan = yes log = "PRO_choose_stategy_plan" }
 
 IMS_choose_stategy_plan = {
 	IMS = {
 	
 	}
-}
+} d_IMS_choose_stategy_plan = { IMS_choose_stategy_plan = yes log = "IMS_choose_stategy_plan" }
 
 AMO_choose_stategy_plan = {
 	AMO = {
 	
 	}
-}
+} d_AMO_choose_stategy_plan = { AMO_choose_stategy_plan = yes log = "AMO_choose_stategy_plan" }
 
 JOS_choose_stategy_plan = {
 	JOS = {
 	
 	}
-}
+} d_JOS_choose_stategy_plan = { JOS_choose_stategy_plan = yes log = "JOS_choose_stategy_plan" }
 
 GAN_choose_stategy_plan = {
 	GAN = {
 	
 	}
-}
+} d_GAN_choose_stategy_plan = { GAN_choose_stategy_plan = yes log = "GAN_choose_stategy_plan" }
 
 # } WESTERNS {
 
@@ -184,61 +206,94 @@ REI_choose_stategy_plan = {
 	REI = {
 	
 	}
-}
+} d_REI_choose_stategy_plan = { REI_choose_stategy_plan = yes log = "REI_choose_stategy_plan" }
 
 PRT_choose_stategy_plan = {
 	PRT = {
 		# choose stance on KYU
+			# check opinion (positive relations decrease hostility)
+		set_temp_variable = { hostility_KYU = opinion@KYU }
+		KYU = { add_to_temp_variable = { hostility_KYU = opinion@PRT } }
+		multiply_temp_variable = { hostility_KYU = -1 }
+			# check ideology
+		if = { limit = { left_ideology = yes KYU = { left_ideology = yes } }		add_to_temp_variable = { hostility_KYU = -100 } }
+		if = { limit = { right_ideology = yes KYU = { right_ideology = yes } }		add_to_temp_variable = { hostility_KYU = -100 } }
+		if = { limit = { center_ideology = yes KYU = { center_ideology = yes } }	add_to_temp_variable = { hostility_KYU = -100 } }
+		if = { limit = { right_ideology = yes KYU = { left_ideology = yes } }		add_to_temp_variable = { hostility_KYU = 100 } }
+		if = { limit = { left_ideology = yes KYU = { right_ideology = yes } }		add_to_temp_variable = { hostility_KYU = 100 } }
+			# previous decisions
+		if = { limit = { has_country_flag = hostile_to_KYU }						add_to_temp_variable = { hostility_KYU = 100 } }
+		if = { limit = { has_country_flag = friendly_to_KYU }						add_to_temp_variable = { hostility_KYU = -100 } }
+			# check other factors
+		if = { limit = { has_war_with = KYU }										add_to_temp_variable = { hostility_KYU = 1000 } }
+		if = { limit = { has_country_flag = reject_overture_from_KYU }				add_to_temp_variable = { hostility_KYU = 100 } }
+		if = { limit = { is_justifying_wargoal_against = KYU }						add_to_temp_variable = { hostility_KYU = 100 } }
+		if = { limit = { has_wargoal_against = KYU }								add_to_temp_variable = { hostility_KYU = 200 } }
+		if = { limit = { is_in_faction_with = KYU }									add_to_temp_variable = { hostility_KYU = -500 } }
+		if = { limit = { has_completed_focus = PRT_NAV_befriend_KYU }				add_to_temp_variable = { hostility_KYU = -200 } }
+		if = { limit = { is_embargoing = KYU }										add_to_temp_variable = { hostility_KYU = 200 } }
+		if = { limit = { KYU = { has_completed_focus = KYU_NAV_active_diplomacy } }	add_to_temp_variable = { hostility_KYU = -100 } }
+		if = { limit = { KYU = { has_completed_focus = KYU_NAV_neutrality } }		add_to_temp_variable = { hostility_KYU = 200 } }
+		if = { limit = { KYU = { has_completed_focus = KYU_NAV_aggressive } }		add_to_temp_variable = { hostility_KYU = 400 } }
+		if = { limit = { KYU = { has_country_flag = reject_overture_from_PRT } }	add_to_temp_variable = { hostility_KYU = 200 } }
+		if = { limit = { KYU = { is_justifying_wargoal_against = PRT } }			add_to_temp_variable = { hostility_KYU = 200 } }
+		if = { limit = { KYU = { has_wargoal_against = PRT } }						add_to_temp_variable = { hostility_KYU = 400 } }
+		if = { limit = { KYU = { is_embargoing = PRT } }							add_to_temp_variable = { hostility_KYU = 200 } }
+			# final decision
 		if = {
-			limit = {
-				NOT = {
-					has_country_flag = hostile_to_KYU
-					focus_progress = { focus = KYU_NAV_befriend_PRT progress > 0.01 }
-				}
-				count_triggers = {
-					amount = 3
-					has_war_with = KYU has_war_with = KYU has_war_with = KYU	#it counts 3 times to fulfill trigger automatically
-					has_opinion = { target = KYU value < -50 }
-					has_opinion = { target = KYU value < -100 }
-					is_justifying_wargoal_against = KYU
-					KYU = { has_completed_focus = KYU_NAV_neutrality }
-					KYU = { has_completed_focus = KYU_NAV_aggressive }
-					KYU = { has_country_flag = reject_overture_from_PRT }
-					KYU = { has_opinion = { target = PRT value < -50 } }
-					KYU = { has_opinion = { target = PRT value < -100 } }
-					KYU = { is_justifying_wargoal_against = PRT }
-					AND = { OR = { has_government = democratic has_government = democratic_socialism has_government = communism } KYU = { OR = { has_government = fascism has_government = neutrality has_government = autocracy } } }
-				}
-			}
-			set_country_flag = hostile_to_KYU
-			log = "[THIS.GetName] chose hostile_to_KYU"
-		} else = { log = "[THIS.GetName] chose NOT hostile_to_KYU" }
+			limit = { check_variable = { hostility_KYU > 499 } }
+			clr_country_flag = friendly_to_KYU
+			set_country_flag = hostile_to_KYU log = "[THIS.GetName] is hostile towards [KYU.GetName]"
+		} else_if = {
+			limit = { check_variable = { hostility_KYU < -249 } }
+			clr_country_flag = hostile_to_KYU
+			set_country_flag = friendly_to_KYU log = "[THIS.GetName] is friendly towards [KYU.GetName]"
+		} else = {
+			clr_country_flag = hostile_to_KYU
+			clr_country_flag = friendly_to_KYU log = "[THIS.GetName] is neutral towards [KYU.GetName]"
+		}
 		# choose stance on HIR
+			# check opinion (positive relations decrease hostility)
+		set_temp_variable = { hostility_HIR = opinion@HIR }
+		HIR = { add_to_temp_variable = { hostility_HIR = opinion@PRT } }
+		multiply_temp_variable = { hostility_HIR = -1 }
+			# check ideology
+		if = { limit = { left_ideology = yes HIR = { left_ideology = yes } }		add_to_temp_variable = { hostility_HIR = -100 } }
+		if = { limit = { right_ideology = yes HIR = { right_ideology = yes } }		add_to_temp_variable = { hostility_HIR = -100 } }
+		if = { limit = { center_ideology = yes HIR = { center_ideology = yes } }	add_to_temp_variable = { hostility_HIR = -100 } }
+		if = { limit = { right_ideology = yes HIR = { left_ideology = yes } }		add_to_temp_variable = { hostility_HIR = 100 } }
+		if = { limit = { left_ideology = yes HIR = { right_ideology = yes } }		add_to_temp_variable = { hostility_HIR = 100 } }
+			# previous decisions
+		if = { limit = { has_country_flag = hostile_to_HIR }						add_to_temp_variable = { hostility_HIR = 100 } }
+		if = { limit = { has_country_flag = friendly_to_HIR }						add_to_temp_variable = { hostility_HIR = -100 } }
+			# check other factors
+		if = { limit = { has_war_with = HIR }										add_to_temp_variable = { hostility_HIR = 1000 } }
+		if = { limit = { has_country_flag = reject_overture_from_HIR }				add_to_temp_variable = { hostility_HIR = 100 } }
+		if = { limit = { is_justifying_wargoal_against = HIR }						add_to_temp_variable = { hostility_HIR = 100 } }
+		if = { limit = { has_wargoal_against = HIR }								add_to_temp_variable = { hostility_HIR = 200 } }
+		if = { limit = { is_in_faction_with = HIR }									add_to_temp_variable = { hostility_HIR = -500 } }
+		if = { limit = { has_completed_focus = PRT_NAV_befriend_HIR }				add_to_temp_variable = { hostility_HIR = -200 } }
+		if = { limit = { is_embargoing = HIR }										add_to_temp_variable = { hostility_HIR = 200 } }
+		if = { limit = { HIR = { has_completed_focus = HIR_NAV_active_diplomacy } }	add_to_temp_variable = { hostility_HIR = -100 } }
+		if = { limit = { HIR = { has_completed_focus = HIR_NAV_neutrality } }		add_to_temp_variable = { hostility_HIR = 200 } }
+		if = { limit = { HIR = { has_completed_focus = HIR_NAV_aggressive } }		add_to_temp_variable = { hostility_HIR = 400 } }
+		if = { limit = { HIR = { has_country_flag = reject_overture_from_PRT } }	add_to_temp_variable = { hostility_HIR = 200 } }
+		if = { limit = { HIR = { is_justifying_wargoal_against = PRT } }			add_to_temp_variable = { hostility_HIR = 200 } }
+		if = { limit = { HIR = { has_wargoal_against = PRT } }						add_to_temp_variable = { hostility_HIR = 400 } }
+		if = { limit = { HIR = { is_embargoing = PRT } }							add_to_temp_variable = { hostility_HIR = 200 } }
+			# final decision
 		if = {
-			limit = {
-				NOT = {
-					has_country_flag = hostile_to_HIR
-					focus_progress = { focus = HIR_NAV_befriend_PRT progress > 0.01 }
-				}
-				count_triggers = {
-					amount = 3
-					has_war_with = HIR has_war_with = HIR has_war_with = HIR	#it counts 3 times to fulfill trigger automatically
-					has_completed_focus = HIR_NAV_aggressive
-					has_opinion = { target = HIR value < -50 }
-					has_opinion = { target = HIR value < -100 }
-					is_justifying_wargoal_against = HIR
-					HIR = { has_completed_focus = HIR_NAV_neutrality }
-					HIR = { has_completed_focus = HIR_NAV_aggressive }
-					HIR = { has_country_flag = reject_overture_from_PRT }
-					HIR = { has_opinion = { target = PRT value < -50 } }
-					HIR = { has_opinion = { target = PRT value < -100 } }
-					HIR = { is_justifying_wargoal_against = PRT }
-					AND = { OR = { has_government = democratic has_government = democratic_socialism has_government = communism } HIR = { OR = { has_government = fascism has_government = neutrality has_government = autocracy } } }
-				}
-			}
-			set_country_flag = hostile_to_HIR
-			log = "[THIS.GetName] chose hostile_to_HIR"
-		} else = { log = "[THIS.GetName] chose NOT hostile_to_HIR" }
+			limit = { check_variable = { hostility_HIR > 499 } }
+			clr_country_flag = friendly_to_HIR
+			set_country_flag = hostile_to_HIR log = "[THIS.GetName] is hostile towards [HIR.GetName]"
+		} else_if = {
+			limit = { check_variable = { hostility_HIR < -249 } }
+			clr_country_flag = hostile_to_HIR
+			set_country_flag = friendly_to_HIR log = "[THIS.GetName] is friendly towards [HIR.GetName]"
+		} else = {
+			clr_country_flag = hostile_to_HIR
+			clr_country_flag = friendly_to_HIR log = "[THIS.GetName] is neutral towards [HIR.GetName]"
+		}
 		# choose NAV strategy
 		if = {
 			limit = { NOT = { has_country_flag = NAV_aggressive_strategy has_country_flag = NAV_friendly_strategy } }
@@ -247,32 +302,14 @@ PRT_choose_stategy_plan = {
 				set_country_flag = NAV_aggressive_strategy	log = "[THIS.GetName] chose NAV_aggressive_strategy"
 			} else_if = {
 				limit = {
-					has_country_flag = hostile_to_KYU
-					OR = {
-						has_war_with = HIR
-						has_completed_focus = HIR_NAV_aggressive
-						has_opinion = { target = HIR value < -50 }
-						is_justifying_wargoal_against = HIR
-						HIR = { has_country_flag = reject_overture_from_PRT }
-						HIR = { has_opinion = { target = HIR value < -50 } }
-						HIR = { is_justifying_wargoal_against = HIR }
-						AND = { OR = { has_government = democratic has_government = democratic_socialism has_government = communism } HIR = { OR = { has_government = fascism has_government = neutrality has_government = autocracy } } }
-					}
+					has_country_flag = hostile_to_HIR
+					check_variable = { hostility_KYU > 249 }
 				}
 				set_country_flag = NAV_aggressive_strategy	log = "[THIS.GetName] chose NAV_aggressive_strategy"
 			} else_if = {
 				limit = {
-					has_country_flag = hostile_to_HIR
-					OR = {
-						has_war_with = KYU
-						has_completed_focus = KYU_NAV_aggressive
-						has_opinion = { target = KYU value < -50 }
-						is_justifying_wargoal_against = KYU
-						KYU = { has_country_flag = reject_overture_from_PRT }
-						KYU = { has_opinion = { target = HIR value < -50 } }
-						KYU = { is_justifying_wargoal_against = HIR }
-						AND = { OR = { has_government = democratic has_government = democratic_socialism has_government = communism } KYU = { OR = { has_government = fascism has_government = neutrality has_government = autocracy } } }
-					}
+					has_country_flag = hostile_to_KYU
+					check_variable = { hostility_HIR > 249 }
 				}
 				set_country_flag = NAV_aggressive_strategy	log = "[THIS.GetName] chose NAV_aggressive_strategy"
 			} else_if = {
@@ -292,91 +329,124 @@ PRT_choose_stategy_plan = {
 			# if neutral or fasc/mon, check China for peaceful resolution of Macau problem
 			# choose aggressive path if KYU is hostile, if China is hostile, or if AXS/ALY is threateing (unlikely)
 	}
-}
+} d_PRT_choose_stategy_plan = { PRT_choose_stategy_plan = yes log = "PRT_choose_stategy_plan" }
 
 KOB_choose_stategy_plan = {
 	KOB = {
 	
 	}
-}
+} d_KOB_choose_stategy_plan = { KOB_choose_stategy_plan = yes log = "KOB_choose_stategy_plan" }
 
 OSA_choose_stategy_plan = {
 	OSA = {
 	
 	}
-}
+} d_OSA_choose_stategy_plan = { OSA_choose_stategy_plan = yes log = "OSA_choose_stategy_plan" }
 
 AMC_choose_stategy_plan = {
 	OKI = {
 	
 	}
-}
+} d_AMC_choose_stategy_plan = { AMC_choose_stategy_plan = yes log = "AMC_choose_stategy_plan" }
 
 OKI_choose_stategy_plan = {
 	OKI = {
 	
 	}
-}
+}  d_OKI_choose_stategy_plan = { OKI_choose_stategy_plan = yes log = "OKI_choose_stategy_plan" }
 
 FER_choose_stategy_plan = {
 	FER = {
 	
 	}
-}
+}  d_FER_choose_stategy_plan = { FER_choose_stategy_plan = yes log = "FER_choose_stategy_plan" }
 
 HIR_choose_stategy_plan = {
 	HIR = {
 		# choose stance on KYU
+			# check opinion (positive relations decrease hostility)
+		set_temp_variable = { hostility_KYU = opinion@KYU }
+		KYU = { add_to_temp_variable = { hostility_KYU = opinion@HIR } }
+		multiply_temp_variable = { hostility_KYU = -1 }
+			# check ideology
+		if = { limit = { left_ideology = yes KYU = { left_ideology = yes } }		add_to_temp_variable = { hostility_KYU = -100 } }
+		if = { limit = { right_ideology = yes KYU = { right_ideology = yes } }		add_to_temp_variable = { hostility_KYU = -100 } }
+		if = { limit = { center_ideology = yes KYU = { center_ideology = yes } }	add_to_temp_variable = { hostility_KYU = -100 } }
+		if = { limit = { right_ideology = yes KYU = { left_ideology = yes } }		add_to_temp_variable = { hostility_KYU = 100 } }
+		if = { limit = { left_ideology = yes KYU = { right_ideology = yes } }		add_to_temp_variable = { hostility_KYU = 100 } }
+			# previous decisions
+		if = { limit = { has_country_flag = hostile_to_KYU }						add_to_temp_variable = { hostility_KYU = 100 } }
+		if = { limit = { has_country_flag = friendly_to_KYU }						add_to_temp_variable = { hostility_KYU = -100 } }
+			# check other factors
+		if = { limit = { has_war_with = KYU }										add_to_temp_variable = { hostility_KYU = 1000 } }
+		if = { limit = { has_country_flag = reject_overture_from_KYU }				add_to_temp_variable = { hostility_KYU = 100 } }
+		if = { limit = { is_justifying_wargoal_against = KYU }						add_to_temp_variable = { hostility_KYU = 100 } }
+		if = { limit = { has_wargoal_against = KYU }								add_to_temp_variable = { hostility_KYU = 200 } }
+		if = { limit = { is_in_faction_with = KYU }									add_to_temp_variable = { hostility_KYU = -500 } }
+		if = { limit = { has_completed_focus = HIR_NAV_befriend_KYU }				add_to_temp_variable = { hostility_KYU = -200 } }
+		if = { limit = { is_embargoing = KYU }										add_to_temp_variable = { hostility_KYU = 200 } }
+		if = { limit = { KYU = { has_completed_focus = KYU_NAV_active_diplomacy } }	add_to_temp_variable = { hostility_KYU = -100 } }
+		if = { limit = { KYU = { has_completed_focus = KYU_NAV_neutrality } }		add_to_temp_variable = { hostility_KYU = 200 } }
+		if = { limit = { KYU = { has_completed_focus = KYU_NAV_aggressive } }		add_to_temp_variable = { hostility_KYU = 400 } }
+		if = { limit = { KYU = { has_country_flag = reject_overture_from_HIR } }	add_to_temp_variable = { hostility_KYU = 200 } }
+		if = { limit = { KYU = { is_justifying_wargoal_against = HIR } }			add_to_temp_variable = { hostility_KYU = 200 } }
+		if = { limit = { KYU = { has_wargoal_against = HIR } }						add_to_temp_variable = { hostility_KYU = 400 } }
+		if = { limit = { KYU = { is_embargoing = HIR } }							add_to_temp_variable = { hostility_KYU = 200 } }
+			# final decision
 		if = {
-			limit = {
-				NOT = {
-					has_country_flag = hostile_to_KYU
-					focus_progress = { focus = KYU_NAV_befriend_HIR progress > 0.01 }
-				}
-				count_triggers = {
-					amount = 3
-					has_war_with = KYU has_war_with = KYU has_war_with = KYU	#it counts 3 times to fulfill trigger automatically
-					has_opinion = { target = KYU value < -50 }
-					has_opinion = { target = KYU value < -100 }
-					is_justifying_wargoal_against = KYU
-					KYU = { has_completed_focus = HIR_NAV_neutrality }
-					KYU = { has_completed_focus = KYU_NAV_aggressive }
-					KYU = { has_country_flag = reject_overture_from_HIR }
-					KYU = { has_opinion = { target = HIR value < -50 } }
-					KYU = { has_opinion = { target = HIR value < -100 } }
-					KYU = { is_justifying_wargoal_against = HIR }
-					AND = { OR = { has_government = democratic has_government = democratic_socialism has_government = communism } KYU = { OR = { has_government = fascism has_government = neutrality has_government = autocracy } } }
-				}
-			}
-			set_country_flag = hostile_to_KYU
-			log = "[THIS.GetName] chose hostile_to_KYU"
-		} else = { log = "[THIS.GetName] chose NOT hostile_to_KYU" }
+			limit = { check_variable = { hostility_KYU > 499 } }
+			clr_country_flag = friendly_to_KYU
+			set_country_flag = hostile_to_KYU log = "[THIS.GetName] is hostile towards [KYU.GetName]"
+		} else_if = {
+			limit = { check_variable = { hostility_KYU < -249 } }
+			clr_country_flag = hostile_to_KYU
+			set_country_flag = friendly_to_KYU log = "[THIS.GetName] is friendly towards [KYU.GetName]"
+		} else = {
+			clr_country_flag = hostile_to_KYU
+			clr_country_flag = friendly_to_KYU log = "[THIS.GetName] is neutral towards [KYU.GetName]"
+		}
 		# choose stance on PRT
+			# check opinion (positive relations decrease hostility)
+		set_temp_variable = { hostility_PRT = opinion@PRT }
+		PRT = { add_to_temp_variable = { hostility_PRT = opinion@HIR } }
+		multiply_temp_variable = { hostility_PRT = -1 }
+			# check ideology
+		if = { limit = { left_ideology = yes PRT = { left_ideology = yes } }		add_to_temp_variable = { hostility_PRT = -100 } }
+		if = { limit = { right_ideology = yes PRT = { right_ideology = yes } }		add_to_temp_variable = { hostility_PRT = -100 } }
+		if = { limit = { center_ideology = yes PRT = { center_ideology = yes } }	add_to_temp_variable = { hostility_PRT = -100 } }
+		if = { limit = { right_ideology = yes PRT = { left_ideology = yes } }		add_to_temp_variable = { hostility_PRT = 100 } }
+		if = { limit = { left_ideology = yes PRT = { right_ideology = yes } }		add_to_temp_variable = { hostility_PRT = 100 } }
+			# previous decisions
+		if = { limit = { has_country_flag = hostile_to_PRT }						add_to_temp_variable = { hostility_PRT = 100 } }
+		if = { limit = { has_country_flag = friendly_to_PRT }						add_to_temp_variable = { hostility_PRT = -100 } }
+			# check other factors
+		if = { limit = { has_war_with = PRT }										add_to_temp_variable = { hostility_PRT = 1000 } }
+		if = { limit = { has_country_flag = reject_overture_from_PRT }				add_to_temp_variable = { hostility_PRT = 100 } }
+		if = { limit = { is_justifying_wargoal_against = PRT }						add_to_temp_variable = { hostility_PRT = 100 } }
+		if = { limit = { has_wargoal_against = PRT }								add_to_temp_variable = { hostility_PRT = 200 } }
+		if = { limit = { is_in_faction_with = PRT }									add_to_temp_variable = { hostility_PRT = -500 } }
+		if = { limit = { has_completed_focus = HIR_NAV_befriend_PRT }				add_to_temp_variable = { hostility_PRT = -200 } }
+		if = { limit = { is_embargoing = PRT }										add_to_temp_variable = { hostility_PRT = 200 } }
+		if = { limit = { PRT = { has_completed_focus = PRT_NAV_active_diplomacy } }	add_to_temp_variable = { hostility_PRT = -100 } }
+		if = { limit = { PRT = { has_completed_focus = PRT_NAV_neutrality } }		add_to_temp_variable = { hostility_PRT = 200 } }
+		if = { limit = { PRT = { has_completed_focus = PRT_NAV_aggressive } }		add_to_temp_variable = { hostility_PRT = 400 } }
+		if = { limit = { PRT = { has_country_flag = reject_overture_from_HIR } }	add_to_temp_variable = { hostility_PRT = 200 } }
+		if = { limit = { PRT = { is_justifying_wargoal_against = HIR } }			add_to_temp_variable = { hostility_PRT = 200 } }
+		if = { limit = { PRT = { has_wargoal_against = HIR } }						add_to_temp_variable = { hostility_PRT = 400 } }
+		if = { limit = { KYU = { is_embargoing = HIR } }							add_to_temp_variable = { hostility_PRT = 200 } }
+			# final decision
 		if = {
-			limit = {
-				NOT = {
-					has_country_flag = hostile_to_PRT
-					focus_progress = { focus = PRT_NAV_befriend_HIR progress > 0.01 }
-				}
-				count_triggers = {
-					amount = 3
-					has_war_with = PRT has_war_with = PRT has_war_with = PRT	#it counts 3 times to fulfill trigger automatically
-					has_completed_focus = PRT_NAV_aggressive
-					has_opinion = { target = PRT value < -50 }
-					has_opinion = { target = PRT value < -100 }
-					is_justifying_wargoal_against = PRT
-					PRT = { has_completed_focus = PRT_NAV_neutrality }
-					PRT = { has_completed_focus = PRT_NAV_aggressive }
-					PRT = { has_country_flag = reject_overture_from_HIR }
-					PRT = { has_opinion = { target = HIR value < -50 } }
-					PRT = { has_opinion = { target = HIR value < -100 } }
-					PRT = { is_justifying_wargoal_against = HIR }
-					AND = { OR = { has_government = democratic has_government = democratic_socialism has_government = communism } PRT = { OR = { has_government = fascism has_government = neutrality has_government = autocracy } } }
-				}
-			}
-			set_country_flag = hostile_to_PRT
-			log = "[THIS.GetName] chose hostile_to_PRT"
-		} else = { log = "[THIS.GetName] chose NOT hostile_to_PRT" }
+			limit = { check_variable = { hostility_PRT > 499 } }
+			clr_country_flag = friendly_to_PRT
+			set_country_flag = hostile_to_PRT log = "[THIS.GetName] is hostile towards [PRT.GetName]"
+		} else_if = {
+			limit = { check_variable = { hostility_PRT < -249 } }
+			clr_country_flag = hostile_to_PRT
+			set_country_flag = friendly_to_PRT log = "[THIS.GetName] is friendly towards [PRT.GetName]"
+		} else = {
+			clr_country_flag = hostile_to_PRT
+			clr_country_flag = friendly_to_PRT log = "[THIS.GetName] is neutral towards [PRT.GetName]"
+		}
 		# choose NAV strategy
 		if = {
 			limit = { NOT = { has_country_flag = NAV_aggressive_strategy has_country_flag = NAV_friendly_strategy } }
@@ -385,32 +455,14 @@ HIR_choose_stategy_plan = {
 				set_country_flag = NAV_aggressive_strategy	log = "[THIS.GetName] chose NAV_aggressive_strategy"
 			} else_if = {
 				limit = {
-					has_country_flag = hostile_to_KYU
-					OR = {
-						has_war_with = PRT
-						has_completed_focus = PRT_NAV_aggressive
-						has_opinion = { target = PRT value < -50 }
-						is_justifying_wargoal_against = PRT
-						PRT = { has_country_flag = reject_overture_from_HIR }
-						PRT = { has_opinion = { target = HIR value < -50 } }
-						PRT = { is_justifying_wargoal_against = HIR }
-						AND = { OR = { has_government = democratic has_government = democratic_socialism has_government = communism } KYU = { OR = { has_government = fascism has_government = neutrality has_government = autocracy } } }
-					}
+					has_country_flag = hostile_to_PRT
+					check_variable = { hostility_KYU > 249 }
 				}
 				set_country_flag = NAV_aggressive_strategy	log = "[THIS.GetName] chose NAV_aggressive_strategy"
 			} else_if = {
 				limit = {
-					has_country_flag = hostile_to_PRT
-					OR = {
-						has_war_with = KYU
-						has_completed_focus = KYU_NAV_aggressive
-						has_opinion = { target = KYU value < -50 }
-						is_justifying_wargoal_against = KYU
-						KYU = { has_country_flag = reject_overture_from_HIR }
-						KYU = { has_opinion = { target = HIR value < -50 } }
-						KYU = { is_justifying_wargoal_against = HIR }
-						AND = { OR = { has_government = democratic has_government = democratic_socialism has_government = communism } KYU = { OR = { has_government = fascism has_government = neutrality has_government = autocracy } } }
-					}
+					has_country_flag = hostile_to_KYU
+					check_variable = { hostility_PRT > 249 }
 				}
 				set_country_flag = NAV_aggressive_strategy	log = "[THIS.GetName] chose NAV_aggressive_strategy"
 			} else_if = {
@@ -481,7 +533,7 @@ HIR_choose_stategy_plan = {
 			} else = { log = "[THIS.GetName] chose default path / NOT ai_path_aggressive" }
 		}
 	}
-}
+} d_HIR_choose_stategy_plan = { HIR_choose_stategy_plan = yes log = "HIR_choose_stategy_plan" }
 
 # } DEBUG
 
@@ -511,3 +563,27 @@ choose_ai_strategy = {
 		} else = { log = "[THIS.GetName] is not AI" }
 	}
 } d_choose_ai_strategy = { choose_ai_strategy = yes log = "choose_ai_strategy (DEBUG)"}
+
+
+## in SS_generic_triggers.txt:
+
+#left_ideology = {
+#	OR = {
+#		has_government = democratic_socialism
+#		has_government = communism
+#	}
+#}
+
+#right_ideology = {
+#	OR = {
+#		has_government = fascism
+#		has_government = autocracy
+#	}
+#}
+
+#center_ideology = {
+#	OR = {
+#		has_government = democratic
+#		has_government = neutrality
+#	}
+#}
