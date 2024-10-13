@@ -1,0 +1,664 @@
+### TO DO remove VOC from default path, make another path
+
+### split initial path into two, one early game and one after decisions regarding ww2 need to be made
+
+
+HIR_wartime_plan = {
+	name = "Dutch Wartime Strategy"
+	desc = "Prioritize bonuses that provide immediate bonuses and improve diplomatic relations"
+	
+	allowed = {
+		original_tag = HIR
+	}
+	enable = {
+		has_war = yes
+	}
+	abort = {
+		# never aborted, in order to maintain the advisers' weights
+	}
+	
+	ai_national_focuses = {
+		HIR_land_army_effort
+		HIR_colony_army_effort
+		HIR_home_army_effort
+			# a) it is likekly that the next few focuses are completed by the time HIR goes to war
+		HIR_crisis_repression				#a
+		HIR_active_diplomacy				#a
+		HIR_labour_mobilization				#a
+		HIR_military_infrastructure			#a
+			# b) alternative paths after early 'crisis' focuses
+		HIR_allow_migration					#b
+		HIR_integration_policy				#b
+		HIR_sell_land						#b
+			#c) it is likely that this or HIR_focus_homeland_development is already completed, the next follows the same for both
+		HIR_focus_colonial_development
+		HIR_colonial_development_1			#c
+		HIR_homeland_development_1			#c
+		HIR_colonial_development_2			#c
+		HIR_homeland_development_2			#c
+		HIR_colonial_development_3			#c
+		HIR_dutch_nationalism2				#c (prerequisite to "Plan Z" if AI took fascist path)
+		HIR_homeland_development_z			#c, only available in fascist path
+		HIR_homeland_development_3			#c, this may not be completed if HIR did "Plan Z" before
+		HIR_employment_focus				#a
+		HIR_end_crisis						#b
+			#d) in case the AI completed "Incr. Colonial Autonomy" or "Reafirm Neutr. in Europe"
+		HIR_create_voc						#d
+		HIR_voc_hire_mercenaries			#d
+		HIR_focus_tech_rifles
+		HIR_land_army_modernization
+		HIR_voc_refit_ships					#d
+		HIR_naval_effort
+		HIR_naval_tech_anti_sub
+		HIR_naval_marines
+		HIR_naval_tech_capital
+		HIR_navy_modernized
+		HIR_air_force_effort
+		HIR_air_tech_fighter
+		HIR_air_tech_nav
+		HIR_air_force_modernization
+		HIR_amphibious_invasion_effort
+	}
+	
+	focus_factors = {
+		
+	}				
+
+	research = {
+
+	}
+
+	ideas = {
+		HIR_Adriaan_Dijxhoorn = 4
+		generic_mining_expert_western = 4
+		education_law_military = 4
+		generic_military_police_western = 4
+		HIR_Henri_Winkelman = 4
+		HIR_Karel_Doorman = 4
+		generic_air_close_air_sup_exp = 4
+		generic_military_engineer_western = 2
+		HIR_Jan_Goudriaan = 2
+		HIR_tony_lovink = 2
+	}
+
+	# Keep small, as it is used as a factor for some things (such as research needs)
+	# Recommended around 1.0. Useful for relation between plans
+	weight = {
+		factor = 1.0
+		modifier = {
+			factor = 1.0
+		}
+	}
+}
+
+HIR_default_plan = {
+	name = "Initial Default Dutch Strategy"
+	desc = "Isolacionism in Europe, colonial economic development, democratic politics."
+	
+	allowed = {
+		original_tag = HIR
+	}
+	enable = {
+		has_war = no
+		NOT = { has_country_flag = ai_path_fascism has_country_flag = ai_path_neutrality }
+	}
+	abort = {
+		# abort when this strategy is completed (we just check the end of each branch)
+		has_country_flag = initial_strategy_completed
+	}
+	
+	ai_national_focuses = {
+		# 1936
+		HIR_crisis_help
+		HIR_focus_colonial_development
+		HIR_colonial_development_1
+		HIR_university_homeland
+		HIR_homeland_development_1
+		# 1937
+		HIR_university_colony	HIR_university_colony_hf	HIR_university_colony_cf #three possible focuses here
+		HIR_land_army_effort
+		HIR_colony_army_effort
+		HIR_colonial_development_2
+		HIR_NAV_neutrality	HIR_NAV_active_diplomacy	# two possibles, a special ai hidden trigger will block one
+	}
+	
+	focus_factors = {
+		HIR_focus_homeland_development = 0	# Do not take fascist path
+	}				
+
+	research = {
+
+	}
+
+	ideas = {
+		HIR_Jan_Goudriaan = 4
+		HIR_willem_schermerhorn = 2
+		generic_mining_expert_western = 2
+		generic_army_chief_old_guard_western = 2
+		generic_navy_anti_submarine = 2
+		generic_air_chief_safety = 2
+		education_law_technical = 2
+		HIR_luis_ferdinand = 0
+		HIR_george_kettmann = 0
+		HIR_Anton_de_Kom = 0
+		generic_establishment_mouthpiece_western = 0
+	}
+
+	# Keep small, as it is used as a factor for some things (such as research needs)
+	# Recommended around 1.0. Useful for relation between plans
+	weight = {
+		factor = 1.0
+		modifier = {
+			factor = 1.0
+		}
+	}
+}
+
+HIR_default_allied_late_plan = {
+	name = "Pro-Allied Late Dutch Strategy"
+	desc = "Align with England, military build-up, democratic politics."
+	
+	allowed = {
+		original_tag = HIR
+	}
+	enable = {
+		has_war = no
+		has_country_flag = initial_strategy_completed
+		NOT = { has_country_flag = ai_path_fascism has_country_flag = ai_path_neutrality }
+		has_country_flag = ai_path_aggressive 
+	}
+	abort = {
+		always = no
+	}
+	
+	ai_national_focuses = {
+		HIR_NAV_befriend_KYU HIR_NAV_befriend_PRT HIR_NAV_aggressive	# 3 options,  a special ai hidden trigger will delay the 'befriend' ones, other is different path
+		HIR_NAV_befriend_KYU_2 HIR_NAV_befriend_PRT_2					# 2 options,  a special ai hidden trigger will delay one after the other
+		HIR_align_england
+	}
+	
+	focus_factors = {
+		HIR_focus_homeland_development = 0	# Do not take fascist path
+	}				
+
+	research = {
+
+	}
+
+	ideas = {
+		HIR_Jan_Goudriaan = 4
+		HIR_willem_schermerhorn = 2
+		generic_mining_expert_western = 2
+		generic_army_chief_old_guard_western = 2
+		generic_navy_anti_submarine = 2
+		generic_air_chief_safety = 2
+		education_law_technical = 2
+		HIR_luis_ferdinand = 0
+		HIR_george_kettmann = 0
+		HIR_Anton_de_Kom = 0
+		generic_establishment_mouthpiece_western = 0
+	}
+
+	# Keep small, as it is used as a factor for some things (such as research needs)
+	# Recommended around 1.0. Useful for relation between plans
+	weight = {
+		factor = 1.0
+		modifier = {
+			factor = 1.0
+		}
+	}
+}
+
+HIR_default_isolacionist_late_plan = {
+	name = "Late Default Dutch Strategy"
+	desc = "Isolacionism in Europe, colonial economic development, democratic politics."
+	
+	allowed = {
+		original_tag = HIR
+	}
+	enable = {
+		has_war = no
+		has_country_flag = initial_strategy_completed
+		NOT = { has_country_flag = ai_path_fascism has_country_flag = ai_path_neutrality has_country_flag = ai_path_aggressive  }
+	}
+	abort = {
+		always = no
+	}
+	
+	ai_national_focuses = {
+		
+	}
+	
+	focus_factors = {
+		HIR_focus_homeland_development = 0	# Do not take fascist path
+	}				
+
+	research = {
+
+	}
+
+	ideas = {
+		HIR_Jan_Goudriaan = 4
+		HIR_willem_schermerhorn = 2
+		generic_mining_expert_western = 2
+		generic_army_chief_old_guard_western = 2
+		generic_navy_anti_submarine = 2
+		generic_air_chief_safety = 2
+		education_law_technical = 2
+		HIR_luis_ferdinand = 0
+		HIR_george_kettmann = 0
+		HIR_Anton_de_Kom = 0
+		generic_establishment_mouthpiece_western = 0
+	}
+
+	# Keep small, as it is used as a factor for some things (such as research needs)
+	# Recommended around 1.0. Useful for relation between plans
+	weight = {
+		factor = 1.0
+		modifier = {
+			factor = 1.0
+		}
+	}
+}
+
+HIR_voc_plan = {
+	name = "Dutch V.O.C. Initial Strategy"
+	desc = "Isolacionism in Europe, colonial economic development, neutral politics."
+	
+	allowed = {
+		original_tag = HIR
+	}
+	enable = {
+		has_war = no
+		OR = {
+			has_country_flag = ai_path_neutrality
+			has_government = neutrality
+		}
+	}
+	abort = {
+		has_country_flag = initial_strategy_completed
+	}
+	
+	ai_national_focuses = {
+		# 1936
+		HIR_crisis_self_rule
+		HIR_focus_colonial_development
+		HIR_colonial_development_1
+		HIR_university_homeland
+		HIR_homeland_development_1
+		# 1937
+		HIR_university_colony	HIR_university_colony_hf	HIR_university_colony_cf #three possible focuses here
+		HIR_land_army_effort
+		HIR_trade_with_all
+		HIR_reafirm_european_neutrality
+		HIR_NAV_neutrality	HIR_NAV_active_diplomacy	# two possibles, a special ai hidden trigger will block one
+		# 1938
+		HIR_create_voc
+	}
+	
+	focus_factors = {
+		HIR_focus_homeland_development = 0	# Do not take fascist path
+		HIR_crisis_repression = 0			# Only choose the Self Rule path
+		HIR_crisis_help = 0					# "
+	}				
+
+	research = {
+
+	}
+
+	ideas = {
+		HIR_Jan_Goudriaan = 4
+		generic_establishment_mouthpiece_western = 4
+		generic_mining_expert_western = 2
+		generic_army_chief_old_guard_western = 2
+		generic_navy_anti_submarine = 2
+		generic_air_chief_safety = 2
+		education_law_technical = 2
+		HIR_luis_ferdinand = 0
+		HIR_george_kettmann = 0
+		HIR_Anton_de_Kom = 0
+		HIR_willem_schermerhorn = 0
+	}
+
+	# Keep small, as it is used as a factor for some things (such as research needs)
+	# Recommended around 1.0. Useful for relation between plans
+	weight = {
+		factor = 1.0
+		modifier = {
+			factor = 1.0
+		}
+	}
+}
+
+HIR_voc_late_isolacionist_plan = {
+	name = "Dutch V.O.C. Late Isolacionist Strategy"
+	desc = "Isolacionism in Europe, colonial economic development, neutral politics."
+	
+	allowed = {
+		original_tag = HIR
+	}
+	enable = {
+		has_war = no
+		OR = {
+			has_country_flag = ai_path_neutrality
+			has_government = neutrality
+		}
+		has_country_flag = initial_strategy_completed
+		NOT = { has_country_flag = ai_path_aggressive }
+	}
+	abort = {
+		always = no
+	}
+	
+	ai_national_focuses = {
+		
+	}
+	
+	focus_factors = {
+		HIR_focus_homeland_development = 0	# Do not take fascist path
+	}				
+
+	research = {
+
+	}
+
+	ideas = {
+		HIR_Jan_Goudriaan = 4
+		generic_establishment_mouthpiece_western = 4
+		generic_mining_expert_western = 2
+		generic_army_chief_old_guard_western = 2
+		generic_navy_anti_submarine = 2
+		generic_air_chief_safety = 2
+		education_law_technical = 2
+		HIR_luis_ferdinand = 0
+		HIR_george_kettmann = 0
+		HIR_Anton_de_Kom = 0
+		HIR_willem_schermerhorn = 0
+	}
+
+	# Keep small, as it is used as a factor for some things (such as research needs)
+	# Recommended around 1.0. Useful for relation between plans
+	weight = {
+		factor = 1.0
+		modifier = {
+			factor = 1.0
+		}
+	}
+}
+
+HIR_voc_late_aggressive_plan = {
+	name = "Dutch V.O.C. Late Aggressive Strategy"
+	desc = "Isolacionism in Europe, military build-up, neutral politics."
+	
+	allowed = {
+		original_tag = HIR
+	}
+	enable = {
+		has_war = no
+		OR = {
+			has_country_flag = ai_path_neutrality
+			has_government = neutrality
+		}
+		has_country_flag = initial_strategy_completed
+		has_country_flag = ai_path_aggressive 
+	}
+	abort = {
+		always = no
+	}
+	
+	ai_national_focuses = {
+		
+	}
+	
+	focus_factors = {
+		HIR_focus_homeland_development = 0	# Do not take fascist path
+	}				
+
+	research = {
+
+	}
+
+	ideas = {
+		HIR_Jan_Goudriaan = 4
+		generic_establishment_mouthpiece_western = 4
+		generic_mining_expert_western = 2
+		generic_army_chief_old_guard_western = 2
+		generic_navy_anti_submarine = 2
+		generic_air_chief_safety = 2
+		education_law_technical = 2
+		HIR_luis_ferdinand = 0
+		HIR_george_kettmann = 0
+		HIR_Anton_de_Kom = 0
+		HIR_willem_schermerhorn = 0
+	}
+
+	# Keep small, as it is used as a factor for some things (such as research needs)
+	# Recommended around 1.0. Useful for relation between plans
+	weight = {
+		factor = 1.0
+		modifier = {
+			factor = 1.0
+		}
+	}
+}
+
+HIR_fascist_plan = {
+	name = "Initial Fascist Dutch Strategy"
+	desc = "Align with Germany, homeland economic development, fascist politics (preferably, also works for monarchy)"
+	
+	allowed = {
+		original_tag = HIR
+	}
+	enable = {
+		has_war = no
+		OR = {
+			has_country_flag = ai_path_fascism
+			has_government = fascism
+			has_country_flag = ai_path_autocracy
+			has_government = autocracy
+		}
+	}
+	abort = {
+		has_country_flag = initial_strategy_completed
+	}
+	
+	ai_national_focuses = {
+		
+	}
+	
+	focus_factors = {
+		HIR_focus_homeland_development = 0	# Do not take fascist path
+	}				
+
+	research = {
+
+	}
+
+	ideas = {
+		HIR_Jan_Goudriaan = 4
+		HIR_george_kettmann = 4
+		generic_mining_expert_western = 2
+		generic_army_chief_old_guard_western = 2
+		generic_navy_anti_submarine = 2
+		generic_air_chief_safety = 2
+		education_law_ideological_fascism = 2
+		HIR_luis_ferdinand = 0
+		generic_establishment_mouthpiece_western = 0
+		HIR_Anton_de_Kom = 0
+		HIR_willem_schermerhorn = 0
+	}
+
+	# Keep small, as it is used as a factor for some things (such as research needs)
+	# Recommended around 1.0. Useful for relation between plans
+	weight = {
+		factor = 1.0
+		modifier = {
+			factor = 1.0
+		}
+	}
+}
+
+HIR_fascist_late_homeland_plan = {
+	name = "Late Fascist Dutch European Strategy"
+	desc = "Align with Germany, homeland development, fascist politics (preferably, also works for monarchy)."
+	
+	allowed = {
+		original_tag = HIR
+	}
+	enable = {
+		has_war = no
+		OR = {
+			has_country_flag = ai_path_fascism
+			has_government = fascism
+			has_country_flag = ai_path_autocracy
+			has_government = autocracy
+		}
+		has_country_flag = initial_strategy_completed
+		NOT = { has_country_flag = ai_path_aggressive  }
+	}
+	abort = {
+		always = no
+	}
+	
+	ai_national_focuses = {
+		
+	}
+	
+	focus_factors = {
+		HIR_focus_homeland_development = 0	# Do not take fascist path
+	}				
+
+	research = {
+
+	}
+
+	ideas = {
+		HIR_Jan_Goudriaan = 4
+		HIR_george_kettmann = 4
+		generic_mining_expert_western = 2
+		generic_army_chief_old_guard_western = 2
+		generic_navy_anti_submarine = 2
+		generic_air_chief_safety = 2
+		education_law_ideological_fascism = 2
+		HIR_luis_ferdinand = 0
+		generic_establishment_mouthpiece_western = 0
+		HIR_Anton_de_Kom = 0
+		HIR_willem_schermerhorn = 0
+	}
+
+	# Keep small, as it is used as a factor for some things (such as research needs)
+	# Recommended around 1.0. Useful for relation between plans
+	weight = {
+		factor = 1.0
+		modifier = {
+			factor = 1.0
+		}
+	}
+}
+
+HIR_fascist_late_colonial_plan = {
+	name = "Late Fascist Dutch Colonial Strategy"
+	desc = "Align with Germany, colonial military build-up, fascist politics (preferably, also works for monarchy)."
+	
+	allowed = {
+		original_tag = HIR
+	}
+	enable = {
+		has_war = no
+		OR = {
+			has_country_flag = ai_path_fascism
+			has_government = fascism
+			has_country_flag = ai_path_autocracy
+			has_government = autocracy
+		}
+		has_country_flag = initial_strategy_completed
+		has_country_flag = ai_path_aggressive 
+	}
+	abort = {
+		always = no
+	}
+	
+	ai_national_focuses = {
+		
+	}
+	
+	focus_factors = {
+		HIR_focus_homeland_development = 0	# Do not take fascist path
+	}				
+
+	research = {
+
+	}
+
+	ideas = {
+		HIR_Jan_Goudriaan = 4
+		HIR_george_kettmann = 4
+		generic_mining_expert_western = 2
+		generic_army_chief_old_guard_western = 2
+		generic_navy_anti_submarine = 2
+		generic_air_chief_safety = 2
+		education_law_ideological_fascism = 2
+		HIR_luis_ferdinand = 0
+		generic_establishment_mouthpiece_western = 0
+		HIR_Anton_de_Kom = 0
+		HIR_willem_schermerhorn = 0
+	}
+
+	# Keep small, as it is used as a factor for some things (such as research needs)
+	# Recommended around 1.0. Useful for relation between plans
+	weight = {
+		factor = 1.0
+		modifier = {
+			factor = 1.0
+		}
+	}
+}
+
+HIR_monarchist_plan = {
+	name = "Monarchist Dutch Strategy"
+	desc = "Do not list focuses, only weighs."
+	
+	allowed = {
+		original_tag = HIR
+	}
+	enable = {
+		has_war = no
+		OR = {
+			has_country_flag = ai_path_autocracy
+			has_government = autocracy
+		}
+	}
+	abort = {
+		always = no
+	}
+	
+	ai_national_focuses = {
+		
+	}
+	
+	focus_factors = {
+		HIR_nationalist_government = 0	# Do not take fascist path
+	}				
+
+	research = {
+
+	}
+
+	ideas = {
+		HIR_Jan_Goudriaan = 4
+		HIR_luis_ferdinand = 4	# monarchist adviser
+		HIR_george_kettmann = 0	# do not take fascist adviser
+		generic_establishment_mouthpiece_western = 0
+		HIR_Anton_de_Kom = 0
+		HIR_willem_schermerhorn = 0
+	}
+
+	# Keep small, as it is used as a factor for some things (such as research needs)
+	# Recommended around 1.0. Useful for relation between plans
+	weight = {
+		factor = 1.0
+		modifier = {
+			factor = 1.0
+		}
+	}
+}

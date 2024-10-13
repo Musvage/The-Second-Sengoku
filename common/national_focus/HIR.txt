@@ -955,6 +955,7 @@ focus_tree = {
 				add_idea = HIR_natives_of_hirado_suppressed_spirit
 				remove_idea = HIR_natives_of_hirado_spirit
 			}
+			clr_country_flag = ai_path_neutrality	# Remove flag for impossible path
 		}
 	}
 	
@@ -1001,6 +1002,7 @@ focus_tree = {
 				add_idea = HIR_natives_of_hirado_aid_spirit
 				remove_idea = HIR_natives_of_hirado_spirit
 			}
+			clr_country_flag = ai_path_neutrality	# Remove flag for impossible path
 		}
 	}
 	
@@ -1041,11 +1043,11 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_STABILITY }
 		
 		ai_will_do = {
-        factor = 10
-        modifier = {
-        factor = 2
-        has_war = no
-            }
+			factor = 10
+			modifier = {
+				factor = 2
+				has_war = no
+			}
         }
 		
 		mutually_exclusive = { focus = HIR_NAV_active_diplomacy focus = HIR_trade_with_all }
@@ -1055,7 +1057,13 @@ focus_tree = {
 		y = 1
 		
 		available = {
-			# add spirit to avoid embargos
+			# add spirit to avoid embargos (what was that again?)
+			hidden_trigger = {
+				if = {
+					limit = { is_ai = yes OR = { has_completed_focus = HIR_crisis_self_rule has_completed_focus = HIR_crisis_help has_completed_focus = HIR_crisis_repression } NOT = { has_completed_focus = HIR_NAV_active_diplomacy } }
+					NOT = { has_country_flag = NAV_friendly_strategy }
+				}
+			}
 		}
 
 		cost = 10
@@ -1075,10 +1083,10 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_DIPLOMACY }
 		
 		ai_will_do = {
-        factor = 10
-        modifier = {
-        factor = 2
-        has_war = yes
+			factor = 10
+			modifier = {
+				factor = 2
+				has_war = yes
             }
         }
 		
@@ -1089,7 +1097,12 @@ focus_tree = {
 		y = 1
 		
 		available = {
-		
+			hidden_trigger = {
+				if = {
+					limit = { is_ai = yes OR = { has_completed_focus = HIR_crisis_self_rule has_completed_focus = HIR_crisis_help has_completed_focus = HIR_crisis_repression } NOT = { has_completed_focus = HIR_NAV_neutrality } }
+					NOT = { has_country_flag = NAV_aggressive_strategy }
+				}
+			}
 		}
 
 		cost = 10
@@ -1119,10 +1132,10 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WAR_SUPPORT }
 		
 		ai_will_do = {
-        factor = 10
-        modifier = {
-        factor = 2
-        has_war = no
+			factor = 10
+			modifier = {
+				factor = 2
+				has_war = no
             }
         }
 		
@@ -1152,6 +1165,10 @@ focus_tree = {
 		text_icon = navigators_style
 
 		completion_reward = {
+			hidden_effect = {
+				PRT_choose_stategy_plan = yes
+				KYU_choose_stategy_plan = yes
+			}
 			add_war_support = 0.05
 			unlock_decision_category_tooltip = NAV_aggressive_diplomacy_category
 		}
@@ -1170,11 +1187,15 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_DIPLOMACY }
 		
 		ai_will_do = {
-        factor = 10
-        modifier = {
-        factor = 2
-        has_war = no
+			factor = 10
+			modifier = {
+				factor = 2
+				has_war = no
             }
+			modifier = {
+				factor = 0
+				has_country_flag = hostile_to_KYU
+			}
         }
 		
 		prerequisite = { focus = HIR_NAV_active_diplomacy }
@@ -1204,6 +1225,12 @@ focus_tree = {
 					}
 				}
 			}
+			hidden_trigger = {
+				if = {
+					limit = { is_ai = yes has_completed_focus = HIR_NAV_active_diplomacy }
+					NOT = { has_country_flag = hostile_to_KYU }
+				}
+			}
 		}
 
 		cost = 5
@@ -1213,6 +1240,7 @@ focus_tree = {
 		text_icon = navigators_style
 
 		completion_reward = {
+			hidden_effect = { KYU_choose_stategy_plan = yes }	# UPDATE AI STRATEGY BEFORE FIRING EVENT
 			KYU = { country_event = { id = navigator.1 hours = 6 } }
 			custom_effect_tooltip = loc_if_accept
 			effect_tooltip = {
@@ -1241,11 +1269,15 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_INTERNATIONAL_TRADE }
 		
 		ai_will_do = {
-        factor = 10
-        modifier = {
-        factor = 2
-        has_war = yes
+			factor = 10
+			modifier = {
+				factor = 2
+				has_war = yes
             }
+			modifier = {
+				factor = 0
+				has_country_flag = hostile_to_PRT
+			}
         }
 		
 		prerequisite = { focus = HIR_NAV_active_diplomacy }
@@ -1275,6 +1307,12 @@ focus_tree = {
 					}
 				}
 			}
+			hidden_trigger = {
+				if = {
+					limit = { is_ai = yes has_completed_focus = HIR_NAV_active_diplomacy }
+					NOT = { has_country_flag = hostile_to_PRT }
+				}
+			}
 		}
 
 		cost = 5
@@ -1284,6 +1322,7 @@ focus_tree = {
 		text_icon = navigators_style
 
 		completion_reward = {
+			hidden_effect = { PRT_choose_stategy_plan = yes }	# UPDATE AI STRATEGY BEFORE FIRING EVENT
 			PRT = { country_event = { id = navigator.1 hours = 6 } }
 			custom_effect_tooltip = loc_if_accept
 			effect_tooltip = {
@@ -1320,11 +1359,15 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_INTERNATIONAL_TRADE FOCUS_FILTER_POLITICAL }
 		
 		ai_will_do = {
-        factor = 10
-        modifier = {
-        factor = 2
-        has_war = yes
+			factor = 10
+			modifier = {
+				factor = 2
+				has_war = yes
             }
+			modifier = {
+				factor = 0
+				has_country_flag = hostile_to_KYU
+			}
         }
 		
 		prerequisite = { focus = HIR_NAV_befriend_KYU }
@@ -1790,8 +1833,8 @@ focus_tree = {
 				has_global_flag = world_stage_phoney_war_rages_on
 				NOT = { has_global_flag = world_stage_world_war_2_happened }
 				if = {
-					limit = { REI = { focus_progress = { focus = REI_blitzkrieg > 0 } } }
-					REI = { focus_progress = { focus = REI_blitzkrieg < 0.9 } }
+					limit = { REI = { focus_progress = { focus = REI_blitzkrieg progress > 0 } } }
+					REI = { focus_progress = { focus = REI_blitzkrieg progress < 0.9 } }
 				} else = {
 					NOT = { REI = { has_completed_focus = REI_blitzkrieg } }
 				}
@@ -1805,7 +1848,7 @@ focus_tree = {
 			news_event = hirado.1
 			hidden_effect = {
 				if = {
-					limit = { REI = { focus_progress = { focus = REI_blitzkrieg > 0 } } }
+					limit = { REI = { focus_progress = { focus = REI_blitzkrieg progress > 0 } } }
 					REI = { news_event = hirado.15 }
 				}
 			}
@@ -2080,6 +2123,8 @@ focus_tree = {
 				add_timed_idea = { idea = HIR_chartered_company_2_spirit days = 365 }
 			}
 			hidden_effect = { news_event = hirado.6 }
+			clr_country_flag = allowed_path_democratic
+			set_country_flag = allowed_path_neutrality
 		}
 	}
 	
@@ -2951,6 +2996,8 @@ focus_tree = {
 			add_timed_idea = { idea = HIR_surge_of_nationalism_spirit days = 730 }
 			custom_effect_tooltip = unlock_characters_tt
 			show_ideas_tooltip = HIR_george_kettmann
+			clr_country_flag = allowed_path_democratic
+			set_country_flag = allowed_path_fascism
 		}
 	}
 	
@@ -3017,6 +3064,8 @@ focus_tree = {
 			show_ideas_tooltip = HIR_luis_ferdinand
 			set_global_flag = blitzkrieg_ignore_netherlands	# this is mainly for the correct requirement for REI's blitzkrieg
 			custom_effect_tooltip = HIR_royal_wedding_germany_tt
+			clr_country_flag = allowed_path_democratic
+			set_country_flag = allowed_path_autocracy
 		}
 	}
 	

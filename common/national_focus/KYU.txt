@@ -377,6 +377,7 @@ focus_tree = {
 				remove_ideas = all_internationally_recognised
 			}
 			add_ideas = KYU_independent_state_spirit
+			add_ideas = KYU_unrecognised_independence
 			every_state = {
 				limit = {
 					is_on_continent = kyushu NOT = { is_core_of = KYU }
@@ -462,12 +463,43 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = KYU_independent_kyushu_2	# Seek International Recognition
-		icon = GFX_focus_KYU_international_recognition
-		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		id = KYU_new_war_ministry	# 
+		icon = GFX_focus_generic_army_doctrine
+		search_filters = { FOCUS_FILTER_MILITARY }
 		
 		prerequisite = { focus = KYU_independent_kyushu }
 		relative_position_id = KYU_independent_kyushu
+		x = -1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		completion_reward = {
+			if = {
+				limit = { has_dlc = "No Step Back" }
+				swap_ideas = {
+					add_idea = KYU_naval_junta_nsb_3_spirit
+					remove_idea = KYU_naval_junta_nsb_2_spirit
+				}
+			} else = {
+				swap_ideas = {
+					add_idea = KYU_naval_junta_3_spirit
+					remove_idea = KYU_naval_junta_2_spirit
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = KYU_new_war_ministry_2	# 
+		icon = GFX_focus_PRO_embrace_militarism
+		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_MANPOWER }
+		
+		prerequisite = { focus = KYU_new_war_ministry }
+		relative_position_id = KYU_new_war_ministry
 		x = 0
 		y = 1
 		cost = 10
@@ -477,7 +509,68 @@ focus_tree = {
 		}
 		
 		completion_reward = {
+			swap_ideas = {
+				add_idea = KYU_independent_state_spirit_2
+				remove_idea = KYU_independent_state_spirit
+			}
+		}
+	}
+	
+	focus = {
+		id = KYU_new_foreign_office	# 
+		icon = GFX_focus_KYU_international_recognition
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_DIPLOMACY }
 		
+		prerequisite = { focus = KYU_independent_kyushu }
+		relative_position_id = KYU_independent_kyushu
+		x = 1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		completion_reward = {
+			add_political_power = 200
+			custom_effect_tooltip = KYU_new_foreign_office_tt
+			hidden_effect = {
+				every_other_country = {
+					add_ai_strategy = {
+						type = antagonize
+						id = KYU
+						value = -25
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = KYU_new_foreign_office_2	# Seek International Recognition
+		icon = GFX_focus_KYU_international_recognition
+		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		
+		prerequisite = { focus = KYU_new_foreign_office }
+		relative_position_id = KYU_new_foreign_office
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		completion_reward = {
+			every_other_country = {
+				if = {
+					limit = { unification_candidate = yes }
+					country_event = { id =  kyushu.301 hours = 3 random = 21 }
+				} else = {
+					country_event = { id =  kyushu.300 hours = 3 random = 21 }
+				}
+			}
+			remove_ideas = KYU_unrecognised_independence
 		}
 	}
 	
@@ -488,9 +581,9 @@ focus_tree = {
 		
 		available = { has_completed_focus = KYU_ministry_decree_2 }
 		
-		prerequisite = { focus = KYU_independent_kyushu focus = KYU_unification_path }
-		relative_position_id = KYU_independent_kyushu
-		x = 3
+		prerequisite = { focus = KYU_unification_path }
+		relative_position_id = KYU_unification_path
+		x = 0
 		y = 1
 		cost = 10
 		
@@ -986,7 +1079,7 @@ focus_tree = {
 				election_frequency = 60
 			}
 			add_ideas = KYU_double_leaf_society_spirit
-			hidden_ideas = {
+			hidden_effect = {
 				swap_ideas = {
 					remove_idea = KYU_back_nagano_2_spirit
 					add_idea = KYU_back_nagano_3_spirit
@@ -3333,6 +3426,16 @@ focus_tree = {
 		text_icon = navigators_style
 		
 		available_if_capitulated = yes
+		
+		available = {
+			is_subject = no
+			hidden_trigger = {
+				if = {
+					limit = { is_ai = yes OR = { has_completed_focus = KYU_war_council has_completed_focus = KYU_industrial_effort_1 } NOT = { has_completed_focus = KYU_NAV_neutrality } }
+					NOT = { has_country_flag = NAV_aggressive_strategy }
+				}
+			}
+		}
 
 		completion_reward = {
 			add_political_power = 100
@@ -3367,6 +3470,16 @@ focus_tree = {
 		available_if_capitulated = yes
 		
 		text_icon = navigators_style
+		
+		available = {
+			is_subject = no
+			hidden_trigger = {
+				if = {
+					limit = { is_ai = yes OR = { has_completed_focus = KYU_war_council has_completed_focus = KYU_industrial_effort_1 } NOT = { has_completed_focus = KYU_NAV_active_diplomacy } }
+					NOT = { has_country_flag = NAV_friendly_strategy }
+				}
+			}
+		}
 
 		completion_reward = {
 			add_stability = 0.1
@@ -3406,6 +3519,10 @@ focus_tree = {
 		text_icon = navigators_style
 
 		completion_reward = {
+			hidden_effect = {
+				PRT_choose_stategy_plan = yes
+				HIR_choose_stategy_plan = yes
+			}
 			add_war_support = 0.05
 			unlock_decision_category_tooltip = NAV_aggressive_diplomacy_category
 		}
@@ -3423,7 +3540,13 @@ focus_tree = {
 		dynamic = yes
 		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_POLITICAL }
 		
-		ai_will_do = { factor = 10 }
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 0
+				has_country_flag = hostile_to_HIR
+			}
+		}
 		
 		prerequisite = { focus = KYU_NAV_active_diplomacy }
 		relative_position_id = KYU_NAV_active_diplomacy
@@ -3452,6 +3575,12 @@ focus_tree = {
 					}
 				}
 			}
+			hidden_trigger = {
+				if = {
+					limit = { is_ai = yes has_completed_focus = KYU_NAV_active_diplomacy }
+					NOT = { has_country_flag = hostile_to_HIR }
+				}
+			}
 		}
 
 		cost = 5
@@ -3461,6 +3590,7 @@ focus_tree = {
 		text_icon = navigators_style
 
 		completion_reward = {
+			hidden_effect = { HIR_choose_stategy_plan = yes }	# UPDATE AI STRATEGY BEFORE FIRING EVENT
 			HIR = { country_event = { id = navigator.1 hours = 6 } }
 			custom_effect_tooltip = loc_if_accept
 			effect_tooltip = {
@@ -3488,7 +3618,13 @@ focus_tree = {
 		dynamic = yes
 		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_POLITICAL }
 		
-		ai_will_do = { factor = 10 }
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 0
+				has_country_flag = hostile_to_HIR
+			}
+		}
 		
 		prerequisite = { focus = KYU_NAV_befriend_HIR }
 		relative_position_id = KYU_NAV_befriend_HIR
@@ -3541,7 +3677,13 @@ focus_tree = {
 		dynamic = yes
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
-		ai_will_do = { factor = 10 }
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 0
+				has_country_flag = hostile_to_PRT
+			}
+		}
 		
 		prerequisite = { focus = KYU_NAV_active_diplomacy }
 		relative_position_id = KYU_NAV_active_diplomacy
@@ -3570,6 +3712,12 @@ focus_tree = {
 					}
 				}
 			}
+			hidden_trigger = {
+				if = {
+					limit = { is_ai = yes has_completed_focus = KYU_NAV_active_diplomacy }
+					NOT = { has_country_flag = hostile_to_PRT }
+				}
+			}
 		}
 
 		cost = 5
@@ -3579,6 +3727,7 @@ focus_tree = {
 		text_icon = navigators_style
 
 		completion_reward = {
+			hidden_effect = { PRT_choose_stategy_plan = yes }	# UPDATE AI STRATEGY BEFORE FIRING EVENT
 			PRT = { country_event = { id = navigator.1 hours = 6 } }
 			custom_effect_tooltip = loc_if_accept
 			effect_tooltip = {
