@@ -162,6 +162,47 @@ KYU_choose_stategy_plan = {
 			set_country_flag = NAV_friendly_strategy log = "[THIS.GetName] chose friendly strategy (NAV)"
 		}
 		# choose stance on Seto Crisis (if it is going on)
+		# # ai_path_neutrality
+		# ai_path_fascism
+		# ai_path_autocracy
+		# initial_strategy_completed
+		
+		# check end of initial strategy branches to move on to late game strategy (these are placeholders at the moment)
+		if = {
+			limit = {
+				OR = { has_completed_focus = KYU_back_yamamoto_1 date > 1937.01.01}	# Yamamoto Path
+				OR = { has_completed_focus = KYU_back_koga_1 date < 1937.01.01}	# Koga Path
+				OR = { has_completed_focus = KYU_invite_nagano_1 date < 1937.01.01}	# Nagano Path
+			}
+			set_country_flag = initial_strategy_completed
+		}
+		# chose late game strategy
+		if = {
+			limit = {
+				has_country_flag = initial_strategy_completed
+			}
+			set_temp_variable = { ai_agressivenes_level = 0 }
+				# check ideology
+			if = { limit = { has_ideology = fascism }									add_to_temp_variable = { ai_agressivenes_level = 100 } }
+			if = { limit = { has_ideology = democratic }								add_to_temp_variable = { ai_agressivenes_level = -100 } }
+			if = { limit = { has_ideology = democratic_socialism }						add_to_temp_variable = { ai_agressivenes_level = -100 } }
+				# previous decisions
+			if = { limit = { has_country_flag = ai_agressivenes_level }					add_to_temp_variable = { ai_agressivenes_level = 100 } }
+			if = { limit = { NOT = { has_country_flag = ai_agressivenes_level } }		add_to_temp_variable = { ai_agressivenes_level = -100 } }
+				# check other factors
+			if = { limit = { has_war = yes }											add_to_temp_variable = { ai_agressivenes_level = 999 } }
+			if = { limit = { has_completed_focus = KYU_independent_kyushu }				add_to_temp_variable = { ai_agressivenes_level = -250 } }
+			if = { limit = { has_completed_focus = KYU_unification_path }				add_to_temp_variable = { ai_agressivenes_level = 250 } }
+			if = { limit = { is_subject = yes }											add_to_temp_variable = { ai_agressivenes_level = -250 } }
+			if = { limit = { any_other_country = { has_wargoal_against = KYU } }		add_to_temp_variable = { ai_agressivenes_level = 250 } }
+			if = { limit = { any_other_country = { is_justifying_wargoal_against = KYU } }		add_to_temp_variable = { ai_agressivenes_level = 125 } }
+			if = { limit = { has_country_flag = NAV_aggressive_strategy }				add_to_temp_variable = { ai_agressivenes_level = 250 } }
+				# final decision
+			if = {
+				limit = { check_variable = { ai_agressivenes_level > 0 } }
+				set_country_flag = ai_path_aggressiv	log = "[THIS.GetName] chose aggressive strategy (general)"
+			} else = { clr_country_flag = ai_path_aggressiv log = "[THIS.GetName] chose isolacionist strategy (general)" }
+		}
 	}
 } d_KYU_choose_stategy_plan = { KYU_choose_stategy_plan = yes log = "KYU_choose_stategy_plan" }
 
