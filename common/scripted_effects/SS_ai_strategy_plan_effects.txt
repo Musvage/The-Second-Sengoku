@@ -161,7 +161,135 @@ KYU_choose_stategy_plan = {
 			clr_country_flag = NAV_aggressive_strategy
 			set_country_flag = NAV_friendly_strategy log = "[THIS.GetName] chose friendly strategy (NAV)"
 		}
+		# choose stance on CHU
+			# check opinion (positive relations decrease hostility)
+		set_temp_variable = { hostility_CHU = opinion@CHU }
+		CHU = { add_to_temp_variable = { hostility_CHU = opinion@KYU } }
+		multiply_temp_variable = { hostility_CHU = -1 }
+		add_to_temp_variable = { hostility_CHU = 100 } }	# historical grievances
+			# check ideology
+		if = { limit = { left_ideology = yes CHU = { left_ideology = yes } }		add_to_temp_variable = { hostility_CHU = -100 } }
+		if = { limit = { right_ideology = yes CHU = { right_ideology = yes } }		add_to_temp_variable = { hostility_CHU = -100 } }
+		if = { limit = { center_ideology = yes CHU = { center_ideology = yes } }	add_to_temp_variable = { hostility_CHU = -100 } }
+		if = { limit = { right_ideology = yes CHU = { left_ideology = yes } }		add_to_temp_variable = { hostility_CHU = 100 } }
+		if = { limit = { left_ideology = yes CHU = { right_ideology = yes } }		add_to_temp_variable = { hostility_CHU = 100 } }
+		if = { limit = { has_global_flag = seto_crisis_active }						multiply_temp_variable = { hostility_CHU = 2 } }	# ideologial tensions are high rigth now!
+			# previous decisions
+		if = { limit = { has_country_flag = hostile_to_CHU }						add_to_temp_variable = { hostility_CHU = 100 } }
+		if = { limit = { has_country_flag = friendly_to_CHU }						add_to_temp_variable = { hostility_CHU = -100 } }
+			# check other factors
+		if = { limit = { has_war_with = CHU }										add_to_temp_variable = { hostility_CHU = 1000 } }
+		if = { limit = { has_country_flag = reject_overture_from_PRT }				add_to_temp_variable = { hostility_CHU = 100 } }
+		if = { limit = { is_justifying_wargoal_against = CHU }						add_to_temp_variable = { hostility_CHU = 100 } }
+		if = { limit = { has_wargoal_against = CHU }								add_to_temp_variable = { hostility_CHU = 200 } }
+		if = { limit = { is_in_faction_with = CHU }									add_to_temp_variable = { hostility_CHU = -500 } }
+		if = { limit = { has_completed_focus = KYU_seto_crises_back_chu }			add_to_temp_variable = { hostility_CHU = -200 } }
+		if = { limit = { is_embargoing = CHU }										add_to_temp_variable = { hostility_CHU = 200 } }
+		if = { limit = { CHU = { has_completed_focus = CHU_aggressive_policy } }	add_to_temp_variable = { hostility_CHU = 200 } }
+		if = { limit = { CHU = { has_completed_focus = CHU_spread_democracy_to_kyu } }		add_to_temp_variable = { hostility_CHU = 200 } }	# CHU wants to unify japan
+		if = { limit = { CHU = { is_justifying_wargoal_against = KYU } }			add_to_temp_variable = { hostility_CHU = 200 } }
+		if = { limit = { CHU = { has_wargoal_against = KYU } }						add_to_temp_variable = { hostility_CHU = 400 } }
+		if = { limit = { CHU = { is_embargoing = KYU } }							add_to_temp_variable = { hostility_CHU = 200 } }
+			# final decision
+		if = {
+			limit = { check_variable = { hostility_CHU > 499 } }
+			clr_country_flag = friendly_to_CHU
+			set_country_flag = hostile_to_CHU log = "[THIS.GetName] is hostile towards [CHU.GetName]"
+		} else_if = {
+			limit = { check_variable = { hostility_CHU < -249 } }
+			clr_country_flag = hostile_to_CHU
+			set_country_flag = friendly_to_CHU log = "[THIS.GetName] is friendly towards [CHU.GetName]"
+		} else = {
+			clr_country_flag = hostile_to_CHU
+			clr_country_flag = friendly_to_CHU log = "[THIS.GetName] is neutral towards [CHU.GetName]"
+		}
+			# choose stance on SHI
+			# check opinion (positive relations decrease hostility)
+		set_temp_variable = { hostility_SHI = opinion@SHI }
+		SHI = { add_to_temp_variable = { hostility_SHI = opinion@KYU } }
+		multiply_temp_variable = { hostility_SHI = -1 }
+			# check ideology
+		if = { limit = { left_ideology = yes SHI = { left_ideology = yes } }		add_to_temp_variable = { hostility_SHI = -100 } }
+		if = { limit = { right_ideology = yes SHI = { right_ideology = yes } }		add_to_temp_variable = { hostility_SHI = -100 } }
+		if = { limit = { center_ideology = yes SHI = { center_ideology = yes } }	add_to_temp_variable = { hostility_SHI = -100 } }
+		if = { limit = { right_ideology = yes SHI = { left_ideology = yes } }		add_to_temp_variable = { hostility_SHI = 100 } }
+		if = { limit = { left_ideology = yes SHI = { right_ideology = yes } }		add_to_temp_variable = { hostility_SHI = 100 } }
+		if = { limit = { has_global_flag = seto_crisis_active }						multiply_temp_variable = { hostility_SHI = 2 } }	# ideologial tensions are high rigth now!
+			# previous decisions
+		if = { limit = { has_country_flag = hostile_to_SHI }						add_to_temp_variable = { hostility_SHI = 100 } }
+		if = { limit = { has_country_flag = friendly_to_SHI }						add_to_temp_variable = { hostility_SHI = -100 } }
+			# check other factors
+		if = { limit = { has_war_with = SHI }										add_to_temp_variable = { hostility_SHI = 1000 } }
+		if = { limit = { has_country_flag = reject_overture_from_PRT }				add_to_temp_variable = { hostility_SHI = 100 } }
+		if = { limit = { is_justifying_wargoal_against = SHI }						add_to_temp_variable = { hostility_SHI = 100 } }
+		if = { limit = { has_wargoal_against = SHI }								add_to_temp_variable = { hostility_SHI = 200 } }
+		if = { limit = { is_in_faction_with = SHI }									add_to_temp_variable = { hostility_SHI = -500 } }
+		if = { limit = { has_completed_focus = KYU_seto_crises_back_SHI }			add_to_temp_variable = { hostility_SHI = -200 } }
+		if = { limit = { is_embargoing = SHI }										add_to_temp_variable = { hostility_SHI = 200 } }
+		if = { limit = { SHI = { has_completed_focus = SHI_blood_dragon } }			add_to_temp_variable = { hostility_SHI = 200 } }	# SHI wants to unify japan
+		if = { limit = { SHI = { is_justifying_wargoal_against = KYU } }			add_to_temp_variable = { hostility_SHI = 200 } }
+		if = { limit = { SHI = { has_wargoal_against = KYU } }						add_to_temp_variable = { hostility_SHI = 400 } }
+		if = { limit = { SHI = { is_embargoing = KYU } }							add_to_temp_variable = { hostility_SHI = 200 } }
+			# final decision
+		if = {
+			limit = { check_variable = { hostility_SHI > 499 } }
+			clr_country_flag = friendly_to_SHI
+			set_country_flag = hostile_to_SHI log = "[THIS.GetName] is hostile towards [SHI.GetName]"
+		} else_if = {
+			limit = { check_variable = { hostility_SHI < -249 } }
+			clr_country_flag = hostile_to_SHI
+			set_country_flag = friendly_to_SHI log = "[THIS.GetName] is friendly towards [SHI.GetName]"
+		} else = {
+			clr_country_flag = hostile_to_SHI
+			clr_country_flag = friendly_to_SHI log = "[THIS.GetName] is neutral towards [SHI.GetName]"
+		}
+			# choose stance on IMS
+			# check opinion (positive relations decrease hostility)
+		set_temp_variable = { hostility_IMS = opinion@IMS }
+		IMS = { add_to_temp_variable = { hostility_IMS = opinion@KYU } }
+		multiply_temp_variable = { hostility_IMS = -1 }
+			# check ideology
+		if = { limit = { left_ideology = yes IMS = { left_ideology = yes } }		add_to_temp_variable = { hostility_IMS = -100 } }
+		if = { limit = { right_ideology = yes IMS = { right_ideology = yes } }		add_to_temp_variable = { hostility_IMS = -100 } }
+		if = { limit = { center_ideology = yes IMS = { center_ideology = yes } }	add_to_temp_variable = { hostility_IMS = -100 } }
+		if = { limit = { right_ideology = yes IMS = { left_ideology = yes } }		add_to_temp_variable = { hostility_IMS = 100 } }
+		if = { limit = { left_ideology = yes IMS = { right_ideology = yes } }		add_to_temp_variable = { hostility_IMS = 100 } }
+		if = { limit = { has_global_flag = seto_crisis_active }						multiply_temp_variable = { hostility_IMS = 2 } }	# ideologial tensions are high rigth now!
+			# previous decisions
+		if = { limit = { has_country_flag = hostile_to_IMS }						add_to_temp_variable = { hostility_IMS = 100 } }
+		if = { limit = { has_country_flag = friendly_to_IMS }						add_to_temp_variable = { hostility_IMS = -100 } }
+			# check other factors
+		if = { limit = { IMS = { num_of_controlled_states < 6 } }					add_to_temp_variable = { hostility_IMS = -200 } }	# IMS is harmelss
+		if = { limit = { has_war_with = IMS }										add_to_temp_variable = { hostility_IMS = 1000 } }
+		if = { limit = { has_country_flag = reject_overture_from_PRT }				add_to_temp_variable = { hostility_IMS = 100 } }
+		if = { limit = { is_justifying_wargoal_against = IMS }						add_to_temp_variable = { hostility_IMS = 100 } }
+		if = { limit = { has_wargoal_against = IMS }								add_to_temp_variable = { hostility_IMS = 200 } }
+		if = { limit = { is_in_faction_with = IMS }									add_to_temp_variable = { hostility_IMS = -500 } }
+		if = { limit = { has_completed_focus = KYU_seto_crises_back_IMS }			add_to_temp_variable = { hostility_IMS = -200 } }
+		if = { limit = { is_embargoing = IMS }										add_to_temp_variable = { hostility_IMS = 200 } }
+		if = { limit = { IMS = { has_completed_focus = ss_generic_modernisation } }	add_to_temp_variable = { hostility_IMS = -200 } }
+		if = { limit = { IMS = { has_completed_focus = ss_generic_join_lon } }		add_to_temp_variable = { hostility_IMS = -200 } }
+		if = { limit = { IMS = { has_completed_focus = ss_generic_tradition } }		add_to_temp_variable = { hostility_IMS = 200 } }
+		if = { limit = { IMS = { is_justifying_wargoal_against = KYU } }			add_to_temp_variable = { hostility_IMS = 200 } }
+		if = { limit = { IMS = { has_wargoal_against = KYU } }						add_to_temp_variable = { hostility_IMS = 400 } }
+		if = { limit = { IMS = { is_embargoing = KYU } }							add_to_temp_variable = { hostility_IMS = 200 } }
+			# final decision
+		if = {
+			limit = { check_variable = { hostility_IMS > 499 } }
+			clr_country_flag = friendly_to_IMS
+			set_country_flag = hostile_to_IMS log = "[THIS.GetName] is hostile towards [IMS.GetName]"
+		} else_if = {
+			limit = { check_variable = { hostility_IMS < -249 } }
+			clr_country_flag = hostile_to_IMS
+			set_country_flag = friendly_to_IMS log = "[THIS.GetName] is friendly towards [IMS.GetName]"
+		} else = {
+			clr_country_flag = hostile_to_IMS
+			clr_country_flag = friendly_to_IMS log = "[THIS.GetName] is neutral towards [IMS.GetName]"
+		}
 		# choose stance on Seto Crisis (if it is going on)
+		if = {
+			limit = { has_global_flag = seto_crisis_active }
+		}
 		# # ai_path_neutrality
 		# ai_path_fascism
 		# ai_path_autocracy
