@@ -289,18 +289,79 @@ KYU_choose_stategy_plan = {
 		# choose stance on Seto Crisis (if it is going on)
 		if = {
 			limit = { has_global_flag = seto_crisis_active }
-		}
-		# # ai_path_neutrality
-		# ai_path_fascism
-		# ai_path_autocracy
-		# initial_strategy_completed
-		
+			set_country_flag = seto_crisis_strategy_neutrality
+			clr_country_flag = seto_crisis_strategy_back_ims
+			clr_country_flag = seto_crisis_strategy_back_shi
+			clr_country_flag = seto_crisis_strategy_back_chu
+			if = {
+				limit = {
+					OR = {
+						check_variable = { hostility_IMS < -200 }
+						AND = {
+							check_variable = { hostility_IMS < 0 }
+							IMS = { focus_progress = { focus = IMS_generic_prepare_for_war progress > 0 } }
+						}
+					}
+					OR = {
+						AND = {
+							check_variable = { hostility_IMS < hostility_SHI }
+							check_variable = { hostility_IMS < hostility_CHU }
+						}
+						AND = {
+							check_variable = { hostility_SHI > 200 }
+							check_variable = { hostility_CHU > 200 }
+						}
+					}
+				}
+				set_country_flag = seto_crisis_strategy_back_ims clr_country_flag = seto_crisis_strategy_neutrality	# logic: if [KYU is very friendly towards IMS; OR IMS is actively persuing independence] AND [KYU is more friendly towards IMS than both SHI/CHU; OR KYU is very hostile towards both SHI/CHU] => adopt strategy to back IMS
+				log = "[THIS.GetName] chose seto_crisis_strategy_back_ims"
+			}
+			else_if = {
+				limit = {
+					OR = {
+						AND = {
+							check_variable = { hostility_SHI < -200 }
+							check_variable = { hostility_SHI < hostility_IMS }
+							check_variable = { hostility_SHI < hostility_CHU }
+						}
+						AND = {
+							check_variable = { hostility_SHI < 0 }
+							has_government = fascism CHU = { has_government = fascism }
+							IMS = { focus_progress = { focus = IMS_generic_government_fascism progress > 0 } }
+						}
+					}
+					NOT = { has_government = democratic has_government = democratic_socialism has_government = communism }
+				}
+				set_country_flag = seto_crisis_strategy_back_shi clr_country_flag = seto_crisis_strategy_neutrality	# logic: if [KYU is friendly towards SHI; AND KYU is more friendly towards SHI than CHU/IMS] OR [KYU/SHI/IMS are ideologicaly aligned; AND KYU is not hostile towards SHI] => adopt strategy to back SHI
+				log = "[THIS.GetName] chose seto_crisis_strategy_back_shi"
+			}
+			else_if = {
+				limit = {
+					OR = {
+						AND = {
+							check_variable = { hostility_CHU < -200 }
+							check_variable = { hostility_CHU < hostility_SHI }
+							check_variable = { hostility_CHU < hostility_IMS }
+						}
+						AND = {
+							check_variable = { hostility_CHU < 0 }
+							has_government = neutrality CHU = { has_government = neutrality }
+							IMS = { focus_progress = { focus = IMS_generic_government_neutrality progress > 0 } }
+						}
+					}
+					NOT = { has_government = democratic has_government = democratic_socialism has_government = communism }
+				}
+				set_country_flag = seto_crisis_strategy_back_chu clr_country_flag = seto_crisis_strategy_neutrality	# logic: if [KYU is friendly towards CHU; AND KYU is more friendly towards CHU than SHI/IMS] OR [KYU/CHU/IMS are ideologicaly aligned; AND KYU is not hostile towards CHU] => adopt strategy to back CHU
+				log = "[THIS.GetName] chose seto_crisis_strategy_back_chu"
+			}
+			else = { log = "[THIS.GetName] chose seto_crisis_strategy_neutrality" }
+		} else = { clr_country_flag = seto_crisis_strategy_neutrality clr_country_flag = seto_crisis_strategy_back_ims clr_country_flag = seto_crisis_strategy_back_shi clr_country_flag = seto_crisis_strategy_back_chu }
 		# check end of initial strategy branches to move on to late game strategy (these are placeholders at the moment)
 		if = {
 			limit = {
-				OR = { has_completed_focus = KYU_back_yamamoto_1 date > 1937.01.01}	# Yamamoto Path
-				OR = { has_completed_focus = KYU_back_koga_1 date < 1937.01.01}	# Koga Path
-				OR = { has_completed_focus = KYU_invite_nagano_1 date < 1937.01.01}	# Nagano Path
+				OR = { has_completed_focus = KYU_back_yamamoto_1 date > 1937.01.01}		# Yamamoto Path
+				OR = { has_completed_focus = KYU_back_koga_1 date < 1937.01.01}			# Koga Path
+				OR = { has_completed_focus = KYU_invite_nagano_1 date < 1937.01.01}		# Nagano Path
 			}
 			set_country_flag = initial_strategy_completed
 		}
