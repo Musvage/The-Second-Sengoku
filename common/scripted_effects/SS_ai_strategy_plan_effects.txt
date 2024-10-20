@@ -42,6 +42,7 @@ SHI_choose_stategy_plan = {
 	}
 } d_SHI_choose_stategy_plan = { SHI_choose_stategy_plan = yes log = "SHI_choose_stategy_plan" }
 
+
 KYU_choose_stategy_plan = {
 	KYU = {
 		# choose stance on HIR
@@ -167,7 +168,7 @@ KYU_choose_stategy_plan = {
 		set_temp_variable = { hostility_CHU = opinion@CHU }
 		CHU = { add_to_temp_variable = { hostility_CHU = opinion@KYU } }
 		multiply_temp_variable = { hostility_CHU = -1 }
-		add_to_temp_variable = { hostility_CHU = 100 } }	# historical grievances
+		add_to_temp_variable = { hostility_CHU = 100 }		# historical grievances
 			# check ideology
 		if = { limit = { left_ideology = yes CHU = { left_ideology = yes } }		add_to_temp_variable = { hostility_CHU = -100 } }
 		if = { limit = { right_ideology = yes CHU = { right_ideology = yes } }		add_to_temp_variable = { hostility_CHU = -100 } }
@@ -360,11 +361,30 @@ KYU_choose_stategy_plan = {
 		# check end of initial strategy branches to move on to late game strategy (these are placeholders at the moment)
 		if = {
 			limit = {
-				OR = { has_completed_focus = KYU_back_yamamoto_1 date > 1937.01.01}		# Yamamoto Path
-				OR = { has_completed_focus = KYU_back_koga_1 date < 1937.01.01}			# Koga Path
-				OR = { has_completed_focus = KYU_invite_nagano_1 date < 1937.01.01}		# Nagano Path
+				date > 1937.06.01
+				NOT = { has_country_flag = initial_strategy_completed }
+				OR = {
+					AND = {
+						has_country_flag = ai_path_autocracy
+						has_completed_focus = KYU_technology_industry_effort
+						has_completed_focus = KYU_clan_generals
+						has_completed_focus = KYU_research_effort
+					}
+					AND = {
+						has_country_flag = ai_path_neutrality
+						has_completed_focus = KYU_back_koga_3
+						has_completed_focus = KYU_technology_industry_effort_2
+						has_completed_focus = KYU_war_council
+					}
+					AND = {
+						has_country_flag = ai_path_fascism
+						has_completed_focus = KYU_invite_nagano_2
+						has_completed_focus = KYU_military_industry_effort_3
+						has_completed_focus = KYU_reformed_military_academy
+					}
+				}
 			}
-			set_country_flag = initial_strategy_completed
+			set_country_flag = initial_strategy_completed log = "[THIS.GetName] finished initial strategy"	# THIS check is duplicated in the focuses themselves as a fail-safe
 		}
 		# chose late game strategy
 		if = {
@@ -391,7 +411,7 @@ KYU_choose_stategy_plan = {
 						}
 					}
 					set_country_flag = ai_alternative_strategy log = "[THIS.GetName] chose alternative strategy"	# logic: if any neighbor (or CHU/SHI) is too strong, go for independence path (alternative). Else, go for unification (default).
-				} else = { clr_counrty_flag = ai_alternative_strategy log = "[THIS.GetName] chose default strategy" }
+				} else = { clr_country_flag = ai_alternative_strategy log = "[THIS.GetName] chose default strategy" }
 			} else_if = {
 				limit = { OR = { has_government = fascism has_government = neutrality } }
 				if = {
@@ -422,9 +442,9 @@ KYU_choose_stategy_plan = {
 						}
 					}
 					set_country_flag = ai_alternative_strategy log = "[THIS.GetName] chose alternative strategy"	# logic: if every neighbor (and CHU/SHI) is significantly weaker, go aggressive soon (alternative). Else, build up more (default). If at war, do not persue aggressive focuses.
-				} else = { clr_counrty_flag = ai_alternative_strategy log = "[THIS.GetName] chose default strategy" }
+				} else = { clr_country_flag = ai_alternative_strategy log = "[THIS.GetName] chose default strategy" }
 			} else = {
-				clr_counrty_flag = ai_alternative_strategy log = "[THIS.GetName] chose default strategy"
+				clr_country_flag = ai_alternative_strategy log = "[THIS.GetName] chose default strategy"
 			}
 		}
 	}

@@ -3,6 +3,18 @@
 # THE SCRIPTS THEMSELVES ARE HANDLED BY scripted_effects/SS_ai_strategy_plan_effects.txt
 
 on_actions = {
+	# select initial strategy, on a country-by-country bases
+	on_startup = {
+		effect = {
+			KYU = {
+				random_list = {
+					1 = { set_country_flag = ai_path_autocracy }
+					1 = { set_country_flag = ai_path_neutrality }
+					1 = { set_country_flag = ai_path_fascism }
+				}
+			}
+		}
+	}
 	# AI evaluate its strategy at startup, each 6 months and after each war/peace
 	on_startup = {
 		effect = {
@@ -132,53 +144,55 @@ on_actions = {
 	
 	on_government_change = {
 		effect = {
-			# the following ensures that the country will have available the appropriate strategic plan to the new ideology, if the change of government was unforseen (i.e., being puppeted or an error in coding)
-			if = {
-				limit = { has_government = autocracy }
-				set_country_flag = ai_path_autocracy  clr_country_flag = ai_path_communism clr_country_flag = ai_path_democratic clr_country_flag = ai_path_democratic_socialism clr_country_flag = ai_path_fascism clr_country_flag = ai_path_neutrality
+			ROOT = {
+				# the following ensures that the country will have available the appropriate strategic plan to the new ideology, if the change of government was unforseen (i.e., being puppeted or an error in coding)
+				if = {
+					limit = { has_government = autocracy }
+					set_country_flag = ai_path_autocracy  clr_country_flag = ai_path_communism clr_country_flag = ai_path_democratic clr_country_flag = ai_path_democratic_socialism clr_country_flag = ai_path_fascism clr_country_flag = ai_path_neutrality
+				}
+				if = {
+					limit = { has_government = communism }
+					clr_country_flag = ai_path_autocracy  set_country_flag = ai_path_communism clr_country_flag = ai_path_democratic clr_country_flag = ai_path_democratic_socialism clr_country_flag = ai_path_fascism clr_country_flag = ai_path_neutrality
+				}
+				if = {
+					limit = { has_government = democratic }
+					clr_country_flag = ai_path_autocracy  clr_country_flag = ai_path_communism set_country_flag = ai_path_democratic clr_country_flag = ai_path_democratic_socialism clr_country_flag = ai_path_fascism clr_country_flag = ai_path_neutrality
+				}
+				if = {
+					limit = { has_government = democratic_socialism }
+					clr_country_flag = ai_path_autocracy  clr_country_flag = ai_path_communism clr_country_flag = ai_path_democratic set_country_flag = ai_path_democratic_socialism clr_country_flag = ai_path_fascism clr_country_flag = ai_path_neutrality
+				}
+				if = {
+					limit = { has_government = fascism }
+					clr_country_flag = ai_path_autocracy  clr_country_flag = ai_path_communism clr_country_flag = ai_path_democratic clr_country_flag = ai_path_democratic_socialism set_country_flag = ai_path_fascism clr_country_flag = ai_path_neutrality
+				}
+				if = {
+					limit = { has_government = neutrality }
+					clr_country_flag = ai_path_autocracy  clr_country_flag = ai_path_communism clr_country_flag = ai_path_democratic clr_country_flag = ai_path_democratic_socialism clr_country_flag = ai_path_fascism set_country_flag = ai_path_neutrality
+				}
+				# reasses strategies
+				if = { limit = { tag = SHO } SHO_choose_stategy_plan = yes }
+				if = { limit = { tag = KAN } KAN_choose_stategy_plan = yes }
+				if = { limit = { tag = EZO } EZO_choose_stategy_plan = yes }
+				if = { limit = { tag = SHI } SHI_choose_stategy_plan = yes }
+				if = { limit = { tag = KYU } KYU_choose_stategy_plan = yes }
+				if = { limit = { tag = CHU } CHU_choose_stategy_plan = yes }
+				if = { limit = { tag = PRO } PRO_choose_stategy_plan = yes }
+				if = { limit = { tag = IMS } IMS_choose_stategy_plan = yes }
+				if = { limit = { tag = AMO } AMO_choose_stategy_plan = yes }
+				if = { limit = { tag = JOS } JOS_choose_stategy_plan = yes }
+				if = { limit = { tag = GAN } GAN_choose_stategy_plan = yes }
+				if = { limit = { tag = REI } REI_choose_stategy_plan = yes }
+				if = { limit = { tag = PRT } PRT_choose_stategy_plan = yes }
+				if = { limit = { tag = KOB } KOB_choose_stategy_plan = yes }
+				if = { limit = { tag = OSA } OSA_choose_stategy_plan = yes }
+				if = { limit = { tag = AMC } AMC_choose_stategy_plan = yes }
+				if = { limit = { tag = OKI } OKI_choose_stategy_plan = yes }
+				if = { limit = { tag = FER } FER_choose_stategy_plan = yes }
+				if = { limit = { tag = HIR } HIR_choose_stategy_plan = yes }
+				# reset timer for reassessing strategy
+				random_list = { 1 = { set_variable = { ai_strategy_cooldown = 5 } } 1 = { set_variable = { ai_strategy_cooldown = 6 } } 1 = { set_variable = { ai_strategy_cooldown = 7 } } }
 			}
-			if = {
-				limit = { has_government = communism }
-				clr_country_flag = ai_path_autocracy  set_country_flag = ai_path_communism clr_country_flag = ai_path_democratic clr_country_flag = ai_path_democratic_socialism clr_country_flag = ai_path_fascism clr_country_flag = ai_path_neutrality
-			}
-			if = {
-				limit = { has_government = democratic }
-				clr_country_flag = ai_path_autocracy  clr_country_flag = ai_path_communism set_country_flag = ai_path_democratic clr_country_flag = ai_path_democratic_socialism clr_country_flag = ai_path_fascism clr_country_flag = ai_path_neutrality
-			}
-			if = {
-				limit = { has_government = democratic_socialism }
-				clr_country_flag = ai_path_autocracy  clr_country_flag = ai_path_communism clr_country_flag = ai_path_democratic set_country_flag = ai_path_democratic_socialism clr_country_flag = ai_path_fascism clr_country_flag = ai_path_neutrality
-			}
-			if = {
-				limit = { has_government = fascism }
-				clr_country_flag = ai_path_autocracy  clr_country_flag = ai_path_communism clr_country_flag = ai_path_democratic clr_country_flag = ai_path_democratic_socialism set_country_flag = ai_path_fascism clr_country_flag = ai_path_neutrality
-			}
-			if = {
-				limit = { has_government = neutrality }
-				clr_country_flag = ai_path_autocracy  clr_country_flag = ai_path_communism clr_country_flag = ai_path_democratic clr_country_flag = ai_path_democratic_socialism clr_country_flag = ai_path_fascism set_country_flag = ai_path_neutrality
-			}
-			# reasses strategies
-			if = { limit = { tag = SHO } SHO_choose_stategy_plan = yes }
-			if = { limit = { tag = KAN } KAN_choose_stategy_plan = yes }
-			if = { limit = { tag = EZO } EZO_choose_stategy_plan = yes }
-			if = { limit = { tag = SHI } SHI_choose_stategy_plan = yes }
-			if = { limit = { tag = KYU } KYU_choose_stategy_plan = yes }
-			if = { limit = { tag = CHU } CHU_choose_stategy_plan = yes }
-			if = { limit = { tag = PRO } PRO_choose_stategy_plan = yes }
-			if = { limit = { tag = IMS } IMS_choose_stategy_plan = yes }
-			if = { limit = { tag = AMO } AMO_choose_stategy_plan = yes }
-			if = { limit = { tag = JOS } JOS_choose_stategy_plan = yes }
-			if = { limit = { tag = GAN } GAN_choose_stategy_plan = yes }
-			if = { limit = { tag = REI } REI_choose_stategy_plan = yes }
-			if = { limit = { tag = PRT } PRT_choose_stategy_plan = yes }
-			if = { limit = { tag = KOB } KOB_choose_stategy_plan = yes }
-			if = { limit = { tag = OSA } OSA_choose_stategy_plan = yes }
-			if = { limit = { tag = AMC } AMC_choose_stategy_plan = yes }
-			if = { limit = { tag = OKI } OKI_choose_stategy_plan = yes }
-			if = { limit = { tag = FER } FER_choose_stategy_plan = yes }
-			if = { limit = { tag = HIR } HIR_choose_stategy_plan = yes }
-			# reset timer for reassessing strategy
-			random_list = { 1 = { set_variable = { ai_strategy_cooldown = 5 } } 1 = { set_variable = { ai_strategy_cooldown = 6 } } 1 = { set_variable = { ai_strategy_cooldown = 7 } } }
 		}
 	}
 }
