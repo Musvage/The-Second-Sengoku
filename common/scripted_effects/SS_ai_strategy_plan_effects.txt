@@ -11,7 +11,8 @@
 # ai_path_communism
 # ai_path_autocracy
 # initial_strategy_completed
-# ai_path_aggressiv
+# ai_alternative_strategy
+# ai_path_aggressive
 # hostile_to_[TAG]
 # friendly_to_[TAG]
 
@@ -370,27 +371,61 @@ KYU_choose_stategy_plan = {
 			limit = {
 				has_country_flag = initial_strategy_completed
 			}
-			set_temp_variable = { ai_agressivenes_level = 0 }
-				# check ideology
-			if = { limit = { has_ideology = fascism }									add_to_temp_variable = { ai_agressivenes_level = 100 } }
-			if = { limit = { has_ideology = democratic }								add_to_temp_variable = { ai_agressivenes_level = -100 } }
-			if = { limit = { has_ideology = democratic_socialism }						add_to_temp_variable = { ai_agressivenes_level = -100 } }
-				# previous decisions
-			if = { limit = { has_country_flag = ai_agressivenes_level }					add_to_temp_variable = { ai_agressivenes_level = 100 } }
-			if = { limit = { NOT = { has_country_flag = ai_agressivenes_level } }		add_to_temp_variable = { ai_agressivenes_level = -100 } }
-				# check other factors
-			if = { limit = { has_war = yes }											add_to_temp_variable = { ai_agressivenes_level = 999 } }
-			if = { limit = { has_completed_focus = KYU_independent_kyushu }				add_to_temp_variable = { ai_agressivenes_level = -250 } }
-			if = { limit = { has_completed_focus = KYU_unification_path }				add_to_temp_variable = { ai_agressivenes_level = 250 } }
-			if = { limit = { is_subject = yes }											add_to_temp_variable = { ai_agressivenes_level = -250 } }
-			if = { limit = { any_other_country = { has_wargoal_against = KYU } }		add_to_temp_variable = { ai_agressivenes_level = 250 } }
-			if = { limit = { any_other_country = { is_justifying_wargoal_against = KYU } }		add_to_temp_variable = { ai_agressivenes_level = 125 } }
-			if = { limit = { has_country_flag = NAV_aggressive_strategy }				add_to_temp_variable = { ai_agressivenes_level = 250 } }
-				# final decision
 			if = {
-				limit = { check_variable = { ai_agressivenes_level > 0 } }
-				set_country_flag = ai_path_aggressiv	log = "[THIS.GetName] chose aggressive strategy (general)"
-			} else = { clr_country_flag = ai_path_aggressiv log = "[THIS.GetName] chose isolacionist strategy (general)" }
+				limit = { has_government = autocracy }
+				if = {
+					limit = {
+						OR = {
+							any_neighbor_country = {
+								strength_ratio = { tag = KYU ratio > 1 }
+								NOT = { is_in_faction_with = KYU }
+							}
+							CHU = {
+								strength_ratio = { tag = KYU ratio > 1 }
+								NOT = { is_in_faction_with = KYU }
+							}
+							SHI = {
+								strength_ratio = { tag = KYU ratio > 1 }
+								NOT = { is_in_faction_with = KYU }
+							}
+						}
+					}
+					set_country_flag = ai_alternative_strategy log = "[THIS.GetName] chose alternative strategy"	# logic: if any neighbor (or CHU/SHI) is too strong, go for independence path (alternative). Else, go for unification (default).
+				} else = { clr_counrty_flag = ai_alternative_strategy log = "[THIS.GetName] chose default strategy" }
+			} else_if = {
+				limit = { OR = { has_government = fascism has_government = neutrality } }
+				if = {
+					limit = {
+						has_war = no
+						AND = {
+							all_neighbor_country = {
+								OR = {
+									strength_ratio = { tag = KYU ratio < 0.75 }
+									is_in_faction_with = KYU
+									is_subject_of = KYU
+								}
+							}
+							CHU = {
+								OR = {
+									strength_ratio = { tag = KYU ratio < 0.75 }
+									is_in_faction_with = KYU
+									is_subject_of = KYU
+								}
+							}
+							SHI = {
+								OR = {
+									strength_ratio = { tag = KYU ratio < 0.75 }
+									is_in_faction_with = KYU
+									is_subject_of = KYU
+								}
+							}
+						}
+					}
+					set_country_flag = ai_alternative_strategy log = "[THIS.GetName] chose alternative strategy"	# logic: if every neighbor (and CHU/SHI) is significantly weaker, go aggressive soon (alternative). Else, build up more (default). If at war, do not persue aggressive focuses.
+				} else = { clr_counrty_flag = ai_alternative_strategy log = "[THIS.GetName] chose default strategy" }
+			} else = {
+				clr_counrty_flag = ai_alternative_strategy log = "[THIS.GetName] chose default strategy"
+			}
 		}
 	}
 } d_KYU_choose_stategy_plan = { KYU_choose_stategy_plan = yes log = "KYU_choose_stategy_plan" }
