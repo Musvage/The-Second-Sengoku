@@ -520,6 +520,7 @@ PRT_choose_stategy_plan = {
 		if = { limit = { is_embargoing = KYU }										add_to_temp_variable = { hostility_KYU = 200 } }
 		if = { limit = { KYU = { has_completed_focus = KYU_NAV_active_diplomacy } }	add_to_temp_variable = { hostility_KYU = -100 } }
 		if = { limit = { KYU = { has_completed_focus = KYU_NAV_neutrality } }		add_to_temp_variable = { hostility_KYU = 200 } }
+		if = { limit = { KYU = { has_completed_focus = KYU_pan_asianism } }			add_to_temp_variable = { hostility_KYU = 200 } }
 		if = { limit = { KYU = { has_completed_focus = KYU_NAV_aggressive } }		add_to_temp_variable = { hostility_KYU = 400 } }
 		if = { limit = { KYU = { has_country_flag = reject_overture_from_PRT } }	add_to_temp_variable = { hostility_KYU = 200 } }
 		if = { limit = { KYU = { is_justifying_wargoal_against = PRT } }			add_to_temp_variable = { hostility_KYU = 200 } }
@@ -610,10 +611,45 @@ PRT_choose_stategy_plan = {
 			if = { limit = { has_country_flag = NAV_aggressive_strategy } log = "[THIS.GetName] chose NAV_aggressive_strategy" }
 		}
 		# choose overal strategy
-			# 5 possible paths: neutrality (default), democratic/socdem, fascist/monarchist.
-			# neutral, fascist and monarchy prefer Strenghen Colonial Act, dem/socdem prefere Revise
-			# if neutral or fasc/mon, check China for peaceful resolution of Macau problem
-			# choose aggressive path if KYU is hostile, if China is hostile, or if AXS/ALY is threateing (unlikely)
+		if = {
+			limit = {
+				date > 1937.06.01
+				NOT = { has_country_flag = initial_strategy_completed }
+				OR = {
+					AND = {
+						has_country_flag = ai_path_neutrality
+						has_completed_focus = PRT_create_arsenal_alfeite
+						has_completed_focus = PRT_extra_research_2
+						has_completed_focus = PRT_cult_of_personality
+					}
+					AND = {
+						OR = { has_country_flag = ai_path_autocracy has_country_flag = ai_path_fascism }
+						has_completed_focus = PRT_create_ogma
+						has_completed_focus = PRT_develop_african_industry
+						has_completed_focus = PRT_local_dockyards
+					}
+					AND = {
+						OR = { has_country_flag = ai_path_democratic has_country_flag = ai_path_democratic_socialism }
+						has_completed_focus = PRT_religious_syncretism
+						has_completed_focus = PRT_integrate_market
+						has_completed_focus = PRT_free_elections
+					}
+				}
+			}
+			set_country_flag = initial_strategy_completed log = "[THIS.GetName] finished initial strategy"	# THIS check is duplicated in the focuses themselves as a fail-safe
+		}
+		if = {
+			limit = {
+				OR = {
+					any_other_country = { is_justifying_wargoal_against = PRT }
+					any_other_country = { has_wargoal_against = PRT }
+					has_global_flag = world_stage_devolution_of_macau
+					KYU = { has_country_flag = reject_overture_from_PRT OR = { has_completed_focus = KYU_pan_asianism has_completed_focus = KYU_NAV_aggressive } }
+					AND = { NOT = { clr_global_flag = modus_vivendi_pacific } has_global_flag = world_stage_world_war_2_is_active }
+				}
+			}
+			set_country_flag = ai_path_aggressive	log = "[THIS.GetName] chose alternative/aggressive strategy"
+		} else = { clr_country_flag = ai_path_aggressive	log = "[THIS.GetName] chose default/isolacionist strategy" }
 	}
 } d_PRT_choose_stategy_plan = { PRT_choose_stategy_plan = yes log = "PRT_choose_stategy_plan" }
 
@@ -674,6 +710,7 @@ HIR_choose_stategy_plan = {
 		if = { limit = { KYU = { has_completed_focus = KYU_NAV_active_diplomacy } }	add_to_temp_variable = { hostility_KYU = -100 } }
 		if = { limit = { KYU = { has_completed_focus = KYU_NAV_neutrality } }		add_to_temp_variable = { hostility_KYU = 200 } }
 		if = { limit = { KYU = { has_completed_focus = KYU_NAV_aggressive } }		add_to_temp_variable = { hostility_KYU = 400 } }
+		if = { limit = { KYU = { has_completed_focus = KYU_pan_asianism } }			add_to_temp_variable = { hostility_KYU = 400 } }
 		if = { limit = { KYU = { has_country_flag = reject_overture_from_HIR } }	add_to_temp_variable = { hostility_KYU = 200 } }
 		if = { limit = { KYU = { is_justifying_wargoal_against = HIR } }			add_to_temp_variable = { hostility_KYU = 200 } }
 		if = { limit = { KYU = { has_wargoal_against = HIR } }						add_to_temp_variable = { hostility_KYU = 400 } }
