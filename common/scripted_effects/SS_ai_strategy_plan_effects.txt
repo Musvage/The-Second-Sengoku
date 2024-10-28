@@ -801,6 +801,33 @@ HIR_choose_stategy_plan = {
 		}
 		# choose overal strategy
 		if = {
+			limit = {
+				date > 1937.06.01
+				NOT = { has_country_flag = initial_strategy_completed }
+				OR = {
+					AND = {
+						NOT = { has_country_flag = ai_path_neutrality has_country_flag = ai_path_autocracy has_country_flag = ai_path_fascism }
+						OR = { has_completed_focus = HIR_NAV_neutrality has_completed_focus = HIR_NAV_active_diplomacy }
+						has_completed_focus = HIR_colonial_development_2
+						has_completed_focus = HIR_colony_army_effort
+					}
+					AND = {
+						has_country_flag = ai_path_neutrality
+						OR = { has_completed_focus = HIR_NAV_neutrality has_completed_focus = HIR_NAV_active_diplomacy }
+						has_completed_focus = HIR_homeland_development_1
+						has_completed_focus = HIR_create_voc
+					}
+					AND = {
+						OR = { has_country_flag = ai_path_autocracy has_country_flag = ai_path_fascism }
+						has_completed_focus = HIR_home_army_effort
+						has_completed_focus = HIR_homeland_development_2
+						has_completed_focus = HIR_royal_wedding_germany
+					}
+				}
+			}
+			set_country_flag = initial_strategy_completed log = "[THIS.GetName] finished initial strategy"	# THIS check is duplicated in the focuses themselves as a fail-safe
+		}
+		if = {
 			limit = { OR = { has_country_flag = ai_path_neutrality has_country_flag = ai_path_autocracy has_country_flag = ai_path_fascism } }	# V.O.C., fascist and monarchist path
 			if = {
 				limit = {
