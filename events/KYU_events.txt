@@ -517,7 +517,7 @@ country_event = {	# Clans Revolt Again	# leader becomes the cool portrait of day
 		}
 	}
 	option = {
-		name = kyushu.15.join
+		name = kyushu.17.join
 		trigger = {
 			tag = ROOT is_ai = no
 			any_enemy_country = { tag = MCK }
@@ -608,14 +608,51 @@ country_event = {	# Order 66: parliament revolts
 	option = {
 		name = kyushu.19.join
 		trigger = { tag = KYU is_ai = no }
-		random_country = {
-			limit = { has_cosmetic_tag = KYU_FKK }
+		var:global.TAG_FKK = {
 			change_tag_from = KYU
+			if = {
+				limit = { difficulty < 2 }
+				add_political_power = 30
+				add_command_power = 10
+				army_experience = 20
+				navy_experience = 20
+				air_experience = 20
+				add_war_support = 0.1
+				add_manpower = 1000
+				hidden_effect = { spawn_fukuoka_troops = yes spawn_fukuoka_troops = yes }
+				custom_effect_tooltip = kyushu.16.6troops
+			} else = {
+				add_political_power = 150
+				add_command_power = 50
+				army_experience = 10
+				navy_experience = 10
+				air_experience = 10
+				add_war_support = 0.05
+				add_manpower = 5000
+				hidden_effect = { spawn_fukuoka_troops = yes }
+				custom_effect_tooltip = kyushu.16.3troops
+			}
 		}
 	}
 	option = {
 		name = kyushu.19.other
 		trigger = { NOT = { tag = KYU has_war_with = KYU } }
+	}
+	option = {
+		name = kyushu.19.help
+		trigger = {
+			NOT = { is_in_faction_with = KYU }
+			OR = { tag = PRT tag = HIR }
+			OR = { has_completed_focus = HIR_NAV_aggressive has_completed_focus = PRT_NAV_aggressive }
+			NOT = { has_completed_focus = HIR_NAV_befriend_KYU has_completed_focus = PRT_NAV_befriend_KYU }
+		}
+		set_temp_variable = { rifle_gift = num_equipment@infantry_equipment }
+		divide_temp_variable = { rifle_gift = 5 }
+		send_equipment = {
+			equipment = infantry_equipment
+			amount = var:rifle_gift
+			target = var:global.TAG_FKK
+		}
 	}
 	option = {
 		name = kyushu.19.enemy
