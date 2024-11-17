@@ -645,18 +645,72 @@ country_event = {	# Order 66: parliament revolts
 			OR = { tag = PRT tag = HIR }
 			OR = { has_completed_focus = HIR_NAV_aggressive has_completed_focus = PRT_NAV_aggressive }
 			NOT = { has_completed_focus = HIR_NAV_befriend_KYU has_completed_focus = PRT_NAV_befriend_KYU }
+			has_equipment = { infantry_equipment > 999 } 
 		}
-		set_temp_variable = { rifle_gift = num_equipment@infantry_equipment }
-		divide_temp_variable = { rifle_gift = 5 }
-		send_equipment = {
-			equipment = infantry_equipment
-			amount = var:rifle_gift
-			target = var:global.TAG_FKK
+		show_effect = {
+			set_temp_variable = { rifle_gift = num_equipment@infantry_equipment }
+			divide_temp_variable = { rifle_gift = 5 }
+			send_equipment = {
+				equipment = infantry_equipment
+				amount = var:rifle_gift
+				target = var:global.TAG_FKK
+			}
+		}
+		hidden_effect = { var:global.TAG_FKK = { country_event = { id = kyushu.20 hours = 3 random = 9 } } }
+		add_ai_strategy = {
+			type = befriend
+			id = var:global.TAG_FKK
+			value = 25
 		}
 	}
 	option = {
 		name = kyushu.19.enemy
 		trigger = { NOT = { tag = KYU } has_war_with = KYU }
+	}
+}
+
+country_event = {	# Order 66: weapons supply
+	id = kyushu.20
+	title = kyushu.20.t
+	desc = kyushu.20.d
+	picture = GFX_report_event_generic_rifles
+	
+	is_triggered_only = yes
+	
+	major = yes
+	
+	show_major = { OR = { tag = ROOT tag = FROM tag = KYU } }
+	
+	option = {
+		name = kyushu.20.fkk
+		trigger = { NOT = { tag = KYU tag = FROM } }
+		FROM = {
+			set_temp_variable = { rifle_gift = num_equipment@infantry_equipment }
+			divide_temp_variable = { rifle_gift = 5 }
+			send_equipment = {
+				equipment = infantry_equipment
+				amount = var:rifle_gift
+				target = var:global.TAG_FKK
+			}
+		}
+		add_ai_strategy = {
+			type = befriend
+			id = ROOT
+			value = 50
+		}
+	}
+	option = {
+		name = kyushu.20.from
+		trigger = { tag = FROM }
+	}
+	option = {
+		name = kyushu.20.kyu
+		trigger = { tag = KYU }
+		add_ai_strategy = {
+			type = antagonize
+			id = FROM
+			value = 50
+		}
 	}
 }
 
