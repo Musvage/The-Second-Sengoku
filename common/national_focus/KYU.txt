@@ -436,7 +436,7 @@ focus_tree = {
 		prerequisite = { focus = KYU_cross_rubicon }
 		mutually_exclusive = { focus = KYU_unification_path }
 		relative_position_id = KYU_cross_rubicon
-		x = -1
+		x = 0
 		y = 2
 		cost = 10
 		
@@ -553,14 +553,18 @@ focus_tree = {
 		icon = GFX_focus_generic_army_doctrine
 		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_YAMAMOTO }
 		
-		prerequisite = { focus = KYU_independent_kyushu }
+		prerequisite = { focus = KYU_independent_kyushu focus = KYU_unification_path }
 		relative_position_id = KYU_independent_kyushu
-		x = -1
+		x = 3
 		y = 1
 		cost = 10
 		
 		ai_will_do = {
 			factor = 10
+		}
+		
+		available = {
+			has_completed_focus = KYU_ministry_decree_2
 		}
 		
 		completion_reward = {
@@ -580,13 +584,13 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = KYU_new_war_ministry_2	# 
+		id = KYU_kumaso_nationalism	# 
 		icon = GFX_focus_PRO_embrace_militarism
 		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_MANPOWER FOCUS_FILTER_YAMAMOTO }
 		
-		prerequisite = { focus = KYU_new_war_ministry }
-		relative_position_id = KYU_new_war_ministry
-		x = 0
+		prerequisite = { focus = KYU_independent_kyushu }
+		relative_position_id = KYU_independent_kyushu
+		x = 1
 		y = 1
 		cost = 10
 		
@@ -609,7 +613,7 @@ focus_tree = {
 		
 		prerequisite = { focus = KYU_independent_kyushu }
 		relative_position_id = KYU_independent_kyushu
-		x = 1
+		x = -1
 		y = 1
 		cost = 10
 		
@@ -674,11 +678,13 @@ focus_tree = {
 		y = 1
 		cost = 10
 		
+		allow_branch = { always = no }
+		
 		ai_will_do = {
-        factor = 10
-        modifier = {
-        has_war = yes
-		factor = 10
+			factor = 10
+			modifier = {
+				has_war = yes
+				factor = 10
             }
         }
 		
@@ -1035,7 +1041,7 @@ focus_tree = {
 		completion_reward = {
 			set_country_flag = allowed_path_fascism	# this is for allowing advisers
 			clr_country_flag = initial_ideology_neutrality
-			custom_effect_tooltip = KYU_invite_nagano_1_tt
+			custom_effect_tooltip = KYU_back_nagano_1_tt
 			add_ideas = KYU_back_nagano_spirit
 			custom_effect_tooltip = unlock_characters_tt
 			character_list_tooltip = {
@@ -1091,10 +1097,11 @@ focus_tree = {
 		
 		available = { power_balance_value = { id = KYU_fractured_government_balance value < -0.33 } }
 		
-		select_effect = { PRO = { if = { limit = { NOT = { has_country_flag = nagano_warning } } country_event = kyushu.12 } } }
+		select_effect = { PRO = { if = { limit = { NOT = { has_country_flag = nagano_warning } } country_event = kyushu.12 } } }	# prevents event from firing twice again (why did I do that? I dont remembr)
 		
 		completion_reward = {
 			news_event = kyushu.13
+			custom_effect_tooltip = KYU_invite_nagano_2_tt
 			every_possible_country = {
 				limit = { has_character = PRO_osami_nagano }
 				effect_tooltip = {
@@ -1156,16 +1163,17 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_DIPLOMACY }
 		
 		prerequisite = { focus = KYU_invite_nagano_2 }
+		mutually_exclusive = { focus = KYU_western_advisers }
 		relative_position_id = KYU_invite_nagano_2
 		x = 1
-		y = 1
+		y = 3
 		cost = 10
 		
 		ai_will_do = {
-        factor = 10
-        modifier = {
-        has_war = yes
-		factor = 10
+			factor = 10
+			modifier = {
+				has_war = yes
+				factor = 10
             }
         }
 		
@@ -1682,7 +1690,10 @@ focus_tree = {
 		y = 1
 		cost = 10
 		
-		available = { is_subject = no }
+		available = {
+			is_subject = no
+			has_civil_war = no
+		}
 		
 		ai_will_do = {
 			factor = 10
@@ -2922,7 +2933,7 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		completion_reward = {
-			add_ideas = special_forces
+			add_ideas = KYU_rikusentai_spirit
 			if = {
 				limit = { has_dlc = "Arms Against Tyranny" }
 				add_doctrine_cost_reduction = {
@@ -3052,6 +3063,7 @@ focus_tree = {
 			else = {
 				set_technology = { torpedo_cruiser_mtg = 1 }
 			}
+			navy_experience = 10
 		}
 	}
 	
@@ -3081,7 +3093,7 @@ focus_tree = {
 	focus = {
 		id = KYU_torpedo_effort	# Long Lance, Type 93 torpedo
 		icon = GFX_focus_KYU_long_lance_torpedoes
-		search_filters = { FOCUS_FILTER_MILITARY }
+		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_RESEARCH }
 		
 		prerequisite = { focus = KYU_submarine_effort focus = KYU_cruiser_effort }
 		relative_position_id = KYU_cruiser_effort
@@ -3090,10 +3102,10 @@ focus_tree = {
 		cost = 10
 
 		ai_will_do = {
-        factor = 1
-        modifier = {
-        has_war = yes
-		factor = 10
+			factor = 1
+			modifier = {
+				has_war = yes
+				factor = 10
             }
         }
 
@@ -3101,6 +3113,23 @@ focus_tree = {
 
 		completion_reward = {
 			add_ideas = the_long_lance
+			if = {
+				limit = { has_dlc = "Man the Guns" }
+				add_tech_bonus = {
+					name = torpedo_bonus
+					bonus = 2
+					uses = 1
+					category = cat_torpedoes
+				}
+			} else = {
+				add_tech_bonus = {
+					name = ss_dd_bonus
+					bonus = 1
+					uses = 1
+					category = dd_tech
+					category = ss_tech
+				}
+			}
 		}
 	}
 	
@@ -4169,10 +4198,10 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_ARMY_REFORM }
 		
 		prerequisite = { focus = KYU_join_league }
-		mutually_exclusive = { focus = KYU_reformed_military_academy }
+		mutually_exclusive = { focus = KYU_reformed_military_academy focus = KYU_pan_asianism }
 		relative_position_id = KYU_join_league
 		x = 0
-		y = 2
+		y = 3
 		cost = 10
 		
 		ai_will_do = {
@@ -4453,7 +4482,7 @@ focus_tree = {
 		mutually_exclusive = { focus = KYU_western_advisers }
 		relative_position_id = KYU_ministry_decree_2
 		x = 0
-		y = 2
+		y = 3
 		cost = 10
 		
 		ai_will_do = {
