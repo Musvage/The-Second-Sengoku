@@ -1137,11 +1137,11 @@ country_event = {	# Solomonic Solution Accepted (KYU event)
 	id = kyushu.201
 	title = kyushu.201.t
 	desc = {
-		trigger = { OR = { tag = MUS tag = SUS } }
+		trigger = { OR = { tag = MUS tag = SUS tag = KYU} }
 		text = kyushu.201.d1
 	}
 	desc = {
-		trigger = { NOT = { tag = MUS tag = SUS } }
+		trigger = { NOT = { tag = MUS tag = SUS tag = KYU } }
 		text = kyushu.201.d2
 	}
 	picture = GFX_report_news_okinawa_map
@@ -1284,7 +1284,6 @@ country_event = {	# Solomonic Solution Refused (KYU event)
 	picture = GFX_report_news_okinawa_map
 	
 	is_triggered_only = yes
-	major = yes
 	
 	option = {
 		trigger = { tag = ROOT }	# Peace was never an option
@@ -1318,7 +1317,14 @@ country_event = {	# Solomonic Solution Refused (KYU event)
 country_event = {	# Solomonic Solution Refused, Wargoal (global event)
 	id = kyushu.203
 	title = kyushu.203.t
-	desc = kyushu.203.d
+	desc = {
+		trigger = { OR = { tag = KYU tag = SUS tag = MUS } }
+		text = kyushu.203.d1
+	}
+	desc = {
+		trigger = { NOT = { tag = KYU tag = SUS tag = MUS } }
+		text = kyushu.203.d2
+	}
 	picture = GFX_report_news_okinawa_map
 	
 	is_triggered_only = yes
@@ -1341,7 +1347,14 @@ country_event = {	# Solomonic Solution Refused, Wargoal (global event)
 country_event = {	# Solomonic Solution Refused, Give up (global event)
 	id = kyushu.204
 	title = kyushu.204.t
-	desc = kyushu.204.d
+	desc = {
+		trigger = { OR = { tag = KYU tag = SUS tag = MUS } }
+		text = kyushu.204.d1
+	}
+	desc = {
+		trigger = { NOT = { tag = KYU tag = SUS tag = MUS } }
+		text = kyushu.204.d2
+	}
 	picture = GFX_report_news_okinawa_map
 	
 	is_triggered_only = yes
@@ -1467,7 +1480,14 @@ country_event = {	# Demand Okinawa (MUS/SUS event)
 country_event = {	# Demand Okinawa: Accepted (global event)
 	id = kyushu.207
 	title = kyushu.207.t
-	desc = kyushu.207.d
+	desc = {
+		trigger = { OR = { tag = SUS tag = MUS tag = KYU } }
+		text = kyushu.207.d1
+	}
+	desc = {
+		trigger = { NOT = { tag = KYU tag = SUS tag = MUS } }
+		text = kyushu.207.d2
+	}
 	picture = GFX_report_news_okinawa_map
 	
 	is_triggered_only = yes
@@ -1563,7 +1583,18 @@ country_event = {	# Demand Okinawa: Refused (KYU event)
 country_event = {	# Demand Okinawa: Refused, to war! (global event)
 	id = kyushu.209
 	title = kyushu.209.t
-	desc = kyushu.209.d
+	desc = {
+		trigger = { tag = KYU }
+		text = kyushu.209.d1
+	}
+	desc = {
+		trigger = { OR = { tag = SUS tag = MUS } }
+		text = kyushu.209.d2
+	}
+	desc = {
+		trigger = { NOT = { tag = KYU tag = SUS tag = MUS } }
+		text = kyushu.209.d3
+	}
 	picture = GFX_report_news_okinawa_map
 	
 	is_triggered_only = yes
@@ -1586,7 +1617,18 @@ country_event = {	# Demand Okinawa: Refused, to war! (global event)
 country_event = {	# Demand Okinawa: Refused, backs down (global event)
 	id = kyushu.210
 	title = kyushu.210.t
-	desc = kyushu.210.d
+	desc = {
+		trigger = { tag = KYU }
+		text = kyushu.210.d1
+	}
+	desc = {
+		trigger = { OR = { tag = SUS tag = MUS } }
+		text = kyushu.210.d2
+	}
+	desc = {
+		trigger = { NOT = { tag = KYU tag = SUS tag = MUS } }
+		text = kyushu.210.d3
+	}
 	picture = GFX_report_news_okinawa_map
 	
 	is_triggered_only = yes
@@ -1641,17 +1683,22 @@ country_event = {	# Seeking recognition
 	is_triggered_only = yes
 	major = no
 	
+	
 	option = {
-		name = kyushu.300.a #Equal oppurtunity
+		name = kyushu.300.a # Prioritize Japans
+		custom_effect_tooltip = kyushu.300.att
+		if = {
+			limit = { unification_candidate = yes NOT = { is_puppet_of = KYU has_war_with = KYU } }
+			country_event = { id =  kyushu.301 hours = 3 random = 21 }
+		}
 	}
 	option = {
-		name = kyushu.300.b #Axis recognition
-		trigger = {101 = { NOT = { has_state_flag = metropolis_capitulated } } }
-	}
-	option = {
-		name = kyushu.300.c #Allied recognition
-		trigger = { 102 = { NOT = { has_state_flag = metropolis_capitulated } } }
-
+		name = kyushu.300.b # Prioritize Outsiders
+		custom_effect_tooltip = kyushu.300.btt
+		if = {
+			limit = { unification_candidate = no NOT = { is_puppet_of = KYU has_war_with = KYU } }
+			country_event = { id =  kyushu.301 hours = 3 random = 21 }
+		}
 	}
 }
 
@@ -1664,13 +1711,66 @@ country_event = {	#  Other Japans recognize Kyushu?
 	is_triggered_only = yes
 	
 	option = { #Yes!
-		name = kyushu.903.a
-		trigger = { NOT = { has_war_with = KYU } }
-
+		name = kyushu.301.japan1
+		trigger = { NOT = { has_war_with = KYU } unification_candidate = yes }
+		if = {
+			limit = { NOT = { is_in_faction_with = KYU } }
+			add_to_variable = { country_unification_score_other_bonus = -5 }
+			custom_effect_tooltip = unification_score_minus_5_f
+			diplomatic_relation = {
+				country = FROM
+				relation = non_aggression_pact
+				active = yes
+			}
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 2
+				has_war = yes
+			}
+			modifier = {
+				factor = 0
+				has_country_flag = unlock_unify_japan_category
+			}
+		}
 	}
 	option = { #No!
-		name = kyushu.903.b
-		trigger = { NOT = {  is_in_faction_with = KYU is_puppet_of = KYU } }
+		name = kyushu.301.japan2
+		trigger = { NOT = {  is_in_faction_with = KYU is_puppet_of = KYU } unification_candidate = yes }
+		ai_chance = {
+			factor = 0.5
+		}
+	}
+	option = { #Yes!
+		name = kyushu.301.barbarian1
+		trigger = { NOT = { has_war_with = KYU } unification_candidate = no }
+		if = {
+			limit = { NOT = { is_in_faction_with = KYU } }
+			diplomatic_relation = {
+				country = FROM
+				relation = non_aggression_pact
+				active = yes
+			}
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 2
+				has_war = yes
+			}
+		}
+	}
+	option = { #No!
+		name = kyushu.301.barbarian2
+		trigger = { NOT = {  is_in_faction_with = KYU is_puppet_of = KYU } unification_candidate = no }
+		ai_chance = {
+			factor = 0.25
+			modifier = {
+				factor = 2
+				has_war = yes
+			}
+		}
 	}
 }
 
