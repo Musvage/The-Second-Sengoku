@@ -1705,7 +1705,14 @@ country_event = {	# Seeking recognition
 country_event = {	#  Other Japans recognize Kyushu?
 	id = kyushu.301
 	title = kyushu.301.t
-	desc = kyushu.301.d
+	desc = {
+		trigger = { unification_candidate = yes NOT = { capital_scope  = { is_on_continent = kyushu } } }
+		text = kyushu.301.d1
+	}
+	desc = {
+		trigger = { unification_candidate = no }
+		text = kyushu.301.d2
+	}
 	picture = GFX_report_news_kyushu_map
 	
 	is_triggered_only = yes
@@ -1713,6 +1720,7 @@ country_event = {	#  Other Japans recognize Kyushu?
 	option = { #Yes!
 		name = kyushu.301.japan1
 		trigger = { NOT = { has_war_with = KYU } unification_candidate = yes }
+		hidden_effect = { KYU = { country_event = kyushu.302 } }
 		if = {
 			limit = { NOT = { is_in_faction_with = KYU } }
 			add_to_variable = { country_unification_score_other_bonus = -5 }
@@ -1730,14 +1738,20 @@ country_event = {	#  Other Japans recognize Kyushu?
 				has_war = yes
 			}
 			modifier = {
-				factor = 0
+				factor = 0.25
 				has_country_flag = unlock_unify_japan_category
+			}
+			modifier = {
+				factor = 0
+				has_war = no
+				has_country_flag = hostile_to_KYU
 			}
 		}
 	}
 	option = { #No!
 		name = kyushu.301.japan2
 		trigger = { NOT = {  is_in_faction_with = KYU is_puppet_of = KYU } unification_candidate = yes }
+		hidden_effect = { KYU = { country_event = kyushu.303 } }
 		ai_chance = {
 			factor = 0.5
 		}
@@ -1753,24 +1767,102 @@ country_event = {	#  Other Japans recognize Kyushu?
 				active = yes
 			}
 		}
+		every_other_country = {
+			limit = { unification_candidate = yes }
+			add_opinion_modifier = { target = PREV modifier = KYU_foreign_recognition_bad_opinion }
+		}
+		hidden_effect = { KYU = { country_event = kyushu.302 } }
 		ai_chance = {
 			factor = 1
 			modifier = {
 				factor = 2
 				has_war = yes
 			}
+			modifier = {
+				factor = 0
+				has_war = no
+				has_country_flag = hostile_to_KYU
+			}
 		}
 	}
 	option = { #No!
 		name = kyushu.301.barbarian2
 		trigger = { NOT = {  is_in_faction_with = KYU is_puppet_of = KYU } unification_candidate = no }
+		hidden_effect = { KYU = { country_event = kyushu.303 } }
 		ai_chance = {
 			factor = 0.25
 			modifier = {
 				factor = 2
 				has_war = yes
 			}
+			modifier = {
+				add = 4.75
+				any_allied_country = {
+					unification_candidate = yes
+				}
+			}
 		}
+	}
+}
+
+country_event = {	#  Others recognize Kyushu
+	id = kyushu.302
+	title = kyushu.302.t
+	desc = kyushu.302.d
+	picture = GFX_report_news_kyushu_map
+	
+	is_triggered_only = yes
+	major = yes
+	fire_for_sender = no
+	
+	option = {
+		name = kyushu.302.kyu
+		trigger = { tag = KYU }
+		effect_tooltip = {
+			diplomatic_relation = {
+				country = FROM
+				relation = non_aggression_pact
+				active = yes
+			}
+		}
+	}
+	option = {
+		name = kyushu.302.japan
+		trigger = { NOT = { tag = KYU } unification_candidate = yes }
+		effect_tooltip = {
+			add_opinion_modifier = { target = FROM modifier = KYU_foreign_recognition_bad_opinion }
+			KYU = {
+				diplomatic_relation = {
+					country = FROM
+					relation = non_aggression_pact
+					active = yes
+				}
+			}
+		}
+	}
+	option = {
+		name = kyushu.302.other
+		trigger = { NOT = { tag = KYU } unification_candidate = no }
+		effect_tooltip = {
+			KYU = {
+				diplomatic_relation = {
+					country = FROM
+					relation = non_aggression_pact
+					active = yes
+				}
+			}
+		}
+	}
+}
+
+country_event = {	#  Others don't recognize Kyushu
+	id = kyushu.303
+	title = kyushu.303.t
+	desc = kyushu.303.d
+	picture = GFX_report_news_kyushu_map
+	
+	option = {
+		name = kyushu.301.a		
 	}
 }
 
