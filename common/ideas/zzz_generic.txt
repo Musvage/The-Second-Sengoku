@@ -17,6 +17,8 @@ ideas = {
 			}
 		}
 
+		
+
 		continuous_naval_production = {
 			allowed = {
 				always = no
@@ -100,11 +102,26 @@ ideas = {
 				}
 			}		
 		}
+
+		#sp_multi_charge_large_caliber_gun_small_size_ns = { #TODO_Manu: Used for Small version of V-3 SP. Uncomment if Code Support gets implemented 
+		#	allowed = {
+		#		always = no
+		#	}
+		#
+		#	allowed_civil_war = {
+		#		always = yes
+		#	}
+		#	
+		#	removal_cost = -1
+		#	
+		#	modifier = {
+		#		production_speed_mega_gun_emplacement_factor = 0.5
+		#	}
+		#}
 	}
 
 	# Special ones that can be applied on other countries through focus system.
 	country = {
-	
 		idea_colonial_armies = {
 			
 			allowed = {
@@ -150,6 +167,61 @@ ideas = {
 			}
 			
 			rule = { can_send_volunteers = yes }
+		}
+		
+		damage_to_naval_base_low = {
+			allowed = {
+				always = no
+			}
+
+			allowed_civil_war = {
+				always = yes
+			}
+
+			picture = POL_disjointed_industry
+			
+			removal_cost = -1
+			
+			modifier = {
+				refit_speed = -0.05
+				repair_speed_factor = -0.05
+			}
+		}
+		damage_to_naval_base_medium = {
+			allowed = {
+				always = no
+			}
+
+			allowed_civil_war = {
+				always = yes
+			}
+
+			picture = POL_disjointed_industry
+			
+			removal_cost = -1
+			
+			modifier = {
+				refit_speed = -0.1
+				repair_speed_factor = -0.1
+			}
+		}
+		damage_to_naval_base_high = {
+			allowed = {
+				always = no
+			}
+
+			picture = POL_disjointed_industry
+
+			allowed_civil_war = {
+				always = yes
+			}
+			
+			removal_cost = -1
+			
+			modifier = {
+				refit_speed = -0.25
+				repair_speed_factor = -0.25
+			}
 		}
 		
 		TO_chose_neutrality = {
@@ -267,7 +339,29 @@ ideas = {
 			
 			modifier = {
 				fascism_drift = 0.1
-				fascism_acceptance = 85
+				fascism_acceptance = 65
+			}
+		}
+
+		strong_fascist_influence = {
+			name = fascist_influence
+			allowed = {
+				always = no
+			}
+
+			allowed_civil_war = {
+				has_government = fascism
+			}
+
+			removal_cost = -1
+
+			picture = generic_fascism_drift_bonus
+			
+			modifier = {
+				fascism_drift = 0.25
+				fascism_acceptance = 150
+				drift_defence_factor = -0.25
+
 			}
 		}
 		
@@ -291,6 +385,7 @@ ideas = {
 				communism_acceptance = 85
 			}
 		}
+
 		democratic_influence = {
 			
 			
@@ -311,6 +406,7 @@ ideas = {
 				democratic_acceptance = 85
 			}
 		}
+		
 		neutrality_influence = {
 			allowed = {
 				always = no
@@ -430,11 +526,40 @@ ideas = {
 						}
 					}
 					AND = {
-						tag = REI
+						tag = FER
 						has_government = communism
-						FER = {
+						REI = {
 							has_government = fascism
 						}
+					}
+				}
+			}
+
+			cancel = {
+				OR = {
+					AND = {
+						tag = REI
+						is_subject = yes
+						has_war_with = FER
+						NOT = { is_in_faction_with = FER }
+					}
+					AND = {
+						tag = FER
+						is_subject = yes
+						has_war_with = REI
+						NOT = { is_in_faction_with = REI }
+					}
+				}
+			}
+
+			on_remove = {
+				if = {
+					limit = {
+						tag = REI
+						is_in_faction_with = FER
+					}
+					REI = {
+						dismantle_faction = yes
 					}
 				}
 			}
@@ -442,6 +567,7 @@ ideas = {
 			removal_cost = -1
 			
 			modifier = {
+				custom_modifier_tooltip = GER_dimantle_faction_tt
 				communism_acceptance = 100
 				fascism_acceptance = 100
 			}
@@ -487,6 +613,27 @@ ideas = {
 				research_speed_factor = 0.035
 			}
 		}
+
+		# Secret Weapons
+		generic_secret_weapons_ns = {
+			
+			allowed = {
+				always = no
+			}
+
+			allowed_civil_war = {
+				always = yes
+			}
+
+			removal_cost = -1
+
+			picture = generic_research_bonus
+			
+			modifier = {
+				special_project_speed_factor = 0.05
+			}
+		}
+
 		# from decision
 		paramilitary_training = {
 			
@@ -625,7 +772,7 @@ ideas = {
 			modifier = {
 				conscription = 0.05
 				resistance_damage_to_garrison = -0.1 
-				custom_modifier_tooltip = army_division_buff_40
+				custom_modifier_tooltip = army_division_buff_40 
 			}
 		}
 	
@@ -648,7 +795,8 @@ ideas = {
 			picture = generic_manpower_bonus
 	
 			modifier = {
-				conscription = 0.02
+				conscription = 0.01
+				mobilization_speed = 0.25
 			}
 		}
 	
@@ -672,6 +820,7 @@ ideas = {
 	
 			modifier = {
 				training_time_army_factor = -0.1
+				supply_combat_penalties_on_core_factor = -0.15
 			}
 		}
 	
@@ -695,6 +844,7 @@ ideas = {
 	
 			modifier = {
 				stability_factor = 0.05
+				weekly_manpower = 400
 			}
 		}
 	
@@ -768,7 +918,7 @@ ideas = {
 				send_volunteers_tension = 0.20
 				guarantee_tension = 1.0
 				embargo_threshold_factor = 2.5
-				ai_badass_factor = 0.01  # Will receive 1% of the threat from others
+				ai_badass_factor = 0.01    # Will receive 1% of the threat from others
 				ai_get_ally_desire_factor = -100
 			}
 		}
@@ -793,6 +943,7 @@ ideas = {
 				production_speed_coastal_bunker_factor = 0.2
 				production_speed_anti_air_building_factor = 0.2
 				production_speed_arms_factory_factor = 0.2
+				bunker_max_level_terrain_limit = 1
 			}
 		}
 
@@ -829,6 +980,8 @@ ideas = {
 			
 			modifier = {
 				send_volunteer_divisions_required = -0.5
+				send_volunteer_factor = 0.1
+				send_volunteers_tension = -0.1
 			}
 		}
 
@@ -921,10 +1074,12 @@ ideas = {
 			picture = generic_research_bonus
 	
 			modifier = {
-				production_speed_nuclear_reactor_factor = 0.2
+				production_speed_nuclear_reactor_factor = 0.15 # was 0.2
+				specialization_nuclear_speed_factor = 0.05
+				production_speed_nuclear_facility_factor = 0.05
 			}
 			research_bonus = {
-				nuclear = 0.15
+				nuclear = 0.05 # was 0.15
 			}
 		}
 
@@ -944,11 +1099,13 @@ ideas = {
 			picture = generic_research_bonus
 	
 			modifier = {
-				production_speed_nuclear_reactor_factor = 0.25
+				production_speed_nuclear_reactor_factor = 0.2 # was 0.25
 				political_power_factor = -0.5
+				specialization_nuclear_speed_factor = 0.05
+				production_speed_nuclear_facility_factor = 0.05
 			}
 			research_bonus = {
-				nuclear = 0.15
+				nuclear = 0.05
 			}
 		}
 		
@@ -1287,15 +1444,66 @@ ideas = {
 			}
 			
 			removal_cost = -1
-			picture = generic_pp_unity_bonus
-			#TODO_ASD: Set correct icon - idea_generic_org_of_african_unity
+			picture = generic_org_of_african_unity
+			
 			modifier = {
+			}
+		}
+
+		special_project_consumer_costs_high = { 
+			allowed = {
+				always = yes
+			}
+
+			allowed_civil_war = {
+				always = yes
+			}
+			
+			removal_cost = -1
+			picture = generic_industrial_concern_1
+			
+			modifier = {
+				consumer_goods_factor = 0.1
+			}
+		}
+
+		special_project_consumer_costs_medium = { 
+			allowed = {
+				always = yes
+			}
+
+			allowed_civil_war = {
+				always = yes
+			}
+			
+			removal_cost = -1
+			picture = generic_industrial_concern_1
+			
+			modifier = {
+				consumer_goods_factor = 0.05
+			}
+		}
+
+		special_project_consumer_costs_low = { 
+			allowed = {
+				always = yes
+			}
+
+			allowed_civil_war = {
+				always = yes
+			}
+			
+			removal_cost = -1
+			picture = generic_industrial_concern_1
+			
+			modifier = {
+				consumer_goods_factor = 0.025
 			}
 		}
 	}
 
 	# TECHNOLOGY
-	tank_manufacturer = {
+	tank_manufacturer = { 
 	
 		designer = yes
 		
@@ -1304,7 +1512,7 @@ ideas = {
 			picture = generic_tank_manufacturer_1
 			
 			allowed = {
-				
+			
 				NOT = {
 					has_available_idea_with_traits = { idea = tank_manufacturer limit = 1 }
 				}
@@ -1350,6 +1558,7 @@ ideas = {
 				NOT = { tag = KOB }
 				NOT = { tag = REI }
 				NOT = { tag = FER }
+				
 			}
 			
 			cost = 150
@@ -1379,6 +1588,7 @@ ideas = {
 				NOT = { tag = PRO }
 				NOT = { tag = HIR }
 				NOT = { tag = PRT }
+				
 			}
 			
 			cost = 150
@@ -1396,12 +1606,14 @@ ideas = {
 			picture = generic_air_manufacturer_3
 
 			allowed = {
+			
 				NOT = {
 					has_available_idea_with_traits = { idea = medium_aircraft_manufacturer limit = 1 }
 				}
 				NOT = { tag = PRO }
 				NOT = { tag = HIR }
 				NOT = { tag = PRT }
+				
 			}
 			
 			cost = 150
@@ -1426,6 +1638,7 @@ ideas = {
 				NOT = { tag = PRO }
 				NOT = { tag = HIR }
 				NOT = { tag = PRT }
+				
 			}
 			
 			cost = 150
@@ -1450,6 +1663,7 @@ ideas = {
 				NOT = { tag = PRO }
 				NOT = { tag = HIR }
 				NOT = { tag = PRT }
+				
 			}
 			
 			cost = 150
@@ -1477,6 +1691,7 @@ ideas = {
 				NOT = { tag = PRO }
 				NOT = { tag = HIR }
 				NOT = { tag = SHI }
+				
 			}
 			
 			cost = 150
@@ -1503,6 +1718,7 @@ ideas = {
 				NOT = { tag = CHU }
 				NOT = { tag = SHI }
 				NOT = { tag = EZO }
+				
 			}
 			
 			cost = 150
@@ -1531,6 +1747,7 @@ ideas = {
 				}
 				NOT = { tag = PRO }
 				NOT = { tag = HIR }
+				
 			}
 			
 			cost = 150
@@ -1554,6 +1771,7 @@ ideas = {
 				}
 				NOT = { tag = PRO }
 				NOT = { tag = HIR }
+				
 			}
 			
 			cost = 150
@@ -1577,6 +1795,7 @@ ideas = {
 				}
 				NOT = { tag = PRO }
 				NOT = { tag = HIR }
+				
 			}
 			
 			cost = 150

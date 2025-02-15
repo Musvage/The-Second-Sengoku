@@ -863,7 +863,7 @@ NGraphics = {
 	COUNTRY_FLAG_MEDIUM_TEX_HEIGHT = 41,
 	COUNTRY_FLAG_MEDIUM_TEX_MAX_SIZE = 1024, -- Tweak dependly on amount of countries. Must be power of 2. No more then 2048.
 	COUNTRY_FLAG_SMALL_TEX_WIDTH = 10,
-	COUNTRY_FLAG_SMALL_TEX_HEIGHT = 10,
+	COUNTRY_FLAG_SMALL_TEX_HEIGHT = 7,
 	COUNTRY_FLAG_SMALL_TEX_MAX_SIZE = 256, -- Tweak dependly on amount of countries. Must be power of 2. No more then 2048.
 	VICTORY_POINT_LEVELS = 3,
 	VICTORY_POINT_MAP_ICON_AFTER = {0, 9, 20}, -- After this amount of VP the map icon becomes bigger dot.
@@ -1220,9 +1220,20 @@ NGraphics = {
 	RAID_ARROW_NAVAL_SUBDIVISIONS = 20,             -- Number of subdivisions for the path spline (more = smoother, but slower to render)
 	RAID_ARROW_NAVAL_SHARP_TURN_SMOOTHNESS = 0.10,  -- Amount of smoothness that is applied to smooth out sharp turns (0 = off)
 	RAID_ARROW_NAVAL_USE_MIDPOINTS = true,          -- Whether to use midpoints between provinces to build the path
+
 	RAID_UNIT_ENTITY_BASE_SCALE = 2.0,              -- Base scale of the raid unit entity used to show the progress of the raid (can be further modifier in raid script)
 	RAID_UNIT_ENTITY_OFFSET = { 0.0, 0.0, 0.0 },    -- Raid entity offset from the arrow spline position
     RAID_CONVOY_ENTITY_START_OFFSET = 15.0,         -- Offset along the arrow where the convoy entity starts (to avoid being placed on land)
+
+	-- The next two values specify how multi-stage animation works for raid units, which is used, for example, for some nuclear rockets.
+	-- Currently, three-stage animation is supported, in order for it to work, the unit entity must have following animation states:
+	--  "idle"			- idle animation of the first stage (looped)
+	--  "idle2_intro"	- intro animation of the second stage (not looped, goes to "idle2" when done)
+	--  "idle2"			- idle animation of the second stage (looped)
+	--  "idle3_intro"	- intro animation of the third stage (not looped, goes to "idle3" when done)
+	--  "idle3"			- idle animation of the third stage (looped)
+	RAID_UNIT_SECOND_STAGE_PROGRESS = 0.33,			-- Specifies raid progress value on [0,1] where second stage is activated
+	RAID_UNIT_THIRD_STAGE_PROGRESS = 0.66,			-- Specifies raid progress value on [0,1] where third stage is activated
 
 	DEFAULT_NUDGE_FLOATING_HARBOR_DIST = 7.0,       -- Default distance of floating harbors from the coast in pixels, for nudger
 
