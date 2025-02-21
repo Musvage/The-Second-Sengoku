@@ -6804,8 +6804,8 @@ news_event = {
 	immediate = {
 		hidden_effect = {
 			set_global_flag = world_stage_theater_spanish_cw_is_active
-			111 = { set_variable = { world_stage_coalition = 8 } }			# Special coalition for the Spanish Civil War
-			121 = { set_variable = { world_stage_coalition = 9 } }			# Special coalition for the Spanish Civil War
+			111 = { set_variable = { world_stage_coalition = 8 } set_state_flag = worldstage_AI_active }			# Special coalition for the Spanish Civil War 
+			121 = { set_variable = { world_stage_coalition = 9 } set_state_flag = worldstage_AI_active }			# Special coalition for the Spanish Civil War
 			35 = {															# proxy for Madrid
 				set_variable = { theater_owner_coalition = 8 }				# Republican coalition
 				add_to_variable = { world_stage_power_deployed_by^111 = 5 }	
@@ -6959,7 +6959,12 @@ news_event = {
 	major = yes show_major = { NOT = { has_country_flag = hide_worldstage_notification } }
 	
 	immediate = {
-		add_to_variable = { global.REP_strength_spain = -1 }
+		hidden_effect = {
+			add_to_variable = {
+				var = 111.world_stage_power
+				value = -1
+			}
+		}
 	}
 	
 	option = {
@@ -6967,7 +6972,6 @@ news_event = {
 		trigger = {
 			has_government = fascism
 		}
-		custom_effect_tooltip = worldstage.10.tt2
 		if = {
 			limit = { has_country_flag = world_stage_spanish_cw_helped_falange }
 			add_doctrine_cost_reduction = {
@@ -6976,19 +6980,20 @@ news_event = {
 			}
 		}
 		effect_tooltip = {
-			custom_effect_tooltip = country_name_republica
+			custom_effect_tooltip = metropolis_scope_republica
 			add_to_variable = {
-				global.REP_strength_spain = -1
-				tooltip = world_stage_add_local_power
+				var = 111.world_stage_power
+				value = -1
+				tooltip = add_world_stage_power_no_scope_tt
 			}
 		}
+		custom_effect_tooltip = worldstage.10.tt2
 	}
 	option = {
 		name = worldstage.10.komin
 		trigger = {
 			has_government = communism
 		}
-		custom_effect_tooltip = worldstage.10.tt1
 		if = {
 			limit = { has_country_flag = world_stage_spanish_cw_helped_falange }
 			add_doctrine_cost_reduction = {
@@ -6997,12 +7002,14 @@ news_event = {
 			}
 		}
 		effect_tooltip = {
-			custom_effect_tooltip = country_name_republica
+			custom_effect_tooltip = metropolis_scope_republica
 			add_to_variable = {
-				global.REP_strength_spain = -1
-				tooltip = world_stage_add_local_power
+				var = 111.world_stage_power
+				value = -1
+				tooltip = add_world_stage_power_no_scope_tt
 			}
 		}
+		custom_effect_tooltip = worldstage.10.tt1
 	}
 	option = {
 		name = worldstage.10.other
@@ -7012,7 +7019,6 @@ news_event = {
 				has_government = fascism
 			}
 		}
-		custom_effect_tooltip = worldstage.10.tt1
 		if = {
 			limit = { has_country_flag = world_stage_spanish_cw_helped_falange }
 			custom_effect_tooltip = world_stage_helped_falange_trigger
@@ -7022,12 +7028,14 @@ news_event = {
 			}
 		}
 		effect_tooltip = {
-			custom_effect_tooltip = country_name_republica
+			custom_effect_tooltip = metropolis_scope_republica
 			add_to_variable = {
-				global.REP_strength_spain = -1
-				tooltip = world_stage_add_local_power
+				var = 111.world_stage_power
+				value = -1
+				tooltip = add_world_stage_power_no_scope_tt
 			}
 		}
+		custom_effect_tooltip = worldstage.10.tt1
 	}
 }
 
@@ -7169,9 +7177,9 @@ news_event = {
 			has_government = fascism
 		}
 		effect_tooltip = {
+			custom_effect_tooltip = theater_scope_madrid
 			if = {
 				limit = { 35 = { has_state_flag = theater_is_active } }
-				custom_effect_tooltip = theater_scope_madrid
 				if = {
 					limit = { var:world_stage_metropolis = { check_variable = { 35.coalition_side_attack = 9 } } }
 					add_to_variable = {
@@ -7184,11 +7192,10 @@ news_event = {
 						tooltip = world_stage_add_strategic_advantage_defender
 					}
 				}
-			}
-			
+			} else = { custom_effect_tooltip = world_stage_possibly_reinforce_here }
+			custom_effect_tooltip = theater_scope_zaragoza
 			if = {
 				limit = { 36 = { has_state_flag = theater_is_active } }
-				custom_effect_tooltip = theater_scope_zaragoza
 				if = {
 					limit = { var:world_stage_metropolis = { check_variable = { 36.coalition_side_attack = 9 } } }
 					add_to_variable = {
@@ -7201,10 +7208,10 @@ news_event = {
 						tooltip = world_stage_add_strategic_advantage_defender
 					}
 				}
-			}
+			} else = { custom_effect_tooltip = world_stage_possibly_reinforce_here }
+			custom_effect_tooltip = theater_scope_barcelona
 			if = {
 				limit = { 37 = { has_state_flag = theater_is_active } }
-				custom_effect_tooltip = theater_scope_barcelona
 				if = {
 					limit = { var:world_stage_metropolis = { check_variable = { 37.coalition_side_attack = 9 } } }
 					add_to_variable = {
@@ -7217,7 +7224,7 @@ news_event = {
 						tooltip = world_stage_add_strategic_advantage_defender
 					}
 				}
-			}
+			} else = { custom_effect_tooltip = world_stage_possibly_reinforce_here }
 		}
 	}
 	option = {
@@ -7226,9 +7233,9 @@ news_event = {
 			has_government = communism
 		}
 		effect_tooltip = {
+			custom_effect_tooltip = theater_scope_madrid
 			if = {
 				limit = { 35 = { has_state_flag = theater_is_active } }
-				custom_effect_tooltip = theater_scope_madrid
 				if = {
 					limit = { var:world_stage_metropolis = { check_variable = { 35.coalition_side_attack = 9 } } }
 					add_to_variable = {
@@ -7241,11 +7248,10 @@ news_event = {
 						tooltip = world_stage_add_strategic_advantage_defender
 					}
 				}
-			}
-			
+			} else = { custom_effect_tooltip = world_stage_possibly_reinforce_here }
+			custom_effect_tooltip = theater_scope_zaragoza
 			if = {
 				limit = { 36 = { has_state_flag = theater_is_active } }
-				custom_effect_tooltip = theater_scope_zaragoza
 				if = {
 					limit = { var:world_stage_metropolis = { check_variable = { 36.coalition_side_attack = 9 } } }
 					add_to_variable = {
@@ -7258,10 +7264,10 @@ news_event = {
 						tooltip = world_stage_add_strategic_advantage_defender
 					}
 				}
-			}
+			} else = { custom_effect_tooltip = world_stage_possibly_reinforce_here }
+			custom_effect_tooltip = theater_scope_barcelona
 			if = {
 				limit = { 37 = { has_state_flag = theater_is_active } }
-				custom_effect_tooltip = theater_scope_barcelona
 				if = {
 					limit = { var:world_stage_metropolis = { check_variable = { 37.coalition_side_attack = 9 } } }
 					add_to_variable = {
@@ -7274,67 +7280,7 @@ news_event = {
 						tooltip = world_stage_add_strategic_advantage_defender
 					}
 				}
-			}
-		}
-	}
-	option = {
-		name = worldstage.7.other
-		trigger = {
-			NOT = {
-				has_government = communism
-				has_government = fascism
-			}
-		}
-		effect_tooltip = {
-			if = {
-				limit = { 35 = { has_state_flag = theater_is_active } }
-				custom_effect_tooltip = theater_scope_madrid
-				if = {
-					limit = { var:world_stage_metropolis = { check_variable = { 35.coalition_side_attack = 9 } } }
-					add_to_variable = {
-						35.defender_strategic_advantage = bonus_to_falange
-						tooltip = world_stage_add_strategic_advantage_attacker
-					}
-				} else = {
-					add_to_variable = {
-						35.defender_strategic_advantage = bonus_to_falange
-						tooltip = world_stage_add_strategic_advantage_defender
-					}
-				}
-			}
-			
-			if = {
-				limit = { 36 = { has_state_flag = theater_is_active } }
-				custom_effect_tooltip = theater_scope_zaragoza
-				if = {
-					limit = { var:world_stage_metropolis = { check_variable = { 36.coalition_side_attack = 9 } } }
-					add_to_variable = {
-						36.defender_strategic_advantage = bonus_to_falange
-						tooltip = world_stage_add_strategic_advantage_attacker
-					}
-				} else = {
-					add_to_variable = {
-						36.defender_strategic_advantage = bonus_to_falange
-						tooltip = world_stage_add_strategic_advantage_defender
-					}
-				}
-			}
-			if = {
-				limit = { 37 = { has_state_flag = theater_is_active } }
-				custom_effect_tooltip = theater_scope_barcelona
-				if = {
-					limit = { var:world_stage_metropolis = { check_variable = { 37.coalition_side_attack = 9 } } }
-					add_to_variable = {
-						37.defender_strategic_advantage = bonus_to_falange
-						tooltip = world_stage_add_strategic_advantage_attacker
-					}
-				} else = {
-					add_to_variable = {
-						37.defender_strategic_advantage = bonus_to_falange
-						tooltip = world_stage_add_strategic_advantage_defender
-					}
-				}
-			}
+			} else = { custom_effect_tooltip = world_stage_possibly_reinforce_here }
 		}
 	}
 }
@@ -7361,12 +7307,12 @@ news_event = {
 			has_government = fascism
 		}
 		# effect_tooltip = {
-			# custom_effect_tooltip = country_name_falange
+			# custom_effect_tooltip = metropolis_scope_falange
 			# add_to_variable = {
 				# global.FAL_strength_spain = 1
 				# tooltip = world_stage_add_local_power
 			# }
-			# custom_effect_tooltip = country_name_republica
+			# custom_effect_tooltip = metropolis_scope_republica
 			# add_to_variable = {
 				# global.REP_strength_spain = -1
 				# tooltip = world_stage_add_local_power
@@ -7379,12 +7325,12 @@ news_event = {
 			has_government = communism
 		}
 		# effect_tooltip = {
-			# custom_effect_tooltip = country_name_falange
+			# custom_effect_tooltip = metropolis_scope_falange
 			# add_to_variable = {
 				# global.FAL_strength_spain = 1
 				# tooltip = world_stage_add_local_power
 			# }
-			# custom_effect_tooltip = country_name_republica
+			# custom_effect_tooltip = metropolis_scope_republica
 			# add_to_variable = {
 				# global.REP_strength_spain = -1
 				# tooltip = world_stage_add_local_power
@@ -7400,12 +7346,12 @@ news_event = {
 			}
 		}
 		# effect_tooltip = {
-			# custom_effect_tooltip = country_name_falange
+			# custom_effect_tooltip = metropolis_scope_falange
 			# add_to_variable = {
 				# global.FAL_strength_spain = 1
 				# tooltip = world_stage_add_local_power
 			# }
-			# custom_effect_tooltip = country_name_republica
+			# custom_effect_tooltip = metropolis_scope_republica
 			# add_to_variable = {
 				# global.REP_strength_spain = -1
 				# tooltip = world_stage_add_local_power
@@ -7435,7 +7381,7 @@ news_event = {
 			has_government = fascism
 		}
 		# effect_tooltip = {
-			# custom_effect_tooltip = country_name_republica
+			# custom_effect_tooltip = metropolis_scope_republica
 			# add_to_variable = {
 				# global.REP_strength_spain = -1
 				# tooltip = world_stage_add_local_power
@@ -7448,7 +7394,7 @@ news_event = {
 			has_government = communism
 		}
 		# effect_tooltip = {
-			# custom_effect_tooltip = country_name_republica
+			# custom_effect_tooltip = metropolis_scope_republica
 			# add_to_variable = {
 				# global.REP_strength_spain = -1
 				# tooltip = world_stage_add_local_power
@@ -7464,7 +7410,7 @@ news_event = {
 			}
 		}
 		# effect_tooltip = {
-			# custom_effect_tooltip = country_name_republica
+			# custom_effect_tooltip = metropolis_scope_republica
 			# add_to_variable = {
 				# global.REP_strength_spain = -1
 				# tooltip = world_stage_add_local_power
@@ -7856,7 +7802,7 @@ news_event = {
 			if = {
 				limit = { NOT = { tag = REI } }
 				custom_effect_tooltip = world_stage_theater_norway_is_active_tt
-				custom_effect_tooltip = country_name_germany
+				custom_effect_tooltip = metropolis_name_germany
 				add_to_variable = {
 					placeholder_var = 60
 					tooltip = world_stage_deploy_power_norway
@@ -7866,12 +7812,12 @@ news_event = {
 					tooltip = world_stage_bonus_power_norway
 				}
 			}
-#			custom_effect_tooltip = country_name_france
+#			custom_effect_tooltip = metropolis_name_france
 #			add_to_variable = {
 #				placeholder_var = 5
 #				tooltip = world_stage_bonus_power_norway
 #			}
-#			custom_effect_tooltip = country_name_england
+#			custom_effect_tooltip = metropolis_name_england
 #			add_to_variable = {
 #				placeholder_var = 5
 #				tooltip = world_stage_bonus_power_norway
@@ -7883,7 +7829,7 @@ news_event = {
 		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 2 } } }
 		effect_tooltip = {
 			custom_effect_tooltip = world_stage_theater_norway_is_active_tt
-			custom_effect_tooltip = country_name_germany
+			custom_effect_tooltip = metropolis_name_germany
 			add_to_variable = {
 				placeholder_var = 60
 				tooltip = world_stage_deploy_power_norway
@@ -7892,12 +7838,12 @@ news_event = {
 				placeholder_var = 30
 				tooltip = world_stage_bonus_power_norway
 			}
-#			custom_effect_tooltip = country_name_france
+#			custom_effect_tooltip = metropolis_name_france
 #			add_to_variable = {
 #				placeholder_var = 5
 #				tooltip = world_stage_bonus_power_norway
 #			}
-#			custom_effect_tooltip = country_name_england
+#			custom_effect_tooltip = metropolis_name_england
 #			add_to_variable = {
 #				placeholder_var = 5
 #				tooltip = world_stage_bonus_power_norway
@@ -7909,7 +7855,7 @@ news_event = {
 		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 1 } } }
 		effect_tooltip = {
 			custom_effect_tooltip = world_stage_theater_norway_is_active_tt
-			custom_effect_tooltip = country_name_germany
+			custom_effect_tooltip = metropolis_name_germany
 			add_to_variable = {
 				placeholder_var = 60
 				tooltip = world_stage_deploy_power_norway
@@ -7918,12 +7864,12 @@ news_event = {
 				placeholder_var = 30
 				tooltip = world_stage_bonus_power_norway
 			}
-#			custom_effect_tooltip = country_name_france
+#			custom_effect_tooltip = metropolis_name_france
 #			add_to_variable = {
 #				placeholder_var = 5
 #				tooltip = world_stage_bonus_power_norway
 #			}
-#			custom_effect_tooltip = country_name_england
+#			custom_effect_tooltip = metropolis_name_england
 #			add_to_variable = {
 #				placeholder_var = 5
 #				tooltip = world_stage_bonus_power_norway
@@ -7935,7 +7881,7 @@ news_event = {
 		trigger = { var:world_stage_metropolis = { check_variable = { world_stage_coalition = 4 } } }
 		effect_tooltip = {
 			custom_effect_tooltip = world_stage_theater_norway_is_active_tt
-			custom_effect_tooltip = country_name_germany
+			custom_effect_tooltip = metropolis_name_germany
 			add_to_variable = {
 				placeholder_var = 60
 				tooltip = world_stage_deploy_power_norway
@@ -7944,12 +7890,12 @@ news_event = {
 				placeholder_var = 30
 				tooltip = world_stage_bonus_power_norway
 			}
-#			custom_effect_tooltip = country_name_france
+#			custom_effect_tooltip = metropolis_name_france
 #			add_to_variable = {
 #				placeholder_var = 5
 #				tooltip = world_stage_bonus_power_norway
 #			}
-#			custom_effect_tooltip = country_name_england
+#			custom_effect_tooltip = metropolis_name_england
 #			add_to_variable = {
 #				placeholder_var = 5
 #				tooltip = world_stage_bonus_power_norway
