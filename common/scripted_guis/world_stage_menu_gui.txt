@@ -424,8 +424,8 @@ scripted_gui = {
 			world_stage_go_to_background_12_visible = {if = { check_variable = { number_of_connections_displayed > 1 } } }
 			world_stage_go_to_background_23_visible = {if = { check_variable = { number_of_connections_displayed > 2 } } }
 			world_stage_go_to_background_34_visible = {if = { check_variable = { number_of_connections_displayed > 3 } } }
-			world_stage_naval_based_theater_visible = { var:current_theater = { has_state_flag = is_navy_theater } }
-			world_stage_land_based_theater_visible = { NOT = { var:current_theater = { has_state_flag = is_navy_theater } } }
+			world_stage_naval_based_theater_visible = { var:current_theater = { has_state_flag = is_navy_theater }  always	= no }			# currently disabled
+			world_stage_land_based_theater_visible = { NOT = { var:current_theater = { has_state_flag = is_navy_theater } } always	= no }	# currently disabled
 			world_stage_clock_base_visible = { var:current_theater = { has_state_flag = theater_is_active } }
 			world_stage_clock_counter_visible = { var:current_theater = { has_state_flag = theater_is_active } }
 			world_stage_clock_display_visible = { var:current_theater = { has_state_flag = theater_is_active } }
@@ -441,6 +441,10 @@ scripted_gui = {
 				command_power > 24.9
 				check_variable = { var:world_stage_metropolis:world_stage_power > 0 }
 				world_stage_has_permission_no_tooltip = yes
+				OR = {
+					check_variable = { PREV.world_stage_coalition = theater_owner_coalition }
+					check_variable = { PREV.world_stage_coalition = coalition_side_attack }
+				}
 			}
 			button_equipment_click_enabled = {
 				var:current_theater = { has_state_flag = theater_is_active }
@@ -460,20 +464,32 @@ scripted_gui = {
 					check_variable = { current_theater = 28 }
 					check_variable = { current_theater = 33 }
 				}
+				OR = {
+					check_variable = { PREV.world_stage_coalition = theater_owner_coalition }
+					check_variable = { PREV.world_stage_coalition = coalition_side_attack }
+				}
 			}
 			button_offensive_click_enabled = {
 				var:current_theater = { has_state_flag = theater_is_active }
 				check_variable = { array_worldstage_action_cooldown^var:current_theater < 1 }
-				command_power > 24.9
+				command_power > 39.9
 				check_variable = { var:current_theater:world_stage_power_deployed_by^world_stage_metropolis > 1 }
 				world_stage_has_permission_no_tooltip = yes
+				OR = {
+					check_variable = { PREV.world_stage_coalition = theater_owner_coalition }
+					check_variable = { PREV.world_stage_coalition = coalition_side_attack }
+				}
 			}
 			button_defenses_click_enabled = {
 				var:current_theater = { has_state_flag = theater_is_active }
 				check_variable = { array_worldstage_action_cooldown^var:current_theater < 1 }
-				command_power > 24.9
+				command_power > 19.9
 				check_variable = { var:current_theater:world_stage_power_deployed_by^world_stage_metropolis > 1 }
 				world_stage_has_permission_no_tooltip = yes
+				OR = {
+					check_variable = { PREV.world_stage_coalition = theater_owner_coalition }
+					check_variable = { PREV.world_stage_coalition = coalition_side_attack }
+				}
 			}
 			button_retreat_click_enabled = {
 				var:current_theater = { has_state_flag = theater_is_active }
@@ -481,6 +497,10 @@ scripted_gui = {
 				command_power > 24.9
 				check_variable = { var:current_theater:world_stage_power_deployed_by^world_stage_metropolis > 1.1 }	# min = 2
 				world_stage_has_permission_no_tooltip = yes
+				OR = {
+					check_variable = { PREV.world_stage_coalition = theater_owner_coalition }
+					check_variable = { PREV.world_stage_coalition = coalition_side_attack }
+				}
 			}
 			world_stage_attacker_header_visible = { var:current_theater = { has_state_flag = theater_is_active } }
 			world_stage_attacker_symbol_visible = { var:current_theater = { has_state_flag = theater_is_active } }
@@ -610,38 +630,37 @@ scripted_gui = {
 			button_offensive_click = {
 				if = {
 					limit = { command_power > 24.9 }
-					set_variable = { array_worldstage_action_cooldown^var:current_theater = 5 } # number of days of cooldown
+					set_variable = { array_worldstage_action_cooldown^var:current_theater = 10 } # number of days of cooldown
 					set_variable = { array_worldstage_action_ongoing^var:current_theater = @action_offensive } # type of action taken
-					add_command_power = -25
+					add_command_power = -40
 					var:current_theater = {
-						random_list = {
-							1 = { set_temp_variable = { offensive_bonus = 0.025 } }
-							1 = { set_temp_variable = { offensive_bonus = 0.05 } }
-							1 = { set_temp_variable = { offensive_bonus = 0.075 } }
-						}
-						if = {
-							limit = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 5 } }
-							random_list = {
-								1 = { set_temp_variable = { offensive_bonus = 0.05 } }
-								1 = { set_temp_variable = { offensive_bonus = 0.1 } }
-								1 = { set_temp_variable = { offensive_bonus = 0.15 } }
-							}
-						}
-						if = {
-							limit = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 15 } }
-							random_list = {
-								1 = { set_temp_variable = { offensive_bonus = 0.075 } }
-								1 = { set_temp_variable = { offensive_bonus = 0.15 } }
-								1 = { set_temp_variable = { offensive_bonus = 0.225 } }
-							}
-						}
 						if = {
 							limit = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 30 } }
 							random_list = {
-								1 = { set_temp_variable = { offensive_bonus = 0.1 } }
-								1 = { set_temp_variable = { offensive_bonus = 0.2 } }
-								1 = { set_temp_variable = { offensive_bonus = 0.3 } }
+								1 = { set_temp_variable = { offensive_bonus = 0.25 } }
+								1 = { set_temp_variable = { offensive_bonus = 0.30 } }
+								1 = { set_temp_variable = { offensive_bonus = 0.40 } }
 							}
+						} else_if = {
+							limit = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 15 } }
+							random_list = {
+								1 = { set_temp_variable = { offensive_bonus = 0.15 } }
+								1 = { set_temp_variable = { offensive_bonus = 0.20 } }
+								1 = { set_temp_variable = { offensive_bonus = 0.30 } }
+							}
+						} else_if = {
+							limit = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 5 } }
+							random_list = {
+								1 = { set_temp_variable = { offensive_bonus = 0.05 } }
+								1 = { set_temp_variable = { offensive_bonus = 0.10 } }
+								1 = { set_temp_variable = { offensive_bonus = 0.20 } }
+							}
+						} else = {
+							random_list = {
+								1 = { set_temp_variable = { offensive_bonus = 0.00 } }
+								1 = { set_temp_variable = { offensive_bonus = 0.05 } }
+								1 = { set_temp_variable = { offensive_bonus = 0.15 } }
+							}						
 						}
 						if = {
 							limit = { check_variable = { PREV.world_stage_coalition = theater_owner_coalition } }	# it's a defender
@@ -658,20 +677,21 @@ scripted_gui = {
 					limit = { command_power > 24.9 }
 					set_variable = { array_worldstage_action_cooldown^var:current_theater = 5 } # number of days of cooldown
 					set_variable = { array_worldstage_action_ongoing^var:current_theater = @action_defenses } # type of action taken
-					add_command_power = -25
+					add_command_power = -20
 					var:current_theater = {
 						set_temp_variable = { defenses_bonus = 0.05 }
 						if = {
-							limit = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 15 } }
-							 set_temp_variable = { defenses_bonus = 0.1 }
-						}
-						if = {
-							limit = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 30 } }
-							set_temp_variable = { defenses_bonus = 0.15 }
-						}
-						if = {
 							limit = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 45 } }
-							set_temp_variable = { defenses_bonus = 0.2 }
+							set_temp_variable = { defenses_bonus = 0.30 }
+						} else_if = {
+							limit = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 45 } }
+							set_temp_variable = { defenses_bonus = 0.20 }
+						}  else_if = {
+							limit = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 45 } }
+							set_temp_variable = { defenses_bonus = 0.10 }
+						}  else = {
+							limit = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 45 } }
+							set_temp_variable = { defenses_bonus = 0.05 }
 						}
 						if = {
 							limit = { check_variable = { PREV.world_stage_coalition = theater_owner_coalition } }	# it's a defender
@@ -753,6 +773,10 @@ scripted_gui = {
 				command_power > 24.9
 				check_variable = { var:world_stage_metropolis:world_stage_power > 0 }
 				world_stage_has_permission_no_tooltip = yes
+				OR = {
+					check_variable = { PREV.world_stage_coalition = theater_owner_coalition }
+					check_variable = { PREV.world_stage_coalition = coalition_side_attack }
+				}
 			}
 			button_equipment_click_enabled = {
 				var:current_theater = { has_state_flag = theater_is_active }
@@ -772,20 +796,32 @@ scripted_gui = {
 					check_variable = { current_theater = 28 }
 					check_variable = { current_theater = 33 }
 				}
+				OR = {
+					check_variable = { PREV.world_stage_coalition = theater_owner_coalition }
+					check_variable = { PREV.world_stage_coalition = coalition_side_attack }
+				}
 			}
 			button_offensive_click_enabled = {
 				var:current_theater = { has_state_flag = theater_is_active }
 				check_variable = { array_worldstage_action_cooldown^var:current_theater < 1 }
-				command_power > 24.9
+				command_power > 39.9
 				check_variable = { var:current_theater:world_stage_power_deployed_by^world_stage_metropolis > 1 }
 				world_stage_has_permission_no_tooltip = yes
+				OR = {
+					check_variable = { PREV.world_stage_coalition = theater_owner_coalition }
+					check_variable = { PREV.world_stage_coalition = coalition_side_attack }
+				}
 			}
 			button_defenses_click_enabled = {
 				var:current_theater = { has_state_flag = theater_is_active }
 				check_variable = { array_worldstage_action_cooldown^var:current_theater < 1 }
-				command_power > 24.9
+				command_power > 19.9
 				check_variable = { var:current_theater:world_stage_power_deployed_by^world_stage_metropolis > 1 }
 				world_stage_has_permission_no_tooltip = yes
+				OR = {
+					check_variable = { PREV.world_stage_coalition = theater_owner_coalition }
+					check_variable = { PREV.world_stage_coalition = coalition_side_attack }
+				}
 			}
 			button_retreat_click_enabled = {
 				var:current_theater = { has_state_flag = theater_is_active }
@@ -793,6 +829,10 @@ scripted_gui = {
 				command_power > 24.9
 				check_variable = { var:current_theater:world_stage_power_deployed_by^world_stage_metropolis > 1.1 }	# min = 2
 				world_stage_has_permission_no_tooltip = yes
+				OR = {
+					check_variable = { PREV.world_stage_coalition = theater_owner_coalition }
+					check_variable = { PREV.world_stage_coalition = coalition_side_attack }
+				}
 			}
 			world_stage_attacker_header_visible = { var:current_theater = { has_state_flag = theater_is_active } }
 			world_stage_attacker_symbol_visible = { var:current_theater = { has_state_flag = theater_is_active } }
@@ -919,38 +959,37 @@ scripted_gui = {
 			button_offensive_click = {
 				if = {
 					limit = { command_power > 24.9 }
-					set_variable = { array_worldstage_action_cooldown^var:current_theater = 5 } # number of days of cooldown
+					set_variable = { array_worldstage_action_cooldown^var:current_theater = 10 } # number of days of cooldown
 					set_variable = { array_worldstage_action_ongoing^var:current_theater = @action_offensive } # type of action taken
-					add_command_power = -25
+					add_command_power = -40
 					var:current_theater = {
-						random_list = {
-							1 = { set_temp_variable = { offensive_bonus = 0.025 } }
-							1 = { set_temp_variable = { offensive_bonus = 0.05 } }
-							1 = { set_temp_variable = { offensive_bonus = 0.075 } }
-						}
-						if = {
-							limit = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 5 } }
-							random_list = {
-								1 = { set_temp_variable = { offensive_bonus = 0.05 } }
-								1 = { set_temp_variable = { offensive_bonus = 0.1 } }
-								1 = { set_temp_variable = { offensive_bonus = 0.15 } }
-							}
-						}
-						if = {
-							limit = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 15 } }
-							random_list = {
-								1 = { set_temp_variable = { offensive_bonus = 0.075 } }
-								1 = { set_temp_variable = { offensive_bonus = 0.15 } }
-								1 = { set_temp_variable = { offensive_bonus = 0.225 } }
-							}
-						}
 						if = {
 							limit = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 30 } }
 							random_list = {
-								1 = { set_temp_variable = { offensive_bonus = 0.1 } }
-								1 = { set_temp_variable = { offensive_bonus = 0.2 } }
-								1 = { set_temp_variable = { offensive_bonus = 0.3 } }
+								1 = { set_temp_variable = { offensive_bonus = 0.25 } }
+								1 = { set_temp_variable = { offensive_bonus = 0.30 } }
+								1 = { set_temp_variable = { offensive_bonus = 0.40 } }
 							}
+						} else_if = {
+							limit = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 15 } }
+							random_list = {
+								1 = { set_temp_variable = { offensive_bonus = 0.15 } }
+								1 = { set_temp_variable = { offensive_bonus = 0.20 } }
+								1 = { set_temp_variable = { offensive_bonus = 0.30 } }
+							}
+						} else_if = {
+							limit = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 5 } }
+							random_list = {
+								1 = { set_temp_variable = { offensive_bonus = 0.05 } }
+								1 = { set_temp_variable = { offensive_bonus = 0.10 } }
+								1 = { set_temp_variable = { offensive_bonus = 0.20 } }
+							}
+						} else = {
+							random_list = {
+								1 = { set_temp_variable = { offensive_bonus = 0.00 } }
+								1 = { set_temp_variable = { offensive_bonus = 0.05 } }
+								1 = { set_temp_variable = { offensive_bonus = 0.15 } }
+							}						
 						}
 						if = {
 							limit = { check_variable = { PREV.world_stage_coalition = theater_owner_coalition } }	# it's a defender
@@ -967,20 +1006,21 @@ scripted_gui = {
 					limit = { command_power > 24.9 }
 					set_variable = { array_worldstage_action_cooldown^var:current_theater = 5 } # number of days of cooldown
 					set_variable = { array_worldstage_action_ongoing^var:current_theater = @action_defenses } # type of action taken
-					add_command_power = -25
+					add_command_power = -20
 					var:current_theater = {
 						set_temp_variable = { defenses_bonus = 0.05 }
 						if = {
-							limit = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 15 } }
-							 set_temp_variable = { defenses_bonus = 0.1 }
-						}
-						if = {
-							limit = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 30 } }
-							set_temp_variable = { defenses_bonus = 0.15 }
-						}
-						if = {
 							limit = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 45 } }
-							set_temp_variable = { defenses_bonus = 0.2 }
+							set_temp_variable = { defenses_bonus = 0.30 }
+						} else_if = {
+							limit = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 45 } }
+							set_temp_variable = { defenses_bonus = 0.20 }
+						}  else_if = {
+							limit = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 45 } }
+							set_temp_variable = { defenses_bonus = 0.10 }
+						}  else = {
+							limit = { check_variable = { world_stage_power_deployed_by^world_stage_metropolis > 45 } }
+							set_temp_variable = { defenses_bonus = 0.05 }
 						}
 						if = {
 							limit = { check_variable = { PREV.world_stage_coalition = theater_owner_coalition } }	# it's a defender
