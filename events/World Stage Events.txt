@@ -8629,13 +8629,88 @@ news_event = {
 	major = yes
 	
 	immediate = {
-		# the code will be essentially the same as in worldstage.83
-		# check every theater owned by Republican Spain, open a front on a random nearby enemy theater
-		# if the Spanish Civil War is still ongoing, make Falangist Spain join the Axis and "end" the civil war without its events
+		hidden_effect = {	# the code will be essentially the same as in worldstage.83
+			# figure out if Spain should join Allies Comintern
+			if = {
+				limit = { has_global_flag = world_stage_world_war_3_is_active }
+				set_temp_variable = { new_republica_coalition = 2 }
+			} else = { set_temp_variable = { new_republica_coalition = 1 } }
+			# change metropolis' coalitions
+			111 = { set_variable = {  world_stage_coalition = new_republica_coalition } }	# Republica is now Allies/Commintern
+			111 = { set_state_flag = worldstage_AI_active } 								# awake the AI, in case it was sleeping (SCW ended before WW2) / only Republica, if Falange was defeated already there's no need to wake it
+			121 = { set_variable = {  world_stage_coalition = 3 } }							# Falange is now Axis
+			# change theater owners
+			every_state = { limit = { check_variable = { theater_owner = 8 } } set_variable = { theater_owner = new_republica_coalition } }	# Republica's theaters are now Allies/Comminter
+			every_state = { limit = { check_variable = { theater_owner = 9 } } set_variable = { theater_owner = 3 } }						# Falange's theaters are now Axis
+			35 = {	# Madrid
+				if = { limit = { check_variable = { theater_owner = 4 } } }	# in other words, SCW ended already
+				set_variable = { theater_owner = new_republica_coalition }
+			}
+			36 = {	# Zaragoza
+				if = { limit = { check_variable = { theater_owner = 4 } } }
+				set_variable = { theater_owner = new_republica_coalition }
+			}
+			37 = {	# Barcelona
+				if = { limit = { check_variable = { theater_owner = 4 } } }
+				set_variable = { theater_owner = new_republica_coalition }
+			}
+			# change any ongoing battles
+			every_state = {
+				limit = { check_variable = { coalition_side_attack = 8 } }
+				set_variable = { coalition_side_attack = new_republica_coalition }
+				world_stage_state_update_current_day = yes 
+			}
+			every_state = {
+				limit = { check_variable = { coalition_side_attack = 9 } }
+				set_variable = { coalition_side_attack = 3 }
+				world_stage_state_update_current_day = yes 
+			}
+		}
 	}
 	
 	option = {
-	
+		trigger = { tag = SPR }	# Just in case a Spanish Port is implemented
+		name = worldstage.85.self
+		custom_effect_tooltip = metropolis_scope_republica
+		if = {
+			limit = { has_global_flag = world_stage_world_war_3_is_active }
+			custom_effect_tooltip = join_coalition_comintern
+		} else = { custom_effect_tooltip = join_coalition_allies } }
+		custom_effect_tooltip = metropolis_scope_falange
+		custom_effect_tooltip = join_coalition_axis
+	}
+	option = {
+		trigger = { NOT = { tag = SPR } check_variable = { world_stage_coalition = 1 } }
+		name = worldstage.85.good
+		custom_effect_tooltip = metropolis_scope_republica
+		if = {
+			limit = { has_global_flag = world_stage_world_war_3_is_active }
+			custom_effect_tooltip = join_coalition_comintern
+		} else = { custom_effect_tooltip = join_coalition_allies } }
+		custom_effect_tooltip = metropolis_scope_falange
+		custom_effect_tooltip = join_coalition_axis
+	}
+	option = {
+		trigger = { NOT = { tag = SPR } check_variable = { world_stage_coalition = 3 } }
+		name = worldstage.85.bad
+		custom_effect_tooltip = metropolis_scope_republica
+		if = {
+			limit = { has_global_flag = world_stage_world_war_3_is_active }
+			custom_effect_tooltip = join_coalition_comintern
+		} else = { custom_effect_tooltip = join_coalition_allies } }
+		custom_effect_tooltip = metropolis_scope_falange
+		custom_effect_tooltip = join_coalition_axis
+	}
+	option = {
+		trigger = { NOT = { tag = SPR check_variable = { world_stage_coalition = 1 } check_variable = { world_stage_coalition = 3 } } }
+		name = worldstage.85.neutral
+		custom_effect_tooltip = metropolis_scope_republica
+		if = {
+			limit = { has_global_flag = world_stage_world_war_3_is_active }
+			custom_effect_tooltip = join_coalition_comintern
+		} else = { custom_effect_tooltip = join_coalition_allies } }
+		custom_effect_tooltip = metropolis_scope_falange
+		custom_effect_tooltip = join_coalition_axis
 	}
 }
 
@@ -8651,13 +8726,88 @@ news_event = {
 	major = yes
 	
 	immediate = {
-		# the code will be essentially the same as in worldstage.82
-		# check every theater owned by Falangist Spain, open a front on a random nearby enemy theater
-		# if the Spanish Civil War is still ongoing, make Republican Spain join the Axis and "end" the civil war without its events
+		hidden_effect = {	# the code will be essentially the same as in worldstage.82
+			# figure out if Spain should join Allies Comintern
+			if = {
+				limit = { has_global_flag = world_stage_world_war_3_is_active }
+				set_temp_variable = { new_republica_coalition = 2 }
+			} else = { set_temp_variable = { new_republica_coalition = 1 } }
+			# change metropolis' coalitions
+			111 = { set_variable = {  world_stage_coalition = new_republica_coalition } }	# Republica is now Allies/Commintern
+			121 = { set_variable = {  world_stage_coalition = 3 } }							# Falange is now Axis
+			121 = { set_state_flag = worldstage_AI_active } 								# awake the AI, in case it was sleeping (SCW ended before WW2) / only Falange, if Republica was defeated already there's no need to wake it
+			# change theater owners
+			every_state = { limit = { check_variable = { theater_owner = 8 } } set_variable = { theater_owner = new_republica_coalition } }	# Republica's theaters are now Allies/Comminter
+			every_state = { limit = { check_variable = { theater_owner = 9 } } set_variable = { theater_owner = 3 } }						# Falange's theaters are now Axis
+			35 = {	# Madrid
+				if = { limit = { check_variable = { theater_owner = 4 } } }	# in other words, SCW ended already
+				set_variable = { theater_owner = 3 }
+			}
+			36 = {	# Zaragoza
+				if = { limit = { check_variable = { theater_owner = 4 } } }
+				set_variable = { theater_owner = 3 }
+			}
+			37 = {	# Barcelona
+				if = { limit = { check_variable = { theater_owner = 4 } } }
+				set_variable = { theater_owner = 3 }
+			}
+			# change any ongoing battles
+			every_state = {
+				limit = { check_variable = { coalition_side_attack = 8 } }
+				set_variable = { coalition_side_attack = new_republica_coalition }
+				world_stage_state_update_current_day = yes 
+			}
+			every_state = {
+				limit = { check_variable = { coalition_side_attack = 9 } }
+				set_variable = { coalition_side_attack = 3 }
+				world_stage_state_update_current_day = yes 
+			}
+		}
 	}
 	
 	option = {
-	
+		trigger = { tag = SPR }	# Just in case a Spanish Port is implemented
+		name = worldstage.85.self
+		custom_effect_tooltip = metropolis_scope_falange
+		custom_effect_tooltip = join_coalition_axis
+		custom_effect_tooltip = metropolis_scope_republica
+		if = {
+			limit = { has_global_flag = world_stage_world_war_3_is_active }
+			custom_effect_tooltip = join_coalition_comintern
+		} else = { custom_effect_tooltip = join_coalition_allies } }
+	}
+	option = {
+		trigger = { NOT = { tag = SPR } check_variable = { world_stage_coalition = 1 } }
+		name = worldstage.85.good
+		custom_effect_tooltip = metropolis_scope_falange
+		custom_effect_tooltip = join_coalition_axis
+		custom_effect_tooltip = metropolis_scope_republica
+		if = {
+			limit = { has_global_flag = world_stage_world_war_3_is_active }
+			custom_effect_tooltip = join_coalition_comintern
+		} else = { custom_effect_tooltip = join_coalition_allies } }
+	}
+	option = {
+		trigger = { NOT = { tag = SPR } check_variable = { world_stage_coalition = 3 } }
+		name = worldstage.85.bad
+		custom_effect_tooltip = metropolis_scope_falange
+		custom_effect_tooltip = join_coalition_axis
+		custom_effect_tooltip = metropolis_scope_republica
+		if = {
+			limit = { has_global_flag = world_stage_world_war_3_is_active }
+			custom_effect_tooltip = join_coalition_comintern
+		} else = { custom_effect_tooltip = join_coalition_allies } }
+	}
+	option = {
+		trigger = { NOT = { tag = SPR check_variable = { world_stage_coalition = 1 } check_variable = { world_stage_coalition = 3 } } }
+		name = worldstage.85.neutral
+		custom_effect_tooltip = metropolis_scope_falange
+		custom_effect_tooltip = join_coalition_axis
+		custom_effect_tooltip = metropolis_scope_republica
+		if = {
+			limit = { has_global_flag = world_stage_world_war_3_is_active }
+			custom_effect_tooltip = join_coalition_comintern
+		} else = { custom_effect_tooltip = join_coalition_allies } }
 	}
 }
 
