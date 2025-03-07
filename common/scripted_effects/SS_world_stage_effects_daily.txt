@@ -13,6 +13,39 @@ world_stage_activate_daily_state_effect = { # activated from on_actions/daily fr
 }
 
 world_stage_state_daily_effect = {
+	# if any country has negative strength, decrease deployed forces until it gets to zero, preferably from least important theaters (given by AI preferences)
+	every_state = {
+		if = {
+			limit = { check_variable = { world_stage_power < 0 } }	log = "[THIS.GetMetropolisName] has [?world_stage_power] strentgh"
+			# select theater & decrease power
+			if = {
+				limit = {
+					any_of = {
+						array = world_stage_ignore_theater
+						value = v
+						index = i
+						var:i = { check_variable = { world_stage_power_deployed_by^PREV.world_stage_metropolis > 0 } }
+					}
+				}
+				log = "choose ignorable theater to withdraw power"
+				random_scope_in_array = {
+					array = world_stage_ignore_theater
+					break = break
+					limit = { check_variable = { world_stage_power_deployed_by^PREV.world_stage_metropolis > 0 } }
+					subtract_from_variable = { world_stage_power_deployed_by^PREV.world_stage_metropolis = 1 }
+				}
+				add_to_variable = { world_stage_power = 1 }
+			} else = {	# else: no ignorable theater has deployed power, get a random one
+				log = "choose random theater to withdraw power"
+				random_state = {
+					limit = { check_variable = { world_stage_power_deployed_by^PREV.world_stage_metropolis > 0 } }
+					subtract_from_variable = { world_stage_power_deployed_by^PREV.world_stage_metropolis = 1 }
+					PREV = { add_to_variable = { world_stage_power = 1 } }
+				}
+			}
+			round_variable = { world_stage_power }
+		}
+	}
 	subtract_from_variable = { theater_timer = 1 }
 	# calculate deployed forces (everyone is either axis or allies)
 	set_variable = { defender_deployed_power = 0 }
