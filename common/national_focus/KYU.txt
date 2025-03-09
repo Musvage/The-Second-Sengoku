@@ -724,7 +724,10 @@ focus_tree = {
 		
 		available = {
 			has_government = autocracy
-			has_power_balance = { id = KYU_fractured_government_balance }
+			power_balance_value = {
+				id = KYU_fractured_government_balance
+				value > 0.5
+			}
 		}
 		
 		completion_reward = {
@@ -1218,6 +1221,11 @@ focus_tree = {
 		bypass = { has_government = fascism}
 		
 		completion_reward = {
+			add_power_balance_value = {
+				id = KYU_fractured_government_balance
+				value = -0.1
+				tooltip_side = KYU_bop_government_side
+			}
 			set_country_flag = ignore_flavour_event
 			news_event = kyushu.14
 			set_politics = {
@@ -1326,36 +1334,25 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = KYU_disarm_clans
-		icon = GFX_focus_KYU_seize_weapons
+		id = KYU_arrest_opposition
+		icon = GFX_focus_KYU_supress_dissidents
 		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_KOGA FOCUS_FILTER_NAGANO }
 		
 		prerequisite = { focus = KYU_back_koga_3 focus = KYU_depose_junta }
-		relative_position_id = KYU_back_koga_3
-		x = 2
-		y = 2
+		relative_position_id = KYU_depose_junta
+		x = -3
+		y = 1
 		cost = 10
 		
 		ai_will_do = {
-        factor = 10
-        modifier = {
-        has_war = no
-		factor = 10
-            }
-        }
-		
-		available = {
-			any_controlled_state = { has_dynamic_modifier = { modifier = KYU_clan_resistance_modifier } }
+			factor = 10
 		}
 		
-		bypass = { NOT = { any_controlled_state = { has_dynamic_modifier = { modifier = KYU_clan_resistance_modifier } } } NOT = { has_completed_focus = KYU_back_yamamoto_1 } }
+		available = { has_power_balance = { id = KYU_fractured_government_balance } }
+		
+		bypass = { NOT = { has_power_balance = { id = KYU_fractured_government_balance } } NOT = { has_completed_focus = KYU_back_yamamoto_1 } }
 		
 		completion_reward = {
-			every_controlled_state = {
-				limit = { has_dynamic_modifier = { modifier = KYU_clan_resistance_modifier } }
-				remove_dynamic_modifier = { modifier = KYU_clan_resistance_modifier }
-			}
-			custom_effect_tooltip = paragraph_tt
 			if = {
 				limit = { has_power_balance = { id = KYU_fractured_government_balance } }
 				add_power_balance_value = {
@@ -1365,6 +1362,59 @@ focus_tree = {
 				}
 				custom_effect_tooltip = paragraph_tt
 			}
+			set_temp_variable = { civil_war_chance = 1 }
+			subtract_from_temp_variable = { civil_war_chance = power_balance_value }
+			set_temp_variable = { no_civil_war_chance = power_balance_value?1 }
+			every_controlled_state = {
+				limit = { has_dynamic_modifier = { modifier = KYU_clan_resistance_modifier } }
+				hidden_effect = {
+					set_temp_variable = { resistance_bonus = var:resistance }
+					multiply_temp_variable = { resistance_bonus = -0.5 }
+					add_resistance = var:resistance_bonus
+				}
+				custom_effect_tooltip = KYU_arrest_opposition_tt
+			}
+			clr_country_flag = revolt_NAI clr_country_flag = revolt_HOS clr_country_flag = revolt_NBS clr_country_flag = revolt_OTO clr_country_flag = revolt_SAR clr_country_flag = revolt_KAR
+		}
+	}
+	
+	focus = {
+		id = KYU_disarm_clans
+		icon = GFX_focus_KYU_seize_weapons
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_KOGA FOCUS_FILTER_NAGANO }
+		
+		prerequisite = { focus = KYU_arrest_opposition }
+		relative_position_id = KYU_arrest_opposition
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				has_war = no
+				factor = 0.01
+            }
+        }
+		
+		available = {
+			power_balance_value = {
+				id = KYU_fractured_government_balance
+				value < -0.5
+			}
+		}
+		
+		bypass = { NOT = { any_controlled_state = { has_dynamic_modifier = { modifier = KYU_clan_resistance_modifier } } } NOT = { has_completed_focus = KYU_back_yamamoto_1 } }
+		
+		completion_reward = {
+			hidden_ideas = { remove_ideas = { KYU_back_nagano_spirit  KYU_back_koga_spirit } }
+			remove_power_balance = { id = KYU_fractured_government_balance }
+			custom_effect_tooltip = paragraph_tt
+			every_controlled_state = {
+				limit = { has_dynamic_modifier = { modifier = KYU_clan_resistance_modifier } }
+				remove_dynamic_modifier = { modifier = KYU_clan_resistance_modifier }
+			}
+			custom_effect_tooltip = paragraph_tt
 			hidden_effect = {
 				if = {
 					limit = { autocracy > 0.2 }
@@ -1492,159 +1542,13 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = KYU_arrest_opposition
-		icon = GFX_focus_KYU_supress_dissidents
-		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_KOGA FOCUS_FILTER_NAGANO }
+		id = KYU_political_effort_2	# Filler! ACKTUALLY no longer filler, i'm adding a resistance reduction bonus
+		icon = GFX_focus_KYU_new_prefectures
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		
-		prerequisite = { focus = KYU_back_koga_3 focus = KYU_depose_junta }
-		relative_position_id = KYU_depose_junta
-		x = -2
-		y = 2
-		cost = 10
-		
-		ai_will_do = {
-			factor = 10
-		}
-		
-		available = { has_power_balance = { id = KYU_fractured_government_balance } }
-		
-		bypass = { NOT = { has_power_balance = { id = KYU_fractured_government_balance } } NOT = { has_completed_focus = KYU_back_yamamoto_1 } }
-		
-		completion_reward = {
-			hidden_effect = {
-				remove_ideas = { KYU_back_nagano_spirit  KYU_back_koga_spirit }
-				if = {
-					limit = { power_balance_value = { id = KYU_fractured_government_balance value < 0.6 } }
-					random_list = {
-						1 = { set_country_flag = revolt_NAI modifier = { factor = 0 country_exists = NAI } }
-						1 = { set_country_flag = revolt_HOS modifier = { factor = 0 country_exists = HOS } }
-						1 = { set_country_flag = revolt_OTO modifier = { factor = 0 country_exists = OTO } }
-					}
-				}
-				if = {
-					limit = { power_balance_value = { id = KYU_fractured_government_balance value < 0.4 } }
-					random_list = {
-						1 = { set_country_flag = revolt_NBS modifier = { factor = 0 country_exists = NBS } }
-						1 = { set_country_flag = revolt_SAR modifier = { factor = 0 country_exists = SAR } }
-						1 = { set_country_flag = revolt_KAR modifier = { factor = 0 country_exists = KAR } }
-					}
-				}
-			}
-			set_temp_variable = { civil_war_chance = 1 }
-			subtract_from_temp_variable = { civil_war_chance = power_balance_value }
-			set_temp_variable = { no_civil_war_chance = power_balance_value?1 }
-			remove_power_balance = { id = KYU_fractured_government_balance }
-			custom_effect_tooltip = paragraph_tt
-			every_controlled_state = {
-				limit = { has_dynamic_modifier = { modifier = KYU_clan_resistance_modifier } }
-				hidden_effect = {
-					set_temp_variable = { resistance_bonus = var:resistance }
-					multiply_temp_variable = { resistance_bonus = -0.5 }
-					add_resistance = var:resistance_bonus
-				}
-				custom_effect_tooltip = KYU_arrest_opposition_tt
-				custom_effect_tooltip = paragraph_tt
-			}
-			random_list = {
-				var:no_civil_war_chance = {
-					# The opposition goes gentle into that good night
-					custom_effect_tooltip = KYU_civil_war_1_tt
-				}
-				var:civil_war_chance = {
-					custom_effect_tooltip = KYU_civil_war_2_tt
-					hidden_effect = {
-						if = {
-							limit = { NOT = { country_exists = SMZ } }
-							release_on_controlled = SMZ
-							SMZ = {
-								declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
-								country_event = kyushu.1000
-								every_controlled_state = {
-									limit = {
-										free_building_slots = {
-											building = arms_factory
-											size > 0
-											include_locked = yes
-										}
-									}
-									add_building_construction = {
-										type = arms_factory
-										level = 1
-										instant_build = yes
-									}
-									add_extra_state_shared_building_slots = 1
-								}
-							}
-						}
-						if = {
-							limit = { has_country_flag = revolt_KAR}
-							release_on_controlled = KAR
-							KAR = {
-								declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
-								country_event = kyushu.1000
-							}
-						}
-						if = {
-							limit = { has_country_flag = revolt_SAR}
-							release_on_controlled = SAR
-							SAR = {
-								declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
-								country_event = kyushu.1000
-							}
-						}
-						if = {
-							limit = { has_country_flag = revolt_NAI}
-							release_on_controlled = NAI
-							NAI = {
-								declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
-								country_event = kyushu.1000
-							}
-						}
-						if = {
-							limit = { has_country_flag = revolt_OTO}
-							release_on_controlled = OTO
-							OTO = {
-								declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
-								country_event = kyushu.1000
-							}
-						}
-						if = {
-							limit = { has_country_flag = revolt_NBS}
-							release_on_controlled = NBS
-							NBS = {
-								declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
-								country_event = kyushu.1000
-							}
-						}
-						if = {
-							limit = { has_country_flag = revolt_HOS}
-							release_on_controlled = HOS
-							HOS = {
-								declare_war_on = { target = ROOT  type = civil_war } add_civil_war_target = KYU
-								country_event = kyushu.1000
-							}
-						}
-						if = {
-							limit = { has_country_flag = clan_revolt_happened }
-							news_event = kyushu.16
-						} else = {
-							news_event = kyushu.15
-						}
-					}
-				}
-			}
-			clr_country_flag = revolt_NAI clr_country_flag = revolt_HOS clr_country_flag = revolt_NBS clr_country_flag = revolt_OTO clr_country_flag = revolt_SAR clr_country_flag = revolt_KAR
-		}
-	}
-	
-	focus = {
-		id = KYU_political_effort_2	# Filler!
-		icon = GFX_focus_KYU_stabilize_the_nation
-		search_filters = { FOCUS_FILTER_STABILITY }
-		
-		prerequisite = { focus = KYU_disarm_clans focus = KYU_arrest_opposition focus = KYU_order_66 }
+		prerequisite = { focus = KYU_disarm_clans focus = KYU_order_66 }
 		relative_position_id = KYU_disarm_clans
-		x = -1
+		x = -2
 		y = 1
 		cost = 10
 		
@@ -1653,14 +1557,31 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			add_stability = 0.1
+			add_political_power = 150
+			KYU = {
+				every_controlled_state = {
+					limit = {
+						OR = {
+							is_core_of = NBS
+							is_core_of = OTO
+							is_core_of = UCK
+							is_core_of = HOS
+							is_core_of = SAR
+							is_core_of = KAR
+							is_core_of = NAI
+							is_core_of = SMZ
+						}
+					}
+					set_resistance = 0
+				}
+			}
 		}
 	}
 	
 	focus = {
-		id = KYU_political_effort	# Filler!
-		icon = GFX_focus_KYU_new_prefectures
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		id = KYU_political_effort	# Filler! ACKTCHUALLY no longer filler, it cores rebellious states
+		icon = GFX_focus_KYU_stabilize_the_nation
+		search_filters = { FOCUS_FILTER_STABILITY }
 		
 		prerequisite = { focus = KYU_political_effort_2 }
 		relative_position_id = KYU_political_effort_2
@@ -1672,8 +1593,38 @@ focus_tree = {
 			factor = 10
 		}
 		
+		available = {
+			NOT = {
+				has_war_with = NBS
+				has_war_with = OTO
+				has_war_with = UCK
+				has_war_with = HOS
+				has_war_with = SAR
+				has_war_with = KAR
+				has_war_with = NAI
+				has_war_with = SMZ
+			}
+		}
+		
 		completion_reward = {
-			add_political_power = 150
+			add_stability = 0.1
+			KYU = {
+				every_controlled_state = {
+					limit = {
+						OR = {
+							is_core_of = NBS
+							is_core_of = OTO
+							is_core_of = UCK
+							is_core_of = HOS
+							is_core_of = SAR
+							is_core_of = KAR
+							is_core_of = NAI
+							is_core_of = SMZ
+						}
+					}
+					add_core_of = KYU
+				}
+			}
 		}
 	}
 
@@ -1682,7 +1633,7 @@ focus_tree = {
 		icon = GFX_focus_KYU_unification_path
 		search_filters = { FOCUS_FILTER_ANNEXATION }
 		
-		prerequisite = { focus = KYU_order_66 focus = KYU_disarm_clans focus = KYU_arrest_opposition }
+		prerequisite = { focus = KYU_order_66 focus = KYU_disarm_clans }
 		relative_position_id = KYU_order_66
 		x = 3
 		y = 1
