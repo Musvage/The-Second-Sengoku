@@ -365,17 +365,17 @@ chose_theater_to_act = {
 		value = theater_index	# this is the theater index, which is a state id
 		break = break			# if we use set_temp_variable = { break = 1 }, it breaks the code (any value other than 0)
 		
-		if = {
-			limit = { check_variable = { array_worldstage_action_cooldown^var:theater_index < 1 } }
-			var:theater_index = {
+		var:theater_index = {
+			if = {
+				limit = { has_state_flag = theater_is_active }
 				if = {
-					limit = { has_state_flag = theater_is_active }
+					limit = { check_variable = { array_worldstage_action_cooldown^var:theater_index < 1 } }
 					
 					PREV = { set_variable = { selected_theater = theater_index } set_state_flag = selected_theater_is_priority }
 					set_temp_variable = { break = 1 }
-				}
-			}
-		} else = { var:theater_index = { log = "(Tried priority theater [GetTheaterName] but it was on cooldown)" } }
+				} else = { log = "(Tried priority theater [GetTheaterName] but it was on cooldown)" }
+			} else = { var:theater_index = { log = "(Tried priority theater [GetTheaterName] but it was not active)" } }
+		}
 	}
 	if = {
 		limit = { check_variable = { selected_theater = 0 } }	# if this is zero, then no priority theater was chosen, let's choose a regular
