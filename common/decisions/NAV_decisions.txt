@@ -199,7 +199,7 @@ NAV_aggressive_diplomacy_category = {
 	
 		icon = GFX_decision_generic_clans
 		
-		allowed = { OR = { original_tag = PRT original_tag = HIR original_tag = KYU } }
+		allowed = { OR = { original_tag = PRT original_tag = HIR } }
 		
 		visible = { NOT = { has_country_flag = accepted_overtures_KYU } }
 		
@@ -223,7 +223,7 @@ NAV_aggressive_diplomacy_category = {
 		custom_cost_text = NAV_decision_help_clans_cost
 		
 		days_remove = 7
-		days_re_enable = 180
+		days_re_enable = 30
 		
 		remove_effect = {
 			effect_tooltip = {
@@ -233,12 +233,99 @@ NAV_aggressive_diplomacy_category = {
 					target = FROM
 				}
 			}
-			hidden_effect = { FROM = { country_event = navigator.10 } }
+			hidden_effect = {
+				FROM = {
+					country_event = navigator.10
+					add_ai_strategy = {
+						type = befriend
+						id = ROOT
+						value = 10
+					}
+				}
+			}
 			effect_tooltip = {
 				KYU = {
 					add_opinion_modifier = {
 						target = ROOT
 						modifier = NAV_arm_clans
+					}
+				}
+			}
+		}
+	}
+	
+	NAV_decision_help_fukuoka = {	# KYU_FKK
+	
+		icon = GFX_decision_generic_clans
+		
+		allowed = { OR = { original_tag = PRT original_tag = HIR } }
+		
+		visible = {
+			NOT = { has_country_flag = accepted_overtures_KYU }
+			KYU = { has_civil_war = yes }
+			KYU = {
+				any_enemy_country = {
+					has_cosmetic_tag = KYU_FKK
+				}
+			}
+		}
+		
+		targets = { KYU }
+		
+		fixed_random_seed = no
+		
+		available = {
+			FROM = {
+				exists = yes
+				NOT = { has_war_with = ROOT }
+			}
+		}
+		
+		custom_cost_trigger = {
+			has_equipment = {
+				infantry_equipment > 299
+			}
+		}
+		
+		custom_cost_text = NAV_decision_help_clans_cost
+		
+		days_remove = 7
+		days_re_enable = 30
+		
+		remove_effect = {
+			FROM = { add_political_power = 1 }
+			hidden_effect = {
+				KYU = {
+					random_enemy_country = {
+						limit = {
+							has_cosmetic_tag = KYU_FKK
+						}
+						set_temp_variable = { enemy_tag = THIS }
+					}
+				}
+			}
+			var:enemy_tag = {
+				effect_tooltip = {
+					send_equipment = {
+						equipment = infantry_equipment
+						amount = 300
+						target = FROM
+					}
+				}
+				hidden_effect = {
+					country_event = navigator.11
+					add_ai_strategy = {
+						type = befriend
+						id = ROOT
+						value = 10
+					}
+				}
+			}
+			effect_tooltip = {
+				KYU = {
+					add_opinion_modifier = {
+						target = ROOT
+						modifier = NAV_arm_fkk
 					}
 				}
 			}

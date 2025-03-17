@@ -191,7 +191,7 @@ news_event = {	# Empire of Kyushu
 	id = kyushu.9
 	title = kyushu.9.t
 	desc = kyushu.9.d
-	picture = GFX_report_news_kyushu_map_wide
+	picture = GFX_report_news_empire_of_kyushu_wide
 	
 	major = yes
 	is_triggered_only = yes
@@ -199,11 +199,14 @@ news_event = {	# Empire of Kyushu
 	option = {
 		name = kyushu.9.self
 		trigger = { tag = ROOT }
-		
 	}
 	option = {
 		name = kyushu.9.other
-		trigger = { NOT = { tag = ROOT tag = KAN } }
+		trigger = { NOT = { tag = ROOT tag = KAN } country_exists = KAN }
+	}
+	option = {
+		name = kyushu.9.other2
+		trigger = { NOT = { tag = ROOT tag = KAN } NOT = { country_exists = KAN } }
 	}
 	option = {
 		name = kyushu.9.kan
@@ -214,7 +217,14 @@ news_event = {	# Empire of Kyushu
 country_event = {	# Independent Kyushu
 	id = kyushu.10
 	title = kyushu.10.t
-	desc = kyushu.10.d
+	desc = {
+		trigger = { has_completed_focus = KYU_dangerous_coalition }
+		text = kyushu.10.d1
+	}
+	desc = {
+		trigger = { NOT = { has_completed_focus = KYU_dangerous_coalition } }
+		text = kyushu.10.d2
+	}
 	picture = GFX_report_event_independent_kyushu
 	
 	major = yes
@@ -239,7 +249,14 @@ country_event = {	# Independent Kyushu
 country_event = {	# Koga in Charge
 	id = kyushu.11
 	title = kyushu.11.t
-	desc = kyushu.11.d
+	desc = {
+		trigger = { has_completed_focus = KYU_dangerous_coalition }
+		text = kyushu.11.d1
+	}
+	desc = {
+		trigger = { NOT = { has_completed_focus = KYU_dangerous_coalition } }
+		text = kyushu.11.d2
+	}
 	picture = GFX_report_event_koga_2
 	
 	major = yes
@@ -304,29 +321,18 @@ news_event = {	# Nagano Defects
 	desc = {
 		trigger = {
 			has_global_flag = nagano_many_ships
-			has_navy_size = {
-				size > 9
-			}
 		}
 		text = kyushu.13.d1
 	}
 	desc = {
 		trigger = {
 			has_global_flag = nagano_few_ships
-			has_navy_size = {	# they get a smaller share, so there gotta be more ships
-				size > 19
-			}
 		}
 		text = kyushu.13.d2
 	}
 	desc = {
 		trigger = {
-			OR = {
-				NOT = { has_global_flag = nagano_few_ships has_global_flag = nagano_many_ships }
-				has_navy_size = {
-					size < 10
-				}
-			}
+			NOT = { has_global_flag = nagano_few_ships has_global_flag = nagano_many_ships }
 		}
 		text = kyushu.13.d3
 	}
@@ -368,11 +374,18 @@ news_event = {	# Nagano Defects
 	}
 }
 
-news_event = {	# Nagano Becomes Prime Minister
+country_event = {	# Nagano Becomes Prime Minister
 	id = kyushu.14
 	title = kyushu.14.t
-	desc = kyushu.14.d
-	picture = GFX_report_news_kyushu_map_wide
+	desc = {
+		trigger = { KYU = { has_character = KYU_Hori_Teikichi } }
+		text = kyushu.14.d1
+	}
+	desc = {
+		trigger = { KYU = { NOT = { has_character = KYU_Hori_Teikichi } has_character = KYU_jisaburo_ozawa } }
+		text = kyushu.14.d2
+	}
+	picture = GFX_report_event_coup_d_etat
 	
 	is_triggered_only = yes
 	
@@ -421,7 +434,36 @@ country_event = {	# Clans Revolt: Disarm
 	}
 }
 
-country_event = {	# Clans Revolt: Arrested Yamamoto's men
+country_event = {	# Clans Revolt: check event Clans unite
+	id = kyushu.151
+	title = kyushu.151.t
+	desc = kyushu.151.d
+	picture = GFX_report_event_irregular_soldiers_japan
+	
+	is_triggered_only = yes
+	
+	hidden = yes
+	
+	immediate = {
+		if = {
+			limit = {
+				OR = {
+					KYU = { country_exists = NBS has_war_with = NBS }
+					KYU = { country_exists = OTO has_war_with = OTO }
+					KYU = { country_exists = UCK has_war_with = UCK } 
+					KYU = { country_exists = HOS has_war_with = HOS }
+					KYU = { country_exists = SAR has_war_with = SAR }
+					KYU = { country_exists = KAR has_war_with = KAR }
+					KYU = { country_exists = NAI has_war_with = NAI }
+					KYU = { country_exists = SMZ has_war_with = SMZ }
+				}
+			}
+		}
+		KYU = { country_event = kyushu.17 }
+	}
+}
+
+country_event = {	# Clans Revolt: Arrested Yamamoto's men	#### DEPRICATED
 	id = kyushu.16
 	title = kyushu.16.t
 	desc = kyushu.16.d
@@ -462,41 +504,45 @@ country_event = {	# Clans Revolt Again	# leader becomes the cool portrait of day
 	is_triggered_only = yes
 	
 	immediate = {
-		KYU = {
-			set_nationality = {
-				target_country = MCK
-				character = KYU_council_of_daimyos
-			}
-		}
-		MCK = {
-			set_cosmetic_tag = KYU_MCK
-			every_other_country = {
-				limit = {
-					OR = { tag = SMZ tag = NBS tag = HOS tag = OTO tag = NAI tag = SAR tag = KAR }
-					has_war_with = KYU NOT = { has_war_with = MCK }
-					OR = {
-						is_subject = no
-						is_subject_of = MCK
-					}
-					OR = {
-						is_in_faction = no
-						is_in_faction_with = MCK
-					}
-				}
-				MCK = {
-					annex_country = {
-						target = PREV
-						transfer_troops = yes
-					}
+		hidden_effect = {
+			KYU = {
+				set_nationality = {
+					target_country = MCK
+					character = KYU_council_of_daimyos
 				}
 			}
-			KYU_council_of_daimyos = {
-				add_country_leader_role = {
-					promote_leader = yes
-					country_leader = {
-						ideology = autocracy_subtype
-						expire = "1965.1.1.1"
-						traits = { KYU_military_council }
+			MCK = {
+				add_manpower = 10000
+				add_war_support = 0.1
+				set_cosmetic_tag = KYU_MCK
+				every_other_country = {
+					limit = {
+						OR = { tag = SMZ tag = NBS tag = HOS tag = OTO tag = NAI tag = SAR tag = KAR }
+						has_war_with = KYU NOT = { has_war_with = MCK }
+						OR = {
+							is_subject = no
+							is_subject_of = MCK
+						}
+						OR = {
+							is_in_faction = no
+							is_in_faction_with = MCK
+						}
+					}
+					MCK = {
+						annex_country = {
+							target = PREV
+							transfer_troops = yes
+						}
+					}
+				}
+				KYU_council_of_daimyos = {
+					add_country_leader_role = {
+						promote_leader = yes
+						country_leader = {
+							ideology = autocracy_subtype
+							expire = "1965.1.1.1"
+							traits = { KYU_military_council }
+						}
 					}
 				}
 			}
@@ -510,6 +556,7 @@ country_event = {	# Clans Revolt Again	# leader becomes the cool portrait of day
 			custom_effect_tooltip = kyushu.17.tt
 			effect_tooltip = {
 				set_cosmetic_tag = KYU_MCK
+				MCK = { add_manpower = 10000 add_war_support = 0.1 }
 				create_country_leader = {
 					name = KYU_council_of_daimyos
 					desc = ""
@@ -525,12 +572,14 @@ country_event = {	# Clans Revolt Again	# leader becomes the cool portrait of day
 		name = kyushu.17.join
 		trigger = {
 			tag = ROOT is_ai = no
+			NOT = { tag = MCK }
 			any_enemy_country = { tag = MCK }
 		}
 		MCK = {	# alias tag: main clan of kyushu
 			custom_effect_tooltip = kyushu.17.tt
 			effect_tooltip = {
 				set_cosmetic_tag = KYU_MCK
+				MCK = { add_manpower = 10000 add_war_support = 0.1 }
 				create_country_leader = {
 					name = KYU_council_of_daimyos
 					desc = ""
@@ -549,6 +598,7 @@ country_event = {	# Clans Revolt Again	# leader becomes the cool portrait of day
 		custom_effect_tooltip = kyushu.17.tt
 		effect_tooltip = {
 			set_cosmetic_tag = KYU_MCK
+			MCK = { add_manpower = 10000 add_war_support = 0.1 }
 			create_country_leader = {
 				name = KYU_council_of_daimyos
 				desc = ""
@@ -562,12 +612,12 @@ country_event = {	# Clans Revolt Again	# leader becomes the cool portrait of day
 	option = {
 		name = kyushu.17.other
 		trigger = { NOT = { tag = ROOT tag = MCK has_war_with = ROOT } }
-		effect_tooltip = { MCK = { set_cosmetic_tag = KYU_MCK custom_effect_tooltip = kyushu.17.tt } }
+		effect_tooltip = { MCK = { set_cosmetic_tag = KYU_MCK custom_effect_tooltip = kyushu.17.tt } MCK = { add_manpower = 10000 add_war_support = 0.1} }
 	}
 	option = {
 		name = kyushu.17.enemy
 		trigger = { NOT = { tag = ROOT tag = MCK } has_war_with = ROOT }
-		effect_tooltip = { MCK = { set_cosmetic_tag = KYU_MCK custom_effect_tooltip = kyushu.17.tt } }
+		effect_tooltip = { MCK = { set_cosmetic_tag = KYU_MCK custom_effect_tooltip = kyushu.17.tt } MCK = { add_manpower = 10000 add_war_support = 0.1 } }
 	}
 }
 
@@ -1379,7 +1429,14 @@ country_event = {	# Solomonic Solution Refused, Give up (global event)
 country_event = {	# Demand Okinawa (MUS/SUS event)
 	id = kyushu.206
 	title = kyushu.206.t
-	desc = kyushu.206.d
+	desc = {
+		trigger = { NOT = { tag = SUS } }
+		text = kyushu.206.d1
+	}
+	desc = {
+		trigger = { tag = SUS }
+		text = kyushu.206.d2
+	}
 	picture = GFX_report_news_okinawa_map
 	
 	is_triggered_only = yes
@@ -1429,7 +1486,7 @@ country_event = {	# Demand Okinawa (MUS/SUS event)
 			}
 			modifier = {
 				factor = 2
-				has_opinion = { target = HIR value > 49.9 }
+				has_opinion = { target = KYU value > 49.9 }
 			}
 			modifier = {
 				factor = 4
@@ -1442,6 +1499,10 @@ country_event = {	# Demand Okinawa (MUS/SUS event)
 				factor = 2
 				MUS = { OR = { has_government = democratic has_government = democratic_socialism } }
 				KYU = { OR = { has_government = democratic has_government = democratic_socialism } }
+			}
+			modifier = {
+				factor = 0
+				SUS = { is_ai = no }
 			}
 		}
 	}
