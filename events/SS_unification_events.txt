@@ -4,7 +4,7 @@ country_event = {	# Justifying on Claimant	# ROOT is target, FROM is justifying
 	id = unification.10
 	title = unification.10.t
 	desc = unification.10.d
-	picture = GFX_report_news_kyushu_map
+	picture = GFX_report_event_japanese_soldiers_02
 	
 	is_triggered_only = yes
 	major = yes
@@ -18,16 +18,40 @@ country_event = {	# Justifying on Claimant	# ROOT is target, FROM is justifying
 	}
 	
 	option = {
+		trigger = { tag = ROOT FROM = { NOT = { has_country_leader_with_trait = scaramouch_leader has_country_leader_with_trait = buffoon_leader } } }
 		name = unification.10.self	# [chuckles] I'm in danger
-		trigger = { tag = ROOT }
 	}
 	option = {
+		trigger = { NOT = { tag = ROOT has_war_with = ROOT } FROM = { NOT = { has_country_leader_with_trait = scaramouch_leader has_country_leader_with_trait = buffoon_leader } } }
 		name = unification.10.other
-		trigger = { NOT = { tag = ROOT has_war_with = ROOT } }
 	}
 	option = {
+		trigger = { has_war_with = ROOT FROM = { NOT = { has_country_leader_with_trait = scaramouch_leader has_country_leader_with_trait = buffoon_leader } } }
 		name = unification.10.enemy
-		trigger = { has_war_with = ROOT }
+	}
+	option = {
+		trigger = { tag = ROOT FROM = { has_country_leader_with_trait = scaramouch_leader } }
+		name = unification.10.self2	# [chuckles] I'm in danger
+	}
+	option = {
+		trigger = { NOT = { tag = ROOT has_war_with = ROOT } FROM = { has_country_leader_with_trait = scaramouch_leader } }
+		name = unification.10.other2
+	}
+	option = {
+		trigger = { has_war_with = ROOT FROM = { has_country_leader_with_trait = scaramouch_leader } }
+		name = unification.10.enemy2
+	}
+	option = {
+		trigger = { tag = ROOT FROM = { has_country_leader_with_trait = buffoon_leader } }
+		name = unification.10.self3	# [chuckles] I'm in danger
+	}
+	option = {
+		trigger = { NOT = { tag = ROOT has_war_with = ROOT } FROM = { has_country_leader_with_trait = buffoon_leader } }
+		name = unification.10.other3
+	}
+	option = {
+		trigger = { has_war_with = ROOT FROM = { has_country_leader_with_trait = buffoon_leader } }
+		name = unification.10.enemy3
 	}
 }
 
@@ -35,16 +59,16 @@ country_event = {	# Justifying on Claimant: Ultimatum	# ROOT is target, FROM is 
 	id = unification.11
 	title = unification.11.t
 	desc = unification.11.d
-	picture = GFX_report_news_kyushu_map
+	picture = GFX_report_event_japanese_soldiers_02
 	
 	is_triggered_only = yes
 	
 	option = {
 		name = unification.11.a
-		FROM = { country_event = unification.12 }
+		FROM = { country_event = { if = unification.12 hours = 24 } }
 	}
 	option = {
-		name = unification.11.b
+		name = unification.11.b	# annextation, army disbands and flees to other country
 		if = {
 			limit = { any_other_country = { unification_candidate = yes NOT = { tag = FROM tag = ROOT } } }
 			hidden_effect = {
@@ -74,13 +98,19 @@ country_event = {	# Justifying on Claimant: Ultimatum	# ROOT is target, FROM is 
 					always = yes
 				}
 			}
-			var:exiles_destine = { FROM = { hidden_effect = { country_event = unification.14 } annex_country = { target = ROOT transfer_troops = no } } }
+			var:exiles_destine = {
+				FROM = { hidden_effect = { country_event = unification.14 } annex_country = { target = ROOT transfer_troops = no } }
+				if = { limit = { FROM = { is_ai = yes } is_ai = no } change_tag_from = FROM }
+			}
 		} else = {
-			FROM = { hidden_effect = { country_event = unification.13 } annex_country = { target = ROOT transfer_troops = no } }
+			FROM = {
+				hidden_effect = { country_event = unification.13 } annex_country = { target = ROOT transfer_troops = no }
+				if = { limit = { FROM = { is_ai = yes } is_ai = no } change_tag_from = FROM }
+			}
 		}
 	}
 	option = {
-		name = unification.11.c
+		name = unification.11.c	# annexation, troops join
 		trigger = {
 			check_variable = { country_unification_score < FROM.country_unification_score }
 			OR = {
@@ -100,13 +130,13 @@ country_event = {	# Justifying on Claimant: Refused Ultimatum	# ROOT is target, 
 	id = unification.12
 	title = unification.12.t
 	desc = unification.12.d
-	picture = GFX_report_news_kyushu_map
+	picture = GFX_report_event_military_planning
 	
 	is_triggered_only = yes
 	major = yes
 	
 	option = {
-		name = unification.12.1
+		name = unification.12.a	# Waaaaaaaagh!
 		trigger = { tag = ROOT }
 		declare_war_on = {
 			target = FROM
@@ -114,7 +144,7 @@ country_event = {	# Justifying on Claimant: Refused Ultimatum	# ROOT is target, 
 		}
 	}
 	option = {
-		name = unification.12.b
+		name = unification.12.b	# target
 		trigger = { tag = FROM }
 		effect_tooltip = {
 			ROOT = {
@@ -126,7 +156,7 @@ country_event = {	# Justifying on Claimant: Refused Ultimatum	# ROOT is target, 
 		}
 	}
 	option = {
-		name = unification.12.c
+		name = unification.12.c	# other
 		trigger = { NOT = { tag = ROOT tag = FROM } }
 		effect_tooltip = {
 			ROOT = {
@@ -143,16 +173,18 @@ country_event = {	# Justifying on Claimant: Accept Ultimatum, troops disband	# F
 	id = unification.13
 	title = unification.13.t
 	desc = unification.13.d
-	picture = GFX_report_news_kyushu_map
+	picture = GFX_unification_all
 	
 	is_triggered_only = yes
 	major = yes
 	
 	option = {
-		name = unification.13.b
+		trigger = { tag = ROOT }
+		name = unification.13.a
 	}
 	option = {
-		name = unification.13.a
+		trigger = { NOT = { tag = ROOT } }
+		name = unification.13.b
 	}
 }
 
@@ -160,16 +192,22 @@ country_event = {	# Justifying on Claimant: Accept Ultimatum, troops flee	# FROM
 	id = unification.14
 	title = unification.14.t
 	desc = unification.14.d
-	picture = GFX_report_news_kyushu_map
+	picture = GFX_unification_all
 	
 	is_triggered_only = yes
 	major = yes
 	
 	option = {
+		trigger = { tag = ROOT }
+		name = unification.14.a
+	}
+	option = {
+		trigger = { tag = FROM.FROM }
 		name = unification.14.b
 	}
 	option = {
-		name = unification.14.a
+		trigger = { NOT = { tag = ROOT tag = FROM.FROM } }
+		name = unification.14.c
 	}
 }
 
@@ -177,16 +215,18 @@ country_event = {	# Justifying on Claimant: Accept Ultimatum, troops join 	# FRO
 	id = unification.15
 	title = unification.15.t
 	desc = unification.15.d
-	picture = GFX_report_news_kyushu_map
+	picture = GFX_unification_all
 	
 	is_triggered_only = yes
 	major = yes
 	
 	option = {
-		name = unification.15.b
+		trigger = { tag = ROOT }
+		name = unification.15.a
 	}
 	option = {
-		name = unification.15.a
+		trigger = { NOT = { tag = ROOT } }
+		name = unification.15.b
 	}
 }
 
@@ -194,7 +234,7 @@ country_event = {	# Justifying on non-Claimant	# ROOT is target, FROM is justify
 	id = unification.20
 	title = unification.20.t
 	desc = unification.20.d
-	picture = GFX_report_news_kyushu_map
+	picture = GFX_report_event_japanese_soldiers_02
 	
 	is_triggered_only = yes
 	major = yes
@@ -208,16 +248,40 @@ country_event = {	# Justifying on non-Claimant	# ROOT is target, FROM is justify
 	}
 	
 	option = {
+		trigger = { tag = ROOT FROM = { NOT = { has_country_leader_with_trait = scaramouch_leader has_country_leader_with_trait = buffoon_leader } } }
 		name = unification.20.self	# [chuckles] I'm in danger
-		trigger = { tag = ROOT }
 	}
 	option = {
+		trigger = { NOT = { tag = ROOT has_war_with = ROOT } FROM = { NOT = { has_country_leader_with_trait = scaramouch_leader has_country_leader_with_trait = buffoon_leader } } }
 		name = unification.20.other
-		trigger = { NOT = { tag = ROOT has_war_with = ROOT } }
 	}
 	option = {
+		trigger = { has_war_with = ROOT FROM = { NOT = { has_country_leader_with_trait = scaramouch_leader has_country_leader_with_trait = buffoon_leader } } }
 		name = unification.20.enemy
-		trigger = { has_war_with = ROOT }
+	}
+	option = {
+		trigger = { tag = ROOT FROM = { has_country_leader_with_trait = scaramouch_leader } }
+		name = unification.20.self2	# [chuckles] I'm in danger
+	}
+	option = {
+		trigger = { NOT = { tag = ROOT has_war_with = ROOT } FROM = { has_country_leader_with_trait = scaramouch_leader } }
+		name = unification.20.other2
+	}
+	option = {
+		trigger = { has_war_with = ROOT FROM = { has_country_leader_with_trait = scaramouch_leader } }
+		name = unification.20.enemy2
+	}
+	option = {
+		trigger = { tag = ROOT FROM = { has_country_leader_with_trait = buffoon_leader } }
+		name = unification.20.self3	# [chuckles] I'm in danger
+	}
+	option = {
+		trigger = { NOT = { tag = ROOT has_war_with = ROOT } FROM = { has_country_leader_with_trait = buffoon_leader } }
+		name = unification.20.other3
+	}
+	option = {
+		trigger = { has_war_with = ROOT FROM = { has_country_leader_with_trait = buffoon_leader } }
+		name = unification.20.enemy3
 	}
 }
 
@@ -225,25 +289,16 @@ country_event = {	# Ultimatum to non-Claimant	# ROOT is target, FROM is claimant
 	id = unification.21
 	title = unification.21.t
 	desc = unification.21.d
-	picture = GFX_report_news_kyushu_map
+	picture = GFX_report_event_japanese_soldiers_02
 	
 	is_triggered_only = yes
-	major = yes
-	show_major = {
-		NOT = { tag = FROM }
-		OR = {
-			interest_in_cosmetic_event = yes 
-			is_in_faction_with = ROOT
-			is_subject_of = ROOT
-		}		
-	}
 	
 	option = {
 		name = unification.21.a	# Refuse
 		FROM = { country_event = { id = unification.22 hours = 24 } }
 	}
 	option = {
-		name = unification.21.b
+		name = unification.21.b	# Surrender only japanese territory - keep territory in mainland Asia
 		trigger = {
 			any_controlled_state = {
 				NOT = {
@@ -268,7 +323,7 @@ country_event = {	# Ultimatum to non-Claimant	# ROOT is target, FROM is claimant
 		hidden_effect = { FROM = { country_event = unification.23 } }
 	}
 	option = {
-		name = unification.21.c
+		name = unification.21.c	# Surrender all territory - total annexation
 		trigger = {
 			all_controlled_state = {
 				OR = {
@@ -294,7 +349,7 @@ country_event = {	# Justifying on non-Claimant: refused ultimatum	# FROM is targ
 	id = unification.22
 	title = unification.22.t
 	desc = unification.22.d
-	picture = GFX_report_news_kyushu_map
+	picture = GFX_report_event_military_planning
 	
 	is_triggered_only = yes
 	
@@ -323,7 +378,7 @@ country_event = {	# Justifying on non-Claimant: refused ultimatum	# FROM is targ
 				#... will you do the fandango?! THUNDERBOLT AND LIGHTNING, VERY, VERY FRIGHTENING!
 			}
 		}
-		hidden_effect = { unification_get_score = yes }
+		hidden_effect = { unification_get_score = yes country_event = unification.25 }
 	}
 }
 
@@ -331,15 +386,18 @@ country_event = {	# Justifying on non-Claimant: accepted ultimatum	# FROM is tar
 	id = unification.23
 	title = unification.23.t
 	desc = unification.23.d
-	picture = GFX_report_news_kyushu_map
+	picture = GFX_unification_all
 	
 	is_triggered_only = yes
 	major = yes
 	
 	option = {
-		name = unification.23.a
 		trigger = { tag = ROOT }
-		
+		name = unification.23.a
+	}
+	option = {
+		trigger = { NOT = { tag = ROOT } }
+		name = unification.23.b
 	}
 
 }
@@ -348,15 +406,42 @@ country_event = {	# Justifying on non-Claimant: accepted ultimatum, TOTAL ANNEXA
 	id = unification.24
 	title = unification.24.t
 	desc = unification.24.d
-	picture = GFX_report_news_kyushu_map
+	picture = GFX_unification_all
 	
 	is_triggered_only = yes
 	major = yes
 	
 	option = {
-		name = unification.24.a
 		trigger = { tag = ROOT }
-		
+		name = unification.24.a
+	}
+	option = {
+		trigger = { NOT = { tag = ROOT } }
+		name = unification.24.b
+	}
+
+}
+
+country_event = {	# Justifying on non-Claimant: ROOT issued ultimatum and backed down; FROM is target
+	id = unification.25
+	title = unification.25.t
+	desc = unification.25.d
+	picture = GFX_unification_all
+	
+	is_triggered_only = yes
+	major = yes
+	
+	option = {
+		trigger = { tag = ROOT }
+		name = unification.25.a
+	}
+	option = {
+		trigger = { tag = FROM }
+		name = unification.25.b
+	}
+	option = {
+		trigger = { NOT = { tag = ROOT tag = FROM } }
+		name = unification.25.c
 	}
 
 }
