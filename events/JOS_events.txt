@@ -16,6 +16,8 @@ country_event = { #emperordies
 		promote_character = JOS_yi_un
 		clear_variable = dual_leader_id
 		set_variable = { dual_leader_id = 48 }
+
+		set_country_flag = JOS_emperor_died_flag
 	}
 }
 
@@ -75,7 +77,7 @@ country_event = { #propaganda
     }
 }
 
-country_event = { #Korea ask for Hapbang
+country_event = { # Korea ask for integration
 	id = joseon.6
 	title = joseon.6.t
 	desc = joseon.6.desc
@@ -86,10 +88,6 @@ country_event = { #Korea ask for Hapbang
 		name = joseon.6.a
 		ai_chance = {
 			base = 20
-			modifier = {
-				add = 10
-				ROOT = { has_government = JOS }
-			}
 			modifier = {
 				factor = 0.2
 				strength_ratio = {
@@ -119,21 +117,9 @@ country_event = { #Korea ask for Hapbang
 	option = { #no
 		name = joseon.6.b
 		ai_chance = {
-			factor = 50
+			base = 10
 			modifier = {
-				factor = 0.5
-				strength_ratio = { tag = JOS ratio < 1 }
-			}
-			modifier = {
-				factor = 0.2
-				strength_ratio = { tag = JOS ratio < 0.5 }
-			}
-			modifier = {
-				factor = 0
-				strength_ratio = { tag = JOS ratio < 0.2 }
-			}
-			modifier = {
-				factor = 100
+				add = 100
 				is_guaranteed_by = ROC
 			}
 		}
@@ -207,7 +193,7 @@ country_event = { #Gando Decline the Hapbang
 		ai_chance = {
 			base = 0
 			modifier = {
-				factor = 100
+				add = 100
 				GAN = {
 					is_guaranteed_by = ROC
 				}
@@ -229,262 +215,134 @@ news_event = { #Hapbang of Gando News
 		}
     }
 }
-country_event = { #Korea Propose Non-Aggression
+country_event = { # SOV: JOS propose cooperation
 	id = joseon.10
 	title = joseon.10.t
 	desc = joseon.10.desc
 	picture = GFX_
 	is_triggered_only = yes
 
-	option = { 
+	option = { # Make friends out of our enemy
 		name = joseon.10.a
 		ai_chance = {
-			base = 10
-			modifier = {
-				add = ROC.opinion@JOS
-			}
-			modifier = {
-				add = -50
-				NOT = {
-					ROC = { has_government = JOS }
-				}
-			}
+			base = 20
 		}
 		JOS = {
-			diplomatic_relation = {
-				country = ROC
-				relation = non_aggression_pact
+			add_ideas = JOS_to_SOV_mutual_cooperation_idea
+			add_opinion_modifier = {
+				target = FER
+				modifier = JOS_friendly_relations
 			}
-			country_event = { days = 2 id = joseon.11 }
+			add_opinion_modifier = {
+				target = FER
+				modifier = JOS_friendly_relations_trade
+			}
 		}
-    }
-	option = { 
+		add_ideas = JOS_from_SOV_mutual_cooperation_idea
+		add_opinion_modifier = {
+			target = JOS
+			modifier = JOS_friendly_relations
+		}
+		add_opinion_modifier = {
+			target = JOS
+			modifier = JOS_friendly_relations_trade
+		}
+	}
+	option = { # No deals with the enemy
 		name = joseon.10.b
 		ai_chance = {
-			base = 10
+			base = 20
 			modifier = {
-				add = 60
-				NOT = {
-					ROC = { has_government = JOS }
-				}
+				add = -20
+				JOS = { is_ai = no }
 			}
 		}
-		JOS = {
-			country_event = { days = 2 id = joseon.12 }
-		}
-		# TODO
-		# relation modifier
-    }
+	}
 }
-country_event = { #China Accept Non-Aggression Pact
+country_event = { # ROC/OSA/EZO: JOS propose joint trainings
 	id = joseon.11
 	title = joseon.11.t
 	desc = joseon.11.desc
 	picture = GFX_
 	is_triggered_only = yes
 
-	option = { 
+	option = { # Sounds beneficial.
 		name = joseon.11.a
 		ai_chance = {
-			base = 10
+			base = 20
 		}
-    }
+		JOS = {
+			add_timed_idea = {
+				idea = JOS_joint_trainings_idea
+				days = 180
+			}
+		}
+		add_timed_idea = {
+			idea = JOS_joint_trainings_idea
+			days = 180
+		}
+		add_opinion_modifier = {
+			target = JOS
+			modifier = JOS_friendly_relations
+		}
+	}
+	option = { # No deal
+		name = joseon.11.b
+		ai_chance = {
+			base = 20
+			modifier = {
+				add = -20
+				JOS = { is_ai = no }
+			}
+		}
+	}
 }
-country_event = { #China Decline Non-Aggression Pact
+country_event = { # All states recovered.
 	id = joseon.12
 	title = joseon.12.t
 	desc = joseon.12.desc
 	picture = GFX_
 	is_triggered_only = yes
 
-	option = { 
+	option = { # Good.
 		name = joseon.12.a
 		ai_chance = {
-			base = 10
+			base = 20
 		}
-    }
+	}
 }
-country_event = { #KYU: Korea Propose Protection for Tsushima
+country_event = { # OSA: JOS requset guarantees
 	id = joseon.13
 	title = joseon.13.t
 	desc = joseon.13.desc
 	picture = GFX_
 	is_triggered_only = yes
 
-	option = { #sure
+	option = { # We're interested in them
 		name = joseon.13.a
 		ai_chance = {
-			base = 0
+			base = 20
 			modifier = {
-				add = 10
-				strength_ratio = {
-					tag = JOS
-					ratio < 1.5
-				}
-			}
-			modifier = {
-				add = 10
-				is_in_faction_with = JOS
-			}
-			modifier = {
-				add = 20
-				strength_ratio = {
-					tag = JOS
-					ratio < 2
-				}
-			}
-			modifier = {
-				add = 25
-				strength_ratio = {
-					tag = JOS
-					ratio < 2.5
-				}
-			}
-			modifier = {
-				add = 10
-				has_government = democratic
-				JOS = {
-					has_idea = JOS_democracy_achieved_idea
-				}
-			}
-			modifier = {
-				add = 10
-				has_government = neutrality
-				JOS = {
-					has_idea = JOS_democracy_achieved_idea
-				}
-			}
-			modifier = {
-				add = 10
-				has_government = autocracy
-				JOS = {
-					has_idea = JOS_democracy_achieved_idea
-				}
-			}
-			modifier = {
-				add = 10
-				has_government = democratic_socialism
-				JOS = {
-					has_idea = JOS_socialism_achieved_idea
+				factor = 0
+				NOT = {
+					has_government = democratic
+					has_government = democratic_socialism
 				}
 			}
 		}
-		JOS = {
-			diplomatic_relation = {
-				country = 11.owner
-				relation = guarantee
-				active = yes
-			}
-		}
-		11 = {
-			set_state_owner_to = JOS
-		}
-		if = {
-			limit = {
-				11 = {
-					owner = {
-						is_in_faction = yes
-					}
-				}
-			}
-			11 = {
-				OWNER = {
-					add_to_faction = JOS
-				}
-			}
-		}
-    }
-	option = { #nop
+		give_guarantee = JOS
+	}
+	option = { # Nothing interesting there.
 		name = joseon.13.b
 		ai_chance = {
-			base = 0
+			base = 5
 			modifier = {
-				add = 10
-				strength_ratio = {
-					tag = JOS
-					ratio > 1.5
-				}
-			}
-			modifier = {
-				add = 20
-				strength_ratio = {
-					tag = JOS
-					ratio > 2
-				}
-			}
-			modifier = {
-				add = 10
-				is_in_faction = yes
-			}
-			modifier = {
-				add = 10
-				has_government = fascism
-			}
-			modifier = {
-				add = 10
-				has_government = communism
-			}
-		}
-		JOS = {
-			country_event = { id = joseon.14 days = 2 }
-		}
-    }
-}
-country_event = { #Kyushi denied our proposal
-	id = joseon.14
-	title = joseon.14.t
-	desc = joseon.14.desc
-	picture = GFX_
-	is_triggered_only = yes
-
-	option = { #then war
-		name = joseon.14.a
-		ai_chance = {
-			base = 0
-			modifier = {
-				add = 10
-				strength_ratio = {
-					tag = KYU
-					ratio > 1.5
-				}
-			}
-			modifier = {
-				add = 20
-				strength_ratio = {
-					tag = KYU
-					ratio > 2
+				factor = 4
+				NOT = {
+					has_government = democratic
+					has_government = democratic_socialism
 				}
 			}
 		}
-		declare_war_on = {
-			target = KYU
-			type = take_state
-		}
-    }
-	option = { #ok then
-		name = joseon.14.b
-		ai_chance = {
-			base = 0
-			modifier = {
-				add = 10
-				strength_ratio = {
-					tag = JOS
-					ratio < 1.5
-				}
-			}
-			modifier = {
-				add = 20
-				strength_ratio = {
-					tag = JOS
-					ratio < 2
-				}
-			}
-			modifier = {
-				add = 10
-				KYU = {
-					is_in_faction = yes
-				}
-			}
-		}
-    }
+	}
 }

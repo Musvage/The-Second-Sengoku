@@ -1,18 +1,351 @@
-ss_debug_category  = {
+JOS_fading_faith_in_government_category = {
 
-	debug_change_new_joseon_national_focus = {
-		available = {
-			always = yes
-		}
-
+	JOS_debug_add_disloyal_state = {
+		icon = GFX_JOS_decision_recover_disloyal_icon
 		visible = {
 			is_debug = yes
-			tag = JOS
-			is_ai = no
+		}
+		complete_effect = {
+			random_owned_controlled_state = {
+				limit = {
+					NOT = {
+						has_dynamic_modifier = {
+							modifier = JOS_disloyal_administration_modifier
+						}
+					}
+				}
+				add_dynamic_modifier = {
+					modifier = JOS_disloyal_administration_modifier
+				}
+			}
+		}
+	}
+	JOS_debug_remove_disloyal_states = {
+		icon = GFX_JOS_decision_disloyal_popup_icon
+		visible = {
+			is_debug = yes
+		}
+		complete_effect = {
+			every_owned_state = {
+				limit = {
+					has_dynamic_modifier = {
+						modifier = JOS_disloyal_administration_modifier
+					}
+				}
+				remove_dynamic_modifier = {
+					modifier = JOS_disloyal_administration_modifier
+				}
+			}
+		}
+	}
+	JOS_fading_faith_mission = {
+		priority = 100
+
+		is_good = no
+
+		icon = GFX_JOS_decision_gov_faith_icon
+
+		days_mission_timeout = 360
+
+		activation = {
+			OR = {
+				has_completed_focus = JOS_allies_cooperation
+				has_completed_focus = JOS_own_democracy
+			}
+		}
+
+		available = {
+			has_completed_focus = JOS_reinforce_faith_in_administration
+		}
+
+		timeout_effect = {
+			add_stability = -0.1
+			add_popularity = {
+				ideology = democratic
+				popularity = -0.1
+			}
+			add_popularity = {
+				ideology = communism
+				popularity = 0.1
+			}
+			custom_effect_tooltip = JOS_no_faith_result_tt
+			hidden_effect = {
+				set_country_flag = JOS_no_faith_in_government_flag
+			}
+			custom_effect_tooltip = JOS_ten_states_setup_tt
+			random_owned_controlled_state = {
+				limit = {
+					NOT = {
+						has_dynamic_modifier = {
+							modifier = JOS_disloyal_administration_modifier
+						}
+					}
+				}
+				custom_effect_tooltip = JOS_new_administration_setup_tt
+				add_dynamic_modifier = {
+					modifier = JOS_disloyal_administration_modifier
+				}
+				add_to_variable = {
+					JOS_disloyal_states_amount = 1
+				}
+			}
+			activate_mission = JOS_new_administration_popup_mission
 		}
 
 		complete_effect = {
-			load_focus_tree = JOS_new
+			add_stability = 0.1
+			add_popularity = {
+				ideology = democratic
+				popularity = 0.1
+			}
+		}
+	}
+	JOS_new_administration_popup_mission = {
+		priority = 99
+
+		is_good = no
+
+		days_mission_timeout = 28
+
+		icon = GFX_JOS_decision_disloyal_popup_icon
+
+		activation = {
+			always = no
+		}
+
+		available = {
+			always = no
+			# custom_trigger_tooltip = {
+			# 	tooltip = JOS_havnt_faith_in_gov_tt
+			# 	has_country_flag = JOS_no_faith_in_government_flag
+			# }
+		}
+
+		timeout_effect = {
+			if = {
+				limit = {
+					check_variable = {
+						JOS_disloyal_states_amount < 11
+					}
+				}
+				random_owned_controlled_state = {
+					limit = {
+						NOT = {
+							has_dynamic_modifier = {
+								modifier = JOS_disloyal_administration_modifier
+							}
+						}
+					}
+					custom_effect_tooltip = JOS_new_administration_setup_tt
+					add_dynamic_modifier = {
+						modifier = JOS_disloyal_administration_modifier
+					}
+					add_to_variable = {
+						JOS_disloyal_states_amount = 1
+					}
+				}
+				activate_mission = JOS_new_administration_popup_mission
+			}
+		}
+	}
+
+	JOS_recover_disloyal_state_decision = {
+		custom_cost_trigger = {
+			has_manpower > 9999
+			has_equipment = {
+				infantry_equipment > 4999
+			}
+		}
+		custom_cost_text = JOS_recover_disloyal_state_cost
+
+		icon = GFX_JOS_decision_recover_disloyal_icon
+
+		days_remove = 40
+
+		on_map_mode = map_and_decisions_view
+
+		state_target = yes
+
+		target_trigger = {
+			FROM = {
+				has_dynamic_modifier = {
+					modifier = JOS_disloyal_administration_modifier
+				}
+			}
+		}
+
+		remove_effect = {
+			remove_dynamic_modifier = {
+				modifier = JOS_disloyal_administration_modifier
+			}
+			add_to_variable = {
+				JOS_recovered_states_amount = 1
+			}
+
+			hidden_effect = {
+				if = {
+					limit = {
+						check_variable = {
+							var:JOS_recovered_states_amount = 10
+						}
+					}
+					clr_country_flag = JOS_no_faith_in_government_flag
+					country_event = joseon.16
+				}
+			}
+		}
+	}
+
+}
+JOS_southern_unrest_category = {
+
+	JOS_debug_reset_unrest_decision = {
+		priority = 101
+
+		fire_only_once = no
+
+		visible = {
+			is_debug = yes
+		}
+
+		complete_effect = {
+			every_owned_state = {
+				limit = {
+					has_state_flag = JOS_state_can_unrest_flag
+				}
+				set_variable = {
+					THIS.JOS_state_unrest_level = 3.0
+				}
+			}
+		}
+	}
+	JOS_delta_light_development_decision = {
+		icon = GFX_
+
+		fire_only_once = no
+
+		cost = 25
+
+		on_map_mode = map_only
+
+		state_target = yes
+
+		target_trigger = {
+			FROM = {
+				is_core_of = CUS
+			}
+		}
+
+		visible = {
+			FROM = {
+				has_state_flag = JOS_state_can_unrest_flag
+			}
+		}
+
+		days_remove = 20
+
+		remove_effect = {
+			FROM = {
+				custom_effect_tooltip = JOS_state_unrest_decrease_light_tt
+				subtract_from_variable = { THIS.JOS_state_unrest_level = 0.7 }
+				if = {
+					limit = {
+						check_variable = { THIS.JOS_state_unrest_level < 0.01 }
+					}
+					subtract_from_variable = { JOS.JOS_state_active_amount = 1 }
+					set_variable = { THIS.JOS_sector_frame = 0 }
+					clr_state_flag = JOS_state_can_unrest_flag
+					set_variable = { THIS.JOS_state_unrest_modifier_pos_var = 0.0 }
+					set_variable = { THIS.JOS_state_unrest_modifier_neg_var = 0.0 }
+					set_variable = { THIS.JOS_state_unrest_level = 0.0 }
+				}
+			}
+		}
+	}
+	JOS_delta_medium_development_decision = {
+		icon = GFX_
+
+		fire_only_once = no
+
+		cost = 50
+
+		on_map_mode = map_only
+
+		state_target = yes
+
+		target_trigger = {
+			FROM = {
+				is_core_of = CUS
+			}
+		}
+
+		visible = {
+			FROM = {
+				has_state_flag = JOS_state_can_unrest_flag
+			}
+		}
+
+		days_remove = 40
+
+		remove_effect = {
+			FROM = {
+				custom_effect_tooltip = JOS_state_unrest_decrease_medium_tt
+				subtract_from_variable = { THIS.JOS_state_unrest_level = 1.4 }
+				if = {
+					limit = {
+						check_variable = { THIS.JOS_state_unrest_level < 0.01 }
+					}
+					subtract_from_variable = { JOS.JOS_state_active_amount = 1 }
+					set_variable = { THIS.JOS_sector_frame = 0 }
+					clr_state_flag = JOS_state_can_unrest_flag
+					set_variable = { THIS.JOS_state_unrest_modifier_pos_var = 0.0 }
+					set_variable = { THIS.JOS_state_unrest_modifier_neg_var = 0.0 }
+					set_variable = { THIS.JOS_state_unrest_level = 0.0 }
+				}
+			}
+		}
+	}
+	JOS_delta_high_development_decision = {
+		icon = GFX_
+
+		fire_only_once = no
+
+		cost = 75
+
+		on_map_mode = map_only
+
+		state_target = yes
+
+		target_trigger = {
+			FROM = {
+				is_core_of = CUS
+			}
+		}
+
+		visible = {
+			FROM = {
+				has_state_flag = JOS_state_can_unrest_flag
+			}
+		}
+
+		days_remove = 60
+
+		remove_effect = {
+			FROM = {
+				custom_effect_tooltip = JOS_state_unrest_decrease_high_tt
+				subtract_from_variable = { THIS.JOS_state_unrest_level = 2.1 }
+				if = {
+					limit = {
+						check_variable = { THIS.JOS_state_unrest_level < 0.01 }
+					}
+					subtract_from_variable = { JOS.JOS_state_active_amount = 1 }
+					set_variable = { THIS.JOS_sector_frame = 0 }
+					clr_state_flag = JOS_state_can_unrest_flag
+					set_variable = { THIS.JOS_state_unrest_modifier_pos_var = 0.0 }
+					set_variable = { THIS.JOS_state_unrest_modifier_neg_var = 0.0 }
+					set_variable = { THIS.JOS_state_unrest_level = 0.0 }
+				}
+			}
 		}
 	}
 
