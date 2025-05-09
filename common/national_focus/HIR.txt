@@ -2077,7 +2077,7 @@ focus_tree = {
 		prerequisite = { focus = HIR_align_england }
 		relative_position_id = HIR_align_england
 		x = 0
-		y = 1
+		y = 2
 		
 		available_if_capitulated = yes
 		
@@ -2133,8 +2133,8 @@ focus_tree = {
 		
 		prerequisite = { focus = HIR_align_england focus = HIR_reafirm_european_neutrality }
 		mutually_exclusive = { focus = HIR_relocate_capital }
-		relative_position_id = HIR_join_allies
-		x = -2
+		relative_position_id = HIR_align_england
+		x = -1
 		y = 1
 		
 		text_icon = worldstage_style
@@ -2168,6 +2168,211 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = HIR_humanitarianism
+		icon = GFX_focus_FIN_finnish_neutrality
+		search_filters = { FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_WORLD }
+		
+		ai_will_do = {
+			factor = 5
+			modifier = {
+				factor = 4
+				has_global_flag = world_stage_world_war_2_happened
+            }
+        }
+		
+		prerequisite = { focus = HIR_reafirm_european_neutrality }
+		relative_position_id = HIR_reafirm_european_neutrality
+		x = 0
+		y = 2
+		
+		text_icon = worldstage_style
+
+		cost = 10
+		
+		available = {
+			has_global_flag = world_stage_world_war_2_happened
+			custom_trigger_tooltip = {
+				tooltip = theater_not_active_netherlands
+				NOT = { 27 = { has_state_flag = theater_is_active } }
+			}
+			world_stage_has_capitulated = no
+		}
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_tech_bonus = {
+				name = HIR_humanitarianism
+				uses = 1
+				bonus = 1.0 
+				category = hospital_tech
+			}
+			add_ideas = { HIR_humanitarianism_idea }
+			every_other_country = {
+				limit = {
+					OR = { 
+						has_world_stage_coalition_pactofsteel = yes
+						has_world_stage_coalition_axis = yes
+						has_world_stage_coalition_komintern = yes
+						has_world_stage_coalition_leagueofnations = yes
+					}
+				}
+				add_opinion_modifier = {
+					target = HIR
+					modifier = hir_humanitarian_state
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = HIR_radio_oranje
+		icon = GFX_focus_hol_the_only_man_in_the_dutch_government
+		search_filters = { FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_WORLD }
+		
+		ai_will_do = {
+			factor = 50
+        }
+		
+		prerequisite = { focus = HIR_fortress_holland }
+		relative_position_id = HIR_fortress_holland
+		x = 0
+		y = 2
+		
+		text_icon = worldstage_style
+
+		cost = 10
+		
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = theater_not_active_netherlands
+				NOT = { 27 = { has_state_flag = theater_is_active } }
+			}
+			world_stage_has_capitulated = yes
+		}
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_stability = 0.05
+			add_war_support = 0.10
+			add_popularity = { ideology = autocracy popularity = 0.03 }
+			add_ideas = { HIR_radio_oranje_idea }
+		}
+	}
+	
+	#focus = {
+	#	id = HIR_ABDACOM
+	#	icon = GFX_focus_hol_the_fourth_ally
+	#	search_filters = { FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_WORLD }
+	#	
+	#	ai_will_do = {
+	#		factor = 50
+	#		modifier = {
+	#		factor = 2
+	#			has_war = yes
+    #        }
+    #    }
+	#	
+	#	prerequisite = { focus = HIR_radio_oranje }
+	#	relative_position_id = HIR_radio_oranje
+	#	x = 1
+	#	y = 1
+	#	
+	#	text_icon = worldstage_style
+	#
+	#	cost = 10
+	#	
+	#	available = {
+	#		custom_trigger_tooltip = {
+	#			tooltip = theater_not_active_netherlands
+	#			NOT = { 27 = { has_state_flag = theater_is_active } }
+	#		}
+	#		world_stage_has_capitulated = yes
+	#	}
+	#	
+	#	available_if_capitulated = yes
+	#
+	#	completion_reward = {
+	#		add_doctrine_cost_reduction = {
+	#			name = HIR_ABDACOM
+	#			cost_reduction = 0.5
+	#			uses = 2
+	#			category = naval_doctrine
+	#		}
+	#		add_offsite_building = { type = dockyard level = 2 }
+	#		#+5 strength to east indies theatre
+	#	}
+	#}
+	
+	focus = {
+		id = HIR_secure_the_west_indies
+		icon = GFX_focus_hol_oranje_boven
+		search_filters = { FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_WORLD }
+		
+		ai_will_do = {
+			factor = 20
+        }
+		
+		prerequisite = { focus = HIR_radio_oranje }
+		relative_position_id = HIR_radio_oranje
+		x = 0
+		y = 1
+		
+		text_icon = worldstage_style
+
+		cost = 10
+		
+		available = {
+			custom_trigger_tooltip = {
+				tooltip = theater_not_active_netherlands
+				NOT = { 27 = { has_state_flag = theater_is_active } }
+			}
+			world_stage_has_capitulated = yes
+			is_in_faction_with = OSA
+			is_in_faction_with = AMC
+			is_in_faction_with = OKI
+		}
+		
+		available_if_capitulated = yes
+
+		completion_reward = {
+			add_tech_bonus = {
+				name = HIR_secure_the_west_indies
+				uses = 2
+				bonus = 0.5
+				category = synth_resources
+			}
+			OSA = {
+				add_offsite_building = { type = synthetic_refinery level = 1 }
+				add_opinion_modifier = {
+					target = HIR
+					modifier = hir_west_indies
+				}
+			}
+			AMC = {
+				add_offsite_building = { type = synthetic_refinery level = 1 }
+				add_opinion_modifier = {
+					target = HIR
+					modifier = hir_west_indies
+				}
+			}
+			OKI = {
+				add_offsite_building = { type = synthetic_refinery level = 2 }
+				add_opinion_modifier = {
+					target = HIR
+					modifier = hir_west_indies
+				}
+			}
+			add_to_variable = {
+				var = 107.world_stage_power
+				value = 5
+				tooltip = add_world_stage_power_no_scope_tt
+			}
+		}
+	}
+	
+	focus = {
 		id = HIR_relocate_capital
 		icon = GFX_focus_HIR_capital_batavia
 		search_filters = { FOCUS_FILTER_WORLD }
@@ -2175,7 +2380,7 @@ focus_tree = {
 		prerequisite = { focus = HIR_join_allies }
 		mutually_exclusive = { focus = HIR_fortress_holland }
 		relative_position_id = HIR_join_allies
-		x = 0
+		x = 1
 		y = 1
 		
 		available_if_capitulated = yes
@@ -3057,21 +3262,18 @@ focus_tree = {
 					mio:HOL_wilton_fijenoord_organization = { add_mio_research_bonus = 0.05 }
 					mio:HOL_rotterdam_dm_organization = { add_mio_research_bonus = 0.05 }
 					mio:HOL_dm_soerabaja_organization = { add_mio_research_bonus = 0.05 }
-					mio:HOL_nv_ivs_organization = { add_mio_research_bonus = 0.05 }
 				} else = {
 					effect_tooltip = {
 						swap_ideas = { remove_idea = nsm_amsterdam add_idea = nsm_amsterdam_2 }
 						swap_ideas = { remove_idea = wilton_fijenoord add_idea = wilton_fijenoord_2 }
 						swap_ideas = { remove_idea = rotterdam_dm add_idea = rotterdam_dm_2 }
 						swap_ideas = { remove_idea = dm_soerabaja add_idea = dm_soerabaja_2 }
-						swap_ideas = { remove_idea = nv_ivs add_idea = nv_ivs_2 }
 					}
 					hidden_effect = {
 						if = { limit = { has_idea = nsm_amsterdam } swap_ideas = { remove_idea = nsm_amsterdam add_idea = nsm_amsterdam_2 } }
 						if = { limit = { has_idea = wilton_fijenoord } swap_ideas = { remove_idea = wilton_fijenoord add_idea = wilton_fijenoord_2 } }
 						if = { limit = { has_idea = rotterdam_dm } swap_ideas = { remove_idea = rotterdam_dm add_idea = rotterdam_dm_2 } }
 						if = { limit = { has_idea = dm_soerabaja } swap_ideas = { remove_idea = dm_soerabaja add_idea = dm_soerabaja_2 } }
-						if = { limit = { has_idea = nv_ivs } swap_ideas = { remove_idea = nv_ivs add_idea = nv_ivs_2 } }
 					}
 				}
 			} else = {
@@ -3083,14 +3285,12 @@ focus_tree = {
 						mio:HOL_wilton_fijenoord_organization = { add_mio_research_bonus = 0.05 }
 						mio:HOL_rotterdam_dm_organization = { add_mio_research_bonus = 0.05 }
 						mio:HOL_dm_soerabaja_organization = { add_mio_research_bonus = 0.05 }
-						mio:HOL_nv_ivs_organization = { add_mio_research_bonus = 0.05 }
 					} else = {
 						effect_tooltip = {
 							swap_ideas = { remove_idea = nsm_amsterdam add_idea = nsm_amsterdam_2 }
 							swap_ideas = { remove_idea = wilton_fijenoord add_idea = wilton_fijenoord_2 }
 							swap_ideas = { remove_idea = rotterdam_dm add_idea = rotterdam_dm_2 }
 							swap_ideas = { remove_idea = dm_soerabaja add_idea = dm_soerabaja_2 }
-							swap_ideas = { remove_idea = nv_ivs add_idea = nv_ivs_2 }
 						}
 					}
 				}
@@ -3103,10 +3303,10 @@ focus_tree = {
 		icon = GFX_focus_HIR_homeland_development_plan_z
 		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WORLD }
 		
-		prerequisite = { focus = HIR_dutch_nationalism2 }
+		prerequisite = { focus = HIR_abandon_lon }
 		prerequisite = { focus = HIR_join_axis }
 		mutually_exclusive = {focus = HIR_homeland_development_3 }
-		relative_position_id = HIR_dutch_nationalism2
+		relative_position_id = HIR_abandon_lon
 		x = -1
 		y = 2
 		
@@ -3140,13 +3340,40 @@ focus_tree = {
 		
 		completion_reward = {
 			REI = {
-				add_offsite_building = { type = dockyard level = 4 }
+				add_offsite_building = { type = dockyard level = 3 }
 				add_opinion_modifier = {
 					target = HIR
 					modifier = hir_plan_z
 				}
 			}
-			custom_effect_tooltip = metropolis_scope_netherlands
+			custom_effect_tooltip = generic_skip_one_line_tt
+			if = {
+				limit = { has_dlc = "Arms Against Tyranny" }
+				mio:HOL_nv_ivs_organization = {
+					add_mio_size = 1
+					add_mio_funds_gain_factor = 0.25
+					add_mio_research_bonus = 0.05
+				}
+			}
+			else = {
+				if = {
+					limit = {
+						has_idea = nv_ivs
+					}
+					swap_ideas = {
+						remove_idea = nv_ivs
+						add_idea = nv_ivs_2
+					}
+				}
+				else = {
+					effect_tooltip = {
+						swap_ideas = {
+							remove_idea = nv_ivs
+							add_idea = nv_ivs_2
+						}
+					}
+				}
+			}
 			add_to_variable = {
 				var = 107.world_stage_power
 				value = 5
@@ -3273,9 +3500,9 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = HIR_abandon_lon
-		icon = GFX_focus_HIR_abandon_lon
-		search_filters = { FOCUS_FILTER_WORLD FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_DIPLOMACY }
+		id = HIR_circumvent_versailles
+		icon = GFX_focus_HIR_circumvent_versailles
+		search_filters = { FOCUS_FILTER_WORLD FOCUS_FILTER_INDUSTRY }
 		
 		prerequisite = { focus = HIR_focus_homeland_development }
 		relative_position_id = HIR_focus_homeland_development
@@ -3289,50 +3516,58 @@ focus_tree = {
 		text_icon = worldstage_style
 		
 		ai_will_do = {
-        factor = 10
-        modifier = {
-        factor = 2
-        has_war = yes
-            }
+			factor = 10
         }
 		
 		available = {
-			has_world_stage_coalition_leagueofnations = yes
-		}
-		
-		bypass = {
-			OR = {
-				has_world_stage_coalition_leagueofnations = no
-				NOT = { has_global_flag = league_of_nations_exists }
+			world_stage_has_capitulated = no
+			NOT = {
+				if = {
+					limit = { has_global_flag = league_of_nations_exists }
+					has_war_with = STL
+				} else = {
+					has_war_with = AXS
+				}
 			}
 		}
+		
+		bypass = { }
 		
 		completion_reward = {
-			news_event = hirado.8
-			world_stage_join_nonaligned = yes
+			add_offsite_building = { type = dockyard level = 1 }
 			if = {
-				limit = { has_idea = SS_lon_member }
-				remove_ideas = SS_lon_member
-			}
-			add_war_support = 0.1
-			every_other_country = {
-				limit = { has_world_stage_coalition_leagueofnations = yes }
-				add_opinion_modifier = {
-					target = HIR
-					modifier = hir_abandoned_lon_bad
+				limit = { has_dlc = "Man the Guns" }
+				add_tech_bonus = {
+					name = HIR_circumvent_versailles
+					bonus = 0.5
+					uses = 2
+					category = ship_modules_tech
 				}
 			}
-			every_other_country = {
-				limit = {
-					OR = { 
-						has_world_stage_coalition_pactofsteel = yes
-						has_world_stage_coalition_axis = yes
-						has_world_stage_coalition_komintern = yes
-					}
+			else = {
+				add_tech_bonus = {
+					name = HIR_circumvent_versailles
+					bonus = 0.5
+					uses = 1
+					category = ss_tech
 				}
+			}
+			if = {
+				limit = { has_dlc = "Arms Against Tyranny" }
+				custom_effect_tooltip = available_mio_tt
+				show_mio_tooltip = HOL_nv_ivs_organization
+				mio:HOL_nv_ivs_organization = {
+					add_mio_size = 1
+				}
+			}
+			else = {
+				custom_effect_tooltip = available_industrial_concern
+				show_ideas_tooltip = nv_ivs
+			}
+			REI = {
 				add_opinion_modifier = {
 					target = HIR
-					modifier = hir_abandoned_lon_good
+					modifier = hir_circumvent_versailles
 				}
 			}
 		}
@@ -3446,12 +3681,77 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = HIR_abandon_lon
+		icon = GFX_focus_HIR_abandon_lon
+		search_filters = { FOCUS_FILTER_WORLD FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_DIPLOMACY }
+		prerequisite = { focus = HIR_nationalist_government focus = HIR_monarchist_government }
+		relative_position_id = HIR_nationalist_government
+		x = 1
+		y = 1
+		
+		available_if_capitulated = yes
+		
+		cost = 10
+		
+		text_icon = worldstage_style
+		
+		ai_will_do = {
+        factor = 10
+        modifier = {
+        factor = 2
+        has_war = yes
+            }
+        }
+		
+		available = {
+			has_world_stage_coalition_leagueofnations = yes
+		}
+		
+		bypass = {
+			OR = {
+				has_world_stage_coalition_leagueofnations = no
+				NOT = { has_global_flag = league_of_nations_exists }
+			}
+		}
+		
+		completion_reward = {
+			news_event = hirado.8
+			world_stage_join_nonaligned = yes
+			if = {
+				limit = { has_idea = SS_lon_member }
+				remove_ideas = SS_lon_member
+			}
+			add_war_support = 0.1
+			every_other_country = {
+				limit = { has_world_stage_coalition_leagueofnations = yes }
+				add_opinion_modifier = {
+					target = HIR
+					modifier = hir_abandoned_lon_bad
+				}
+			}
+			every_other_country = {
+				limit = {
+					OR = { 
+						has_world_stage_coalition_pactofsteel = yes
+						has_world_stage_coalition_axis = yes
+						has_world_stage_coalition_komintern = yes
+					}
+				}
+				add_opinion_modifier = {
+					target = HIR
+					modifier = hir_abandoned_lon_good
+				}
+			}
+		}
+	}
+	
+	focus = {
 		id = HIR_dutch_nationalism2
 		icon = GFX_goal_generic_political_pressure
 		search_filters = { FOCUS_FILTER_WAR_SUPPORT FOCUS_FILTER_WORLD }
 		
-		prerequisite = { focus = HIR_nationalist_government focus = HIR_monarchist_government }
-		relative_position_id = HIR_nationalist_government
+		prerequisite = { focus = HIR_abandon_lon}
+		relative_position_id = HIR_abandon_lon
 		x = 1
 		y = 1
 		
@@ -3497,7 +3797,7 @@ focus_tree = {
 		icon = GFX_focus_HIR_join_axis_neutrality
 		search_filters = { FOCUS_FILTER_WORLD FOCUS_FILTER_DIPLOMACY }
 		
-		prerequisite = { focus = HIR_abandon_lon }
+		prerequisite = { focus = HIR_circumvent_versailles }
 		prerequisite = { focus = HIR_monarchist_government focus = HIR_nationalist_government }
 		relative_position_id = HIR_monarchist_government
 		x = 1
@@ -3544,7 +3844,7 @@ focus_tree = {
 		
 		prerequisite = { focus = HIR_join_axis }
 		relative_position_id = HIR_join_axis
-		x = -1
+		x = 1
 		y = 1
 		
 		available_if_capitulated = yes
