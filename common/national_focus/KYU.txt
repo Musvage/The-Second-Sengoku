@@ -3056,6 +3056,7 @@ focus_tree = {
 		search_filters = { FOCUS_FILTER_RESEARCH }
 		
 		prerequisite = { focus = KYU_light_ship_effort focus = KYU_heavy_ship_effort }
+		bypass = {  is_special_project_completed = sp:sp_naval_torpedo_cruiser }
 		relative_position_id = KYU_heavy_ship_effort
 		x = 1
 		y = 1
@@ -3064,15 +3065,16 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		completion_reward = {
-			if = {
-				limit = {
-					not = { has_dlc = "Man the Guns" }
-				}
-				set_technology = { torpedo_cruiser = 1 }
-			}
-			else = {
-				set_technology = { torpedo_cruiser_mtg = 1 }
-			}
+			#if = {
+			#	limit = {
+			#		not = { has_dlc = "Man the Guns" }
+			#	}
+			#	set_technology = { torpedo_cruiser = 1 }
+			#}
+			#else = {
+			#	set_technology = { torpedo_cruiser_mtg = 1 }
+			#}
+			complete_special_project = sp:sp_naval_torpedo_cruiser
 			navy_experience = 10
 		}
 	}
@@ -3412,32 +3414,41 @@ focus_tree = {
 		completion_reward = {
 			if = {
 				limit = {
+					limit = { NOT = { is_special_project_completed = sp:sp_naval_super_heavy_battleship } }
+				}
+				complete_special_project = sp:sp_naval_super_heavy_battleship
+			}
+			if = {
+				limit = {
 					has_dlc = "Man the Guns"
 				}
-				if = {
-					limit = { NOT = { has_tech = ship_hull_super_heavy } }
-					set_technology = { ship_hull_super_heavy = 1 }
-				}
-				create_equipment_variant = {
-					name = "Yamato Class"
-					type = ship_hull_super_heavy_1
-					name_group = JAP_BB_HISTORICAL
-					parent_version = 0
-					modules = {
-						fixed_ship_battery_slot = ship_super_heavy_battery_1
-						fixed_ship_anti_air_slot = ship_anti_air_2
-						fixed_ship_fire_control_system_slot = ship_fire_control_system_1
-						fixed_ship_radar_slot = empty
-						fixed_ship_engine_slot = heavy_ship_engine_2
-						fixed_ship_secondaries_slot = ship_secondaries_2
-						fixed_ship_armor_slot = ship_armor_shbb
-						front_1_custom_slot = ship_anti_air_1
-						front_2_custom_slot = empty
-						mid_1_custom_slot = empty
-						mid_2_custom_slot = ship_secondaries_2
-						mid_3_custom_slot = dp_ship_secondaries_2
-						rear_1_custom_slot = ship_super_heavy_battery_1
-						rear_2_custom_slot = ship_airplane_launcher_1
+				#if = {
+				#	limit = { NOT = { has_tech = ship_hull_super_heavy } }
+				#	set_technology = { ship_hull_super_heavy = 1 }
+				#}
+				hidden_effect = {
+					create_equipment_variant = {
+						name = "Yamato Class"
+						type = ship_hull_super_heavy_1
+						name_group = JAP_BB_HISTORICAL
+						parent_version = 0
+						mark_older_equipment_obsolete = yes
+						modules = {
+							fixed_ship_battery_slot = ship_super_heavy_battery_1
+							fixed_ship_anti_air_slot = ship_anti_air_2
+							fixed_ship_fire_control_system_slot = ship_fire_control_system_1
+							fixed_ship_radar_slot = empty
+							fixed_ship_engine_slot = heavy_ship_engine_2
+							fixed_ship_secondaries_slot = ship_secondaries_2
+							fixed_ship_armor_slot = ship_armor_shbb
+							front_1_custom_slot = ship_anti_air_1
+							front_2_custom_slot = empty
+							mid_1_custom_slot = empty
+							mid_2_custom_slot = ship_secondaries_2
+							mid_3_custom_slot = dp_ship_secondaries_2
+							rear_1_custom_slot = ship_super_heavy_battery_1
+							rear_2_custom_slot = ship_airplane_launcher_1
+						}
 					}
 				}
 				add_equipment_production = {
@@ -3452,18 +3463,21 @@ focus_tree = {
 				}
 			}
 			else = {
-				if = {
-					limit = { NOT = { has_tech = heavy_battleship } }
-					set_technology = { heavy_battleship = 1 }
-				}
-				create_equipment_variant = {
-					name = "Yamato Class"
-					type = SH_battleship_1
-					upgrades = {
-						ship_reliability_upgrade = 1
-						ship_engine_upgrade = 1
-						ship_gun_upgrade = 2
-						ship_armor_upgrade = 2
+				#if = {
+				#	limit = { NOT = { has_tech = heavy_battleship } }
+				#	set_technology = { heavy_battleship = 1 }
+				#}
+				hidden_effect = {
+					create_equipment_variant = {
+						name = "Yamato Class"
+						type = SH_battleship_1
+						mark_older_equipment_obsolete = yes
+						upgrades = {
+							ship_reliability_upgrade = 1
+							ship_engine_upgrade = 1
+							ship_gun_upgrade = 2
+							ship_armor_upgrade = 2
+						}
 					}
 				}
 				add_equipment_production = {
