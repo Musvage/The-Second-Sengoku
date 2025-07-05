@@ -13,7 +13,7 @@ focus_tree = {
 	
 	
 	
-	### International Support Path
+	### Internal Legitimacy Path {
 	
 	focus = {
 		id = KAN_internal_legitimacy	# Sonnō jōi = revere the Emperor, expel the barbarians
@@ -35,7 +35,7 @@ focus_tree = {
 		}
 	}
 	
-	### International Support Path
+	### } International Support Path {
 	
 	focus = {
 		id = KAN_external_support	# Fukoku kyōhei = Enrich the Country, Strengthen the Armed Forces
@@ -68,18 +68,1072 @@ focus_tree = {
 		}
 	}
 	
-	### Common Economic Branch
+	### } Common Military Branch {
+	
+	focus = {
+		id = KAN_army_focus_1
+		icon = GFX_focus_KAN_army_focus_1
+		search_filters = { FOCUS_FILTER_MILITARY }
+		
+		mutually_exclusive = { focus = KAN_air_focus_1 focus = KAN_navy_focus_1 }
+		relative_position_id = KAN_external_support
+		x = 7
+		y = 0
+		cost = 10
+		
+		available = {
+
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			if = {
+				limit = { has_dlc = "No Step Back" }
+				custom_effect_tooltip = free_army_spirit_one_time_tt
+				hidden_effect = { add_ideas = KAN_free_army_academy_spirit }
+			} else = {
+				add_doctrine_cost_reduction = {
+					name = land_doc_bonus
+					cost_reduction = 0.66
+					uses = 1
+					category = land_doctrine
+				}
+			}
+			custom_effect_tooltip = KAN_army_focus_1_branch_tt
+		}
+	}
+	
+	focus = {
+		id = KAN_army_focus_2
+		icon = GFX_focus_KAN_army_focus_2
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KAN_army_focus_1 focus = KAN_air_focus_1  }
+		
+		relative_position_id = KAN_army_focus_1
+		x = 0
+		y = 1
+		cost = 10
+		
+		available = {
+
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			if = {
+				limit = { has_completed_focus = KAN_air_focus_1 }
+				custom_effect_tooltip = KAN_focus_air_effect
+				add_tech_bonus = {
+					name = infantry_artillery_bonus
+					bonus = 2.0
+					uses = 1
+					category = infantry_weapons
+					category = artillery
+				}
+				add_breakthrough_progress = {
+					specialization = specialization_land
+					value = 0.2
+				}
+			} else_if = {
+				limit = { NOT = { has_completed_focus = KAN_army_focus_1 } }
+				custom_effect_tooltip = KAN_focus_air_trigger
+				effect_tooltip = {
+					add_tech_bonus = {
+						name = infantry_artillery_bonus
+						bonus = 2.0
+						uses = 1
+						category = infantry_weapons
+						category = artillery
+					}
+					add_breakthrough_progress = {
+						specialization = specialization_land
+						value = 0.2
+					}
+				}
+			}
+			custom_effect_tooltip = paragraph_tt
+			if = {
+				limit = { has_completed_focus = KAN_army_focus_1 }
+				custom_effect_tooltip = KAN_focus_army_effect
+				add_tech_bonus = {
+					name = infantry_artillery_bonus
+					bonus = 1.5
+					uses = 1
+					category = infantry_weapons
+					category = artillery
+				}
+				add_breakthrough_progress = {
+					specialization = specialization_land
+					value = 0.1
+				}
+				add_tech_bonus = {
+					name = fighter_bonus
+					bonus = 0.75
+					uses = 1
+					category = light_air
+				}
+			} else_if = {
+				limit = { NOT = { has_completed_focus = KAN_air_focus_1 } }
+				custom_effect_tooltip = KAN_focus_army_trigger
+				effect_tooltip = {
+					add_tech_bonus = {
+						name = infantry_artillery_bonus
+						bonus = 1.5
+						uses = 1
+						category = infantry_weapons
+						category = artillery
+					}
+					add_breakthrough_progress = {
+						specialization = specialization_land
+						value = 0.1
+					}
+					add_tech_bonus = {
+						name = fighter_bonus
+						bonus = 0.75
+						uses = 1
+						category = light_air
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = KAN_army_focus_3
+		icon = GFX_focus_KAN_army_focus_3
+		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KAN_army_focus_2 }
+		
+		relative_position_id = KAN_army_focus_2
+		x = 0
+		y = 1
+		cost = 10
+		
+		available = {
+
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			add_ideas = special_forces
+			custom_effect_tooltip = paragraph_tt
+			if = {
+				limit = { has_completed_focus = KAN_air_focus_1 }
+				custom_effect_tooltip = KAN_focus_air_effect
+				if = {
+					limit = { has_dlc = "Arms Against Tyranny" }
+					add_doctrine_cost_reduction = {
+						name = mountaineers_doc_bonus
+						cost_reduction = 0.75
+						uses = 1
+						category = cat_mountaineers_doctrine
+					}
+				} else = {
+					add_tech_bonus = {
+						name = special_forces_bonus
+						bonus = 2.0
+						uses = 1
+						technology = tech_mountaineers
+						technology = tech_mountaineers2
+						technology = tech_mountaineers3
+					}
+				}
+			} else_if = {
+				limit = { NOT = { has_completed_focus = KAN_army_focus_1 } }
+				custom_effect_tooltip = KAN_focus_air_trigger
+				effect_tooltip = {
+					if = {
+						limit = { has_dlc = "Arms Against Tyranny" }
+						add_doctrine_cost_reduction = {
+							name = mountaineers_doc_bonus
+							cost_reduction = 0.75
+							uses = 1
+							category = cat_mountaineers_doctrine
+						}
+					} else = {
+						add_tech_bonus = {
+							name = special_forces_bonus
+							bonus = 2.0
+							uses = 1
+							technology = tech_mountaineers
+							technology = tech_mountaineers2
+							technology = tech_mountaineers3
+						}
+					}
+				}
+			}
+			custom_effect_tooltip = paragraph_tt
+			if = {
+				limit = { has_completed_focus = KAN_army_focus_1 }
+				custom_effect_tooltip = KAN_focus_army_effect
+				if = {
+					limit = { has_dlc = "Arms Against Tyranny" }
+					add_doctrine_cost_reduction = {
+						name = mountaineers_doc_bonus
+						cost_reduction = 0.5
+						uses = 1
+						category = cat_mountaineers_doctrine
+					}
+					add_doctrine_cost_reduction = {
+						name = paratroopers_doc_bonus
+						cost_reduction = 0.25
+						uses = 1
+						category = cat_paratroopers_doctrine
+					}
+				} else = {
+					add_tech_bonus = {
+						name = special_forces_bonus
+						bonus = 1.5
+						uses = 1
+						technology = tech_mountaineers
+						technology = tech_mountaineers2
+						technology = tech_mountaineers3
+					}
+					add_tech_bonus = {
+						name = special_forces_bonus
+						bonus = 1.0
+						uses = 1
+						technology = paratroopers
+						technology = paratroopers2
+						technology = paratroopers3
+					}
+				}
+			} else = {
+				limit = { NOT = { has_completed_focus = KAN_air_focus_1 } }
+				custom_effect_tooltip = KAN_focus_army_trigger
+				effect_tooltip = {
+					if = {
+						limit = { has_dlc = "Arms Against Tyranny" }
+						add_doctrine_cost_reduction = {
+							name = mountaineers_doc_bonus
+							cost_reduction = 0.5
+							uses = 1
+							category = cat_mountaineers_doctrine
+						}
+						add_doctrine_cost_reduction = {
+							name = paratroopers_doc_bonus
+							cost_reduction = 0.25
+							uses = 1
+							category = cat_paratroopers_doctrine
+						}
+					} else = {
+						add_tech_bonus = {
+							name = special_forces_bonus
+							bonus = 1.5
+							uses = 1
+							technology = tech_mountaineers
+							technology = tech_mountaineers2
+							technology = tech_mountaineers3
+						}
+						add_tech_bonus = {
+							name = special_forces_bonus
+							bonus = 1.0
+							uses = 1
+							technology = paratroopers
+							technology = paratroopers2
+							technology = paratroopers3
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = KAN_army_focus_4
+		icon = GFX_focus_KAN_army_focus_4
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KAN_army_focus_3 }
+		
+		relative_position_id = KAN_army_focus_3
+		x = 0
+		y = 1
+		cost = 10
+		
+		available = {
+
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			if = {
+				limit = { has_completed_focus = KAN_air_focus_1 }
+				custom_effect_tooltip = KAN_focus_air_effect
+				add_tech_bonus = {
+					name = armor_mech_bonus
+					bonus = 2.0
+					uses = 1
+					category = armor
+					category = cat_mechanized_equipment
+				}
+				add_breakthrough_progress = {
+					specialization = specialization_land
+					value = 0.2
+				}
+			} else_if = {
+				limit = { NOT = { has_completed_focus = KAN_army_focus_1 } }
+				custom_effect_tooltip = KAN_focus_army_trigger
+				add_tech_bonus = {
+					name = armor_mech_bonus
+					bonus = 2.0
+					uses = 1
+					category = armor
+					category = cat_mechanized_equipment
+				}
+				add_breakthrough_progress = {
+					specialization = specialization_land
+					value = 0.2
+				}
+			}
+			custom_effect_tooltip = paragraph_tt
+			if = {
+				limit = { has_completed_focus = KAN_army_focus_1 }
+				custom_effect_tooltip = KAN_focus_army_effect
+				add_tech_bonus = {
+					name = armor_mech_bonus
+					bonus = 1.5
+					uses = 1
+					category = armor
+					category = cat_mechanized_equipment
+				}
+				add_breakthrough_progress = {
+					specialization = specialization_land
+					value = 0.1
+				}
+				if = {
+					limit = { has_dlc = "By Blood Alone" }
+					add_tech_bonus = {
+						name = air_weapon_modules_bonus
+						bonus = 1
+						uses = 1
+						category = cat_air_guns
+						category = cat_air_bombs
+					}
+				} else = {
+					add_tech_bonus = {
+						name = CAS_bonus
+						bonus = 0.75
+						uses = 1
+						category = cas_bomber
+					}
+				}
+			} else_if = {
+				limit = { NOT = { has_completed_focus = KAN_air_focus_1 } }
+				custom_effect_tooltip = KAN_focus_army_trigger
+				add_tech_bonus = {
+					name = armor_mech_bonus
+					bonus = 1.5
+					uses = 1
+					category = armor
+					category = cat_mechanized_equipment
+				}
+				add_breakthrough_progress = {
+					specialization = specialization_land
+					value = 0.1
+				}
+				if = {
+					limit = { has_dlc = "By Blood Alone" }
+					add_tech_bonus = {
+						name = air_weapon_modules_bonus
+						bonus = 1
+						uses = 1
+						category = cat_air_guns
+						category = cat_air_bombs
+					}
+				} else = {
+					add_tech_bonus = {
+						name = CAS_bonus
+						bonus = 0.75
+						uses = 1
+						category = cas_bomber
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = KAN_air_focus_1
+		icon = GFX_focus_KAN_air_focus_1
+		search_filters = { FOCUS_FILTER_MILITARY }
+		
+		mutually_exclusive = { focus = KAN_army_focus_1 focus = KAN_navy_focus_1 }
+		relative_position_id = KAN_army_focus_1
+		x = 2
+		y = 0
+		cost = 10
+		
+		available = {
+
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			if = {
+				limit = { has_dlc = "No Step Back" }
+				add_ideas = independent_air_force_spirit
+			} else = {
+				add_ideas = KAN_independent_air_force_spirit
+			}
+			add_doctrine_cost_reduction = {
+				name = air_doc_bonus
+				cost_reduction = 0.5
+				uses = 1
+				category = air_doctrine
+			}
+			custom_effect_tooltip = KAN_air_focus_1_branch_tt
+		}
+	}
+	
+	focus = {
+		id = KAN_air_focus_2
+		icon = GFX_focus_KAN_air_focus_2
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KAN_air_focus_1 }
+		
+		relative_position_id = KAN_air_focus_1
+		x = 0
+		y = 1
+		cost = 10
+		
+		available = {
+
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			add_tech_bonus = {
+				name = fighter_bonus
+				bonus = 2
+				uses = 1
+				category = light_air
+			}
+			add_breakthrough_progress = {
+				specialization = specialization_air
+				value = 0.2
+			}
+		}
+	}
+	
+	focus = {
+		id = KAN_air_focus_3
+		icon = GFX_focus_KAN_air_focus_3
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KAN_air_focus_2 }
+		
+		relative_position_id = KAN_air_focus_2
+		x = 0
+		y = 1
+		cost = 10
+		
+		available = {
+
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			if = {
+				limit = { has_dlc = "By Blood Alone" }
+				add_tech_bonus = {
+					name = bomber_bonus
+					bonus = 2
+					uses = 1
+					category = medium_air
+					category = heavy_air
+				}
+			} else = {
+				add_tech_bonus = {
+					name = bomber_bonus
+					bonus = 2
+					uses = 1
+					category = cat_strategic_bomber
+					category = tactical_bomber
+				}
+			}
+			add_breakthrough_progress = {
+				specialization = specialization_air
+				value = 0.2
+			}
+		}
+	}
+	
+	focus = {
+		id = KAN_air_focus_4
+		icon = GFX_focus_KAN_air_focus_4
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KAN_air_focus_3 }
+		
+		relative_position_id = KAN_air_focus_3
+		x = 0
+		y = 1
+		cost = 10
+		
+		available = {
+
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			add_tech_bonus = {
+				name = jet_rocket_bonus
+				bonus = 2
+				uses = 2
+				category = rocketry
+				category = jet_technology
+			}
+			add_breakthrough_progress = {
+				specialization = specialization_air
+				value = 0.2
+			}
+		}
+	}
+	
+	focus = {
+		id = KAN_navy_focus_1
+		icon = GFX_focus_KAN_navy_focus_1
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		
+		mutually_exclusive = { focus = KAN_air_focus_1 focus = KAN_army_focus_1 }
+		relative_position_id = KAN_air_focus_1
+		x = 2
+		y = 0
+		cost = 10
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		available = {
+			any_state = {
+				is_coastal = yes
+				is_controlled_by = ROOT
+				free_building_slots = {
+					building = dockyard
+					size > 0
+					include_locked = yes
+				}
+			}
+		}
+		
+		completion_reward = {
+			random_controlled_state = {
+				limit = {
+					is_coastal = yes
+					free_building_slots = {
+						building = dockyard
+						size > 0
+						include_locked = yes
+					}
+				}
+				prioritize = { 61 }
+				if = {
+					limit = {
+						free_building_slots = {
+							building = dockyard
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = dockyard
+						level = 2
+						instant_build = yes
+					}
+				} else = {
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = dockyard
+						level = 1
+						instant_build = yes
+					}
+					ROOT = {
+						random_controlled_state = {
+							limit = {
+								is_coastal = yes
+								free_building_slots = {
+									building = dockyard
+									size > 0
+									include_locked = yes
+								}
+							}
+							prioritize = { 208 }
+							add_extra_state_shared_building_slots = 1
+							add_building_construction = {
+								type = dockyard
+								level = 1
+								instant_build = yes
+							}
+						}
+					}
+				}
+			}
+			random_controlled_state = {
+				limit = {
+					is_coastal = yes
+					free_building_slots = {
+						building = dockyard
+						size > 0
+						include_locked = yes
+					}
+				}
+				prioritize = { 99 2 }
+				if = {
+					limit = {
+						free_building_slots = {
+							building = dockyard
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = dockyard
+						level = 2
+						instant_build = yes
+					}
+				} else = {
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = dockyard
+						level = 1
+						instant_build = yes
+					}
+					ROOT = {
+						random_controlled_state = {
+							limit = {
+								is_coastal = yes
+								free_building_slots = {
+									building = dockyard
+									size > 0
+									include_locked = yes
+								}
+							}
+							prioritize = { 27 91 }
+							add_extra_state_shared_building_slots = 1
+							add_building_construction = {
+								type = dockyard
+								level = 1
+								instant_build = yes
+							}
+						}
+					}
+				}
+			}
+			custom_effect_tooltip = KAN_navy_focus_1_branch_tt
+		}
+	}
+	
+	focus = {
+		id = KAN_navy_focus_2
+		icon = GFX_focus_KAN_navy_focus_2
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KAN_navy_focus_1 focus = KAN_air_focus_1 }
+		
+		relative_position_id = KAN_navy_focus_1
+		x = 0
+		y = 1
+		cost = 10
+		
+		available = {
+
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			if = {
+				limit = { has_completed_focus = KAN_air_focus_1 }
+				custom_effect_tooltip = KAN_focus_air_effect
+				add_tech_bonus = {
+					name = dd_cr_bonus
+					bonus = 2
+					uses = 1
+					category = cl_tech
+					category = dd_tech
+				}
+				add_breakthrough_progress = {
+					specialization = specialization_naval
+					value = 0.2
+				}
+			} else_if = {
+				limit = { NOT = { has_completed_focus = KAN_navy_focus_1 } }
+				custom_effect_tooltip = KAN_focus_air_trigger
+				effect_tooltip = {
+					add_tech_bonus = {
+						name = dd_cr_bonus
+						bonus = 2
+						uses = 1
+						category = cl_tech
+						category = dd_tech
+					}
+					add_breakthrough_progress = {
+						specialization = specialization_naval
+						value = 0.2
+					}
+				}
+			}
+			custom_effect_tooltip = paragraph_tt
+			if = {
+				limit = { has_completed_focus = KAN_navy_focus_1 }
+				custom_effect_tooltip = KAN_focus_navy_effect
+				add_tech_bonus = {
+					name = dd_cr_bonus
+					bonus = 1.5
+					uses = 1
+					category = cl_tech
+					category = dd_tech
+				}
+				add_breakthrough_progress = {
+					specialization = specialization_naval
+					value = 0.1
+				}
+				add_tech_bonus = {
+					name = fighter_bonus
+					bonus = 0.75
+					uses = 1
+					category = light_air
+				}
+			} else_if = {
+				limit = { NOT = { has_completed_focus = KAN_air_focus_1 } }
+				custom_effect_tooltip = KAN_focus_navy_trigger
+				effect_tooltip = {
+					add_tech_bonus = {
+						name = dd_cr_bonus
+						bonus = 1.5
+						uses = 1
+						category = cl_tech
+						category = dd_tech
+					}
+					add_breakthrough_progress = {
+						specialization = specialization_naval
+						value = 0.1
+					}
+					add_tech_bonus = {
+						name = fighter_bonus
+						bonus = 0.75
+						uses = 1
+						category = light_air
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = KAN_navy_focus_3
+		icon = GFX_focus_KAN_navy_focus_3
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KAN_navy_focus_2 }
+		
+		relative_position_id = KAN_navy_focus_2
+		x = 0
+		y = 1
+		cost = 10
+		
+		available = {
+
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			if = {
+				limit = { has_completed_focus = KAN_air_focus_1 }
+				custom_effect_tooltip = KAN_focus_air_effect
+				add_tech_bonus = {
+					name = ss_bonus
+					bonus = 2.0
+					uses = 1
+					category = ss_tech
+				}
+				add_breakthrough_progress = {
+					specialization = specialization_naval
+					value = 0.2
+				}
+			} else_if = {
+				limit = { NOT = { has_completed_focus = KAN_navy_focus_1 } }
+				custom_effect_tooltip = KAN_focus_air_trigger
+				effect_tooltip = {
+					add_tech_bonus = {
+						name = ss_bonus
+						bonus = 2.0
+						uses = 1
+						category = ss_tech
+					}
+					add_breakthrough_progress = {
+						specialization = specialization_naval
+						value = 0.2
+					}
+				}
+			}
+			custom_effect_tooltip = paragraph_tt
+			if = {
+				limit = { has_completed_focus = KAN_navy_focus_1 }
+				custom_effect_tooltip = KAN_focus_navy_effect
+				add_tech_bonus = {
+					name = ss_bonus
+					bonus = 1.5
+					uses = 1
+					category = ss_tech
+				}
+				add_breakthrough_progress = {
+					specialization = specialization_naval
+					value = 0.1
+				}
+				if = {
+				limit = { has_dlc = "By Blood Alone" }
+				if = {
+					limit = { has_tech = air_torpedoe_3 }
+						air_experience = 10
+						navy_experience = 10
+					} else = {
+						custom_effect_tooltip = KYU_nav_av_effort_tt
+					}
+					hidden_effect = {
+						if = {
+							limit = { has_tech = air_torpedoe_2 NOT = { has_tech = air_torpedoe_3 } }
+							set_technology = { air_torpedoe_3 = 1 }
+						}
+						if = {
+							limit = { has_tech = air_torpedoe_1 NOT = { has_tech = air_torpedoe_2 } }
+							set_technology = { air_torpedoe_2 = 1 }
+						}
+						if = {
+							limit = { NOT = { has_tech = air_torpedoe_1 } }
+							set_technology = { air_torpedoe_1 = 1 }
+						}
+					}
+				} else = {
+					add_tech_bonus = {
+						name = naval_aviation_bonus
+						bonus = 0.75
+						uses = 1
+						category = naval_air
+					}
+				}
+			} else_if = {
+				limit = { NOT = { has_completed_focus = KAN_air_focus_1 } }
+				custom_effect_tooltip = KAN_focus_navy_trigger
+				effect_tooltip = {
+					add_tech_bonus = {
+						name = ss_bonus
+						bonus = 1.5
+						uses = 1
+						category = ss_tech
+					}
+					add_breakthrough_progress = {
+						specialization = specialization_naval
+						value = 0.1
+					}
+					if = {
+						limit = { has_dlc = "By Blood Alone" }
+						if = {
+							limit = { has_tech = air_torpedoe_3 }
+							air_experience = 10
+							navy_experience = 10
+						} else = {
+							custom_effect_tooltip = KYU_nav_av_effort_tt
+						}
+						hidden_effect = {
+							if = {
+								limit = { has_tech = air_torpedoe_2 NOT = { has_tech = air_torpedoe_3 } }
+								set_technology = { air_torpedoe_3 = 1 }
+							}
+							if = {
+								limit = { has_tech = air_torpedoe_1 NOT = { has_tech = air_torpedoe_2 } }
+								set_technology = { air_torpedoe_2 = 1 }
+							}
+							if = {
+								limit = { NOT = { has_tech = air_torpedoe_1 } }
+								set_technology = { air_torpedoe_1 = 1 }
+							}
+						}
+					} else = {
+						add_tech_bonus = {
+							name = naval_aviation_bonus
+							bonus = 0.75
+							uses = 1
+							category = naval_air
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = KAN_navy_focus_4
+		icon = GFX_focus_KAN_navy_focus_4
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KAN_navy_focus_3 }
+		
+		relative_position_id = KAN_navy_focus_3
+		x = 0
+		y = 1
+		cost = 10
+		
+		available = {
+
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			
+			if = {
+				limit = { has_completed_focus = KAN_air_focus_1 }
+				custom_effect_tooltip = KAN_focus_air_effect
+				add_tech_bonus = {
+					name = capital_ships_bonus
+					bonus = 2
+					uses = 1
+					category = bc_tech
+					category = bb_tech
+					category = cv_tech
+				}
+				add_breakthrough_progress = {
+					specialization = specialization_naval
+					value = 0.2
+				}
+			} else_if = {
+				limit = { NOT = { has_completed_focus = KAN_navy_focus_1 } }
+				custom_effect_tooltip = KAN_focus_air_trigger
+				effect_tooltip = {
+					add_tech_bonus = {
+						name = capital_ships_bonus
+						bonus = 2
+						uses = 1
+						category = bc_tech
+						category = bb_tech
+						category = cv_tech
+					}
+					add_breakthrough_progress = {
+						specialization = specialization_naval
+						value = 0.2
+					}
+				}
+			}
+			custom_effect_tooltip = paragraph_tt
+			if = {
+				limit = { has_completed_focus = KAN_navy_focus_1 }
+				custom_effect_tooltip = KAN_focus_navy_effect
+				add_tech_bonus = {
+					name = capital_ships_bonus
+					bonus = 1.5
+					uses = 1
+					category = bc_tech
+					category = bb_tech
+					category = cv_tech
+				}
+				add_breakthrough_progress = {
+					specialization = specialization_naval
+					value = 0.1
+				}
+				if = {
+					limit = { has_dlc = "By Blood Alone" }
+					add_tech_bonus = {
+						name = air_weapon_modules_bonus
+						bonus = 1
+						uses = 1
+						category = cat_air_guns
+						category = cat_air_bombs
+					}
+				} else = {
+					add_tech_bonus = {
+						name = naval_aviation_bonus
+						bonus = 0.75
+						uses = 1
+						category = naval_air
+					}
+				}
+			} else_if = {
+				limit = { NOT = { has_completed_focus = KAN_air_focus_1 } }
+				custom_effect_tooltip = KAN_focus_navy_trigger
+				effect_tooltip = {
+					add_tech_bonus = {
+						name = capital_ships_bonus
+						bonus = 1.5
+						uses = 1
+						category = bc_tech
+						category = bb_tech
+						category = cv_tech
+					}
+					add_breakthrough_progress = {
+						specialization = specialization_naval
+						value = 0.1
+					}
+					if = {
+						limit = { has_dlc = "By Blood Alone" }
+						add_tech_bonus = {
+							name = air_weapon_modules_bonus
+							bonus = 1
+							uses = 1
+							category = cat_air_guns
+							category = cat_air_bombs
+						}
+					} else = {
+						add_tech_bonus = {
+							name = naval_aviation_bonus
+							bonus = 0.75
+							uses = 1
+							category = naval_air
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	### } Common Economic Branch {
 	
 	focus = {
 		id = KAN_economy_focus_1
 		icon = GFX_focus_KAN_economic_focus
 		search_filters = { FOCUS_FILTER_RESEARCH }
 		
-		prerequisite = { focus = KAN_internal_legitimacy focus = KAN_external_support }
-		
-		relative_position_id = KAN_external_support
-		x = 0
-		y = 1
+		relative_position_id = KAN_navy_focus_1
+		x = 3
+		y = 0
 		cost = 10
 		
 		available = {
@@ -425,320 +1479,6 @@ focus_tree = {
 		
 		completion_reward = {
 		
-		}
-	}
-	
-	### Common Military Branch
-	
-	focus = {
-		id = KAN_military_focus_1
-		icon = GFX_goal_generic_aggressive_eastern
-		search_filters = { FOCUS_FILTER_RESEARCH }
-		
-		prerequisite = { focus = KAN_internal_legitimacy focus = KAN_external_support }
-		
-		relative_position_id = KAN_internal_legitimacy
-		x = 0
-		y = 1
-		cost = 10
-		
-		available = {
-
-		}
-		
-		ai_will_do = {
-			factor = 5
-		}
-		
-		completion_reward = {
-			add_doctrine_cost_reduction = {
-				name = land_doc_bonus
-				cost_reduction = 0.5
-				uses = 1
-				category = land_doctrine
-			}
-		}
-	}
-	
-	focus = {
-		id = KAN_military_focus_2
-		icon = 
-		search_filters = { FOCUS_FILTER_RESEARCH }
-		
-		prerequisite = { focus = KAN_military_focus_1 }
-		
-		relative_position_id = KAN_military_focus_1
-		x = -1
-		y = 1
-		cost = 10
-		
-		available = {
-
-		}
-		
-		ai_will_do = {
-			factor = 5
-		}
-		
-		completion_reward = {
-			add_tech_bonus = {
-				name = infantry_artillery_bonus
-				bonus = 2.0
-				uses = 1
-				category = infantry_weapons
-				category = artillery
-			}
-			add_breakthrough_progress = {
-				specialization = specialization_land
-				value = 0.1
-			}
-		}
-	}
-	
-	focus = {
-		id = KAN_military_focus_3
-		icon = GFX_focus_generic_arms_factory
-		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_INDUSTRY }
-		
-		prerequisite = { focus = KAN_military_focus_2 }
-		
-		relative_position_id = KAN_military_focus_2
-		x = 0
-		y = 1
-		cost = 10
-		
-		available = {
-
-		}
-		
-		ai_will_do = {
-			factor = 5
-		}
-		
-		completion_reward = {
-			army_experience = 10
-			random_controlled_state = {
-				limit = {
-					free_building_slots = {
-						building = arms_factory
-						size > 1
-						include_locked = yes
-					}
-				}
-				if = {
-					limit = {
-						free_building_slots = {
-							building = arms_factory
-							size > 2
-							include_locked = yes
-						}	
-					}
-					add_extra_state_shared_building_slots = 2
-					add_building_construction = {
-						type = arms_factory
-						level = 2
-						instant_build = yes
-					}
-				} else = {
-					add_extra_state_shared_building_slots = 1
-					add_building_construction = {
-						type = arms_factory
-						level = 1
-						instant_build = yes
-					}
-					random_controlled_state = {
-						limit = {
-							free_building_slots = {
-								building = arms_factory
-								size > 1
-								include_locked = yes
-							}
-						}
-						add_extra_state_shared_building_slots = 1
-						add_building_construction = {
-							type = arms_factory
-							level = 1
-							instant_build = yes
-						}
-					}
-				}
-			}
-		}
-	}
-	
-	focus = {
-		id = KAN_military_focus_4
-		icon = 
-		search_filters = { FOCUS_FILTER_RESEARCH }
-		
-		prerequisite = { focus = KAN_military_focus_3 }
-		
-		relative_position_id = KAN_military_focus_3
-		x = 0
-		y = 1
-		cost = 10
-		
-		available = {
-
-		}
-		
-		ai_will_do = {
-			factor = 5
-		}
-		
-		completion_reward = {
-			add_tech_bonus = {
-				name = armor_bonus
-				bonus = 2.0
-				uses = 1
-				category = armor
-			}
-			add_breakthrough_progress = {
-				specialization = specialization_land
-				value = 0.1
-			}
-		}
-	}
-	
-	focus = {
-		id = KAN_navy_focus_1
-		icon = GFX_focus_generic_navy_doctrine
-		search_filters = { FOCUS_FILTER_RESEARCH }
-		
-		prerequisite = { focus = KAN_military_focus_1 }
-		
-		relative_position_id = KAN_military_focus_1
-		x = 1
-		y = 1
-		cost = 10
-		
-		available = {
-
-		}
-		
-		ai_will_do = {
-			factor = 5
-		}
-		
-		completion_reward = {
-			add_doctrine_cost_reduction = {
-				name = naval_doc_bonus
-				cost_reduction = 0.5
-				uses = 1
-				category = naval_doctrine
-			}
-		}
-	}
-	
-	focus = {
-		id = KAN_navy_focus_2
-		icon = GFX_focus_generic_dockyards
-		search_filters = { FOCUS_FILTER_INDUSTRY }
-		
-		prerequisite = { focus = KAN_navy_focus_1 }
-		
-		relative_position_id = KAN_navy_focus_1
-		x = 0
-		y = 1
-		cost = 10
-		
-		available = {
-
-		}
-		
-		ai_will_do = {
-			factor = 5
-		}
-		
-		completion_reward = {
-			random_controlled_state = {
-				limit = {
-					free_building_slots = {
-						building = industrial_complex
-						size > 1
-						include_locked = yes
-					}
-					is_coastal = yes
-				}
-				if = {
-					limit = {
-						free_building_slots = {
-							building = dockyard
-							size > 2
-							include_locked = yes
-						}	
-					}
-					add_extra_state_shared_building_slots = 2
-					add_building_construction = {
-						type = dockyard
-						level = 2
-						instant_build = yes
-					}
-				} else = {
-					add_extra_state_shared_building_slots = 1
-					add_building_construction = {
-						type = dockyard
-						level = 1
-						instant_build = yes
-					}
-					random_controlled_state = {
-						limit = {
-							free_building_slots = {
-								building = dockyard
-								size > 1
-								include_locked = yes
-							}
-							is_coastal = yes
-						}
-						add_extra_state_shared_building_slots = 1
-						add_building_construction = {
-							type = dockyard
-							level = 1
-							instant_build = yes
-						}
-					}
-				}
-			}
-		}
-	}
-	focus = {
-		id = KAN_navy_focus_3
-		icon = 
-		search_filters = {  }
-		
-		prerequisite = { focus = KAN_navy_focus_2 }
-		
-		relative_position_id = KAN_navy_focus_2
-		x = 0
-		y = 1
-		cost = 10
-		
-		available = {
-
-		}
-		
-		ai_will_do = {
-			factor = 5
-		}
-		
-		completion_reward = {
-			add_tech_bonus = {
-				name = cr_bonus
-				bonus = 1
-				uses = 1
-				category = cl_tech
-				category = ca_tech
-			}
-			add_tech_bonus = {
-				name = dd_bonus
-				bonus = 1
-				uses = 1
-				category = dd_tech
-			}
-			add_breakthrough_progress = {
-				specialization = specialization_naval
-				value = 0.2
-			}
 		}
 	}
 	
