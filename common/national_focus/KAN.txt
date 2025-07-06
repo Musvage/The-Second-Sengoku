@@ -94,6 +94,12 @@ focus_tree = {
 				limit = { has_dlc = "No Step Back" }
 				custom_effect_tooltip = free_army_spirit_one_time_tt
 				hidden_effect = { add_ideas = KAN_free_army_academy_spirit }
+				add_doctrine_cost_reduction = {
+					name = land_doc_bonus
+					cost_reduction = 0.33
+					uses = 1
+					category = land_doctrine
+				}
 			} else = {
 				add_doctrine_cost_reduction = {
 					name = land_doc_bonus
@@ -102,6 +108,7 @@ focus_tree = {
 					category = land_doctrine
 				}
 			}
+			custom_effect_tooltip = paragraph_tt
 			custom_effect_tooltip = KAN_army_focus_1_branch_tt
 		}
 	}
@@ -499,6 +506,7 @@ focus_tree = {
 				uses = 1
 				category = air_doctrine
 			}
+			custom_effect_tooltip = paragraph_tt
 			custom_effect_tooltip = KAN_air_focus_1_branch_tt
 		}
 	}
@@ -750,6 +758,7 @@ focus_tree = {
 					}
 				}
 			}
+			custom_effect_tooltip = paragraph_tt
 			custom_effect_tooltip = KAN_navy_focus_1_branch_tt
 		}
 	}
@@ -1019,7 +1028,6 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			
 			if = {
 				limit = { has_completed_focus = KAN_air_focus_1 }
 				custom_effect_tooltip = KAN_focus_air_effect
@@ -1118,6 +1126,97 @@ focus_tree = {
 							uses = 1
 							category = naval_air
 						}
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = KAN_army_air_navy_focus
+		icon = GFX_focus_generic_army_doctrine
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KAN_army_focus_4 focus = KAN_air_focus_4 focus = KAN_navy_focus_4 }
+		
+		relative_position_id = KAN_air_focus_4
+		x = 0
+		y = 1
+		cost = 10
+		
+		available = {
+			count_triggers = {
+				amount = 2
+				has_completed_focus = KAN_army_focus_4
+				has_completed_focus = KAN_air_focus_4
+				has_completed_focus = KAN_navy_focus_4
+			}
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			if = {
+				limit = { has_completed_focus = KAN_army_focus_4 }
+				add_doctrine_cost_reduction = {
+					name = land_doc_bonus
+					cost_reduction = 0.5
+					uses = 1
+					category = land_doctrine
+				}
+			} else = {
+				custom_effect_tooltip = KAN_army_focus_4_trigger
+				effect_tooltip = {
+					add_doctrine_cost_reduction = {
+						name = land_doc_bonus
+						cost_reduction = 0.5
+						uses = 1
+						category = land_doctrine
+					}
+				}
+			}
+			custom_effect_tooltip = paragraph_tt
+			if = {
+				limit = { NOT = { has_completed_focus = KAN_army_focus_1 has_completed_focus = KAN_navy_focus_1 } }
+				if = {
+					limit = { has_completed_focus = KAN_air_focus_4 }
+					add_doctrine_cost_reduction = {
+						name = air_doc_bonus
+						cost_reduction = 0.5
+						uses = 1
+						category = air_doctrine
+					}
+				} else = {
+					custom_effect_tooltip = KAN_air_focus_4_trigger
+					effect_tooltip = {
+						add_doctrine_cost_reduction = {
+							name = air_doc_bonus
+							cost_reduction = 0.5
+							uses = 1
+							category = air_doctrine
+						}
+					}
+				}
+			}
+			custom_effect_tooltip = paragraph_tt
+			if = {
+				limit = { has_completed_focus = KAN_navy_focus_4 }
+				add_doctrine_cost_reduction = {
+					name = naval_doc_bonus
+					cost_reduction = 0.5
+					uses = 1
+					category = naval_doctrine
+				}
+			} else = {
+				custom_effect_tooltip = KAN_navy_focus_4_trigger
+				effect_tooltip = {
+					add_doctrine_cost_reduction = {
+						name = naval_doc_bonus
+						cost_reduction = 0.5
+						uses = 1
+						category = naval_doctrine
 					}
 				}
 			}
@@ -1453,13 +1552,19 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			
+			add_tech_bonus = {
+				name = advanced_techs_bonus
+				bonus = 2.0
+				uses = 2
+				category = radar_tech
+				category = electronics
+			}
 		}
 	}
 	
 	focus = {
 		id = KAN_technology_focus_3
-		icon = GFX_focus_GENERIC_dangerous_tech_eastern
+		icon = GFX_focus_GENERIC_advanced_tech_eastern
 		search_filters = {  }
 		
 		prerequisite = { focus = KAN_technology_focus_2 }
@@ -1478,7 +1583,42 @@ focus_tree = {
 		}
 		
 		completion_reward = {
+			add_tech_bonus = {
+				name = nuclear_chem_techs_bonus
+				bonus = 2.0
+				uses = 2
+				category = nuclear
+				category = chemical_weaponry_tech
+			}
+			add_breakthrough_progress = {
+				specialization = specialization_nuclear
+				value = 0.25
+			}
+		}
+	}
+	
+	focus = {
+		id = KAN_technology_focus_4
+		icon = GFX_focus_generic_research_slot
+		search_filters = {  }
 		
+		prerequisite = { focus = KAN_technology_focus_3 focus = KAN_economy_focus_4 }
+		
+		relative_position_id = KAN_technology_focus_3
+		x = -1
+		y = 1
+		cost = 10
+		
+		available = {
+			num_of_factories > 75
+		}
+		
+		ai_will_do = {
+			factor = 10
+		}
+		
+		completion_reward = {
+			add_research_slot = 1
 		}
 	}
 	
