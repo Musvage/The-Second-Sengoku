@@ -63,9 +63,72 @@ country_event = {	# Justifying on Claimant: Ultimatum	# ROOT is target, FROM is 
 	
 	is_triggered_only = yes
 	
+	immediate = {
+		FROM = {
+			unification_get_annexation_relative_strength = yes
+			#set_temp_variable = { annexation_persuation_modifier1 = 0.5 }
+			#add_to_temp_variable = { annexation_persuation_modifier1 = has_war_support }
+			if = { limit = { has_war = yes } set_temp_variable = { annexation_persuation_modifier2 = 0.5 } }
+			set_temp_variable = { annexation_persuation_modifier3 = 1 }
+			if = { limit = { left_ideology = yes ROOT = { left_ideology = yes } } add_to_temp_variable = { annexation_persuation_modifier3 = 0.25 } }
+			if = { limit = { center_ideology = yes ROOT = { center_ideology = yes } } add_to_temp_variable = { annexation_persuation_modifier3 = 0.25 } }
+			if = { limit = { right_ideology = yes ROOT = { right_ideology = yes } } add_to_temp_variable = { annexation_persuation_modifier3 = 0.25 } }
+			if = { limit = { left_ideology = yes ROOT = { right_ideology = yes } } add_to_temp_variable = { annexation_persuation_modifier3 = -0.5 } }
+			if = { limit = { right_ideology = yes ROOT = { left_ideology = yes } } add_to_temp_variable = { annexation_persuation_modifier3 = -0.5 } }
+			if = { limit = { is_in_faction = yes } set_temp_variable = { annexation_persuation_modifier4 = 1.25 } }
+			if = { limit = { has_country_leader_with_trait = scaramouch_leader } set_temp_variable = { annexation_persuation_modifier5 = 0.75 } }
+			if = { limit = { has_country_leader_with_trait = buffoon_leader } set_temp_variable = { annexation_persuation_modifier5 = 0.5 } }
+			#multiply_variable = { annexation_relative_strength = annexation_persuation_modifier1 }
+			multiply_variable = { annexation_relative_strength = annexation_persuation_modifier2 }
+			multiply_variable = { annexation_relative_strength = annexation_persuation_modifier3 }
+			multiply_variable = { annexation_relative_strength = annexation_persuation_modifier4 }
+			multiply_variable = { annexation_relative_strength = annexation_persuation_modifier5 }	log = "FROM [FROM.GeName] annexation_relative_strength [?annexation_relative_strength]"
+		}
+		ROOT = {
+			unification_get_annexation_relative_strength = yes
+			set_temp_variable = { annexation_resistance_modifier1 = 0.5 }
+			add_to_temp_variable = { annexation_resistance_modifier1 = has_war_support }
+			if = { limit = { has_war = yes } set_temp_variable = { annexation_resistance_modifier2 = 0.5 } }
+			if = { limit = { has_country_leader_with_trait = scaramouch_leader } set_temp_variable = { annexation_resistance_modifier3 = 0.75 } }
+			if = { limit = { has_country_leader_with_trait = buffoon_leader } set_temp_variable = { annexation_resistance_modifier3 = 0.5 } }
+			multiply_variable = { annexation_relative_strength = annexation_resistance_modifier1 }
+			multiply_variable = { annexation_relative_strength = annexation_resistance_modifier2 }
+			multiply_variable = { annexation_relative_strength = annexation_resistance_modifier3 }
+		}
+		if = {
+			limit = { has_global_flag = annexation_rule_player_only FROM = { is_ai = yes } }
+			FROM = { multiply_variable = { annexation_relative_strength = 0.0 } }
+		} else_if = {
+			limit = { has_global_flag = annexation_rule_player_only_hard FROM = { is_ai = yes } }
+			FROM = { multiply_variable = { annexation_relative_strength = 0.0 } }
+		} else_if = {
+			limit = { has_global_flag = annexation_rule_player_only_hard FROM = { is_ai = no } }
+			FROM = { multiply_variable = { annexation_relative_strength = 0.25 } }
+		} else_if = {
+			limit = { has_global_flag = annexation_rule_ai_only FROM = { is_ai = no } }
+			FROM = { multiply_variable = { annexation_relative_strength = 0.0 } }
+		} else_if = {
+			limit = { has_global_flag = annexation_rule_hard }
+			FROM = { multiply_variable = { annexation_relative_strength = 0.25 } }
+		} else_if = {
+			limit = { has_global_flag = annexation_rule_never_westerns unification_candidate = no }	# this is redundant since this is a  Japan-only event, but I'll keep it here as a failsafe
+			FROM = { multiply_variable = { annexation_relative_strength = 0.0 } }
+		} else_if = {
+			limit = { has_global_flag = annexation_rule_never_any }
+			FROM = { multiply_variable = { annexation_relative_strength = 0.1 } }
+		} else = { FROM = { multiply_variable = { annexation_relative_strength = 0.5 } }	} log = "ROOT [ROOT.GeName] annexation_relative_strength [?annexation_relative_strength]"
+	}
+	
 	option = {
 		name = unification.11.a	# Resist
 		FROM = { country_event = { if = unification.12 hours = 24 } }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				check_variable = { annexation_relative_strength < FROM.annexation_relative_strength }
+			}
+		}
 	}
 	option = {
 		name = unification.11.b	# annextation, army disbands and flees to other country
@@ -154,6 +217,9 @@ country_event = {	# Justifying on Claimant: Ultimatum	# ROOT is target, FROM is 
 				if = { limit = { FROM = { is_ai = yes } is_ai = no } change_tag_from = FROM }
 			}
 		}
+		ai_chance = {
+			factor = 1
+		}
 	}
 	option = {
 		name = unification.11.c	# annexation, troops join
@@ -186,10 +252,13 @@ country_event = {	# Justifying on Claimant: Ultimatum	# ROOT is target, FROM is 
 			}
 			hidden_effect = { country_event = unification.15 } annex_country = { target = ROOT transfer_troops = yes }
 		}
+		ai_chance = {
+			factor = 1
+		}
 	}
 }
 
-country_event = {	# Justifying on Claimant: Refused Ultimatum	# ROOT is target, FROM is justifying
+country_event = {	# Justifying on Claimant: refused Ultimatum	# ROOT is target, FROM is justifying
 	id = unification.12
 	title = unification.12.t
 	desc = unification.12.d
@@ -371,9 +440,72 @@ country_event = {	# Ultimatum to non-Claimant	# ROOT is target, FROM is claimant
 	
 	is_triggered_only = yes
 	
+	immediate = {
+		FROM = {
+			unification_get_annexation_relative_strength = yes
+			#set_temp_variable = { annexation_persuation_modifier1 = 0.5 }
+			#add_to_temp_variable = { annexation_persuation_modifier1 = has_war_support }
+			if = { limit = { has_war = yes } set_temp_variable = { annexation_persuation_modifier2 = 0.5 } }
+			set_temp_variable = { annexation_persuation_modifier3 = 1 }
+			if = { limit = { left_ideology = yes ROOT = { left_ideology = yes } } add_to_temp_variable = { annexation_persuation_modifier3 = 0.25 } }
+			if = { limit = { center_ideology = yes ROOT = { center_ideology = yes } } add_to_temp_variable = { annexation_persuation_modifier3 = 0.25 } }
+			if = { limit = { right_ideology = yes ROOT = { right_ideology = yes } } add_to_temp_variable = { annexation_persuation_modifier3 = 0.25 } }
+			if = { limit = { left_ideology = yes ROOT = { right_ideology = yes } } add_to_temp_variable = { annexation_persuation_modifier3 = -0.5 } }
+			if = { limit = { right_ideology = yes ROOT = { left_ideology = yes } } add_to_temp_variable = { annexation_persuation_modifier3 = -0.5 } }
+			if = { limit = { is_in_faction = yes } set_temp_variable = { annexation_persuation_modifier4 = 1.25 } }
+			if = { limit = { has_country_leader_with_trait = scaramouch_leader } set_temp_variable = { annexation_persuation_modifier5 = 0.75 } }
+			if = { limit = { has_country_leader_with_trait = buffoon_leader } set_temp_variable = { annexation_persuation_modifier5 = 0.5 } }
+			#multiply_variable = { annexation_relative_strength = annexation_persuation_modifier1 }
+			multiply_variable = { annexation_relative_strength = annexation_persuation_modifier2 }
+			multiply_variable = { annexation_relative_strength = annexation_persuation_modifier3 }
+			multiply_variable = { annexation_relative_strength = annexation_persuation_modifier4 }
+			multiply_variable = { annexation_relative_strength = annexation_persuation_modifier5 }	log = "FROM [FROM.GeName] annexation_relative_strength [?annexation_relative_strength]"
+		}
+		ROOT = {
+			unification_get_annexation_relative_strength = yes
+			set_temp_variable = { annexation_resistance_modifier1 = 0.5 }
+			add_to_temp_variable = { annexation_resistance_modifier1 = has_war_support }
+			if = { limit = { has_war = yes } set_temp_variable = { annexation_resistance_modifier2 = 0.5 } }
+			if = { limit = { has_country_leader_with_trait = scaramouch_leader } set_temp_variable = { annexation_resistance_modifier3 = 0.75 } }
+			if = { limit = { has_country_leader_with_trait = buffoon_leader } set_temp_variable = { annexation_resistance_modifier3 = 0.5 } }
+			multiply_variable = { annexation_relative_strength = annexation_resistance_modifier1 }
+			multiply_variable = { annexation_relative_strength = annexation_resistance_modifier2 }
+			multiply_variable = { annexation_relative_strength = annexation_resistance_modifier3 }
+		}
+		if = {
+			limit = { has_global_flag = annexation_rule_player_only FROM = { is_ai = yes } }
+			FROM = { multiply_variable = { annexation_relative_strength = 0.0 } }
+		} else_if = {
+			limit = { has_global_flag = annexation_rule_player_only_hard FROM = { is_ai = yes } }
+			FROM = { multiply_variable = { annexation_relative_strength = 0.0 } }
+		} else_if = {
+			limit = { has_global_flag = annexation_rule_player_only_hard FROM = { is_ai = no } }
+			FROM = { multiply_variable = { annexation_relative_strength = 0.25 } }
+		} else_if = {
+			limit = { has_global_flag = annexation_rule_ai_only FROM = { is_ai = no } }
+			FROM = { multiply_variable = { annexation_relative_strength = 0.0 } }
+		} else_if = {
+			limit = { has_global_flag = annexation_rule_hard }
+			FROM = { multiply_variable = { annexation_relative_strength = 0.25 } }
+		} else_if = {
+			limit = { has_global_flag = annexation_rule_never_westerns unification_candidate = no }	# this is redundant since this is a  non-Japan-only event, but I'll keep it here as a failsafe
+			FROM = { multiply_variable = { annexation_relative_strength = 0.0 } }
+		} else_if = {
+			limit = { has_global_flag = annexation_rule_never_any }
+			FROM = { multiply_variable = { annexation_relative_strength = 0.1 } }
+		} else = { FROM = { multiply_variable = { annexation_relative_strength = 0.5 } }	} log = "ROOT [ROOT.GeName] annexation_relative_strength [?annexation_relative_strength]"
+	}
+	
 	option = {
 		name = unification.21.a	# Refuse
 		FROM = { country_event = { id = unification.22 hours = 24 } }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				check_variable = { annexation_relative_strength < FROM.annexation_relative_strength }
+			}
+		}
 	}
 	option = {
 		name = unification.21.b	# Surrender only japanese territory - keep territory in mainland Asia
@@ -414,6 +546,9 @@ country_event = {	# Ultimatum to non-Claimant	# ROOT is target, FROM is claimant
 			transfer_state_to = FROM
 		}
 		hidden_effect = { FROM = { country_event = unification.23 } }
+		ai_chance = {
+			factor = 1
+		}
 	}
 	option = {
 		name = unification.21.c	# Surrender all territory - total annexation
@@ -450,6 +585,9 @@ country_event = {	# Ultimatum to non-Claimant	# ROOT is target, FROM is claimant
 		}
 		custom_effect_tooltip = game_over_tt
 		hidden_effect = { FROM = { country_event = unification.24 } }
+		ai_chance = {
+			factor = 1
+		}
 	}
 }
 
