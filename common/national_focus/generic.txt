@@ -3024,7 +3024,10 @@ focus_tree = {
 			trigger = { tag = IMS }
 		}
 		
-		allow_branch = { NOT = { has_country_flag = lost_original_focus_tree } }	# for WS-engaged tags, this check must be repeated later on branches that are explicitly allowed down the tree
+		allow_branch = {
+			NOT = { has_country_flag = lost_original_focus_tree }	# for WS-engaged tags, this check must be repeated later on branches that are explicitly allowed down the tree
+			NOT = { tag = KAN }
+		}
 		
 		cost = 10
 		
@@ -3106,7 +3109,11 @@ focus_tree = {
 		y = 0
 		offset = {
 			x = -1 y = 0
-			trigger = { OR = { tag = OSA tag = KOB} }
+			trigger = { OR = { tag = OSA tag = KOB } }
+		}
+		offset = {
+			x = -4 y = 0
+			trigger = { tag = KAN }
 		}
 		cost = 10
 		
@@ -3175,7 +3182,7 @@ focus_tree = {
 		icon = GFX_focus_TOH_the_spread_of_communism
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
-		allow_branch = { NOT = { tag = IMS } }
+		allow_branch = { NOT = { tag = IMS tag = KAN } }
 		
 		prerequisite = { focus = ss_generic_modernisation }
 		mutually_exclusive = { focus = ss_generic_center focus = ss_generic_right focus = IMS_generic_join_lon }
@@ -3237,9 +3244,12 @@ focus_tree = {
 		relative_position_id = ss_generic_modernisation
 		offset = {
 			x = -1 y = 0
-			trigger = { OR = { tag = OSA tag = KOB} }
+			trigger = { OR = { tag = OSA tag = KOB } }
 		}
-		
+		offset = {
+			x = -4 y = 0
+			trigger = { tag = KAN }
+		}
 		cost = 10
 		
 		allow_branch = { NOT = { tag = IMS } }
@@ -3560,7 +3570,6 @@ focus_tree = {
 		x = 1
 		y = 1
 		relative_position_id = ss_generic_left
-		
 		cost = 10
 
 		available_if_capitulated = yes
@@ -3608,7 +3617,10 @@ focus_tree = {
 		x = 3
 		y = 1
 		relative_position_id = ss_generic_left
-		
+		offset = {
+			x = -3 y = 0
+			trigger = { tag = KAN }
+		}
 		cost = 10
 
 		available_if_capitulated = yes
@@ -3772,7 +3784,9 @@ focus_tree = {
 	
 	focus = {
 		id = ss_generic_government_fascism
+		icon = { value = GFX_focus_KAN_fukoku_kuohei trigger = { tag = KAN } }
 		icon = GFX_focus_generic_martial_law
+		dynamic = yes
 		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_WORLD }
 		
 		prerequisite = { focus = ss_generic_right }
@@ -3848,6 +3862,7 @@ focus_tree = {
 		id = ss_generic_government_autocratic
 		icon = { value = GFX_focus_hol_the_only_man_in_the_dutch_government trigger = { tag = HIR } }
 		icon = { value = GFX_focus_PRT_restore_monarchy trigger = { tag = PRT } }
+		icon = { value = GFX_focus_KAN_channalge_absolutists trigger = { tag = KAN } }
 		icon = GFX_focus_KYU_war_preparations
 		dynamic = yes
 		search_filters = { FOCUS_FILTER_POLITICAL }
@@ -3882,7 +3897,10 @@ focus_tree = {
 		
 		available = {
 			autocracy > 0.33
-			NOT = { has_government = autocracy }
+			if = {
+				limit = { NOT = { tag = KAN } }
+				NOT = { has_government = autocracy }
+			}
 			OR = {
 				is_subject = no
 				OVERLORD = { has_government = autocracy }
@@ -3897,13 +3915,31 @@ focus_tree = {
 			}
 		}
 		bypass = {
-			has_government = autocracy
+			if = {
+				limit = { NOT = { tag = KAN } }
+				has_government = autocracy
+			} else = {
+				hidden_trigger = { always = no }
+			}
 		}
 
 		completion_reward = {
-			set_politics = {
-				ruling_party = autocracy
-				elections_allowed = no
+			if = {
+				limit = { tag = KAN }
+				if = {
+					limit = { NOT = { has_government = autocracy } }
+					set_politics = {
+						ruling_party = autocracy
+						elections_allowed = no
+					}
+				}
+				add_political_power = 150
+				add_ideas = KAN_emperor_legitimacy_spirit
+			} else = {
+				text = {
+					trigger = {	tag = PRT }
+					localization_key = ss_generic_government_autocratic_prt
+				}
 			}
 		}
 	}
@@ -4189,7 +4225,7 @@ focus_tree = {
 
 		available_if_capitulated = yes
 		
-		allow_branch = { NOT = { tag = PRT tag = IMS } }
+		allow_branch = { NOT = { tag = PRT tag = IMS tag = KAN } }
 		
 		ai_will_do = {
 			factor = 1
@@ -4200,6 +4236,10 @@ focus_tree = {
 		}
 
 		completion_reward = {
+			if = {
+				limit = { has_idea = AMO_state_shintoism }
+				remove_ideas = AMO_state_shintoism
+			}
 			add_ideas = FER_atheist_state
 			set_religion_secularism = yes
 			add_political_power = 150
@@ -4223,7 +4263,7 @@ focus_tree = {
 			trigger = { tag = IMS }
 		}
 
-		allow_branch = { NOT = { tag = PRT tag = IMS } }
+		allow_branch = { NOT = { tag = PRT tag = IMS tag = KAN } }
 		cost = 10
 
 		available_if_capitulated = yes
@@ -4299,6 +4339,7 @@ focus_tree = {
 			trigger = { tag = IMS }
 		}
 		
+		allow_branch = { NOT = { tag = KAN } } 
 		cost = 10
 
 		available_if_capitulated = yes
@@ -4424,6 +4465,11 @@ focus_tree = {
 		completion_reward = {
 			add_war_support = 0.1
 			custom_effect_tooltip = kamikaze_focus_tooltip
+			if = {
+				limit = { tag = KAN }
+				unlock_decision_category_tooltip = unify_japan_category
+				set_country_flag = unlock_unify_japan_category
+			}	
 		}
 	}
 	
@@ -4496,6 +4542,11 @@ focus_tree = {
 						remove_idea = generic_idea_religious_zeal_7
 					}
 				}
+			}
+			if = {
+				limit = { tag = KAN }
+				unlock_decision_category_tooltip = unify_japan_category
+				set_country_flag = unlock_unify_japan_category
 			}
 		}
 	}
@@ -5436,6 +5487,10 @@ focus_tree = {
 			x = 1 y = 0
 			trigger = { tag = PRT }
 		}
+		offset = {
+			x = -1 y = 0
+			trigger = { tag = KAN }
+		}
 		cost = 10
 
 		available_if_capitulated = yes
@@ -5635,7 +5690,7 @@ focus_tree = {
 				} else = { world_stage_join_axis = yes set_variable = { global.worldstage75 = 3 } hidden_effect = { news_event = worldstage.75 } }
 			}
 			if = {
-				limit = { has_idea = EZO_unrecognised_independence}
+				limit = { has_idea = EZO_unrecognised_independence }
 				remove_ideas = EZO_unrecognised_independence
 			}
 			if = {
@@ -5654,6 +5709,10 @@ focus_tree = {
 		x = 0
 		y = 1
 		relative_position_id = neutrality_focus
+		offset = {
+			x = 0 y = 1
+			trigger = { tag = KAN }
+		}
 		cost = 10
 
 		available_if_capitulated = yes
@@ -5859,6 +5918,8 @@ focus_tree = {
 		available = { has_government = autocracy }
 		
 		ai_will_do = { factor = 1 }
+		
+		allow_branch = { NOT = { tag = KAN } }
 
 		completion_reward = {
 			add_ideas = generic_idea_fascist_prime_minister
