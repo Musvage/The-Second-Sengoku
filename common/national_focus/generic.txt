@@ -2,7 +2,7 @@ focus_tree = {
 	id = generic_focus
 	
 	country = {
-		factor = 2
+		factor = 200
 	}
 	
 	default = yes
@@ -3026,7 +3026,7 @@ focus_tree = {
 		
 		allow_branch = {
 			NOT = { has_country_flag = lost_original_focus_tree }	# for WS-engaged tags, this check must be repeated later on branches that are explicitly allowed down the tree
-			NOT = { tag = KAN }
+			NOT = { tag = KAN tag = SHO }
 		}
 		
 		cost = 10
@@ -3098,12 +3098,64 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = ss_generic_modernisation_sho
+		icon = GFX_focus_SHO_western_focus
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		mutually_exclusive = { focus = ss_generic_tradition }
+
+		#relative_position_id	# NO RELATIVE POSITION since the top focus of the branch to the left has allow_branch and may not be visible!
+		x = 21
+		y = 0
+
+		allow_branch = {
+			tag = SHO
+		}
+		
+		available = { has_global_flag = league_of_nations_exists }
+		
+		cost = 10
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0.25
+				is_subject = yes
+			}
+			modifier = {
+				factor = 10
+				tag = IMS
+			}
+		}
+
+		available_if_capitulated = yes		
+
+		completion_reward = {
+			add_ideas = NAV_active_diplomacy_spirit
+			hidden_effect = {
+				every_possible_country = {
+					limit = { NOT = { TAG = ROOT } }
+					add_opinion_modifier = {
+						target = ROOT
+						modifier  = NAV_active_diplomacy_opinion
+					}
+				}
+			}
+			if = {
+				limit = { has_idea = all_internationally_recognised }
+				add_ideas = SS_lon_member_japan
+			} else = {
+				add_ideas = SS_lon_observer_japan
+			}
+		}
+	}
+	
+	focus = {
 		id = ss_generic_tradition
 		icon = { value = GFX_goal_molotov_ribbentrop_pact trigger = { tag = IMS } }
 		icon = { value = GFX_focus_ROC_reject_modernity }
 		search_filters = { FOCUS_FILTER_STABILITY }
 		dynamic = yes
-		mutually_exclusive = { focus = ss_generic_modernisation }
+		mutually_exclusive = { focus = ss_generic_modernisation focus = ss_generic_modernisation_sho }
 		relative_position_id = ss_generic_modernisation
 		x = 6
 		y = 0
@@ -3114,6 +3166,10 @@ focus_tree = {
 		offset = {
 			x = -4 y = 0
 			trigger = { tag = KAN }
+		}
+		offset = {
+			x = -2 y = 0
+			trigger = { tag = SHO }
 		}
 		cost = 10
 		
@@ -3182,7 +3238,7 @@ focus_tree = {
 		icon = GFX_focus_TOH_the_spread_of_communism
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
-		allow_branch = { NOT = { tag = IMS tag = KAN } }
+		allow_branch = { NOT = { tag = IMS tag = KAN tag = SHO } }
 		
 		prerequisite = { focus = ss_generic_modernisation }
 		mutually_exclusive = { focus = ss_generic_center focus = ss_generic_right focus = IMS_generic_join_lon }
@@ -3237,7 +3293,7 @@ focus_tree = {
 		icon = GFX_goal_generic_neutrality_focus
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
-		prerequisite = { focus = ss_generic_modernisation focus = ss_generic_tradition }
+		prerequisite = { focus = ss_generic_modernisation focus = ss_generic_tradition focus = ss_generic_modernisation_sho }
 		mutually_exclusive = { focus = ss_generic_left focus = ss_generic_right }
 		x = 3
 		y = 1
@@ -3248,7 +3304,7 @@ focus_tree = {
 		}
 		offset = {
 			x = -4 y = 0
-			trigger = { tag = KAN }
+			trigger = { OR = { tag = KAN tag = SHO } }
 		}
 		cost = 10
 		
@@ -3619,7 +3675,7 @@ focus_tree = {
 		relative_position_id = ss_generic_left
 		offset = {
 			x = -3 y = 0
-			trigger = { tag = KAN }
+			trigger = { OR = { tag = KAN tag = SHO } }
 		}
 		cost = 10
 
@@ -3653,6 +3709,10 @@ focus_tree = {
 		}
 
 		completion_reward = {
+			if = {
+				limit = { has_idea = SHO_matsudaira_clan }
+				remove_ideas = SHO_matsudaira_clan
+			}
 			set_politics = {
 				ruling_party = democratic
 				elections_allowed = yes
@@ -3704,6 +3764,9 @@ focus_tree = {
 				if = { limit = { tag = KOB } NOT = { tag = KOB } }
 				if = { limit = { tag = AMC } NOT = { tag = AMC } }
 				if = { limit = { tag = OKI } NOT = { tag = OKI } }
+			} else_if = {
+				limit = { tag = SHO }
+				has_idea = SHO_low_army_morale
 			} else = {
 				has_government = neutrality
 			}
@@ -3713,12 +3776,22 @@ focus_tree = {
 			if = {
 				limit = { NOT = { tag = PRT } }
 				has_government = neutrality
+			} else_if = {
+				limit = { tag = SHO }
+				NOT = {
+					has_idea = SHO_low_army_morale
+					has_government = neutrality
+				}
 			} else = {
 				always = no
 			}
 		}
 
 		completion_reward = {
+			if = {
+				limit = { tag = SHO has_idea = SHO_low_army_morale }
+				remove_idea = SHO_low_army_morale
+			}
 			if = {
 				limit = { NOT = { tag = PRT } }
 				set_politics = {
@@ -3863,6 +3936,7 @@ focus_tree = {
 		icon = { value = GFX_focus_hol_the_only_man_in_the_dutch_government trigger = { tag = HIR } }
 		icon = { value = GFX_focus_PRT_restore_monarchy trigger = { tag = PRT } }
 		icon = { value = GFX_focus_KAN_channalge_absolutists trigger = { tag = KAN } }
+		icon = { value = GFX_focus_SHO_united trigger = { tag = SHO } }
 		icon = GFX_focus_KYU_war_preparations
 		dynamic = yes
 		search_filters = { FOCUS_FILTER_POLITICAL }
@@ -3898,7 +3972,7 @@ focus_tree = {
 		available = {
 			autocracy > 0.33
 			if = {
-				limit = { NOT = { tag = KAN } }
+				limit = { NOT = { OR = { tag = KAN tag = SHO } } }
 				NOT = { has_government = autocracy }
 			}
 			OR = {
@@ -3916,7 +3990,7 @@ focus_tree = {
 		}
 		bypass = {
 			if = {
-				limit = { NOT = { tag = KAN } }
+				limit = { NOT = { tag = KAN tag = SHO } }
 				has_government = autocracy
 			} else = {
 				hidden_trigger = { always = no }
@@ -3925,7 +3999,7 @@ focus_tree = {
 
 		completion_reward = {
 			if = {
-				limit = { tag = KAN }
+				limit = { OR = { tag = KAN tag = SHO } }
 				if = {
 					limit = { NOT = { has_government = autocracy } }
 					set_politics = {
@@ -4225,7 +4299,7 @@ focus_tree = {
 
 		available_if_capitulated = yes
 		
-		allow_branch = { NOT = { tag = PRT tag = IMS tag = KAN } }
+		allow_branch = { NOT = { tag = PRT tag = IMS tag = KAN tag = SHO } }
 		
 		ai_will_do = {
 			factor = 1
@@ -4263,7 +4337,7 @@ focus_tree = {
 			trigger = { tag = IMS }
 		}
 
-		allow_branch = { NOT = { tag = PRT tag = IMS tag = KAN } }
+		allow_branch = { NOT = { tag = PRT tag = IMS tag = KAN tag = SHO } }
 		cost = 10
 
 		available_if_capitulated = yes
@@ -4544,7 +4618,7 @@ focus_tree = {
 				}
 			}
 			if = {
-				limit = { tag = KAN }
+				limit = { OR = { tag = KAN tag = SHO } }
 				unlock_decision_category_tooltip = unify_japan_category
 				set_country_flag = unlock_unify_japan_category
 			}
@@ -5598,8 +5672,9 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = military_youth
+		id = focus_military_youth
 		icon = { value = GFX_focus_PRT_portuguese_youth trigger = { tag = PRT } }
+		icon = { value = GFX_focus_KYU_satsuma_academies trigger = { OR = { tag = KAN tag = SHO } } }
 		icon = GFX_goal_generic_more_territorial_claims
 		search_filters = { FOCUS_FILTER_MANPOWER }
 		dynamic = yes
@@ -5619,7 +5694,12 @@ focus_tree = {
 		ai_will_do = { factor = 1 }
 
 		completion_reward = {
-			add_ideas = military_youth_focus
+			if = {
+				limit = { OR = { tag = KAN tag = SHO } }
+				add_ideas = KYU_satsuma_academy_spirit
+			} else = {
+				add_ideas = focus_military_youth_focus
+			}
 			if = {
 				limit = { has_government = fascism }
 				add_popularity = {
@@ -5644,10 +5724,14 @@ focus_tree = {
 		icon = { value = GFX_goal_generic_political_pressure_eastern }
 		search_filters = { FOCUS_FILTER_MANPOWER FOCUS_FILTER_MILITARY }
 		mutually_exclusive = { focus = neutrality_focus }
-		prerequisite = { focus = military_youth focus = ideological_fanaticism }
+		prerequisite = { focus = focus_military_youth focus = ideological_fanaticism }
 		x = 1
 		y = 1
-		relative_position_id = military_youth
+		relative_position_id = focus_military_youth
+		offset = {
+			x = 1 y = 0
+			trigger = { tag = SHO }
+		}
 		cost = 10
 
 		available_if_capitulated = yes
@@ -5744,7 +5828,15 @@ focus_tree = {
 		ai_will_do = { factor = 1 }
 
 		completion_reward = {
-			add_ideas = generic_idea_citizen_army
+			if = {
+				limit = { tag = SHO has_idea = SHO_low_army_morale }
+				swap_ideas = {
+					remove_idea = SHO_low_army_morale
+					add_idea = generic_idea_citizen_army
+				}
+			} else = {
+				add_ideas = generic_idea_citizen_army
+			}
 		}
 	}
 
