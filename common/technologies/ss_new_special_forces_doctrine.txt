@@ -1,30 +1,23 @@
 technologies = {
 	
-	###JUNGLE INFANTRY
+	### SAMUARI
 	
-	special_forces_samurai = {	# Elevate the Jungle Infantry
+	special_forces_samurai = {	# Elevate the Samurai
 		doctrine_name = "SAMURAI_DOCTRINE"
-
-		# EFFECT ########
-		
-		heat_attrition_factor = -0.1
-		special_forces_cap = 0.1
 		
 		category_special_forces = {
 			max_organisation = 5
 			soft_attack = 0.05
 		}
-		enable_subunits = {
-			samurai_support
-		}		
-		###########
 		
+		special_forces_cap = 0.10
+
 		force_use_small_tech_layout = yes
 		
 		xp_research_type = army
 		xp_unlock_cost = 60
 		
-		#xor = { special_forces_marines special_forces_paratroopers }
+		#xor = { special_forces_mountaineers special_forces_marines special_forces_paratroopers }
 		
 		path = {
 			leads_to_tech = samurai_officer_class
@@ -32,7 +25,7 @@ technologies = {
 		}	
 
 		path = {
-			leads_to_tech = samurai_folk_heros
+			leads_to_tech = samurai_folk_heroes
 			research_cost_coeff = 1
 		}
 		
@@ -41,7 +34,7 @@ technologies = {
 		
 		allow = {
 			AND = {
-				has_tech = samurais
+				has_tech = tech_samurai
 				can_unlock_new_special_forces_tree = yes
 			}
 		}
@@ -82,25 +75,21 @@ technologies = {
 		
 		force_use_small_tech_layout = yes
 		
+		on_research_complete = {
+			division_limit_add_small_doctrine_bonus = yes
+			add_army_doctrine_level = yes
+		}
+		
+		enable_subunits = {
+			police_samurai
+		}	
+		
 		path = {
-			leads_to_tech = samurai_art_of_war
+			leads_to_tech = samurai_close_combat
 			research_cost_coeff = 1
 		}
 
-		xor = { samurai_folk_heros }
-		
-		samurai_support = {
-			max_organisation = 2.5
-			jungle = {
-				attack = 0.05
-			}
-			forest = {
-				attack = 0.05
-			}
-			marsh = {
-				attack = 0.05
-			}
-		}
+		xor = { samurai_folk_heroes }
 		
 		doctrine = yes	
 		research_cost = 4.5
@@ -125,7 +114,7 @@ technologies = {
 		}
 	}
 	
-	samurai_folk_heros = {
+	samurai_folk_heroes = {
 
 		xp_research_type = army
 		xp_unlock_cost = 60
@@ -133,16 +122,25 @@ technologies = {
 		force_use_small_tech_layout = yes
 		
 		path = {
-			leads_to_tech = samurai_art_of_war
+			leads_to_tech = samurai_behind_lines
 			research_cost_coeff = 1
 		}
 
 		xor = { samurai_officer_class }
 		
-		samurai = {
-			soft_attack = 0.1
-			hard_attack = 0.1
-			breakthrough = 0.1
+		teppo_samurai = {
+			suppression_factor = 0.2
+		}
+		on_research_complete = {
+			custom_effect_tooltip = samurai_folk_heroes_tt
+			hidden_effect = {
+				set_variable = { samurai_folk_heroes_modifier_positive = num_battalions_with_type@teppo_samurai }
+				divide_variable = { samurai_folk_heroes_modifier_positive = num_battalions }
+				clamp_variable = { var = samurai_folk_heroes_modifier_positive min = 0 max = 0.2 }
+				set_variable = { samurai_folk_heroes_modifier_negative = samurai_folk_heroes_modifier_positive }
+				multiply_variable = { samurai_folk_heroes_modifier_negative = -1 }
+				add_dynamic_modifier = { modifier  = samurai_folk_heroes_modifier }
+			}
 		}
 		
 		doctrine = yes	
@@ -168,50 +166,6 @@ technologies = {
 		}
 	}
 	
-	samurai_art_of_war = {
-
-		xp_research_type = army
-		xp_unlock_cost = 60
-		
-		cas_damage_reduction  = 0.2
-		enemy_army_bonus_air_superiority_factor = -0.2
-		army_intel_to_others = -20
-		
-		force_use_small_tech_layout = yes
-		
-		path = {
-			leads_to_tech = samurai_close_combat
-			research_cost_coeff = 1
-		}
-		
-		path = {
-			leads_to_tech = samurai_behind_lines
-			research_cost_coeff = 1
-		}
-		
-		doctrine = yes	
-		research_cost = 4.5
-
-		categories = {
-			special_forces_doctrine
-			mountaineers_tech
-			cat_mountaineers_doctrine
-		}
-		
-		folder = {
-			name = special_forces_doctrine_folder
-			position = { x = 0 y = 4 }
-		}
-		
-		ai_will_do = {
-			factor = 20
-		}
-		
-		ai_research_weights = {
-			#armor = 3.0
-		}
-	}
-	
 	samurai_close_combat = {
 
 		xp_research_type = army
@@ -219,19 +173,19 @@ technologies = {
 		
 		force_use_small_tech_layout = yes
 		
-		samurai = {
-			supply_consumption = -0.2
-			default_morale = 0.8
+		police_samurai = {
+			fort = { attack = 0.2 }
+			urban = { attack = 0.2 }
+			battalion_mult = {
+				category = category_front_line
+				breakthrough = 0.10
+			}
 		}
-		
-		supply_combat_penalties_on_core_factor = -0.2
 		
 		path = {
-			leads_to_tech = samurai_bushido_tradition
+			leads_to_tech = samurai_art_of_war
 			research_cost_coeff = 1
 		}
-		
-		xor = { samurai_behind_lines }
 		
 		doctrine = yes	
 		research_cost = 4.5
@@ -244,7 +198,7 @@ technologies = {
 		
 		folder = {
 			name = special_forces_doctrine_folder
-			position = { x = -1 y = 6 }
+			position = { x = -1 y = 4 }
 		}
 		
 		ai_will_do = {
@@ -264,35 +218,21 @@ technologies = {
 		force_use_small_tech_layout = yes
 		
 		path = {
-			leads_to_tech = samurai_bushido_tradition
+			leads_to_tech = samurai_art_of_war
 			research_cost_coeff = 1
 		}
 		
-		artillery_brigade = {
-			forest = { defence = 0.05  }
-			jungle = { defence = 0.05  }
-			marsh = { defence = 0.05  }
-		}
+		pocket_penalty = -0.1
 		
-		anti_tank_brigade = {
-			forest = { defence = 0.05  }
-			jungle = { defence = 0.05  }
-			marsh = { defence = 0.05  }
+		teppo_samurai = {
+			forest = { defence = 0.1  }
+			jungle = { defence = 0.1  }
+			marsh = { defence = 0.1  }
+			forest = { attack = 0.1  }
+			jungle = { attack = 0.1  }
+			marsh = { attack = 0.1  }
+			supply_consumption = -0.2
 		}
-		
-		anti_air_brigade = {
-			forest = { defence = 0.05  }
-			jungle = { defence = 0.05  }
-			marsh = { defence = 0.05  }
-		}
-		
-		rocket_artillery_brigade = {
-			forest = { defence = 0.05  }
-			jungle = { defence = 0.05  }
-			marsh = { defence = 0.05  }
-		}
-		
-		xor = { samurai_close_combat }
 		
 		doctrine = yes	
 		research_cost = 4.5
@@ -305,7 +245,47 @@ technologies = {
 		
 		folder = {
 			name = special_forces_doctrine_folder
-			position = { x = 1 y = 6 }
+			position = { x = 1 y = 4 }
+		}
+		
+		ai_will_do = {
+			factor = 20
+		}
+		
+		ai_research_weights = {
+			#armor = 3.0
+		}
+	}
+	
+	samurai_art_of_war = {
+
+		xp_research_type = army
+		xp_unlock_cost = 60
+		
+		planning_speed = 0.1
+		max_planning_factor = 0.1
+		org_loss_when_moving = -0.1
+		land_night_attack = 0.1
+		
+		force_use_small_tech_layout = yes
+		
+		path = {
+			leads_to_tech = samurai_bushido_tradition
+			research_cost_coeff = 1
+		}
+		
+		doctrine = yes	
+		research_cost = 4.5
+
+		categories = {
+			special_forces_doctrine
+			mountaineers_tech
+			cat_mountaineers_doctrine
+		}
+		
+		folder = {
+			name = special_forces_doctrine_folder
+			position = { x = 0 y = 6 }
 		}
 		
 		ai_will_do = {
@@ -322,10 +302,11 @@ technologies = {
 		xp_research_type = army
 		xp_unlock_cost = 60
 		
-		samurai = {
-			equipment_capture_factor = 0.02
-			combat_width = -0.2
-			max_organisation = 5
+		weekly_casualties_war_support = 0.1
+		army_strength_factor = 0.1
+		
+		ategory_special_forces = {
+			breakthrough = 0.1
 		}
 		
 		force_use_small_tech_layout = yes
@@ -370,25 +351,12 @@ technologies = {
 		
 		force_use_small_tech_layout = yes
 		
-		special_forces_training_time_factor = -0.10
-		special_forces_cap = 0.20
-		
-		samurai_support = {
-			battalion_mult = {
-				category = category_light_infantry
-				max_organisation = 1
-				supply_consumption = -0.15
-				add = yes
-			}
-		}
-		
-		samurai_support = {
-			battalion_mult = {
-				category = category_cavalry
-				max_organisation = 1
-				supply_consumption = -0.15
-				add = yes
-			}
+		teppo_samurai = {
+			max_organisation = 5
+			soft_attack = 0.1
+			hard_attack = 0.1
+			breakthrough = 0.1
+			ap_attack = 0.1
 		}
 		
 		xor = { samurai_backbone_of_army }
@@ -421,64 +389,9 @@ technologies = {
 		xp_research_type = army
 		xp_unlock_cost = 60
 		
-	#	recon = {
-	#		battalion_mult = {
-	#			category = category_special_forces
-	#			soft_attack = 0.10
-	#			hard_attack = 0.10
-	#			breakthrough = 0.10
-	#			#add = yes
-	#		}
-	#	}
-		
-		mot_recon = {
-			battalion_mult = {
-				category = category_special_forces
-				soft_attack = 0.10
-				hard_attack = 0.10
-				breakthrough = 0.10
-				#add = yes
-			}
-		}
-		
-		armored_car_recon = {
-			battalion_mult = {
-				category = category_special_forces
-				soft_attack = 0.10
-				hard_attack = 0.10
-				breakthrough = 0.10
-				#add = yes
-			}
-		}
-		
-		light_tank_recon = {
-			battalion_mult = {
-				category = category_special_forces
-				soft_attack = 0.10
-				hard_attack = 0.10
-				breakthrough = 0.10
-				#add = yes
-			}
-		}
-		
-		light_tank_recon = {
-			battalion_mult = {
-				category = category_special_forces
-				soft_attack = 0.10
-				hard_attack = 0.10
-				breakthrough = 0.10
-				#add = yes
-			}
-		}
-		
-		samurai_support = {
-			battalion_mult = {
-				category = category_all_armor
-				soft_attack = 0.10
-				hard_attack = 0.10
-				breakthrough = 0.10
-			}
-		}
+		special_forces_training_time_factor = -0.10
+		special_forces_attack_factor = 0.10
+		special_forces_cap = 0.20
 		
 		force_use_small_tech_layout = yes
 
