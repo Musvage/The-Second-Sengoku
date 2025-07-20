@@ -212,6 +212,7 @@ NDiplomacy = {
 	ATTACHE_TO_SUBJECT_EFFECT = -0.05,				-- If overlord sent attaches to the subject it losses autonomy
 	ATTACHE_TO_OVERLORD_EFFECT = 0.05,				-- If subject sent attaches to the overlord it gains autonomy
 
+	AUTONOMY_LEVEL_CHANGE_SANCTUARY = 30,			-- The number of days post autonomy level has changed where neither side can increase nor decrease the autonomy level.
 	AUTONOMY_LEVEL_CHANGE_PP_COST_BASE = 50.0,		-- Base cost of changing level of autonomy
 	AUTONOMY_LEVEL_CHANGE_PP_ANNEX = 300,			-- Annexation cost
 	AUTONOMY_LEVEL_CHANGE_PP_FREE = 300,			-- Break free cost
@@ -2771,8 +2772,8 @@ NAI = {
 	ASSIGN_TANKS_TO_JUNGLE = -6.0,                              -- factor for assigning tank divisions to fronts with jungle (proportional to how much of that terrain type)
 	UNIT_ASSIGNMENT_TERRAIN_IMPORTANCE = 10.0,                  -- Terrain score for units are multiplied by this when the AI is deciding which front they should be assigned to
 
-	ASSIGN_TANKS_TO_WAR_FRONT = 6.0,                            -- Scoring factor for assigning tank divisions to active war fronts
-	ASSIGN_TANKS_TO_NON_WAR_FRONT = 0.4,                        -- Scoring factor for assigning tank divisions to non-war fronts
+	ASSIGN_TANKS_TO_WAR_FRONT = 6.0,                            -- Scoring factor for assigning divisions with 'role = armor' or 'front_role_override = offence' to active war fronts
+	ASSIGN_TANKS_TO_NON_WAR_FRONT = 0.4,                        -- Scoring factor for assigning divisions with 'role = armor' or 'front_role_override = offence' to non-war fronts
 
 	REASSIGN_TO_ANOTHER_FRONT_FACTOR = 0.5,                    -- Factor for reassigning to another front. 0.0 < X < 1.0 means reluctant, X > 1.0 means want to.
 	REASSIGN_TO_ANOTHER_FRONT_IF_IN_COMBAT_FACTOR = 0.2,       -- Factor for reassigning to another front if in combat. 0.0 < X < 1.0 means reluctant, X > 1.0 means want to.
@@ -3170,7 +3171,8 @@ NAI = {
 
 	COMMAND_POWER_BEFORE_SPEND_ON_TRAITS = 30.0,
 
-	PEACE_BID_FOLD_TURNS_AGAINST_OTHER_AI = 2,					--Resolve contests against other AIs after this many turns. Don't always contest forever, it yields the same results.
+	PEACE_BID_FOLD_TURNS_AGAINST_OTHER_AI = 2,                  -- Resolve contests against other AIs after this many turns. Don't always contest forever, it yields the same results.
+	-- When resolving contest against other AI, a tie breaker score is calculated and the loser folds.
 	PEACE_BID_CONTEST_TIE_BREAKER_CONFERENCE_SCORE = 1.0,       -- How much to weigh relative remaining peace conference score between the countries
 	PEACE_BID_CONTEST_TIE_BREAKER_INFLUENCE_DISTANCE = 1.0,     -- How much to weigh relative influence distance between the countries
 	PEACE_BID_CONTEST_TIE_BREAKER_COUNTRY_SCORE = 1.0,          -- How much to weigh relative country score between the countries
