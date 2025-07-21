@@ -447,48 +447,66 @@ news_event = { # Birth of the Franco-British Union
 }
 
 # Earthquakes
-news_event = {
-	id = earthquake.1
-	title = earthquake.1.t
-	desc = earthquake.1.d
+
+country_event = { #Miyagi Earthquake
+	id = earthquake.miyagi
+	title = earthquake.affected.t
+	desc = earthquake.affected.d
 	picture = GFX_news_LoN_test
 
+	fire_only_once = yes
 	is_triggered_only = yes
 
 	trigger = {
-		
 		date > 1936.11.3
+		tag = ROOT
+		owns_state = 10
 	}
-
-	mean_time_to_happen = { days = 1 }
-
 	hidden = no
 
-	fire_only_once = yes 
+    ai_chance = { base = 100 }
+		immediate = {
+		10 = {
+			limit = {
+				is_fully_controlled_by = ROOT
+				arms_factory > 0
+				industrial_complex > 0
+				infrastructure > 0
+			}
+			damage_building = { type = arms_factory damage = 0.5 }
+			damage_building = { type = industrial_complex damage = 0.5 }
+			damage_building = { type = infrastructure damage = 0.5 }
+			}
+		}
 
 	option = {
-		name = earthquake.japan_response.help
-		ai_chance = {
-			base = 1
+    name = earthquake.japan_response.suffer 
+    hidden_effect = {
+			country_event = { days = 1 earthquake.1 }
 		}
 	}
-
-	option = {
-		name = earthquake.japan_response.reject
-		ai_chance = {
-			base = 99
-		}
-
-	}
-
-	immediate = {
-		state = 10 {
-			if = { limit = { industrial_complex > 0 } damage_building = { type = industrial_complex damage = 0.5 } }
-			if = { limit = { arms_factory > 0 } damage_building = { type = arms_factory damage = 0.5 } }
-			if = { limit = { infrastructure > 0 } damage_building = { type = infrastructure damage = 0.5 } }
-		}
-	}
-
 }
 
+news_event = {
+    id = earthquake.1
+    title = earthquake.1.t
+    desc = earthquake.1.d
+    picture = GFX_news_LoN_test
 
+
+    option = {
+        name = earthquake.japan_response.help
+		trigger = {
+			NOT = {
+				owns_state = 10
+			}
+		}
+        ai_chance = { base = 1 }
+        add_political_power = -5  # Example effect	
+    }
+
+    option = {
+        name = earthquake.japan_response.reject
+        ai_chance = { base = 99 }
+    }
+}
