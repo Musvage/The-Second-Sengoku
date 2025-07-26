@@ -103,7 +103,8 @@ AMO_war_against_shogunate = {
 				target = SHO
 				type = annex_everything
 			}
-			hidden_effect = { activate_mission = AMO_ongoing_war_amo SHO = { activate_mission = AMO_ongoing_war_sho } }
+			set_global_flag = amo_sho_scripted_war_ongoing
+			hidden_effect = { activate_mission = AMO_ongoing_war_amo SHO = { activate_mission = AMO_ongoing_war_sho set_variable = { ongoing_war_buy_time_cost = 50 } } }
 		}
 
 		ai_will_do = { base = 0 }
@@ -217,8 +218,19 @@ AMO_war_against_shogunate = {
 		activation = { always = no }
 		
 		available = {
-			controls_state = 102
-			controls_state = 196
+			hidden_trigger = { always = no }
+			custom_trigger_tooltip = {
+				tooltip = AMO_ongoing_war_amo_pyrrhic
+				NOT = { any_owned_state = { is_controlled_by = SHO } }	# knights hold the line
+			}
+			custom_trigger_tooltip = {
+				tooltip = AMO_ongoing_war_amo_close						# knights capture territory
+				SHO = { any_owned_state = { is_controlled_by = AMO } }
+			}
+			custom_trigger_tooltip = {
+				tooltip = AMO_ongoing_war_amo_total						# total victory
+				NOT = { country_exists = SHO }
+			}
 		}
 
 		days_mission_timeout = 90
@@ -229,6 +241,32 @@ AMO_war_against_shogunate = {
 
 		complete_effect = {
 			custom_effect_tooltip = AMO_ongoing_war_tt
+			if = {
+				limit = {
+					AMO = {
+						all_controlled_state = {
+							OR = {
+								NOT = { is_on_continent = honshu }
+								is_one_state_island = yes
+							}
+						}
+					}
+				}
+				SHO = { country_event = amaterasu.6 }	# Shogun's close victory
+			} else_if = {
+				limit = { 
+					SHO = { NOT = { any_owned_state = { is_controlled_by = AMO } } }
+				}
+				SHO = { country_event = amaterasu.7 }	# Shogun's pyrrhic victory
+			} else_if = {
+				limit = {
+					SHO = { any_owned_state = { is_controlled_by = AMO } }
+				}
+				country_event = amaterasu.9				# Knight's close victory
+			} else_if = {
+				country_event = amaterasu.8				# Knight's pyrrhic victory
+			}
+			clr_global_flag = amo_sho_scripted_war_ongoing
 		}
 		
 		ai_will_do = {
@@ -240,31 +278,30 @@ AMO_war_against_shogunate = {
 	
 		icon = generic_ignite_civil_war
 	
-		allowed = { original_tag = AMO }
+		allowed = { original_tag = SHO }
 		
 		activation = { always = no }
 		
 		available = {
-			OR = {
-				custom_trigger_tooltip = {
-					tooltip = AMO_ongoing_war_sho_bad
-					NOT = { any_owned_state = { is_controlled_by = AMO } }	# kept the knights at bay, but they hold Noto and Sado
-				}
-				custom_trigger_tooltip = {
-					tooltip = AMO_ongoing_war_sho_medium					# expelled the knights from Honshu
-					AMO = {
-						all_controlled_state = {
-							OR = {
-								NOT = { is_on_continent = honshu }
-								is_one_state_island = yes
-							}
+			hidden_trigger = { always = no }
+			custom_trigger_tooltip = {
+				tooltip = AMO_ongoing_war_sho_pyrrhic
+				NOT = { any_owned_state = { is_controlled_by = AMO } }	# kept the knights at bay, but they hold Noto and Sado
+			}
+			custom_trigger_tooltip = {
+				tooltip = AMO_ongoing_war_sho_close						# expelled the knights from Honshu
+				AMO = {
+					all_controlled_state = {
+						OR = {
+							NOT = { is_on_continent = honshu }
+							is_one_state_island = yes
 						}
 					}
 				}
-				custom_trigger_tooltip = {
-					tooltip = AMO_ongoing_war_sho_good						# total victory
-					NOT = { country_exists = AMO }
-				}
+			}
+			custom_trigger_tooltip = {
+				tooltip = AMO_ongoing_war_sho_total						# total victory
+				NOT = { country_exists = AMO }
 			}
 		}
 		
@@ -282,6 +319,42 @@ AMO_war_against_shogunate = {
 		
 		ai_will_do = {
 			factor = 0
+		}
+	}
+	
+	AMO_ongoing_war_buy_time_sho = {
+	
+		icon = generic_hour_glass
+	
+		allowed = { original_tag = SHO }
+		
+		visible = { has_decision = AMO_ongoing_war_sho }
+		
+		cost = var:ongoing_war_buy_time_cost?50
+
+		fire_only_once = no
+		
+		cost = 100
+
+		complete_effect = {
+			add_days_remove  = {
+				decision = AMO_ongoing_war_sho
+				days = 60
+			}
+			custom_effect_tooltip = AMO_ongoing_war_buy_time_sho_cost
+			hidden_effect = {
+				AMO = {
+					add_days_remove  = {
+						decision = AMO_ongoing_war_amo
+						days = 60
+					}
+				}
+				add_to_variable = { ongoing_war_buy_time_cost = 50 }
+			}
+		}
+		
+		ai_will_do = {
+			factor = 10
 		}
 	}
 }

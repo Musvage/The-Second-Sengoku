@@ -48,6 +48,25 @@ on_actions = {
 		effect = {
 			log = "on_capitulation_immediate [ROOT.GetName] is the loser, [FROM.GetName] is the winner."
 		}
+		effect = {
+			if = {
+				limit = {
+					has_global_flag = amo_sho_scripted_war_ongoing
+					if = {
+						limit = { ROOT = { tag = SHO } FROM = { tag = AMO } }	# AMO wins
+						AMO = { country_evet = amaterasu.10 remove_decision = AMO_ongoing_war_amo }
+						SHO = { remove_decision = AMO_ongoing_war_sho }
+						clr_global_flag = amo_sho_scripted_war_ongoing
+					} else_if = {
+						limit = { ROOT = { tag = AMO } FROM = { tag = SHO } }	# SHO wins
+						SHO = { country_evet = amaterasu.5 remove_decision = AMO_ongoing_war_sho }
+						AMO = { remove_decision = AMO_ongoing_war_amo }
+						clr_global_flag = amo_sho_scripted_war_ongoing
+					}
+					
+				}
+			}
+		}
 	}
 	on_peaceconference_started = {
 		effect = {
