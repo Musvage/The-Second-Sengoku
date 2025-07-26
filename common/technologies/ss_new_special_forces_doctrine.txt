@@ -10,6 +10,10 @@ technologies = {
 			soft_attack = 0.05
 		}
 		
+		enable_subunits = {
+			police_samurai
+		}
+		
 		special_forces_cap = 0.10
 
 		force_use_small_tech_layout = yes
@@ -78,13 +82,18 @@ technologies = {
 		on_research_complete = {
 			division_limit_add_small_doctrine_bonus = yes
 			add_army_doctrine_level = yes
+			#
+			custom_effect_tooltip = samurai_officer_class_tt
+			hidden_effect = {
+				set_variable = { samurai_officer_class_modifier_positive = num_battalions_with_type@teppo_samurai }
+				add_to_variable = { samurai_officer_class_modifier_positive = num_battalions_with_type@police_samurai }
+				divide_variable = { samurai_officer_class_modifier_positive = num_battalions }
+				clamp_variable = { var = samurai_officer_class_modifier_positive min = 0 max = 0.2 }
+				add_dynamic_modifier = { modifier  = samurai_officer_class_modifier }
+			}
 		}
 		
-		unit_teppo_samurai_design_cost_factor = -0.50
-		
-		enable_subunits = {
-			police_samurai
-		}	
+		unit_police_samurai_design_cost_factor = -0.5	
 		
 		path = {
 			leads_to_tech = samurai_close_combat
@@ -141,6 +150,7 @@ technologies = {
 			custom_effect_tooltip = samurai_folk_heroes_tt
 			hidden_effect = {
 				set_variable = { samurai_folk_heroes_modifier_positive = num_battalions_with_type@teppo_samurai }
+				add_to_variable = { samurai_folk_heroes_modifier_positive = num_battalions_with_type@police_samurai }
 				divide_variable = { samurai_folk_heroes_modifier_positive = num_battalions }
 				clamp_variable = { var = samurai_folk_heroes_modifier_positive min = 0 max = 0.2 }
 				set_variable = { samurai_folk_heroes_modifier_negative = samurai_folk_heroes_modifier_positive }
@@ -181,8 +191,8 @@ technologies = {
 		force_use_small_tech_layout = yes
 		
 		police_samurai = {
-			fort = { attack = 0.2 }
-			urban = { attack = 0.2 }
+			fort = { attack = 0.1 }
+			urban = { attack = 0.1 }
 			battalion_mult = {
 				category = category_all_infantry
 				breakthrough = 0.10
@@ -312,10 +322,33 @@ technologies = {
 		xp_unlock_cost = 60
 		
 		weekly_casualties_war_support = 0.1
-		army_strength_factor = 0.1
 		
-		ategory_special_forces = {
+		category_special_forces = {
 			breakthrough = 0.1
+		}
+		
+		on_research_complete = {
+			custom_effect_tooltip = samurai_bushido_tradition_tt
+			hidden_effect = {
+				if = {
+					limit = { has_dynamic_modifier = { modifier = samurai_folk_heroes_modifier } }
+					set_variable = { samurai_folk_heroes_modifier_positive = num_battalions_with_type@teppo_samurai }
+					add_to_variable = { samurai_folk_heroes_modifier_positive = num_battalions_with_type@police_samurai }
+					multiply_variable = { samurai_folk_heroes_modifier_positive = 2 }
+					divide_variable = { samurai_folk_heroes_modifier_positive = num_battalions }
+					clamp_variable = { var = samurai_folk_heroes_modifier_positive min = 0 max = 0.2 }
+					set_variable = { samurai_folk_heroes_modifier_negative = samurai_folk_heroes_modifier_positive }
+					multiply_variable = { samurai_folk_heroes_modifier_negative = -1 }
+				} else = {
+					set_variable = { samurai_officer_class_modifier_positive = num_battalions_with_type@teppo_samurai }
+					add_to_variable = { samurai_officer_class_modifier_positive = num_battalions_with_type@police_samurai }
+					multiply_variable = { samurai_officer_class_modifier_positive = 2 }
+					divide_variable = { samurai_officer_class_modifier_positive = num_battalions }
+					clamp_variable = { var = samurai_officer_class_modifier_positive min = 0 max = 0.2 }
+
+				}
+
+			}
 		}
 		
 		force_use_small_tech_layout = yes
