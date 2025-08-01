@@ -10,7 +10,9 @@ AMO_war_against_shogunate = {
 		
 		days_remove = 60
 		
-		modifier = { war_support_weekly = 0.01 weekly_manpower  = 250 }
+		modifier = {
+			war_support_weekly = 0.01 weekly_manpower  = 250
+		}
 		
 		remove_effect = {
 			transfer_state = 102
@@ -84,7 +86,7 @@ AMO_war_against_shogunate = {
 					}
 				}
 				AMO = { capital_scope = {
-					create_unit = { division = "name = \"Hohei Shidan"\" division_template = \"Hohei Shidan"\" start_experience_factor = 0.33" owner = AMO }
+					create_unit = { division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 0.33" owner = AMO }
 				} }
 			}
 			if = { 
@@ -92,7 +94,7 @@ AMO_war_against_shogunate = {
 				SHO = {
 					hidden_effect = {
 						every_country_division = {
-							limit = { unit_organisation > 0.25 }
+							limit = { unit_organization > 0.25 }
 							set_unit_organization = 0.25
 						}
 					}
@@ -221,7 +223,8 @@ AMO_war_against_shogunate = {
 			hidden_trigger = { always = no }
 			custom_trigger_tooltip = {
 				tooltip = AMO_ongoing_war_amo_pyrrhic
-				NOT = { any_owned_state = { is_controlled_by = SHO } }	# knights hold the line
+				102 = { is_controlled_by = AMO }						# knights hold the line
+				196 = { is_controlled_by = AMO }
 			}
 			custom_trigger_tooltip = {
 				tooltip = AMO_ongoing_war_amo_close						# knights capture territory
@@ -263,7 +266,7 @@ AMO_war_against_shogunate = {
 					SHO = { any_owned_state = { is_controlled_by = AMO } }
 				}
 				country_event = amaterasu.9				# Knight's close victory
-			} else_if = {
+			} else = {
 				country_event = amaterasu.8				# Knight's pyrrhic victory
 			}
 			clr_global_flag = amo_sho_scripted_war_ongoing
@@ -328,7 +331,7 @@ AMO_war_against_shogunate = {
 	
 		allowed = { original_tag = SHO }
 		
-		visible = { has_decision = AMO_ongoing_war_sho }
+		visible = { has_active_mission = AMO_ongoing_war_sho }
 		
 		cost = var:ongoing_war_buy_time_cost?50
 
@@ -337,15 +340,15 @@ AMO_war_against_shogunate = {
 		cost = 100
 
 		complete_effect = {
-			add_days_remove  = {
-				decision = AMO_ongoing_war_sho
+			add_days_mission_timeout = {
+				mission = AMO_ongoing_war_sho
 				days = 60
 			}
 			custom_effect_tooltip = AMO_ongoing_war_buy_time_sho_cost
 			hidden_effect = {
 				AMO = {
-					add_days_remove  = {
-						decision = AMO_ongoing_war_amo
+					add_days_mission_timeout = {
+						mission = AMO_ongoing_war_amo
 						days = 60
 					}
 				}
@@ -355,6 +358,75 @@ AMO_war_against_shogunate = {
 		
 		ai_will_do = {
 			factor = 10
+		}
+	}
+	
+	AMO_ongoing_war_buy_time_amo = {
+	
+		icon = generic_hour_glass
+	
+		allowed = { original_tag = AMO }
+		
+		visible = { has_active_mission = AMO_ongoing_war_amo }
+		
+		cost = var:ongoing_war_buy_time_cost?50
+
+		fire_only_once = no
+		
+		cost = 100
+
+		complete_effect = {
+			add_days_mission_timeout = {
+				mission = AMO_ongoing_war_sho
+				days = 60
+			}
+			custom_effect_tooltip = AMO_ongoing_war_buy_time_sho_cost
+			hidden_effect = {
+				AMO = {
+					add_days_mission_timeout = {
+						mission = AMO_ongoing_war_amo
+						days = 60
+					}
+				}
+				add_to_variable = { ongoing_war_buy_time_cost = 50 }
+			}
+		}
+		
+		ai_will_do = {
+			factor = 10
+		}
+	}
+	
+	AMO_ongoing_war_surrender_sho = {
+	
+		icon = generic_hour_glass
+	
+		allowed = { original_tag = SHO }
+		
+		visible = { has_active_mission = AMO_ongoing_war_sho }
+		
+		cost = 0
+
+		fire_only_once = yes
+		
+		cost = 100
+
+		complete_effect = {
+			
+		}
+		
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				add = 99
+				any_enemy_country = {
+					NOT = { tag = AMO }
+					strength_ratio = {
+						tag = AMO
+						ratio > 1
+					}
+				}
+			}
 		}
 	}
 }
