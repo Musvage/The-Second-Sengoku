@@ -768,7 +768,57 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			
+			KAN_uchiyama_gudo = {
+				add_country_leader_trait = {
+					ideology = communism_buddhism
+					trait = KAN_support_from_armies
+				}
+				hidden_effect = {
+					add_trait = {
+						 slot = political_advisor
+						 trait = KAN_support_from_armies_adviser
+					}
+				}
+			}
+			if = {
+				limit = { NOT = { has_idea = KAN_political_radicalism_spirit } }
+				add_timed_idea = { idea = KAN_political_radicalism_spirit days = 730 }
+			} else = {
+				modify_timed_idea = {
+					idea = KAN_political_radicalism_spirit
+					days = 365
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = KAN_sway_generals
+		icon = GFX_focus_KAN_sway_the_generals
+		search_filters = {  }
+		
+		prerequisite = { focus = KAN_approach_young_officers }
+		
+		relative_position_id = KAN_approach_young_officers
+		x = -1
+		y = 1
+		cost = 10
+		
+		available = {
+			NOT = { has_government = communism }
+			has_completed_focus = KAN_ikko_ikki
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			custom_effect_tooltip = KAN_sway_generals_tt
+			effect_tooltip = {
+				custom_effect_tooltip = KAN_sway_generals_effect
+				add_political_power = 200
+			}
 		}
 	}
 	
@@ -905,6 +955,17 @@ focus_tree = {
 				}
 				custom_effect_tooltip = KAN_ikko_ikki_cw_tt
 			}
+			custom_effect_tooltip = loc_paragraph
+			if = {
+				limit = { has_completed_focus = KAN_sway_generals }
+				custom_effect_tooltip = KAN_sway_generals_trigger
+				custom_effect_tooltip = KAN_sway_generals_effect
+				add_political_power = 200
+			} else = {
+				custom_effect_tooltip = KAN_sway_generals_trigger2
+				custom_effect_tooltip = KAN_sway_generals_effect
+				effect_tooltip = { add_political_power = 200 }
+			}
 		}
 	}
 	
@@ -945,6 +1006,15 @@ focus_tree = {
 		
 		ai_will_do = {
 			factor = 5
+		}
+		
+		available = {
+			OR = {
+				has_war = yes
+				any_country = { is_justifying_wargoal_against = ROOT }
+				any_country = { has_wargoal_against = ROOT }
+				threat > 0.99
+			}
 		}
 		
 		completion_reward = {
