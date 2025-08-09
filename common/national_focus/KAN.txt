@@ -161,7 +161,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			set_country_flag = allowed_path_fascism
+			set_country_flag = allowed_path_fascism	remove_country_flag = allowed_path_autocratic
 			add_war_support = 0.05
 			add_timed_idea = { idea = KAN_religious_radicalism_spirit days = 730 }
 		}
@@ -286,9 +286,9 @@ focus_tree = {
 				}
 			}
 			hidden_effect = {
-				KYU_nashimoto_morimasa = {
-					set_character_flag = divine_authority_secondary
-				}
+				KYU_nashimoto_morimasa = { set_character_flag = divine_authority_secondary }
+				KAN_kenkichi_yoshizawa = { set_character_flag = divine_authority_secondary }
+				KAN_prince_kanin_kotohito = { set_character_flag = divine_authority_secondary }
 				add_ideas = KAN_divine_authority_secondary_spirit
 				unification_get_score = yes
 			}
@@ -380,7 +380,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			set_country_flag = allowed_path_communism
+			set_country_flag = allowed_path_communism remove_country_flag = allowed_path_autocratic
 		}
 	}
 	
@@ -407,7 +407,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			set_country_flag = allowed_path_communism
+			set_country_flag = allowed_path_communism remove_country_flag = allowed_path_autocratic
 		}
 	}
 	
@@ -535,9 +535,15 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			set_country_flag = allowed_path_democratic
-			set_country_flag = allowed_path_democratic_socialism
-			add_timed_idea = { idea = KAN_western_influence_spirit days = 730 }
+			if = {
+				limit = { democratic_socialism > democratic }
+				set_country_flag = allowed_path_democratic_socialism
+				add_timed_idea = { idea = KAN_western_influence_alt_spirit days = 730 }
+			} else = {
+				set_country_flag = allowed_path_democratic		
+				add_timed_idea = { idea = KAN_western_influence_spirit days = 730 }
+			}
+			remove_country_flag = allowed_path_autocratic
 		}
 	}
 	
@@ -765,7 +771,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			set_country_flag = allowed_path_communism
+			set_country_flag = allowed_path_communism remove_country_flag = allowed_path_autocratic
 			add_timed_idea = { idea = KAN_political_radicalism_spirit days = 730 }
 		}
 	}
@@ -911,6 +917,16 @@ focus_tree = {
 			hidden_effect = {
 				remove_ideas = KAN_state_shinto_1
 				swap_ideas = { remove_idea = KAN_buddhist_opposition_spirit_1 add_idea = KAN_buddhist_opposition_spirit_2 }
+				KAN_prince_kanin_kotohito = {
+					set_character_flag = resist_ikko_ikki
+				}
+				if = {
+					limit = { NOT = { has_completed_focus = KAN_sway_generals } }
+					every_unit_leader = {
+						limit = { has_trait = imperial_prince_unit_leader }
+						set_character_flag = resist_ikko_ikki
+					}
+				}
 			}
 			if = {
 				limit = { communism > 0.666 }
@@ -929,7 +945,7 @@ focus_tree = {
 						divide_temp_variable = { cw_size = 2 }
 						hidden_effect = {
 							start_civil_war = {
-								ideology = autocracy
+								ideology = neutrality
 								capital = 32	# Kyoto
 								size = 0.5
 								states = all
@@ -944,7 +960,11 @@ focus_tree = {
 										}
 									}
 								}
-								keep_all_characters = yes
+								keep_unit_leaders_trigger  = {
+									NOT = { has_character_flag = resist_ikko_ikki }
+								}
+								keep_political_leader = no
+								keep_political_party_members = yes
 								set_religion_2 = yes
 							}
 						}
@@ -959,7 +979,7 @@ focus_tree = {
 				custom_effect_tooltip = KAN_ikko_ikki_always_cw
 				hidden_effect = {
 					start_civil_war = {
-						ideology = autocracy
+						ideology = neutrality
 						capital = 32	# Kyoto
 						size = 0.5
 						states = all
@@ -974,7 +994,11 @@ focus_tree = {
 								}
 							}
 						}
-						keep_all_characters = yes
+						keep_unit_leaders_trigger  = {
+							NOT = { has_character_flag = resist_ikko_ikki }
+						}
+						keep_political_leader = no
+						keep_political_party_members = yes
 						set_religion_2 = yes
 					}
 				}
