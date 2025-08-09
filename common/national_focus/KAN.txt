@@ -218,9 +218,13 @@ focus_tree = {
 			factor = 5
 		}
 		
+		available = { fascism > 0.5 }
+		
+		bypass = { has_government = fascism }
+		
 		completion_reward = {
 			set_politics = {
-				ruling_party = democratic
+				ruling_party = fascism
 				elections_allowed = yes
 			}
 			custom_effect_tooltip = loc_paragraph
@@ -247,6 +251,8 @@ focus_tree = {
 			factor = 5
 		}
 		
+		available = { has_government = fascism }
+		
 		completion_reward = {
 			add_ideas = KAN_spiritual_mobilization_spirit
 		}
@@ -268,9 +274,24 @@ focus_tree = {
 			factor = 5
 		}
 		
+		available = { has_government = fascism }
+		
 		completion_reward = {
 			add_political_power = 150
-			add_country_leader_trait = KAN_divine_authority_country_leaader
+			KAN_hirohito = {
+				custom_effect_tooltip = gain_divine_authority_country_leader
+				custom_effect_tooltip = unification_score_bonus_20_p_trait
+				hidden_effect = {
+					add_country_leader_trait = KAN_divine_authority_country_leader
+				}
+			}
+			hidden_effect = {
+				KYU_nashimoto_morimasa = {
+					set_character_flag = divine_authority_secondary
+				}
+				add_ideas = KAN_divine_authority_secondary_spirit
+				unification_get_score = yes
+			}
 		}
 	}
 	
@@ -290,6 +311,8 @@ focus_tree = {
 		ai_will_do = {
 			factor = 5
 		}
+		
+		available = { has_government = fascism }
 		
 		completion_reward = {
 			
@@ -780,15 +803,17 @@ focus_tree = {
 					}
 				}
 			}
-			if = {
-				limit = { NOT = { has_idea = KAN_political_radicalism_spirit } }
-				add_timed_idea = { idea = KAN_political_radicalism_spirit days = 730 }
-			} else = {
-				modify_timed_idea = {
-					idea = KAN_political_radicalism_spirit
-					days = 365
-				}
+			set_temp_variable = { communism_bonus = num_battalions_with_type@infantry }
+			add_to_temp_variable = { communism_bonus = num_battalions_with_type@militia }
+			add_to_temp_variable = { communism_bonus = num_battalions_with_type@irregular_infantry }
+			divide_temp_variable = { communism_bonus = 2500 }
+			clamp_variable = { var = communism_bonus min = 0 max = 1 }
+			add_popularity = {
+				ideology = communism
+				popularity = var:communism_bonus
 			}
+			custom_effect_tooltip = paragraph_tt
+			custom_effect_tooltip = KAN_approach_young_officers_tt
 		}
 	}
 	
@@ -816,8 +841,8 @@ focus_tree = {
 		completion_reward = {
 			custom_effect_tooltip = KAN_sway_generals_tt
 			effect_tooltip = {
-				custom_effect_tooltip = KAN_sway_generals_effect
 				add_political_power = 200
+				custom_effect_tooltip = KAN_sway_generals_effect
 			}
 		}
 	}
@@ -959,12 +984,12 @@ focus_tree = {
 			if = {
 				limit = { has_completed_focus = KAN_sway_generals }
 				custom_effect_tooltip = KAN_sway_generals_trigger
-				custom_effect_tooltip = KAN_sway_generals_effect
 				add_political_power = 200
+				custom_effect_tooltip = KAN_sway_generals_effect
 			} else = {
 				custom_effect_tooltip = KAN_sway_generals_trigger2
-				custom_effect_tooltip = KAN_sway_generals_effect
 				effect_tooltip = { add_political_power = 200 }
+				custom_effect_tooltip = KAN_sway_generals_effect
 			}
 		}
 	}
