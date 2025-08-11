@@ -16,6 +16,167 @@
 	shared_focus = SHO_armyrenewal_shared
 	
 	focus = {
+		id = SHO_turn_communist
+		icon = GFX_focus_prc_agrarian_socialism
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		
+	#	prerequisite = { focus = SHO_reform_religious_tolerance focus = SHO_approach_young_officers focus = SHO_state_monopolies }
+		
+		#relative_position_id = SHO_approach_young_officers
+		x = 0
+		y = 1
+		cost = 10
+		
+		available = {
+			communism > 0.33
+			count_triggers = {
+					amount = 2
+					has_completed_focus = SHO_reform_religious_tolerance
+					has_completed_focus = SHO_approach_young_officers
+					has_completed_focus = SHO_state_monopolies
+				}
+			NOT = {
+				has_government = democratic
+				has_government = democratic_socialism
+			}
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			set_politics = {
+				ruling_party = communism
+				elections_allowed = no
+			}
+		}
+	}
+	
+	focus = {
+		id = SHO_political_commissars
+		icon = GFX_focus_SHO_political_comissars
+		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_POLITICAL }
+
+		prerequisite = { focus = SHO_turn_communist }
+		
+		relative_position_id = SHO_turn_communist
+		x = -1
+		y = 1
+
+		cost = 10
+		
+		ai_will_do = { factor = 1 }
+
+		available_if_capitulated = yes
+		
+		available = { has_government = communism } 
+
+		completion_reward = {
+			add_ideas = political_commissars_focus
+			add_political_power = 200
+		}
+	}
+	
+	focus = {
+		id = SHO_abolish_samurai_class
+		icon = GFX_focus_SHO_abolish_samurai
+		search_filters = {  }
+		
+		prerequisite = { focus = SHO_turn_communist }
+		
+		relative_position_id = SHO_turn_communist
+		x = 1
+		y = 1
+		cost = 10
+		
+		available = { has_government = communism }
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			add_ideas = SHO_new_model_army
+			custom_effect_tooltip = SHO_abolish_samurai_class_tt
+			every_country_division = {
+				limit = { division_has_battalion_in_template = teppo_samurai }
+				destroy_unit = yes
+			}
+			custom_effect_tooltip = block_samurai_tech
+			hidden_effect = { set_technology = { tech_samurai = 0 popup = no } set_technology = { tech_samurai2 = 0 popup = no } set_technology = { tech_samurai3 = 0 popup = no } }
+		}
+	}
+	
+	focus = {
+		id = SHO_communist_paramilitary
+		icon = GFX_goal_generic_defence
+		search_filters = { FOCUS_FILTER_MANPOWER }
+		
+		prerequisite = { focus = SHO_abolish_samurai_class }
+		
+		relative_position_id = SHO_abolish_samurai_class
+		x = -1
+		y = 1
+		cost = 10
+		
+		available = {
+			has_government = communism
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			add_ideas = SHO_communist_paramilitary_spirit
+		}
+	}
+	
+	focus = {
+		id = SHO_doctrinal_revolution
+		icon = GFX_focus_SHO_doctrine_revolution
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = SHO_abolish_samurai_class }
+		
+		relative_position_id = SHO_abolish_samurai_class
+		x = 1
+		y = 1
+		cost = 10
+		
+		available = {
+			has_government = communism
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			add_doctrine_cost_reduction = {
+				name = land_doc_bonus
+				cost_reduction = 0.5
+				uses = 1
+				category = land_doctrine
+			}
+			add_doctrine_cost_reduction = {
+				name = naval_doc_bonus
+				cost_reduction = 0.5
+				uses = 1
+				category = naval_doctrine
+			}
+			add_doctrine_cost_reduction = {
+				name = air_doc_bonus
+				cost_reduction = 0.5
+				uses = 1
+				category = air_doctrine
+			}
+		}
+	}
+	
+	### old focuses bellow
+	focus = {
 		id = SHO_tokugawashogunaterestoration
 		icon = GFX_focus_shogunate
 		cost = 10.00
@@ -32,7 +193,7 @@
 				always = no
 			}
 		}
-		x = 18
+		x = 28
 		y = 0
 			available_if_capitulated = yes
 			completion_reward = {

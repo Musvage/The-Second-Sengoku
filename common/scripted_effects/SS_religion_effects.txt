@@ -668,6 +668,50 @@ get_country_religion_drift = {
 	}
 
 	# NATIONAL SPIRITS (these must be added ad-hoc)
+		# default spirits
+	if = {
+		limit = {
+			OR = { has_idea = generic_idea_religious_zeal_1_upgrade has_idea = generic_idea_religious_zeal_1 }
+			has_religion_1 = yes
+		}
+		add_to_variable = { country_religion_drift_idea = 0.5 }
+	}
+	if = {
+		limit = {
+			OR = { has_idea = generic_idea_religious_zeal_2_upgrade has_idea = generic_idea_religious_zeal_2 }
+			has_religion_2 = yes
+		}
+		add_to_variable = { country_religion_drift_idea = 0.5 }
+	}
+	if = {
+		limit = {
+			OR = { has_idea = generic_idea_religious_zeal_3_upgrade has_idea = generic_idea_religious_zeal_3 }
+			has_religion_3 = yes
+		}
+		add_to_variable = { country_religion_drift_idea = 0.5 }
+	}
+	if = {
+		limit = {
+			OR = { has_idea = generic_idea_religious_zeal_4_upgrade has_idea = generic_idea_religious_zeal_4 }
+			has_religion_4 = yes
+		}
+		add_to_variable = { country_religion_drift_idea = 0.5 }
+	}
+	if = {
+		limit = {
+			OR = { has_idea = generic_idea_religious_zeal_5_upgrade has_idea = generic_idea_religious_zeal_5 }
+			has_religion_5 = yes
+		}
+		add_to_variable = { country_religion_drift_idea = 0.5 }
+	}
+	if = {
+		limit = {
+			OR = { has_idea = generic_idea_religious_zeal_7_upgrade has_idea = generic_idea_religious_zeal_7 }
+			has_religion_7 = yes
+		}
+		add_to_variable = { country_religion_drift_idea = 0.5 }
+	}	
+		# tag-specific spirits
 	if = {
 		limit = {
 			has_idea = ROC_idea_confucian_administration
@@ -713,49 +757,6 @@ get_country_religion_drift = {
 		}
 		add_to_variable = { country_religion_drift_idea = 0.1 }
 	}
-	
-	if = {
-		limit = {
-			OR = { has_idea = generic_idea_religious_zeal_1_upgrade has_idea = generic_idea_religious_zeal_1 }
-			has_religion_1 = yes
-		}
-		add_to_variable = { country_religion_drift_idea = 0.5 }
-	}
-	if = {
-		limit = {
-			OR = { has_idea = generic_idea_religious_zeal_2_upgrade has_idea = generic_idea_religious_zeal_2 }
-			has_religion_2 = yes
-		}
-		add_to_variable = { country_religion_drift_idea = 0.5 }
-	}
-	if = {
-		limit = {
-			OR = { has_idea = generic_idea_religious_zeal_3_upgrade has_idea = generic_idea_religious_zeal_3 }
-			has_religion_3 = yes
-		}
-		add_to_variable = { country_religion_drift_idea = 0.5 }
-	}
-	if = {
-		limit = {
-			OR = { has_idea = generic_idea_religious_zeal_4_upgrade has_idea = generic_idea_religious_zeal_4 }
-			has_religion_4 = yes
-		}
-		add_to_variable = { country_religion_drift_idea = 0.5 }
-	}
-	if = {
-		limit = {
-			OR = { has_idea = generic_idea_religious_zeal_5_upgrade has_idea = generic_idea_religious_zeal_5 }
-			has_religion_5 = yes
-		}
-		add_to_variable = { country_religion_drift_idea = 0.5 }
-	}
-	if = {
-		limit = {
-			OR = { has_idea = generic_idea_religious_zeal_7_upgrade has_idea = generic_idea_religious_zeal_7 }
-			has_religion_7 = yes
-		}
-		add_to_variable = { country_religion_drift_idea = 0.5 }
-	}
 	if = {
 		limit = {
 			has_idea = PRT_assimilation_policy_spirit
@@ -766,9 +767,16 @@ get_country_religion_drift = {
 	if = {
 		limit = {
 			OR = { has_idea = KAN_state_shinto_2 has_idea = KAN_state_shinto_3 }
-			has_religion_3 = yes
+			has_religion_2 = yes
 		}
 		add_to_variable = { country_religion_drift_idea = 0.25 }
+	}
+	if = {
+		limit = {
+			has_idea = KAN_buddhist_opposition_spirit
+			has_religion_2 = yes
+		}
+		add_to_variable = { country_religion_drift_idea = -1.00 }
 	}
 	
 	# IDEOLOGY
@@ -789,6 +797,10 @@ get_country_religion_drift = {
 	}
 	if = {
 		limit = { has_country_leader_with_trait = KAN_shinshoku_leader has_religion_2 = yes }
+		add_to_variable = { country_religion_drift_adviser = 0.5 }
+	}
+	if = {
+		limit = { has_country_leader_with_trait = KAN_buddhist_monk_leader has_religion_1 = yes }
 		add_to_variable = { country_religion_drift_adviser = 0.5 }
 	}
 	
@@ -812,8 +824,11 @@ get_country_religion_drift = {
 	set_variable = { country_religion_drift_multiplier = 1 }
 	add_to_variable = { country_religion_drift_multiplier = country_religion_drift_christianity }
 	
-	#### MULTIPLY EFFECT
+	### MULTIPLY EFFECT
 	multiply_variable = { country_religion_drift = country_religion_drift_multiplier }
+	
+	### CLAMP: no negative drift
+	clamp_variable = { var = country_religion_drift min = 0 }
 }
 
 state_drift_religion = {

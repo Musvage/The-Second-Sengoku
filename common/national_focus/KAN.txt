@@ -161,7 +161,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			set_country_flag = allowed_path_fascism
+			set_country_flag = allowed_path_fascism	remove_country_flag = allowed_path_autocratic
 			add_war_support = 0.05
 			add_timed_idea = { idea = KAN_religious_radicalism_spirit days = 730 }
 		}
@@ -198,6 +198,7 @@ focus_tree = {
 			custom_effect_tooltip = KAN_swap_ideas_shinto_state
 			custom_effect_tooltip = religious_unrest_plus_100_percent
 			custom_effect_tooltip = conversion_shinto_25_tt
+			hidden_effect = { set_country_religion_modifier = yes }
 		}
 	}
 	
@@ -217,15 +218,20 @@ focus_tree = {
 			factor = 5
 		}
 		
+		available = { fascism > 0.5 }
+		
+		bypass = { has_government = fascism }
+		
 		completion_reward = {
 			set_politics = {
-				ruling_party = democratic
+				ruling_party = fascism
 				elections_allowed = yes
 			}
 			custom_effect_tooltip = loc_paragraph
 			custom_effect_tooltip = KAN_swap_ideas_shinto_state
 			custom_effect_tooltip = conversion_shinto_25_tt
 			custom_effect_tooltip = loc_idea_swap_religion_can_core_with_religion
+			hidden_effect = { set_country_religion_modifier = yes }
 		}
 	}
 	
@@ -244,6 +250,8 @@ focus_tree = {
 		ai_will_do = {
 			factor = 5
 		}
+		
+		available = { has_government = fascism }
 		
 		completion_reward = {
 			add_ideas = KAN_spiritual_mobilization_spirit
@@ -266,9 +274,24 @@ focus_tree = {
 			factor = 5
 		}
 		
+		available = { has_government = fascism }
+		
 		completion_reward = {
 			add_political_power = 150
-			add_country_leader_trait = KAN_divine_authority_country_leaader
+			KAN_hirohito = {
+				custom_effect_tooltip = gain_divine_authority_country_leader
+				custom_effect_tooltip = unification_score_bonus_20_p_trait
+				hidden_effect = {
+					add_country_leader_trait = KAN_divine_authority_country_leader
+				}
+			}
+			hidden_effect = {
+				KYU_nashimoto_morimasa = { set_character_flag = divine_authority_secondary }
+				KAN_kenkichi_yoshizawa = { set_character_flag = divine_authority_secondary }
+				KAN_prince_kanin_kotohito = { set_character_flag = divine_authority_secondary }
+				add_ideas = KAN_divine_authority_secondary_spirit
+				unification_get_score = yes
+			}
 		}
 	}
 	
@@ -288,6 +311,8 @@ focus_tree = {
 		ai_will_do = {
 			factor = 5
 		}
+		
+		available = { has_government = fascism }
 		
 		completion_reward = {
 			
@@ -355,7 +380,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			set_country_flag = allowed_path_communism
+			set_country_flag = allowed_path_communism remove_country_flag = allowed_path_autocratic
 		}
 	}
 	
@@ -382,7 +407,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			set_country_flag = allowed_path_communism
+			set_country_flag = allowed_path_communism remove_country_flag = allowed_path_autocratic
 		}
 	}
 	
@@ -510,9 +535,15 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			set_country_flag = allowed_path_democratic
-			set_country_flag = allowed_path_democratic_socialism
-			add_timed_idea = { idea = KAN_western_influence_spirit days = 730 }
+			if = {
+				limit = { democratic_socialism > democratic }
+				set_country_flag = allowed_path_democratic_socialism
+				add_timed_idea = { idea = KAN_western_influence_alt_spirit days = 730 }
+			} else = {
+				set_country_flag = allowed_path_democratic		
+				add_timed_idea = { idea = KAN_western_influence_spirit days = 730 }
+			}
+			remove_country_flag = allowed_path_autocratic
 		}
 	}
 	
@@ -565,7 +596,7 @@ focus_tree = {
 		icon = GFX_focus_SHO_religious_tolerance_2
 		search_filters = { FOCUS_FILTER_RELIGION }
 		
-		prerequisite = { focus = KAN_befriend_democracies focus = KAN_befriend_komintern }
+		prerequisite = { focus = KAN_befriend_democracies }
 		
 		relative_position_id = KAN_befriend_democracies
 		x = 2
@@ -667,6 +698,52 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = KAN_democratize_career
+		icon = GFX_focus_KAN_students
+		search_filters = { FOCUS_FILTER_WAR_SUPPORT }
+		
+		prerequisite = { focus = KAN_student_movement_new }
+		mutually_exclusive = { focus = KAN_warrior_elite } 
+		
+		relative_position_id = KAN_student_movement_new
+		x = -1
+		y = 1
+		cost = 10
+		
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			add_ideas = KAN_democratize_army_career_spirit
+		}
+	}
+	
+	focus = {
+		id = KAN_warrior_elite
+		icon = GFX_focus_KAN_students
+		search_filters = { FOCUS_FILTER_WAR_SUPPORT }
+		
+		prerequisite = { focus = KAN_student_movement_new }
+		mutually_exclusive = { focus = KAN_democratize_career } 
+		
+		relative_position_id = KAN_student_movement_new
+		x = 1
+		y = 1
+		cost = 10
+		
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			add_ideas = KAN_warrior_elite_spirit
+		}
+	}
+	
+	focus = {
 		id = KAN_befriend_komintern # "The Unthinkable Option" path
 		icon = GFX_focus_KAN_align_with_russia
 		search_filters = {  }
@@ -675,7 +752,7 @@ focus_tree = {
 		mutually_exclusive = { focus = KAN_befriend_nationalists focus = KAN_befriend_democracies }
 		
 		relative_position_id = KAN_befriend_democracies
-		x = 4
+		x = 5
 		y = 0
 		cost = 10
 		
@@ -694,7 +771,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			set_country_flag = allowed_path_communism
+			set_country_flag = allowed_path_communism remove_country_flag = allowed_path_autocratic
 			add_timed_idea = { idea = KAN_political_radicalism_spirit days = 730 }
 		}
 	}
@@ -707,7 +784,7 @@ focus_tree = {
 		prerequisite = { focus = KAN_befriend_komintern }
 		
 		relative_position_id = KAN_befriend_komintern
-		x = 0
+		x = -1
 		y = 1
 		cost = 10
 		
@@ -720,253 +797,350 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			
+			KAN_uchiyama_gudo = {
+				add_country_leader_trait = {
+					ideology = communism_buddhism
+					trait = KAN_support_from_armies
+				}
+				hidden_effect = {
+					add_trait = {
+						 slot = political_advisor
+						 trait = KAN_support_from_armies_adviser
+					}
+				}
+			}
+			set_temp_variable = { communism_bonus = num_battalions_with_type@infantry }
+			add_to_temp_variable = { communism_bonus = num_battalions_with_type@militia }
+			add_to_temp_variable = { communism_bonus = num_battalions_with_type@irregular_infantry }
+			divide_temp_variable = { communism_bonus = 2500 }
+			clamp_variable = { var = communism_bonus min = 0 max = 1 }
+			add_popularity = {
+				ideology = communism
+				popularity = var:communism_bonus
+			}
+			custom_effect_tooltip = paragraph_tt
+			custom_effect_tooltip = KAN_approach_young_officers_tt
 		}
 	}
 	
 	focus = {
-		id = KAN_state_monopolies
-		icon = GFX_focus_KAN_state_monopoly
-		search_filters = { FOCUS_FILTER_INDUSTRY }
+		id = KAN_sway_generals
+		icon = GFX_focus_KAN_sway_the_generals
+		search_filters = {  }
+		
+		prerequisite = { focus = KAN_approach_young_officers }
+		
+		relative_position_id = KAN_approach_young_officers
+		x = -1
+		y = 1
+		cost = 10
+		
+		available = {
+			NOT = { has_government = communism }
+			has_completed_focus = KAN_ikko_ikki
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			custom_effect_tooltip = KAN_sway_generals_tt
+			effect_tooltip = {
+				add_political_power = 200
+				custom_effect_tooltip = KAN_sway_generals_effect
+			}
+		}
+	}
+	
+	focus = {
+		id = KAN_buddhist_opposition
+		icon = GFX_focus_KAN_buddhist_opposition
+		search_filters = { FOCUS_FILTER_RELIGION FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = KAN_befriend_komintern }
 		
 		relative_position_id = KAN_befriend_komintern
-		x = 2
-		y = 1
-		cost = 10
-		
-		available = {
-			NOT = {
-				every_controlled_state = {
-					free_building_slots = {
-						building = industrial_complex
-						size = 0
-						include_locked = yes
-					}
-				}
-			}
-		}
-		
-		ai_will_do = {
-			factor = 5
-		}
-		
-		completion_reward = {
-			custom_effect_tooltip = KAN_state_monopolies_tt
-			meta_effect = {
-				text = {
-					random_controlled_state = {
-						limit = {
-							free_building_slots = {
-								[INDUSTRY1]
-								size > 1
-								include_locked = yes
-							}	
-						}
-						prioritize = { 32 }	# Kyoto
-						add_extra_state_shared_building_slots = 1
-						add_building_construction = {
-							type = industrial_complex
-							level = 1
-							instant_build = yes
-						}
-					}
-					random_controlled_state = {
-						limit = {
-							free_building_slots = {
-								[INDUSTRY2]
-								size > 1
-								include_locked = yes
-							}	
-						}
-						add_extra_state_shared_building_slots = 1
-						add_building_construction = {
-							type = industrial_complex
-							level = 1
-							instant_build = yes
-						}
-					}
-					random_controlled_state = {
-						limit = {
-							free_building_slots = {
-								[INDUSTRY3]
-								size > 1
-								include_locked = yes
-							}	
-						}
-						add_extra_state_shared_building_slots = 1
-						add_building_construction = {
-							type = industrial_complex
-							level = 1
-							instant_build = yes
-						}
-					}
-				}
-				INDUSTRY1 = "[ROOT.GetIndustryType1]"
-				INDUSTRY2 = "[ROOT.GetIndustryType2]"
-				INDUSTRY3 = "[ROOT.GetIndustryType3]"
-			}
-		}
-	}
-	
-	focus = {
-		id = KAN_turn_communist
-		icon = GFX_focus_prc_agrarian_socialism
-		search_filters = { FOCUS_FILTER_INDUSTRY }
-		
-		prerequisite = { focus = KAN_reform_religious_tolerance focus = KAN_approach_young_officers focus = KAN_state_monopolies }
-		
-		relative_position_id = KAN_approach_young_officers
-		x = 0
-		y = 1
-		cost = 10
-		
-		available = {
-			communism > 0.33
-			count_triggers = {
-					amount = 2
-					has_completed_focus = KAN_reform_religious_tolerance
-					has_completed_focus = KAN_approach_young_officers
-					has_completed_focus = KAN_state_monopolies
-				}
-			NOT = {
-				has_government = democratic
-				has_government = democratic_socialism
-			}
-		}
-		
-		ai_will_do = {
-			factor = 5
-		}
-		
-		completion_reward = {
-			set_politics = {
-				ruling_party = communism
-				elections_allowed = no
-			}
-		}
-	}
-	
-	focus = {
-		id = KAN_political_commissars
-		icon = GFX_focus_KAN_political_comissars
-		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_POLITICAL }
-
-		prerequisite = { focus = KAN_turn_communist }
-		
-		relative_position_id = KAN_turn_communist
-		x = -1
-		y = 1
-
-		cost = 10
-		
-		ai_will_do = { factor = 1 }
-
-		available_if_capitulated = yes
-		
-		available = { has_government = communism } 
-
-		completion_reward = {
-			add_ideas = political_commissars_focus
-			add_political_power = 200
-		}
-	}
-	
-	focus = {
-		id = KAN_abolish_samurai_class
-		icon = GFX_focus_KAN_abolish_samurai
-		search_filters = {  }
-		
-		prerequisite = { focus = KAN_turn_communist }
-		
-		relative_position_id = KAN_turn_communist
 		x = 1
 		y = 1
 		cost = 10
 		
-		available = { has_government = communism }
 		
 		ai_will_do = {
 			factor = 5
 		}
 		
 		completion_reward = {
-			add_ideas = KAN_new_model_army
-			custom_effect_tooltip = KAN_abolish_samurai_class_tt
-			every_country_division = {
-				limit = { division_has_battalion_in_template = teppo_samurai }
-				destroy_unit = yes
+			add_ideas = KAN_buddhist_opposition_spirit_1
+			hidden_effect = { set_country_religion_modifier = yes }
+			every_owned_state = {
+				limit = { is_controlled_by = ROOT }
+				custom_effect_tooltip = KAN_buddhist_conversion_tooltip
+				#hidden_effect = {
+					multiply_variable = { state_religion_shinto = 0.25 }
+					add_to_variable = { state_religion_buddhism = state_religion_shinto }
+					multiply_variable = { state_religion_shinto = 3 }
+					check_state_main_religion = yes
+				#}
 			}
-			custom_effect_tooltip = block_samurai_tech
-			hidden_effect = { set_technology = { tech_samurai = 0 popup = no } set_technology = { tech_samurai2 = 0 popup = no } set_technology = { tech_samurai3 = 0 popup = no } }
+			hidden_effect = {
+				state_religion_error_catcher = yes
+				get_official_religion_popularity = yes
+				scale_country_religion_effect = yes
+				get_country_religion_drift = yes
+			}
 		}
 	}
 	
 	focus = {
-		id = KAN_communist_paramilitary
-		icon = GFX_goal_generic_defence
-		search_filters = { FOCUS_FILTER_MANPOWER }
+		id = KAN_ikko_ikki
+		icon = GFX_focus_KAN_ikko_ikki
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		
-		prerequisite = { focus = KAN_abolish_samurai_class }
+		prerequisite = { focus = KAN_buddhist_opposition }
+		prerequisite = { focus = KAN_approach_young_officers }
 		
-		relative_position_id = KAN_abolish_samurai_class
+		relative_position_id = KAN_approach_young_officers
+		x = 1
+		y = 1
+		cost = 10
+		
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			set_religion_1 = yes
+			set_politics = { ruling_party = communism elections_allowed = no }
+			add_ideas = KAN_state_buddhism
+			hidden_effect = {
+				remove_ideas = KAN_state_shinto_1
+				swap_ideas = { remove_idea = KAN_buddhist_opposition_spirit_1 add_idea = KAN_buddhist_opposition_spirit_2 }
+				KAN_prince_kanin_kotohito = {
+					set_character_flag = resist_ikko_ikki
+				}
+				if = {
+					limit = { NOT = { has_completed_focus = KAN_sway_generals } }
+					every_unit_leader = {
+						limit = { has_trait = imperial_prince_unit_leader }
+						set_character_flag = resist_ikko_ikki
+					}
+				}
+			}
+			if = {
+				limit = { communism > 0.666 }
+				custom_effect_tooltip = KAN_ikko_ikki_no_cw
+			} else_if = {
+				limit = { communism > 0.333 }
+				custom_effect_tooltip = loc_paragraph
+				custom_effect_tooltip = KAN_ikko_ikki_maybe_cw
+				set_temp_variable = { cw_chance = party_popularity@communism }
+				subtract_from_temp_variable = { cw_chance = 0.332 }
+				random_list = {
+					0.332 = {
+						custom_effect_tooltip = KAN_ikko_ikki_maybe_cw_1
+						set_temp_variable = { cw_size = 1 }
+						subtract_from_temp_variable = { cw_size = party_popularity@communism }
+						divide_temp_variable = { cw_size = 2 }
+						hidden_effect = {
+							start_civil_war = {
+								ideology = neutrality
+								capital = 32	# Kyoto
+								size = 0.5
+								states = all
+								states_filter = {
+									OR = {
+										check_variable = { state_religion_shinto > state_religion_buddhism }
+										AND = {
+											any_neighbor_state = {
+												check_variable = { state_religion_shinto > state_religion_buddhism }
+											}
+											NOT = { check_variable = { state_religion_buddhism > 0.5 } }
+										}
+									}
+								}
+								keep_unit_leaders_trigger  = {
+									NOT = { has_character_flag = resist_ikko_ikki }
+								}
+								keep_political_leader = no
+								keep_political_party_members = yes
+								set_religion_2 = yes
+							}
+						}
+					}
+					var:cw_chance = {
+						custom_effect_tooltip = KAN_ikko_ikki_maybe_cw_2
+					}
+				}
+				custom_effect_tooltip = KAN_ikko_ikki_cw_tt
+			} else = {
+				custom_effect_tooltip = loc_paragraph
+				custom_effect_tooltip = KAN_ikko_ikki_always_cw
+				hidden_effect = {
+					start_civil_war = {
+						ideology = neutrality
+						capital = 32	# Kyoto
+						size = 0.5
+						states = all
+						states_filter = {
+							OR = {
+								check_variable = { state_religion_shinto > state_religion_buddhism }
+								AND = {
+									any_neighbor_state = {
+										check_variable = { state_religion_shinto > state_religion_buddhism }
+									}
+									NOT = { check_variable = { state_religion_buddhism > 0.5 } }
+								}
+							}
+						}
+						keep_unit_leaders_trigger  = {
+							NOT = { has_character_flag = resist_ikko_ikki }
+						}
+						keep_political_leader = no
+						keep_political_party_members = yes
+						set_religion_2 = yes
+					}
+				}
+				custom_effect_tooltip = KAN_ikko_ikki_cw_tt
+			}
+			custom_effect_tooltip = loc_paragraph
+			if = {
+				limit = { has_completed_focus = KAN_sway_generals }
+				custom_effect_tooltip = KAN_sway_generals_trigger
+				add_political_power = 200
+				custom_effect_tooltip = KAN_sway_generals_effect
+			} else = {
+				custom_effect_tooltip = KAN_sway_generals_trigger2
+				effect_tooltip = { add_political_power = 200 }
+				custom_effect_tooltip = KAN_sway_generals_effect
+			}
+		}
+	}
+	
+	focus = {
+		id = KAN_warrior_monks
+		icon = GFX_focus_KAN_warrior_monks
+		search_filters = { FOCUS_FILTER_WAR_SUPPORT }
+		
+		prerequisite = { focus = KAN_ikko_ikki }
+		
+		relative_position_id = KAN_ikko_ikki
 		x = -1
 		y = 1
 		cost = 10
 		
-		available = {
-			has_government = communism
-		}
 		
 		ai_will_do = {
 			factor = 5
+		}
+		
+		completion_reward = {
+			add_ideas = KAN_warrior_monks_spirit
+		}
+	}
+	
+	focus = {
+		id = KAN_emergency_mobilization
+		icon = GFX_focus_KAN_emergency_mobilization
+		search_filters = { FOCUS_FILTER_WAR_SUPPORT }
+		
+		prerequisite = { focus = KAN_ikko_ikki }
+		
+		relative_position_id = KAN_ikko_ikki
+		x = 1
+		y = 1
+		cost = 10
+		
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		available = {
+			OR = {
+				has_war = yes
+				any_country = { is_justifying_wargoal_against = ROOT }
+				any_country = { has_wargoal_against = ROOT }
+				threat > 0.99
+			}
 		}
 		
 		completion_reward = {
 			add_ideas = KAN_communist_paramilitary_spirit
-		}
-	}
-	
-	focus = {
-		id = KAN_doctrinal_revolution
-		icon = GFX_focus_KAN_doctrine_revolution
-		search_filters = { FOCUS_FILTER_RESEARCH }
-		
-		prerequisite = { focus = KAN_abolish_samurai_class }
-		
-		relative_position_id = KAN_abolish_samurai_class
-		x = 1
-		y = 1
-		cost = 10
-		
-		available = {
-			has_government = communism
-		}
-		
-		ai_will_do = {
-			factor = 5
-		}
-		
-		completion_reward = {
-			add_doctrine_cost_reduction = {
-				name = land_doc_bonus
-				cost_reduction = 0.5
-				uses = 1
-				category = land_doctrine
+			custom_effect_tooltip = paragraph_tt
+			hidden_effect = {
+				division_template = {
+					name = "Peasant Brigade"
+					is_locked = yes
+					division_names_group = KAN_MLT_01
+					priority = 0
+					template_counter = 14
+					regiments = {
+						infantry = { x = 0 y = 0 }
+						infantry = { x = 0 y = 1 }
+						infantry = { x = 1 y = 0 }
+						infantry = { x = 1 y = 1 }
+					}
+				}
 			}
-			add_doctrine_cost_reduction = {
-				name = naval_doc_bonus
-				cost_reduction = 0.5
-				uses = 1
-				category = naval_doctrine
+			random_core_state = {
+				limit = { is_island_state = no }
+				prioritize = { 32 }
+				hidden_effect = {
+					create_unit = {
+						division = "name = \"Peasant Brigade\" division_template = \"Peasant Brigade\" start_experience_factor = 0.0 start_equipment_factor = 1"
+						owner = ROOT
+					}
+				}
+				custom_effect_tooltip = KAN_emergency_mobilization_tt
 			}
-			add_doctrine_cost_reduction = {
-				name = air_doc_bonus
-				cost_reduction = 0.5
-				uses = 1
-				category = air_doctrine
+			random_core_state = {
+				limit = { is_island_state = no }
+				prioritize = { 18 }
+				hidden_effect = {
+					create_unit = {
+						division = "name = \"Peasant Brigade\" division_template = \"Peasant Brigade\" start_experience_factor = 0.0 start_equipment_factor = 1"
+						owner = ROOT
+					}
+				}
+				custom_effect_tooltip = KAN_emergency_mobilization_tt
 			}
+			random_core_state = {
+				limit = { is_island_state = no }
+				prioritize = { 87 }
+				hidden_effect = {
+					create_unit = {
+						division = "name = \"Peasant Brigade\" division_template = \"Peasant Brigade\" start_experience_factor = 0.0 start_equipment_factor = 1"
+						owner = ROOT
+					}
+				}
+				custom_effect_tooltip = KAN_emergency_mobilization_tt
+			}
+			random_core_state = {
+				limit = { is_island_state = no }
+				prioritize = { 209 }
+				hidden_effect = {
+					create_unit = {
+						division = "name = \"Peasant Brigade\" division_template = \"Peasant Brigade\" start_experience_factor = 0.0 start_equipment_factor = 1"
+						owner = ROOT
+					}
+				}
+				custom_effect_tooltip = KAN_emergency_mobilization_tt
+			}
+			random_core_state = {
+				limit = { is_island_state = no }
+				prioritize = { 91 }
+				hidden_effect = {
+					create_unit = {
+						division = "name = \"Peasant Brigade\" division_template = \"Peasant Brigade\" start_experience_factor = 0.0 start_equipment_factor = 1"
+						owner = ROOT
+					}
+				}
+				custom_effect_tooltip = KAN_emergency_mobilization_tt
+			}
+			custom_effect_tooltip = paragraph_tt
+			add_timed_idea = { idea = KAN_communist_paramilitary_spirit_debuff days = 180 }
 		}
 	}
 	
@@ -4178,7 +4352,7 @@ create_navy_leader = {
 	}
 	
 		focus = {
-		id = KAN_state_monopoly 
+		id = KAN_buddhist_radicals 
 		icon = GFX_focus_KAN_state_monopoly
 		x = -1
 		y = 1
