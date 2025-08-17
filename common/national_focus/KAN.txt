@@ -343,21 +343,64 @@ focus_tree = {
 	}
 	
 	# } Monarchi/Fascist common branch {
+	
 	focus = {
-		id = KAN_befriend_nationalists
-		icon = GFX_focus_KAN_align_with_germany
-		search_filters = {  }
+		id = KAN_ignore_westerns
+		icon = GFX_focus_SHO_isolation
+		search_filters = { FOCUS_FILTER_STABILITY FOCUS_FILTER_WAR_SUPPORT }
 		
 		prerequisite = { focus = KAN_monarchist_path focus = KAN_religious_path }
 		
-		mutually_exclusive = { focus = KAN_ignore_westerns }
+		mutually_exclusive = { focus = KAN_befriend_nationalists }
 		
 		relative_position_id = KAN_monarchist_path
 		x = 3
 		y = 1
 		cost = 10
 		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			if = {
+				limit = { has_completed_focus = KAN_monarchist_path }
+				custom_effect_tooltip = KAN_monarchist_path_effect
+				add_stability = 0.1
+			} else_if = {
+				limit = { NOT = { has_completed_focus = KAN_religious_path } }
+				custom_effect_tooltip = KAN_monarchist_path_trigger
+				add_stability = 0.1
+			}
+			if = {
+				limit = { has_completed_focus = KAN_religious_path }
+				custom_effect_tooltip = KAN_religious_path_effect
+				add_war_support = 0.1
+			} else_if = {
+				limit = { NOT = { has_completed_focus = KAN_monarchist_path } }
+				custom_effect_tooltip = loc_paragraph
+				custom_effect_tooltip = KAN_religious_path_trigger
+				add_war_support = 0.1
+			}
+		}
+	}
+	
+	focus = {
+		id = KAN_befriend_nationalists
+		icon = GFX_focus_KAN_align_with_germany
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_DIPLOMACY }
+		
+		prerequisite = { focus = KAN_monarchist_path focus = KAN_religious_path }
+		
+		mutually_exclusive = { focus = KAN_ignore_westerns }
+		
+		relative_position_id = KAN_monarchist_path
+		x = 5
+		y = 1
+		cost = 10
+		
 		available = {
+			NOT = { has_war_with = REI is_justifying_wargoal_against = REI REI = { is_justifying_wargoal_against = KAN } }
 			REI = {
 				exists = yes
 				OR = {
@@ -373,6 +416,10 @@ focus_tree = {
 					has_government = neutrality
 				}
 			}
+			OR = {
+				NOT = { has_completed_focus = KAN_help_shikoku }
+				NOT = { REI = { has_completed_focus = REI_colonial_hegemony } }
+			}
 		}
 		
 		ai_will_do = {
@@ -380,34 +427,130 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			set_country_flag = allowed_path_communism remove_country_flag = allowed_path_autocratic
+			# add cosmetic event for foreign investment
+			if = {
+				limit = { NOT = { has_guaranteed = REI } }
+				diplomatic_relation = {
+					country = REI
+					relation = guarantee
+					active = yes
+				}
+			} else = { add_political_power = 90 }
+			random_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 1
+						include_locked = yes
+					}	
+				}
+				prioritize = { 32 }	# Kyoto
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 1
+						include_locked = yes
+					}	
+				}
+				prioritize = { 32 }	# Kyoto
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
 		}
 	}
 	
 	focus = {
-		id = KAN_ignore_westerns
-		icon = GFX_focus_SHO_isolation
+		id = KAN_showa_institutions
+		icon = GFX_focus_KAN_showa_constitution
 		search_filters = {  }
 		
-		prerequisite = { focus = KAN_monarchist_path focus = KAN_religious_path }
+		prerequisite = { focus = KAN_befriend_nationalists focus = KAN_ignore_westerns }
 		
-		mutually_exclusive = { focus = KAN_befriend_nationalists }
-		
-		relative_position_id = KAN_monarchist_path
-		x = 5
+		relative_position_id = KAN_ignore_westerns
+		x = 1
 		y = 1
 		cost = 10
-		
-		available = {
-			
-		}
 		
 		ai_will_do = {
 			factor = 5
 		}
 		
 		completion_reward = {
-			set_country_flag = allowed_path_communism remove_country_flag = allowed_path_autocratic
+			hidden_effect = {
+				add_ideas = KAN_free_economy_trade_spirit
+				add_ideas = KAN_free_welfare_education_spirit
+			}
+			custom_effect_tooltip = KAN_showa_institutions_tt_1
+			custom_effect_tooltip = KAN_showa_institutions_tt_2
+		}
+	}
+	
+	focus = {
+		id = KAN_league_of_blood_focus
+		icon = GFX_focus_KAN_league_of_blood
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		
+		prerequisite = { focus = KAN_befriend_nationalists focus = KAN_ignore_westerns }
+		
+		relative_position_id = KAN_showa_institutions
+		x = -1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			add_ideas = KAN_league_of_blood
+			set_temp_variable = { pol_bonus = var:threat }
+			divide_temp_variable = { pol_bonus = 10 }
+			clamp_temp_variable = { var = pol_bonus min = 0.025 }
+			custom_effect_tooltip = loc_paragraph
+			if = {
+				limit = { has_completed_focus = KAN_monarchist_path }
+				custom_effect_tooltip = KAN_monarchist_path_effect
+				add_popularity = {
+					ideology = autocracy
+					popularity = var:pol_bonus
+				}
+			} else_if = {
+				limit = { NOT = { has_completed_focus = KAN_religious_path } }
+				custom_effect_tooltip = KAN_monarchist_path_trigger
+				add_popularity = {
+					ideology = autocracy
+					popularity = var:pol_bonus
+				}
+			}
+			if = {
+				limit = { has_completed_focus = KAN_religious_path }
+				custom_effect_tooltip = KAN_religious_path_effect
+				add_popularity = {
+					ideology = fascism
+					popularity = var:pol_bonus
+				}
+			} else_if = {
+				limit = { NOT = { has_completed_focus = KAN_monarchist_path } }
+				custom_effect_tooltip = loc_paragraph
+				custom_effect_tooltip = KAN_religious_path_trigger
+				add_popularity = {
+					ideology = fascism
+					popularity = var:pol_bonus
+				}
+			}
+			custom_effect_tooltip = KAN_league_of_blood_focus_tt
 		}
 	}
 	
@@ -418,7 +561,7 @@ focus_tree = {
 		
 		prerequisite = { focus = KAN_befriend_nationalists focus = KAN_ignore_westerns }
 		
-		relative_position_id = KAN_befriend_nationalists
+		relative_position_id = KAN_showa_institutions
 		x = 1
 		y = 1
 		cost = 10
@@ -429,48 +572,6 @@ focus_tree = {
 		
 		completion_reward = {
 			add_ideas = imperial_austerity_idea
-		}
-	}
-	
-	focus = {
-		id = KAN_league_of_blood_focus
-		icon = GFX_focus_
-		search_filters = {  }
-		
-		prerequisite = { focus = KAN_economic_austerity }
-		
-		relative_position_id = KAN_economic_austerity
-		x = -1
-		y = 1
-		cost = 10
-		
-		ai_will_do = {
-			factor = 5
-		}
-		
-		completion_reward = {
-		
-		}
-	}
-	
-	focus = {
-		id = KAN_showa_institutions
-		icon = GFX_focus_
-		search_filters = {  }
-		
-		prerequisite = { focus = KAN_economic_austerity }
-		
-		relative_position_id = KAN_economic_austerity
-		x = 1
-		y = 1
-		cost = 10
-		
-		ai_will_do = {
-			factor = 5
-		}
-		
-		completion_reward = {
-		
 		}
 	}
 	
@@ -588,6 +689,16 @@ focus_tree = {
 		
 		completion_reward = {
 			add_ideas = KAN_kellogg_briand_spirit
+			set_temp_variable = { dem_bonus = 1 }
+			remove_from_temp_variable = { dem_bonus = var:threat }
+			divide_temp_variable = { dem_bonus = 10 }
+			add_to_temp_variable = { dem_bonus = 0.05 }
+			custom_effect_tooltip = loc_paragraph
+			add_popularity = {
+				ideology = democratic
+				popularity = var:dem_bonus
+			}
+			custom_effect_tooltip = KAN_reform_kellogg_briand_pact_tt
 		}
 	}
 	
@@ -615,7 +726,7 @@ focus_tree = {
 	
 	focus = {
 		id = KAN_constitution_reforms
-		icon = GFX_focus_KAN_showa_constitution
+		icon = GFX_focus_KAN_channalge_absolutists
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = KAN_reform_religious_tolerance focus = KAN_reform_western_education focus = KAN_reform_kellogg_briand_pact }
@@ -1241,6 +1352,10 @@ focus_tree = {
 		
 		available = {
 			NOT = { has_war_with = SHI is_justifying_wargoal_against = SHI SHI = { is_justifying_wargoal_against = KAN } }
+			OR = {
+				NOT = { has_completed_focus = KAN_befriend_nationalists }
+				NOT = { REI = { has_completed_focus = REI_colonial_hegemony } }
+			}
 		}
 		
 		relative_position_id = KAN_antagonize_CHU
@@ -1253,7 +1368,11 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-		
+			diplomatic_relation = {
+				country = SHI
+				relation = non_aggression_pact
+				active = yes
+			}
 		}
 	}
 	
