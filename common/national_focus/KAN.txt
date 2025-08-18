@@ -571,7 +571,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			add_ideas = imperial_austerity_idea
+			add_ideas = KAN_imperial_austerity_spirit
 		}
 	}
 	
@@ -725,8 +725,41 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = KAN_preserve_imperial_family
+		icon = GFX_focus_KAN_preserve_imperial_family
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		
+		prerequisite = { focus = KAN_reform_religious_tolerance focus = KAN_reform_western_education focus = KAN_reform_kellogg_briand_pact }
+		
+		relative_position_id = KAN_reform_kellogg_briand_pact
+		x = -2
+		y = 1
+		cost = 10
+		
+		available = {
+			NOT = {
+				has_government = democratic
+				has_government = democratic_socialism
+				has_completed_focus = KAN_constitution_reforms
+			}
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			custom_effect_tooltip = KAN_preserve_imperial_family_tt
+			effect_tooltip = {
+				add_ideas = KAN_hirohito_popular_figurehead
+				custom_effect_tooltip = KAN_preserve_imperial_family_effect
+			}
+		}
+	}
+	
+	focus = {
 		id = KAN_constitution_reforms
-		icon = GFX_focus_KAN_channalge_absolutists
+		icon = GFX_goal_generic_demand_territory
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = KAN_reform_religious_tolerance focus = KAN_reform_western_education focus = KAN_reform_kellogg_briand_pact }
@@ -777,6 +810,30 @@ focus_tree = {
 					elections_allowed = yes
 				}	
 			}
+			if = {
+				limit = { NOT = { has_completed_focus = KAN_preserve_imperial_family } }
+				custom_effect_tooltip = KAN_constitution_reforms_tt2
+				hidden_effect = {
+					#deactivate_advisor # add one line for each character; remove trait for adviser
+					every_character = {
+						limit = { has_trait = imperial_prince_unit_leader }
+						if = { limit = { is_field_marshal = yes } demote_leader = yes }
+						remove_trait = { trait = imperial_prince_unit_leader }
+					}
+				}
+			}
+			custom_effect_tooltip = KAN_constitution_reforms_tt
+			custom_effect_tooltip = loc_paragraph
+			if = {
+				limit = { has_completed_focus = KAN_sway_generals }
+				custom_effect_tooltip = KAN_preserve_imperial_family_trigger
+				add_ideas = KAN_hirohito_popular_figurehead
+				custom_effect_tooltip = KAN_preserve_imperial_family_effect
+			} else = {
+				custom_effect_tooltip = KAN_preserve_imperial_family_trigger2
+				add_ideas = KAN_hirohito_popular_figurehead
+				custom_effect_tooltip = KAN_preserve_imperial_family_effect
+			}
 		}
 	}
 	
@@ -804,17 +861,26 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			
+			add_ideas = KAN_national_student_mobilization_1
+			hidden_effect = {
+				set_temp_variable = { pop_bonus = party_popularity@ruling_party }
+				multiply_temp_variable = { pop_bonus = 0.15 }
+				if = {
+					limit = {
+						NOT = { has_dynamic_modifier = { modifier = PRO_modifier_ruling_party_popularity } }
+					}
+					add_dynamic_modifier = { modifier = PRO_modifier_ruling_party_popularity }
+				}
+			}
 		}
 	}
 	
 	focus = {
 		id = KAN_democratize_career
-		icon = GFX_focus_KAN_students
+		icon = GFX_focus_generic_infantry
 		search_filters = { FOCUS_FILTER_WAR_SUPPORT }
 		
 		prerequisite = { focus = KAN_student_movement_new }
-		mutually_exclusive = { focus = KAN_warrior_elite } 
 		
 		relative_position_id = KAN_student_movement_new
 		x = -1
@@ -832,12 +898,11 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = KAN_warrior_elite
-		icon = GFX_focus_KAN_students
+		id = KAN_volunteer_corps
+		icon = GFX_focus_HIR_full_employment
 		search_filters = { FOCUS_FILTER_WAR_SUPPORT }
 		
 		prerequisite = { focus = KAN_student_movement_new }
-		mutually_exclusive = { focus = KAN_democratize_career } 
 		
 		relative_position_id = KAN_student_movement_new
 		x = 1
@@ -850,7 +915,10 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			add_ideas = KAN_warrior_elite_spirit
+			swap_ideas = {
+				remove_idea = KAN_national_student_mobilization_1
+				add_idea = KAN_national_student_mobilization_2
+			}
 		}
 	}
 	
@@ -1025,6 +1093,8 @@ focus_tree = {
 			set_religion_1 = yes
 			set_politics = { ruling_party = communism elections_allowed = no }
 			add_ideas = KAN_state_buddhism
+			custom_effect_tooltip = KAN_constitution_reforms_tt2
+			custom_effect_tooltip = KAN_constitution_reforms_tt
 			hidden_effect = {
 				remove_ideas = KAN_state_shinto_1
 				swap_ideas = { remove_idea = KAN_buddhist_opposition_spirit_1 add_idea = KAN_buddhist_opposition_spirit_2 }
@@ -1125,6 +1195,15 @@ focus_tree = {
 				custom_effect_tooltip = KAN_sway_generals_trigger2
 				effect_tooltip = { add_political_power = 200 }
 				custom_effect_tooltip = KAN_sway_generals_effect
+			}
+			hidden_effect = {
+				#deactivate_advisor # add one line for each character
+				every_character = {
+					limit = { has_trait = imperial_prince_unit_leader }
+					if = { limit = { is_field_marshal = yes } demote_leader = yes }	# do it last so people who switch to countrer revolutionary dont loose trait
+					limit = { has_trait = imperial_prince_unit_leader }
+					remove_trait = { trait = imperial_prince_unit_leader }
+				}
 			}
 		}
 	}
@@ -1458,7 +1537,7 @@ focus_tree = {
 		icon = GFX_focus_KAN_army_focus_1
 		search_filters = { FOCUS_FILTER_MILITARY }
 		
-		mutually_exclusive = { focus = KAN_air_focus_1 focus = KAN_navy_focus_1 }
+		mutually_exclusive = { focus = KAN_air_focus_1 }
 		relative_position_id = KAN_befriend_komintern
 		x = 4
 		y = -1
@@ -1862,7 +1941,7 @@ focus_tree = {
 		icon = GFX_focus_KAN_air_focus_1
 		search_filters = { FOCUS_FILTER_MILITARY }
 		
-		mutually_exclusive = { focus = KAN_army_focus_1 focus = KAN_navy_focus_1 }
+		mutually_exclusive = { focus = KAN_navy_focus_1 }
 		relative_position_id = KAN_army_focus_1
 		x = 2
 		y = 0
@@ -2774,15 +2853,12 @@ focus_tree = {
 		y = 1
 		cost = 10
 		
-		available = {
-
-		}
-		
 		ai_will_do = {
 			factor = 5
 		}
 		
 		completion_reward = {
+			crash_1929_decrease_level = yes
 			random_controlled_state = {
 				limit = {
 					free_building_slots = {
@@ -3862,7 +3938,7 @@ create_navy_leader = {
 			factor = 10
 		}	
 		completion_reward = {
-		add_ideas = imperial_austerity_idea 
+		add_ideas = KAN_imperial_austerity_spirit 
 		}
 	}
 	
