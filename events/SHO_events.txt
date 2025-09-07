@@ -1,2 +1,234 @@
 ﻿add_namespace = shogunate
 add_namespace = sho_assembly
+
+country_event = {	# Opening Congress (never fires, it's just to avoid a spolier in the focus tree)
+	id = shogunate.1001
+	title = shogunate.1001.t
+	desc = "this should not appear"
+	picture = GFX_report_event_yamamoto_1
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "this should not appear"
+	}
+}
+
+
+country_event = {	# Assassination (automatic event)
+	id = shogunate.1
+	title = shogunate.1.t
+	desc = shogunate.1.d
+	picture = GFX_report_event_yamamoto_1
+	
+	is_triggered_only = no
+	major = yes
+	
+	trigger = {
+		has_country_leader = {
+			character = SHO_tokugawa_iesato
+			ruling_only = yes
+		}
+		NOT = { focus_progress = { focus = SHO_call_congress progress > 0.01 } focus_progress = { focus = SHO_suppress_opposition progress > 0.01 } focus_progress = { focus = SHO_burakumin_terrorists progress > 0.01 } }
+		NOT = {
+			has_completed_focus = SHO_call_congress
+			has_completed_focus = SHO_suppress_opposition
+			has_completed_focus = SHO_burakumin_terrorists
+		}
+		date > 1936.04.20
+	}
+	
+	mean_time_to_happen = {
+		days = 140
+		modifier = {
+			factor = 0.5
+			autocracy < 0.5
+		}
+	}
+	
+	immediate = {
+		hidden_efect = {
+			SHO = {
+				set_country_flag = shogun_assassination_attempt_happened
+				hidden_effect = {
+					remove_country_leader_role = {
+						character = SHO_tokugawa_iesato	# we don't kill him right here and now because it would make easier for tooltipping to have him loose his role. he actually dies (offscreem) in the next event
+						ideology = autocracy_subtype
+					}
+				}
+				unlock_national_focus = SHO_call_congress
+			}
+		}
+	}
+	
+	option = {
+		name = shogunate.1.self
+		trigger = { tag = SHO }
+		effect_tooltip = {
+			SHO_tokugawa_iesato = {
+				custom_effect_tooltip = character_dies
+			}
+		}
+		hidden_effect = {
+			remove_country_leader_role = {
+				character = SHO_tokugawa_iesato	# we don't kill him right here and now because it would make easier for tooltipping to have him loose his role. he actually dies (offscreem) in the next event
+				ideology = autocracy_subtype
+			}
+		}
+	}
+	option = {
+		name = shogunate.1.kan
+		trigger = { tag = KAN }
+		effect_tooltip = {
+			SHO = {
+				SHO_tokugawa_iesato = {
+					custom_effect_tooltip = character_dies
+				}
+			}
+		}
+		custom_effect_tooltip = loc_paragraph
+		custom_effect_tooltip = shogunate.2.kantt
+	}
+	option = {
+		name = shogunate.1.other
+		trigger = { NOT = { tag = SHO tag = KAN } }
+		effect_tooltip = {
+			SHO = {
+				SHO_tokugawa_iesato = {
+					custom_effect_tooltip = character_dies
+				}
+			}
+		}
+		if = {
+			limit = { has_global_flag = eastereggs_enabled }
+			custom_effect_tooltip = shogunate.2.f
+		}
+	}
+}
+
+country_event = {	# Assassination (focus event)
+	id = shogunate.2
+	title = shogunate.2.t
+	desc = shogunate.2.d
+	picture = GFX_report_event_yamamoto_1
+	
+	is_triggered_only = yes
+	major = yes
+	
+	immediate = {
+		hidden_effect = {
+			SHO = {
+				set_country_flag = shogun_assassination_attempt_happened
+				hidden_effect = {
+					remove_country_leader_role = {
+						character = SHO_tokugawa_iesato	# we don't kill him right here and now because it would make easier for tooltipping to have him loose his role. he actually dies (offscreem) in the next event
+						ideology = autocracy_subtype
+					}
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = shogunate.2.self
+		trigger = { tag = SHO }
+		effect_tooltip = {
+			SHO_tokugawa_iesato = {
+				custom_effect_tooltip = character_dies
+			}
+		}
+	}
+	option = {
+		name = shogunate.2.kan
+		trigger = { tag = KAN }
+		effect_tooltip = {
+			SHO = {
+				SHO_tokugawa_iesato = {
+					custom_effect_tooltip = character_dies
+				}
+			}
+		}
+		custom_effect_tooltip = loc_paragraph
+		custom_effect_tooltip = shogunate.2.kantt
+	}
+	option = {
+		name = shogunate.2.other
+		trigger = { NOT = { tag = SHO tag = KAN } }
+		effect_tooltip = {
+			SHO = {
+				SHO_tokugawa_iesato = {
+					custom_effect_tooltip = character_dies
+				}
+			}
+		}
+		if = {
+			limit = { has_global_flag = eastereggs_enabled }
+			custom_effect_tooltip = loc_paragraph
+			custom_effect_tooltip = shogunate.2.f
+		}
+	}
+}
+
+country_event = {	# Congress, appoint successor (automatic event) [note: the focus-triggered event does not lead to this option, since there are specific focuses for each candidate]
+	id = shogunate.3
+	title = shogunate.3.t
+	desc = shogunate.3.d
+	picture = GFX_report_event_yamamoto_1
+	
+	is_triggered_only = no
+	
+	trigger = {
+		has_country_flag = shogun_assassination_attempt_happened
+		date > 1936.05.05
+		NOT = {
+			focus_progress = { focus = SHO_successor_owari progress > 0.01 }
+			focus_progress = { focus = SHO_successor_mito progress > 0.01 }
+			focus_progress = { focus = SHO_successor_kii progress > 0.01 }
+		}
+		NOT = {
+			has_completed_focus = SHO_successor_owari
+			has_completed_focus = SHO_successor_mito
+			has_completed_focus = SHO_successor_kii
+		}
+	}
+	
+	mean_time_to_happen = {
+		days = 35
+	}
+	
+	immediate = { retire_character = SHO_tokugawa_iesato }
+	
+	option = {
+		name = shogunate.3.autocarcy
+		trigger = { NOT = { focus_progress = { focus = SHO_successor_kii progress > 0.01 } focus_progress = { focus = SHO_successor_owari progress > 0.01 } } }
+		if = {
+			limit = { focus_progress = { focus = SHO_successor_mito progress > 0.5 } }
+			complete_national_focus = SHO_successor_mito
+		} else = {
+			promote_character = SHO_tokugawa_kuniyuki
+			unlock_national_focus = SHO_successor_mito
+		}
+	}
+	option = {
+		name = shogunate.3.democratic
+		trigger = { NOT = { focus_progress = { focus = SHO_successor_mito progress > 0.01 } focus_progress = { focus = SHO_successor_owari progress > 0.01 } } }
+		if = {
+			limit = { focus_progress = { focus = SHO_successor_kii progress > 0.5 } }
+			complete_national_focus = SHO_successor_kii
+		} else = {
+			promote_character = SHO_tokugawa_yorisada
+			unlock_national_focus = SHO_successor_kii
+		}
+	}
+	option = {
+		name = shogunate.3.fascism
+		trigger = { NOT = { focus_progress = { focus = SHO_successor_mito progress > 0.01 } focus_progress = { focus = SHO_successor_kii progress > 0.01 } } }
+		if = {
+			limit = { focus_progress = { focus = SHO_successor_owari progress > 0.5 } }
+			complete_national_focus = SHO_successor_owari
+		} else = {
+			promote_character = SHO_tokugawa_yoshichika
+			unlock_national_focus = SHO_successor_owari
+		}
+	}
+}
