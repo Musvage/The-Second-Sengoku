@@ -142,7 +142,6 @@
 		
 		completion_reward = {
 			# autocracy
-			#promote_character = SHO_tokugawa_kuniyuki	# replace later for making him 2nd leader before turning ideology
 			add_stability = 0.05
 			SHO_tokugawa_kuniyuki = {
 				custom_effect_tooltip = become_secondary_leader
@@ -151,7 +150,6 @@
 			}
 			hidden_effect = {
 				SHO_council_of_roju = {
-					set_character_flag = persuasive_monarchist_secondary
 					set_character_flag = dual_leader_id_tokugawa_kuniyuki
 					set_character_flag = dual_leader_second_title_regent
 				}
@@ -183,16 +181,16 @@
 		
 		completion_reward = {
 			# fascism
-			#promote_character = SHO_tokugawa_yoshichika	# replace later for making him 2nd leader before turning ideology
 			add_war_support = 0.05
 			SHO_tokugawa_yoshichika = {
+				promote_character = yes
 				custom_effect_tooltip = become_secondary_leader
 				custom_effect_tooltip = loc_paragraph
-				effect_tooltip = { add_trait = { ideology = fascism_ideology trait = fascist_demagogue } }
+				effect_tooltip = { add_trait = { ideology = fascism_ideology trait = building_fascism_support } }
 			}
 			hidden_effect = {
 				SHO_council_of_roju = {
-					set_character_flag = fascist_demagogue_secondary
+					set_character_flag = building_fascism_support_secondary
 					set_character_flag = dual_leader_id_tokugawa_yoshichika
 					set_character_flag = dual_leader_second_title_regent
 				}
@@ -226,16 +224,16 @@
 		
 		completion_reward = {
 			# democratic
-			#promote_character = SHO_tokugawa_yorisada	# replace later for making him 2nd leader before turning ideology
 			add_political_power = 70
 			SHO_tokugawa_yorisada = {
+				promote_character = yes
 				custom_effect_tooltip = become_secondary_leader
 				custom_effect_tooltip = loc_paragraph
-				effect_tooltip = { add_trait = { ideology = conservatism trait = democratic_reformer } }
+				effect_tooltip = { add_trait = { ideology = conservatism trait = building_democratic_support } }
 			}
 			hidden_effect = {
 				SHO_council_of_roju = {
-					set_character_flag = democratic_reformer_secondary
+					set_character_flag = building_democratic_support_secondary
 					set_character_flag = dual_leader_id_tokugawa_yorisada
 					set_character_flag = dual_leader_second_title_regent
 				}
@@ -243,6 +241,219 @@
 			}
 			set_country_flag = allowed_path_democratic	# this is for allowing advisers
 			clr_country_flag = initial_ideology_autocracy
+		}
+	}
+	
+	focus = {
+		id = SHO_mito_dynasty
+		icon = GFX_goal_generic_improve_relations
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		
+		prerequisite = { focus = SHO_successor_mito }
+		
+		relative_position_id = SHO_successor_mito
+		x = 0
+		y = 1
+		cost = 10
+		
+		available = {
+			has_government = autocracy
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			add_political_power = 150
+			SHO_tokugawa_kuniyuki = {
+				custom_effect_tooltip = become_shogun
+				set_character_flag = dual_leader_first_title_emperor
+			}
+			hidden_effect = {
+				promote_character = SHO_tokugawa_kuniyuki
+				SHO_council_of_roju = {
+					clr_character_flag = dual_leader_id_tokugawa_kuniyuki
+					clr_character_flag = dual_leader_second_title_regent
+				}
+			}
+			# add shoguness
+		}
+	}
+	
+	focus = {
+		id = SHO_build_coalition
+		icon = GFX_goal_generic_improve_relations
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		
+		prerequisite = { focus = SHO_successor_owari focus = SHO_successor_kii }
+		
+		relative_position_id = SHO_successor_owari
+		x = 1
+		y = 1
+		cost = 10
+		
+		available = {
+			NOT = {
+				has_government = fascism
+				has_government = democratic
+			}
+		}
+		
+		bypass = {
+			if = {
+				limit = { has_completed_focus = SHO_successor_owari }
+				OR = {
+					has_government = fascism
+					fascism > 0.75
+				}
+			}
+			if = {
+				limit = { has_completed_focus = SHO_successor_kii }
+				OR = {
+					has_government = democratic
+					democratic > 0.75
+				}
+			}
+			if = {
+				limit = { NOT = { has_completed_focus = SHO_successor_owari has_completed_focus = SHO_successor_kii } }
+				OR = {
+					has_government = fascism
+					fascism > 0.75
+					has_government = democratic
+					democratic > 0.75
+				}
+			}
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			country_event = shogunate.4
+		}
+	}
+	
+	focus = {
+		id = SHO_new_shogun_fascism
+		icon = GFX_goal_support_fascism
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		
+		prerequisite = { focus = SHO_build_coalition }
+		prerequisite = { focus = SHO_successor_owari }
+		
+		relative_position_id = SHO_build_coalition
+		x = -1
+		y = 1
+		cost = 10
+		
+		available = { NOT = { has_government = fascism } }
+		
+		bypass = { OR = { has_government = fascism } }
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			SHO_tokugawa_yoshichika = {
+				custom_effect_tooltip = become_shogun
+				set_character_flag = dual_leader_first_title_emperor
+			}
+			hidden_effect = {
+				SHO_council_of_roju = {
+					clr_character_flag = building_fascism_support_secondary
+					clr_character_flag = dual_leader_id_tokugawa_yoshichika
+					clr_character_flag = dual_leader_second_title_regent
+				}
+				remove_ideas = fascist_demagogue_spirit
+			}
+			set_politics = {
+				ruling_party = fascism
+				elections_allowed = no
+				last_election = "1936.12.31"
+				election_frequency = 60
+			}
+			if = {
+				limit = { has_country_flag = shogunate_build_coalition_autocracy }
+				hidden_effect = {
+					SHO_tokugawa_yoshichika = {
+						set_character_flag = dual_leader_id_tokugawa_kuniyuki
+						set_character_flag = dual_leader_id_prime_minister
+					}
+				}
+			}
+			if = {
+				limit = { has_country_flag = shogunate_build_coalition_neutrality }
+				hidden_effect = {
+					SHO_tokugawa_yoshichika = {
+						set_character_flag = dual_leader_id_senjuro_hayashi
+						set_character_flag = dual_leader_id_prime_minister
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = SHO_new_shogun_democratic
+		icon = GFX_goal_support_democracy
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		
+		prerequisite = { focus = SHO_build_coalition }
+		prerequisite = { focus = SHO_successor_kii }
+		
+		relative_position_id = SHO_build_coalition
+		x = 1
+		y = 1
+		cost = 10
+		
+		available = { NOT = { has_government = democratic } }
+		
+		bypass = { OR = { has_government = democratic } }
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			SHO_tokugawa_yorisada = {
+				custom_effect_tooltip = become_shogun
+				set_character_flag = dual_leader_first_title_emperor
+			}
+			hidden_effect = {
+				SHO_council_of_roju = {
+					clr_character_flag = building_democratic_support_secondary
+					clr_character_flag = dual_leader_id_tokugawa_yorisada
+					clr_character_flag = dual_leader_second_title_regent
+				}
+				remove_ideas = democratic_reformer_spirit
+			}
+			set_politics = {
+				ruling_party = democratic
+				elections_allowed = yes
+				last_election = "1936.12.31"
+				election_frequency = 60
+			}
+			if = {
+				limit = { has_country_flag = shogunate_build_coalition_communism }
+				hidden_effect = {
+					SHO_tokugawa_yorisada = {
+						set_character_flag = dual_leader_id_sakai_toshihiko
+						set_character_flag = dual_leader_id_prime_minister
+					}
+				}
+			}
+			if = {
+				limit = { has_country_flag = shogunate_build_coalition_neutrality }
+				hidden_effect = {
+					SHO_tokugawa_yorisada = {
+						set_character_flag = dual_leader_id_senjuro_hayashi
+						set_character_flag = dual_leader_id_prime_minister
+					}
+				}
+			}
 		}
 	}
 	
