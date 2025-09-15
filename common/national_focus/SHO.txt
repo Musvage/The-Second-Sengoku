@@ -268,7 +268,7 @@
 			add_political_power = 150
 			SHO_tokugawa_kuniyuki = {
 				custom_effect_tooltip = become_shogun
-				set_character_flag = dual_leader_first_title_emperor
+				set_character_flag = dual_leader_first_title_shogun
 			}
 			hidden_effect = {
 				promote_character = SHO_tokugawa_kuniyuki
@@ -359,7 +359,7 @@
 		completion_reward = {
 			SHO_tokugawa_yoshichika = {
 				custom_effect_tooltip = become_shogun
-				set_character_flag = dual_leader_first_title_emperor
+				set_character_flag = dual_leader_first_title_shogun
 				effect_tooltip = { remove_trait = { ideology = fascism_ideology trait = building_fascism_support } }
 			}
 			hidden_effect = {
@@ -421,7 +421,7 @@
 		completion_reward = {
 			SHO_tokugawa_yorisada = {
 				custom_effect_tooltip = become_shogun
-				set_character_flag = dual_leader_first_title_emperor
+				set_character_flag = dual_leader_first_title_shogun
 				effect_tooltip = { remove_trait = { ideology = conservatism trait = building_democratic_support } }
 			}
 			hidden_effect = {
@@ -620,14 +620,16 @@
 			}
 		}
 	}
+
+	### Economic Branch
 	
 	focus = {	# Bakuhan Kindai-ka >> baku-han  (Shogunal-domain) kindai-ka (modernization)
 		id = SHO_shogunal_domain_modernization
 		icon = GFX_focus_generic_industry_effort
-		search_filters = { FOCUS_FILTER_RESEARCH }
+		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_INDUSTRY }
 		
 		relative_position_id = SHO_burakumin_terrorists
-		x = 5
+		x = 7
 		y = 0
 		cost = 10
 		
@@ -646,6 +648,646 @@
 				uses = 1
 				category = industry
 			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = industrial_complex
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+	}
+	
+	focus = {	
+		id = SHO_extra_tech
+		icon = GFX_focus_generic_research_eastern
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = SHO_shogunal_domain_modernization }
+		relative_position_id = SHO_shogunal_domain_modernization
+		x = 0
+		y = 2
+		cost = 10
+		
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			add_research_slot = 1
+		}
+	}
+	
+	focus = {	
+		id = SHO_advanced_tech
+		icon = GFX_focus_GENERIC_radar_effort_eastern
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = SHO_extra_tech }
+		relative_position_id = SHO_extra_tech
+		x = 0
+		y = 2
+		cost = 10
+		
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			add_tech_bonus = {
+				name = advanced_techs_bonus
+				bonus = 2.0
+				uses = 2
+				category = radar_tech
+				category = electronics
+				category = rocketry
+			}
+			add_breakthrough_progress = {
+				specialization = specialization_air
+				value = 0.2
+			}
+		}
+	}
+	
+	focus = {	
+		id = SHO_extra_tech2
+		icon = GFX_focus_generic_research_eastern
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = SHO_advanced_tech }
+		relative_position_id = SHO_advanced_tech
+		x = 0
+		y = 2
+		cost = 10
+		
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			add_research_slot = 1
+		}
+	}
+	
+	focus = {	
+		id = SHO_nuclear_tech
+		icon = GFX_focus_GENERIC_advanced_tech_eastern
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = SHO_extra_tech2 }
+		relative_position_id = SHO_extra_tech2
+		x = 0
+		y = 1
+		cost = 10
+		
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			add_tech_bonus = {
+				name = nuclear_tech_bonus
+				bonus = 2.0
+				category = nuclear
+			}
+			add_breakthrough_progress = {
+				specialization = specialization_nuclear
+				value = 0.5
+			}
+		}
+	}
+	
+	focus = {	
+		id = SHO_construction_industry
+		icon = GFX_focus_generic_research_civ
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		
+		prerequisite = { focus = SHO_shogunal_domain_modernization }
+		relative_position_id = SHO_shogunal_domain_modernization
+		x = -2
+		y = 1
+		cost = 10
+		
+		available = {
+			
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			add_tech_bonus = {
+				name = construction_bonus
+				bonus = 2.0
+				uses = 1
+				category = construction_line_tech
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = industrial_complex
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+	}
+	
+	focus = {	
+		id = SHO_steel_industry
+		icon = GFX_focus_generic_industry_effort
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		
+		prerequisite = { focus = SHO_construction_industry }
+		relative_position_id = SHO_construction_industry
+		x = -1
+		y = 2
+		cost = 10
+		
+		available = {
+			
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			add_tech_bonus = {
+				name = resources_bonus
+				bonus = 2.0
+				uses = 1
+				category = excavation_tech
+			}
+			random_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 1
+						include_locked = yes
+					}	
+				}
+				add_resource = {
+					type = steel
+					amount = 4
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+	}
+	
+	focus = {	
+		id = SHO_energy_industry
+		icon = GFX_focus_generic_industry_effort
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		
+		prerequisite = { focus = SHO_construction_industry }
+		relative_position_id = SHO_construction_industry
+		x = 1
+		y = 2
+		cost = 10
+		
+		available = {
+			
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			add_tech_bonus = {
+				name = JAP_coal_liquification
+				bonus = 2.0
+				uses = 1
+				category = synth_resources
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = synthetic_refinery
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = synthetic_refinery
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = synthetic_refinery
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+	}
+	
+	focus = {	
+		id = SHO_focus_natural_resources
+		icon = GFX_focus_generic_industry_effort
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		
+		prerequisite = { focus = SHO_steel_industry focus = SHO_energy_industry }
+		mutually_exclusive = { focus = SHO_focus_synth_resources }
+		relative_position_id = SHO_steel_industry
+		x = 0
+		y = 2
+		cost = 10
+		
+		available = {
+			
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			
+		}
+	}
+	
+	focus = {	
+		id = SHO_focus_synth_resources
+		icon = GFX_focus_generic_research_synth
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		
+		prerequisite = { focus = SHO_steel_industry focus = SHO_energy_industry }
+		mutually_exclusive = { focus = SHO_focus_natural_resources }
+		relative_position_id = SHO_energy_industry
+		x = 0
+		y = 2
+		cost = 10
+		
+		available = {
+			
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			
+		}
+	}
+	
+	focus = {
+		id = SHO_machinery_industry
+		icon = GFX_focus_generic_industry_effort
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		
+		prerequisite = { focus = SHO_shogunal_domain_modernization }
+		relative_position_id = SHO_shogunal_domain_modernization
+		x = 2
+		y = 1
+		cost = 10
+		
+		available = {
+			
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			add_tech_bonus = {
+				name = production_bonus
+				bonus = 2.0
+				uses = 1
+				category = machinery_tech
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = industrial_complex
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = industrial_complex
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = SHO_weapons_industry
+		icon = GFX_focus_generic_arms_factory
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		
+		prerequisite = { focus = SHO_machinery_industry }
+		relative_position_id = SHO_machinery_industry
+		x = -1
+		y = 2
+		cost = 10
+		
+		bypass = {
+			custom_trigger_tooltip = {
+				tooltip = production_effort_tt
+				all_owned_state = {
+					free_building_slots = {
+						building = arms_factory
+						size < 1
+						include_locked = yes
+					}
+				}
+			}
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = arms_factory
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_owned_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = arms_factory
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = SHO_naval_industry
+		icon = GFX_focus_generic_dockyards
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		
+		prerequisite = { focus = SHO_machinery_industry }
+		relative_position_id = SHO_machinery_industry
+		x = 1
+		y = 2
+		cost = 10
+		
+		available = {
+			any_state = {
+				is_coastal = yes
+				is_controlled_by = ROOT
+			}
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			if = {
+				limit = {
+					any_controlled_state = {
+						free_building_slots = {
+							building = dockyard
+							size > 0
+							include_locked = yes
+						}
+						impassable = no
+						is_coastal = yes
+						is_one_state_island = no
+					}
+				}
+				random_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = dockyard
+							size > 0
+							include_locked = yes
+						}
+						is_coastal = yes
+						is_one_state_island = no
+						impassable = no
+					}
+					add_building_construction = {
+						type = dockyard
+						level = 1
+						instant_build = yes
+					}
+					add_extra_state_shared_building_slots = 1
+				}
+			}
+			if = {
+				limit = {
+					any_controlled_state = {
+						free_building_slots = {
+							building = dockyard
+							size > 0
+							include_locked = yes
+						}
+						impassable = no
+						is_coastal = yes
+						is_one_state_island = no
+					}
+				}
+				random_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = dockyard
+							size > 0
+							include_locked = yes
+						}
+						is_coastal = yes
+						is_one_state_island = no
+						impassable = no
+					}
+					add_building_construction = {
+						type = dockyard
+						level = 1
+						instant_build = yes
+					}
+					add_extra_state_shared_building_slots = 1
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = SHO_focus_quantity_production
+		icon = GFX_focus_generic_army_expansion_3
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		
+		prerequisite = { focus = SHO_weapons_industry focus = SHO_naval_industry }
+		mutually_exclusive = { focus = SHO_focus_quality_production }
+		relative_position_id = SHO_weapons_industry
+		x = 0
+		y = 2
+		cost = 10
+		
+		available = {
+			
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			
+		}
+	}
+	
+	focus = {	
+		id = SHO_focus_quality_production
+		icon = GFX_focus_generic_industry_effort
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		
+		prerequisite = { focus = SHO_weapons_industry focus = SHO_naval_industry }
+		mutually_exclusive = { focus = SHO_focus_quantity_production }
+		relative_position_id = SHO_naval_industry
+		x = 0
+		y = 2
+		cost = 10
+		
+		available = {
+			
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			
 		}
 	}
 }
