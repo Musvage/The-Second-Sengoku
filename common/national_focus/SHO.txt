@@ -246,7 +246,7 @@
 	
 	focus = {
 		id = SHO_mito_dynasty
-		icon = GFX_goal_generic_improve_relations
+		icon = GFX_focus_SHO_mito_dynasty
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = SHO_successor_mito }
@@ -620,6 +620,273 @@
 			}
 		}
 	}
+	
+	### Military Branch
+	# quick reforms to counter the Knights, or structural reforms that take longer
+	
+	focus = {
+		id = SHO_army_purge_disloyalty
+		icon = GFX_focus_SHO_purge_disloyals
+		search_filters = { FOCUS_FILTER_MILITARY }
+		
+		mutually_exclusive = { focus = SHO_army_restructure_officer_career }
+		
+		relative_position_id = SHO_burakumin_terrorists
+		x = 5
+		y = 0
+		cost = 4
+		
+		available = {
+			AMO = { has_decision = AMO_countdown_to_war }
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			custom_effect_tooltip = SHO_low_army_morale_a_tt
+			custom_effect_tooltip = loc_paragraph
+			custom_effect_tooltip = SHO_army_purge_disloyalty_tt
+			#hidden_effect = {
+				swap_ideas = {
+					remove_idea = SHO_low_army_morale_abc
+					add_idea = SHO_low_army_morale_bc
+				}
+			#}
+			hidden_effect = {
+				AMO = {
+					set_variable = { AMO_war_decisions_war_cost = 60 }
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = SHO_army_force_conscription
+		icon = GFX_goal_generic_political_pressure_eastern
+		search_filters = { FOCUS_FILTER_MANPOWER }
+		
+		prerequisite = { focus = SHO_army_purge_disloyalty }
+		
+		relative_position_id = SHO_army_purge_disloyalty
+		x = -1
+		y = 1
+		cost = 4
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			custom_effect_tooltip = SHO_low_army_morale_b_tt
+			custom_effect_tooltip = loc_paragraph
+			add_timed_idea = { idea = SHO_forcing_conscription_spirit days = 180 }
+			hidden_effect = {
+				if = {
+					limit = { has_idea = SHO_low_army_morale_bc }
+					swap_ideas = {
+						remove_idea = SHO_low_army_morale_bc
+						add_idea = SHO_low_army_morale_c
+					}
+				} else = {
+					remove_ideas = SHO_low_army_morale_b
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = SHO_army_comandeer_resources
+		icon = GFX_focus_REI_home_infrastructure
+		search_filters = { FOCUS_FILTER_MILITARY }
+		
+		prerequisite = { focus = SHO_army_purge_disloyalty }
+		
+		relative_position_id = SHO_army_purge_disloyalty
+		x = 1
+		y = 1
+		cost = 4
+		
+		available = {
+			
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			custom_effect_tooltip = SHO_low_army_morale_b_tt
+			custom_effect_tooltip = loc_paragraph
+			add_timed_idea = { idea = SHO_comandeering_equipment_spirit days = 180 }
+			hidden_effect = {
+				if = {
+					limit = { has_idea = SHO_low_army_morale_bc }
+					swap_ideas = {
+						remove_idea = SHO_low_army_morale_bc
+						add_idea = SHO_low_army_morale_b
+					}
+				} else = {
+					remove_ideas = SHO_low_army_morale_c
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = SHO_army_restructure_officer_career
+		icon = GFX_focus_generic_officers2
+		search_filters = { FOCUS_FILTER_MILITARY }
+		
+		mutually_exclusive = { focus = SHO_army_purge_disloyalty }
+		
+		relative_position_id = SHO_army_purge_disloyalty
+		x = 4
+		y = 0
+		cost = 10
+		
+		available = {
+			
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			army_experience = 5
+			navy_experience = 5
+			air_experience = 5
+			custom_effect_tooltip = loc_paragraph
+			custom_effect_tooltip = SHO_low_army_morale_a_tt
+			hidden_effect = {
+				swap_ideas = {
+					remove_idea = SHO_low_army_morale_abc
+					add_idea = SHO_low_army_morale_bc
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = SHO_army_wages_pensions
+		icon = GFX_focus_PRO_issue_bonds
+		search_filters = { FOCUS_FILTER_MANPOWER }
+		
+		prerequisite = { focus = SHO_army_restructure_officer_career }
+		
+		relative_position_id = SHO_army_restructure_officer_career
+		x = -1
+		y = 1
+		cost = 10
+		
+		available = {
+			
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			custom_effect_tooltip = SHO_low_army_morale_b_tt
+			custom_effect_tooltip = loc_paragraph
+			hidden_effect = { add_ideas = SHO_army_wages_pensions_spirit }
+			custom_effect_tooltip = free_mobilization_laws_one_time
+				hidden_effect = {
+				if = {
+					limit = { has_idea = SHO_low_army_morale_bc }
+					swap_ideas = {
+						remove_idea = SHO_low_army_morale_bc
+						add_idea = SHO_low_army_morale_c
+					}
+				} else = {
+					remove_ideas = SHO_low_army_morale_b
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = SHO_army_command_chain
+		icon = GFX_focus_SHO_command_chain
+		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = SHO_army_restructure_officer_career }
+		
+		relative_position_id = SHO_army_restructure_officer_career
+		x = 1
+		y = 1
+		cost = 10
+		
+		available = {
+			
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			custom_effect_tooltip = SHO_low_army_morale_c_tt
+			custom_effect_tooltip = loc_paragraph
+			add_tech_bonus = {
+				name = advanced_techs_bonus
+				bonus = 0.5
+				uses = 1
+				category = support_tech
+			}
+			hidden_effect = {
+				if = {
+					limit = { has_idea = SHO_low_army_morale_bc }
+					swap_ideas = {
+						remove_idea = SHO_low_army_morale_bc
+						add_idea = SHO_low_army_morale_b
+					}
+				} else = {
+					remove_ideas = SHO_low_army_morale_c
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = SHO_research_department
+		icon = GFX_focus_REI_research
+		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_INDUSTRY }
+		
+		prerequisite = { focus = SHO_army_force_conscription focus = SHO_army_comandeer_resources focus = SHO_army_restructure_officer_career }
+		
+		relative_position_id = SHO_army_purge_disloyalty
+		x = 2
+		y = 2
+		cost = 10
+		
+		available = {
+			
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			if = {
+				limit = { has_dlc = "Arms Against Tyranny" }
+				every_military_industrial_organization = {
+					add_mio_funds = 400
+				}
+			} else = {
+				hidden_ideas = {
+					add_ideas = SHO_research_department_designer_spirit
+					add_ideas = SHO_research_department_industrial_spirit
+				}
+				custom_effect_tooltip = free_design_company_one_time_tt
+				custom_effect_tooltip = free_industrial_concern_one_time_tt
+			}
+		}
+	}
 
 	### Economic Branch
 	
@@ -628,7 +895,7 @@
 		icon = GFX_focus_generic_industry_effort
 		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_INDUSTRY }
 		
-		relative_position_id = SHO_burakumin_terrorists
+		relative_position_id = SHO_army_restructure_officer_career
 		x = 7
 		y = 0
 		cost = 10
@@ -870,22 +1137,9 @@
 				category = excavation_tech
 			}
 			random_controlled_state = {
-				limit = {
-					free_building_slots = {
-						building = industrial_complex
-						size > 1
-						include_locked = yes
-					}	
-				}
 				add_resource = {
 					type = steel
-					amount = 4
-				}
-				add_extra_state_shared_building_slots = 1
-				add_building_construction = {
-					type = industrial_complex
-					level = 1
-					instant_build = yes
+					amount = 6
 				}
 			}
 		}
@@ -893,7 +1147,7 @@
 	
 	focus = {	
 		id = SHO_energy_industry
-		icon = GFX_focus_generic_industry_effort
+		icon = GFX_focus_generic_energy_effort
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		
 		prerequisite = { focus = SHO_construction_industry }
@@ -952,7 +1206,7 @@
 	
 	focus = {	
 		id = SHO_focus_natural_resources
-		icon = GFX_focus_generic_industry_effort
+		icon = GFX_focus_generic_resources_effort
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		
 		prerequisite = { focus = SHO_steel_industry focus = SHO_energy_industry }
@@ -1262,7 +1516,7 @@
 		}
 		
 		completion_reward = {
-			
+			add_ideas = SHO_mass_production_spirit
 		}
 	}
 	
@@ -1287,8 +1541,7 @@
 		}
 		
 		completion_reward = {
-			
-		}
+			add_ideas = SHO_quality_focus_spirit
 	}
 }
 #FOCUS_FILTER_SPY
