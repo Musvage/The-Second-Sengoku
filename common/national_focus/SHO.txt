@@ -629,16 +629,12 @@
 		icon = GFX_focus_SHO_purge_disloyals
 		search_filters = { FOCUS_FILTER_MILITARY }
 		
-		mutually_exclusive = { focus = SHO_army_restructure_officer_career }
+		mutually_exclusive = { focus = SHO_army_reform_plan }
 		
 		relative_position_id = SHO_burakumin_terrorists
 		x = 5
 		y = 0
 		cost = 4
-		
-		available = {
-			AMO = { has_decision = AMO_countdown_to_war }
-		}
 		
 		ai_will_do = {
 			factor = 5
@@ -647,16 +643,23 @@
 		completion_reward = {
 			custom_effect_tooltip = SHO_low_army_morale_a_tt
 			custom_effect_tooltip = loc_paragraph
-			custom_effect_tooltip = SHO_army_purge_disloyalty_tt
-			#hidden_effect = {
+			if = {
+				limit = {  AMO = { has_decision = AMO_countdown_to_war } }
+				AMO = {
+					add_days_mission_timeout = {
+						mission = AMO_countdown_to_war
+						days = 30
+					}
+					set_variable = { AMO_war_decisions_war_cost = 60 }
+					custom_effect_tooltip = SHO_army_purge_disloyalty_tt
+				}
+				custom_effect_tooltip = loc_paragraph
+			}
+			custom_effect_tooltip = SHO_army_purge_disloyalty_tt2
+			hidden_effect = {
 				swap_ideas = {
 					remove_idea = SHO_low_army_morale_abc
 					add_idea = SHO_low_army_morale_bc
-				}
-			#}
-			hidden_effect = {
-				AMO = {
-					set_variable = { AMO_war_decisions_war_cost = 60 }
 				}
 			}
 		}
@@ -717,7 +720,7 @@
 		}
 		
 		completion_reward = {
-			custom_effect_tooltip = SHO_low_army_morale_b_tt
+			custom_effect_tooltip = SHO_low_army_morale_c_tt
 			custom_effect_tooltip = loc_paragraph
 			add_timed_idea = { idea = SHO_comandeering_equipment_spirit days = 180 }
 			hidden_effect = {
@@ -735,14 +738,14 @@
 	}
 	
 	focus = {
-		id = SHO_army_restructure_officer_career
-		icon = GFX_focus_generic_officers2
+		id = SHO_army_reform_plan
+		icon = GFX_focus_generic_army
 		search_filters = { FOCUS_FILTER_MILITARY }
 		
 		mutually_exclusive = { focus = SHO_army_purge_disloyalty }
 		
 		relative_position_id = SHO_army_purge_disloyalty
-		x = 4
+		x = 5
 		y = 0
 		cost = 10
 		
@@ -755,11 +758,46 @@
 		}
 		
 		completion_reward = {
+			add_political_power = 100
+			custom_effect_tooltip = unlock_characters_tt
+			character_list_tooltip = {
+				limit = {
+					OR = {
+						has_trait = army_chief_reform_3
+						has_trait = air_chief_reform_3
+						has_trait = navy_chief_reform_3
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = SHO_army_restructure_officer_career
+		icon = GFX_focus_generic_officers2
+		search_filters = { FOCUS_FILTER_MILITARY }
+		
+		prerequisite = { focus = SHO_army_reform_plan }
+		
+		relative_position_id = SHO_army_reform_plan
+		x = -2
+		y = 1
+		cost = 10
+		
+		available = {
+			
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			custom_effect_tooltip = SHO_low_army_morale_a_tt
+			custom_effect_tooltip = loc_paragraph
 			army_experience = 5
 			navy_experience = 5
 			air_experience = 5
-			custom_effect_tooltip = loc_paragraph
-			custom_effect_tooltip = SHO_low_army_morale_a_tt
 			hidden_effect = {
 				swap_ideas = {
 					remove_idea = SHO_low_army_morale_abc
@@ -774,10 +812,10 @@
 		icon = GFX_focus_PRO_issue_bonds
 		search_filters = { FOCUS_FILTER_MANPOWER }
 		
-		prerequisite = { focus = SHO_army_restructure_officer_career }
+		prerequisite = { focus = SHO_army_reform_plan }
 		
-		relative_position_id = SHO_army_restructure_officer_career
-		x = -1
+		relative_position_id = SHO_army_reform_plan
+		x = 0
 		y = 1
 		cost = 10
 		
@@ -813,10 +851,10 @@
 		icon = GFX_focus_SHO_command_chain
 		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_RESEARCH }
 		
-		prerequisite = { focus = SHO_army_restructure_officer_career }
+		prerequisite = { focus = SHO_army_reform_plan }
 		
-		relative_position_id = SHO_army_restructure_officer_career
-		x = 1
+		relative_position_id = SHO_army_reform_plan
+		x = 2
 		y = 1
 		cost = 10
 		
@@ -856,7 +894,7 @@
 		icon = GFX_focus_REI_research
 		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_INDUSTRY }
 		
-		prerequisite = { focus = SHO_army_force_conscription focus = SHO_army_comandeer_resources focus = SHO_army_restructure_officer_career }
+		prerequisite = { focus = SHO_army_force_conscription focus = SHO_army_comandeer_resources focus = SHO_army_reform_plan }
 		
 		relative_position_id = SHO_army_purge_disloyalty
 		x = 2
@@ -895,8 +933,8 @@
 		icon = GFX_focus_generic_industry_effort
 		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_INDUSTRY }
 		
-		relative_position_id = SHO_army_restructure_officer_career
-		x = 7
+		relative_position_id = SHO_army_reform_plan
+		x = 6
 		y = 0
 		cost = 10
 		
