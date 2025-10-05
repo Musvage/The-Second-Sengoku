@@ -31,11 +31,20 @@ country_event = {	# Assassination (automatic event)
 		}
 		NOT = { focus_progress = { focus = SHO_call_congress progress > 0.01 } focus_progress = { focus = SHO_suppress_opposition progress > 0.01 } focus_progress = { focus = SHO_burakumin_terrorists progress > 0.01 } }
 		NOT = {
-			has_completed_focus = SHO_call_congress
-			has_completed_focus = SHO_suppress_opposition
-			has_completed_focus = SHO_burakumin_terrorists
+			focus_progress = {
+				focus = SHO_call_congress
+				progress > 0.5
+			}
+			focus_progress = {
+				focus = SHO_suppress_opposition
+				progress > 0.5
+			}
+			focus_progress = {
+				focus = SHO_burakumin_terrorists
+				progress > 0.01
+			}
 		}
-		date > 1936.04.20
+		date > 1936.10.20
 	}
 	
 	mean_time_to_happen = {
@@ -390,9 +399,6 @@ country_event = {	# Officers Purged (SHO event, kills officer)
 	
 	option = {
 		name = shogunate.6.a
-		#var:char_kill_id = {
-		#	custom_effect_tooltip = character_executed
-		#}
 		character_list_tooltip = {
 			limit = {
 				has_character_flag = SHO_kill_this_character
@@ -404,3 +410,85 @@ country_event = {	# Officers Purged (SHO event, kills officer)
 	}
 }
 
+country_event = {	# Shogun is Sick
+	id = shogunate.101
+	title = shogunate.101.t
+	desc = shogunate.101.d
+	picture = GFX_report_event_yamamoto_1
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = SHO
+		has_country_leader = {
+			character = SHO_tokugawa_iesato
+			ruling_only = yes
+		}
+		date > 1938.6.1
+	}
+	
+	mean_time_to_happen = {
+		years = 2
+		modifier = {
+			factor = 0.5
+			SHO = {
+				SHO_tokugawa_iesato = {
+					OR = {
+						has_trait = wounded
+						has_trait = sick
+					}
+				}
+			}
+		}
+	}
+	
+	immediate = { SHO = { set_country_flag = SHO_shogun_is_sick } }
+	
+	option = {
+		name = shogunate.101.a
+		
+	}
+}
+
+country_event = {	# Shogun Dies!
+	id = shogunate.102
+	title = shogunate.102.t
+	desc = shogunate.102.d
+	picture = GFX_report_event_yamamoto_1
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = SHO
+		set_country_flag = SHO_shogun_is_sick
+		SHO = { has_character = SHO_tokugawa_iesato }
+	}
+	
+	mean_time_to_happen = {
+		years = 2
+		modifier = {
+			factor = 0.1
+			SHO = {
+				SHO_tokugawa_iesato = {
+					OR = {
+						has_trait = wounded
+						has_trait = sick
+					}
+				}
+			}
+		}
+	}
+	
+	immediate = { SHO = { clr_country_flag = SHO_shogun_is_sick } }
+	
+	option = {
+		name = shogunate.102.a
+		retire_character = SHO_tokugawa_iesato
+		SHO_tokugawa_iemasa
+		promote_character = {
+			character = SHO_tokugawa_iesato
+			ideology = autocracy_subtype
+			add_timed_idea = { idea = SHO_shogun_died_recently_spirit days = 180 }
+		}
+	}
+}
