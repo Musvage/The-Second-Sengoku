@@ -402,7 +402,7 @@
 	
 	focus = {
 		id = SHO_new_shogun_fascism
-		icon = GFX_goal_support_fascism
+		icon = GFX_focus_SHO_dark_wave
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = SHO_build_coalition }
@@ -425,6 +425,7 @@
 			SHO_tokugawa_yoshichika = {
 				custom_effect_tooltip = become_shogun
 				set_character_flag = dual_leader_first_title_shogun
+				custom_effect_tooltip = loc_paragraph
 				effect_tooltip = { remove_trait = { ideology = fascism_ideology trait = building_fascism_support } }
 			}
 			hidden_effect = {
@@ -487,6 +488,7 @@
 			SHO_tokugawa_yorisada = {
 				custom_effect_tooltip = become_shogun
 				set_character_flag = dual_leader_first_title_shogun
+				custom_effect_tooltip = loc_paragraph
 				effect_tooltip = { remove_trait = { ideology = conservatism trait = building_democratic_support } }
 			}
 			hidden_effect = {
@@ -526,17 +528,29 @@
 	
 	focus = {
 		id = SHO_befriend_france
-		icon = GFX_focus_SHO_countrerweight
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		icon = { value = GFX_focus_generic_diplomacy_KOB_communism trigger = { KOB = { has_government = communism } } }
+		icon = { value = GFX_focus_generic_diplomacy_KOB_democratic_socialism trigger = { has_goverment = democratic_socialism } }
+		icon = GFX_focus_generic_diplomacy_KOB_democratic
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_DIPLOMACY }
 		
 		prerequisite = { focus = SHO_new_shogun_democratic }
+		mutually_exclusive = { focus = SHO_maitain_autonomy }
 		
 		relative_position_id = SHO_new_shogun_democratic
 		x = 0
 		y = 1
 		cost = 10
 		
-		available = { has_government = democratic }
+		available = {
+			has_government = democratic
+			KOB = {
+				NOT = {
+					has_government = neutrality
+					has_government = autocracy
+					has_government = fascism
+				}
+			}
+		}
 		
 		ai_will_do = {
 			factor = 5
@@ -549,13 +563,14 @@
 	
 	focus = {
 		id = SHO_maitain_autonomy
-		icon = GFX_focus_SHO_countrerweight
+		icon = GFX_focus_SHO_isolation
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = SHO_new_shogun_democratic focus = SHO_new_shogun_fascism }
+		mutually_exclusive = { focus = SHO_befriend_france }
 		
 		relative_position_id = SHO_new_shogun_democratic
-		x = 2
+		x = -2
 		y = 1
 		cost = 10
 		
@@ -564,7 +579,12 @@
 		}
 		
 		completion_reward = {
-			
+			custom_effect_tooltip = free_trade_laws_one_time
+			custom_effect_tooltip = free_economy_one_time
+			hidden_effect = {
+				add_ideas = SHO_maitain_autonomy_economy_spirit
+				add_ideas = SHO_maitain_autonomy_trade_spirit
+			}
 		}
 	}
 	
@@ -611,7 +631,7 @@
 	focus = {
 		id = SHO_political_commissars
 		icon = GFX_focus_SHO_political_comissars
-		search_filters = { FOCUS_FILTER_MILITARY FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_STABILITY FOCUS_FILTER_POLITICAL }
 
 		prerequisite = { focus = SHO_turn_communist }
 		
@@ -628,7 +648,7 @@
 		available = { has_government = communism } 
 
 		completion_reward = {
-			add_ideas = political_commissars_focus	# change later
+			add_stability = 0.1
 			add_popularity = {
 				ideology = communism
 				popularity = 0.1
@@ -691,7 +711,11 @@
 		}
 		
 		completion_reward = {
-			add_ideas = KAN_communist_paramilitary_spirit	# change later
+			swap_ideas = {
+				remove_idea = SHO_new_model_army
+				add_idea = SHO_new_model_army_2
+			}
+			custom_effect_tooltip = mobilization_law_threshold_reduction_tt
 		}
 	}
 	
@@ -738,7 +762,7 @@
 	}
 	
 	focus = {
-		id = SHO_mountaineer_doctrine
+		id = SHO_doctrinal_revolution
 		icon = GFX_focus_SHO_doctrine_revolution
 		search_filters = { FOCUS_FILTER_RESEARCH }
 		
