@@ -7,12 +7,386 @@ focus_tree = {
 	country = {
 		factor = 0
 		modifier = {
-			add = 0
+			add = 10
 			tag = AMO
 		}
 	}
 
+	### Branch for initial war with the Shogunate
 	
+	# quick action sub-branch
+	
+	focus = {
+		id = AMO_short_preparation
+		icon = GFX_goal_generic_aggressive_eastern
+		search_filters = { FOCUS_FILTER_AMO_WAR FOCUS_FILTER_EQUIPMENT }
+		
+		mutually_exclusive = { focus = AMO_long_preparation }
+		
+		x = 0
+		y = 0
+		cost = 5
+		
+		available = { has_decision = AMO_countdown_to_war }
+		
+		bypass = { NOT = { has_decision = AMO_countdown_to_war } }
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		cancelable = no
+		
+		completion_reward = {
+			add_equipment_to_stockpile = {
+				type = infantry_equipment_traditional
+				amount = 500
+			}
+			add_equipment_to_stockpile = {
+				type = artillery_equipment_traditional
+				amount = 50
+			}
+		}
+	}
+	
+	focus = {
+		id = AMO_short_preparation_frenzy
+		icon = GFX_focus_AMO_national_frenzy
+		search_filters = { FOCUS_FILTER_AMO_WAR FOCUS_FILTER_MILITARY }
+		
+		prerequisite = { focus = AMO_short_preparation }
+		
+		relative_position_id = AMO_short_preparation
+		x = -4
+		y = 1
+		cost = 2.5
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		cancelable = no
+		
+		completion_reward = {
+			add_war_support = 0.1
+			add_manpower = 25000
+		}
+	}
+	
+	focus = {
+		id = AMO_short_preparation_comandeer_ships
+		icon = GFX_focus_generic_destroyer_effort
+		search_filters = { FOCUS_FILTER_AMO_WAR FOCUS_FILTER_MILITARY }
+		
+		prerequisite = { focus = AMO_short_preparation }
+		
+		relative_position_id = AMO_short_preparation
+		x = -2
+		y = 1
+		cost = 2.5
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		cancelable = no
+		
+		available = {
+			SHO = {
+				has_navy_size = {
+					size > 1
+					type = screen_ship
+				}
+			}
+		}
+		
+		completion_reward = {
+			SHO = {
+				transfer_units_fraction= {
+					target = AMO
+					size = 0.1
+					stockpile_ratio = 0
+					army_ratio = 0
+					navy_ratio = 0.1
+					air_ratio = 0
+					keep_unit_leaders_trigger = {
+						always = yes
+					}
+				}
+			}
+			SHO = {
+				transfer_ship = {
+					type = light_cruiser
+					target = AMO
+					exclude_refitting = no
+				}
+				transfer_ship = {
+					type = destroyer
+					target = AMO
+					exclude_refitting = no
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = AMO_short_preparation_supply_weapons
+		icon = GFX_focus_AMO_provide_guns
+		search_filters = { FOCUS_FILTER_AMO_WAR FOCUS_FILTER_EQUIPMENT }
+		
+		prerequisite = { focus = AMO_short_preparation }
+		
+		relative_position_id = AMO_short_preparation
+		x = 0
+		y = 1
+		cost = 2.5
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		cancelable = no
+		
+		completion_reward = {
+			effect_tooltip = {
+				add_equipment_to_stockpile = {
+					type = infantry_equipment_0
+					amount = 1000
+				}
+				add_equipment_to_stockpile = {
+					type = artillery_equipment_1
+					amount = 50
+				}
+			}
+			hidden_effect = {
+				add_equipment_to_stockpile = { type = infantry_equipment_0 amount = 200 producer = REI }
+				add_equipment_to_stockpile = { type = artillery_equipment_1 amount = 10 producer = REI }
+				add_equipment_to_stockpile = { type = infantry_equipment_0 amount = 200 producer = AMC }
+				add_equipment_to_stockpile = { type = artillery_equipment_1 amount = 10 producer = AMC }
+				add_equipment_to_stockpile = { type = infantry_equipment_0 amount = 200 producer = OKI }
+				add_equipment_to_stockpile = { type = artillery_equipment_1 amount = 10 producer = OKI }
+				add_equipment_to_stockpile = { type = infantry_equipment_0 amount = 200 producer = KOB }
+				add_equipment_to_stockpile = { type = artillery_equipment_1 amount = 10 producer = KOB }
+				add_equipment_to_stockpile = { type = infantry_equipment_0 amount = 200 producer = OSA }
+				add_equipment_to_stockpile = { type = artillery_equipment_1 amount = 10 producer = OSA }	# this is weird but it's just so that there is variety in the equipment, to make it look like smuglers got weapons from multiple sources - it would make for unreadable game tooltips
+			}
+		}
+	}
+	
+	# meticulous preparation sub-branch
+	
+	focus = {
+		id = AMO_long_preparation
+		icon = GFX_focus_AMO_long_preparation
+		search_filters = { FOCUS_FILTER_AMO_PREPARE FOCUS_FILTER_POLITICAL }
+		
+		mutually_exclusive = { focus = AMO_short_preparation }
+		
+		relative_position_id = AMO_short_preparation
+		x = 2
+		y = 0
+		cost = 5
+		
+		available = { has_decision = AMO_countdown_to_war }
+		
+		bypass = { NOT = { has_decision = AMO_countdown_to_war } }
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		cancelable = no
+		
+		select_effect = {
+			add_days_remove  = {
+				decision = AMO_countdown_to_war
+				days = 60
+			}
+		}
+		
+		completion_reward = {
+			add_political_power = 150
+			custom_effect_tooltip = loc_paragraph
+			custom_effect_tooltip = AMO_long_preparation_tt
+			custom_effect_tooltip = loc_paragraph
+			custom_effect_tooltip = loc_upon_selection
+			effect_tooltip = { add_days_remove  = { decision = AMO_countdown_to_war days = 60 } }
+		}
+	}
+	
+	focus = {
+		id = AMO_long_preparation_supply_weapons
+		icon = GFX_focus_generic_arms_factory
+		search_filters = { FOCUS_FILTER_AMO_PREPARE FOCUS_FILTER_INDUSTRY }
+		
+		prerequisite = { focus = AMO_long_preparation }
+		
+		relative_position_id = AMO_long_preparation
+		x = 0
+		y = 1
+		cost = 5
+		
+		available = { has_decision = AMO_countdown_to_war }
+		
+		bypass = { NOT = { has_decision = AMO_countdown_to_war } }
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		cancelable = no
+		
+		select_effect = {
+			add_days_remove  = {
+				decision = AMO_countdown_to_war
+				days = 35
+			}
+		}
+		
+		completion_reward = {
+			add_offsite_building = { type = arms_factory level = 1 }
+			custom_effect_tooltip = loc_paragraph
+			custom_effect_tooltip = loc_upon_selection
+			effect_tooltip = { add_days_remove  = { decision = AMO_countdown_to_war days = 35 } }
+		}
+	}
+	
+	focus = {
+		id = AMO_long_preparation_find_recruits
+		icon = GFX_focus_generic_grand_mobilization
+		search_filters = { FOCUS_FILTER_AMO_PREPARE FOCUS_FILTER_MANPOWER }
+		
+		prerequisite = { focus = AMO_long_preparation }
+		
+		relative_position_id = AMO_long_preparation
+		x = 2
+		y = 1
+		cost = 5
+		
+		available = { has_decision = AMO_countdown_to_war }
+		
+		bypass = { NOT = { has_decision = AMO_countdown_to_war } }
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		cancelable = no
+		
+		select_effect = {
+			add_days_remove  = {
+				decision = AMO_countdown_to_war
+				days = 35
+			}
+		}
+		
+		completion_reward = {
+			add_ideas = AMO_conscription_effort_spirit
+			custom_effect_tooltip = loc_paragraph
+			custom_effect_tooltip = loc_upon_selection
+			effect_tooltip = { add_days_remove  = { decision = AMO_countdown_to_war days = 35 } }
+		}
+	}
+	
+	focus = {
+		id = AMO_long_preparation_infiltrate_shogunate
+		icon = GFX_focus_AMO_infiltrate_shogunate
+		search_filters = { FOCUS_FILTER_AMO_PREPARE FOCUS_FILTER_MILITARY }
+		
+		prerequisite = { focus = AMO_long_preparation }
+		
+		relative_position_id = AMO_long_preparation
+		x = 4
+		y = 1
+		cost = 5
+		
+		available = { has_decision = AMO_countdown_to_war }
+		
+		bypass = { NOT = { has_decision = AMO_countdown_to_war } }
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		cancelable = no
+		
+		select_effect = {
+			add_days_remove  = {
+				decision = AMO_countdown_to_war
+				days = 35
+			}
+		}
+		
+		completion_reward = {
+			set_country_flag = AMO_recruit_samurai_completed
+			set_country_flag = AMO_rally_soldiers_completed
+			custom_effect_tooltip = AMO_countdown_to_war_upon_completed
+			custom_effect_tooltip = AMO_recruit_samurai_tt
+			custom_effect_tooltip = AMO_rally_soldiers_tt
+			custom_effect_tooltip = loc_paragraph
+			custom_effect_tooltip = loc_upon_selection
+			effect_tooltip = { add_days_remove  = { decision = AMO_countdown_to_war days = 35 } }
+		}
+	}
+	
+	focus = {
+		id = AMO_long_preparation_refit_ships
+		icon = GFX_focus_generic_refit_merchant_ships
+		search_filters = { FOCUS_FILTER_AMO_PREPARE }
+		
+		prerequisite = { focus = AMO_long_preparation_supply_weapons }
+		
+		relative_position_id = AMO_long_preparation_supply_weapons
+		x = 0
+		y = 1
+		cost = 5
+		
+		available = { has_decision = AMO_countdown_to_war }
+		
+		bypass = { NOT = { has_decision = AMO_countdown_to_war } }
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		cancelable = no
+		
+		completion_reward = {
+			add_offsite_building = { type = dockyard level = 1 }
+			custom_effect_tooltip = loc_paragraph
+			custom_effect_tooltip = AMO_countdown_to_war_upon_completed
+			custom_effect_tooltip = "spawn basic ships"
+		}
+	}
+	
+	focus = {
+		id = AMO_long_preparation_steal_weapons
+		icon = GFX_focus_AMO_sabotage_arsenals
+		search_filters = { FOCUS_FILTER_AMO_PREPARE }
+		
+		prerequisite = { focus = AMO_long_preparation_infiltrate_shogunate }
+		
+		relative_position_id = AMO_long_preparation_infiltrate_shogunate
+		x = 0
+		y = 1
+		cost = 5
+		
+		available = { has_decision = AMO_countdown_to_war }
+		
+		bypass = { NOT = { has_decision = AMO_countdown_to_war } }
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		cancelable = no
+		
+		completion_reward = {
+			set_country_flag = AMO_steal_weapons_completed
+			custom_effect_tooltip = AMO_countdown_to_war_upon_completed
+			custom_effect_tooltip = AMO_steal_weapons_tt
+		}
+	}
 
 }
 #FOCUS_FILTER_SPY
@@ -28,3 +402,5 @@ focus_tree = {
 #FOCUS_FILTER_WAR_SUPPORT
 #FOCUS_FILTER_RELIGION
 #FOCUS_FILTER_WORLD
+#FOCUS_FILTER_AMO_WAR
+#FOCUS_FILTER_AMO_PREPARE
