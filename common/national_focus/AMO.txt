@@ -91,40 +91,53 @@ focus_tree = {
 		
 		cancelable = no
 		
-		available = {
-			SHO = {
-				has_navy_size = {
-					size > 1
-					type = screen_ship
-				}
-			}
-		}
-		
 		completion_reward = {
-			SHO = {
-				transfer_units_fraction= {
-					target = AMO
-					size = 0.1
-					stockpile_ratio = 0
-					army_ratio = 0
-					navy_ratio = 0.1
-					air_ratio = 0
-					keep_unit_leaders_trigger = {
-						always = yes
+			#SHO = {
+			#	transfer_units_fraction= {
+			#		target = AMO
+			#		size = 0.1
+			#		stockpile_ratio = 0
+			#		army_ratio = 0
+			#		navy_ratio = 0.1
+			#		air_ratio = 0
+			#		keep_unit_leaders_trigger = {
+			#			always = yes
+			#		}
+			#	}
+			#}
+			if = {
+				limit = { has_dlc = "Man the Guns" }
+				hidden_effect = {
+					create_ship = {
+						type = ship_hull_light_1
+						equipment_variant = "Katsuriki Class"
+						creator = AMO
+						name = "Katsuriki"
+					}
+					create_ship = {
+						type = ship_hull_light_1
+						equipment_variant = "Fubuki Class"
+						creator = AMO
+						name = "Fubuki"
 					}
 				}
-			}
-			SHO = {
-				transfer_ship = {
-					type = light_cruiser
-					target = AMO
-					exclude_refitting = no
+				custom_effect_tooltip = amo_spawn_2_destroyers
+			} else = {
+				hidden_effect = {
+					create_ship = {
+						type = destroyer_1
+						equipment_variant = "Katsuriki Class"
+						creator = AMO
+						name = "Katsuriki I"
+					}
+					create_ship = {
+						type = destroyer_1
+						equipment_variant = "Katsuriki Class"
+						creator = AMO
+						name = "Katsuriki II"
+					}
 				}
-				transfer_ship = {
-					type = destroyer
-					target = AMO
-					exclude_refitting = no
-				}
+				custom_effect_tooltip = clan_spawn_2_destroyers
 			}
 		}
 	}
@@ -352,10 +365,52 @@ focus_tree = {
 		cancelable = no
 		
 		completion_reward = {
-			add_offsite_building = { type = dockyard level = 1 }
-			custom_effect_tooltip = loc_paragraph
-			custom_effect_tooltip = AMO_countdown_to_war_upon_completed
-			custom_effect_tooltip = "spawn basic ships"
+			if = {
+				limit = { has_dlc = "Man the Guns" }
+				add_offsite_building = { type = dockyard level = 1 }
+				custom_effect_tooltip = loc_paragraph
+				custom_effect_tooltip = AMO_countdown_to_war_upon_completed
+				hidden_effect = {
+					create_equipment_variant = {
+						name = "Refited Merchant Ship"		# based on Okinoshima Class, cruiser minelayer
+						type = ship_hull_cruiser_1
+						name_group = JAP_MINELAYERS_HISTORICAL
+						parent_version = 0
+						modules = {
+							fixed_ship_battery_slot = ship_light_medium_battery_1
+							fixed_ship_anti_air_slot = ship_anti_air_1
+							fixed_ship_fire_control_system_slot = ship_fire_control_system_0
+							fixed_ship_radar_slot = empty
+							fixed_ship_engine_slot = cruiser_ship_engine_1
+							fixed_ship_armor_slot = empty
+							mid_1_custom_slot = empty
+							mid_2_custom_slot = ship_torpedo_1
+							rear_1_custom_slot = ship_mine_layer_1
+						}
+					}
+					create_ship = {
+						type = ship_hull_cruiser_1
+						equipment_variant = "Refited Merchant Ship"
+						creator = AMO
+						name = "Refited Merchant Ship"
+					}
+				}
+				custom_effect_tooltip = clan_spawn_1_light_cruiser
+			} else = {
+				add_offsite_building = { type = dockyard level = 2 }
+				custom_effect_tooltip = loc_paragraph
+				custom_effect_tooltip = AMO_countdown_to_war_upon_completed
+				hidden_effect = {
+					create_ship = {
+							type = destroyer_1
+							equipment_variant = "Katsuriki Class"
+							creator = AMO
+							name = "Katsuriki II"
+						}
+					}
+				}
+				custom_effect_tooltip = clan_spawn_1_destroyer
+			}
 		}
 	}
 	
