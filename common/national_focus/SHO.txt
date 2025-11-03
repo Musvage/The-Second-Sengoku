@@ -695,7 +695,7 @@
 	focus = {
 		id = SHO_maitain_autonomy
 		icon = GFX_focus_SHO_isolation
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
 		
 		prerequisite = { focus = SHO_new_shogun_democratic focus = SHO_new_shogun_fascism }
 		mutually_exclusive = { focus = SHO_befriend_france }
@@ -710,11 +710,12 @@
 		}
 		
 		completion_reward = {
-			custom_effect_tooltip = free_trade_laws_one_time
+			add_stability = 0.05
 			custom_effect_tooltip = free_economy_one_time
+			#custom_effect_tooltip = free_trade_laws_one_time
 			hidden_effect = {
 				add_ideas = SHO_maitain_autonomy_economy_spirit
-				add_ideas = SHO_maitain_autonomy_trade_spirit
+				#add_ideas = SHO_maitain_autonomy_trade_spirit
 			}
 		}
 	}
@@ -1624,12 +1625,14 @@
 	focus = {	# Bakuhan Kindai-ka >> baku-han  (Shogunal-domain) kindai-ka (modernization)
 		id = SHO_shogunal_domain_modernization
 		icon = GFX_focus_generic_industry_effort
-		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_INDUSTRY }
+		search_filters = { FOCUS_FILTER_INDUSTRY }
 		
 		relative_position_id = SHO_army_reform_plan
-		x = 6
+		x = 7
 		y = 0
 		cost = 10
+		
+		mutually_exclusive = { focus = SHO_maintain_rice_tax }
 		
 		available = {
 			
@@ -1640,42 +1643,184 @@
 		}
 		
 		completion_reward = {
-			add_tech_bonus = {
-				name = industrial_bonus
-				bonus = 1.0
-				uses = 1
-				category = industry
-			}
-			random_owned_controlled_state = {
+			custom_effect_tooltip = SHO_shogunal_domain_modernization_tt
+			custom_effect_tooltip = loc_paragraph
+			if = {
 				limit = {
-					free_building_slots = {
-						building = industrial_complex
-						size > 0
-						include_locked = yes
+					any_controlled_state = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 0
+							include_locked = yes
+						}
 					}
-					OR = {
-						is_in_home_area = yes
-						NOT = {
-							owner = {
-								any_owned_state = {
-									free_building_slots = {
-										building = industrial_complex
-										size > 0
-										include_locked = yes
+				}
+				random_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 0
+							include_locked = yes
+						}
+						OR = {
+							is_in_home_area = yes
+							NOT = {
+								owner = {
+									any_owned_state = {
+										free_building_slots = {
+											building = industrial_complex
+											size > 0
+											include_locked = yes
+										}
+										is_in_home_area = yes
 									}
-									is_in_home_area = yes
 								}
 							}
 						}
 					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
 				}
-				add_extra_state_shared_building_slots = 1
-				add_building_construction = {
-					type = industrial_complex
-					level = 1
-					instant_build = yes
+				random_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 0
+							include_locked = yes
+						}
+						OR = {
+							is_in_home_area = yes
+							NOT = {
+								owner = {
+									any_owned_state = {
+										free_building_slots = {
+											building = industrial_complex
+											size > 0
+											include_locked = yes
+										}
+										is_in_home_area = yes
+									}
+								}
+							}
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
 				}
+			} else = {
+				add_offsite_building = { type = industrial_complex level = 1 }
 			}
+		}
+	}
+	
+	focus = {
+		id = SHO_maintain_rice_tax
+		icon = GFX_focus_TOH_develop_land
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		
+		mutually_exclusive = { focus = SHO_shogunal_domain_modernization }
+		
+		relative_position_id = SHO_shogunal_domain_modernization
+		x = -2
+		y = 0
+		cost = 10
+		
+		available = {
+			NOT = { has_idea = free_trade }
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			custom_effect_tooltip = SHO_maintain_rice_tax_tt
+			custom_effect_tooltip = SHO_maintain_rice_tax_tt2
+			custom_effect_tooltip = loc_paragraph
+			add_ideas = SHO_rice_tax_spirit
+			custom_effect_tooltip = loc_paragraph
+			if = {
+				limit = {
+					any_controlled_state = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 0
+							include_locked = yes
+						}
+					}
+				}
+				random_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 0
+							include_locked = yes
+						}
+						OR = {
+							is_in_home_area = yes
+							NOT = {
+								owner = {
+									any_owned_state = {
+										free_building_slots = {
+											building = industrial_complex
+											size > 0
+											include_locked = yes
+										}
+										is_in_home_area = yes
+									}
+								}
+							}
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+				}
+				random_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 0
+							include_locked = yes
+						}
+						OR = {
+							is_in_home_area = yes
+							NOT = {
+								owner = {
+									any_owned_state = {
+										free_building_slots = {
+											building = industrial_complex
+											size > 0
+											include_locked = yes
+										}
+										is_in_home_area = yes
+									}
+								}
+							}
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+				}
+			} else = {
+				add_offsite_building = { type = industrial_complex level = 1 }
+			}
+			hidden_effect = { set_variable = { crash_1929_modifier = 0 } crash_1929_calculate_effect = yes }
 		}
 	}
 	
@@ -1684,9 +1829,9 @@
 		icon = GFX_focus_generic_research_eastern
 		search_filters = { FOCUS_FILTER_RESEARCH }
 		
-		prerequisite = { focus = SHO_shogunal_domain_modernization }
+		prerequisite = { focus = SHO_shogunal_domain_modernization focus = SHO_maintain_rice_tax }
 		relative_position_id = SHO_shogunal_domain_modernization
-		x = 0
+		x = -1
 		y = 2
 		cost = 10
 		
@@ -1784,12 +1929,12 @@
 	
 	focus = {	
 		id = SHO_construction_industry
-		icon = GFX_focus_generic_research_civ
+		icon = GFX_focus_generic_construction_eastern
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		
-		prerequisite = { focus = SHO_shogunal_domain_modernization }
+		prerequisite = { focus = SHO_shogunal_domain_modernization focus = SHO_maintain_rice_tax }
 		relative_position_id = SHO_shogunal_domain_modernization
-		x = -2
+		x = -3
 		y = 1
 		cost = 10
 		
@@ -1804,44 +1949,63 @@
 		completion_reward = {
 			add_tech_bonus = {
 				name = construction_bonus
-				bonus = 2.0
+				bonus = 1.0
 				uses = 1
 				category = construction_line_tech
 			}
-			random_owned_controlled_state = {
+			add_tech_bonus = {
+				name = cat_fortification_bonus
+				bonus = 1.0
+				uses = 1
+				category = cat_fortification
+			}
+			if = {
 				limit = {
-					free_building_slots = {
-						building = industrial_complex
-						size > 0
-						include_locked = yes
+					any_controlled_state = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 0
+							include_locked = yes
+						}
 					}
-					OR = {
-						is_in_home_area = yes
-						NOT = {
-							owner = {
-								any_owned_state = {
-									free_building_slots = {
-										building = industrial_complex
-										size > 0
-										include_locked = yes
+				}
+				random_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 0
+							include_locked = yes
+						}
+						OR = {
+							is_in_home_area = yes
+							NOT = {
+								owner = {
+									any_owned_state = {
+										free_building_slots = {
+											building = industrial_complex
+											size > 0
+											include_locked = yes
+										}
+										is_in_home_area = yes
 									}
-									is_in_home_area = yes
 								}
 							}
 						}
 					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
 				}
-				add_extra_state_shared_building_slots = 1
-				add_building_construction = {
-					type = industrial_complex
-					level = 1
-					instant_build = yes
-				}
+			} else = {
+				add_offsite_building = { type = industrial_complex level = 1 }
 			}
 		}
 	}
 	
-	focus = {	
+	focus = {
 		id = SHO_steel_industry
 		icon = GFX_focus_generic_industry_effort
 		search_filters = { FOCUS_FILTER_INDUSTRY }
@@ -1870,13 +2034,13 @@
 			random_controlled_state = {
 				add_resource = {
 					type = steel
-					amount = 6
+					amount = 8
 				}
 			}
 		}
 	}
 	
-	focus = {	
+	focus = {
 		id = SHO_energy_industry
 		icon = GFX_focus_generic_energy_effort
 		search_filters = { FOCUS_FILTER_INDUSTRY }
@@ -1902,40 +2066,53 @@
 				uses = 1
 				category = synth_resources
 			}
-			random_owned_controlled_state = {
+			if = {
 				limit = {
-					free_building_slots = {
-						building = synthetic_refinery
-						size > 0
-						include_locked = yes
+					any_controlled_state = {
+						free_building_slots = {
+							building = synthetic_refinery
+							size > 0
+							include_locked = yes
+						}
 					}
-					OR = {
-						is_in_home_area = yes
-						NOT = {
-							owner = {
-								any_owned_state = {
-									free_building_slots = {
-										building = synthetic_refinery
-										size > 0
-										include_locked = yes
+				}
+				random_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = synthetic_refinery
+							size > 0
+							include_locked = yes
+						}
+						OR = {
+							is_in_home_area = yes
+							NOT = {
+								owner = {
+									any_owned_state = {
+										free_building_slots = {
+											building = synthetic_refinery
+											size > 0
+											include_locked = yes
+										}
+										is_in_home_area = yes
 									}
-									is_in_home_area = yes
 								}
 							}
 						}
 					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = synthetic_refinery
+						level = 1
+						instant_build = yes
+					}
 				}
-				add_extra_state_shared_building_slots = 1
-				add_building_construction = {
-					type = synthetic_refinery
-					level = 1
-					instant_build = yes
-				}
+			} else = {
+				add_offsite_building = { type = synthetic_refinery level = 1 }
 			}
 		}
 	}
 	
-	focus = {	
+	focus = {
 		id = SHO_focus_natural_resources
 		icon = GFX_focus_generic_resources_effort
 		search_filters = { FOCUS_FILTER_INDUSTRY }
@@ -1960,9 +2137,9 @@
 		}
 	}
 	
-	focus = {	
+	focus = {
 		id = SHO_focus_synth_resources
-		icon = GFX_focus_generic_research_synth
+		icon = GFX_focus_generic_research_synth_2
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		
 		prerequisite = { focus = SHO_steel_industry focus = SHO_energy_industry }
@@ -1990,9 +2167,9 @@
 		icon = GFX_focus_generic_industry_effort
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		
-		prerequisite = { focus = SHO_shogunal_domain_modernization }
+		prerequisite = { focus = SHO_shogunal_domain_modernization focus = SHO_maintain_rice_tax }
 		relative_position_id = SHO_shogunal_domain_modernization
-		x = 2
+		x = 1
 		y = 1
 		cost = 10
 		
@@ -2005,41 +2182,107 @@
 		}
 		
 		completion_reward = {
-			add_tech_bonus = {
-				name = production_bonus
-				bonus = 2.0
-				uses = 1
-				category = machinery_tech
+			if = {
+				limit = { has_completed_focus = SHO_shogunal_domain_modernization }
+				add_tech_bonus = {
+					name = production_bonus
+					bonus = 2
+					category = machinery_tech
+				}
+				add_tech_bonus = {
+					name = industryorganization_bonus
+					bonus = 2
+					category = concentrated_industry_category
+					category = dispersed_industry_category
+				}
+			} else = {
+				add_tech_bonus = {
+					name = production_bonus
+					bonus = 2
+					category = machinery_tech
+				}
 			}
-			random_owned_controlled_state = {
+			if = {
 				limit = {
-					free_building_slots = {
-						building = industrial_complex
-						size > 0
-						include_locked = yes
+					any_controlled_state = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 0
+							include_locked = yes
+						}
 					}
-					OR = {
-						is_in_home_area = yes
-						NOT = {
-							owner = {
-								any_owned_state = {
-									free_building_slots = {
-										building = industrial_complex
-										size > 0
-										include_locked = yes
+				}
+				random_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 0
+							include_locked = yes
+						}
+						OR = {
+							is_in_home_area = yes
+							NOT = {
+								owner = {
+									any_owned_state = {
+										free_building_slots = {
+											building = industrial_complex
+											size > 0
+											include_locked = yes
+										}
+										is_in_home_area = yes
 									}
-									is_in_home_area = yes
 								}
 							}
 						}
 					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = industrial_complex
+						level = 1
+						instant_build = yes
+					}
+					random_controlled_state = {
+						limit = {
+							free_building_slots = {
+								building = industrial_complex
+								size > 0
+								include_locked = yes
+							}
+							OR = {
+								is_in_home_area = yes
+								NOT = {
+									owner = {
+										any_owned_state = {
+											free_building_slots = {
+												building = industrial_complex
+												size > 0
+												include_locked = yes
+											}
+											is_in_home_area = yes
+										}
+									}
+								}
+							}
+						}
+						add_extra_state_shared_building_slots = 1
+						add_building_construction = {
+							type = industrial_complex
+							level = 1
+							instant_build = yes
+						}
+					}
+				} else = {
+					add_offsite_building = { type = industrial_complex level = 1 }
 				}
-				add_extra_state_shared_building_slots = 1
-				add_building_construction = {
-					type = industrial_complex
-					level = 1
-					instant_build = yes
-				}
+			}
+			if = {
+				limit = { has_completed_focus = SHO_shogunal_domain_modernization }
+				custom_effect_tooltip = loc_paragraph
+				custom_effect_tooltip = SHO_machinery_industry_tt
+			} else_if = {
+				limit = { NOT = { has_completed_focus = SHO_maintain_rice_tax } }
+				custom_effect_tooltip = loc_paragraph
+				custom_effect_tooltip = SHO_machinery_industry_trigger
 			}
 		}
 	}
@@ -2073,65 +2316,134 @@
 		}
 		
 		completion_reward = {
-			random_owned_controlled_state = {
+			if = {
 				limit = {
-					free_building_slots = {
-						building = arms_factory
-						size > 0
-						include_locked = yes
+					any_controlled_state = {
+						free_building_slots = {
+							building = arms_factory
+							size > 0
+							include_locked = yes
+						}
 					}
-					OR = {
-						is_in_home_area = yes
-						NOT = {
-							owner = {
-								any_owned_state = {
-									free_building_slots = {
-										building = arms_factory
-										size > 0
-										include_locked = yes
+				}
+				random_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = arms_factory
+							size > 0
+							include_locked = yes
+						}
+						OR = {
+							is_in_home_area = yes
+							NOT = {
+								owner = {
+									any_owned_state = {
+										free_building_slots = {
+											building = arms_factory
+											size > 0
+											include_locked = yes
+										}
+										is_in_home_area = yes
 									}
-									is_in_home_area = yes
 								}
 							}
 						}
 					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = arms_factory
+						level = 1
+						instant_build = yes
+					}
 				}
-				add_extra_state_shared_building_slots = 1
-				add_building_construction = {
-					type = arms_factory
-					level = 1
-					instant_build = yes
+				random_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = arms_factory
+							size > 0
+							include_locked = yes
+						}
+						OR = {
+							is_in_home_area = yes
+							NOT = {
+								owner = {
+									any_owned_state = {
+										free_building_slots = {
+											building = arms_factory
+											size > 0
+											include_locked = yes
+										}
+										is_in_home_area = yes
+									}
+								}
+							}
+						}
+					}
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = arms_factory
+						level = 1
+						instant_build = yes
+					}
+				}
+				if = {
+					limit = { has_completed_focus = SHO_shogunal_domain_modernization }
+					if = {
+						limit = {
+							any_controlled_state = {
+								free_building_slots = {
+									building = arms_factory
+									size > 0
+									include_locked = yes
+								}
+							}
+						}
+						random_controlled_state = {
+							limit = {
+								free_building_slots = {
+									building = arms_factory
+									size > 0
+									include_locked = yes
+								}
+								OR = {
+									is_in_home_area = yes
+									NOT = {
+										owner = {
+											any_owned_state = {
+												free_building_slots = {
+													building = arms_factory
+													size > 0
+													include_locked = yes
+												}
+												is_in_home_area = yes
+											}
+										}
+									}
+								}
+							}
+							add_extra_state_shared_building_slots = 1
+							add_building_construction = {
+								type = arms_factory
+								level = 1
+								instant_build = yes
+							}
+						}
+					} else = { add_offsite_building = { type = arms_factory level = 1 } }
+					custom_effect_tooltip = loc_paragraph
+					custom_effect_tooltip = SHO_weapons_industry_tt
+				}
+			} else = {
+				if = {
+					limit = { has_completed_focus = SHO_shogunal_domain_modernization }
+					add_offsite_building = { type = arms_factory level = 2 }
+				} else = {
+					add_offsite_building = { type = arms_factory level = 1 }
 				}
 			}
-			random_owned_controlled_state = {
-				limit = {
-					free_building_slots = {
-						building = arms_factory
-						size > 0
-						include_locked = yes
-					}
-					OR = {
-						is_in_home_area = yes
-						NOT = {
-							owner = {
-								any_owned_state = {
-									free_building_slots = {
-										building = arms_factory
-										size > 0
-										include_locked = yes
-									}
-									is_in_home_area = yes
-								}
-							}
-						}
-					}
-				}
-				add_extra_state_shared_building_slots = 1
-				add_building_construction = {
-					type = arms_factory
-					level = 1
-					instant_build = yes
-				}
+			if = {
+				limit = { NOT = { has_completed_focus = SHO_shogunal_domain_modernization  has_completed_focus = SHO_maintain_rice_tax } }
+				custom_effect_tooltip = loc_paragraph
+				custom_effect_tooltip = SHO_weapons_industry_trigger
 			}
 		}
 	}
@@ -2167,9 +2479,7 @@
 							size > 0
 							include_locked = yes
 						}
-						impassable = no
 						is_coastal = yes
-						is_one_state_island = no
 					}
 				}
 				random_controlled_state = {
@@ -2180,48 +2490,120 @@
 							include_locked = yes
 						}
 						is_coastal = yes
-						is_one_state_island = no
-						impassable = no
+						OR = {
+							is_in_home_area = yes
+							NOT = {
+								owner = {
+									any_owned_state = {
+										free_building_slots = {
+											building = dockyard
+											size > 0
+											include_locked = yes
+										}
+										is_in_home_area = yes
+									}
+								}
+							}
+						}
 					}
+					add_extra_state_shared_building_slots = 1
 					add_building_construction = {
 						type = dockyard
 						level = 1
 						instant_build = yes
 					}
+				}
+				random_controlled_state = {
+					limit = {
+						free_building_slots = {
+							building = dockyard
+							size > 0
+							include_locked = yes
+						}
+						is_coastal = yes
+						OR = {
+							is_in_home_area = yes
+							NOT = {
+								owner = {
+									any_owned_state = {
+										free_building_slots = {
+											building = dockyard
+											size > 0
+											include_locked = yes
+										}
+										is_in_home_area = yes
+									}
+								}
+							}
+						}
+					}
 					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = dockyard
+						level = 1
+						instant_build = yes
+					}
+				}
+				if = {
+					limit = { has_completed_focus = SHO_shogunal_domain_modernization }
+					if = {
+						limit = {
+							any_controlled_state = {
+								free_building_slots = {
+									building = dockyard
+									size > 0
+									include_locked = yes
+								}
+								is_coastal = yes
+							}
+						}
+						random_controlled_state = {
+							limit = {
+								free_building_slots = {
+									building = dockyard
+									size > 0
+									include_locked = yes
+								}
+								is_coastal = yes
+								OR = {
+									is_in_home_area = yes
+									NOT = {
+										owner = {
+											any_owned_state = {
+												free_building_slots = {
+													building = dockyard
+													size > 0
+													include_locked = yes
+												}
+												is_in_home_area = yes
+											}
+										}
+									}
+								}
+							}
+							add_extra_state_shared_building_slots = 1
+							add_building_construction = {
+								type = dockyard
+								level = 1
+								instant_build = yes
+							}
+						}
+					} else = { add_offsite_building = { type = dockyard level = 1 } }
+					custom_effect_tooltip = loc_paragraph
+					custom_effect_tooltip = SHO_naval_industry_tt
+				}
+			} else = {
+				if = {
+					limit = { has_completed_focus = SHO_shogunal_domain_modernization }
+					add_offsite_building = { type = dockyard level = 2 }
+				} else = {
+					add_offsite_building = { type = dockyard level = 1 }
 				}
 			}
 			if = {
-				limit = {
-					any_controlled_state = {
-						free_building_slots = {
-							building = dockyard
-							size > 0
-							include_locked = yes
-						}
-						impassable = no
-						is_coastal = yes
-						is_one_state_island = no
-					}
-				}
-				random_controlled_state = {
-					limit = {
-						free_building_slots = {
-							building = dockyard
-							size > 0
-							include_locked = yes
-						}
-						is_coastal = yes
-						is_one_state_island = no
-						impassable = no
-					}
-					add_building_construction = {
-						type = dockyard
-						level = 1
-						instant_build = yes
-					}
-					add_extra_state_shared_building_slots = 1
-				}
+				limit = { NOT = { has_completed_focus = SHO_shogunal_domain_modernization  has_completed_focus = SHO_maintain_rice_tax } }
+				custom_effect_tooltip = loc_paragraph
+				custom_effect_tooltip = SHO_naval_industry_trigger
 			}
 		}
 	}
@@ -2247,7 +2629,19 @@
 		}
 		
 		completion_reward = {
-			add_ideas = SHO_mass_production_spirit
+			if = {
+				limit = { has_completed_focus = SHO_shogunal_domain_modernization }
+				add_ideas = SHO_mass_production2_spirit
+				custom_effect_tooltip = loc_paragraph
+				custom_effect_tooltip = SHO_focus_quantity_production_tt
+			} else_if = {
+				limit = { NOT = { has_completed_focus = SHO_maintain_rice_tax } }
+				add_ideas = SHO_mass_production_spirit
+				custom_effect_tooltip = loc_paragraph
+				custom_effect_tooltip = SHO_focus_quantity_production_trigger
+			} else = {
+				add_ideas = SHO_mass_production_spirit
+			}
 		}
 	}
 	
@@ -2272,7 +2666,19 @@
 		}
 		
 		completion_reward = {
-			add_ideas = SHO_quality_focus_spirit
+			if = {
+				limit = { has_completed_focus = SHO_shogunal_domain_modernization }
+				add_ideas = SHO_quality_focus2_spirit
+				custom_effect_tooltip = loc_paragraph
+				custom_effect_tooltip = SHO_focus_quality_production_tt
+			} else_if = {
+				limit = { NOT = { has_completed_focus = SHO_maintain_rice_tax } }
+				add_ideas = SHO_quality_focus_spirit
+				custom_effect_tooltip = loc_paragraph
+				custom_effect_tooltip = SHO_focus_quality_production_trigger
+			} else = {
+				add_ideas = SHO_quality_focus_spirit
+			}
 	}
 }
 #FOCUS_FILTER_SPY
