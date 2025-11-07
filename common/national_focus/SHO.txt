@@ -356,7 +356,7 @@
 		relative_position_id = SHO_successor_owari
 		x = 1
 		y = 1
-		cost = 5
+		cost = 10
 		
 		available = {
 			NOT = {
@@ -569,7 +569,7 @@
 	
 	focus = {
 		id = SHO_befriend_france_techs
-		icon = GFX_focus_generic_diplomacy_KOB_democratic
+		icon = GFX_focus_SHO_french_tech
 		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_DIPLOMACY }
 		
 		prerequisite = { focus = SHO_befriend_france }
@@ -631,7 +631,7 @@
 	
 	focus = {
 		id = SHO_befriend_france_equipment
-		icon = GFX_focus_generic_diplomacy_KOB_democratic
+		icon = GFX_focus_SHO_french_licenses
 		search_filters = { FOCUS_FILTER_EQUIPMENT FOCUS_FILTER_DIPLOMACY }
 		
 		prerequisite = { focus = SHO_befriend_france }
@@ -1005,6 +1005,12 @@
 					var:char_kill_id = { SHO = { country_event = { id = shogunate.6 hours = 6 } } }
 				}
 			}
+			### AI Strategy
+			if = {
+				limit = { has_country_flag = ai_path_army_reform }
+				clr_country_flag = ai_path_army_reform
+				set_country_flag = ai_path_army_purge
+			}
 		}
 	}
 	
@@ -1111,6 +1117,12 @@
 						has_trait = navy_chief_reform_3
 					}
 				}
+			}
+			### AI Strategy
+			if = {
+				limit = { has_country_flag = ai_path_army_purge }
+				clr_country_flag = ai_path_army_purge
+				set_country_flag = ai_path_army_reform
 			}
 		}
 	}
@@ -1385,6 +1397,35 @@
 	
 	focus = {
 		id = SHO_mil_research_navy_2
+		icon = GFX_focus_generic_submarine_effort_3
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = SHO_mil_research_navy_1 }
+		
+		relative_position_id = SHO_mil_research_navy_1
+		x = -1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			add_tech_bonus = {
+				name = ss_bonus
+				bonus = 2
+				category = ss_tech
+			}
+			add_breakthrough_progress = {
+				specialization = specialization_naval
+				value = 0.1
+			}
+		}
+	}
+	
+	focus = {
+		id = SHO_mil_research_navy_3
 		icon = GFX_goal_generic_navy_battleship2
 		search_filters = { FOCUS_FILTER_RESEARCH }
 		
@@ -1596,6 +1637,7 @@
 					bonus = 1.5
 					uses = 1
 					category = medium_air
+					category = light_air
 				}
 				add_tech_bonus = {
 					name = nav_bomber_bonus
@@ -1611,6 +1653,56 @@
 					bonus = 2.0
 					uses = 1
 					category = naval_bomber
+				}
+			}
+			add_breakthrough_progress = {
+				specialization = specialization_air
+				value = 0.1
+			}
+		}
+	}
+	
+	focus = {
+		id = SHO_mil_research_air_3
+		icon = GFX_focus_KYU_cas
+		search_filters = { FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = SHO_mil_research_air_1 }
+		
+		relative_position_id = SHO_mil_research_air_1
+		x = 1
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			if = {
+				limit = { has_dlc = "By Blood Alone" }
+				add_tech_bonus = {
+					name = CAS_bonus
+					bonus = 1.5
+					uses = 1
+					category = medium_air
+					category = light_air
+				}
+				add_tech_bonus = {
+					name = CAS_bonus
+					bonus = 1.5
+					uses = 1
+					technology = early_bombs
+					technology = armor_piercing_bombs
+					technology = heavy_bombs
+				}
+			} else = {
+				add_tech_bonus = {
+					name = CAS_bonus
+					bonus = 1.0
+					ahead_reduction = 2
+					uses = 1
+					category = cas_bomber
 				}
 			}
 			add_breakthrough_progress = {
@@ -1723,7 +1815,7 @@
 	
 	focus = {
 		id = SHO_maintain_rice_tax
-		icon = GFX_focus_TOH_develop_land
+		icon = GFX_focus_SHO_rice_tax
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		
 		mutually_exclusive = { focus = SHO_shogunal_domain_modernization }
@@ -1735,6 +1827,12 @@
 		
 		available = {
 			NOT = { has_idea = free_trade }
+			if = {
+				limit = { is_ai = yes }
+				hidden_trigger = {
+					check_variable = { global.crash_1929_level > 10 }	# if Great Depression is nearly over, AI won't take this focus
+				}
+			}
 		}
 		
 		ai_will_do = {
@@ -1887,6 +1985,8 @@
 		x = 0
 		y = 2
 		cost = 10
+		
+		available = { num_of_factories > 75 }
 		
 		
 		ai_will_do = {

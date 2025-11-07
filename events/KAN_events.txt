@@ -1,6 +1,91 @@
 add_namespace = kansai
 add_namespace = KAN_foreign_influence
 
+# events start at 10
+# old/depricated events are 1-10
+
+country_event = { # Help the Knights (AMO event)
+	id = kansai.10
+	title = kansai.10.t
+	desc = kansai.10.desc
+	picture = GFX_report_event_ger_civil_war
+	is_triggered_only = yes
+	
+	option = {	# accept 
+		name = kansai.10.a
+		### SINCE THIS ONLY HAPPENS EARLY GAME, WE CAN ASSUME THE BORDERS ARE THE SAME AS IN 1.1.1936
+		# select spawn state
+		if = {
+			limit = { SHO = { controls_state = 118 } }
+			set_global_flag = KAN_help_knights_state_118
+		} else_if = {
+			limit = { SHO = { controls_state = 63 } }
+			set_global_flag = KAN_help_knights_state_63
+		} else_if = {
+			limit = { SHO = { controls_state = 44 } }
+			set_global_flag = KAN_help_knights_state_44
+		} else = {
+			set_global_flag = KAN_help_knights_no_state
+		}
+		if = {
+			limit = { has_global_flag = KAN_help_knights_no_state }
+			# spawn units directly in Notojima
+			AMO = { load_oob = KAN_spawn_196 }
+		} else = {
+			# spawn unit via switching province controller and loading specific oob
+			custom_effect_tooltip = kansai.10.tt3
+			if = {
+				limit = { has_global_flag = KAN_help_knights_state_118 }
+				AMO = {
+					set_province_controller = 698
+					hidden_effect = { load_oob = KAN_spawn_118 }
+				}
+			} else_if = {
+				limit = { has_global_flag = KAN_help_knights_state_44 }
+				AMO = {
+					set_province_controller = 5744
+					hidden_effect = { load_oob = KAN_spawn_44 }
+				}
+			} else_if = {
+				limit = { has_global_flag = KAN_help_knights_state_63 }
+				AMO = {
+					set_province_controller = 4564
+					hidden_effect = { 
+						set_province_controller = 3911 
+						load_oob = KAN_spawn_63
+					}
+				}
+			}
+		}
+		custom_effect_tooltip = loc_paragraph
+		custom_effect_tooltip = kansai.10.tt1
+		hidden_effect = {
+			KAN = {
+				add_manpower = -9000
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = -900
+				}
+			}
+		}
+		ai_chance = {
+			base = 1
+		}
+	}
+	option = {	# refuse
+		name = kansai.10.b
+		ai_chance = {
+			base = 1
+		}
+	}
+}
+
+	
+### OLD STUFF BELLOW
+### OLD STUFF BELLOW
+### OLD STUFF BELLOW
+### OLD STUFF BELLOW
+
 country_event = { #civilwar
 	id = kansai.1
 	title = kansai.1.t

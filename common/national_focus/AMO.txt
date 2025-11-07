@@ -1960,7 +1960,11 @@ focus_tree = {
 		cancelable = no
 		
 		completion_reward = {
-			add_research_slot = 1
+			add_tech_bonus = {
+				name = electronic_bonus
+				bonus = 2.0
+				category = electronics
+			}
 		}
 	}
 	
@@ -1988,7 +1992,11 @@ focus_tree = {
 		cancelable = no
 		
 		completion_reward = {
-			add_research_slot = 1
+			add_tech_bonus = {
+				name = advanced_techs_bonus
+				bonus = 2.0
+				category = radar_tech
+			}
 		}
 	}
 	
@@ -2017,47 +2025,25 @@ focus_tree = {
 		cancelable = no
 		
 		completion_reward = {
-			add_research_slot = 1
+			add_tech_bonus = {
+				name = nuclear_tech_bonus
+				bonus = 2.0
+				category = nuclear
+			}
 		}
 	}
 	
 	### "Regular" main focuses
 	
 	focus = {
-		id = AMO_set_up_administration
-		icon = GFX_goal_generic_intelligence_exchange
-		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
-		
-		prerequisite = { focus = AMO_resolution_end_war focus = AMO_resolution_one_more_turn }
-		
-		relative_position_id = AMO_resolution_one_more_turn
-		x = -2
-		y = 1
-		cost = 10
-		
-		available = { AMO_is_not_confined = yes }
-		
-		ai_will_do = {
-			factor = 5
-		}
-		
-		cancelable = no
-		
-		completion_reward = {
-			add_political_power = 120
-			add_stability = 0.1
-		}
-	}
-	
-	focus = {
 		id = AMO_commissioner_chief_of_staff
 		icon = GFX_focus_AMO_commissioner_chief
 		search_filters = { FOCUS_FILTER_MILITARY }
 		
-		prerequisite = { focus = AMO_set_up_administration }
+		prerequisite = { focus = AMO_resolution_end_war focus = AMO_resolution_one_more_turn }
 		
-		relative_position_id = AMO_set_up_administration
-		x = -4
+		relative_position_id = AMO_resolution_one_more_turn
+		x = -6
 		y = 1
 		cost = 10
 		
@@ -2266,10 +2252,10 @@ focus_tree = {
 		icon = GFX_focus_AMO_commissioner_finance
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		
-		prerequisite = { focus = AMO_set_up_administration }
+		prerequisite = { focus = AMO_resolution_end_war focus = AMO_resolution_one_more_turn }
 		
-		relative_position_id = AMO_set_up_administration
-		x = -1
+		relative_position_id = AMO_resolution_one_more_turn
+		x = -4
 		y = 1
 		cost = 10
 		
@@ -2293,10 +2279,10 @@ focus_tree = {
 		icon = GFX_focus_AMO_commissioner_supply
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		
-		prerequisite = { focus = AMO_set_up_administration }
+		prerequisite = { focus = AMO_resolution_end_war focus = AMO_resolution_one_more_turn }
 		
-		relative_position_id = AMO_set_up_administration
-		x = 1
+		relative_position_id = AMO_resolution_one_more_turn
+		x = -2
 		y = 1
 		cost = 10
 		
@@ -2317,14 +2303,56 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = AMO_commissioner_supply_trucks
+		icon = GFX_focus_generic_truck
+		search_filters = { FOCUS_FILTER_EQUIPMENT FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = AMO_commissioner_supply }
+		
+		relative_position_id = AMO_commissioner_supply
+		x = 0
+		y = 2
+		cost = 10
+		
+		#available = { AMO_is_not_confined = yes }
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		cancelable = no
+		
+		completion_reward = {
+			set_temp_variable = { num_equip = num_of_military_factories }
+			add_to_temp_variable = { num_equip = num_of_civilian_factories }
+			multiply_temp_variable = { num_equip = 10 }
+			add_equipment_to_stockpile = {
+				type = support_equipment
+				amount = var:num_equip
+			}
+			add_equipment_to_stockpile = {
+				type = motorized_equipment_0
+				amount = var:num_equip
+			}
+			custom_effect_tooltip = AMO_commissioner_supply_trucks_tt
+			add_tech_bonus = {
+				name = support_bonus
+				bonus = 1.0
+				uses = 1
+				category = support_tech
+			}
+		}
+	}
+	
+	focus = {
 		id = AMO_commissioner_development
 		icon = GFX_focus_AMO_commissioner_development
 		search_filters = { FOCUS_FILTER_INDUSTRY }
 		
-		prerequisite = { focus = AMO_set_up_administration }
+		prerequisite = { focus = AMO_resolution_end_war focus = AMO_resolution_one_more_turn }
 		
-		relative_position_id = AMO_set_up_administration
-		x = 3
+		relative_position_id = AMO_resolution_one_more_turn
+		x = 0
 		y = 1
 		cost = 10
 		
@@ -2346,7 +2374,6 @@ focus_tree = {
 		cancelable = no
 		
 		completion_reward = {
-			add_ideas = AMO_commissioner_development_spirit
 			196 = {
 				if = {
 					limit = {
@@ -2380,6 +2407,221 @@ focus_tree = {
 					add_extra_state_shared_building_slots = 1
 				}
 			}
+			custom_effect_tooltip = AMO_commissioner_development_tt
+			random_controlled_state = {
+				limit = {
+					NOT = { state = 196 }
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				if = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+				} else = {
+
+					add_extra_state_shared_building_slots = 1
+				}
+				set_temp_variable = { blocked_state_1 = THIS }
+			}
+			random_controlled_state = {
+				limit = {
+					NOT = { state = 196 state = var:blocked_state_1 }
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				if = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+				} else = {
+
+					add_extra_state_shared_building_slots = 1
+				}
+				set_temp_variable = { blocked_state_2 = THIS }
+			}
+			random_controlled_state = {
+				limit = {
+					NOT = { state = 196 state = var:blocked_state_1 state = var:blocked_state_2 }
+					free_building_slots = {
+						building = industrial_complex
+						size > 0
+						include_locked = yes
+					}
+				}
+				if = {
+					limit = {
+						free_building_slots = {
+							building = industrial_complex
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+				} else = {
+
+					add_extra_state_shared_building_slots = 1
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = AMO_commissioner_development_bunkers
+		icon = GFX_goal_generic_fortify_city
+		search_filters = { FOCUS_FILTER_MILITARY }
+		
+		prerequisite = { focus = AMO_commissioner_development }
+		
+		relative_position_id = AMO_commissioner_development
+		x = 0
+		y = 2
+		cost = 10
+		
+		available = {
+			AMO_is_not_confined = yes
+			any_controlled_state = {
+				any_neighbor_state = { is_controlled_by = SHO }
+			}
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		cancelable = no
+		
+		completion_reward = {
+			custom_effect_tooltip = AMO_commissioner_development_bunkers_tt
+			every_controlled_state = {
+				add_building_construction = {
+					type = bunker
+					level = 1
+					instant_build = yes
+					province = {
+						limit_to_border_country = SHO
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = AMO_commissioner_development_supply_fuel
+		icon = GFX_focus_generic_stockpile_fuel
+		search_filters = { FOCUS_FILTER_EQUIPMENT }
+		
+		prerequisite = { focus = AMO_commissioner_development }
+		prerequisite = { focus = AMO_commissioner_supply }
+		
+		relative_position_id = AMO_commissioner_supply
+		x = 1
+		y = 1
+		cost = 10
+		
+		available = {
+			if = { limit = { has_decision = AMO_countdown_to_war } NOT = { AMO_is_preparing_for_war = yes } }
+			AMO_is_not_confined = yes
+			available = {
+				any_owned_state = {
+					free_building_slots = {
+						building = industrial_complex
+						size > 1
+						include_locked = yes
+					}
+				}
+			}
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			custom_effect_tooltip = AMO_commissioner_development_supply_fuel_tt1
+			random_controlled_state = {
+				prioritize = { 196 }
+				limit = {
+					free_building_slots = {
+						building = fuel_silo
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = fuel_silo
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = fuel_silo
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_controlled_state = {
+				limit = {
+					NOT = { state = 196 }
+					free_building_slots = {
+						building = fuel_silo
+						size > 0
+						include_locked = yes
+					}
+					OR = {
+						is_in_home_area = yes
+						NOT = {
+							owner = {
+								any_owned_state = {
+									free_building_slots = {
+										building = fuel_silo
+										size > 0
+										include_locked = yes
+									}
+									is_in_home_area = yes
+								}
+							}
+						}
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = fuel_silo
+					level = 1
+					instant_build = yes
+				}
+			}
+			set_temp_variable = { num_fuel_bonus = num_of_military_factories }
+			add_to_temp_variable = { num_fuel_bonus = num_of_civilian_factories }
+			multiply_temp_variable = { num_fuel_bonus = 500 }
+			add_fuel = var:num_fuel_bonus
+			custom_effect_tooltip = AMO_commissioner_development_supply_fuel_tt2
 		}
 	}
 	
