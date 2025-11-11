@@ -30,13 +30,67 @@ on_actions = {
 					}
 				}
 				FROM.FROM = {
-					create_unit = {
-							division = "name = \"Ashigaru Levy\" division_template = \"Ashigaru Levy\" start_experience_factor = 0.33 start_equipment_factor = 1"
-							owner = ROOT
+					meta_effect = {
+						text = {
+							create_unit = {
+									division = "name = \"[STATE_NAME] Levy\" division_template = \"Ashigaru Levy\" start_experience_factor = 0.33 start_equipment_factor = 1"
+									owner = ROOT
+							}
+						}
+						STATE_NAME = "[THIS.GetName]"
 					}
 					set_state_flag = AMO_call_clans2_spirit_already_triggered
 				}
 				log = "[AMO.GetName] occupied [FROM.FROM.GetName] and gained 1 division"
+			}
+		}
+		effect = {
+			### AMO_call_clans2_spirit: lost/gained state, count number of suitable states for division cap
+			if = {
+				limit = { ROOT = { has_idea = AMO_call_clans2_spirit } }
+				ROOT = {
+					set_variable = { clan_levy_cap = 0 }
+					every_controlled_state = {
+						if = {
+							limit = {
+								any_country_with_core = {
+									is_clan = yes
+									exists = no
+									NOT = { has_war_with = ROOT }
+								}
+							}
+							add_to_variable = { ROOT.clan_levy_cap = 1 }
+						}
+					}
+					set_division_template_cap = { 
+						division_template = "Ashigaru Levy" 
+						division_cap = clan_levy_cap
+					}
+				}
+				log = "ROOT [ROOT.GetAdjective] check number irregulars: [?ROOT.clan_levy_cap]"
+			}
+			if = {
+				limit = { FROM = { has_idea = AMO_call_clans2_spirit } }
+				FROM = {
+					set_variable = { clan_levy_cap = 0 }
+					every_controlled_state = {
+						if = {
+							limit = {
+								any_country_with_core = {
+									is_clan = yes
+									exists = no
+									NOT = { has_war_with = FROM }
+								}
+							}
+							add_to_variable = { FROM.clan_levy_cap = 1 }
+						}
+					}
+					set_division_template_cap = { 
+						division_template = "Ashigaru Levy" 
+						division_cap = clan_levy_cap
+					}
+				}
+				log = "FROM [FROM.GetAdjective] check number irregulars: [?FROM.clan_levy_cap]"
 			}
 		}
 		effect = {

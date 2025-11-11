@@ -1,0 +1,28 @@
+on_actions = {
+	on_monthly_AMO = {
+		# error catcher for number of irregular troops
+		effect = {
+			if = {
+				limit = { has_idea = AMO_call_clans2_spirit }
+				set_variable = { clan_levy_cap = 0 }
+				every_controlled_state = {
+					if = {
+						limit = {
+							any_country_with_core = {
+								is_clan = yes
+								exists = no
+								NOT = { has_war_with = ROOT }
+							}
+						}
+						add_to_variable = { ROOT.clan_levy_cap = 1 }
+					}
+				}
+				set_division_template_cap = { 
+					division_template = "Ashigaru Levy" 
+					division_cap = clan_levy_cap
+				}
+				log = "MONTHLY [ROOT.GetAdjective] check number irregulars: [?ROOT.clan_levy_cap]"
+			}
+		}
+	}
+}
