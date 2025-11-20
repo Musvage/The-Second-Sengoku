@@ -359,46 +359,6 @@ focus_tree = {
 		}
 	}
 	
-	focus = {
-		id = KAN_help_knights
-		icon = GFX_focus_KAN_help_knights
-		search_filters = { FOCUS_FILTER_DIPLOMACY }
-		
-		prerequisite = { focus = KAN_religious_path focus = KAN_antagonize_SHO }
-		
-		relative_position_id = KAN_religious_path
-		x = 2
-		y = 1
-		cost = 10
-		
-		ai_will_do = {
-			factor = 5
-		}
-		
-		available = {
-			any_controlled_state = { any_neighbor_state = { is_controlled_by = SHO } }
-			has_manpower = 9000
-			has_equipment = { infantry_equipment > 899 }
-			NOT = { has_war_with = AMO is_justifying_wargoal_against = AMO AMO = { is_justifying_wargoal_against = KAN } }
-		}
-		
-		completion_reward = {
-			AMO = { country_event = kansai.10 }
-			custom_effect_tooltip = loc_paragraph
-			custom_effect_tooltip = loc_if_accept
-			effect_tooltip = {
-				add_manpower = -9000
-				add_equipment_to_stockpile = {
-					type = infantry_equipment
-					amount = -900
-				}
-			}
-			AMO = { custom_effect_tooltip = KAN_help_knights_tt }
-			custom_effect_tooltip = loc_paragraph
-			custom_effect_tooltip = KAN_help_knights_tt2
-		}
-	}
-	
 	# } Monarchi/Fascist common branch {
 	
 	focus = {
@@ -1395,12 +1355,11 @@ focus_tree = {
 	### } CHU-SHO diplomacy path + common army development {
 	
 	focus = {
-		id = KAN_antagonize_SHO
-		icon = GFX_focus_KAN_revenge_the_boshin_war
-		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WAR_SUPPORT }
+		id = KAN_befriend_edo
+		icon = GFX_focus_generic_treaty_provisional
+		search_filters = { FOCUS_FILTER_DIPLOMACY }
 		
 		prerequisite = { focus = KAN_internal_legitimacy focus = KAN_external_support }
-		mutually_exclusive = { focus = KAN_antagonize_CHU }
 		
 		relative_position_id = KAN_internal_legitimacy
 		x = 6
@@ -1411,8 +1370,79 @@ focus_tree = {
 			factor = 5
 		}
 		
+		available = {
+			any_controlled_state = { any_neighbor_state = { is_controlled_by = SHO } }
+			has_manpower = 9000
+			has_equipment = { infantry_equipment > 899 }
+			NOT = { has_war_with = AMO is_justifying_wargoal_against = AMO AMO = { is_justifying_wargoal_against = KAN } }
+			has_global_flag = amo_sho_scripted_war_ongoing
+		}
+		
+		bypass = {
+			NOT = { has_global_flag = amo_sho_scripted_war_ongoing }
+		}
+		
 		completion_reward = {
-			add_war_support = 0.05
+			AMO = { country_event = kansai.10 }
+			custom_effect_tooltip = loc_paragraph
+			custom_effect_tooltip = loc_if_accept
+			effect_tooltip = {
+				add_manpower = -9000
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = -900
+				}
+				AMO = { custom_effect_tooltip = KAN_help_knights_tt }
+				give_military_access = AMO
+				AMO = { give_military_access = KAN }
+			}
+			custom_effect_tooltip = KAN_help_knights_tt2
+		}
+	}
+	
+	focus = {
+		id = KAN_help_knights
+		icon = GFX_focus_KAN_help_knights
+		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		
+		prerequisite = { focus = KAN_internal_legitimacy focus = KAN_external_support }
+		
+		relative_position_id = KAN_internal_legitimacy
+		x = 4
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		available = {
+			any_controlled_state = { any_neighbor_state = { is_controlled_by = SHO } }
+			has_manpower = 9000
+			has_equipment = { infantry_equipment > 899 }
+			NOT = { has_war_with = AMO is_justifying_wargoal_against = AMO AMO = { is_justifying_wargoal_against = KAN } }
+			has_global_flag = amo_sho_scripted_war_ongoing
+		}
+		
+		bypass = {
+			NOT = { has_global_flag = amo_sho_scripted_war_ongoing }
+		}
+		
+		completion_reward = {
+			AMO = { country_event = kansai.10 }
+			custom_effect_tooltip = loc_paragraph
+			custom_effect_tooltip = loc_if_accept
+			effect_tooltip = {
+				add_manpower = -9000
+				add_equipment_to_stockpile = {
+					type = infantry_equipment
+					amount = -900
+				}
+				AMO = { custom_effect_tooltip = KAN_help_knights_tt }
+				give_military_access = AMO
+				AMO = { give_military_access = KAN }
+			}
+			custom_effect_tooltip = KAN_help_knights_tt2
 		}
 	}
 	
@@ -1421,53 +1451,10 @@ focus_tree = {
 		icon = GFX_focus_generic_attack_chugoku
 		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WAR_SUPPORT }
 		
-		prerequisite = { focus = KAN_antagonize_SHO }
+		prerequisite = { focus = KAN_help_shikoku focus = KAN_befriend_seto_islands }
 		
-		relative_position_id = KAN_antagonize_SHO
-		x = 0
-		y = 1
-		cost = 10
-		
-		ai_will_do = {
-			factor = 5
-		}
-		
-		completion_reward = {
-			add_war_support = 0.05
-		}
-	}
-	
-	focus = {
-		id = KAN_antagonize_CHU
-		icon = GFX_focus_KAN_punish_the_rebellious_army
-		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WAR_SUPPORT }
-		
-		prerequisite = { focus = KAN_internal_legitimacy focus = KAN_external_support }
-		mutually_exclusive = { focus = KAN_antagonize_SHO }
-		
-		relative_position_id = KAN_antagonize_SHO
-		x = 4
-		y = 0
-		cost = 10
-		
-		ai_will_do = {
-			factor = 5
-		}
-		
-		completion_reward = {
-			add_war_support = 0.05
-		}
-	}
-	
-	focus = {
-		id = KAN_antagonize_later_SHO
-		icon = GFX_focus_generic_attack_shogun
-		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WAR_SUPPORT }
-		
-		prerequisite = { focus = KAN_antagonize_CHU }
-		
-		relative_position_id = KAN_antagonize_CHU
-		x = 0
+		relative_position_id = KAN_help_shikoku
+		x = 1
 		y = 1
 		cost = 10
 		
@@ -1485,7 +1472,8 @@ focus_tree = {
 		icon = GFX_focus_generic_diplomacy_shikoku
 		search_filters = { FOCUS_FILTER_DIPLOMACY }
 		
-		prerequisite = { focus = KAN_antagonize_CHU }
+		prerequisite = { focus = KAN_internal_legitimacy focus = KAN_external_support }
+		mutually_exclusive = { focus = KAN_help_seto_islands }
 		
 		available = {
 			NOT = { has_war_with = SHI is_justifying_wargoal_against = SHI SHI = { is_justifying_wargoal_against = KAN } }
@@ -1495,8 +1483,8 @@ focus_tree = {
 			}
 		}
 		
-		relative_position_id = KAN_antagonize_CHU
-		x = 2
+		relative_position_id = KAN_internal_legitimacy
+		x = 10
 		y = 1
 		cost = 10
 		
@@ -1514,17 +1502,117 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = KAN_help_seto_islands
+		icon = GFX_focus_REI_diffuse_seto_crisis
+		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		
+		prerequisite = { focus = KAN_internal_legitimacy focus = KAN_external_support }
+		mutually_exclusive = { focus = KAN_help_shikoku }
+		
+		relative_position_id = KAN_help_shikoku
+		x = 2
+		y = 0
+		cost = 10
+		
+		available = {
+			OR = {
+				has_global_flag = seto_crisis_active
+				country_exists = IMS
+				if = { limit = { IMS = { NOT = { has_completed_focus = IMS_government_autocratic_2 } } } country_exists = IMA }
+			}
+			hidden_trigger = {
+				if = {
+					limit = { is_ai = yes }
+					OR = { has_completed_focus = KYU_back_koga_1 has_completed_focus = KYU_invite_nagano_1 } NOT = { has_completed_focus = KYU_seto_crisis_back_chu has_completed_focus = KYU_seto_crisis_back_shi }
+					has_country_flag = seto_crisis_strategy_back_ims
+				}
+			}
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			give_guarantee = IMS
+			IMS = {
+			#	country_event = kyushu.106
+				add_opinion_modifier = {
+					target = KAN
+					modifier = REI_defends_IMS_independence
+				}
+			}
+			add_ai_strategy = {
+				type = protect
+				id = IMS
+				value = 100
+			}
+		}
+	}
+	
+	focus = {
+		id = KAN_antagonize_later_SHO
+		icon = GFX_focus_generic_attack_shogun
+		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WAR_SUPPORT }
+		
+		prerequisite = { focus = KAN_help_knights focus = KAN_befriend_edo }
+		
+		relative_position_id = KAN_befriend_edo
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			add_war_support = 0.05
+		}
+	}
+	
+	focus = {
+		id = KAN_vassalize_knights
+		icon = GFX_focus_AMO_ideological_struggle
+		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WAR_SUPPORT }
+		
+		prerequisite = { focus = KAN_help_knights }
+		
+		relative_position_id = KAN_befriend_edo
+		x = -2
+		y = 1
+		cost = 10
+		
+		available = {
+			NOT = { has_war_with = AMO is_justifying_wargoal_against = AMO AMO = { is_justifying_wargoal_against = KAN } }
+			has_global_flag = amo_sho_scripted_war_ongoing
+		}
+		
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			custom_effect_tooltip = loc_if_accept
+			effect_tooltip = {
+				puppet = {
+					target = AMO
+					end_wars = no
+				}
+			}
+			custom_effect_tooltip = KAN_vassalize_knights_warning
+		}
+	}
+	
+	focus = {
 		id = KAN_liaison_conference_focus
 		icon = GFX_focus_PRO_japanese_entente
 		search_filters = { FOCUS_FILTER_MILITARY }
 		
-		prerequisite = { focus = KAN_antagonize_CHU focus = KAN_antagonize_SHO }
+		prerequisite = { focus = KAN_befriend_edo focus = KAN_help_knights focus = KAN_help_shikoku focus = KAN_help_seto_islands }
 		
-		available = {
-			
-		}
-		
-		relative_position_id = KAN_antagonize_SHO
+		relative_position_id = KAN_befriend_edo
 		x = 2
 		y = 1
 		cost = 10
@@ -5454,7 +5542,7 @@ focus = {
 		available_if_capitulated = no
 
 		completion_reward = {
-		add_ideas = focus_military_youth_focus
+			add_ideas = military_youth_focus
 		}
 	}
 	
