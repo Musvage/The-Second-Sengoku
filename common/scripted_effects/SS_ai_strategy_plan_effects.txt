@@ -20,7 +20,37 @@
 
 SHO_choose_stategy_plan = {
 	SHO = {
-	
+		# choose stance on KAN
+			# check opinion (positive relations decrease hostility)
+		set_temp_variable = { hostility_KAN = opinion@KAN }
+		KAN = { add_to_temp_variable = { hostility_KAN = opinion@SHO } }
+		multiply_temp_variable = { hostility_KAN = -1 }
+			# check ideology
+		if = { limit = { left_ideology = yes KAN = { left_ideology = yes } }		add_to_temp_variable = { hostility_KAN = -100 } }
+		if = { limit = { right_ideology = yes KAN = { right_ideology = yes } }		add_to_temp_variable = { hostility_KAN = -100 } }
+		if = { limit = { center_ideology = yes KAN = { center_ideology = yes } }	add_to_temp_variable = { hostility_KAN = -100 } }
+		if = { limit = { right_ideology = yes KAN = { left_ideology = yes } }		add_to_temp_variable = { hostility_KAN = 100 } }
+		if = { limit = { left_ideology = yes KAN = { right_ideology = yes } }		add_to_temp_variable = { hostility_KAN = 100 } }
+			# previous decisions
+		if = { limit = { has_country_flag = hostile_to_KAN }						add_to_temp_variable = { hostility_KAN = 100 } }
+			# check other factors
+		if = { limit = { country_exists = AMO }										add_to_temp_variable = { hostility_KAN = 100 } }	# Shogun is careful when the Knights are around
+		if = { limit = { NOT = { country_exists = AMO } }							add_to_temp_variable = { hostility_KAN = 100 } }	# Shogun gets cocky if he defeats the Knights
+		if = { limit = { has_war_with = KAN }										add_to_temp_variable = { hostility_KAN = 1000 } }
+		if = { limit = { has_country_flag = reject_overture_from_KAN }				add_to_temp_variable = { hostility_KAN = 100 } }
+		if = { limit = { is_justifying_wargoal_against = KAN }						add_to_temp_variable = { hostility_KAN = 100 } }
+		if = { limit = { has_wargoal_against = KAN }								add_to_temp_variable = { hostility_KAN = 200 } }
+		if = { limit = { is_in_faction_with = KAN }									add_to_temp_variable = { hostility_KAN = -500 } }
+#		if = { limit = { has_completed_focus =  }									add_to_temp_variable = { hostility_KAN = -200 } }
+		if = { limit = { is_embargoing = KAN }										add_to_temp_variable = { hostility_KAN = 200 } }
+		if = { limit = { KAN = { is_justifying_wargoal_against = SHO } }			add_to_temp_variable = { hostility_KAN = 200 } }
+		if = { limit = { KAN = { has_wargoal_against = SHO } }						add_to_temp_variable = { hostility_KAN = 400 } }
+		if = { limit = { KAN = { is_embargoing = SHO } }							add_to_temp_variable = { hostility_KAN = 200 } }
+		if = { limit = { KAN = { has_completed_focus = KAN_help_knights } }			add_to_temp_variable = { hostility_KAN = 100 } }
+		if = { limit = { KAN = { has_completed_focus = KAN_antagonize_later_SHO } }	add_to_temp_variable = { hostility_KAN = 100 } }
+		
+		# choose stance on TOH
+		# choose stance on PRO
 	}
 } d_SHO_choose_stategy_plan = { SHO_choose_stategy_plan = yes log = "SHO_choose_stategy_plan" }
 
@@ -470,7 +500,8 @@ IMS_choose_stategy_plan = {
 
 AMO_choose_stategy_plan = {
 	AMO = {
-	
+		# if KAN/PRO are left-leaning, AMO is likely to choose Common Enemies
+		# if KAN/PRO/TOH are hostile towards SHO, AMO is likely to gear for war faster
 	}
 } d_AMO_choose_stategy_plan = { AMO_choose_stategy_plan = yes log = "AMO_choose_stategy_plan" }
 
