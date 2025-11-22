@@ -1618,6 +1618,14 @@ on_actions = {
 				planned_economy_update = yes
 			}
 		}
+		
+	on_declare_war = {
+		effect = {
+			if = {
+				limit = { ROOT = { has_country_flag = accepted_help_from_KAN } FROM = { tag = KAN } }
+				add_country_leader_trait = untrustworthy_leader
+			}
+		}
 	}
 	
 	on_peace = {
@@ -1704,6 +1712,26 @@ on_actions = {
 					remove_opinion_modifier = {
 						target = REI
 						modifier = REI_untrustworthy_leader_modifier
+					}
+				}
+			}
+			if = {
+				limit = { OR = { has_country_leader_with_trait = untrustworthy_leader any_character = { is_country_leader = yes has_character_flag = untrustworthy_leader_secondary } } }
+				every_possible_country = {
+					limit = { NOT = { has_opinion_modifier = untrustworthy_leader_modifier tag = PREV } }
+					add_opinion_modifier = {
+						target = PREV
+						modifier = untrustworthy_leader_modifier
+					}
+				}
+			}
+			if = {
+				limit = {  NOT = { has_country_leader_with_trait = untrustworthy_leader any_character = { is_country_leader = yes has_character_flag = untrustworthy_leader_secondary } } }
+				every_possible_country = {
+					limit = { has_opinion_modifier = untrustworthy_leader_modifier NOT = { tag = PREV } }
+					remove_opinion_modifier = {
+						target = PREV
+						modifier = untrustworthy_leader_modifier
 					}
 				}
 			}
