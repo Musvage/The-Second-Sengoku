@@ -120,6 +120,7 @@ NMapMode = {
 	CONSTRUCTION_SECONDARY_FOREIGN_BUILD_TARGET_PROVINCE_COLOR_INDEX = 12,
 	FACTION_THEATER_COLOR_INDEX = 13, -- Border color when editing a faction theater (index in BORDER_COLOR_CUSTOM_HIGHLIGHTS)
 	FACTION_THEATER_HIGHLIGHT_COLOR_INDEX = 14, -- Border color when hovering a faction theater map icon (index in BORDER_COLOR_CUSTOM_HIGHLIGHTS)
+
 },
 
 NMapIcons = {
@@ -679,7 +680,7 @@ NAirGfx = {
 	AIRPLANES_SMOOTH_INTERPOLATION_TURN = 0.12, 	-- How smooth is the turning interpolation.
 	AIRPLANES_BANK_STRENGTH = 210.0, 				-- Multiplier of how much the curve affects the wings banking. (angle limited by the following value)
 	AIRPLANES_BANK_ANGLE_LIMIT = 55.0, 				-- Bank angle limit.
-	AIRPLANES_GROUND_COLLISION_OFFSET_Y = 0.0, 		-- Set's the height (Y) offset before 3d airplanes disappear after going to the ground.
+	AIRPLANES_GROUND_COLLISION_OFFSET_Y = -5.0, 		-- Lets the 3d airplanes disappear after going a bit under the ground.
 	AIRPLANES_GROUND_EXPLOSION_TIME_DELAY = 0.6,	-- Time in seconds to play explosion animation when plane hit ground before the plane entity is deleted
 	AIRPLANES_1_FIGHTER_PATROL_ANIM = 1, 			-- Number of fighters needed for a single instance of this animation
 	AIRPLANES_3_FIGHTER_PATROL_ANIM = 3,			-- Number of fighters needed for a single instance of this animation
@@ -927,10 +928,10 @@ NGraphics = {
 	SOUTH_POLE_OFFSET = 0.17, -- Our map is missing big parts of globe on north and south (see also in shader daynight.fxh)
 	NORTH_POLE_OFFSET = 0.93,
 	COUNTRY_FLAG_TEX_WIDTH = 82, -- Expected texture size
-	COUNTRY_FLAG_TEX_HEIGHT = 52,
+	COUNTRY_FLAG_TEX_HEIGHT = 82,
 	COUNTRY_FLAG_TEX_MAX_SIZE = 256, -- Tweak dependly on amount of countries. Must be power of 2. No more then 2048.
 	COUNTRY_FLAG_MEDIUM_TEX_WIDTH = 41,
-	COUNTRY_FLAG_MEDIUM_TEX_HEIGHT = 26,
+	COUNTRY_FLAG_MEDIUM_TEX_HEIGHT = 41,
 	COUNTRY_FLAG_MEDIUM_TEX_MAX_SIZE = 1024, -- Tweak dependly on amount of countries. Must be power of 2. No more then 2048.
 	COUNTRY_FLAG_SMALL_TEX_WIDTH = 10,
 	COUNTRY_FLAG_SMALL_TEX_HEIGHT = 7,
@@ -965,7 +966,7 @@ NGraphics = {
 	DECISION_MAP_ICON_DISTANCE_CUTOFF = 1000,
 	DECISION_MAP_ICON_DEPTH_PRIORITY = 50,
 	NAVAL_MISSION_TASK_FORCES_GROUP_BY_ALLEGIANCE_CUTOFF = 500,
-	NAVAL_MISSION_ICONS_DISTANCE_CUTOFF = 1600, --1300,
+	NAVAL_MISSION_ICONS_DISTANCE_CUTOFF = 900, --1300,
 	NAVAL_MINES_DISTANCE_CUTOFF = 800,
 	CRYPTOLOGY_MAP_ICON_DISTANCE_CUTOFF = 1000,
 	PEACE_CONFERENCE_MAP_ICON_DISTANCE_CUTOFF = 500,
@@ -990,19 +991,19 @@ NGraphics = {
 	INTEL_LEDGER_CIVILIAN_ICON_STATE_CUTOFF = 250.0,
 	INTEL_LEDGER_CIVILIAN_ICON_REGION_CUTOFF = 700.0,
 
-	RAILWAY_CAMERA_CUTOFF = 300.0, -- railways are cut off above this camera height
+	RAILWAY_CAMERA_CUTOFF = 200.0, -- railways are cut off above this camera height
 	RAILWAY_CAMERA_CUTOFF_SPEED = 3.0, -- railways fade in/out speed
 
 	DIVISION_NAMES_GROUP_MAX_TOOLTIP_ENTRIES = 15,	-- Max entries to display the names in the tooltip, when mouse over the division-names-group in the division template designer.
 	NAMES_GROUP_MAX_NAME_LIST_ENTRIES = 25,	-- Max example name entries in ship and railway gun name list in production menu
 
-	WEATHER_DISTANCE_CUTOFF = 1500, -- At what distance weather effects are hidden
-	WEATHER_DISTANCE_FADE_LENGTH = 400, -- How far the fade out distance should be
-	WEATHER_ZOOM_IN_CUTOFF = 358, -- At what distance weather effects are faded out the most when zooming in
+	WEATHER_DISTANCE_CUTOFF = 1200, -- At what distance weather effects are hidden
+	WEATHER_DISTANCE_FADE_LENGTH = 1400, -- How far the fade out distance should be
+	WEATHER_ZOOM_IN_CUTOFF = 1, -- At what distance weather effects are faded out the most when zooming in
 	WEATHER_ZOOM_IN_FADE_LENGTH = 220, -- How far the zoom in fade out distance should be
 	WEATHER_ZOOM_IN_FADE_FACTOR = 0.0, -- How much the weather effects should fade out when maximum zoomed in
-	WEATHER_PLAYBACK_RATE = 0.15, -- Playback rate at maximum distance
-	WEATHER_PLAYBACK_RATE_CUTOFF = 500, -- Playback rate maximum distance
+	WEATHER_PLAYBACK_RATE = 0.25, -- Playback rate at maximum distance
+	WEATHER_PLAYBACK_RATE_CUTOFF = 400, -- Playback rate maximum distance
 	WEATHER_PLAYBACK_RATE_LENGTH = 200, -- For how long to fade between normal playback rate and maximum distance playback rate
 
 	POSTEFFECT_PER_PROVINCE_MIN_SNOW = 0.1,
@@ -1075,7 +1076,7 @@ NGraphics = {
 	TRADE_ROUTE_BAD_EFFICIENCY_ROUTE_COLOR = { 1.0, 0.7, 0.5, 0.75 },
 	TRADE_ROUTE_BAD_EFFICIENCY_HOTSPOT_COLOR = { 1.0, 0.0, 0.0, 0.75 },
 	TRADE_ROUTE_PRODUCTION_TRANSFER_COLOR = { 0.0, 0.5, 1.0, 0.75 },
-	TRADE_ROUTE_SUPPLIES_TRANSFER_COLOR = { 1.0, 1.0, 1.0, 0.35 },
+	TRADE_ROUTE_SUPPLIES_TRANSFER_COLOR = { 1.0, 1.0, 1.0, 0.75 },
 	TRADE_ROUTE_RESOURCE_EXPORT_COLOR = { 0.7, 1.0, 0.5, 0.75 },
 	TRADE_ROUTE_RESOURCE_IMPORT_COLOR = { 0.2, 0.9, 1.0, 0.75 },
 	TRADE_ROUTE_LEND_LEASE_EXPORT_COLOR = { 0.5, 1.0, 0.0, 0.75 },
@@ -1140,9 +1141,9 @@ NGraphics = {
 	SUPPLY_CONSUMER_ARROW_HEIGHT_TO_LEN = 0.1,
 	SUPPLY_CONSUMER_ARROW_HEIGHT_MAX = 4.0,
 
-	SUPPLY_UNIT_COUNTER_SHOW_THRESHOLD = 0.5,  -- At what supply threshold will the normal crate be shown on unit counters
-	SUPPLY_UNIT_COUNTER_LOW_THRESHOLD = 0.35,  -- At what supply threshold will the orange crate be shown on unit counters
-	SUPPLY_UNIT_COUNTER_VERY_LOW_THRESHOLD = 0.2,  -- At what supply threshold will the red crate with ! will be shown on unit counters
+	SUPPLY_UNIT_COUNTER_SHOW_THRESHOLD = 0.75,  -- At what supply threshold will the normal crate be shown on unit counters
+	SUPPLY_UNIT_COUNTER_LOW_THRESHOLD = 0.5,  -- At what supply threshold will the orange crate be shown on unit counters
+	SUPPLY_UNIT_COUNTER_VERY_LOW_THRESHOLD = 0.25,  -- At what supply threshold will the red crate with ! will be shown on unit counters
 
 	COUP_GREEN = { 0.0, 1.0, 0.0, 1.0 },
 	COUP_RED = { 1.0, 0.0, 0.0, 1.0 },
@@ -1190,7 +1191,7 @@ NGraphics = {
 	NATIONAL_FOCUS_SHINE_DISTANCE_SCALE = 0.03,
 	NATIONAL_FOCUS_PULSE_BASE =	10.0,
 	NATIONAL_FOCUS_PULSE_RANDOM = 10.0,
-	POLITICAL_GRID_SMALL_BOX_LIMIT = 6,              	-- Limit for gridbox in political view before it will be replaced with extended gridbox
+	POLITICAL_GRID_SMALL_BOX_LIMIT = 8,              	-- Limit for gridbox in political view before it will be replaced with extended gridbox
 	SETUP_SPIRIT_GRID_BOX_LIMIT = 3,					-- Limit for gridbox in game setup before it will be replaced with extended gridbox
 	POLITICAL_PULSE_BASE =	10.0,
 	POLITICAL_PULSE_RANDOM = 10.0,
@@ -1471,7 +1472,6 @@ NInterface = {
 	EQUIPMENT_DESIGNER_SHOW_MODULE_FORBIDS_BASE_ROLE_ICON = 0, -- If this is set to 0 no icon will be displayed if the main tank role is forbidden. If set to 1 the icon will be displayed as normal.
 	EQUIPMENT_DESIGNER_SHOW_MODULE_FORBIDS_SPECIALIZED_ROLE_ICON = 0, -- If this is set to 0 no icons will be displayed for any forbidden specialized roles. If set to 1 the icons will be displayed as normal.
 
-
 	MIO_CENTRAL_TREE_HORIZONTAL_POSITION = 1, -- Horizontal position for auto-generated MIO traits
 
 	SLOW_INTERFACE_THRESHOLD = 5000, -- Show warning "SLOW INTERFACE" in debug when interface refresh takes more that this (in microseconds)
@@ -1492,8 +1492,8 @@ NFrontend = {
 	CAMERA_END_X = 2958.0,							-- Move to position in main menu
 	CAMERA_END_Y = 900.0,
 	CAMERA_END_Z = 1400.0,
-	CAMERA_MIN_HEIGHT = 50.0,						-- Minimum camera height
-	CAMERA_MAX_HEIGHT = 3000.0,						-- Maximum camera height
+	CAMERA_MIN_HEIGHT = 25.0,						-- Minimum camera height
+	CAMERA_MAX_HEIGHT = 2000.0,						-- Maximum camera height
 	CAMERA_SPEED_IN_MENUS = 0.1,
 	CAMERA_INTERPOLATION_SPEED = 0.19,
 
