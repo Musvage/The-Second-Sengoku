@@ -625,6 +625,8 @@ NProduction = {
 	BASE_COUNTRY_ENERGY_PRODUCTION = 10.0, 			-- The base energy production of a country
 	ENERGY_SCALING_COST_BY_FACTORY_COUNT = 0.0225, -- Scales energy cost based on the total number of factories
 	BASE_ENERGY_COST = 0.25,						-- How much energy per factory consumes
+	ENERGY_COST_CAP = 6,						-- Maximum energy cost per factory
+	ENERGY_SCALE_PER_TRADE_FACTORY_EXPORT = 0.25, -- Factor of how many of the factories gained from trade is affects the energy cost scaling
 	BASE_FACTORY_SPEED = 4, 					-- Base factory speed multiplier (how much hoi3 style IC each factory gives).
 	BASE_FACTORY_SPEED_MIL = 3.5, 				-- Base factory speed multiplier (how much hoi3 style IC each factory gives).
 	BASE_FACTORY_SPEED_NAV = 2.0, 				-- Base factory speed multiplier (how much hoi3 style IC each factory gives).
@@ -753,7 +755,7 @@ NBuildings = {
 	OWNER_CHANGE_EXTRA_SHARED_SLOTS_FACTOR = 1, --Scale factor of extra shared slots when state owner change.
 	DESTRUCTION_COOLDOWN_IN_WAR = 30,	-- Number of days cooldown between removal of buildings in war times
 
-	INFRASTRUCTURE_RESOURCE_BONUS = 0.2, -- multiplicative resource bonus for each level of (non damaged) infrastructure
+	INFRASTRUCTURE_RESOURCE_BONUS = 0.15, -- multiplicative resource bonus for each level of (non damaged) infrastructure
 	SUPPLY_ROUTE_RESOURCE_BONUS = 0.2,   -- multiplicative resource bonus for having a railway/naval connection to the capital
 	INFRASTRUCTURE_MUD_EFFECT = -0.8, -- multiplicative effect on mud growth for max infra
 },
@@ -1569,6 +1571,7 @@ NNavy = {
 	REPAIR_AND_RETURN_AMOUNT_SHIPS_MEDIUM = 0.4,					-- % of total damaged ships, that will be sent for repair-and-return in one call.
 	REPAIR_AND_RETURN_AMOUNT_SHIPS_HIGH = 0.8,						-- % of total damaged ships, that will be sent for repair-and-return in one call.
 	REPAIR_AND_RETURN_UNIT_DYING_STR = 0.2,							-- Str below this point is considering a single ship "dying", and a high priority to send to repair.
+	AI_MAX_TASKFORCES_PER_TRAINING_OBJECTIVE = 5,					-- Max number of taskforces we desire for AI to put in each fleet that is training.
 	EXPERIENCE_LOSS_FACTOR = 1.00,                 					-- percentage of experienced solders who die when manpower is removed
 	NAVY_EXPENSIVE_IC = 5500,										-- How much IC is considering the fleet to be expensive. Those expensive will triger the alert, when are on low STR.
 	MISSION_MAX_REGIONS = 0,										-- Limit of the regions that can be assigned to naval mission. Set to 0 for unlimited.
@@ -1649,7 +1652,8 @@ NNavy = {
 	NAVY_REPAIR_BASE_SEARCH_SCORE_PER_SHIP_WAITING_EXTRA_SHIP = 5,  -- if a naval base has more ships than it can repair, it will get penalties
 	NAVY_REPAIR_BASE_SEARCH_SCORE_PER_SLOT = 1.0,					-- while searching for a naval base for repairs, the bases gets a bonus to their scores per empty slot they have
 	NAVY_REPAIR_BASE_SEARCH_BOOST_FOR_SAME_COUNTRY = 5,				-- while searching for a naval base for repairs, your own bases gets a bonus
-
+	NAVY_REPAIR_BASE_PRIORITY_THRESHOLD_LOW = 2,					-- bases with a level above this value will be set to low prio	(bases between these levels will get medium prio)
+	NAVY_REPAIR_BASE_PRIORITY_THRESHOLD_HIGH = 7,					-- bases with a level above this value will be set to high prio (bases between these levels will get medium prio)
 
 	CONVOY_SPOTTING_COOLDOWN = 0.3,  -- % of travel time
 	CONVOY_SPOTTING_COOLDOWN_MIN = 36, -- minimum cooldown time
@@ -2322,6 +2326,10 @@ NAI = {
 	EQUIPMENT_MARKET_SCORE_FACTOR_COST_PER_UNIT = -5.0,             -- Score coefficient for SubsidizedCostPerUnit (low is good)
 	EQUIPMENT_MARKET_SCORE_FACTOR_AI_STRAT_WEIGHT = 50.0,           -- Score coefficient for AiStratWeight (high is prio)
 	EQUIPMENT_MARKET_SCORE_FACTOR_DIPLO_OPINION = 1.0,              -- Score coefficient for DiploOpinion, mainly used as tie breaker (high is good)
+
+	INFRASTRUCTURE_PERCENTAGE_AT_WHICH_TO_BUILD_INFRA_CAP_BUILDING = 0.75,		-- When should we build a cap building on a state
+	NUM_FACTORIES_IN_STATE_TO_WANT_ENERGY_REDUCTION = 6,			-- How many mils should we want in a state before we think about building energy reduction cap building
+	TOTAL_STATE_EXTRACTED_RESOURCES_FOR_BUILDING_RESOURCE_CAP_BUILDING = 30.0,	--How many resources required for building a resource inproving infra cap building
 
 	DIPLOMACY_ACCEPT_CONDITIONAL_SURRENDER_MANPOWER_IN_FIELD = -20,	-- Scale multiplied by difference in manpower in field
 	DIPLOMACY_ACCEPT_CONDITIONAL_SURRENDER_GLOBAL_TENSION = -10,	-- Multiplied by WT
@@ -4028,6 +4036,8 @@ NIntel = {
 		0.3, -- NAVAL_MINES_SWEEPING
 		0.3, -- RECON
 		0.3, -- NAVAL_PATROL
+		0.3, -- BARRAGE
+		0.3, -- SAM
 	},
 	AIR_MAPICON_MISSION_COUNT_INTEL_MAX = {
 		0.6, -- AIR_SUPERIORITY
@@ -4046,6 +4056,8 @@ NIntel = {
 		0.6, -- NAVAL_MINES_SWEEPING
 		0.6, -- RECON
 		0.6, -- NAVAL_PATROL
+		0.6, -- BARRAGE
+		0.6, -- SAM
 	},
 	AIR_MAPICON_MISSION_COUNT_INTEL_RANGE_AT_LOWEST_INTEL = {
 		0.5, -- AIR_SUPERIORITY
@@ -4064,6 +4076,8 @@ NIntel = {
 		0.5, -- NAVAL_MINES_SWEEPING
 		0.5, -- RECON
 		0.5, -- NAVAL_PATROL
+		0.5, -- BARRAGE
+		0.5, -- SAM
 	},
 
 	AIR_MAPICON_SHOW_ALL_AIR_PORTS = 0.3,  -- min intel to show all air ports (otherwise you will only see nearby ones)
@@ -4425,7 +4439,7 @@ NFactions = {
 	FACTION_INFLUENCE_EXPEDITIONARY_FORCE_RECIEVER_FACTOR = -0.02 , --how much the country's provided expeditionary forces affects its influence
 	FACTION_MANPOWER_GIVE_CONTRIBUTION_SCALAR=0.1,			-- a scalar of how much contribution you get for giving a singular recruitable population to your faction
 	FACTION_MANPOWER_RECIEVE_CONTRIBUTION_SCALAR=0.1,		-- a scalar for how much contribution it takes to get a singular recruitable population
-	FACTION_SCIENTIST_CONTRIBUTION_VALUE = 5,				--how much contribution one scientists gives to you if it is working for somebody else.
+	FACTION_SCIENTIST_CONTRIBUTION_VALUE = 3,				--how much contribution one scientists gives to you if it is working for somebody else.
 	ASSIGN_FACILITY_TO_FACTION_INITIATIVE_COST = 1,		--The initiative cost of assigning a facility to a faction
 	FACTION_ASSIGN_SCIENTIST_COST = 25,						--how much political power it costs to assign a supportive scientist
 	FACTION_UNLOCK_COMMANDER_COST = 1,						--how much initiative it costs to create a new faction theater
@@ -4483,30 +4497,6 @@ NFactions = {
 		"spymaster_no_lar",
 		"commander_of_the_fetno_derash",
 		"commander_of_the_fetno_derash_no_lar",
-		"SWI_soviet_spy",
-		"SWI_intelligence_officer",
-		"special_envoy",
-		"BRA_soviet_spy",
-		"HUN_military_intelligence_officer",
-		"AUS_secretive_priest",
-		"AUS_veteran_head_of_agency",
-		"BEL_illusive_mastermind",
-		"GER_intelligence_coordinator",
-		"GER_secretary_of_state_security",
-		"GER_reich_security_main_office_director_lar",
-		"GER_reich_security_main_office_director_no_lar",
-		"head_of_the_abwehr",
-		"head_of_the_abwehr_improved",
-		"intelligence_service_deputy",
-		"PRC_multi_talented_diplomat_lar",
-		"PRC_multi_talented_diplomat_no_lar",
-		"PRC_trained_by_the_nkvd",
-		"PRC_spymaster",
-		"PHI_intelligence_bureau_chief",
-		"HUN_stalinist_agent",
-		"JAP_tokko_chief",
-		"CHI_spymaster"
-
 	},
 	FACTION_INTELLIGENCE_UNLOCK_COST = 1,
 	FACTION_INTELLIGENCE_SHARING_BONUS = 0.05,      -- How much intelligence sharing one 

@@ -38,6 +38,7 @@ replace_path="common/units/names_divisions"
 replace_path="common/units/names_railway_guns"
 replace_path="common/units/names_ships"
 replace_path="common/factions"
+replace_path="common/rules"
 tags={
 	"Alternative History"
 	"Events"
