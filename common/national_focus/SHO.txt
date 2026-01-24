@@ -46,8 +46,8 @@
 	}
 	
 	focus = {
-		id = SHO_state_philantrophy
-		icon = GFX_focus_SHO_state_philantrophy
+		id = SHO_caste_system
+		icon = GFX_focus_SHO_caste_system
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = SHO_suppress_opposition }
@@ -59,6 +59,34 @@
 		
 		available = {
 			has_government = autocracy
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+		
+		completion_reward = {
+			add_political_power = 150
+			
+		}
+	}
+	
+	focus = {
+		id = SHO_state_philantrophy
+		icon = GFX_focus_SHO_state_philantrophy
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		
+		prerequisite = { focus = SHO_caste_system focus = SHO_mito_dynasty }
+		
+		relative_position_id = SHO_caste_system
+		x = 1
+		y = 1
+		cost = 10
+		
+		available = {
+			has_government = autocracy
+			NOT = { has_idea = welfare_law_none }
+			NOT = { has_idea = education_law_none }
 		}
 		
 		ai_will_do = {
@@ -318,32 +346,6 @@
 		}
 	}
 	
-	focus = {
-		id = SHO_caste_system
-		icon = GFX_focus_SHO_mito_dynasty
-		search_filters = { FOCUS_FILTER_POLITICAL }
-		
-		prerequisite = { focus = SHO_mito_dynasty focus = SHO_state_philantrophy }
-		
-		relative_position_id = SHO_state_philantrophy
-		x = 1
-		y = 1
-		cost = 10
-		
-		available = {
-			has_government = autocracy
-		}
-		
-		ai_will_do = {
-			factor = 5
-		}
-		
-		completion_reward = {
-			add_political_power = 150
-			
-		}
-	}
-	
 	# democratic/fascist branch
 	
 	focus = {
@@ -568,14 +570,18 @@
 	}
 	
 	focus = {
-		id = SHO_befriend_france_techs
-		icon = GFX_focus_SHO_french_tech
+		id = SHO_gain_techs
+		icon = { value = GFX_focus_SHO_gain_tech_germany trigger = { has_completed_focus = SHO_befriend_germany } }
+		icon = { value = GFX_focus_SHO_gain_tech_autonomy trigger = { has_completed_focus = SHO_maintain_autonomy } }
+		icon = { value = GFX_focus_SHO_gain_tech_france trigger = { has_completed_focus = SHO_befriend_france } }
+		icon = GFX_focus_SHO_gain_tech_blank
+		dynamic = yes
 		search_filters = { FOCUS_FILTER_RESEARCH FOCUS_FILTER_DIPLOMACY }
 		
-		prerequisite = { focus = SHO_befriend_france }
+		prerequisite = { focus = SHO_befriend_germany focus = SHO_maintain_autonomy focus = SHO_befriend_france}
 		
-		relative_position_id = SHO_befriend_france
-		x = -1
+		relative_position_id = SHO_maintain_autonomy
+		x = -3
 		y = 1
 		cost = 10
 		
@@ -597,47 +603,92 @@
 		
 		completion_reward = {
 			if = {
-				limit = { has_dlc = "By Blood Alone" }
-				add_tech_bonus = {
-					name = fighter_bonus
-					bonus = 1
+				limit = { NOT = { has_completed_focus = SHO_befriend_germany has_completed_focus = SHO_maintain_autonomy } }
+				if = { limit = { has_completed_focus = SHO_befriend_france } custom_effect_tooltip = SHO_gain_equipment_effect_france else = { custom_effect_tooltip = SHO_gain_equipment_trigger_france } }
+								add_tech_bonus = {
+					name = infantry_artillery_bonus
+					bonus = 2
 					uses = 1
-					category = light_air
+					category = infantry_weapons
+					category = artillery
 				}
-			} else = {
 				add_tech_bonus = {
-					name = fighter_bonus
+					name = construction_bunker_bonus
 					bonus = 1
-					uses = 1
-					technology = fighter1
-					technology = fighter2
-					technology = fighter3
+					uses = 2
+					category = construction_tech
+					category = cat_fortification
 				}
 			}
-			add_tech_bonus = {
-				name = armor_bonus
-				bonus = 1
-				uses = 1
-				category = armor
+			if = {
+				limit = { NOT = { has_completed_focus = SHO_befriend_france has_completed_focus = SHO_maintain_autonomy } }
+				if = { limit = { has_completed_focus = SHO_befriend_germany } custom_effect_tooltip = SHO_gain_equipment_effect_germany else = { custom_effect_tooltip = loc_paragraph custom_effect_tooltip = SHO_gain_equipment_trigger_germany } }
+				if = {
+					limit = { has_dlc = "By Blood Alone" }
+					add_tech_bonus = {
+						name = fighter_bonus
+						bonus = 1.5
+						uses = 1
+						category = light_air
+					}
+				} else = {
+					add_tech_bonus = {
+						name = fighter_bonus
+						bonus = 1
+						uses = 1
+						technology = fighter1
+						technology = fighter2
+						technology = fighter3
+					}
+				}
+				add_tech_bonus = {
+					name = armor_bonus
+					bonus = 1.5
+					uses = 1
+					category = armor
+				}
 			}
-			add_tech_bonus = {
-				name = industrial_bonus
-				bonus = 1.0
-				uses = 1
-				category = industry
+			if = {
+				limit = { NOT = { has_completed_focus = SHO_befriend_france has_completed_focus = SHO_befriend_germany } }
+				if = { limit = { has_completed_focus = SHO_maintain_autonomy } custom_effect_tooltip = SHO_gain_equipment_effect_autonomy else = { custom_effect_tooltip = loc_paragraph custom_effect_tooltip = SHO_gain_equipment_trigger_autonomy } }
+				add_tech_bonus = {
+					name = naval_equipment_bonus
+					bonus = 1
+					uses = 1
+					category = naval_equipment
+				}
+				add_tech_bonus = {
+					name = infantry_artillery_bonus
+					bonus = 1.0
+					uses = 1
+					category = infantry_weapons
+					category = artillery
+				}
+				add_breakthrough_progress = {
+					specialization = specialization_naval
+					value = 0.1
+				}
+				add_breakthrough_progress = {
+					specialization = specialization_land
+					value = 0.1
+				}
 			}
 		}
 	}
 	
 	focus = {
-		id = SHO_befriend_france_equipment
-		icon = GFX_focus_SHO_french_licenses
+		id = SHO_gain_equipment
+		icon = { value = GFX_focus_SHO_gain_equip_germany trigger = { has_completed_focus = SHO_befriend_germany } }
+		icon = { value = GFX_focus_SHO_gain_equip_autonomy trigger = { has_completed_focus = SHO_maintain_autonomy } }
+		icon = { value = GFX_focus_SHO_gain_equip_france trigger = { has_completed_focus = SHO_befriend_france } }
+		icon = GFX_focus_SHO_gain_equip_blank
+		dynamic = yes
 		search_filters = { FOCUS_FILTER_EQUIPMENT FOCUS_FILTER_DIPLOMACY }
 		
-		prerequisite = { focus = SHO_befriend_france }
+		prerequisite = { focus = SHO_befriend_germany focus = SHO_maintain_autonomy focus = SHO_befriend_france}
 		
-		relative_position_id = SHO_befriend_france
-		x = 1
+		relative_position_id = SHO_maintain_autonomy
+		x = -1
 		y = 1
 		cost = 10
 		
@@ -659,35 +710,103 @@
 		}
 		
 		completion_reward = {
-			add_equipment_to_stockpile = {
-				type = infantry_equipment_1
-				amount = 2000
-				producer = KOB
-			}
-			add_equipment_to_stockpile = {
-				type = motorized_equipment_0
-				amount = 200
-				producer = KOB
-			}
-			add_equipment_to_stockpile = {
-				type = support_equipment_1
-				amount = 200
-				producer = KOB
+			if = {
+				limit = { NOT = { has_completed_focus = SHO_befriend_germany has_completed_focus = SHO_maintain_autonomy } }
+				if = { limit = { has_completed_focus = SHO_befriend_france } custom_effect_tooltip = SHO_gain_equipment_effect_france else = { custom_effect_tooltip = SHO_gain_equipment_trigger_france } }
+				add_equipment_to_stockpile = {
+					type = infantry_equipment_1
+					amount = 2000
+					producer = KOB
+				}
+				add_equipment_to_stockpile = {
+					type = motorized_equipment_0
+					amount = 200
+					producer = KOB
+				}
+				add_equipment_to_stockpile = {
+					type = support_equipment_1
+					amount = 200
+					producer = KOB
+				}
+				if = {
+					limit = { has_dlc = "No Step Back" }
+					add_equipment_to_stockpile = {
+						type = light_tank_chassis_0
+						variant_name = "FT Char Cannon"
+						amount = 50
+						producer = KOB
+					}
+				} else = {
+					add_equipment_to_stockpile = {
+						type = gw_tank_equipment
+						amount = 50
+						producer = KOB
+					}
+				}
 			}
 			if = {
-				limit = { has_dlc = "No Step Back" }
+				limit = { NOT = { has_completed_focus = SHO_befriend_france has_completed_focus = SHO_maintain_autonomy } }
+				if = { limit = { has_completed_focus = SHO_befriend_germany } custom_effect_tooltip = SHO_gain_equipment_effect_germany else = { custom_effect_tooltip = loc_paragraph custom_effect_tooltip = SHO_gain_equipment_trigger_germany } }
 				add_equipment_to_stockpile = {
-					type = light_tank_chassis_0
-					variant_name = "FT Char Cannon"
-					amount = 50
-					producer = KOB
+					type = infantry_equipment_1
+					amount = 2000
+					producer = REI
 				}
-			} else = {
 				add_equipment_to_stockpile = {
-					type = gw_tank_equipment
-					amount = 50
-					producer = KOB
+					type = motorized_equipment_0
+					amount = 200
+					producer = REI
 				}
+				add_equipment_to_stockpile = {
+					type = support_equipment_1
+					amount = 200
+					producer = REI
+				}
+				if = {
+					limit = { has_dlc = "No Step Back" }
+					add_equipment_to_stockpile = {
+						type = light_tank_chassis_0
+						variant_name = "FT Char Cannon"
+						amount = 50
+						producer = REI
+					}
+				} else = {
+					add_equipment_to_stockpile = {
+						type = gw_tank_equipment
+						amount = 50
+						producer = REI
+					}
+				}
+			}
+			if = {
+				limit = { NOT = { has_completed_focus = SHO_befriend_france has_completed_focus = SHO_befriend_germany } }
+				if = { limit = { has_completed_focus = SHO_maintain_autonomy } custom_effect_tooltip = SHO_gain_equipment_effect_autonomy else = { custom_effect_tooltip = loc_paragraph custom_effect_tooltip = SHO_gain_equipment_trigger_autonomy } }
+				add_equipment_to_stockpile = {
+					type = infantry_equipment_1
+					amount = 1000
+				}
+				add_equipment_to_stockpile = {
+					type = motorized_equipment_0
+					amount = 100
+				}
+				add_equipment_to_stockpile = {
+					type = support_equipment_1
+					amount = 100
+				}
+				if = {
+					limit = { has_dlc = "No Step Back" }
+					add_equipment_to_stockpile = {
+						type = light_tank_chassis_0
+						variant_name = "FT Char Cannon"
+						amount = 25
+					}
+				} else = {
+					add_equipment_to_stockpile = {
+						type = gw_tank_equipment
+						amount = 25
+					}
+				}
+				add_offsite_building = { type = arms_factory level = 2 }
 			}
 		}
 	}
@@ -698,11 +817,11 @@
 		icon = GFX_focus_generic_diplomacy_REI_neutrality
 		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
 		
-		prerequisite = { focus = SHO_caste_system focus = SHO_new_shogun_fascism }
+		prerequisite = { focus = SHO_state_philantrophy focus = SHO_new_shogun_fascism }
 		mutually_exclusive = { focus =  SHO_maintain_autonomy }
 		
-		relative_position_id = SHO_new_shogun_fascism
-		x = -3
+		relative_position_id = SHO_state_philantrophy
+		x = 0
 		y = 1
 		cost = 10
 		
