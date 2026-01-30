@@ -560,11 +560,28 @@
 		}
 		
 		completion_reward = {
+			set_temp_var = { kob_op_kan = KOB.opinion@KAN }
+			set_temp_var = { kob_op_sho = KOB.opinion@SHO }
 			custom_effect_tooltip = loc_if_accept
 			effect_tooltip = {
 				give_guarantee = KOB
 				add_ideas = SHO_befriend_france_sho_spirit	# SHO_befriend_france_kob_spirit
-				add_timed_idea = { idea = SHO_befriend_foreigns_investment_spirit days = 365 }
+				add_timed_idea = { idea = SHO_befriend_foreigns_investment_spirit days = 365 }		#### TODO TO-DO TO DO : add effect to gain full Kobe foreign trade
+			}
+			if = {
+				limit = {
+					country_exists = KAN
+					#NOT = { KOB = { has_completed_focus =  } }
+					check_variable = { kob_op_kan > kob_op_sho }
+					KOB = {
+						has_opinion = {
+							target = KAN
+							value > 50
+						}
+					}
+				}
+				custom_effect_tooltip = loc_paragraph
+				custom_effect_tooltip = kob_likes_kan_will_not_accept
 			}
 		}
 	}
@@ -844,6 +861,8 @@
 		}
 		
 		completion_reward = {
+			set_temp_variable = { rei_op_shi = REI.opinion@SHI }
+			set_temp_variable = { rei_op_sho = REI.opinion@SHO }
 			#custom_effect_tooltip = will_join_axis_tt
 			custom_effect_tooltip = loc_if_accept
 			effect_tooltip = {
@@ -854,6 +873,7 @@
 				limit = {
 					country_exists = SHI
 					NOT = {  REI = { has_completed_focus = REI_colonial_hegemony } }
+					check_variable = { rei_op_shi > rei_op_sho }
 					REI = {
 						has_opinion = {
 							target = SHI
