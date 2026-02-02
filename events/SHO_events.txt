@@ -483,23 +483,14 @@ country_event = {	# Befriend Germany, offer (target REI)
 				NOT = { REI = { has_completed_focus = REI_colonial_hegemony } }
 				has_opinion = {
 					target = SHI
-					value < 0
+					value < 25
 				}
 				has_opinion = {
 					target = SHO
-					value > 25
+					value > 50
 				}
 			}
 		}
-	}
-	
-	
-	
-	
-	}
-	option = {
-		name = shogunate.25.no
-		hidden_effect = { SHO = { country_event = { id = shogunate.27 hours = 2 random = 4 } } }
 	}
 }
 
@@ -574,9 +565,12 @@ country_event = {	# Befriend Germany, refuse (target SHO)
 	
 	option = {
 		name = shogunate.23.self
-		trigger = { tag = SHO }
 		set_country_flag = germany_refused_offer
-		uncomplete_national_focus = SHO_befriend_germany
+		uncomplete_national_focus = {
+			focus = SHO_befriend_germany
+			uncomplete_children = no
+			refund_political_power = no
+		}
 	}
 }
 
@@ -640,8 +634,11 @@ country_event = {	# Befriend France, offer (target KOB)
 			factor = var:KOB.opinion@SHO?4
 			modifier = {
 				factor = 0
-				#NOT = { KOB = { has_completed_focus =  } }	# when KAN or KOB is done, revisit this
-				always = no
+				KAN = { has_completed_focus = KAN_reform_kellogg_briand_pact }
+				has_opinion = {
+					target = KAN
+					value > 0
+				}
 			}
 		}
 	}
@@ -652,9 +649,12 @@ country_event = {	# Befriend France, offer (target KOB)
 			factor = var:KOB.opinion@KAN?1
 			modifier = {
 				factor = 0
-				has_opinion = {
-					target = KAN
-					value < 0
+				OR = {
+					NOT = { KAN = { has_completed_focus = KAN_reform_kellogg_briand_pact } }
+					has_opinion = {
+						target = KAN
+						value < 0
+					}
 				}
 				has_opinion = {
 					target = SHO
@@ -740,9 +740,12 @@ country_event = {	# Befriend France, refuse (target SHO)
 	
 	option = {
 		name = shogunate.27.self
-		trigger = { tag = SHO }
 		set_country_flag = france_refused_offer
-		uncomplete_national_focus = SHO_befriend_france
+		uncomplete_national_focus = {
+			focus = SHO_befriend_france
+			uncomplete_children = no
+			refund_political_power = no
+		}
 	}
 }
 
