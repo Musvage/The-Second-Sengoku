@@ -529,6 +529,240 @@ country_event = { # Focus: Truce!	Rejected
 	}
 }
 
+country_event = { # A Common Enemy 
+	id = amaterasu.31
+	title = amaterasu.31.t
+	desc = amaterasu.31.desc
+	picture = GFX_report_event_modern_samurai
+
+	is_triggered_only = yes
+	
+	major = yes
+
+	option = {
+		name = amaterasu.31.b
+		if = { limit = { tag = CHU } AMO = { custom_effect_tooltip = AMO_trade_subsidize_spirit_chu_tt_display } }
+		if = { limit = { tag = KAN } AMO = { custom_effect_tooltip = AMO_trade_subsidize_spirit_kan_tt_display } }
+		if = { limit = { tag = PRO } AMO = { custom_effect_tooltip = AMO_trade_subsidize_spirit_pro_tt_display } }
+		if = { limit = { tag = TOH } AMO = { custom_effect_tooltip = AMO_trade_subsidize_spirit_hto_tt_display } }
+
+		hidden_effect = { AMO = { country_event = amaterasu.312 } }
+	}
+	option = {
+		name = amaterasu.31.a
+		trigger = { has_equipment = { infantry_equipment > 999 } }
+		set_temp_variable = { amount_equip = 1000 }
+		if = { limit = { infantry_equipment > 9999 } set_temp_variable = { amount_equip = 5000 } }
+		else_if = { limit = { infantry_equipment > 7999 } set_temp_variable = { amount_equip = 4000 } }
+		else_if = { limit = { infantry_equipment > 5999 } set_temp_variable = { amount_equip = 3000 } }
+		else_if = { limit = { infantry_equipment > 3999 } set_temp_variable = { amount_equip = 2000 } }
+		effect_tooltip = {
+			send_equipment = {
+				equipment = infantry_equipment
+				amount = var:amount_equip
+				target = AMO
+			}
+		}
+		hidden_effect = { AMO = { country_event = amaterasu.311 } }
+	}
+	option = {
+		name = amaterasu.31.c
+		trigger = { has_manpower > 2999 }
+		set_temp_variable = { amount_volunteers = 3000 }
+		if = { limit = { has_manpower > 8999} set_temp_variable = { amount_volunteers = 9000 } }
+		else_if = { limit = { has_manpower > 7499} set_temp_variable = { amount_volunteers = 7500 } }
+		else_if = { limit = { has_manpower > 5999} set_temp_variable = { amount_volunteers = 6000 } }
+		else_if = { limit = { has_manpower > 4499} set_temp_variable = { amount_volunteers = 4500 } }
+		effect_tooltip = {
+			AMO = { add_manpower = var:amount_volunteers }
+			multiply_temp_variable = { amount_volunteers = -1 }
+			add_manpower = var:amount_volunteers
+		}
+		hidden_effect = { AMO = { country_event = amaterasu.313 } }
+	}
+	option = {
+		name = amaterasu.31.no
+		hidden_effect = { AMO = { country_event = amaterasu.314 } }
+	}
+}
+
+country_event = { # A Common Enemy: send weapons (target: AMO)
+	id = amaterasu.311
+	title = amaterasu.311.t
+	desc = amaterasu.311.desc
+	picture = GFX_report_event_generic_rifles
+
+	is_triggered_only = yes
+	
+	major = yes
+
+	option = {
+		name = amaterasu.311.amo
+		trigger = { tag = AMO }
+		FROM = {
+			set_temp_variable = { amount_equip = 1000 }
+			if = { limit = { infantry_equipment > 9999 } set_temp_variable = { amount_equip = 5000 } }
+			else_if = { limit = { infantry_equipment > 7999 } set_temp_variable = { amount_equip = 4000 } }
+			else_if = { limit = { infantry_equipment > 5999 } set_temp_variable = { amount_equip = 3000 } }
+			else = { limit = { infantry_equipment > 3999 } set_temp_variable = { amount_equip = 2000 } }
+			send_equipment = {
+				equipment = infantry_equipment
+				amount = var:amount_equip
+				target = AMO
+			}
+		}
+	}
+	option = {
+		name = amaterasu.311.from
+		trigger = { tag = FROM }
+	}
+	option = {
+		name = amaterasu.311.good
+		trigger = { NOT = { tag = AMO tag = FROM } is_ally_with = AMO }
+		FROM = { custom_effect_tooltip = AMO_common_enemy_boon_1_tooltip }
+	}
+	option = {
+		name = amaterasu.311.bad
+		trigger = { NOT = { tag = AMO tag = FROM } OR = { has_war_with = AMO tag = SHO } }
+		FROM = { custom_effect_tooltip = AMO_common_enemy_boon_1_tooltip }
+	}
+	option = {
+		name = amaterasu.311.other
+		trigger = { NOT = { tag = AMO tag = FROM tag = SHO has_war_with = AMO is_ally_with = AMO } }
+		FROM = { custom_effect_tooltip = AMO_common_enemy_boon_1_tooltip }
+	}
+}
+
+country_event = { # A Common Enemy: subsidize trade (target: AMO)
+	id = amaterasu.312
+	title = amaterasu.312.t
+	desc = amaterasu.312.desc
+	picture = GFX_report_event_merchant_ship_01
+
+	is_triggered_only = yes
+	
+	major = yes
+
+	option = {
+		name = amaterasu.312.amo
+		trigger = { tag = AMO }
+		hidden_effect = { if = { limit = { NOT = { has_idea = AMO_trade_subsidize_spirit } add_ideas = AMO_trade_subsidize_spirit } } }
+		if = { limit = { FROM = { tag = CHU } } add_ideas = AMO_trade_subsidize_chu_spirit }
+		if = { limit = { FROM = { tag = KAN } } add_ideas = AMO_trade_subsidize_kan_spirit }
+		if = { limit = { FROM = { tag = TOH } } add_ideas = AMO_trade_subsidize_toh_spirit }
+		if = { limit = { FROM = { tag = PRO } } add_ideas = AMO_trade_subsidize_pro_spirit }
+	}
+	option = {
+		name = amaterasu.312.from
+		trigger = { tag = FROM }
+	}
+	option = {
+		name = amaterasu.312.good
+		trigger = { NOT = { tag = AMO tag = FROM } is_ally_with = AMO }
+		AMO = {
+			if = { limit = { FROM = { tag = CHU } } custom_effect_tooltip = AMO_trade_subsidize_spirit_chu_tt_display }
+			if = { limit = { FROM = { tag = KAN } } custom_effect_tooltip = AMO_trade_subsidize_spirit_kan_tt_display }
+			if = { limit = { FROM = { tag = PRO } } custom_effect_tooltip = AMO_trade_subsidize_spirit_pro_tt_display }
+			if = { limit = { FROM = { tag = TOH } } custom_effect_tooltip = AMO_trade_subsidize_spirit_toh_tt_display }
+		}
+	}
+	option = {
+		name = amaterasu.312.bad
+		trigger = { NOT = { tag = AMO tag = FROM } OR = { has_war_with = AMO tag = SHO } }
+		AMO = {
+			if = { limit = { FROM = { tag = CHU } } custom_effect_tooltip = AMO_trade_subsidize_spirit_chu_tt_display }
+			if = { limit = { FROM = { tag = KAN } } custom_effect_tooltip = AMO_trade_subsidize_spirit_kan_tt_display }
+			if = { limit = { FROM = { tag = PRO } } custom_effect_tooltip = AMO_trade_subsidize_spirit_pro_tt_display }
+			if = { limit = { FROM = { tag = TOH } } custom_effect_tooltip = AMO_trade_subsidize_spirit_toh_tt_display }
+		}
+	}
+	option = {
+		name = amaterasu.312.other
+		trigger = { NOT = { tag = AMO tag = FROM tag = SHO has_war_with = AMO is_ally_with = AMO } }
+		AMO = {
+			if = { limit = { FROM = { tag = CHU } } custom_effect_tooltip = AMO_trade_subsidize_spirit_chu_tt_display }
+			if = { limit = { FROM = { tag = KAN } } custom_effect_tooltip = AMO_trade_subsidize_spirit_kan_tt_display }
+			if = { limit = { FROM = { tag = PRO } } custom_effect_tooltip = AMO_trade_subsidize_spirit_pro_tt_display }
+			if = { limit = { FROM = { tag = TOH } } custom_effect_tooltip = AMO_trade_subsidize_spirit_toh_tt_display }
+		}
+	}
+}
+
+country_event = { # A Common Enemy: send manpower (target: AMO)
+	id = amaterasu.313
+	title = amaterasu.313.t
+	desc = amaterasu.313.desc
+	picture = GFX_report_event_irregular_soldiers_japan
+
+	is_triggered_only = yes
+	
+	major = yes
+
+	option = {
+		name = amaterasu.313.amo
+		trigger = { tag = AMO }
+		FROM = {
+			set_temp_variable = { amount_volunteers = 3000 }
+			if = { limit = { has_manpower > 8999} set_temp_variable = { amount_volunteers = 9000 } }
+			else_if = { limit = { has_manpower > 7499} set_temp_variable = { amount_volunteers = 7500 } }
+			else_if = { limit = { has_manpower > 5999} set_temp_variable = { amount_volunteers = 6000 } }
+			else_if = { limit = { has_manpower > 4499} set_temp_variable = { amount_volunteers = 4500 } }
+			AMO = { add_manpower = var:amount_volunteers }
+			multiply_temp_variable = { amount_volunteers = -1 }
+			add_manpower = var:amount_volunteers
+		}
+	}
+	option = {
+		name = amaterasu.313.from
+		trigger = { tag = FROM }
+	}
+	option = {
+		name = amaterasu.313.good
+		trigger = { NOT = { tag = AMO tag = FROM } is_ally_with = AMO }
+		FROM = { custom_effect_tooltip = AMO_common_enemy_boon_3_tooltip }
+	}
+	option = {
+		name = amaterasu.313.bad
+		trigger = { NOT = { tag = AMO tag = FROM } OR = { has_war_with = AMO tag = SHO } }
+		FROM = { custom_effect_tooltip = AMO_common_enemy_boon_3_tooltip }
+	}
+	option = {
+		name = amaterasu.313.other
+		trigger = { NOT = { tag = AMO tag = FROM tag = SHO has_war_with = AMO is_ally_with = AMO } }
+		FROM = { custom_effect_tooltip = AMO_common_enemy_boon_4_tooltip }
+	}
+}
+
+country_event = { # A Common Enemy: no help (target: AMO)
+	id = amaterasu.314
+	title = amaterasu.314.t
+	desc = amaterasu.314.desc
+	picture = GFX_report_event_generic_sign_treaty1
+
+	is_triggered_only = yes
+	
+	major = yes
+	
+	fire_for_sender = no
+
+	option = {
+		name = amaterasu.314.amo
+		trigger = { tag = AMO }
+	}
+	option = {
+		name = amaterasu.314.bad
+		trigger = { NOT = { tag = AMO tag = FROM } is_ally_with = AMO }
+	}
+	option = {
+		name = amaterasu.314.good
+		trigger = { NOT = { tag = AMO tag = FROM } OR = { has_war_with = AMO tag = SHO } }
+	}
+	option = {
+		name = amaterasu.314.other
+		trigger = { NOT = { tag = AMO tag = FROM tag = SHO has_war_with = AMO is_ally_with = AMO } }
+	}
+}
+
 country_event = { # reset focus tree
 	id = amaterasu.999
 	title = "hidden event"
