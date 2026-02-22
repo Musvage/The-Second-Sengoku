@@ -2673,6 +2673,59 @@ focus_tree = {
 	}
 	
 	focus = {
+		id = AMO_finish_shogunate
+		icon = GFX_focus_SHO_behead_shogunate
+		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		
+		prerequisite = { focus = AMO_common_enemy }
+		
+		relative_position_id = AMO_common_enemy
+		x = -1
+		y = 1
+		cost = 10
+		
+		available = {
+			
+		}
+		
+		ai_will_do = { factor = 5 }
+		
+		
+		completion_reward = {
+			
+		}
+	}
+	
+	focus = {
+		id = AMO_common_enemy2
+		icon = GFX_goal_generic_military_deal
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
+		
+		prerequisite = { focus = AMO_common_enemy }
+		
+		relative_position_id = AMO_common_enemy
+		x = 0
+		y = 2
+		cost = 10
+		
+		available = {
+			OR = {
+				has_government = neutrality
+				has_government = fascism
+				has_government = autocracy
+			}
+		}
+		
+		ai_will_do = { factor = 5 }
+		
+		
+		completion_reward = {
+			add_political_power = 75
+			add_ideas = AMO_reactionary_alliance_spirit
+		}
+	}
+	
+	focus = {
 		id = AMO_call_clans
 		icon = GFX_focus_AMO_lower_nobility
 		search_filters = { FOCUS_FILTER_ANNEXATION }
@@ -2740,7 +2793,7 @@ focus_tree = {
 		prerequisite = { focus = AMO_call_clans }
 		
 		relative_position_id = AMO_call_clans
-		x = 0
+		x = 1
 		y = 1
 		cost = 10
 		
@@ -2819,7 +2872,117 @@ focus_tree = {
 			custom_effect_tooltip = AMO_call_clans2_tt2
 		}
 	}
-
+	
+	focus = {
+		id = AMO_call_clans3
+		icon = GFX_goal_generic_improve_relations
+		search_filters = { FOCUS_FILTER_ANNEXATION }
+		
+		prerequisite = { focus = AMO_call_clans }
+		
+		relative_position_id = AMO_call_clans
+		x = 0
+		y = 2
+		cost = 10
+		
+		available = {
+			OR = {
+				any_neighbor_country = {
+					is_clan = yes
+					has_opinion = {
+						target = ROOT
+						value > 50
+					}
+				}
+				any_country = {
+					is_clan = yes
+					is_subject_of = ROOT
+				}
+				
+			}
+		}
+		
+		ai_will_do = { factor = 5 }
+		
+		
+		completion_reward = {
+			custom_effect_tooltip = "event to annex friendly clans nearby or subjects"
+			custom_effect_tooltip = "unlocks decisions to annex friendly clans nearby or subjects"
+			every_other_country = {
+				trigger = {
+					is_clan = yes
+					OR = {
+						is_subject_of = ROOT
+						AND = {
+							is_neighbor_of = ROOT
+							has_opinion = {
+								target = ROOT
+								value > 50
+							}
+						}
+					}
+				}
+				custom_effect_tooltip = "get event"
+			}
+		}
+	}
+	
+	focus = {
+		id = AMO_religious_effort
+		icon = GFX_focus_jap_spiritual_mobilization
+		search_filters = { FOCUS_FILTER_RELIGION }
+		
+		prerequisite = { focus = AMO_common_enemy focus = AMO_call_clans }
+		
+		relative_position_id = AMO_common_enemy
+		x = 1
+		y = 1
+		cost = 10
+		
+		available = {
+			has_religion_2 = yes
+		}
+		
+		ai_will_do = { factor = 5 }
+		
+		
+		completion_reward = {
+			add_ideas = generic_idea_religious_zeal_2_upgrade
+		}
+	}
+	
+	
+	focus = {
+		id = AMO_path_unification
+		icon = GFX_focus_AMO_path_unification
+		search_filters = { FOCUS_FILTER_ANNEXATION }
+		
+		prerequisite = { focus = AMO_call_clans3 focus = AMO_common_enemy2 }
+		prerequisite = { focus = AMO_religious_effort }
+		
+		relative_position_id = AMO_call_clans3
+		x = -1
+		y = 1
+		cost = 10
+		
+		available = {
+			count_triggers = {
+				amount = 2
+				has_completed_focus = AMO_commissioner_chief_of_staff
+				has_completed_focus = AMO_commissioner_finance
+				has_completed_focus = AMO_commissioner_supply
+				has_completed_focus = AMO_commissioner_development
+			}
+		}
+		
+		ai_will_do = { factor = 5 }
+		
+		
+		completion_reward = {
+			unlock_decision_category_tooltip = unify_japan_category
+            set_country_flag = unlock_unify_japan_category
+		}
+	}
 }
 #FOCUS_FILTER_SPY
 #FOCUS_FILTER_ANNEXATION
