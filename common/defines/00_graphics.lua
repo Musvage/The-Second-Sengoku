@@ -13,8 +13,8 @@ NMapMode = {
 	FABRICATE_CLAIM_ALREADY_CORE_SECONDARY_COLOR = { 0.5, 0, 0, 1 },
 	CONSTRUCTION_MAP_MODE_BUILDING_DEFAULT_COLOR = { 0.43, 0.22, 0.22, 0.5 }, 			-- Color of states/provinces that can't be built on
 	CONSTRUCTION_MAP_MODE_BUILDING_MAX_LEVEL_COLOR = { 0.05, 0.1, 0.7, 0.8 }, 			-- Color of states/provinces where current building level is maxed out (max is current max level, not final max level) of a building type
-	CONSTRUCTION_MAP_MODE_BUILDING_LEVEL_LOW_COLOR = { 0.2, 0.7, 0.0, 0.1 },
-	CONSTRUCTION_MAP_MODE_BUILDING_LEVEL_HI_COLOR = { 0.4, 0.9, 0.0, 0.8 },
+	CONSTRUCTION_MAP_MODE_BUILDING_LEVEL_LOW_COLOR = { 0.2, 0.7, 0.0, 0.5 },
+	CONSTRUCTION_MAP_MODE_BUILDING_LEVEL_HI_COLOR = { 0.45, 0.98, 0.0, 0.9 },
 	CONSTRUCTION_MAP_MODE_BUILDING_MAX_AMOUNT_QUEUED_COLOR = { 0.0, 0.0, 1.0  }, 	-- Color of states/provinces when building queue is maxed of a building type
 	CONSTRUCTION_MAP_MODE_BUILDING_QUEUED_COLOR = { 1.0, 0.85, 0.0  },				-- Color of states/provinces when building queue contains one or more of a building type.
 	MAP_MODE_MANPOWER_RANGE_MAX = 20000000,											-- When a state has that much manpower, it will be colored with the color MAP_MODE_MANPOWER_RANGE_COLOR_TO. Everything below that will have an interpolated color.
@@ -29,7 +29,7 @@ NMapMode = {
 	PEACE_CONFERENCE_CONTESTED_SECONDARY_COLOR = { 1, 0, 0, 0.25 },
 	PEACE_CONFERENCE_CHANGE_TARGET_TAG_SECONDARY_COLOR =  { 0, 0.8, 0.5, 0.25 },
 	PEACE_CONFERENCE_DIFFERENT_STACKABLE_SECONDARY_COLOR =  { 1, 1, 0, 0.25 },
-	FACTIONS_COLOR_NOT_MEMBER = { 0.6, 0.6, 0.6, 0.25 },
+	FACTIONS_COLOR_NOT_MEMBER = { 0.7, 0.7, 0.7, 0.7 },
 	FACTIONS_MEMBER_TRANSPARENCY = 1.0,
 	PLAYER_MAPMODE_NOT_SELECTED_COUNTRY_TRANSPARENCY = 0.15,						-- How much is the country colors faded out, for countries that are not occupied by the any player.
 	SELECTED_COUNTRY_HIGHLIGHT_THICKNESS_MULT = 1.5,								-- When a country is selected (blinking/highlighted) it's borders becomes a bit thicker, to make stand out even more. 1.0 is default thickness.
@@ -1076,7 +1076,7 @@ NGraphics = {
 	TRADE_ROUTE_BAD_EFFICIENCY_ROUTE_COLOR = { 1.0, 0.7, 0.5, 0.75 },
 	TRADE_ROUTE_BAD_EFFICIENCY_HOTSPOT_COLOR = { 1.0, 0.0, 0.0, 0.75 },
 	TRADE_ROUTE_PRODUCTION_TRANSFER_COLOR = { 0.0, 0.5, 1.0, 0.75 },
-	TRADE_ROUTE_SUPPLIES_TRANSFER_COLOR = { 1.0, 1.0, 1.0, 0.75 },
+	TRADE_ROUTE_SUPPLIES_TRANSFER_COLOR = { 1.0, 1.0, 1.0, 0.35 },
 	TRADE_ROUTE_RESOURCE_EXPORT_COLOR = { 0.7, 1.0, 0.5, 0.75 },
 	TRADE_ROUTE_RESOURCE_IMPORT_COLOR = { 0.2, 0.9, 1.0, 0.75 },
 	TRADE_ROUTE_LEND_LEASE_EXPORT_COLOR = { 0.5, 1.0, 0.0, 0.75 },
@@ -1141,9 +1141,9 @@ NGraphics = {
 	SUPPLY_CONSUMER_ARROW_HEIGHT_TO_LEN = 0.1,
 	SUPPLY_CONSUMER_ARROW_HEIGHT_MAX = 4.0,
 
-	SUPPLY_UNIT_COUNTER_SHOW_THRESHOLD = 0.75,  -- At what supply threshold will the normal crate be shown on unit counters
-	SUPPLY_UNIT_COUNTER_LOW_THRESHOLD = 0.5,  -- At what supply threshold will the orange crate be shown on unit counters
-	SUPPLY_UNIT_COUNTER_VERY_LOW_THRESHOLD = 0.25,  -- At what supply threshold will the red crate with ! will be shown on unit counters
+	SUPPLY_UNIT_COUNTER_SHOW_THRESHOLD = 0.5,  -- At what supply threshold will the normal crate be shown on unit counters
+	SUPPLY_UNIT_COUNTER_LOW_THRESHOLD = 0.35,  -- At what supply threshold will the orange crate be shown on unit counters
+	SUPPLY_UNIT_COUNTER_VERY_LOW_THRESHOLD = 0.2,  -- At what supply threshold will the red crate with ! will be shown on unit counters
 
 	COUP_GREEN = { 0.0, 1.0, 0.0, 1.0 },
 	COUP_RED = { 1.0, 0.0, 0.0, 1.0 },
@@ -1516,6 +1516,8 @@ NFrontend = {
 
 	SOCIALVIEW_CONTEXT_MENU_BUTTON_OFFSET = 10,
 	SOCIALVIEW_CONTEXT_MENU_MARGIN = 2,
+	TIME_TO_SWAP_BACKGROUNDS = 20, -- Amount of seconds before swapping to another background
+	NEW_BACKGROUND_DURATION = 4 --How often you get to see the new background first before it is inside of the regular rotation, 1 means it will be automatically selcted, 0 means not selected at all, anything higher is the amount of start ups it will be prioritized
 },
 
 NSound = {

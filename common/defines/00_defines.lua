@@ -625,7 +625,7 @@ NProduction = {
 	BASE_COUNTRY_ENERGY_PRODUCTION = 10.0, 			-- The base energy production of a country
 	ENERGY_SCALING_COST_BY_FACTORY_COUNT = 0.0225, -- Scales energy cost based on the total number of factories
 	BASE_ENERGY_COST = 0.25,						-- How much energy per factory consumes
-	ENERGY_COST_CAP = 6,						-- Maximum energy cost per factory
+	ENERGY_COST_CAP = 6.6,						-- Maximum energy cost per factory
 	ENERGY_SCALE_PER_TRADE_FACTORY_EXPORT = 0.25, -- Factor of how many of the factories gained from trade is affects the energy cost scaling
 	BASE_FACTORY_SPEED = 4, 					-- Base factory speed multiplier (how much hoi3 style IC each factory gives).
 	BASE_FACTORY_SPEED_MIL = 3.5, 				-- Base factory speed multiplier (how much hoi3 style IC each factory gives).
@@ -873,16 +873,18 @@ NMilitary = {
 	LEADER_GROUP_MAX_SIZE = 1000, --5,			-- Max slots for leader groups.
 
 	MIN_SUPPLY_CONSUMPTION = 0.05,					-- minimum value of supply consumption that a unit can get
-
-	LAND_COMBAT_ORG_DICE_SIZE = 4,                 -- nr of damage dice
-	LAND_COMBAT_STR_DICE_SIZE = 2,                 -- nr of damage dice
-	LAND_COMBAT_STR_DAMAGE_MODIFIER = 0.060,       -- global damage modifier... but some equipment is returned at end of battles see : EQUIPMENT_COMBAT_LOSS_FACTOR
-	LAND_COMBAT_ORG_DAMAGE_MODIFIER = 0.053,       -- global damage modifier
-	LAND_AIR_COMBAT_STR_DAMAGE_MODIFIER = 0.08,    -- air global strength damage modifier
-	LAND_AIR_COMBAT_ORG_DAMAGE_MODIFIER = 0.10,    	-- air global organization damage modifier
-	LAND_AIR_COMBAT_MAX_PLANES_PER_ENEMY_WIDTH = 3, -- how many CAS/TAC can enter a combat depending on enemy width there
+	
+	LAND_COMBAT_STR_DICE_SIZE = 2,                 -- nr of damage dice (used by ground to ground)
+	LAND_COMBAT_ORG_DICE_SIZE = 4,                 -- nr of damage dice (used by ground to ground)
 	LAND_COMBAT_STR_ARMOR_ON_SOFT_DICE_SIZE = 2,   -- extra damage dice if our armor outclasses enemy
 	LAND_COMBAT_ORG_ARMOR_ON_SOFT_DICE_SIZE = 6,   -- extra damage dice if our armor outclasses enemy
+	LAND_AIR_COMBAT_STR_DICE_SIZE = 2,                 -- nr of damage dice (used by air to ground)
+	LAND_AIR_COMBAT_ORG_DICE_SIZE = 5,                 -- nr of damage dice (used by air to ground)
+	LAND_COMBAT_STR_DAMAGE_MODIFIER = 0.060,       -- global damage modifier... but some equipment is returned at end of battles see : EQUIPMENT_COMBAT_LOSS_FACTOR
+	LAND_COMBAT_ORG_DAMAGE_MODIFIER = 0.053,       -- global damage modifier
+	LAND_AIR_COMBAT_STR_DAMAGE_MODIFIER = 0.035,    -- air global strength damage modifier
+	LAND_AIR_COMBAT_ORG_DAMAGE_MODIFIER = 0.035,    	-- air global organization damage modifier
+	LAND_AIR_COMBAT_MAX_PLANES_PER_ENEMY_WIDTH = 3, -- how many CAS/TAC can enter a combat depending on enemy width there
 	LAND_COMBAT_STR_ARMOR_DEFLECTION_FACTOR = 0.5, -- damage reduction if armor outclassing enemy
 	LAND_COMBAT_ORG_ARMOR_DEFLECTION_FACTOR = 0.5, -- damage reduction if armor outclassing enemy
 	LAND_COMBAT_COLLATERAL_FORT_FACTOR = 0.005,		-- Factor to scale collateral damage to forts with.
@@ -922,8 +924,12 @@ NMilitary = {
 	BASE_LEADER_TRAIT_GAIN_XP = 0.45,			   -- Base xp gain for traits per hour for armies
 	MAX_NUM_TRAITS = -1,						   -- cant have more, -1 to disable
 	ENEMY_AIR_SUPERIORITY_IMPACT = -0.35,          -- effect on defense due to enemy air superiorty
-	ENEMY_AIR_SUPERIORITY_DEFENSE = 0.70,	       -- more AA attack will approach this amount of help (diminishing returns)
-	ENEMY_AIR_SUPERIORITY_DEFENSE_STEEPNESS = 112, -- how quickly defense approaches the max impact diminishing returns curve
+	-- Algorithm is a * (xp / (xp + b)) (see: https://www.desmos.com/calculator/4936qnyxqp)
+	-- a = ENEMY_AIR_SUPERIORITY_DEFENSE
+	-- b = ENEMY_AIR_SUPERIORITY_DEFENSE_STEEPNESS
+	-- xp = anti_air ^ 1.5
+	ENEMY_AIR_SUPERIORITY_DEFENSE = 0.75,	       -- more AA attack will approach this amount of help (diminishing returns)
+	ENEMY_AIR_SUPERIORITY_DEFENSE_STEEPNESS = 625, -- how quickly defense approaches the max impact diminishing returns curve
 	ENEMY_AIR_SUPERIORITY_SPEED_IMPACT = -0.3,     -- effect on speed due to enemy air superiority
 
 	ANTI_AIR_TARGETTING_TO_CHANCE = 0.07,			-- Balancing value to determine the chance of ground AA hitting an attacking airplane, affecting both the effective average damage done by AA to airplanes, and the reduction of damage done by airplanes due to AA support
@@ -1519,9 +1525,10 @@ NNavy = {
 	UNDERWAY_REPLENISHMENT_PRIORITY = 7,							-- Default convoy priority for underway replenishment
 	-- Convoy Priorities END
 
-	NAVAL_HOMEBASE_CALCULATION_DISTANCE_CUTOFF = 1000,				-- Tuning parameter for homebase calculation. Distance to normalize against. Everything above said value will be treated as score = 0.
-	NAVAL_HOMEBASE_BUILDING_SCORE_FACTOR = 0.02,					-- Tuning parameter for homebase calculation. Multiplier for how much the level of the naval base impacts its total score.
-	NAVAL_HOMEBASE_OWNERSHIP_BONUS = 0.04,							-- Tuning parameter for homebase calculation. Adds to total score based on if the base is owned by the country doing the calculation.
+	-- Tuning parameters for homebase calculation
+	NAVAL_HOMEBASE_CALCULATION_DISTANCE_CUTOFF = 550,				-- Distance to normalize against. Everything above said value will be treated as score = 0.
+	NAVAL_HOMEBASE_BUILDING_SCORE_FACTOR = 0.035,					-- Multiplier for how much the level of the naval base impacts its total score.
+	NAVAL_HOMEBASE_OWNERSHIP_BONUS = 0.04,							-- Adds to total score based on if the base is owned by the country doing the calculation.
 
 	ADMIRAL_TASKFORCE_CAP = 10,										-- admirals will start getting penalties after this amount of taskforces
 
@@ -1533,9 +1540,10 @@ NNavy = {
 	MAX_SUBMARINES_PER_AUTO_TASK_FORCE = 30,						-- maximum number of submarines the auto-task force creation will put together when designing wolfpack
 	BEST_CAPITALS_TO_CARRIER_RATIO = 1,							-- capitals / carriers ratio used when auto-task force creation designs CarrierTaskForce
 	BEST_CAPITALS_TO_SCREENS_RATIO = 0.25, 							-- capitals / screens ratio used for creating FEX groups in naval combat
-	COMBAT_BASE_HIT_CHANCE = 0.1,									-- base chance for hit
 
-	COMBAT_MIN_HIT_CHANCE = 0.05,									-- never less hit chance then this?
+	COMBAT_BASE_HIT_CHANCE = 0.1,									-- base chance for hit (in percent)
+	COMBAT_MIN_HIT_CHANCE = 0.02,									-- never less hit chance then this (in percent)
+	
 	COMBAT_EVASION_TO_HIT_CHANCE = 0.007,							-- we take ship evasion stats, and mult by this value, so it gives hit chance reduction. So if reduction is 0.025 and ship evasion = 10, then there will be 0.25 (25%) lower hit chance. (Fe. 50% base -25% from evasion +10% bcoz it's very close).
 	COMBAT_EVASION_TO_HIT_CHANCE_TORPEDO_MULT = 10.0,				-- the above evasion hit chance is multiplied by 400% if shooting with torpedoes. Torpedoes are slow, so evasion matters more.
 	MIN_HIT_PROFILE_MULT = 0.0,										-- largest hit profile penalty to hitting
@@ -1555,21 +1563,21 @@ NNavy = {
 	COMBAT_MAX_GROUPS = 1,											-- Max amount of "Fire Exchange" groups (FEX).
 	COMBAT_MIN_DURATION = 8,										-- Min combat duration before we can retreat. It's a balancing variable so it's not possible to always run with our weak ships agains big flotillas.
 	COMBAT_INITIAL_DURATION = 6,									-- Number of hours that is considered the "initial phase" of naval combat, used for modifiers like surprise attack during "initial combat"
-	COMBAT_RETREAT_DECISION_CHANCE = 0.22, 							-- There is also random factor in deciding if we should retreat or not. That causes a delay in taking decision, that sooner or later will be picked. It's needed so damaged fast ships won't troll the combat.
+	COMBAT_RETREAT_DECISION_CHANCE = 0.2, 							-- There is also random factor in deciding if we should retreat or not. That causes a delay in taking decision, that sooner or later will be picked. It's needed so damaged fast ships won't troll the combat.
 	COMBAT_DETECTED_CONVOYS_FROM_SURFACE_DETECTION_STAT = 0.1,		-- Each 1.0 of surface_detection that ship has (equipment stat), gives x% of convoys discovered from total travelling along the route.
 	COMBAT_BASE_CRITICAL_CHANCE = 0.05,								-- Base chance for receiving a critical chance. It get's scaled down with ship reliability.
 	COMBAT_CRITICAL_DAMAGE_MULT = 5.0,								-- Multiplier for the critical damage. Scaled down with the ship reliability.
 	COMBAT_ARMOR_PIERCING_CRITICAL_BONUS = 1.0,						-- Bonus to critical chance when shooter armor piercing is higher then target armor.
 	COMBAT_ARMOR_PIERCING_DAMAGE_REDUCTION = 0,					-- All damage reduction % when target armor is >= then shooter armor piercing. (depricated)
-	REPAIR_AND_RETURN_PRIO_LOW = 0.2,								-- % of total Strength. When below, navy will go to home base to repair.
-	REPAIR_AND_RETURN_PRIO_MEDIUM = 0.5,							-- % of total Strength. When below, navy will go to home base to repair.
-	REPAIR_AND_RETURN_PRIO_HIGH = 0.9,								-- % of total Strength. When below, navy will go to home base to repair.
-	REPAIR_AND_RETURN_PRIO_LOW_COMBAT = 0.6,						-- % of total Strength. When below, navy will go to home base to repair (in combat).
-	REPAIR_AND_RETURN_PRIO_MEDIUM_COMBAT = 0.3,						-- % of total Strength. When below, navy will go to home base to repair (in combat).
-	REPAIR_AND_RETURN_PRIO_HIGH_COMBAT = 0.1,						-- % of total Strength. When below, navy will go to home base to repair (in combat).
+	REPAIR_AND_RETURN_PRIO_LOW = 0.45,								-- % of total Strength. When below, navy will go to home base to repair.
+	REPAIR_AND_RETURN_PRIO_MEDIUM = 0.65,							-- % of total Strength. When below, navy will go to home base to repair.
+	REPAIR_AND_RETURN_PRIO_HIGH = 0.90,								-- % of total Strength. When below, navy will go to home base to repair.
+	REPAIR_AND_RETURN_PRIO_LOW_COMBAT = 0.9,						-- % of total Strength. When below, navy will go to home base to repair (in combat).
+	REPAIR_AND_RETURN_PRIO_MEDIUM_COMBAT = 0.6,						-- % of total Strength. When below, navy will go to home base to repair (in combat).
+	REPAIR_AND_RETURN_PRIO_HIGH_COMBAT = 0.4,						-- % of total Strength. When below, navy will go to home base to repair (in combat).
 	REPAIR_AND_RETURN_AMOUNT_SHIPS_LOW = 0.2,						-- % of total damaged ships, that will be sent for repair-and-return in one call.
-	REPAIR_AND_RETURN_AMOUNT_SHIPS_MEDIUM = 0.4,					-- % of total damaged ships, that will be sent for repair-and-return in one call.
-	REPAIR_AND_RETURN_AMOUNT_SHIPS_HIGH = 0.8,						-- % of total damaged ships, that will be sent for repair-and-return in one call.
+	REPAIR_AND_RETURN_AMOUNT_SHIPS_MEDIUM = 0.2,					-- % of total damaged ships, that will be sent for repair-and-return in one call.
+	REPAIR_AND_RETURN_AMOUNT_SHIPS_HIGH = 0.2,						-- % of total damaged ships, that will be sent for repair-and-return in one call.
 	REPAIR_AND_RETURN_UNIT_DYING_STR = 0.2,							-- Str below this point is considering a single ship "dying", and a high priority to send to repair.
 	AI_MAX_TASKFORCES_PER_TRAINING_OBJECTIVE = 5,					-- Max number of taskforces we desire for AI to put in each fleet that is training.
 	EXPERIENCE_LOSS_FACTOR = 1.00,                 					-- percentage of experienced solders who die when manpower is removed
@@ -1715,21 +1723,54 @@ NNavy = {
 		0.0, -- CONVOY ESCORT
 		0.7, -- MINES PLANTING
 		0.7, -- MINES SWEEPING
-		0.5, -- TRAIN
+		0.5, -- TRAINING
 		0.0, -- RESERVE_FLEET
 		0.0, -- NAVAL_INVASION_SUPPORT
 	},
 	MISSION_DEFAULT_SPREAD_BASE = 1.0, -- multiplier for mission spreads. higher = less ships on start
 
+
+	-------		For "aggression" related values, think of it more as "risk taking" rather than "aggression". 
+	-------		It modifies how big of a difference between taskforce strengths the ships will consider "i could do that"
+
 	AGGRESSION_SETTINGS_VALUES = { -- ships will use this values while deciding to attack enemies
 		0,		-- do not engage
-		0.5,	-- low
-		0.9,	-- medium
+		0.6,	-- low
+		1.25,	-- medium
 		2.0,	-- high
 		10000,	-- I am death incarnate!
 	},
 
-	AGGRESION_MULTIPLIER_FOR_COMBAT = 1.2,				-- ships are more aggresive in combat
+	AGGRESSION_LEVEL_BY_MISSION_WEAKER = { -- the aggression level per mission when the AI has a weaker navy than its opponent
+		---- values correspond to the indexes of the AGGRESSION_SETTINGS_VALUES. 0 = do not engage, 1 = low, 2 = medium, etc. 
+		---- If set to (-1), will use the hardcoded behavior (low if navy is generally weaker than opponent, medium if stronger)
+		-1, -- HOLD
+		0, -- PATROL
+		2, -- STRIKE FORCE
+		2, -- CONVOY RAIDING
+		1, -- CONVOY ESCORT
+		-1, -- MINES PLANTING
+		-1, -- MINES SWEEPING
+		-1, -- TRAINING
+		-1, -- RESERVE_FLEET
+		2, -- NAVAL_INVASION_SUPPORT
+	},
+	AGGRESSION_LEVEL_BY_MISSION_STRONGER_OR_EQUAL = { -- the aggression level per mission when the AI has a stronger navy than its opponent
+		---- values correspond to the indexes of the AGGRESSION_SETTINGS_VALUES. 0 = do not engage, 1 = low, 2 = medium, etc. 
+		---- If set to (-1), will use the hardcoded behavior (low if navy is generally weaker than opponent, medium if stronger)
+		-1, -- HOLD
+		2, -- PATROL
+		4, -- STRIKE FORCE
+		2, -- CONVOY RAIDING
+		2, -- CONVOY ESCORT
+		-1, -- MINES PLANTING
+		-1, -- MINES SWEEPING
+		-1, -- TRAINING
+		-1, -- RESERVE_FLEET
+		3, -- NAVAL_INVASION_SUPPORT
+	},
+
+	AGGRESION_MULTIPLIER_FOR_COMBAT = 1.0,				-- ships are more aggresive in combat
 
 	AGGRESSION_ARMOR_EFFICIENCY_MULTIPLIER = 1.0,		-- armor to enemy piercing ratio is multiplied by this value, which will increase the strength of ships while considering them for aggression
 	AGGRESSION_MIN_ARMOR_EFFICIENCY = 0.5,              -- armor multiplier has a min and max caps while being factored in aggression
@@ -1737,15 +1778,17 @@ NNavy = {
 
 	AGGRESSION_LIGHT_GUN_EFFICIENCY_ON_LIGHT_SHIPS = 1.0, -- ratio for scoring for different gun types against light ships
 	AGGRESSION_HEAVY_GUN_EFFICIENCY_ON_LIGHT_SHIPS = 0.25,-- ratio for scoring for different gun types against light ships
-	AGGRESSION_TORPEDO_EFFICIENCY_ON_LIGHT_SHIPS = 0.1,   -- ratio for scoring for different gun types against light ships
+	AGGRESSION_TORPEDO_EFFICIENCY_ON_LIGHT_SHIPS = 0.2,   -- ratio for scoring for different gun types against light ships
 
 	AGGRESSION_LIGHT_GUN_EFFICIENCY_ON_HEAVY_SHIPS = 0.1, -- ratio for scoring for different gun types against heavy ships
 	AGGRESSION_HEAVY_GUN_EFFICIENCY_ON_HEAVY_SHIPS = 1.0, -- ratio for scoring for different gun types against heavy ships
-	AGGRESSION_TORPEDO_EFFICIENCY_ON_HEAVY_SHIPS = 1.1,   -- ratio for scoring for different gun types against heavy ships
+	AGGRESSION_TORPEDO_EFFICIENCY_ON_HEAVY_SHIPS = 1.5,   -- ratio for scoring for different gun types against heavy ships
 
 	AGGRESSION_CONVOY_STRENGTH_FACTOR = 0.3,			  -- convoys in combat gets a penalty to their strength in aggression calculations
 
-	SUBMARINE_ESCAPE_RATIOS = { -- subs will escape battle in convoy raid if there are enemies that can attack
+	 -- subs will escape battle in convoy raid if there are enemies that can attack
+	 -- example if value is 3.0, if I have 10 subs, then I will retreat if there are 3.33 ships that can hit subs
+	SUBMARINE_ESCAPE_RATIOS = {
 		1000,     -- do not engage
 		3.0,   -- low
 		1.0,   -- medium
@@ -2004,14 +2047,17 @@ NNavy = {
 		15,	-- Wolfpack
 		22,	-- Carrier task force
 		26,	-- Surface action group
-		16,	-- Mine layers
-		17,	-- Mine sweepers
+		30,	-- Mine layers
+		31,	-- Mine sweepers
 		29,	-- Patrol task force
 		1,	-- Convoy escort
+		5,	-- Dominance patrol force
 	},
 
 	-- NOTE: you can see the effect of changing the values down below by running the command tfria with a task force selected
-	MIN_SHIP_COUNT_FOR_TASK_FORCE_ROLE_ASSIGNMENT = 4,					-- define the minimum number of ship that should be in a task force for it to be considered a patrol or an escort task force (used to the insignia assignment, see TASK_FORCE_ROLE_TO_INSIGNIA)
+	MIN_MINE_CAPABLE_RATIO_FOR_ROLE_ASSIGNMENT = 0.6,					-- minimum ratio of mine laying/sweeping capable ships needed for a taskforce to get that icon assigned
+	MAX_SHIP_COUNT_FOR_DOMINANCE_PATROL_ROLE_ASSIGNMENT = 15,			-- define the maximum number of ships that should be in a task force for it to be considered a dominance building patrol (provided they have any capitals as well)
+	MIN_SHIP_COUNT_FOR_TASK_FORCE_ROLE_ASSIGNMENT = 2,					-- define the minimum number of ship that should be in a task force for it to be considered a patrol or an escort task force (used to the insignia assignment, see TASK_FORCE_ROLE_TO_INSIGNIA)
 	SURFACE_DETECTION_STAT_FOR_SHIP_TO_BE_PATROL = 16,					-- amount of surface detection required for a ship to be considered as part of a patrol task force
 	DEPTH_CHARGE_STAT_FOR_SHIP_TO_BE_SUB_HUNTER = 15,					-- amount of depth charge required for a ship to be considred a sub hunter and so good for convoy escort
 	SUB_DETECTION_STAT_FOR_SHIP_TO_BE_SUB_HUNTER = 2,					-- amount of sub detection required for a ship to be considered a sub hunter
@@ -2019,8 +2065,9 @@ NNavy = {
 	HEAVY_GUN_ATTACK_TO_SHORE_BOMBARDMENT							= 0.05,  -- heavy gun attack value is divided by this value * 100 and added to shore bombardment modifier
 	LIGHT_GUN_ATTACK_TO_SHORE_BOMBARDMENT							= 0.025, -- light gun attack value is divided by this value * 100 and added to shore bombardment modifier
 
-	GUN_HIT_PROFILES = { -- hit profiles for guns, if target ih profile is lower the gun will have lower accuracy
-		80.0,	-- big guns
+	-- hit profiles for guns, if target ih profile is lower the gun will have lower accuracy
+	GUN_HIT_PROFILES = { 
+		70.0,	-- big guns
 		100.0,	-- torpedoes
 		45.0,	-- small guns
 	},
@@ -2402,7 +2449,7 @@ NAI = {
 	DESIRE_USE_XP_TO_UNLOCK_NAVY_SPIRIT = 0.35,      -- How quickly is desire to unlock naval spirits accumulated?
 	DESIRE_USE_XP_TO_UNLOCK_AIR_SPIRIT = 0.35,      -- How quickly is desire to unlock air spirits accumulated?
 
-	DAYS_BETWEEN_CHECK_BEST_DOCTRINE = 7;       -- Recalculate desired best doctrine to unlock with this many days inbetween.
+	DAYS_BETWEEN_CHECK_BEST_DOCTRINE = 30;       -- Recalculate desired best doctrine to unlock with this many days inbetween.
 	DAYS_BETWEEN_CHECK_BEST_TEMPLATE = 7;       -- Recalculate desired best template to upgrade with this many days inbetween.
 	DAYS_BETWEEN_CHECK_BEST_EQUIPMENT = 7;      -- Recalculate desired best equipment to upgrade with this many days inbetween.
 
@@ -2680,7 +2727,7 @@ NAI = {
 	CARRIER_CAPACITY_IN_PRODUCTION_MAX_DAYS_LEFT_TO_INCLUDE_FACTOR = 365,	-- Carriers in production that will take more days to complete than this value will be ignored when calculating the above.
 
 	START_TRAINING_EQUIPMENT_LEVEL = 0.40,               -- ai will not start to train if equipment drops below this level
-	STOP_TRAINING_EQUIPMENT_LEVEL = 0.30,                -- ai will not train if equipment drops below this level
+	STOP_TRAINING_EQUIPMENT_LEVEL = 0.25,                -- ai will not train if equipment drops below this level
 	START_TRAINING_SUPPLY_LEVEL = 0.40,                  -- ai will not start to train if supply ratio drops below this level
 	STOP_TRAINING_SUPPLY_LEVEL = 0.30,                   -- ai will not train if supply ratio drops below this level
 	STOP_TRAINING_FULLY_TRAINED_FACTOR = 0.95,           -- ai will not train if at least this ratio of divisions in the army are fully trained
@@ -2695,7 +2742,7 @@ NAI = {
 
 
 	UPGRADE_DIVISION_RELUCTANCE = 7,					-- How often to consider upgrading to new templates for units in the field
-	UPGRADE_PERCENTAGE_OF_FORCES = 0.03,				-- How big part of the army that should be considered for upgrading
+	UPGRADE_PERCENTAGE_OF_FORCES = 0.05,				-- How big part of the army that should be considered for upgrading
 	REMOVE_OBSOLETE_TEMPLATE_DAYS = 180,                -- Remove obsolete and unused templates if they have been marked as obsolete for x days. Non-positive value means "never remove".
 
 	REFIT_SHIP_RELUCTANCE = 28,							-- How often to consider refitting to new equipment variants for ships in the field
@@ -2808,6 +2855,8 @@ NAI = {
 	NAVAL_PATROL_PLANES_PER_SHIP_PATROLLING = 10.0,		-- Amount of naval patrol planes per ship on a patrol mission
 	NAVAL_PATROL_PLANES_PER_SHIP_RAIDING = 10.0,		-- Amount of naval patrol planes per ship on a convoy raid mission
 	NAVAL_PATROL_PLANES_PER_SHIP_ESCORTING = 10.0,		-- Amount of naval patrol planes per ship on a convoy escort mission
+
+	NAVAL_COAST_DEFENSE_TENSION_THRESHOLD = 0.5,		-- The world tension threshold where countries start pre-emptively protecting their home coast
 
 	NAVAL_FIGHTERS_PER_PLANE = 1.0,						-- Amounts of air superiority planes requested per enemy plane
 	NAVAL_STRIKE_PLANES_PER_ARMY = 0,					-- Amount of planes requested per enemy army
@@ -2977,8 +3026,8 @@ NAI = {
 	MAX_AVAILABLE_MANPOWER_RATIO_TO_BUFFER_WARTIME = 0.4,			-- deployment will try to buffer a ratio of manpower (for reinforcements) during war time
 	MAX_AVAILABLE_MANPOWER_RATIO_TO_BUFFER_PEACETIME = 0.2,		-- deployment will try to buffer a ratio of manpower (for reinforcements) during peace time
 
-	MANPOWER_RATIO_REQUIRED_TO_PRIO_MOBILIZATION_LAW = 0.4,		-- percentage of manpower in field is desired to be buffered for AI when it has upcoming wars or already at war. if it has less manpower, it will prio manpower laws
-	UPGRADES_DEFICIT_LIMIT_DAYS = 7,                            -- Ai will avoid upgrading units in the field to new templates if it takes longer than this to fullfill their equipment need
+	MANPOWER_RATIO_REQUIRED_TO_PRIO_MOBILIZATION_LAW = 0.55,		-- percentage of manpower in field is desired to be buffered for AI when it has upcoming wars or already at war. if it has less manpower, it will prio manpower laws
+	UPGRADES_DEFICIT_LIMIT_DAYS = 30,                            -- Ai will avoid upgrading units in the field to new templates if it takes longer than this to fullfill their equipment need
 
 	GIE_EXILE_AIR_MANPOWER_USAGE_RATIO = 0.2, -- AI will not deploy new exile wings when this percentage of available exile manpower is already used for wing recruitment.
 
@@ -3398,9 +3447,9 @@ NAI = {
 	AIFC_PATH_COST_ADJ_STRAIT = 4.0,
 	AIFC_PATH_COST_ADJ_RIVER = 2.0,
 	AIFC_PATH_COST_ADJ_RIVER_LARGE = 3.0,
-	AIFC_PATH_COST_TRN_MOUNTAINS = 2.0,
-	AIFC_PATH_COST_TRN_FOREST = 1.5,
-	AIFC_PATH_COST_TRN_DESERT = 1.5,
+	AIFC_PATH_COST_TRN_MOUNTAINS = 3.0,
+	AIFC_PATH_COST_TRN_FOREST = 1.2,
+	AIFC_PATH_COST_TRN_DESERT = 1.2,
 	AIFC_PATH_COST_TRN_HILLS = 1.2,
 	AIFC_PATH_COST_TRN_JUNGLE = 3.0,
 	AIFC_PATH_COST_TRN_PLAINS = 0.8,
@@ -3428,11 +3477,22 @@ NAI = {
     AI_MIN_DOMINANCE_MARGIN = 200,                          -- When trying to get control of a region, AI will try to exceed the required dominance by at least this amount
     CONVOY_DANGER_FOR_MAX_IMPORTANCE = 50,                  -- When deciding whether to protect a convoy route, the importance will scale with convoy danger up to this value
     NUM_CONVOYS_FOR_MAX_PROTECTION = 50,                    -- When deciding whether to protect a convoy route, the importance will scale with the number of convoys up to this value
-    CONVOY_RAIDING_TARGET_RECALC_DAYS = 3,                  -- Each X days, the AI will reevaluate which regions to convoy raid (because enemy convoy usage or trade routes might change)
-    AI_OBJECTIVE_DEFAULT_TARGET_RECALC_DAYS = 0,            -- Each X days, the AI will reevaluate which regions to target for naval missions (this is the default value, but can be overriden by specific objectives, see CONVOY_RAIDING_TARGET_RECALC_DAYS)
+    CONVOY_RAIDING_TARGET_RECALC_DAYS = 15,                  -- Each X days, the AI will reevaluate which regions to convoy raid (because enemy convoy usage or trade routes might change)
+	STRIKE_FORCE_TARGET_RECALC_DAYS = 5,					-- Each X days, the AI will reevaluate which regions to put strike forces in (because patrol coverage will change)
+    AI_OBJECTIVE_DEFAULT_TARGET_RECALC_DAYS = 7,            -- Each X days, the AI will reevaluate which regions to target for naval missions (this is the default value, but can be overriden by specific objectives, see CONVOY_RAIDING_TARGET_RECALC_DAYS)
 	DANGEROUS_ENEMY_ARMY_SIZE = 100,						-- If the size of the enemy's army of the attacking country is more than this value, the AI will add naval invasion defense importance
 	DANGEROUS_DISTANCE_TO_CAPITAL = 1000.0,					-- Distance in pixels from the target province to capital location where the AI will add the naval invasion defense importance
 	
+	NAVAL_STRIKE_FORCE_OBJECTIVE_IMPORTANCE = {				-- ordering of this list is important!
+		0.1875,	-- invasion suppport
+		0.25,	-- invasion defense
+		0,0,	-- others ( MineSweeping, MineLaying )
+		0.0625,	-- generic coast defense
+		0,0,	-- others ( ConvoyRaiding, ConvoyProtection )
+		0.125,	-- naval dominance strategy
+		0,0,0	-- others ( Training, NavalBlockade, StrikeForce )
+	},
+
 	MIN_FACTORIES_TO_WANT_TO_IMPORT = {  -- minimum number of civilian factories the AI must have to consider importing a resource - per strategic resource. Default 0, array -should- be updated with new resources, or if the order changes.
 		0, -- oil
 		0, -- aluminium
@@ -4515,10 +4575,10 @@ NDoctrines = {
         DEFAULT_REWARD_MASTERY = 100.0,                         -- How much mastery is required for unlocking a doctrine reward, if no override is set
         BASE_MASTERY_GAIN_TARGET_MANPOWER = 100000.0,           -- Beyond this amount of manpower contributing to mastery, mastery gain will start having diminishing returns (see doctrines documentation)
         TRAINING_MASTERY_GAIN_FACTOR = 0.1,                     -- How much training contributes to doctrine mastery relative to combat/missions
-        MAX_MONTHLY_MASTERY_GAIN = 50.0,                        -- Monthly mastery gain will not exceed this value
+        MAX_MONTHLY_MASTERY_GAIN = 40.0,                        -- Monthly mastery gain will not exceed this value
         MIN_MASTERY_GAIN_PER_DAY = 0.0,                         -- If we have any mastery gain, it will be boosted to be at least this much per day (lower cap)
-        MASTERY_BAR_ANIMATION_SPEED_PER_DAILY_MASTERY = 5.0, -- Multiplier of how fast the mastery bar animates based on daily mastery gain
-        MASTERY_BAR_MAX_ANIMATION_SPEED = 50.0,               -- Max speed of the mastery bar animation
+        MASTERY_BAR_ANIMATION_SPEED_PER_DAILY_MASTERY = 4.0, -- Multiplier of how fast the mastery bar animates based on daily mastery gain
+        MASTERY_BAR_MAX_ANIMATION_SPEED = 40.0,               -- Max speed of the mastery bar animation
         MASTERY_BANK_CONVERSION_RATE = 0.25,                    -- The rate at which mastery gained when a track is finished or empty is "banked"
         MASTERY_BANK_MAX = 200.0,                               -- The maximum amount of mastery that can be banked
         MILITARY_ATTACHE_MASTERY_TRANSFER_FACTOR = 0.1,         -- For each mastery track, military attaches will add this fraction of their visiting country's mastery gain (from units only) in that track
