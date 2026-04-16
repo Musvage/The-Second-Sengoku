@@ -184,7 +184,7 @@
 		mutually_exclusive = { focus = SHO_suppress_opposition focus = SHO_call_congress }
 		
 		relative_position_id = SHO_call_congress
-		x = 5
+		x = 6
 		y = 0
 		cost = 10
 		
@@ -205,7 +205,8 @@
 		ai_will_do = { factor = 5 }
 		
 		completion_reward = {
-			
+			# event
+			add_timed_idea = { idea = SHO_shogun_died_recently_communist_spirit days = 180 }
 		}
 	}
 	
@@ -430,6 +431,8 @@
 		
 		completion_reward = {
 			country_event = shogunate.4
+			custom_effect_tooltip = loc_paragraph
+			custom_effect_tooltip = SHO_build_coalition_tt
 		}
 	}
 	
@@ -969,69 +972,11 @@
 	### Communist Branch
 	
 	focus = {
-		id = SHO_turn_communist
-		icon = GFX_focus_SHO_chains_broken
-		search_filters = { FOCUS_FILTER_INDUSTRY }
-		
-		prerequisite = { focus = SHO_burakumin_terrorists }
-		
-		relative_position_id = SHO_burakumin_terrorists
-		x = 0
-		y = 1
-		cost = 10
-		
-		available = {
-			communism > 0.33
-			count_triggers = {
-					amount = 2
-					has_completed_focus = SHO_reform_religious_tolerance
-					has_completed_focus = SHO_approach_young_officers
-					has_completed_focus = SHO_state_monopolies
-				}
-			NOT = {
-				has_government = democratic
-				has_government = democratic_socialism
-			}
-		}
-		
-		ai_will_do = { factor = 5 }
-		
-		completion_reward = {
-			set_politics = {
-				ruling_party = communism
-				elections_allowed = no
-			}
-		}
-	}
-	
-	focus = {
-		id = SHO_communist_press	#Suihei Shimbun
-		icon = GFX_focus_SHO_revolutionary_press
-		search_filters = { FOCUS_FILTER_POLITICAL }
-		
-		prerequisite = { focus = SHO_burakumin_terrorists }
-		
-		relative_position_id = SHO_burakumin_terrorists
-		x = 2
-		y = 1
-		cost = 10
-		
-		ai_will_do = { factor = 5 }
-		
-		completion_reward = {
-			add_popularity = {
-				ideology = communism
-				popularity = 0.1
-			}
-		}
-	}
-	
-	focus = {
 		id = SHO_communist_confront	#kyūdan
 		icon = GFX_focus_SHO_communism_confront
 		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_WAR_SUPPORT }
 		
-		prerequisite = { focus = SHO_turn_communist }
+		prerequisite = { focus = SHO_burakumin_terrorists }
 		mutually_exclusive = { focus = SHO_communist_conciliation }
 		
 		available = {
@@ -1041,8 +986,8 @@
 			}
 		}
 		
-		relative_position_id = SHO_turn_communist
-		x = -2
+		relative_position_id = SHO_burakumin_terrorists
+		x = -1
 		y = 1
 		cost = 10
 		
@@ -1059,7 +1004,7 @@
 		icon = GFX_focus_SHO_communism_conciliation
 		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
 		
-		prerequisite = { focus = SHO_turn_communist }
+		prerequisite = { focus = SHO_burakumin_terrorists }
 		mutually_exclusive = { focus = SHO_communist_confront }
 		
 		available = {
@@ -1069,8 +1014,8 @@
 			}
 		}
 		
-		relative_position_id = SHO_turn_communist
-		x = 0
+		relative_position_id = SHO_burakumin_terrorists
+		x = 1
 		y = 1
 		cost = 10
 		
@@ -1081,6 +1026,66 @@
 		}
 	}
 	
+	focus = {
+		id = SHO_communist_press	#Suihei Shimbun
+		icon = GFX_focus_SHO_revolutionary_press
+		search_filters = { FOCUS_FILTER_POLITICAL }
+		
+		prerequisite = { focus = SHO_burakumin_terrorists }
+		
+		relative_position_id = SHO_burakumin_terrorists
+		x = 2
+		y = 2
+		cost = 10
+		
+		ai_will_do = { factor = 5 }
+		
+		completion_reward = {
+			add_popularity = {
+				ideology = communism
+				popularity = 0.1
+			}
+		}
+	}	
+	
+	focus = {
+		id = SHO_turn_communist
+		icon = GFX_focus_SHO_chains_broken
+		search_filters = { FOCUS_FILTER_INDUSTRY }
+		
+		prerequisite = { focus = SHO_communist_conciliation focus = SHO_communist_confront }
+		
+		relative_position_id = SHO_communist_confront
+		x = 1
+		y = 1
+		cost = 10
+		
+		available = {
+			communism > 0.33
+			NOT = {
+				has_government = democratic
+				has_government = democratic_socialism
+			}
+		}
+		
+		bypass = {
+			OR = {
+				has_government = democratic
+				has_government = democratic_socialism
+			}
+		}
+		
+		
+		ai_will_do = { factor = 5 }
+		
+		completion_reward = {
+			remove_ideas = SHO_matsudaira_clan
+			set_politics = {
+				ruling_party = communism
+				elections_allowed = no
+			}
+		}
+	}
 
 	focus = {
 		id = SHO_abolish_samurai_class
@@ -1090,7 +1095,7 @@
 		prerequisite = { focus = SHO_turn_communist }
 		
 		relative_position_id = SHO_turn_communist
-		x = 2
+		x = 0
 		y = 1
 		cost = 10
 		
@@ -1198,6 +1203,34 @@
 				custom_effect_tooltip = SHO_doctrinal_revolution_tt1
 			}
 			clear_variable = samurai_doctrine_level
+		}
+	}
+	
+	focus = {
+		id = SHO_abolish_feudalism
+		icon = GFX_focus_SHO_our_own_path
+		search_filters = { FOCUS_FILTER_ANNEXATION }
+		
+		prerequisite = { focus = SHO_abolish_samurai_class }
+		mutually_exclusive = { focus = SHO_abolish_samurai_class }
+		
+		available = {
+			OR = {
+				has_government = communism
+				has_government = democratic_socialism
+			}
+		}
+		
+		relative_position_id = SHO_abolish_samurai_class
+		x = 0
+		y = 2
+		cost = 10
+		
+		ai_will_do = { factor = 5 }
+		
+		completion_reward = {
+			unlock_decision_category_tooltip = unify_japan_category
+            set_country_flag = unlock_unify_japan_category
 		}
 	}
 	
