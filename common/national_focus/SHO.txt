@@ -250,6 +250,7 @@
 				limit = { has_idea = SHO_shogun_died_recently_weak_spirit }
 				remove_ideas = { SHO_shogun_died_recently_weak_spirit }
 			} else = { remove_ideas = { SHO_shogun_died_recently_spirit } }
+			hidden_effect = { country_event = shogunate.999 } # reset focus tree
 		}
 	}
 	
@@ -295,6 +296,7 @@
 				limit = { has_idea = SHO_shogun_died_recently_weak_spirit }
 				remove_ideas = { SHO_shogun_died_recently_weak_spirit }
 			} else = { remove_ideas = { SHO_shogun_died_recently_spirit } }
+			hidden_effect = { country_event = shogunate.999 } # reset focus tree
 		}
 	}
 	
@@ -340,6 +342,7 @@
 				limit = { has_idea = SHO_shogun_died_recently_weak_spirit }
 				remove_ideas = { SHO_shogun_died_recently_weak_spirit }
 			} else = { remove_ideas = { SHO_shogun_died_recently_spirit } }
+			hidden_effect = { country_event = shogunate.999 } # reset focus tree
 		}
 	}
 	
@@ -636,6 +639,102 @@
 	}
 	
 	focus = {
+		id = SHO_befriend_germany
+		icon = { value = GFX_focus_generic_diplomacy_REI_autocracy trigger = { REI = { has_government = autocracy } } }
+		icon = GFX_focus_generic_diplomacy_REI_neutrality
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
+		
+		prerequisite = { focus = SHO_state_philantrophy focus = SHO_new_shogun_fascism }
+		mutually_exclusive = { focus =  SHO_maintain_autonomy }
+		
+		relative_position_id = SHO_state_philantrophy
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = { factor = 5 }
+		
+		available = {
+			if = {
+				limit = { has_country_flag = germany_refused_offer }
+				NOT = { has_country_flag = germany_refused_offer }
+			}
+			NOT = {
+				any_other_country = { has_idea = REI_idea_prefered_partner }
+				has_war_with = REI
+				is_justifying_wargoal_against = REI
+			}
+			REI = {
+				has_opinion = {
+					target = SHO
+					value > 0
+				}
+			}
+		}
+		
+		completion_reward = {
+			if = {
+				limit = { country_exists = REI }
+				REI = { country_event = { id = shogunate.21 hours = 6 random = 18 } }
+			} else = { REI = { country_event = { id = shogunate.22 hours = 6 random = 6 } } }
+			set_temp_variable = { rei_op_shi = REI.opinion@SHI }
+			set_temp_variable = { rei_op_sho = REI.opinion@SHO }
+			custom_effect_tooltip = loc_paragraph
+			custom_effect_tooltip = loc_if_accept
+			effect_tooltip = {
+				custom_effect_tooltip = will_join_axis_tt
+				add_ideas = REI_idea_prefered_partner
+				give_guarantee = REI
+				custom_effect_tooltip = tc_yawatahama_has_access_gain
+			}
+			if = {
+				limit = {
+					country_exists = REI
+					country_exists = SHI
+					NOT = {  REI = { has_completed_focus = REI_colonial_hegemony } }
+					check_variable = { rei_op_shi > rei_op_sho }
+					REI = {
+						has_opinion = {
+							target = SHI
+							value > 25
+						}
+					}
+				}
+				custom_effect_tooltip = loc_paragraph
+				custom_effect_tooltip = rei_likes_shi_will_not_accept
+			}
+			hidden_effect = { country_event = shogunate.999 } # reset focus tree
+		}
+	}
+	
+	focus = {
+		id = SHO_maintain_autonomy
+		icon = GFX_focus_SHO_isolation
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
+		
+		prerequisite = { focus = SHO_caste_system focus = SHO_new_shogun_fascism focus = SHO_new_shogun_democratic }
+		mutually_exclusive = { focus = SHO_befriend_germany focus = SHO_befriend_france }
+		
+		relative_position_id = SHO_new_shogun_fascism
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = { factor = 5 }
+		
+		completion_reward = {
+			add_stability = 0.05
+			custom_effect_tooltip = free_economy_one_time
+			#custom_effect_tooltip = free_trade_laws_one_time
+			hidden_effect = {
+				add_ideas = SHO_maintain_autonomy_economy_spirit
+				#add_ideas = SHO_maintain_autonomy_trade_spirit
+			}
+			hidden_effect = { country_event = shogunate.999 } # reset focus tree
+		}
+	}
+	
+	focus = {
 		id = SHO_gain_techs
 		icon = { value = GFX_focus_SHO_gain_tech_germany trigger = { has_completed_focus = SHO_befriend_germany } }
 		icon = { value = GFX_focus_SHO_gain_tech_autonomy trigger = { has_completed_focus = SHO_maintain_autonomy } }
@@ -647,7 +746,7 @@
 		prerequisite = { focus = SHO_befriend_germany focus = SHO_maintain_autonomy focus = SHO_befriend_france}
 		
 		relative_position_id = SHO_maintain_autonomy
-		x = -3
+		x = -1
 		y = 1
 		cost = 10
 		
@@ -749,10 +848,10 @@
 		dynamic = yes
 		search_filters = { FOCUS_FILTER_EQUIPMENT FOCUS_FILTER_DIPLOMACY }
 		
-		prerequisite = { focus = SHO_befriend_germany focus = SHO_maintain_autonomy focus = SHO_befriend_france}
+		prerequisite = { focus = SHO_befriend_germany focus = SHO_maintain_autonomy focus = SHO_befriend_france }
 		
 		relative_position_id = SHO_maintain_autonomy
-		x = -1
+		x = 1
 		y = 1
 		cost = 10
 		
@@ -874,98 +973,35 @@
 	}
 	
 	focus = {
-		id = SHO_befriend_germany
-		icon = { value = GFX_focus_generic_diplomacy_REI_autocracy trigger = { REI = { has_government = autocracy } } }
-		icon = GFX_focus_generic_diplomacy_REI_neutrality
-		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
+		id = SHO_end_schism
+		icon = { value = GFX_focus_SHO_unification_owari trigger = { has_completed_focus = SHO_successor_owari } }
+		icon = { value = GFX_focus_SHO_unification_mito trigger = { has_completed_focus = SHO_successor_mito } }
+		icon = { value = GFX_focus_SHO_unification_kii trigger = { has_completed_focus = SHO_successor_kii } }
+		icon = GFX_focus_SHO_unification_tokugawa
+		search_filters = { FOCUS_FILTER_ANNEXATION }
 		
-		prerequisite = { focus = SHO_state_philantrophy focus = SHO_new_shogun_fascism }
-		mutually_exclusive = { focus =  SHO_maintain_autonomy }
-		
-		relative_position_id = SHO_state_philantrophy
+		prerequisite = { focus = SHO_befriend_germany focus = SHO_maintain_autonomy focus = SHO_befriend_france }
+		relative_position_id = SHO_maintain_autonomy
 		x = 0
-		y = 1
-		cost = 10
-		
-		ai_will_do = { factor = 5 }
+		y = 2
 		
 		available = {
-			if = {
-				limit = { has_country_flag = germany_refused_offer }
-				NOT = { has_country_flag = germany_refused_offer }
-			}
-			NOT = {
-				any_other_country = { has_idea = REI_idea_prefered_partner }
-				has_war_with = REI
-				is_justifying_wargoal_against = REI
-			}
-			REI = {
-				has_opinion = {
-					target = SHO
-					value > 0
-				}
+			OR = {
+				has_government = communism
+				has_government = democratic_socialism
 			}
 		}
 		
-		completion_reward = {
-			if = {
-				limit = { country_exists = REI }
-				REI = { country_event = { id = shogunate.21 hours = 6 random = 18 } }
-			} else = { REI = { country_event = { id = shogunate.22 hours = 6 random = 6 } } }
-			set_temp_variable = { rei_op_shi = REI.opinion@SHI }
-			set_temp_variable = { rei_op_sho = REI.opinion@SHO }
-			custom_effect_tooltip = loc_paragraph
-			custom_effect_tooltip = loc_if_accept
-			effect_tooltip = {
-				custom_effect_tooltip = will_join_axis_tt
-				add_ideas = REI_idea_prefered_partner
-				give_guarantee = REI
-				custom_effect_tooltip = tc_yawatahama_has_access_gain
-			}
-			if = {
-				limit = {
-					country_exists = REI
-					country_exists = SHI
-					NOT = {  REI = { has_completed_focus = REI_colonial_hegemony } }
-					check_variable = { rei_op_shi > rei_op_sho }
-					REI = {
-						has_opinion = {
-							target = SHI
-							value > 25
-						}
-					}
-				}
-				custom_effect_tooltip = loc_paragraph
-				custom_effect_tooltip = rei_likes_shi_will_not_accept
-			}
-			hidden_effect = { country_event = shogunate.999 } # reset focus tree
-		}
-	}
-	
-	focus = {
-		id = SHO_maintain_autonomy
-		icon = GFX_focus_SHO_isolation
-		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
-		
-		prerequisite = { focus = SHO_caste_system focus = SHO_new_shogun_fascism focus = SHO_new_shogun_democratic }
-		mutually_exclusive = { focus = SHO_befriend_germany focus = SHO_befriend_france }
-		
-		relative_position_id = SHO_new_shogun_fascism
+		relative_position_id = SHO_maintain_autonomy
 		x = 0
-		y = 1
+		y = 2
 		cost = 10
 		
 		ai_will_do = { factor = 5 }
 		
 		completion_reward = {
-			add_stability = 0.05
-			custom_effect_tooltip = free_economy_one_time
-			#custom_effect_tooltip = free_trade_laws_one_time
-			hidden_effect = {
-				add_ideas = SHO_maintain_autonomy_economy_spirit
-				#add_ideas = SHO_maintain_autonomy_trade_spirit
-			}
-			hidden_effect = { country_event = shogunate.999 } # reset focus tree
+			unlock_decision_category_tooltip = unify_japan_category
+            set_country_flag = unlock_unify_japan_category
 		}
 	}
 	
@@ -2159,15 +2195,22 @@
 		
 		available = {
 			NOT = { has_idea = free_trade }
+			NOT = { has_completed_focus = SHO_land_redistribution }
 			if = {
 				limit = { is_ai = yes }
 				hidden_trigger = {
-					check_variable = { global.crash_1929_level > 10 }	# if Great Depression is nearly over, AI won't take this focus
+					check_variable = { global.crash_1929_level > 10 }	# if Great Depression is nearly over, AI won't take this focus (explanation: why not just use ai_will_do? because we can put one after another in the ai strategy files, otherwise we would have to check 1929 every day to pick the right strategy)
 				}
 			}
 		}
 		
-		ai_will_do = { factor = 5 }
+		ai_will_do = {
+			factor = 5
+			modifier = {
+				factor = 0
+				check_variable = { global.crash_1929_level < 10 }
+			}
+		}
 		
 		completion_reward = {
 			set_country_flag = SHO_maintain_rice_tax_flag
