@@ -15,7 +15,7 @@ focus_tree = {
 	focus = {
 		id = KAN_internal_legitimacy	# Sonnō jōi = revere the Emperor, expel the barbarians
 		icon = GFX_focus_KAN_sunno_joi
-		search_filters = {  }
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_SPY }
 		
 		mutually_exclusive = { focus = KAN_external_support }
 		
@@ -26,8 +26,7 @@ focus_tree = {
 		ai_will_do = { factor = 5 }
 		
 		completion_reward = {
-			custom_effect_tooltip = unlock_samurai_tech
-			hidden_effect = { set_technology = { tech_samurai = 1 popup = no } }
+			add_ideas = KAN_internal_legitimacy_spirit
 		}
 	}
 	
@@ -93,7 +92,7 @@ focus_tree = {
 		completion_reward = {
 			custom_effect_tooltip = KAN_court_chrysantemum_emperor_tt
 			set_country_flag = kan_chrysantemum_court
-			hidden_effects = { add_dynamic_modifier = { modifier = KAN_court_chrysantemum_emperor_modifier } }
+			hidden_effect = { add_dynamic_modifier = { modifier = KAN_court_chrysantemum_emperor_modifier } }
 		}
 	}
 	
@@ -599,7 +598,20 @@ focus_tree = {
 		ai_will_do = { factor = 5 }
 		
 		completion_reward = {
-			
+			custom_effect_tooltip = KAN_external_support_tt
+			custom_effect_tooltip = KAN_external_support4_tt
+			custom_effect_tooltip = KAN_external_support2_tt
+			custom_effect_tooltip = KAN_external_support3_tt
+			# a bit convoluted, but it is to avoid non-existing countries (like KIT) showing up in the tooltip
+			hidden_effect = {
+				add_ideas = KAN_external_support_spirit
+				every_possible_country = {
+					limit = { unification_candidate = no is_dynamic_country = no }
+					add_opinion_modifier = { target = ROOT modifier = KAN_fukoku_kyohei_bonus }
+					add_opinion_modifier = { target = ROOT modifier = KAN_fukoku_kyohei_trade_bonus }
+					add_ideas = KAN_external_support_foreign_spirit
+				}
+			}
 		}
 	}
 	
@@ -1596,6 +1608,8 @@ focus_tree = {
 	
 	focus = {
 		id = KAN_national_defense_focus
+		icon = { value = GFX_focus_KAN_national_defense_state_democratic trigger = { has_completed_focus = KAN_constitutional_reforms } }
+		icon = { value = GFX_focus_KAN_national_defense_state_communism trigger = { has_completed_focus = KAN_ikko_ikki } }
 		icon = GFX_focus_KAN_national_defense_state
 		search_filters = { FOCUS_FILTER_MILITARY }
 		
