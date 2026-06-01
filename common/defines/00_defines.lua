@@ -1489,6 +1489,11 @@ NAir = {
 },
 
 NNavy = {
+	NAVAL_MISSION_AI_RANGE_THRESHOLD_EPSILON = 0.25,				-- Epsilon tolerance for AI naval range threshold checks.
+	NAVAL_MISSION_AI_CONVOY_NORMALIZATION_TARGET = 150,				-- Number of convoys to normalize against when scoring convoy raiding missions.
+	SUBMARINE_BASE_STEALTH_VALUE = 100,								-- Used in the reworked formula, sub_visiblity is subtracted from SUBMARINE_BASE_STEALTH_VALUE for the divider. The higher the define, the lower the chance for detection to happen
+	SUBMARINE_REVEAL_DETECTION_MULTIPLIER = 0.075,					-- Used in the reworked formula, multiplies the average submarine detection. The higher the define, the higher chance for detection to happen
+	SUBMARINE_REVEAL_TORPEDO_FIRING_DETECTION_MULTIPLIER = 1.1,		-- used in the reworked formula when firing the torpedos to see whether it has been detected. This define is applied as multiplier to the numerator (avg. sub detection * SUBMARINE_REVEAL_DETECTION_MULTIPLIER * SUBMARINE_REVEAL_TORPEDO_FIRING_DETECTION_MULTIPLIER). define = 1, no difference, define < 0, no chance of detecting, 0 < define < 1, lowers chance of detecting comparing to passive reveal, 1 < define, increases chance to be revealed.
 	-- Peace Conference
 	WAR_SCORE_GAIN_FOR_SUNK_SHIP_MANPOWER_FACTOR = 0.004,			-- war score gained for every manpower killed when sinking a ship
 	WAR_SCORE_GAIN_FOR_SUNK_SHIP_PRODUCTION_COST_FACTOR = 0.10,		-- war score gained for every IC of the sunk ship
@@ -2264,6 +2269,8 @@ NTrade = {
 },
 
 NAI = {
+	MINIMUM_MONTHLY_LEND_LEASE_EQUIPMENT = 10,	-- AI will not offer lend-lease if the monthly amount would be less than this
+
 	PEACE_TIME_NAVY_FUEL_FACTOR = 0.2,			-- Percentage of fuel available to navy that is allowed to use for missiosn during peace time
 	PEACE_TIME_NAVY_FUEL_LIMIT = 0.5,			-- The maximum fuel percentage to use for navy at peace from available fuel scaled with world tension
 	GARRISON_FRACTION = 0.0, 					-- How large part of a front should always be holding the line rather than advancing at the enemy
@@ -4478,6 +4485,8 @@ NRaids = {
 	MAX_TARGETS_TO_UPDATE_PER_FRAME = 100,					-- PERFORMANCE (FRAME) : max raid targets to evaluate per frame (affects raid map icon refresh rate)
 },
 NFactions = {
+	FACTION_INFLUENCE_SCIENTIST_CONTRIBUTION_VALUE = 0.5,	-- how much contribution one scientists gives to you if it is working for somebody else.
+
 	FACTION_INITIATIVE_CHANGE_RULE_COST = 1,				-- Cost of changing a faction rule (FI points)
 	FACTION_DOCTRINE_SHARING_UNLOCK_COST = 1,               -- Cost of unlocking doctrine sharing for one folder
 	DOCTRINE_SHARING_BASE_MASTERY_GAIN_MONTHLY = 10,        -- When doctrine sharing is enabled, this is the base amount of mastery gained monthly
