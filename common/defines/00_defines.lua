@@ -1494,6 +1494,8 @@ NNavy = {
 	SUBMARINE_BASE_STEALTH_VALUE = 100,								-- Used in the reworked formula, sub_visiblity is subtracted from SUBMARINE_BASE_STEALTH_VALUE for the divider. The higher the define, the lower the chance for detection to happen
 	SUBMARINE_REVEAL_DETECTION_MULTIPLIER = 0.075,					-- Used in the reworked formula, multiplies the average submarine detection. The higher the define, the higher chance for detection to happen
 	SUBMARINE_REVEAL_TORPEDO_FIRING_DETECTION_MULTIPLIER = 1.1,		-- used in the reworked formula when firing the torpedos to see whether it has been detected. This define is applied as multiplier to the numerator (avg. sub detection * SUBMARINE_REVEAL_DETECTION_MULTIPLIER * SUBMARINE_REVEAL_TORPEDO_FIRING_DETECTION_MULTIPLIER). define = 1, no difference, define < 0, no chance of detecting, 0 < define < 1, lowers chance of detecting comparing to passive reveal, 1 < define, increases chance to be revealed.
+	CAPITAL_SHIP_COMBAT_RETREAT_MULT = 0.5,							-- Multiplier on combat retreat threshold for capital ships and carriers (they can take more punishment)
+	NAVY_REPAIR_BASE_SEARCH_NON_OPERATIONAL_STR = 0.65,				-- strength factor at or below which a fleet is considered non-operational by the AI, causing it to cancel the mission and send the fleet to repair
 	-- Peace Conference
 	WAR_SCORE_GAIN_FOR_SUNK_SHIP_MANPOWER_FACTOR = 0.004,			-- war score gained for every manpower killed when sinking a ship
 	WAR_SCORE_GAIN_FOR_SUNK_SHIP_PRODUCTION_COST_FACTOR = 0.10,		-- war score gained for every IC of the sunk ship
@@ -2270,7 +2272,19 @@ NTrade = {
 
 NAI = {
 	MINIMUM_MONTHLY_LEND_LEASE_EQUIPMENT = 10,	-- AI will not offer lend-lease if the monthly amount would be less than this
-
+	AI_TASKFORCE_REQUIRED_RESERVE_RATIO = 0.2,	-- Fraction of required TF optimal composition held in reserve for reinforcement (rounded up per type)
+	LENDLEASE_CONVOY_OVERCOMMIT_PENALTY_INTERVAL = 3, -- For every N convoys the receiver is over capacity (including this lend-lease), apply -1 to AI acceptance score
+	STOP_TRAINING_ACTIVE_COMBAT_RATIO = 0.10,            -- ai halts all training when more than this share of its divisions are in active combat (reinforce instead)
+	CONVOY_DEFICIT_BUILD_BOOST_MAX = 150,				-- Cap on the convoy-deficit-driven boost added to the convoy build target. Prevents convoy panic from starving warship production when many convoys are lost at once.
+	AI_SHIP_SWAP_MIN_DAMAGED_SHIPS = 2,							-- minimum number of damaged ships in a taskforce before AI considers swapping them to reserves
+	AI_SHIP_SWAP_DAMAGE_THRESHOLD = 0.33,						-- per-ship strength threshold below which the AI considers a capital/carrier damaged enough to swap to reserves
+	AI_REPAIR_CANCEL_MIN_STRENGTH = 0.75,						-- AI will pull non-reserve task forces out of repair and back on mission once they reach this strength
+	AI_SURFACE_COMBAT_FUEL_RATIO = 0.70,						-- fraction of navy fuel reserved for surface combat (patrols, strike forces, dominance)
+	AI_CONVOY_DEFENSE_FUEL_RATIO = 0.15,						-- fraction of navy fuel reserved for convoy escorts (remaining goes to convoy raiding)
+	INVASION_UNITS_READY_AT_MIN_PLAN = 0.75,                -- units ready ratio required when plan value is at minimum threshold
+	INVASION_UNITS_READY_AT_MAX_PLAN = 0.25,                -- units ready ratio required when plan value is very high (1.0+)
+	AI_NAVAL_GOALS_UPDATE_FREQUENCY_DAYS = 7;           -- Regenerate naval AI objectives this often in days (affects performance)
+	
 	PEACE_TIME_NAVY_FUEL_FACTOR = 0.2,			-- Percentage of fuel available to navy that is allowed to use for missiosn during peace time
 	PEACE_TIME_NAVY_FUEL_LIMIT = 0.5,			-- The maximum fuel percentage to use for navy at peace from available fuel scaled with world tension
 	GARRISON_FRACTION = 0.0, 					-- How large part of a front should always be holding the line rather than advancing at the enemy
