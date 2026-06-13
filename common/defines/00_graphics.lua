@@ -6,6 +6,13 @@ NWiki = {
 },
 
 NMapMode = {
+	SHOW_DEPLOYED_GENERAL_COMMUNICATION_LINES = true,                                                        -- If true, show lines between deployed generals and their divisions when in range
+	SHOW_DEPLOYED_GENERAL_NO_COMMUNICATION_LINES = true,                                                     -- If true, show lines between deployed generals and their divisions when outside range
+	SHOW_DEPLOYED_GENERAL_FRONT_LINES = true,										-- If true, show the always-on line from each deployed General to the nearest point of their frontline.
+	DEPLOYED_GENERAL_FRONT_LINE_MAX_CAMERA_HEIGHT = 350.0,							-- Camera height above which the always-on General->frontline lines are culled (hidden).
+	SHOW_DEPLOYED_GENERAL_BASE_PLATES = true,										-- If true, draw a flat circular decal under each deployed General as a visual anchor for the comms lines.
+	DEPLOYED_GENERAL_BASE_PLATE_RADIUS = 2.5,										-- Radius of the deployed General base plate in map units. Passed as the vRange to CRangeIndicator (which doubles it to get diameter).
+
 	FABRICATE_CLAIM_SELECTED_SECONDARY_COLOR = { 0, 1, 0, 1 },
 	FABRICATE_CLAIM_TARGET_COUNTRY_SECONDARY_COLOR = { 0, 0, 0, 0 },
 	FABRICATE_CLAIM_NON_TARGET_COUNTRY_SECONDARY_COLOR = { 0, 0, 0, 0 },
@@ -713,6 +720,8 @@ NAirGfx = {
 },
 
 NGraphics = {
+	RAID_UNIT_ZOOM_HEIGHT = 150.0,					-- The height for the map camera to zoom in to a raid unit
+
 	COUNTER_MODE_ALLEGIANCE_OURS = { 0.32, 0.71, 0.39, 1.0 },
 	COUNTER_MODE_ALLEGIANCE_ALLIED = { 0.31, 0.65, 0.94, 1.0 },
 	COUNTER_MODE_ALLEGIANCE_ENEMY = { 0.91, 0.30, 0.30, 1.0 },
