@@ -12,7 +12,10 @@ country_event = { # WAR!
 
 	is_triggered_only = yes
 	
-	immediate = { set_global_flag = amo_sho_scripted_war_ongoing }
+	immediate = {
+		set_global_flag = amo_sho_scripted_war_ongoing
+		AMO = { clr_country_flag = ai_path_long_preparation clr_country_flag = ai_path_short_preparation }
+	}
 
 	option = {
 		name = amaterasu.1.amo
@@ -782,7 +785,35 @@ country_event = { # A Common Enemy: no help (target: AMO)
 	}
 }
 
-country_event = { # reset focus tree
+country_event = { # reset focus tree to restart AI strategy
+	id = amaterasu.998
+	title = "hidden event"
+	desc = "this is meant to pick AMO's AI strategy and possibly reset the focus tree"
+	picture = GFX_report_event_modern_samurai
+
+	is_triggered_only = yes
+	
+	hidden = yes
+
+	immediate = {
+		if = {
+			limit = {
+				SHO = {
+					focus_progress = {
+						focus = SHO_army_reform_plan
+						progress = > 0.01
+					}
+				}
+			}
+			set_country_flag = ai_path_long_preparation
+		} else = {
+			set_country_flag = ai_path_short_preparation
+		}
+		mark_focus_tree_layout_dirty = yes
+	}
+}
+
+country_event = { # reset focus tree to unlock it
 	id = amaterasu.999
 	title = "hidden event"
 	desc = "this is meant to reset the icons in the AMO focus tree"
