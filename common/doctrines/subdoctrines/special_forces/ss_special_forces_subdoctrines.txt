@@ -1,0 +1,246 @@
+samurai_1 = {	# Officer Class
+    track = { special_forces_first special_forces_second }
+    name = SUBDOCTRINE_SAMURAI_1
+    description = SUBDOCTRINE_SAMURAI_1_DESC
+    icon = GFX_samurai_officer_class_medium
+
+    xp_cost = 60
+    xp_type = army
+
+    xor = { samurai_2 }
+
+    mastery = {
+        multiplier = 6
+        categories = {
+            category_all_samurai
+        }
+    }
+
+    allow = {
+		AND = {
+			has_tech = tech_samurai
+			can_unlock_new_special_forces_tree = yes
+		}
+		IF = {
+			limit = { original_tag = SHO }
+			NOT = { has_completed_focus = SHO_abolish_samurai_class }
+		}
+	}
+
+    visible = {
+    	has_dlc = "Arms Against Tyranny"
+    }
+
+    ai_will_do = {
+        base = 1
+        modifier = {
+            factor = 25
+           	OR = {
+           		original_tag = SHO
+           		original_tag = KAN
+           	} 
+        }
+    }
+
+    # EFFECTS
+	enable_subunits = {
+		police_samurai
+	}
+	
+	effect = {
+		division_limit_add_small_doctrine_bonus = yes
+		add_army_doctrine_level = yes
+		#
+		custom_effect_tooltip = samurai_officer_class_tt
+		hidden_effect = {
+			set_variable = { samurai_officer_class_modifier_positive = num_battalions_with_type@teppo_samurai }
+			add_to_variable = { samurai_officer_class_modifier_positive = num_battalions_with_type@police_samurai }
+			divide_variable = { samurai_officer_class_modifier_positive = num_battalions }
+			clamp_variable = { var = samurai_officer_class_modifier_positive min = 0 max = 0.2 }
+			add_dynamic_modifier = { modifier  = samurai_officer_class_modifier }
+		}
+	}
+
+    
+    rewards = {
+		reward_1 = {	# samurai_close_combat
+			mastery = 60
+			police_samurai = {
+				fort = { attack = 0.1 }
+				urban = { attack = 0.1 }
+				battalion_mult = {
+					category = category_all_infantry
+					breakthrough = 0.10
+				}
+			}
+		}
+		reward_2 = {	# samurai_art_of_war
+			mastery = 60
+				teppo_samurai = {
+				combat_width = -0.2
+				maximum_speed = 0.1
+				initiative = 0.01
+				max_organisation = 3
+			}
+			
+			police_samurai = {
+				max_organisation = 3
+			}
+		}
+		reward_3 = {	# samurai_bushido_tradition
+			mastery = 60
+			effect = {
+				custom_effect_tooltip = samurai_bushido_tradition_tt
+				set_country_flag = samurai_bushido_tradition_flag
+				set_variable = { samurai_officer_class_modifier_positive = num_battalions_with_type@teppo_samurai }
+				add_to_variable = { samurai_officer_class_modifier_positive = num_battalions_with_type@police_samurai }
+				multiply_variable = { samurai_officer_class_modifier_positive = 2 }
+				divide_variable = { samurai_officer_class_modifier_positive = num_battalions }
+				clamp_variable = { var = samurai_officer_class_modifier_positive min = 0 max = 0.2 }
+			}
+		}
+		reward_4 = {	# samurai_elite_infantry
+			mastery = 60
+			teppo_samurai = {
+				max_organisation = 5
+				soft_attack = 0.1
+				hard_attack = 0.1
+				breakthrough = 0.1
+				ap_attack = 0.1
+			}
+			
+			police_samurai = {
+				max_organisation = 5
+			}    	
+		}
+		reward_5 = {	# samurai_backbone_of_army
+			mastery = 60
+	    	special_forces_training_time_factor = -0.10
+			special_forces_attack_factor = 0.10
+			special_forces_cap = 0.20
+		}
+    }
+}
+
+samurai_2 = {	# Folk Heros
+    track = { special_forces_first special_forces_second }
+    name = SUBDOCTRINE_SAMURAI_2
+    description = SUBDOCTRINE_SAMURAI_2_DESC
+    icon = GFX_samurai_folk_heroes_medium
+
+    xp_cost = 60
+    xp_type = army
+
+    xor = { samurai_1 }
+
+    mastery = {
+        multiplier = 6
+        categories = {
+            category_all_samurai
+        }
+    }
+
+    allow = {
+		AND = {
+			has_tech = tech_samurai
+			can_unlock_new_special_forces_tree = yes
+		}
+		IF = {
+			limit = { original_tag = SHO }
+			NOT = { has_completed_focus = SHO_abolish_samurai_class }
+		}
+	}
+
+    visible = {
+    	has_dlc = "Arms Against Tyranny"
+    }
+
+    ai_will_do = {
+        base = 1
+        modifier = {
+            factor = 25
+           	OR = {
+           		original_tag = AMO
+           	} 
+        }
+    }
+
+    # EFFECTS
+	enable_subunits = {
+		police_samurai
+	}
+	
+	effect = {
+		custom_effect_tooltip = samurai_folk_heroes_tt
+		hidden_effect = {
+			set_variable = { samurai_folk_heroes_modifier_positive = num_battalions_with_type@teppo_samurai }
+			add_to_variable = { samurai_folk_heroes_modifier_positive = num_battalions_with_type@police_samurai }
+			divide_variable = { samurai_folk_heroes_modifier_positive = num_battalions }
+			clamp_variable = { var = samurai_folk_heroes_modifier_positive min = 0 max = 0.2 }
+			set_variable = { samurai_folk_heroes_modifier_negative = samurai_folk_heroes_modifier_positive }
+			multiply_variable = { samurai_folk_heroes_modifier_negative = -1 }
+			add_dynamic_modifier = { modifier  = samurai_folk_heroes_modifier }
+			add_dynamic_modifier = { modifier  = samurai_folk_heroes_owner_modifier }	# we use two modifiers so we can display a more clear tooltip when mousing over the resistance (Folk Heroes / Owner's Folk Heroes)
+		}
+	}
+    
+    rewards = {
+		reward_1 = {	# samurai_behind_lines
+			mastery = 60
+			pocket_penalty = -0.1
+		
+			teppo_samurai = {
+				forest = { defence = 0.1  }
+				jungle = { defence = 0.1  }
+				marsh = { defence = 0.1  }
+				forest = { attack = 0.1  }
+				jungle = { attack = 0.1  }
+				marsh = { attack = 0.1  }
+				supply_consumption = -0.2
+			}
+		}
+		reward_2 = {	# samurai_bushido_tradition
+			mastery = 60
+			effect = {
+				custom_effect_tooltip = samurai_bushido_tradition_tt
+				set_country_flag = samurai_bushido_tradition_flag
+				set_variable = { samurai_folk_heroes_modifier_positive = num_battalions_with_type@teppo_samurai }
+				add_to_variable = { samurai_folk_heroes_modifier_positive = num_battalions_with_type@police_samurai }
+				multiply_variable = { samurai_folk_heroes_modifier_positive = 2 }
+				divide_variable = { samurai_folk_heroes_modifier_positive = num_battalions }
+				clamp_variable = { var = samurai_folk_heroes_modifier_positive min = 0 max = 0.2 }
+				set_variable = { samurai_folk_heroes_modifier_negative = samurai_folk_heroes_modifier_positive }
+				multiply_variable = { samurai_folk_heroes_modifier_negative = -1 }				  		
+			}
+		}
+		reward_3 = {	# samurai_art_of_war
+			mastery = 60
+			teppo_samurai = {
+				combat_width = -0.2
+				maximum_speed = 0.1
+				initiative = 0.01
+				max_organisation = 3
+			}
+			
+			police_samurai = {
+				max_organisation = 3
+			}
+		}
+		reward_4 = {	# Survival Techniques
+			mastery = 60
+			teppo_samurai = {
+				supply_consumption = -0.2
+				default_morale = 0.8
+			}
+			supply_combat_penalties_on_core_factor = -0.2			
+		}
+		reward_5 = {	# Asymmetrical Warfare
+			mastery = 60
+		    cas_damage_reduction  = 0.2
+			enemy_army_bonus_air_superiority_factor = -0.2
+			teppo_samurai = {
+				equipment_capture_factor = 0.02
+			}
+		}
+    }
+}

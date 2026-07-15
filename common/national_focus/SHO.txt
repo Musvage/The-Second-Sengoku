@@ -1193,21 +1193,44 @@
 		available = { has_government = communism }
 		
 		ai_will_do = { factor = 5 }
-		
+
 		completion_reward = {
-			custom_effect_tooltip = free_army_academy_one_time
-			hidden_effect = { remove_ideas = SHO_political_commissars_spirit }
-			add_ideas = SHO_new_model_army	
-			set_variable = { samurai_doctrine_level = 0 }
-			if = { limit = { has_tech = special_forces_samurai } add_to_variable = { samurai_doctrine_level = 1 } }
-			if = { limit = { has_tech = samurai_officer_class } add_to_variable = { samurai_doctrine_level = 1 } }
-			if = { limit = { has_tech = samurai_folk_heroes } add_to_variable = { samurai_doctrine_level = 1 } }
-			if = { limit = { has_tech = samurai_close_combat } add_to_variable = { samurai_doctrine_level = 1 } }
-			if = { limit = { has_tech = samurai_behind_lines } add_to_variable = { samurai_doctrine_level = 1 } }
-			if = { limit = { has_tech = samurai_art_of_war } add_to_variable = { samurai_doctrine_level = 1 } }
-			if = { limit = { has_tech = samurai_bushido_tradition } add_to_variable = { samurai_doctrine_level = 1 } }
-			if = { limit = { has_tech = samurai_elite_infantry } add_to_variable = { samurai_doctrine_level = 1 } }
-			if = { limit = { has_tech = samurai_backbone_of_army } add_to_variable = { samurai_doctrine_level = 1 } }
+			hidden_effect = {
+				set_variable = { sam_doc_mastery_bonus = 0 }
+				if = {
+					limit = { OR = { has_doctrine = samurai_1 has_doctrine = samurai_2 } }
+					if = { limit = { has_mastery = { amount = 60 track = special_forces_first } } set_variable = { sam_doc_mastery_bonus = 5 } }
+					if = { limit = { has_mastery = { amount = 120 track = special_forces_first } } set_variable = { sam_doc_mastery_bonus = 10 } }
+					if = { limit = { has_mastery = { amount = 180 track = special_forces_first } } set_variable = { sam_doc_mastery_bonus = 15 } }
+					if = { limit = { has_mastery = { amount = 240 track = special_forces_first } } set_variable = { sam_doc_mastery_bonus = 20 } }
+					if = { limit = { has_mastery = { amount = 300 track = special_forces_first } } set_variable = { sam_doc_mastery_bonus = 25 } }
+					log = "sam_doc_mastery_bonus [?sam_doc_mastery_bonus]"
+					if = {
+						limit = { has_doctrine = special_forces_quality }
+						set_grand_doctrine = special_forces_quantity
+						set_grand_doctrine = special_forces_quality
+					} else = {
+						set_grand_doctrine = special_forces_quality
+						set_grand_doctrine = special_forces_quantity			# This looks convoluted but is meant to "clean" the subdoctrine, which I can't figure out how to do any other way
+					}
+				}
+			}
+			#custom_effect_tooltip = free_army_academy_one_time
+			#hidden_effect = { remove_ideas = SHO_political_commissars_spirit }
+			#add_ideas = SHO_new_model_army	
+			add_potential_special_forces_tree = yes
+			
+			# Bellow, code related to our never-released doctrine tree [shakes fist at the skies in anger]
+			#set_variable = { samurai_doctrine_level = 0 }
+			#if = { limit = { has_tech = special_forces_samurai } add_to_variable = { samurai_doctrine_level = 1 } }
+			#if = { limit = { has_tech = samurai_officer_class } add_to_variable = { samurai_doctrine_level = 1 } }
+			#if = { limit = { has_tech = samurai_folk_heroes } add_to_variable = { samurai_doctrine_level = 1 } }
+			#if = { limit = { has_tech = samurai_close_combat } add_to_variable = { samurai_doctrine_level = 1 } }
+			#if = { limit = { has_tech = samurai_behind_lines } add_to_variable = { samurai_doctrine_level = 1 } }
+			#if = { limit = { has_tech = samurai_art_of_war } add_to_variable = { samurai_doctrine_level = 1 } }
+			#if = { limit = { has_tech = samurai_bushido_tradition } add_to_variable = { samurai_doctrine_level = 1 } }
+			#if = { limit = { has_tech = samurai_elite_infantry } add_to_variable = { samurai_doctrine_level = 1 } }
+			#if = { limit = { has_tech = samurai_backbone_of_army } add_to_variable = { samurai_doctrine_level = 1 } }
 			custom_effect_tooltip = loc_paragraph
 			custom_effect_tooltip = SHO_doctrinal_revolution_tt2
 		}
@@ -1259,6 +1282,19 @@
 		ai_will_do = { factor = 5 }
 		
 		completion_reward = {
+			if = {
+				limit = {
+					has_dlc = "Arms Against Tyranny"
+				}
+				meta_effect = {
+					text = {
+						add_mastery = {
+							amount = [S_D_L]
+						}
+					}
+					S_D_L = "[?sam_doc_mastery_bonus]"
+				}
+			}
 			add_doctrine_cost_reduction = {
 				name = all_doc_bonus
 				cost_reduction = 0.5
