@@ -1195,6 +1195,15 @@
 		ai_will_do = { factor = 5 }
 
 		completion_reward = {
+			custom_effect_tooltip = SHO_abolish_samurai_class_tt1
+			if = {
+				limit = { has_doctrine = samurai_1 }
+				custom_effect_tooltip = SHO_abolish_samurai_class_tt2
+			}
+			if = {
+				limit = { has_doctrine = samurai_1 }
+				custom_effect_tooltip = SHO_abolish_samurai_class_tt3
+			}
 			hidden_effect = {
 				set_variable = { sam_doc_mastery_bonus = 0 }
 				if = {
@@ -1214,11 +1223,12 @@
 						set_grand_doctrine = special_forces_quantity			# This looks convoluted but is meant to "clean" the subdoctrine, which I can't figure out how to do any other way
 					}
 				}
+				set_variable = { sam_tech_bonus = 0 }
+				if = { limit = { has_tech = tech_samurai } set_variable = { sam_tech_bonus = 1 } }
+				if = { limit = { has_tech = tech_samurai2 } set_variable = { sam_tech_bonus = 2 } }
+				if = { limit = { has_tech = tech_samurai3 } set_variable = { sam_tech_bonus = 3 } }
 			}
-			#custom_effect_tooltip = free_army_academy_one_time
-			#hidden_effect = { remove_ideas = SHO_political_commissars_spirit }
-			#add_ideas = SHO_new_model_army	
-			add_potential_special_forces_tree = yes
+			add_ideas = SHO_new_model_army	
 			
 			# Bellow, code related to our never-released doctrine tree [shakes fist at the skies in anger]
 			#set_variable = { samurai_doctrine_level = 0 }
@@ -1294,42 +1304,55 @@
 					}
 					S_D_L = "[?sam_doc_mastery_bonus]"
 				}
-			}
-			add_doctrine_cost_reduction = {
-				name = all_doc_bonus
-				cost_reduction = 0.5
-				uses = 1
-				category = land_doctrine
-				category = naval_doctrine
-				category = air_doctrine
-			}
-			custom_effect_tooltip = loc_paragraph
-			if = {
-				limit = {
-					check_variable = {
-						var = samurai_doctrine_level
-						value = 0
-						compare = greater_than
-					}
-				}
-				custom_effect_tooltip = SHO_abolish_samurai_class_tt
-				meta_effect = {
-					text = {
-						add_doctrine_cost_reduction = {
-							name = cat_special_force_doc_bonus
-							cost_reduction = 0.5
-							uses = [DOC_LEVEL]
-							category = cat_mountaineers_doctrine
-							category = cat_marines_doctrine
-							category = cat_paratroopers_doctrine
-						}
-					}
-					DOC_LEVEL = "[?samurai_doctrine_level]"
-				}
-			} else = {
 				custom_effect_tooltip = SHO_doctrinal_revolution_tt1
+				add_doctrine_cost_reduction = {
+					name = all_doc_bonus
+					cost_reduction = 1
+					uses = 1
+					category = special_forces
+				}
+				add_potential_special_forces_tree = yes
+			} else = {
+				custom_effect_tooltip = SHO_doctrinal_revolution_tt2
+				if = {
+					limit = { check_variable = { sam_tech_bonus = 3 } }
+					add_tech_bonus = {
+						name = special_forces_bonus
+						bonus = 2
+						uses = 3
+						category = para_tech
+						category = marine_tech
+						category = mountaineers_tech
+					}
+				} else_if = {
+					limit = { check_variable = { sam_tech_bonus = 2 } }
+					add_tech_bonus = {
+						name = special_forces_bonus
+						bonus = 2
+						uses = 2
+						category = para_tech
+						category = marine_tech
+						category = mountaineers_tech
+					}
+				} else = {
+					add_tech_bonus = {
+						name = special_forces_bonus
+						bonus = 2
+						uses = 1
+						category = para_tech
+						category = marine_tech
+						category = mountaineers_tech
+					}
+				}
+				add_doctrine_cost_reduction = {
+					name = all_doc_bonus
+					cost_reduction = 0.5
+					uses = 1
+					category = land_doctrine
+					category = naval_doctrine
+					category = air_doctrine
+				}
 			}
-			clear_variable = samurai_doctrine_level
 		}
 	}
 	
