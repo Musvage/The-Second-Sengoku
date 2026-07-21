@@ -651,7 +651,7 @@
 		id = SHO_befriend_germany
 		icon = {
 			GFX_focus_generic_diplomacy_REI_autocracy = { REI = { has_government = autocracy } }
-			GFX_focus_generic_diplomacy_REI_neutrality
+			GFX_focus_generic_diplomacy_REI_neutrality = yes
 		}
 		dynamic = yes
 		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
@@ -1214,7 +1214,7 @@
 				custom_effect_tooltip = SHO_abolish_samurai_class_tt2
 			}
 			if = {
-				limit = { has_doctrine = samurai_1 }
+				limit = { has_doctrine = samurai_2 }
 				custom_effect_tooltip = SHO_abolish_samurai_class_tt3
 			}
 			hidden_effect = {
@@ -1241,6 +1241,7 @@
 				if = { limit = { has_tech = tech_samurai2 } set_variable = { sam_tech_bonus = 2 } }
 				if = { limit = { has_tech = tech_samurai3 } set_variable = { sam_tech_bonus = 3 } }
 			}
+			custom_effect_tooltip = loc_paragraph
 			add_ideas = SHO_new_model_army	
 			
 			# Bellow, code related to our never-released doctrine tree [shakes fist at the skies in anger]
@@ -1254,8 +1255,8 @@
 			#if = { limit = { has_tech = samurai_bushido_tradition } add_to_variable = { samurai_doctrine_level = 1 } }
 			#if = { limit = { has_tech = samurai_elite_infantry } add_to_variable = { samurai_doctrine_level = 1 } }
 			#if = { limit = { has_tech = samurai_backbone_of_army } add_to_variable = { samurai_doctrine_level = 1 } }
-			custom_effect_tooltip = loc_paragraph
-			custom_effect_tooltip = SHO_doctrinal_revolution_tt2
+			#custom_effect_tooltip = loc_paragraph
+			#custom_effect_tooltip = SHO_doctrinal_revolution_tt2
 		}
 	}
 	
@@ -1309,15 +1310,18 @@
 				limit = {
 					has_dlc = "Arms Against Tyranny"
 				}
-				meta_effect = {
-					text = {
-						add_mastery = {
-							amount = [S_D_L]
-						}
-					}
-					S_D_L = "[?sam_doc_mastery_bonus]"
-				}
 				custom_effect_tooltip = SHO_doctrinal_revolution_tt1
+				if = {
+					limit = { check_variable = { var = sam_doc_mastery_bonus compare = not_equals value = 0 } }
+					meta_effect = {
+						text = {
+							add_mastery = {
+								amount = [S_D_L]
+							}
+						}
+						S_D_L = "[?sam_doc_mastery_bonus]"
+					}
+				}
 				add_doctrine_cost_reduction = {
 					name = all_doc_bonus
 					cost_reduction = 1
