@@ -45,13 +45,13 @@ country_event = { # Help the Knights (AMO event)
 		### SINCE THIS ONLY HAPPENS EARLY GAME, WE CAN ASSUME THE BORDERS ARE THE SAME AS IN 1.1.1936
 		# select spawn state
 		if = {
-			limit = { SHO = { controls_state = 118 } }
+			limit = { AMO = { controls_state = 118 } }
 			set_global_flag = KAN_help_knights_state_118
 		} else_if = {
-			limit = { SHO = { controls_state = 63 } }
+			limit = { AMO = { controls_state = 63 } }
 			set_global_flag = KAN_help_knights_state_63
 		} else_if = {
-			limit = { SHO = { controls_state = 44 } }
+			limit = { AMO = { controls_state = 44 } }
 			set_global_flag = KAN_help_knights_state_44
 		} else = {
 			set_global_flag = KAN_help_knights_no_state
@@ -59,7 +59,7 @@ country_event = { # Help the Knights (AMO event)
 		if = {
 			limit = { has_global_flag = KAN_help_knights_no_state }
 			# spawn units directly in Notojima
-			AMO = { load_oob = KAN_spawn_196 }
+			AMO = { load_oob = AMO_spawn_196 }
 		} else = {
 			# spawn unit via switching province controller and loading specific oob
 			custom_effect_tooltip = kansai.11.tt3
@@ -67,13 +67,13 @@ country_event = { # Help the Knights (AMO event)
 				limit = { has_global_flag = KAN_help_knights_state_118 }
 				AMO = {
 					set_province_controller = 698
-					hidden_effect = { load_oob = KAN_spawn_118 }
+					hidden_effect = { load_oob = AMO_spawn_118 }
 				}
 			} else_if = {
 				limit = { has_global_flag = KAN_help_knights_state_44 }
 				AMO = {
 					set_province_controller = 5744
-					hidden_effect = { load_oob = KAN_spawn_44 }
+					hidden_effect = { load_oob = AMO_spawn_44 }
 				}
 			} else_if = {
 				limit = { has_global_flag = KAN_help_knights_state_63 }
@@ -81,7 +81,7 @@ country_event = { # Help the Knights (AMO event)
 					set_province_controller = 4564
 					hidden_effect = { 
 						set_province_controller = 3911 
-						load_oob = KAN_spawn_63
+						load_oob = AMO_spawn_63
 					}
 				}
 			}
@@ -100,16 +100,55 @@ country_event = { # Help the Knights (AMO event)
 		give_military_access = KAN
 		KAN = { give_military_access = AMO }
 		set_country_flag = accepted_help_from_KAN
+		hidden_effect = { country_event = { id = kansai.12 hours = 6 } }
 		ai_chance = {
 			base = 1
 		}
 	}
 	option = {	# refuse
 		name = kansai.11.b
+		hidden_effect = { KAN = { country_event = { id = kansai.13 hours = 6 } } }
 		ai_chance = {
 			base = 1
 		}
 	}
+}
+
+country_event = { # Help the Knights - accept (KAN event - world)
+	id = kansai.12
+	title = kansai.12.t
+	desc = kansai.12.desc
+	picture = GFX_report_event_japanese_soldiers_01
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {
+		trigger = { tag = KAN }
+		name = kansai.12.kan
+	}
+	option = {
+		trigger = { tag = AMO }
+		name = kansai.12.amo
+	}
+	option = {
+		trigger = { tag = SHO }
+		name = kansai.12.sho
+	}
+	option = {
+		trigger = { NOT = { tag = AMO tag = KAN tag = SHO } }
+		name = kansai.12.other
+	}
+}
+
+country_event = { # Help the Knights - refuse (KAN event)
+	id = kansai.13
+	title = kansai.13.t
+	desc = kansai.13.desc
+	picture = GFX_report_news_knights_map
+	is_triggered_only = yes
+	
+	option = { name = kansai.13.a }
 }
 
 ### OLD STUFF BELLOW
