@@ -102,7 +102,7 @@ country_event = { # Help the Knights (AMO event)
 		set_country_flag = accepted_help_from_KAN
 		hidden_effect = { country_event = { id = kansai.12 hours = 6 } }
 		ai_chance = {
-			base = 1
+			base = 4
 		}
 	}
 	option = {	# refuse
@@ -110,6 +110,15 @@ country_event = { # Help the Knights (AMO event)
 		hidden_effect = { KAN = { country_event = { id = kansai.13 hours = 6 } } }
 		ai_chance = {
 			base = 1
+			modifier = {
+				factor = 16
+				OR = {
+					has_wargoal_against = KAN
+					KAN = { has_wargoal_against = AMO }
+					is_justifying_wargoal_against = KAN
+					KAN = { is_justifying_wargoal_against = AMO }
+				}
+			}
 		}
 	}
 }
@@ -150,6 +159,99 @@ country_event = { # Help the Knights - refuse (KAN event)
 	
 	option = { name = kansai.13.a }
 }
+
+country_event = { # Help the Seto Islands (IMS event)
+	id = kansai.14
+	title = kansai.14.t
+	desc = kansai.14.desc
+	picture = GFX_report_event_merchant_ship_01
+	is_triggered_only = yes
+	
+	option = {	# accept
+		name = kansai.14.a
+		hidden_effect = { KAN = { country_event = { id = kansai.15 hours = 6 } } }
+		KAN = { give_guarantee = SET }
+		add_ideas = KAN_subsidize_ims_spirit
+		add_political_power = 100
+		add_offsite_building = { type = industrial_complex level = 1 }
+		custom_effect_tooltip = kansai.14.tt
+		set_global_flag = ims_accept_kan_help
+		ai_chance = {
+			base = 4
+		}
+	}
+	option = {	# refuse
+		name = kansai.14.a
+		hidden_effect = { KAN = { country_event = { id = kansai.16 hours = 6 } } }
+		ai_chance = {
+			base = 1
+			modifier = {
+				factor = 0
+				has_completed_focus = ss_generic_modernisation
+			}
+			modifier = {
+				factor = 0.1
+				 tag = IMA has_government = autocracy KAN = { has_government = autocracy }
+			}
+			modifier = {
+				factor = 16
+				has_completed_focus = ss_generic_tradition
+			}
+		}
+	}
+	
+}
+
+country_event = {	# Economic Aid to IMS
+	id = kansai.15
+	title = kansai.15.t
+	desc = kansai.15.d
+	picture = GFX_report_event_merchant_ship_01
+
+	is_triggered_only = yes
+	
+	major = yes
+
+	option = {
+		trigger = { tag = SET }
+		name = kansai.15.a
+	}
+	option = {
+		trigger = { tag = KAN }
+		name = kansai.15.b
+		effect_tooltip = {
+			SET = {
+				add_ideas = KAN_subsidize_ims_spirit
+				add_political_power = 100
+				add_offsite_building = { type = industrial_complex level = 1 }
+			}
+			KAN = { give_guarantee = SET }
+		}
+	}
+	option = {
+		trigger = { NOT = { tag = SET tag = KAN } }
+		name = kansai.15.c
+		effect_tooltip = {
+			SET = {
+				add_ideas = KAN_subsidize_ims_spirit
+				add_political_power = 100
+				add_offsite_building = { type = industrial_complex level = 1 }
+			}
+			KAN = { give_guarantee = SET }
+		}
+	}
+}
+
+country_event = { # Help the Seto Islands - refuse (KAN event)
+	id = kansai.16
+	title = kansai.16.t
+	desc = kansai.16.desc
+	picture = GFX_report_news_kyushu_map
+	is_triggered_only = yes
+	
+	option = { name = kansai.16.a }
+}
+
 
 ### OLD STUFF BELLOW
 ### OLD STUFF BELLOW

@@ -1468,6 +1468,20 @@ focus_tree = {
 				AMO = { give_military_access = KAN }
 			}
 			custom_effect_tooltip = KAN_help_knights_tt2
+			custom_effect_tooltip = loc_paragraph
+			if = {
+				limit = {
+					OR = {
+						AMO = { has_wargoal_against = KAN }
+						has_wargoal_against = AMO
+						AMO = { is_justifying_wargoal_against = KAN }
+						is_justifying_wargoal_against = AMO
+					}
+				}
+				custom_effect_tooltip = loc_accept_chance_low
+			} else = {
+				custom_effect_tooltip = loc_accept_chance_high
+			}
 		}
 	}
 	
@@ -1546,33 +1560,58 @@ focus_tree = {
 		available = {
 			OR = {
 				has_global_flag = seto_crisis_active
-				country_exists = IMS
-				if = { limit = { IMS = { NOT = { has_completed_focus = IMS_government_autocratic_2 } } } country_exists = IMA }
+				country_exists = SET
 			}
-			hidden_trigger = {
-				if = {
-					limit = { is_ai = yes }
-					OR = { has_completed_focus = KYU_back_koga_1 has_completed_focus = KYU_invite_nagano_1 } NOT = { has_completed_focus = KYU_seto_crisis_back_chu has_completed_focus = KYU_seto_crisis_back_shi }
-					has_country_flag = seto_crisis_strategy_back_ims
-				}
-			}
+#			hidden_trigger = {
+#				if = {
+#					limit = { is_ai = yes }
+#					OR = { has_completed_focus = KYU_back_koga_1 has_completed_focus = KYU_invite_nagano_1 } NOT = { has_completed_focus = KYU_seto_crisis_back_chu has_completed_focus = KYU_seto_crisis_back_shi }
+#					has_country_flag = seto_crisis_strategy_back_ims
+#				}
+#			}
 		}
 		
 		ai_will_do = { factor = 5 }
 		
 		completion_reward = {
-			give_guarantee = IMS
-			IMS = {
-			#	country_event = kyushu.106
+			SET = {
 				add_opinion_modifier = {
 					target = KAN
 					modifier = REI_defends_IMS_independence
 				}
+				country_event = kansai.14
+			}
+			custom_effect_tooltip = loc_paragraph
+			custom_effect_tooltip = loc_if_accept
+			effect_tooltip = {
+				SET = {
+					KAN = { give_guarantee = SET }
+					add_ideas = KAN_subsidize_ims_spirit
+					add_political_power = 100
+					add_offsite_building = { type = industrial_complex level = 1 }
+				}
 			}
 			add_ai_strategy = {
 				type = protect
-				id = IMS
+				id = SET
 				value = 100
+			}
+			custom_effect_tooltip = loc_paragraph
+			if = {
+				limit = {
+					SET = {
+						OR = {
+							has_completed_focus = ss_generic_modernisation
+							AND = { tag = IMA has_government = autocracy KAN = { has_government = autocracy } }
+						}
+					}
+				}
+				custom_effect_tooltip = loc_accept_chance_very_high
+			} else_if = {
+				limit = { SET = { has_completed_focus = ss_generic_tradition} }
+				custom_effect_tooltip = loc_accept_chance_low
+			} else = {
+				custom_effect_tooltip = loc_accept_chance_high
 			}
 		}
 	}
@@ -1581,7 +1620,7 @@ focus_tree = {
 		id = KAN_vassalize_seto
 		icon = GFX_focus_KAN_annex_seto
 		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WAR_SUPPORT }
-		
+		dynamic = yes
 		prerequisite = { focus = KAN_help_seto_islands }
 		
 		relative_position_id = KAN_help_seto_islands
