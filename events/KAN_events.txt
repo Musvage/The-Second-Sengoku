@@ -160,29 +160,154 @@ country_event = { # Help the Knights - refuse (KAN event)
 	option = { name = kansai.13.a }
 }
 
-country_event = { # Help the Seto Islands (IMS event)
+country_event = { # Vassalize the Knights (AMO event)
 	id = kansai.14
 	title = kansai.14.t
 	desc = kansai.14.desc
+	picture = GFX_report_event_ger_civil_war
+	is_triggered_only = yes
+	
+	option = {	# accept 
+		name = kansai.14.a
+		KAN = {
+			puppet = {
+				target = AMO
+				end_wars = no
+			}
+			hidden_effect = { country_event = kansai.15 }
+		}
+		ai_chance = {
+			base = 200
+			modifier = {
+				add = 100
+				has_completed_focus = AMO_common_enemy
+			}
+			modifier = {
+				add = 100
+				has_war = yes
+			}
+			modifier = {
+				factor = 0.01
+				has_religion_2 = yes
+				KAN = { has_religion_2 = no }
+				NOT = {
+					has_war = yes
+					strength_ratio = {
+						tag = KAN
+						ratio < 0.2
+					}
+				}
+			}
+		}
+	}
+	option = {	# refuse 
+		name = kansai.14.a
+		KAN = { country_event = kansai.16 }
+		ai_chance = {
+			base = 100
+			modifier = {
+				add = 100
+				KAN = { has_war = yes }
+			}
+			modifier = {
+				factor = 0
+				has_war = yes
+				strength_ratio = {
+					tag = KAN
+					ratio < 0.2
+				}
+			}
+		}
+	}
+}
+
+country_event = { # Vassalize the Knights (KAN event)
+	id = kansai.15
+	title = kansai.15.t
+	desc = kansai.15.desc
+	picture = GFX_report_event_ger_civil_war
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {
+		trigger = { tag = AMO }
+		name = kansai.15.amo
+	}
+	option = {
+		trigger = { tag = KAN }
+		name = kansai.15.kan
+		effect_tooltip = {
+			KAN = {
+				puppet = {
+					target = AMO
+					end_wars = no
+				}
+			}
+		}
+	}
+	option = {
+		trigger = { tag = SHO }
+		name = kansai.15.sho
+		effect_tooltip = {
+			KAN = {
+				puppet = {
+					target = AMO
+					end_wars = no
+				}
+			}
+		}
+	}
+	option = {
+		trigger = { NOT = { tag = AMO tag = KAN tag = SHO } }
+		name = kansai.15.other
+		effect_tooltip = {
+			KAN = {
+				puppet = {
+					target = AMO
+					end_wars = no
+				}
+			}
+		}
+	}
+	
+}
+
+country_event = { # Vassalize the Knights (KAN event)
+	id = kansai.16
+	title = kansai.16.t
+	desc = kansai.16.desc
+	picture = GFX_report_event_ger_civil_war
+	is_triggered_only = yes
+	
+	option = {
+		name = kansai.16.a
+	}
+}
+
+country_event = { # Help the Seto Islands (SET event)
+	id = kansai.21
+	title = kansai.21.t
+	desc = kansai.21.desc
 	picture = GFX_report_event_merchant_ship_01
 	is_triggered_only = yes
 	
 	option = {	# accept
-		name = kansai.14.a
-		hidden_effect = { KAN = { country_event = { id = kansai.15 hours = 6 } } }
+		name = kansai.21.a
+		hidden_effect = { KAN = { country_event = { id = kansai.22 hours = 6 } } }
 		KAN = { give_guarantee = SET }
 		add_ideas = KAN_subsidize_ims_spirit
 		add_political_power = 100
 		add_offsite_building = { type = industrial_complex level = 1 }
-		custom_effect_tooltip = kansai.14.tt
+		custom_effect_tooltip = kansai.21.tt
 		set_global_flag = ims_accept_kan_help
 		ai_chance = {
 			base = 4
 		}
 	}
 	option = {	# refuse
-		name = kansai.14.a
-		hidden_effect = { KAN = { country_event = { id = kansai.16 hours = 6 } } }
+		name = kansai.21.a
+		hidden_effect = { KAN = { country_event = { id = kansai.23 hours = 6 } } }
 		ai_chance = {
 			base = 1
 			modifier = {
@@ -203,9 +328,9 @@ country_event = { # Help the Seto Islands (IMS event)
 }
 
 country_event = {	# Economic Aid to IMS
-	id = kansai.15
-	title = kansai.15.t
-	desc = kansai.15.d
+	id = kansai.22
+	title = kansai.22.t
+	desc = kansai.22.d
 	picture = GFX_report_event_merchant_ship_01
 
 	is_triggered_only = yes
@@ -214,11 +339,11 @@ country_event = {	# Economic Aid to IMS
 
 	option = {
 		trigger = { tag = SET }
-		name = kansai.15.a
+		name = kansai.22.a
 	}
 	option = {
 		trigger = { tag = KAN }
-		name = kansai.15.b
+		name = kansai.22.b
 		effect_tooltip = {
 			SET = {
 				add_ideas = KAN_subsidize_ims_spirit
@@ -230,7 +355,7 @@ country_event = {	# Economic Aid to IMS
 	}
 	option = {
 		trigger = { NOT = { tag = SET tag = KAN } }
-		name = kansai.15.c
+		name = kansai.22.c
 		effect_tooltip = {
 			SET = {
 				add_ideas = KAN_subsidize_ims_spirit
@@ -243,13 +368,130 @@ country_event = {	# Economic Aid to IMS
 }
 
 country_event = { # Help the Seto Islands - refuse (KAN event)
-	id = kansai.16
-	title = kansai.16.t
-	desc = kansai.16.desc
+	id = kansai.23
+	title = kansai.23.t
+	desc = kansai.23.desc
 	picture = GFX_report_news_kyushu_map
 	is_triggered_only = yes
 	
-	option = { name = kansai.16.a }
+	option = { name = kansai.23.a }
+}
+
+country_event = { # Vassalize the Seto Islands (SET event)
+	id = kansai.24
+	title = kansai.24.t
+	desc = kansai.24.desc
+	picture = GFX_report_event_ger_civil_war
+	is_triggered_only = yes
+	
+	option = {	# accept 
+		name = kansai.24.a
+		KAN = {
+			puppet = {
+				target = SET
+				end_wars = no
+			}
+			hidden_effect = { country_event = kansai.25 }
+		}
+		ai_chance = {
+			base = 200
+			modifier = {
+				add = 100
+				has_war = yes
+			}
+			modifier = {
+				add = 100
+				OR = {
+					has_completed_focus = ss_generic_tradition
+					AND = { tag = IMA has_government = autocracy KAN = { has_government = autocracy } }
+				}
+			}
+		}
+	}
+	option = {	# refuse 
+		name = kansai.24.a
+		KAN = { country_event = kansai.26 }
+		ai_chance = {
+			base = 100
+			modifier = {
+				add = 100
+				KAN = { has_war = yes }
+			}
+			modifier = {
+				add = 100
+				has_completed_focus = ss_generic_modernisation
+			}
+			modifier = {
+				factor = 0
+				has_war = yes
+				strength_ratio = {
+					tag = KAN
+					ratio < 0.2
+				}
+			}
+		}
+	}
+}
+
+country_event = { # Vassalize the Seto Islands (KAN event)
+	id = kansai.25
+	title = kansai.25.t
+	desc = kansai.25.desc
+	picture = GFX_report_event_ger_civil_war
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {	# accept 
+		name = kansai.25.set
+	}
+	option = {	# refuse 
+		name = kansai.25.kan
+		effect_tooltip = {
+			KAN = {
+				puppet = {
+					target = SET
+					end_wars = no
+				}
+			}
+		}
+	}
+	option = {	# sho
+		name = kansai.25.sho
+		effect_tooltip = {
+			KAN = {
+				puppet = {
+					target = SET
+					end_wars = no
+				}
+			}
+		}
+	}
+	option = {	# other
+		name = kansai.25.other
+		effect_tooltip = {
+			KAN = {
+				puppet = {
+					target = SET
+					end_wars = no
+				}
+			}
+		}
+	}
+	
+}
+
+country_event = { # Vassalize the Seto Islands (KAN event)
+	id = kansai.26
+	title = kansai.26.t
+	desc = kansai.26.desc
+	picture = GFX_report_event_ger_civil_war
+	is_triggered_only = yes
+	
+	option = {
+		name = kansai.26.a
+		
+	}
 }
 
 
