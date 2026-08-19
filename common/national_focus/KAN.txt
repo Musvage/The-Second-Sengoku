@@ -1454,7 +1454,7 @@ focus_tree = {
 		}
 		
 		completion_reward = {
-			AMO = { country_event = kansai.10 }
+			AMO = { country_event = kansai.11 }
 			custom_effect_tooltip = loc_paragraph
 			custom_effect_tooltip = loc_if_accept
 			effect_tooltip = {
@@ -1479,6 +1479,80 @@ focus_tree = {
 					}
 				}
 				custom_effect_tooltip = loc_accept_chance_low
+			} else = {
+				custom_effect_tooltip = loc_accept_chance_high
+			}
+		}
+	}
+	
+	focus = {
+		id = KAN_vassalize_knights
+		icon = GFX_focus_KAN_annex_knights
+		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WAR_SUPPORT }
+		
+		prerequisite = { focus = KAN_help_knights }
+		
+		relative_position_id = KAN_befriend_edo
+		x = -2
+		y = 1
+		cost = 10
+		
+		available = {
+			NOT = { has_war_with = AMO is_justifying_wargoal_against = AMO AMO = { is_justifying_wargoal_against = KAN } }
+		}
+		
+		
+		ai_will_do = { factor = 5 }
+		
+		completion_reward = {
+			AMO = { country_event = { id = kansai.14 hours = 6 } }
+			custom_effect_tooltip = loc_paragraph
+			custom_effect_tooltip = loc_if_accept
+			effect_tooltip = {
+				puppet = {
+					target = AMO
+					end_wars = no
+				}
+			}
+			custom_effect_tooltip = KAN_vassalize_knights_warning
+			custom_effect_tooltip = loc_paragraph
+			SET = {
+				set_temp_variable = { accept_chance = 1 }
+				if = { limit = { has_completed_focus = AMO_common_enemy } add_to_temp_variable = { accept_chance = 1 } }
+				if = { limit = { has_war = yes } add_to_temp_variable = { accept_chance = 1 } }
+				if = { limit = { KAN = { has_war = yes } } add_to_temp_variable = { accept_chance = -1 } }
+				if = { limit = { has_opinion = { target = KAN value > 50 } } add_to_temp_variable = { accept_chance = 1 } }
+				if = { limit = { has_opinion = { target = KAN value < 50 } } add_to_temp_variable = { accept_chance = -1 } }
+				if = {
+					limit = {
+						has_religion_2 = yes
+						KAN = { has_religion_2 = no }
+					}
+					set_temp_variable = { accept_chance = 0 }
+				}
+				if = {
+					limit = {
+						has_war = yes
+						strength_ratio = {
+							tag = KAN
+							ratio < 0.2
+						}
+						any_enemy_country = {
+							strength_ratio = {
+								tag = AMO
+								ratio > 1
+							}
+						}
+					}
+					set_temp_variable = { accept_chance = 10 }
+				}
+			}
+			if = {
+				limit = { check_variable = { accept_chance < 1 } }
+				custom_effect_tooltip = loc_accept_chance_low
+			} else_if = {
+				limit = { check_variable = { accept_chance > 3 } }
+				custom_effect_tooltip = loc_accept_chance_very_high
 			} else = {
 				custom_effect_tooltip = loc_accept_chance_high
 			}
@@ -1641,6 +1715,7 @@ focus_tree = {
 		
 		completion_reward = {
 			SET = { country_event = { id = kansai.24 hours = 6 } }
+			custom_effect_tooltip = loc_paragraph
 			custom_effect_tooltip = loc_if_accept
 			effect_tooltip = {
 				puppet = {
@@ -1654,7 +1729,9 @@ focus_tree = {
 				set_temp_variable = { accept_chance = 1 }
 				if = { limit = { has_completed_focus = ss_generic_modernisation } add_to_temp_variable = { accept_chance = -1 } }
 				if = { limit = { has_war = yes } add_to_temp_variable = { accept_chance = 1 } }
-				if = { limit = { KAN = { has_war = yes } } add_to_temp_variable = { accept_chance = 1 } }
+				if = { limit = { KAN = { has_war = yes } } add_to_temp_variable = { accept_chance = -1 } }
+				if = { limit = { has_opinion = { target = KAN value > 50 } } add_to_temp_variable = { accept_chance = 1 } }
+				if = { limit = { has_opinion = { target = KAN value < -50 } } add_to_temp_variable = { accept_chance = -1 } }
 				if = {
 					limit = {
 						OR = {
@@ -1670,6 +1747,12 @@ focus_tree = {
 						strength_ratio = {
 							tag = KAN
 							ratio < 0.2
+						}
+						any_enemy_country = {
+							strength_ratio = {
+								tag = AMO
+								ratio > 1
+							}
 						}
 					}
 					set_temp_variable = { accept_chance = 10 }
@@ -1711,72 +1794,6 @@ focus_tree = {
 		
 		completion_reward = {
 			add_war_support = 0.05
-		}
-	}
-	
-	focus = {
-		id = KAN_vassalize_knights
-		icon = GFX_focus_KAN_annex_knights
-		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_WAR_SUPPORT }
-		
-		prerequisite = { focus = KAN_help_knights }
-		
-		relative_position_id = KAN_befriend_edo
-		x = -2
-		y = 1
-		cost = 10
-		
-		available = {
-			NOT = { has_war_with = AMO is_justifying_wargoal_against = AMO AMO = { is_justifying_wargoal_against = KAN } }
-			has_global_flag = amo_sho_scripted_war_ongoing
-		}
-		
-		
-		ai_will_do = { factor = 5 }
-		
-		completion_reward = {
-			AMO = { country_event = { id = kansai.14 hours = 6 } }
-			custom_effect_tooltip = loc_if_accept
-			effect_tooltip = {
-				puppet = {
-					target = AMO
-					end_wars = no
-				}
-			}
-			custom_effect_tooltip = KAN_vassalize_knights_warning
-			custom_effect_tooltip = loc_paragraph
-			SET = {
-				set_temp_variable = { accept_chance = 1 }
-				if = { limit = { has_completed_focus = AMO_common_enemy } add_to_temp_variable = { accept_chance = 1 } }
-				if = { limit = { has_war = yes } add_to_temp_variable = { accept_chance = 1 } }
-				if = { limit = { KAN = { has_war = yes } } add_to_temp_variable = { accept_chance = 1 } }
-				if = {
-					limit = {
-						has_religion_2 = yes
-						KAN = { has_religion_2 = no }
-					}
-					add_to_temp_variable = { accept_chance = 0 }
-				}
-				if = {
-					limit = {
-						has_war = yes
-						strength_ratio = {
-							tag = KAN
-							ratio < 0.2
-						}
-					}
-					set_temp_variable = { accept_chance = 10 }
-				}
-			}
-			if = {
-				limit = { check_variable = { accept_chance < 1 } }
-				custom_effect_tooltip = loc_accept_chance_low
-			} else_if = {
-				limit = { check_variable = { accept_chance > 3 } }
-				custom_effect_tooltip = loc_accept_chance_very_high
-			} else = {
-				custom_effect_tooltip = loc_accept_chance_high
-			}
 		}
 	}
 	

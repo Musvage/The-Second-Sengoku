@@ -187,6 +187,10 @@ country_event = { # Vassalize the Knights (AMO event)
 				has_war = yes
 			}
 			modifier = {
+				add = 100
+				has_opinion = { target = KAN value > 50 }
+			}
+			modifier = {
 				factor = 0.01
 				has_religion_2 = yes
 				KAN = { has_religion_2 = no }
@@ -201,7 +205,7 @@ country_event = { # Vassalize the Knights (AMO event)
 		}
 	}
 	option = {	# refuse 
-		name = kansai.14.a
+		name = kansai.14.b
 		KAN = { country_event = kansai.16 }
 		ai_chance = {
 			base = 100
@@ -210,11 +214,21 @@ country_event = { # Vassalize the Knights (AMO event)
 				KAN = { has_war = yes }
 			}
 			modifier = {
+				add = 100
+				has_opinion = { target = KAN value < -50 }
+			}
+			modifier = {
 				factor = 0
 				has_war = yes
 				strength_ratio = {
 					tag = KAN
 					ratio < 0.2
+				}
+				any_enemy_country = {
+					strength_ratio = {
+						tag = AMO
+						ratio > 1
+					}
 				}
 			}
 		}
@@ -401,6 +415,10 @@ country_event = { # Vassalize the Seto Islands (SET event)
 			}
 			modifier = {
 				add = 100
+				has_opinion = { target = KAN value > 50 }
+			}
+			modifier = {
+				add = 100
 				OR = {
 					has_completed_focus = ss_generic_tradition
 					AND = { tag = IMA has_government = autocracy KAN = { has_government = autocracy } }
@@ -409,7 +427,7 @@ country_event = { # Vassalize the Seto Islands (SET event)
 		}
 	}
 	option = {	# refuse 
-		name = kansai.24.a
+		name = kansai.24.b
 		KAN = { country_event = kansai.26 }
 		ai_chance = {
 			base = 100
@@ -422,11 +440,21 @@ country_event = { # Vassalize the Seto Islands (SET event)
 				has_completed_focus = ss_generic_modernisation
 			}
 			modifier = {
+				add = 100
+				has_opinion = { target = KAN value < -50 }
+			}
+			modifier = {
 				factor = 0
 				has_war = yes
 				strength_ratio = {
 					tag = KAN
 					ratio < 0.2
+				}
+				any_enemy_country = {
+					strength_ratio = {
+						tag = AMO
+						ratio > 1
+					}
 				}
 			}
 		}
@@ -442,10 +470,12 @@ country_event = { # Vassalize the Seto Islands (KAN event)
 	
 	major = yes
 	
-	option = {	# accept 
+	option = { 
+		trigger = { tag = SET }
 		name = kansai.25.set
 	}
-	option = {	# refuse 
+	option = {
+		trigger = { tag = KAN }
 		name = kansai.25.kan
 		effect_tooltip = {
 			KAN = {
@@ -456,8 +486,9 @@ country_event = { # Vassalize the Seto Islands (KAN event)
 			}
 		}
 	}
-	option = {	# sho
-		name = kansai.25.sho
+	option = {	# chugoku and shikoku
+		trigger = { OR = { tag = SHI tag = CHU } }
+		name = kansai.25.chushi
 		effect_tooltip = {
 			KAN = {
 				puppet = {
@@ -468,6 +499,7 @@ country_event = { # Vassalize the Seto Islands (KAN event)
 		}
 	}
 	option = {	# other
+		trigger = { NOT = { tag = SET tag = KAN tag = CHU tag = SHI } }
 		name = kansai.25.other
 		effect_tooltip = {
 			KAN = {
@@ -490,7 +522,6 @@ country_event = { # Vassalize the Seto Islands (KAN event)
 	
 	option = {
 		name = kansai.26.a
-		
 	}
 }
 
