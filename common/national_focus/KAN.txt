@@ -1398,7 +1398,7 @@ focus_tree = {
 		}
 		
 		bypass = {
-			NOT = { has_global_flag = amo_sho_scripted_war_ongoing }
+			
 		}
 		
 		completion_reward = {
@@ -1448,7 +1448,39 @@ focus_tree = {
 					}
 				}
 			}
-			custom_effect_tooltip = KAN_help_knights_tt2
+			custom_effect_tooltip = KAN_disonorable_action_PRO
+			custom_effect_tooltip = loc_paragraph
+			set_temp_variable = { accept_chance = 400 }
+			if = {
+				limit = { PRO = { has_opinion = { target = KAN value > 50 } } }
+				add_to_temp_variable = { accept_chance = 400 }
+			}
+			if = {
+				limit = { PRO = { has_opinion = { target = KAN value < -50 } } }
+				add_to_temp_variable = { accept_chance = -200 }
+			}
+			if = {
+				limit = {
+					OR = {
+						has_wargoal_against = KAN
+						KAN = { has_wargoal_against = AMO }
+					}
+				}
+				add_to_temp_variable = { accept_chance = -200 }
+			}
+			if = {
+				limit = {
+					check_variable = { accept_chance > 799 }
+				}
+				custom_effect_tooltip = loc_accept_chance_very_high
+			} else_if = {
+				limit = {
+					check_variable = { accept_chance > 399 }
+				custom_effect_tooltip = loc_accept_chance_high
+				}
+			} else = {
+				custom_effect_tooltip = loc_accept_chance_low
+			}
 		}
 	}
 	
@@ -1496,7 +1528,7 @@ focus_tree = {
 				give_military_access = AMO
 				AMO = { give_military_access = KAN }
 			}
-			custom_effect_tooltip = KAN_help_knights_tt2
+			custom_effect_tooltip = KAN_disonorable_action_AMO
 			custom_effect_tooltip = loc_paragraph
 			if = {
 				limit = {
@@ -1527,7 +1559,13 @@ focus_tree = {
 		cost = 10
 		
 		available = {
+			country_exists = AMO
+			AMO = { has_country_flag = accepted_help_from_KAN }
 			NOT = { has_war_with = AMO is_justifying_wargoal_against = AMO AMO = { is_justifying_wargoal_against = KAN } }
+			strength_ratio = {
+				tag = AMO
+				ratio > 1
+			}
 		}
 		
 		
@@ -1650,7 +1688,7 @@ focus_tree = {
 					diplomatic_relation = { country = KAN relation = non_aggression_pact active = yes }
 				}
 			}
-			custom_effect_tooltip = KAN_help_knights_tt2
+			custom_effect_tooltip = KAN_disonorable_action_SHI
 		}
 	}
 	
@@ -1701,6 +1739,7 @@ focus_tree = {
 					add_offsite_building = { type = industrial_complex level = 1 }
 				}
 			}
+			custom_effect_tooltip = KAN_disonorable_action_SET
 			add_ai_strategy = {
 				type = protect
 				id = SET
@@ -1740,7 +1779,8 @@ focus_tree = {
 		
 		available = {
 			country_exists = SET
-			NOT = { has_war_with = SET }
+			SET = { has_country_flag = accepted_help_from_KAN }
+			NOT = { has_war_with = SET is_justifying_wargoal_against = SET SET = { is_justifying_wargoal_against = KAN } }
 			strength_ratio = {
 				tag = SET
 				ratio > 1

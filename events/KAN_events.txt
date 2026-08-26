@@ -86,15 +86,17 @@ country_event = { # Help the Knights (AMO event)
 				}
 			}
 		}
+		custom_effect_tooltip = KAN_disonorable_action_KAN
 		custom_effect_tooltip = loc_paragraph
-		custom_effect_tooltip = kansai.11.tt1
 		hidden_effect = {
+			add_ai_strategy = { type = befriend id = KAN value = 50 }
 			KAN = {
 				add_manpower = -9000
 				add_equipment_to_stockpile = {
 					type = infantry_equipment
 					amount = -900
 				}
+				add_ai_strategy = { type = befriend id = AMO value = 50 }
 			}
 		}
 		give_military_access = KAN
@@ -302,25 +304,35 @@ country_event = { # Vassalize the Knights (KAN event)
 country_event = { # Help the Seto Islands (SET event)
 	id = kansai.21
 	title = kansai.21.t
-	desc = kansai.21.desc
+	desc = kansai.21.d
 	picture = GFX_report_event_merchant_ship_01
 	is_triggered_only = yes
 	
 	option = {	# accept
 		name = kansai.21.a
-		hidden_effect = { KAN = { country_event = { id = kansai.22 hours = 6 } } }
 		KAN = { give_guarantee = SET }
 		add_ideas = KAN_subsidize_ims_spirit
 		add_political_power = 100
 		add_offsite_building = { type = industrial_complex level = 1 }
 		custom_effect_tooltip = kansai.21.tt
 		set_global_flag = ims_accept_kan_help
+		set_country_flag = accepted_help_from_KAN
+		custom_effect_tooltip = KAN_disonorable_action_KAN
+		hidden_effect = {
+			add_ai_strategy = { type = befriend id = KAN value = 50 }
+			KAN = {
+				add_ai_strategy = { type = befriend id = SET value = 50 }
+				country_event = { id = kansai.22 hours = 6 }
+			}
+			CHU = { add_ai_strategy = { type = befriend id = KAN value = -25 } }
+			SHI = { add_ai_strategy = { type = befriend id = KAN value = -25 } }
+		}
 		ai_chance = {
 			base = 4
 		}
 	}
 	option = {	# refuse
-		name = kansai.21.a
+		name = kansai.21.b
 		hidden_effect = { KAN = { country_event = { id = kansai.23 hours = 6 } } }
 		ai_chance = {
 			base = 1
@@ -576,24 +588,35 @@ country_event = { # Help PRO (PRO event)
 			}
 		}
 		set_country_flag = accepted_help_from_KAN
-		hidden_effect = { country_event = { id = kansai.32 hours = 6 } }
+		custom_effect_tooltip = KAN_disonorable_action_KAN
+		hidden_effect = {
+			country_event = { id = kansai.32 hours = 6 }
+			add_ai_strategy = { type = befriend id = KAN value = 50 }
+			KAN = { add_ai_strategy = { type = befriend id = PRO value = 50 } }
+		}
 		ai_chance = {
-			base = 4
+			base = 400
+			modifier = {
+				add = 200
+				has_opinion = { target = KAN value > 50 }
+			}
 		}
 	}
 	option = {	# refuse
 		name = kansai.31.b
 		hidden_effect = { KAN = { country_event = { id = kansai.33 hours = 6 } } }
 		ai_chance = {
-			base = 1
+			base = 100
 			modifier = {
-				factor = 16
+				add = 200
 				OR = {
 					has_wargoal_against = KAN
 					KAN = { has_wargoal_against = AMO }
-					is_justifying_wargoal_against = KAN
-					KAN = { is_justifying_wargoal_against = AMO }
 				}
+			}
+			modifier = {
+				add = 200
+				has_opinion = { target = KAN value < -50 }
 			}
 		}
 	}
@@ -614,7 +637,7 @@ country_event = { # Help PRO - accept (KAN event - world)
 	}
 	option = {
 		trigger = { tag = PRO }
-		name = kansai.32.amo
+		name = kansai.32.pro
 	}
 	option = {
 		trigger = { NOT = { tag = PRO tag = KAN } }
@@ -632,6 +655,124 @@ country_event = { # Help PRO - refuse (KAN event)
 	option = { name = kansai.33.a }
 }
 
+
+country_event = { # Disonorable Actions! (KAN declared war on accepted_help_from_KAN)
+	id = kansai.51
+	title = kansai.51.t
+	desc = kansai.51.d
+	
+	picture = GFX_report_event_hirohito
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {
+		name = kansai.51.kan
+		trigger = { tag = KAN }
+		if = {
+			limit = { has_country_leader_with_trait = buffoon_leader }
+			add_stability = -0.05
+		} else_if = {
+			limit = { has_country_leader_with_trait = scaramouch_leader }
+			swap_ruler_traits = { remove = scaramouch_leader add = buffoon_leader }
+		} else = {
+			add_country_leader_trait = scaramouch_leader
+		}
+	}
+	option = {
+		name = kansai.51.self
+		trigger = { tag = ROOT }
+		effect_tooltip = {
+			KAN = {
+				if = {
+					limit = { has_country_leader_with_trait = buffoon_leader }
+					add_stability = -0.05
+				} else_if = {
+					limit = { has_country_leader_with_trait = scaramouch_leader }
+					swap_ruler_traits = { remove = scaramouch_leader add = buffoon_leader }
+				} else = {
+					add_country_leader_trait = scaramouch_leader
+				}
+			}
+		}
+	}
+	option = {
+		name = kansai.51.other
+		trigger = { NOT = { tag = ROOT tag = KAN } }
+		effect_tooltip = {
+			KAN = {
+				if = {
+					limit = { has_country_leader_with_trait = buffoon_leader }
+					add_stability = -0.05
+				} else_if = {
+					limit = { has_country_leader_with_trait = scaramouch_leader }
+					swap_ruler_traits = { remove = scaramouch_leader add = buffoon_leader }
+				} else = {
+					add_country_leader_trait = scaramouch_leader
+				}
+			}
+		}
+	}
+}
+
+country_event = { # Disonorable Actions! (TAG with accepted_help_from_KAN declared war on KAN)
+	id = kansai.52
+	title = kansai.52.t
+	desc = kansai.52.d
+	
+	picture = GFX_report_event_hirohito
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {
+		name = kansai.52.self
+		trigger = { tag = ROOT }
+		if = {
+			limit = { has_country_leader_with_trait = buffoon_leader }
+			add_stability = -0.05
+		} else_if = {
+			limit = { has_country_leader_with_trait = scaramouch_leader }
+			swap_ruler_traits = { remove = scaramouch_leader add = buffoon_leader }
+		} else = {
+			add_country_leader_trait = scaramouch_leader
+		}
+	}
+	option = {
+		name = kansai.52.kan
+		trigger = { tag = KAN }
+		effect_tooltip = {
+			ROOT = {
+				if = {
+					limit = { has_country_leader_with_trait = buffoon_leader }
+					add_stability = -0.05
+				} else_if = {
+					limit = { has_country_leader_with_trait = scaramouch_leader }
+					swap_ruler_traits = { remove = scaramouch_leader add = buffoon_leader }
+				} else = {
+					add_country_leader_trait = scaramouch_leader
+				}
+			}
+		}
+	}
+	option = {
+		name = kansai.52.other
+		trigger = { NOT = { tag = KAN tag = ROOT } }
+		effect_tooltip = {
+			ROOT = {
+				if = {
+					limit = { has_country_leader_with_trait = buffoon_leader }
+					add_stability = -0.05
+				} else_if = {
+					limit = { has_country_leader_with_trait = scaramouch_leader }
+					swap_ruler_traits = { remove = scaramouch_leader add = buffoon_leader }
+				} else = {
+					add_country_leader_trait = scaramouch_leader
+				}
+			}
+		}
+	}
+}
 
 ### OLD STUFF BELLOW
 ### OLD STUFF BELLOW
