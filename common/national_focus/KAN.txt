@@ -1462,8 +1462,8 @@ focus_tree = {
 			if = {
 				limit = {
 					OR = {
-						has_wargoal_against = KAN
-						KAN = { has_wargoal_against = AMO }
+						has_wargoal_against = AMO
+						AMO = { has_wargoal_against = KAN }
 					}
 				}
 				add_to_temp_variable = { accept_chance = -200 }
@@ -1499,6 +1499,7 @@ focus_tree = {
 		ai_will_do = { factor = 5 }
 		
 		available = {
+			has_religion_2 = yes
 			any_controlled_state = { any_neighbor_state = { is_controlled_by = SHO } }
 			has_manpower > 8999
 			has_equipment = { infantry_equipment > 899 }
@@ -1535,8 +1536,6 @@ focus_tree = {
 					OR = {
 						AMO = { has_wargoal_against = KAN }
 						has_wargoal_against = AMO
-						AMO = { is_justifying_wargoal_against = KAN }
-						is_justifying_wargoal_against = AMO
 					}
 				}
 				custom_effect_tooltip = loc_accept_chance_low
@@ -1662,6 +1661,7 @@ focus_tree = {
 		mutually_exclusive = { focus = KAN_help_seto_islands }
 		
 		available = {
+			has_religion_2 = yes
 			NOT = { has_war_with = SHI is_justifying_wargoal_against = SHI SHI = { is_justifying_wargoal_against = KAN } }
 			OR = {
 				NOT = { has_completed_focus = KAN_befriend_nationalists }
@@ -1677,18 +1677,48 @@ focus_tree = {
 		ai_will_do = { factor = 5 }
 		
 		completion_reward = {
-			SHI = { country_event = kansai.31 }	# CHANCE LATER
+			SHI = { country_event = kansai.41 }
 			custom_effect_tooltip = loc_paragraph
 			custom_effect_tooltip = loc_if_accept
 			effect_tooltip = {
-				give_guarantee = SHI
-				diplomatic_relation = { country = SHI relation = non_aggression_pact active = yes }
 				SHI = {
-					give_guarantee = KAN
+					add_ideas = KAN_befriend_shikoku_spirit
 					diplomatic_relation = { country = KAN relation = non_aggression_pact active = yes }
 				}
 			}
 			custom_effect_tooltip = KAN_disonorable_action_SHI
+			custom_effect_tooltip = loc_paragraph
+			set_temp_variable = { accept_chance = 400 }
+			if = {
+				limit = { SHI = { has_opinion = { target = KAN value > 50 } } }
+				add_to_temp_variable = { accept_chance = 400 }
+			}
+			if = {
+				limit = { SHI = { has_opinion = { target = KAN value < -50 } } }
+				add_to_temp_variable = { accept_chance = -200 }
+			}
+			if = {
+				limit = {
+					OR = {
+						has_wargoal_against = SHI
+						SHI = { has_wargoal_against = KAN }
+					}
+				}
+				add_to_temp_variable = { accept_chance = -200 }
+			}
+			if = {
+				limit = {
+					check_variable = { accept_chance > 799 }
+				}
+				custom_effect_tooltip = loc_accept_chance_very_high
+			} else_if = {
+				limit = {
+					check_variable = { accept_chance > 399 }
+				custom_effect_tooltip = loc_accept_chance_high
+				}
+			} else = {
+				custom_effect_tooltip = loc_accept_chance_low
+			}
 		}
 	}
 	
