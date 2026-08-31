@@ -102,8 +102,51 @@ on_actions = {
 				clr_global_flag = amo_sho_scripted_war_ongoing
 			}
 		}
+		effect = {
+			### PLANNED ECONOMY ###
+			if = {
+				limit = { has_government = communism }
+				planned_economy_update = yes
+			}
+		}
 	}
+	
+	on_release_as_puppet = {	# ROOT is the nation being released, FROM is the overlord.
+		effect = {
+			if = {
+				limit = { NOT = { check_variable = { FROM.country_religion = ROOT.country_religion } } }
+				if = {
+					limit = { FROM = { has_religion_shinto = yes } }
+					ROOT = { set_religion_shinto = yes }
+				} else_if = {
+					limit = { FROM = { has_religion_christianity = yes } }
+					ROOT = { set_religion_christianity = yes }
+				} else_if = {
+					limit = { FROM = { has_religion_taoism = yes } }
+					ROOT = { set_religion_taoism = yes }
+				} else_if = {
+					limit = { FROM = { has_religion_confucianism = yes } }
+					ROOT = { set_religion_confucianism = yes }
+				} else_if = {
+					limit = { FROM = { has_religion_secularism = yes } }
+					ROOT = { set_religion_secularism = yes }
+				} else_if = {
+					limit = { FROM = { has_religion_cthulhu = yes } }
+					ROOT = { set_religion_cthulhu = yes }
+				} else = {
+					ROOT = { set_religion_buddhism = yes }	# default, if there is any error, Buddhism may not raise eyebrows
+				}
+			}
+		}
+	}
+	
 	on_capitulation_immediate = {
+		effect = {
+			if = {
+				limit = { ROOT = { tag = IMS } }
+				clr_global_flag = seto_crisis_active
+			}
+		}
 		effect = {
 			if = {
 				limit = { ROOT = { tag = AMO has_war_with = SHO has_active_mission = AMO_ongoing_war_amo AMO = { has_capitulated = no } } }

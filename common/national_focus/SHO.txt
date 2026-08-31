@@ -630,8 +630,6 @@
 				limit = { country_exists = KOB }
 				KOB = { country_event = { id = shogunate.25 hours = 6 random = 18 } }
 			} else = { KOB = { country_event = { id = shogunate.24 hours = 6 random = 6 } } }
-			set_temp_var = { kob_op_kan = KOB.opinion@KAN }
-			set_temp_var = { kob_op_sho = KOB.opinion@SHO }
 			custom_effect_tooltip = loc_paragraph
 			custom_effect_tooltip = loc_if_accept
 			effect_tooltip = {
@@ -649,21 +647,66 @@
 			}
 			if = {
 				limit = {
-					country_exists = KOB
 					country_exists = KAN
-					OR = {
-						KAN = { has_completed_focus = KAN_reform_kellogg_briand_pact }
-						check_variable = { kob_op_kan > kob_op_sho }
-					}
 					KOB = {
 						has_opinion = {
 							target = KAN
-							value > 25
+							value > 0
 						}
 					}
 				}
 				custom_effect_tooltip = loc_paragraph
 				custom_effect_tooltip = kob_likes_kan_will_not_accept
+			}
+			custom_effect_tooltip = loc_paragraph
+			set_temp_variable = { accept_chance = 100 }		
+			add_to_temp_variable = { accept_chance = var:KOB.opinion@SHO }
+			subtract_from_temp_variable = { accept_chance = var:KOB.opinion@KAN }
+			if = {
+				limit = {
+					KOB = {
+						OR = {
+							KAN = {
+								OR = {
+									has_completed_focus = KAN_internal_legitimacy
+									has_completed_focus = KAN_befriend_komintern
+								}
+							}
+							has_opinion = {
+								target = KAN
+								value < 0
+							}
+						}
+						has_opinion = {
+							target = SHO
+							value > 25
+						}
+					}
+				
+				}
+				set_temp_variable = { accept_chance = 999 }
+			}
+			if = {
+				limit = {
+					KOB = {
+						KAN = { has_completed_focus = KAN_reform_kellogg_briand_pact }
+						has_opinion = {
+							target = KAN
+							value > 0
+						}
+					}
+				
+				}
+				set_temp_variable = { accept_chance = 0 }
+			}
+			if = {
+				limit = { check_variable = { accept_chance > 149.9 } }
+				custom_effect_tooltip = loc_accept_chance_high
+			} else_if = {
+				limit = { check_variable = { accept_chance > 74.9 } }
+				custom_effect_tooltip = loc_accept_chance_medium
+			} else = {
+				custom_effect_tooltip = loc_accept_chance_low
 			}
 			hidden_effect = { country_event = shogunate.999 } # reset focus tree
 		}
@@ -743,6 +786,51 @@
 				}
 				custom_effect_tooltip = loc_paragraph
 				custom_effect_tooltip = rei_likes_shi_will_not_accept
+			}
+			custom_effect_tooltip = loc_paragraph
+			set_temp_variable = { accept_chance = 100 }		
+			add_to_temp_variable = { accept_chance = var:REI.opinion@SHO }
+			subtract_from_temp_variable = { accept_chance = var:REI.opinion@SHI }
+			if = {
+				limit = {
+					REI = {
+						OR = {
+							has_completed_focus = REI_colonial_hegemony
+							has_opinion = {
+								target = SHI
+								value < 0
+							}
+						}
+						has_opinion = {
+							target = SHO
+							value > 25
+						}
+					}
+				
+				}
+				set_temp_variable = { accept_chance = 999 }
+			}
+			if = {
+				limit = {
+					REI = {
+						has_completed_focus = REI_matsuyama_pact
+						has_opinion = {
+								target = SHI
+								value > 0
+						}
+					}
+				
+				}
+				set_temp_variable = { accept_chance = 0 }
+			}
+			if = {
+				limit = { check_variable = { accept_chance > 149.9 } }
+				custom_effect_tooltip = loc_accept_chance_high
+			} else_if = {
+				limit = { check_variable = { accept_chance > 74.9 } }
+				custom_effect_tooltip = loc_accept_chance_medium
+			} else = {
+				custom_effect_tooltip = loc_accept_chance_low
 			}
 			hidden_effect = { country_event = shogunate.999 } # reset focus tree
 		}

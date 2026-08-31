@@ -852,9 +852,9 @@ news_event = { # Disonorable Actions! (TAG with accepted_help_from_KAN declared 
 }
 
 news_event = { # Address Shogunate Threat (KAN world event)
-	id = kansai.53
-	title = kansai.53.t
-	desc = kansai.53.d
+	id = kansai.61
+	title = kansai.61.t
+	desc = kansai.61.d
 	
 	picture = GFX_report_event_hirohito
 	is_triggered_only = yes
@@ -862,23 +862,182 @@ news_event = { # Address Shogunate Threat (KAN world event)
 	major = yes
 	
 	option = {
-		name = kansai.53.self
+		name = kansai.61.self
 		trigger = { tag = KAN }
 	}
 	option = {
-		name = kansai.53.sho
+		name = kansai.61.sho
 		trigger = { tag = SHO }
 	}
 	option = {
-		name = kansai.53.other
+		name = kansai.61.other
+		trigger = { NOT = { tag = KAN tag = SHO } }
+	}
+}
+
+country_event = { # Address Shogunate Threat demmand control (SHO event)
+	id = kansai.62
+	title = kansai.62.t
+	desc = kansai.62.d
+	
+	picture = GFX_report_event_hirohito
+	is_triggered_only = yes
+	
+	option = {	# accept
+		name = kansai.62.a
+		trigger = {
+			any_controlled_state = {
+				any_neighbor_state = { is_controlled_by = KAN }
+				NOT = { state = 211 }
+			}
+		}
+		every_controlled_state = {
+			limit = { any_neighbor_state = { is_controlled_by = KAN } NOT = { state = 211 } }
+			set_state_flag = kan_transfer_release
+			custom_effect_tooltip = KAN_antagonize_later_state_tt
+		}
+		every_controlled_state = {
+			limit = { has_state_flag = kan_transfer_release }
+			KAN = { transfer_state = PREV }
+		}
+		if = {
+			limit = { 44 = { has_state_flag = kan_transfer_release } 63 = { has_state_flag = kan_transfer_release } }
+			KAN = { transfer_state = 260 }
+		}
+		if = {
+			limit = { 106 = { has_state_flag = kan_transfer_release } }
+			KAN = { transfer_state = 262 }
+		}
+		if = {
+			limit = { 118 = { has_state_flag = kan_transfer_release } }
+			KAN = { release_puppet = SKA }	# Obama Sakai		
+		}
+		if = {
+			limit = { 44 = { has_state_flag = kan_transfer_release } }
+			KAN = { release_puppet = ASA }	# Fukui Matsudaira		
+		}
+		if = {
+			limit = { 63 = { has_state_flag = kan_transfer_release } }
+			KAN = { release_puppet = OWA }	# Owari Tokugawa		
+		}
+		if = {
+			limit = { 97 = { has_state_flag = kan_transfer_release } }
+			KAN = { release_puppet = HOJ }	# Matsumoto Matsudaira
+		}
+		if = {
+			limit = {
+				OR = {
+					106 = { has_state_flag = kan_transfer_release }
+					114 = { has_state_flag = kan_transfer_release }
+					102 = { has_state_flag = kan_transfer_release }
+					128 = { has_state_flag = kan_transfer_release }
+					129 = { has_state_flag = kan_transfer_release }
+				}
+			}
+			KAN = { release_puppet = UES }	# Maeda
+		}
+		hidden_effect = {
+			every_state = { clr_state_flag = kan_transfer_release }
+			KAN = { news_event = kansai.63 }
+		}
+	}
+	option = {	# accept
+		trigger = {
+			all_controlled_state = {
+				OR = {
+					all_neighbor_state = { NOT = {  is_controlled_by = KAN } }
+					state = 211
+				}
+			}
+		}
+		name = kansai.62.a
+		every_owned_state = {
+			limit = { controller = { NOT = { tag = SHO } } }
+			controller = { trasnfer_state = PREV }
+		}
+		KAN = { puppet = { target = SHO end_wars = yes } }
+	}
+	option = {	# refuse
+		name = kansai.62.b
+		hidden_effect = { country_event = { id = kansai.64 random = 6 } }
+		effect_tooltip = {
+			KAN = {
+				declare_war_on = {
+					target = SHO
+					type = annex_everything
+				}
+			}
+		}
+	}
+}
+
+news_event = { # Address Shogunate Threat, accept (KAN event)
+	id = kansai.63
+	title = kansai.63.t
+	desc = kansai.63.d
+	
+	picture = GFX_report_event_hirohito
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {
+		name = kansai.63.self
+		trigger = { tag = KAN }
+	}
+	option = {
+		name = kansai.63.sho
+		trigger = { tag = SHO }
+	}
+	option = {
+		name = kansai.63.other
+		trigger = { NOT = { tag = KAN tag = SHO } }
+	}
+}
+
+news_event = { # Address Shogunate Threat, refuse (KAN event)
+	id = kansai.64
+	title = kansai.64.t
+	desc = kansai.64.d
+	
+	picture = GFX_report_event_hirohito
+	is_triggered_only = yes
+	
+	major = yes
+	
+	immediate = {
+		KAN = {
+			declare_war_on = {
+				target = SHO
+				type = annex_everything
+			}
+		}
+	}
+	
+	option = {
+		name = kansai.64.self
+		trigger = { tag = KAN }
+		effect_tooltip = {
+			declare_war_on = {
+				target = SHO
+				type = annex_everything
+			}
+		}
+	}
+	option = {
+		name = kansai.64.sho
+		trigger = { tag = SHO }
+	}
+	option = {
+		name = kansai.64.other
 		trigger = { NOT = { tag = KAN tag = SHO } }
 	}
 }
 
 news_event = { # Address Army Threat (KAN world event)
-	id = kansai.54
-	title = kansai.54.t
-	desc = kansai.54.d
+	id = kansai.71
+	title = kansai.71.t
+	desc = kansai.71.d
 	
 	picture = GFX_report_event_hirohito
 	is_triggered_only = yes
@@ -886,15 +1045,236 @@ news_event = { # Address Army Threat (KAN world event)
 	major = yes
 	
 	option = {
-		name = kansai.54.self
+		name = kansai.71.self
 		trigger = { tag = KAN }
 	}
 	option = {
-		name = kansai.54.chu
+		name = kansai.71.chu
 		trigger = { tag = CHU }
 	}
 	option = {
-		name = kansai.54.other
+		name = kansai.71.other
+		trigger = { NOT = { tag = KAN tag = CHU } }
+	}
+}
+
+country_event = { # Address Army Threat demmand control (CHU event)
+	id = kansai.72
+	title = kansai.72.t
+	desc = kansai.72.d
+	
+	picture = GFX_report_event_hirohito
+	is_triggered_only = yes
+	
+	option = {	# accept
+		name = kansai.72.a
+		trigger = {
+			any_controlled_state = {
+				any_neighbor_state = { is_controlled_by = KAN }
+				NOT = { state = 198 }
+			}
+		}
+		every_controlled_state = {
+			limit = { any_neighbor_state = { is_controlled_by = KAN } NOT = { state = 211 } }
+			set_state_flag = kan_transfer_release
+			custom_effect_tooltip = KAN_antagonize_later_state_tt
+		}
+		every_controlled_state = {
+			limit = { has_state_flag = kan_transfer_release }
+			KAN = { transfer_state = PREV }
+		}
+		if = {
+			limit = { 98 = { has_state_flag = kan_transfer_release } }
+			KAN = { release_puppet = MAT }	# Matsue Matsudaira
+		}
+		if = {
+			limit = { 103 = { has_state_flag = kan_transfer_release } }
+			KAN = { release_puppet = AMA }	# Kamei		
+		}
+		if = {
+			limit = { 112 = { has_state_flag = kan_transfer_release } }
+			KAN = { release_puppet = TMA }	# Tsuyama Matsudaira
+		}
+		if = {
+			limit = { 115 = { has_state_flag = kan_transfer_release } }
+			KAN = { release_puppet = OIK }	# Okayama Ikeda
+		}
+		if = {
+			limit = { 197 = { has_state_flag = kan_transfer_release } }
+			KAN = { release_puppet = ABE }	# Abe
+		}
+		if = {
+			limit = {
+				OR = {
+					116 = { has_state_flag = kan_transfer_release }
+					123 = { has_state_flag = kan_transfer_release }
+				}
+			}
+			KAN = { release_puppet = ASO }	# Asano
+		}
+		if = {
+			limit = {
+				OR = {
+					110 = { has_state_flag = kan_transfer_release }
+					125 = { has_state_flag = kan_transfer_release }
+				}
+			}
+			KAN = { release_puppet = IKE }	# Tottori Ikeda
+		}
+		if = {
+			limit = {
+				OR = {
+					101 = { has_state_flag = kan_transfer_release }
+					111 = { has_state_flag = kan_transfer_release }
+					117 = { has_state_flag = kan_transfer_release }
+					138 = { has_state_flag = kan_transfer_release }
+				}
+			}
+			KAN = { release_puppet = MRI }	# Mori
+		}
+		hidden_effect = {
+			every_state = { clr_state_flag = kan_transfer_release }
+			KAN = { news_event = kansai.73 }
+		}
+		ai_chance = {
+			base = 100
+			modifier = {
+				factor = 0
+				KAN = { has_war = yes }
+				NOT = { has_war = yes }
+				strength_ratio = {
+					tag = KAN
+					ratio > 1
+				}
+			}
+		}
+	}
+	option = {	# accept
+		trigger = {
+			all_controlled_state = {
+				OR = {
+					all_neighbor_state = { NOT = {  is_controlled_by = KAN } }
+					state = 198
+				}
+			}
+		}
+		name = kansai.72.a
+		every_owned_state = {
+			limit = { controller = { NOT = { tag = CHU } } }
+			controller = { trasnfer_state = PREV }
+		}
+		KAN = { puppet = { target = CHU end_wars = yes } }
+		ai_chance = {
+			base = 100
+			modifier = {
+				factor = 0
+				KAN = { has_war = yes }
+				NOT = { has_war = yes }
+				strength_ratio = {
+					tag = KAN
+					ratio > 1
+				}
+			}
+		}
+	}
+	option = {	# refuse
+		name = kansai.72.b
+		hidden_effect = { country_event = { id = kansai.74 random = 6 } }
+		effect_tooltip = {
+			KAN = {
+				declare_war_on = {
+					target = CHU
+					type = annex_everything
+				}
+			}
+		}
+		ai_chance = {
+			base = 500
+			modifier = {
+				add = -100
+				has_war = yes
+			}
+			modifier = {
+				add = 200
+				KAN = { has_war = yes }
+			}
+			modifier = {
+				add = -100
+				strength_ratio = {
+					tag = KAN
+					ratio < 1
+				}
+			}
+			modifier = {
+				add = -200
+				strength_ratio = {
+					tag = KAN
+					ratio < 0.5
+				}
+			}
+		}
+	}
+}
+
+news_event = { # Address Army Threat, accept (KAN event)
+	id = kansai.73
+	title = kansai.73.t
+	desc = kansai.73.d
+	
+	picture = GFX_report_event_hirohito
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {
+		name = kansai.73.self
+		trigger = { tag = KAN }
+	}
+	option = {
+		name = kansai.73.chu
+		trigger = { tag = CHU }
+	}
+	option = {
+		name = kansai.73.other
+		trigger = { NOT = { tag = KAN tag = CHU } }
+	}
+}
+
+news_event = { # Address Army Threat, refuse (KAN event)
+	id = kansai.74
+	title = kansai.74.t
+	desc = kansai.74.d
+	
+	picture = GFX_report_event_hirohito
+	is_triggered_only = yes
+	
+	major = yes
+	
+	immediate = {
+		KAN = {
+			declare_war_on = {
+				target = CHU
+				type = annex_everything
+			}
+		}
+	}
+	
+	option = {
+		name = kansai.74.self
+		trigger = { tag = KAN }
+		effect_tooltip = {
+			declare_war_on = {
+				target = CHU
+				type = annex_everything
+			}
+		}
+	}
+	option = {
+		name = kansai.74.chu
+		trigger = { tag = CHU }
+	}
+	option = {
+		name = kansai.64.other
 		trigger = { NOT = { tag = KAN tag = CHU } }
 	}
 }
