@@ -24,7 +24,7 @@ types = {
 					is_major = yes
 				}
 			}
-			#modifier = {
+			#modifier = { - Removed from SS for now
 			#	factor = 5 # Historical bombing of Japan
 			#	FROM = {
 			#		original_tag = JAP
@@ -44,7 +44,10 @@ types = {
 		}
 		# Raid Type is visible
 		visible = {
-			is_special_project_completed = sp:sp_nuclear_bomb
+			OR = {
+				is_special_project_completed = sp:sp_nuclear_bomb
+				num_of_nukes > 0	#To fix the nuke from the project option "we can use this against or enemies", not actually being usable
+			}
 		}
 		# Specific Target is visible
 		show_target = {
@@ -74,6 +77,12 @@ types = {
 				amount = { min = 10 }
 			}
 		}
+		unit_requirements = {
+			equipment = {
+				type = { strat_bomber_intercontinental_equipment }
+				amount = { min = 10 }
+			}
+		}
 		essential_equipment = {
 			nukes = 1
 		}
@@ -85,9 +94,6 @@ types = {
 		arrow = {
 			type = air
 		}
-        unit_model = {
-            type = equipment
-        }
 
 		success_factors = {
 			success = {
@@ -166,7 +172,7 @@ types = {
 				victim_effects = {
 					var:actor_country = { save_global_event_target_as = nuclear_gandhi_actor_country }  
 					var:target_state = {
-						#bathe_in_hellfire_nuclear = yes
+						bathe_in_hellfire_nuclear = yes
 						custom_effect_tooltip = raid_nuclear_strike_tt
 						add_dynamic_modifier = {
 							modifier = fallout_atomic
@@ -194,7 +200,7 @@ types = {
 				victim_effects = {
 					var:actor_country = { save_global_event_target_as = nuclear_gandhi_actor_country }  
 					var:target_state = {
-						#bathe_in_hellfire_nuclear = yes
+						bathe_in_hellfire_nuclear = yes
 						custom_effect_tooltip = raid_nuclear_strike_tt
 						add_dynamic_modifier = {
 							modifier = fallout_atomic
@@ -223,7 +229,7 @@ types = {
 					}
 					var:actor_country = { save_global_event_target_as = nuclear_gandhi_actor_country }  
 					var:target_state = {
-						#bathe_in_hellfire_nuclear = yes
+						bathe_in_hellfire_nuclear = yes
 						custom_effect_tooltip = raid_nuclear_strike_tt
 						add_dynamic_modifier = {
 							modifier = fallout_atomic
@@ -237,7 +243,7 @@ types = {
 
 	}
 
-	nuclear_missile_strike = {
+	nuclear_missile_strike = { #Only from Rocket Sites
 		category = nuclear_raids
 
 		days_to_prepare = 14
@@ -317,7 +323,6 @@ types = {
 		starting_point = {
 		    types = {
 		        rocket_site
-		        submarine
 		    }
 		}
 		arrow = {
@@ -327,8 +332,13 @@ types = {
 		launch_sound = raid_launch_nuclear_missile
 
         unit_model = {
-            type = equipment
             scale = 0.5
+        }
+
+        unit_animations = {
+            stage = { state = "idle" }
+            stage = { state = "idle2" intro = "idle2_intro" at_progress = 0.33 }
+            stage = { state = "idle3" intro = "idle3_intro" at_progress = 0.66 }
         }
 
 		success_factors = {
@@ -366,7 +376,7 @@ types = {
 				victim_effects = {
 					var:actor_country = { save_global_event_target_as = nuclear_gandhi_actor_country }  
 					var:target_state = {
-						#bathe_in_hellfire_nuclear = yes
+						bathe_in_hellfire_nuclear = yes
 						#custom_effect_tooltip = raid_nuclear_strike_tt
 						add_dynamic_modifier = {
 							modifier = fallout_atomic
@@ -389,7 +399,7 @@ types = {
 				victim_effects = {
 					var:actor_country = { save_global_event_target_as = nuclear_gandhi_actor_country }  
 					var:target_state = {
-						#bathe_in_hellfire_nuclear = yes
+						bathe_in_hellfire_nuclear = yes
 						add_dynamic_modifier = {
 							modifier = fallout_atomic
 							days = 365
@@ -400,6 +410,181 @@ types = {
 							province = var:ROOT.target_province #optional use either province or state
 							use_nuke = no #will consume nuke if specified
 						}
+					}
+				}
+			}
+		}
+	}
+
+	nuclear_missile_strike_submarine = { #Only from Submarines
+		category = nuclear_raids
+
+		days_to_prepare = 14
+		speed_multiplier = 0.08
+		ai_will_do = {
+			base = 1
+			modifier = {
+				# Don't target anyone who is not a potential enemy
+				factor = 0
+				NOT = {
+					is_in_array = {
+						array = potential_and_current_enemies
+						value = FROM  # Target country
+					}
+				}
+			}
+			modifier = {
+				factor = 2
+				OR = {
+					original_tag = FER
+					original_tag = AMC
+					original_tag = OKI
+				}
+			}
+			modifier = {
+				factor = 2
+				FROM = {
+					is_major = yes
+				}
+			}
+			modifier = {
+				factor = 0.25 # If possible, during peacetime, prepare strikes against the main enemies
+				NOT = { has_war_with = FROM }
+				FROM = { is_major = no }
+			}
+		}
+
+		command_power = 5 # command power allocation cost
+
+		allowed = {
+			has_dlc = "Gotterdammerung"
+		}
+		# Raid Type is visible
+		visible = {
+			is_special_project_completed = sp:sp_nuclear_warheads
+		}
+		# Specific Target is visible
+		show_target = {
+			NOT = {
+				is_in_faction_with = FROM
+			}
+		}
+
+		# Can prepare
+		available = {
+			#has_war_with = FROM
+		}
+		launchable = {
+			has_war_with = FROM
+		}
+
+		target_type = {
+			province = any
+		}
+		target_icon = GFX_other_target_icon
+
+		unit_requirements = {
+			equipment = {
+				type = { nuclear_missile_equipment }
+				amount = { min = 1 }
+			}
+		}
+		essential_equipment = {
+			nukes = 1
+		}
+
+		starting_point = {
+		    types = {
+		        submarine
+		    }
+		}
+		arrow = {
+		    type = ballistic
+		}
+
+		launch_sound = raid_launch_nuclear_missile
+
+        unit_model = {
+            scale = 0.5
+        }
+
+        unit_animations = {
+            stage = { state = "idle" }
+            stage = { state = "idle2" intro = "idle2_intro" at_progress = 0.33 }
+            stage = { state = "idle3" intro = "idle3_intro" at_progress = 0.66 }
+        }
+
+		success_factors = {
+			success = {
+				base = 0.8
+				intel = {
+					weight = 0.2
+					#start_reference = 50
+					reference = 100
+				}
+			}
+		}
+
+
+
+		success_levels = {
+			failure = {
+				actor_effects = {
+					var:actor_country = {
+						custom_effect_tooltip = dud_missile_tt
+					}
+				}
+			}
+			limited_success = {
+				actor_effects = {
+					var:actor_country = {
+						custom_effect_tooltip = dud_missile_tt
+					}
+				}
+			}
+			success = {
+			    custom_sound = raid_result_success_nuclear
+				actor_effects = {
+				}
+				victim_effects = {
+					var:actor_country = { save_global_event_target_as = nuclear_gandhi_actor_country }  
+					var:target_state = {
+						bathe_in_hellfire_nuclear = yes
+						#custom_effect_tooltip = raid_nuclear_strike_tt
+						add_dynamic_modifier = {
+							modifier = fallout_atomic
+							days = 365
+						}
+					}
+					var:actor_country = {
+						launch_nuke = {
+							province = var:ROOT.target_province #optional use either province or state
+							use_nuke = no #will consume nuke if specified
+						}
+						PHI_cobalt_sea_achievement = yes
+					}
+				}
+			}
+			critical_success = {
+			    custom_sound = raid_result_critical_success_nuclear
+				actor_effects = {
+				}
+
+				victim_effects = {
+					var:actor_country = { save_global_event_target_as = nuclear_gandhi_actor_country }  
+					var:target_state = {
+						bathe_in_hellfire_nuclear = yes
+						add_dynamic_modifier = {
+							modifier = fallout_atomic
+							days = 365
+						}
+					}
+					var:actor_country = {
+						launch_nuke = {
+							province = var:ROOT.target_province #optional use either province or state
+							use_nuke = no #will consume nuke if specified
+						}
+						PHI_cobalt_sea_achievement = yes
 					}
 				}
 			}
@@ -482,6 +667,12 @@ types = {
 				amount = { min = 10 }
 			}
 		}
+		unit_requirements = {
+			equipment = {
+				type = { strat_bomber_intercontinental_equipment }
+				amount = { min = 10 }
+			}
+		}
 		nuke_type = thermonuclear_bomb
 
 		essential_equipment = {
@@ -495,9 +686,6 @@ types = {
 		arrow = {
 			type = air
 		}
-        unit_model = {
-            type = equipment
-        }
 
 		success_factors = {
 			success = {
@@ -589,7 +777,7 @@ types = {
 				victim_effects = {
 					var:actor_country = { save_global_event_target_as = nuclear_gandhi_actor_country }   
 					var:target_state = {
-						#bathe_in_hellfire_thermonuclear = yes
+						bathe_in_hellfire_thermonuclear = yes
 						custom_effect_tooltip = raid_nuclear_strike_tt
 						hidden_effect = {
 							IF = {
@@ -625,7 +813,7 @@ types = {
 				victim_effects = {
 					var:actor_country = { save_global_event_target_as = nuclear_gandhi_actor_country }  
 					var:target_state = {
-						#bathe_in_hellfire_thermonuclear = yes
+						bathe_in_hellfire_thermonuclear = yes
 						custom_effect_tooltip = raid_nuclear_strike_tt
 						hidden_effect = {
 							IF = {
@@ -657,7 +845,7 @@ types = {
 	}
 
 
-	thermonuclear_missile_strike = {
+	thermonuclear_missile_strike = { #Only from Rocket Sites
 		category = nuclear_raids
 
 		days_to_prepare = 14
@@ -739,7 +927,6 @@ types = {
 		starting_point = {
 		    types = {
 		        rocket_site
-		        submarine
 		    }
 		}
 		arrow = {
@@ -749,8 +936,13 @@ types = {
 		launch_sound = raid_launch_nuclear_missile
 
         unit_model = {
-            type = equipment
             scale = 0.5
+        }
+
+        unit_animations = {
+            stage = { state = "idle" }
+            stage = { state = "idle2" intro = "idle2_intro" at_progress = 0.33 }
+            stage = { state = "idle3" intro = "idle3_intro" at_progress = 0.66 }
         }
 
 		success_factors = {
@@ -786,7 +978,7 @@ types = {
 				victim_effects = {
 					var:actor_country = { save_global_event_target_as = nuclear_gandhi_actor_country }  
 					var:target_state = {
-						#bathe_in_hellfire_thermonuclear = yes
+						bathe_in_hellfire_thermonuclear = yes
 						#custom_effect_tooltip = raid_nuclear_strike_tt
 						add_dynamic_modifier = {
 							modifier = fallout_thermonuclear
@@ -810,7 +1002,7 @@ types = {
 				victim_effects = {
 					var:actor_country = { save_global_event_target_as = nuclear_gandhi_actor_country }  
 					var:target_state = {
-						#bathe_in_hellfire_thermonuclear = yes
+						bathe_in_hellfire_thermonuclear = yes
 						add_dynamic_modifier = {
 							modifier = fallout_thermonuclear
 							days = 730
@@ -822,6 +1014,183 @@ types = {
 							use_nuke = no #will consume nuke if specified
 							nuke_type = thermonuclear_bomb
 						}
+					}
+				}
+			}
+		}
+	}
+
+	thermonuclear_missile_strike_submarine = { #Only from Submarines
+		category = nuclear_raids
+
+		days_to_prepare = 14
+		speed_multiplier = 0.08
+
+		ai_will_do = {
+			base = 1
+			modifier = {
+				# Don't target anyone who is not a potential enemy
+				factor = 0
+				NOT = {
+					is_in_array = {
+						array = potential_and_current_enemies
+						value = FROM  # Target country
+					}
+				}
+			}
+			modifier = {
+				factor = 2
+				OR = {
+					original_tag = FER
+					original_tag = AMC
+					original_tag = OKI
+				}
+			}
+			modifier = {
+				factor = 2
+				FROM = {
+					is_major = yes
+				}
+			}
+			modifier = {
+				factor = 0.25 # If possible, during peacetime, prepare strikes against the main enemies
+				NOT = { has_war_with = FROM }
+				FROM = { is_major = no }
+			}
+		}
+
+		command_power = 5 # command power allocation cost
+
+		allowed = {
+			has_dlc = "Gotterdammerung"
+		}
+		# Raid Type is visible
+		visible = {
+			is_special_project_completed = sp:sp_nuclear_warheads
+		}
+		# Specific Target is visible
+		show_target = {
+			NOT = {
+				is_in_faction_with = FROM
+			}
+		}
+
+		# Can prepare
+		available = {
+			#has_war_with = FROM
+		}
+		launchable = {
+			has_war_with = FROM
+		}
+
+		target_type = {
+			province = any
+		}
+		target_icon = GFX_other_target_icon
+		target_loc_key = raid_target_name_thermonuclear
+
+		unit_requirements = {
+			equipment = {
+				type = { nuclear_missile_equipment }
+				amount = { min = 1 }
+			}
+		}
+		essential_equipment = {
+			nukes = 1
+		}
+		nuke_type = thermonuclear_bomb
+		starting_point = {
+		    types = {
+		        submarine
+		    }
+		}
+		arrow = {
+		    type = ballistic
+		}
+
+		launch_sound = raid_launch_nuclear_missile
+
+        unit_model = {
+            scale = 0.5
+        }
+
+        unit_animations = {
+            stage = { state = "idle" }
+            stage = { state = "idle2" intro = "idle2_intro" at_progress = 0.33 }
+            stage = { state = "idle3" intro = "idle3_intro" at_progress = 0.66 }
+        }
+
+		success_factors = {
+			success = {
+				base = 0.8
+				intel = {
+					weight = 0.2
+					#start_reference = 50
+					reference = 100
+				}
+			}
+		}
+
+		success_levels = {
+			failure = {
+				actor_effects = {
+					var:actor_country = {
+						custom_effect_tooltip = dud_missile_tt
+					}
+				}
+			}
+			limited_success = {
+				actor_effects = {
+					var:actor_country = {
+						custom_effect_tooltip = dud_missile_tt
+					}
+				}
+			}
+			success = {
+			    custom_sound = raid_result_success_nuclear
+				actor_effects = {
+				}
+				victim_effects = {
+					var:actor_country = { save_global_event_target_as = nuclear_gandhi_actor_country }  
+					var:target_state = {
+						bathe_in_hellfire_thermonuclear = yes
+						#custom_effect_tooltip = raid_nuclear_strike_tt
+						add_dynamic_modifier = {
+							modifier = fallout_thermonuclear
+							days = 730
+						}
+					}
+					
+					var:actor_country = {
+						launch_nuke = {
+							province = var:ROOT.target_province #optional use either province or state
+							use_nuke = no #will consume nuke if specified
+							nuke_type = thermonuclear_bomb
+						}
+						PHI_cobalt_sea_achievement = yes
+					}
+				}
+			}
+			critical_success = {
+			    custom_sound = raid_result_critical_success_nuclear
+				actor_effects = {
+				}
+				victim_effects = {
+					var:actor_country = { save_global_event_target_as = nuclear_gandhi_actor_country }  
+					var:target_state = {
+						bathe_in_hellfire_thermonuclear = yes
+						add_dynamic_modifier = {
+							modifier = fallout_thermonuclear
+							days = 730
+						}
+					}
+					var:actor_country = {
+						launch_nuke = {
+							province = var:ROOT.target_province #optional use either province or state
+							use_nuke = no #will consume nuke if specified
+							nuke_type = thermonuclear_bomb
+						}
+						PHI_cobalt_sea_achievement = yes
 					}
 				}
 			}
