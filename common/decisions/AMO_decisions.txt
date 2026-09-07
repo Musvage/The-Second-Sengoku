@@ -6,9 +6,11 @@ AMO_war_against_shogunate = {
 
 		allowed = { original_tag = AMO }
 
-		fire_only_once = yes
+		fire_only_once = yes	# triggered by startup_flavour.6
 		
 		days_remove = 60
+		
+		war_with_on_remove = SHO
 		
 		modifier = {
 			war_support_weekly = 0.01 weekly_manpower  = 250
@@ -105,8 +107,40 @@ AMO_war_against_shogunate = {
 				target = SHO
 				type = annex_everything
 			}
+			every_state = {
+				limit = { is_owned_by = SHO }
+				add_claim_by = AMO
+			}
 			set_global_flag = amo_sho_scripted_war_ongoing
-			hidden_effect = { activate_mission = AMO_ongoing_war_amo SHO = { activate_mission = AMO_ongoing_war_sho set_variable = { ongoing_war_buy_time_cost = 50 } } }
+			clr_global_flag = amo_sho_scripted_war_brewing
+		}
+
+		ai_will_do = { base = 0 }
+	}
+	
+	AMO_countdown_to_war_sho = {
+
+		icon = generic_ignite_civil_war
+
+		allowed = { original_tag = SHO }
+
+		fire_only_once = yes	# triggered by startup_flavour.6
+		
+		days_remove = 60
+		
+		remove_effect = {
+			effect_tooltip = {
+				AMO = {
+					declare_war_on = {
+						target = SHO
+						type = annex_everything
+					}
+				}
+				every_state = {
+					limit = { is_owned_by = SHO }
+					add_claim_by = AMO
+				}
+			}
 		}
 
 		ai_will_do = { base = 0 }
@@ -120,7 +154,7 @@ AMO_war_against_shogunate = {
 		
 		visible = { has_decision = AMO_countdown_to_war }
 		
-		cost = AMO_war_decisions_war_cost?30
+		cost = 30
 
 		fire_only_once = yes
 
@@ -129,6 +163,14 @@ AMO_war_against_shogunate = {
 				decision = AMO_countdown_to_war
 				days = 30
 			}
+			hidden_effect = {
+				SHO = {
+					add_days_remove  = {
+						decision = AMO_countdown_to_war_sho
+						days = 30
+					}
+				}
+			}
 		}
 		
 		ai_will_do = {
@@ -136,297 +178,467 @@ AMO_war_against_shogunate = {
 		}
 	}
 	
-	AMO_recruit_samurai = {
+	AMO_pacify_states = {
 	
-		icon = generic_clans
-	
-		allowed = { original_tag = AMO is_debug = yes }
-		
-		visible = { has_decision = AMO_countdown_to_war }
-
-		days_remove = 7
-		
-		cost = AMO_war_decisions_war_cost?30
-
-		fire_only_once = yes
-
-		complete_effect = {
-			set_country_flag = AMO_recruit_samurai_completed
-			custom_effect_tooltip = AMO_countdown_to_war_upon_completed
-			custom_effect_tooltip = AMO_recruit_samurai_tt
-		}
-		
-		ai_will_do = {
-			factor = 1
-		}
-	}
-
-	AMO_rally_soldiers = {
-	
-		icon = SWE_set_army_budget
-	
-		allowed = { original_tag = AMO is_debug = yes }
-		
-		visible = { has_decision = AMO_countdown_to_war }
-
-		days_remove = 7
-		
-		cost = AMO_war_decisions_war_cost?30
-
-		fire_only_once = yes
-
-		complete_effect = {
-			set_country_flag = AMO_rally_soldiers_completed
-			custom_effect_tooltip = AMO_countdown_to_war_upon_completed
-			custom_effect_tooltip = AMO_rally_soldiers_tt
-		}
-		
-		ai_will_do = {
-			factor = 1
-		}
-	}
-	
-	AMO_steal_weapons = {
-	
-		icon = generic_prepare_civil_war
-	
-		allowed = { original_tag = AMO is_debug = yes }
-		
-		visible = { has_decision = AMO_countdown_to_war }
-
-		days_remove = 7
-		
-		cost = AMO_war_decisions_war_cost?30
-
-		fire_only_once = yes
-
-		complete_effect = {
-			set_country_flag = AMO_steal_weapons_completed
-			custom_effect_tooltip = AMO_countdown_to_war_upon_completed
-			custom_effect_tooltip = AMO_steal_weapons_tt
-		}
-		
-		ai_will_do = {
-			factor = 0
-		}
-	}
-	
-	AMO_ongoing_war_amo = {
-	
-		icon = generic_ignite_civil_war
+		icon = generic_form_nation
 	
 		allowed = { original_tag = AMO }
 		
-		activation = { always = no }
+		visible = { has_global_flag = amo_sho_scripted_war_ongoing }
 		
 		available = {
-			hidden_trigger = { always = no }
-			custom_trigger_tooltip = {
-				tooltip = AMO_ongoing_war_amo_pyrrhic
-				102 = { is_controlled_by = AMO }						# knights hold the line
-				196 = { is_controlled_by = AMO }
-			}
-			custom_trigger_tooltip = {
-				tooltip = AMO_ongoing_war_amo_close						# knights capture territory
-				SHO = { any_owned_state = { is_controlled_by = AMO } }
-			}
-			custom_trigger_tooltip = {
-				tooltip = AMO_ongoing_war_amo_total						# total victory
-				NOT = { country_exists = SHO }
+			any_controlled_state = {
+				is_owned_by = SHO
+				resistance > 10
 			}
 		}
-
-		days_mission_timeout = 90
-
-		fire_only_once = yes
 		
-		selectable_mission = no
+		cost = 60
 
-		complete_effect = {
-			custom_effect_tooltip = AMO_ongoing_war_tt
+		fire_only_once = no
+		
+		days_remove = 30
+		
+		days_re_enable = 30
+
+		remove_effect = {
+			every_controlled_state = {
+				limit = { is_owned_by = SHO }
+				add_resistance = -25
+			}
+		}
+		
+		ai_will_do = {
+			factor = 0
+		}
+	}
+	
+	AMO_evacuate_capital_to_sado = {
+	
+		icon = generic_scorched_earth
+	
+		allowed = { original_tag = AMO }
+		
+		visible = {
+			has_global_flag = amo_sho_scripted_war_ongoing
 			if = {
-				limit = {
-					AMO = {
-						all_controlled_state = {
-							OR = {
-								NOT = { is_on_continent = honshu }
-								is_one_state_island = yes
-							}
-						}
-					}
+				limit = { has_country_flag = moved_capital_honshu }
+				capital_scope = {
+					AMO = { NOT = { has_full_control_of_state = PREV } }
 				}
-				SHO = { country_event = amaterasu.6 }	# Shogun's close victory
-			} else_if = {
-				limit = { 
-					SHO = { NOT = { any_owned_state = { is_controlled_by = AMO } } }
-				}
-				SHO = { country_event = amaterasu.7 }	# Shogun's pyrrhic victory
-			} else_if = {
-				limit = {
-					SHO = { any_owned_state = { is_controlled_by = AMO } }
-				}
-				country_event = amaterasu.9				# Knight's close victory
 			} else = {
-				country_event = amaterasu.8				# Knight's pyrrhic victory
+				NOT = { has_full_control_of_state = 102 has_full_control_of_state = 196 }
 			}
-			clr_global_flag = amo_sho_scripted_war_ongoing
 		}
-		
-		ai_will_do = {
-			factor = 0
-		}
-	}
-	
-	AMO_ongoing_war_sho = {
-	
-		icon = generic_ignite_civil_war
-	
-		allowed = { original_tag = SHO }
-		
-		activation = { always = no }
 		
 		available = {
-			hidden_trigger = { always = no }
-			custom_trigger_tooltip = {
-				tooltip = AMO_ongoing_war_sho_pyrrhic
-				NOT = { any_owned_state = { is_controlled_by = AMO } }	# kept the knights at bay, but they hold Noto and Sado
-			}
-			custom_trigger_tooltip = {
-				tooltip = AMO_ongoing_war_sho_close						# expelled the knights from Honshu
-				AMO = {
-					all_controlled_state = {
-						OR = {
-							NOT = { is_on_continent = honshu }
-							is_one_state_island = yes
-						}
-					}
-				}
-			}
-			custom_trigger_tooltip = {
-				tooltip = AMO_ongoing_war_sho_total						# total victory
-				NOT = { country_exists = AMO }
+			controls_state = 196
+			has_full_control_of_state = 15
+			has_equipment = {
+				convoy > 10
 			}
 		}
 		
-		is_good = no
-
-		days_mission_timeout = 90
+		cost = 100
 
 		fire_only_once = yes
 		
-		selectable_mission = no
-
-		complete_effect = {
-			custom_effect_tooltip = AMO_ongoing_war_tt
-		}
-		
-		ai_will_do = {
-			factor = 0
-		}
-	}
-	
-	AMO_ongoing_war_buy_time_sho = {
-	
-		icon = generic_hour_glass
-	
-		allowed = { original_tag = SHO }
-		
-		visible = { has_active_mission = AMO_ongoing_war_sho }
-		
-		cost = var:ongoing_war_buy_time_cost?50
-
-		fire_only_once = no
+		days_remove = 30
 		
 		cost = 100
 
-		complete_effect = {
-			add_days_mission_timeout = {
-				mission = AMO_ongoing_war_sho
-				days = 60
-			}
-			custom_effect_tooltip = AMO_ongoing_war_buy_time_sho_cost
-			hidden_effect = {
-				AMO = {
-					add_days_mission_timeout = {
-						mission = AMO_ongoing_war_amo
-						days = 60
-					}
-				}
-				add_to_variable = { ongoing_war_buy_time_cost = 50 }
+		remove_effect = {
+			set_capital = {
+			  state = 15
+			  remember_old_capital = no
 			}
 		}
 		
 		ai_will_do = {
 			factor = 10
+			modifier = {
+				factor = 0
+				controls_state = 102	# Noto
+			}
 		}
 	}
 	
-	AMO_ongoing_war_buy_time_amo = {
+	AMO_ongoing_war_truce_sho = {
 	
-		icon = generic_hour_glass
-	
-		allowed = { original_tag = AMO }
-		
-		visible = { has_active_mission = AMO_ongoing_war_amo }
-		
-		cost = var:ongoing_war_buy_time_cost?50
-
-		fire_only_once = no
-		
-		cost = 100
-
-		complete_effect = {
-			add_days_mission_timeout = {
-				mission = AMO_ongoing_war_sho
-				days = 60
-			}
-			custom_effect_tooltip = AMO_ongoing_war_buy_time_sho_cost
-			hidden_effect = {
-				AMO = {
-					add_days_mission_timeout = {
-						mission = AMO_ongoing_war_amo
-						days = 60
-					}
-				}
-				add_to_variable = { ongoing_war_buy_time_cost = 50 }
-			}
-		}
-		
-		ai_will_do = {
-			factor = 10
-		}
-	}
-	
-	AMO_ongoing_war_surrender_sho = {
-	
-		icon = generic_hour_glass
+		icon = eng_trade_unions_support
 	
 		allowed = { original_tag = SHO }
 		
-		visible = { has_active_mission = AMO_ongoing_war_sho }
+		visible = { has_global_flag = amo_sho_scripted_war_ongoing }
+		
+		available = {
+			has_global_flag = amo_sho_scripted_war_ongoing
+			has_war_with = AMO
+		}
 		
 		cost = 0
 
 		fire_only_once = yes
 		
-		cost = 100
+		cost = 50
 
 		complete_effect = {
-			
+			custom_effect_tooltip = AMO_ongoing_war_truce_sho_tt
+			hidden_effect = { AMO = { country_event = { id = amaterasu.40 hours = 2 random = 10 } } }
 		}
 		
 		ai_will_do = {
-			factor = 1
+			factor = 0
 			modifier = {
-				add = 99
+				add = 10
 				any_enemy_country = {
 					NOT = { tag = AMO }
 					strength_ratio = {
-						tag = AMO
+						tag = SHO
 						ratio > 1
 					}
 				}
 			}
+			modifier = {
+				add = 100
+				KAN = { focus_progress = { focus = KAN_antagonize_later_SHO progress > 0.5 } }
+			}
+			modifier = {
+				add = 2
+				strength_ratio = {
+					tag = AMO
+					ratio < 1
+				}
+			}
+			modifier = {
+				factor = 5
+				strength_ratio = {
+					tag = AMO
+					ratio < 1
+				}
+			}
+		}
+	}
+	
+	AMO_clan_is_rebellin_amo = {
+	
+		icon = generic_form_nation
+	
+		allowed = { always = no }
+		
+		activation = { always = no }
+		
+		available = { check_variable = { global.final_rebellion_score < 0.25 } }
+		
+		days_remove = 30
+		
+		days_re_enable = 15
+		
+		is_good = yes
+		
+		timeout_effect = {
+			# SHO fails
+			custom_effect_tooltip = "a clan rebels"
+			clr_global_flag = amo_sho_scripted_war_cooldown
+			set_global_flag = amo_sho_scripted_war_cooldown
+		}
+
+		complete_effect = {
+			# SHO succeeds 
+			custom_effect_tooltip = "sho lives another day"
+			clr_global_flag = amo_sho_scripted_war_cooldown
+			set_global_flag = amo_sho_scripted_war_cooldown
+		}
+		
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	
+	AMO_clan_is_rebellin_sho = {
+	
+		icon = generic_ignite_civil_war
+	
+				allowed = { always = no }
+		
+		activation = { always = no }
+		
+		available = { check_variable = { global.final_rebellion_score < 0.25 } }
+		
+		days_remove = 30
+		
+		days_re_enable = 15
+		
+		is_good = no
+		
+		selectable_mission = no
+		
+		timeout_effect = {
+			# SHO fails
+			custom_effect_tooltip = "a clan rebels"
+			random_owned_controlled_state = {
+				limit = {
+					OR = {
+						is_core_of = SKA
+						is_core_of = ASA
+						is_core_of = OWA
+						is_core_of = HOJ
+						is_core_of = UES
+						is_core_of = MAT
+						is_core_of = AMA
+						is_core_of = TMA
+						is_core_of = OIK
+						is_core_of = ABE
+					}
+				}
+				if = { limit = { is_core_of = SKA } SHO = { release = SKA SKA = { declare_war_on = { target = SHO } AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes } } }
+				if = { limit = { is_core_of = SKA } SHO = { release = ASA ASA = { declare_war_on = { target = SHO } AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes } } } 
+				if = { limit = { is_core_of = SKA } SHO = { release = OWA OWA = { declare_war_on = { target = SHO } AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes } } }
+				if = { limit = { is_core_of = SKA } SHO = { release = HOJ HOJ = { declare_war_on = { target = SHO } AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes } } }
+				if = { limit = { is_core_of = SKA } SHO = { release = UES UES = { declare_war_on = { target = SHO } AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes } } }
+				if = { limit = { is_core_of = SKA } SHO = { release = MAT MAT = { declare_war_on = { target = SHO } AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes } } }
+				if = { limit = { is_core_of = SKA } SHO = { release = AMA AMA = { declare_war_on = { target = SHO } AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes } } }
+				if = { limit = { is_core_of = SKA } SHO = { release = TMA TMA = { declare_war_on = { target = SHO } AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes } } }
+				if = { limit = { is_core_of = SKA } SHO = { release = OIK OIK = { declare_war_on = { target = SHO } AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes } } }
+				if = { limit = { is_core_of = SKA } SHO = { release = ABE ABE = { declare_war_on = { target = SHO } AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes } } }
+			}
+		}
+
+		complete_effect = {
+			# SHO succeeds 
+			custom_effect_tooltip = "sho lives another day"
+		}
+		
+		ai_will_do = {
+			factor = 1
+		}
+	}
+}
+
+political_actions = {
+	AMO_move_capital_to_114 = {
+	
+		icon = generic_form_nation
+	
+		allowed = { original_tag = AMO }
+		
+		visible = { NOT = { has_country_flag = moved_capital_honshu has_global_flag = amo_sho_scripted_war_brewing } }
+		
+		available = {
+			has_full_control_of_state = 114
+		}
+		
+		cost = 100
+		
+		highlight_states = { state = 114 }
+
+		fire_only_once = yes
+		
+		days_remove = 30
+		
+		cost = 100
+
+		remove_effect = {
+			set_capital = {
+			  state = 114
+			  remember_old_capital = no
+			}
+			114 = { add_core_of = AMO }
+			set_country_flag = moved_capital_honshu
+			custom_effect_tooltip = moved_capital_honshu_tt
+		}
+		
+		ai_will_do = {
+			factor = 20
+		}
+	}
+	
+	AMO_move_capital_to_128 = {
+	
+		icon = generic_form_nation
+	
+		allowed = { original_tag = AMO }
+		
+		visible = { NOT = { has_country_flag = moved_capital_honshu has_global_flag = amo_sho_scripted_war_brewing } }
+		
+		available = {
+			has_full_control_of_state = 128
+		}
+		
+		cost = 100
+		
+		highlight_states = { state = 128 }
+
+		fire_only_once = yes
+		
+		days_remove = 30
+		
+		cost = 100
+
+		remove_effect = {
+			set_capital = {
+			  state = 128
+			  remember_old_capital = no
+			}
+			128 = { add_core_of = AMO }
+			set_country_flag = moved_capital_honshu
+			custom_effect_tooltip = moved_capital_honshu_tt
+		}
+		
+		ai_will_do = {
+			factor = 10
+			modifier = {
+				factor = 0.5
+				NOT = { controls_state = 102 }
+			}
+		}
+	}
+	
+	AMO_move_capital_to_129 = {
+	
+		icon = generic_form_nation
+	
+		allowed = { original_tag = AMO }
+		
+		visible = { NOT = { has_country_flag = moved_capital_honshu has_global_flag = amo_sho_scripted_war_brewing } }
+		
+		available = {
+			has_full_control_of_state = 129
+		}
+		
+		cost = 100
+		
+		highlight_states = { state = 129 }
+
+		fire_only_once = yes
+		
+		days_remove = 30
+		
+		cost = 100
+
+		remove_effect = {
+			set_capital = {
+			  state = 129
+			  remember_old_capital = no
+			}
+			129 = { add_core_of = AMO }
+			set_country_flag = moved_capital_honshu
+			custom_effect_tooltip = moved_capital_honshu_tt
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+	}
+	
+	AMO_move_capital_to_13 = {
+	
+		icon = generic_form_nation
+	
+		allowed = { original_tag = AMO }
+		
+		visible = { NOT = { has_country_flag = moved_capital_honshu has_global_flag = amo_sho_scripted_war_brewing } }
+		
+		available = {
+			has_full_control_of_state = 13
+		}
+		
+		cost = 100
+		
+		highlight_states = { state = 13 }
+
+		fire_only_once = yes
+		
+		days_remove = 30
+		
+		cost = 100
+
+		remove_effect = {
+			set_capital = {
+			  state = 13
+			  remember_old_capital = no
+			}
+			13 = { add_core_of = AMO }
+			set_country_flag = moved_capital_honshu
+			custom_effect_tooltip = moved_capital_honshu_tt
+		}
+		
+		ai_will_do = {
+			factor = 5
+		}
+	}
+	
+	AMO_move_capital_to_37 = {
+	
+		icon = generic_form_nation
+	
+		allowed = { original_tag = AMO }
+		
+		visible = { NOT = { has_country_flag = moved_capital_honshu has_global_flag = amo_sho_scripted_war_brewing } }
+		
+		available = {
+			has_full_control_of_state = 37
+		}
+		
+		cost = 100
+		
+		highlight_states = { state = 37 }
+
+		fire_only_once = yes
+		
+		days_remove = 30
+		
+		cost = 100
+
+		remove_effect = {
+			set_capital = {
+			  state = 37
+			  remember_old_capital = no
+			}
+			37 = { add_core_of = AMO }
+			set_country_flag = moved_capital_honshu
+			custom_effect_tooltip = moved_capital_honshu_tt
+		}
+		
+		ai_will_do = {
+			factor = 2.5
+		}
+	}
+	
+	AMO_move_capital_to_119 = {
+	
+		icon = generic_form_nation
+	
+		allowed = { original_tag = AMO }
+		
+		visible = { NOT = { has_country_flag = moved_capital_honshu has_global_flag = amo_sho_scripted_war_brewing } }
+		
+		available = {
+			has_full_control_of_state = 119
+		}
+		
+		cost = 100
+		
+		highlight_states = { state = 119 }
+
+		fire_only_once = yes
+		
+		days_remove = 30
+		
+		cost = 100
+
+		remove_effect = {
+			set_capital = {
+			  state = 119
+			  remember_old_capital = no
+			}
+			119 = { add_core_of = AMO }
+			set_country_flag = moved_capital_honshu
+			custom_effect_tooltip = moved_capital_honshu_tt
+		}
+		
+		ai_will_do = {
+			factor = 1
 		}
 	}
 }

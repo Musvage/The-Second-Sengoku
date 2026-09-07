@@ -82,7 +82,7 @@
 	focus = {
 		id = SHO_caste_system
 		icon = GFX_focus_SHO_caste_system
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
 		
 		prerequisite = { focus = SHO_suppress_opposition }
 		
@@ -98,7 +98,8 @@
 		ai_will_do = { factor = 5 }
 		
 		completion_reward = {
-			add_political_power = 150
+			add_political_power = 90
+			add_stability = 0.05
 			if = {
 				limit = { has_country_leader = { character = SHO_tokugawa_iesato ruling_only = yes } }
 				custom_effect_tooltip = SHO_caste_system_tt
@@ -229,7 +230,7 @@
 	focus = {
 		id = SHO_successor_mito
 		icon = GFX_focus_SHO_candidate_mito
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
 		
 		prerequisite = { focus = SHO_call_congress }
 		mutually_exclusive = { focus = SHO_successor_owari focus = SHO_successor_kii }
@@ -271,7 +272,7 @@
 	focus = {
 		id = SHO_successor_owari
 		icon = GFX_focus_SHO_candidate_owari
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_WAR_SUPPORT }
 		
 		prerequisite = { focus = SHO_call_congress }
 		mutually_exclusive = { focus = SHO_successor_kii focus = SHO_successor_mito }
@@ -410,7 +411,7 @@
 	focus = {
 		id = SHO_build_coalition
 		icon = GFX_goal_generic_improve_relations
-		search_filters = { FOCUS_FILTER_POLITICAL }
+		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
 		
 		prerequisite = { focus = SHO_successor_owari focus = SHO_successor_kii }
 		
@@ -455,6 +456,7 @@
 		ai_will_do = { factor = 5 }
 		
 		completion_reward = {
+			add_stability = 0.05
 			country_event = shogunate.4
 			custom_effect_tooltip = loc_paragraph
 			custom_effect_tooltip = SHO_build_coalition_tt
@@ -719,7 +721,7 @@
 			GFX_focus_generic_diplomacy_REI_neutrality = yes
 		}
 		dynamic = yes
-		search_filters = { FOCUS_FILTER_POLITICAL FOCUS_FILTER_STABILITY }
+		search_filters = { FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = SHO_state_philantrophy focus = SHO_new_shogun_fascism }
 		mutually_exclusive = { focus =  SHO_maintain_autonomy }
@@ -1544,13 +1546,17 @@
 			custom_effect_tooltip = loc_paragraph
 			if = {
 				limit = {  AMO = { has_decision = AMO_countdown_to_war } }
+				add_days_remove  = {
+					decision = AMO_countdown_to_war_sho
+					days = 30
+				}
 				AMO = {
-					add_days_remove  = {
-						decision = AMO_countdown_to_war
-						days = 30
+					hidden_effect = {
+						add_days_remove  = {
+							decision = AMO_countdown_to_war
+							days = 30
+						}
 					}
-					set_variable = { AMO_war_decisions_war_cost = 60 }
-					custom_effect_tooltip = SHO_army_purge_disloyalty_tt
 					country_event = shogunate.5
 				}
 				custom_effect_tooltip = loc_paragraph

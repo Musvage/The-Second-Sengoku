@@ -79,13 +79,17 @@ country_event = { # Arsenals sabotaged	#(old)
 	}
 }
 
-country_event = { # Shogun Total Victory (triggered by on_actions)
+country_event = { # Shogun Total Victory (triggered by on_actions)	### THIS ONE STAYS
 	id = amaterasu.5
 	title = amaterasu.5.t
 	desc = amaterasu.5.d
 	picture = GFX_report_event_usa_heavy_cruiser
 
 	is_triggered_only = yes
+	
+	immediate = {
+		clr_global_flag = amo_sho_scripted_war_ongoing
+	}
 
 	option = {
 		name = amaterasu.5.amo
@@ -101,7 +105,7 @@ country_event = { # Shogun Total Victory (triggered by on_actions)
 	}
 }
 
-country_event = { # Shogun Close Victory
+country_event = { # Knights Total Victory (triggered by on_actions)	## THIS ONE STAYS
 	id = amaterasu.6
 	title = amaterasu.6.t
 	desc = amaterasu.6.d
@@ -123,7 +127,7 @@ country_event = { # Shogun Close Victory
 	}
 }
 
-country_event = { # Shogun Pyrrhic Victory
+country_event = { # Truce (SHO event)
 	id = amaterasu.7
 	title = amaterasu.7.t
 	desc = amaterasu.7.d
@@ -132,20 +136,28 @@ country_event = { # Shogun Pyrrhic Victory
 	is_triggered_only = yes
 
 	option = {
-		name = amaterasu.7.amo
-		trigger = { tag = AMO }
+		name = amaterasu.5.a	# accept
+		hidden_effect = { AMO = { country_event = amaterasu.8 } }
+		every_owned_state = {
+			limit = { is_controlled_by = AMO }
+			custom_effect_tooltip = AMO_resolution_end_war_tt
+			hidden_effect = { AMO = { transfer_state = PREV } }
+		}
+		AMO = {
+			every_owned_state = {
+				limit = { is_controlled_by = SHO }
+				custom_effect_tooltip = AMO_resolution_end_war_tt2
+				hidden_effect = { SHO = { transfer_state = PREV } }
+			}
+		}
 	}
 	option = {
-		name = amaterasu.7.sho
-		trigger = { tag = SHO }
-	}
-	option = {
-		name = amaterasu.7.other
-		trigger = { NOT = { tag = AMO tag = SHO } }
+		name = amaterasu.5.b	# refuse
+		AMO = { country_event = { id = amaterasu.9 hours = 2 } }
 	}
 }
 
-country_event = { # Knights Pyrrhic Victory
+country_event = { # Truce, refused (AMO event)
 	id = amaterasu.8
 	title = amaterasu.8.t
 	desc = amaterasu.8.d
@@ -154,60 +166,49 @@ country_event = { # Knights Pyrrhic Victory
 	is_triggered_only = yes
 
 	option = {
-		name = amaterasu.8.amo
-		trigger = { tag = AMO }
+		name = amaterasu.8.a	# accept
 	}
 	option = {
-		name = amaterasu.8.sho
-		trigger = { tag = SHO }
-	}
-	option = {
-		name = amaterasu.8.other
-		trigger = { NOT = { tag = AMO tag = SHO } }
+		name = amaterasu.8.b	# refuse
 	}
 }
 
-country_event = { # Knights Close Victory
+country_event = { # Truce, accepted (AMO world event)
 	id = amaterasu.9
 	title = amaterasu.9.t
 	desc = amaterasu.9.d
 	picture = GFX_report_event_usa_heavy_cruiser
 
 	is_triggered_only = yes
+	
+	major = yes
+	
+	immediate = {
+		clr_global_flag = amo_sho_scripted_war_ongoing
+		AMO = {
+			every_owned_state = {
+				limit = { is_core_of = SHO }
+				set_compliance = 100
+				set_resistance = 0
+			}
+		}
+		SHO = {
+			every_owned_state = {
+				limit = { is_core_of = AMO }
+				set_compliance = 100
+				set_resistance = 0
+			}
+			every_controlled_state = {
+				remove_claim_by = AMO
+			}
+		}
+	}
 
 	option = {
-		name = amaterasu.9.amo
-		trigger = { tag = AMO }
+		name = amaterasu.9.a	# accept
 	}
 	option = {
-		name = amaterasu.9.sho
-		trigger = { tag = SHO }
-	}
-	option = {
-		name = amaterasu.9.other
-		trigger = { NOT = { tag = AMO tag = SHO } }
-	}
-}
-
-country_event = { # Knights Total Victory (triggered by on_actions)
-	id = amaterasu.10
-	title = amaterasu.10.t
-	desc = amaterasu.10.d
-	picture = GFX_report_event_usa_heavy_cruiser
-
-	is_triggered_only = yes
-
-	option = {
-		name = amaterasu.10.amo
-		trigger = { tag = AMO }
-	}
-	option = {
-		name = amaterasu.10.sho
-		trigger = { tag = SHO }
-	}
-	option = {
-		name = amaterasu.10.other
-		trigger = { NOT = { tag = AMO tag = SHO } }
+		name = amaterasu.9.b	# refuse
 	}
 }
 
@@ -366,7 +367,7 @@ country_event = { # Focus: Terror Campaign
 	}
 }
 
-country_event = { # Focus: Truce!	target: SHO
+country_event = { # Focus: Truce!	target: SHO	## TODO TO-DO TO DO: delete this event
 	id = amaterasu.27
 	title = amaterasu.27.t
 	desc = amaterasu.27.d
@@ -456,7 +457,7 @@ country_event = { # Focus: Truce!	target: SHO
 	}
 }
 
-country_event = { # Focus: Truce!	Accepted peace
+country_event = { # Focus: Truce!	Accepted peace	## TODO TO-DO TO DO: delete this event
 	id = amaterasu.28
 	title = amaterasu.28.t
 	desc = amaterasu.28.d
@@ -488,7 +489,7 @@ country_event = { # Focus: Truce!	Accepted peace
 	}
 }
 
-country_event = { # Focus: Truce!	Accepted cease fire
+country_event = { # Focus: Truce!	Accepted cease fire	## TODO TO-DO TO DO: delete this event
 	id = amaterasu.29
 	title = amaterasu.29.t
 	desc = amaterasu.29.d
@@ -528,7 +529,7 @@ country_event = { # Focus: Truce!	Accepted cease fire
 	}
 }
 
-country_event = { # Focus: Truce!	Rejected
+country_event = { # Focus: Truce!	Rejected	## TODO TO-DO TO DO: delete this event
 	id = amaterasu.30
 	title = amaterasu.30.t
 	desc = amaterasu.30.d
@@ -786,6 +787,99 @@ country_event = { # A Common Enemy: no help (target: AMO)
 	}
 }
 
+country_event = { # Truce (triggered by decision - AMO event)
+	id = amaterasu.40
+	title = amaterasu.40.t
+	desc = amaterasu.40.d
+	picture = GFX_report_news_peace_dove
+
+	is_triggered_only = yes
+
+	option = {	# accept
+		name = amaterasu.40.a
+		every_state = {
+			limit = { is_owned_by = SHO is_controlled_by = AMO }
+			AMO = { transfer_state = PREV }
+		}
+		every_state = {
+			limit = { is_owned_by = AMO is_controlled_by = SHO }
+			SHO = { transfer_state = PREV }
+		}
+		hidden_effect = { country_evetn = { id = amaterasu.401 } }
+	}
+	option = {	# refuse
+		name = amaterasu.40.b
+		country_evetn = { id = amaterasu.402 hours = 2 }
+	}
+}
+
+country_event = { # Truce, accepted (SHO world event)
+	id = amaterasu.401
+	title = amaterasu.401.t
+	desc = amaterasu.401.d
+	picture = GFX_report_news_peace_dove
+
+	is_triggered_only = yes
+	
+	major = yes
+
+	option = {
+		name = amaterasu.401.sho
+		trigger = { tag = SHO }
+	}
+	option = {
+		name = amaterasu.401.amo
+		trigger = { tag = AMO }
+	}
+	option = {
+		name = amaterasu.401.other
+		trigger = { NOT = { tag = AMO tag = SHO } }
+	}
+}
+
+country_event = { # Truce, refuse (SHO event)
+	id = amaterasu.402
+	title = amaterasu.402.t
+	desc = amaterasu.402.d
+	picture = GFX_report_event_irregular_soldiers_japan
+
+	is_triggered_only = yes
+	
+	option = {
+		name = amaterasu.402.a
+	}
+}
+
+country_event = { # Clan Rebellion
+	id = amaterasu.50
+	title = amaterasu.50.t
+	desc = amaterasu.50.d
+	picture = GFX_report_event_irregular_soldiers_japan
+
+	is_triggered_only = yes
+	
+	immediate = {
+		FROM = {	# FROM is the clan
+			AMO_samurai_rebellion_spawn_clan_unit = yes
+		}
+	}
+	
+	option = {	# we will fight!
+		name = amaterasu.50.a
+		white_peace = FROM
+	}
+	option = {	# ignore
+		name = amaterasu.50.b
+	}
+	option = {	# join
+		trigger = { is_ai = no }
+		name = amaterasu.50.c
+		change_tag_from = FROM
+	}
+}
+
+### Auxiliary hidden events
+
 country_event = { # reset focus tree to restart AI strategy
 	id = amaterasu.998
 	title = "hidden event"
@@ -829,9 +923,6 @@ country_event = { # reset focus tree to unlock it
 		mark_focus_tree_layout_dirty = yes
 	}
 }
-
-# quote for SHO not wanting peace: An enemy that has surrendered is still an enemy. Better to finish them off then to fight twice 
-
 
 ##############################################################
 ##############################################################

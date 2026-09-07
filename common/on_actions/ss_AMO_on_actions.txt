@@ -21,7 +21,122 @@ on_actions = {
 					division_template = "Yugekitai Ryodan" 
 					division_cap = clan_levy_cap
 				}
-				log = "MONTHLY [ROOT.GetAdjective] check number irregulars: [?ROOT.clan_levy_cap]"
+			}
+		}
+		effect = {
+			if = {
+				limit = { OR = { has_global_flag = amo_sho_scripted_war_ongoing has_global_flag = amo_sho_scripted_war_brewing } }
+				set_variable = { global.sho_rebellion_total_score = 0 }
+				SHO = {
+					every_state = {
+						limit = { is_core_of = SHO }
+						set_temp_variable = { temp_rebellion_score = 0 }
+						add_to_temp_variable = { temp_rebellion_score = var:building_level@industrial_complex }
+						add_to_temp_variable = { temp_rebellion_score = var:building_level@arms_factory }
+						add_to_temp_variable = { temp_rebellion_score = var:building_level@dockyard }
+						add_to_temp_variable = { temp_rebellion_score = var:building_level@infrastructure }
+						add_to_temp_variable = { temp_rebellion_score = var:building_level@synthetic_refinery }
+						add_to_temp_variable = { temp_rebellion_score = var:building_level@fuel_silo }
+						add_to_temp_variable = { temp_rebellion_score = var:building_level@nuclear_reactor }
+						add_to_temp_variable = { temp_rebellion_score = var:building_level@nuclear_reactor_heavy_water }
+						add_to_temp_variable = { temp_rebellion_score = var:building_level@commercial_nuclear_reactor }
+						add_to_temp_variable = { temp_rebellion_score = var:building_level@nuclear_facility }
+						add_to_temp_variable = { temp_rebellion_score = var:building_level@energy_infrastructure }
+						add_to_temp_variable = { temp_rebellion_score = var:building_level@industrial_infrastructure }
+						if = {
+							limit = { check_variable = { var:state_population_k > 500 } }
+							multiply_variable = { temp_rebellion_score = 4 }
+						} else_if = {
+							limit = { check_variable = { var:state_population_k > 250 } }
+							multiply_variable = { temp_rebellion_score = 2 }
+						} else = {
+							multiply_variable = { temp_rebellion_score = 1 }
+						}
+						add_to_variable = { global.sho_rebellion_total_score = temp_rebellion_score }
+					}
+				}
+			}
+		}
+	}
+	
+	on_daily_AMO = {
+		effect = {
+			if = {
+				limit = { has_global_flag = amo_sho_scripted_war_ongoing }
+				
+				### GET SCORE
+				
+				set_variable = { global.amo_rebellion_score = 0 }
+				set_variable = { global.sho_rebellion_score = 0 }
+				every_owned_state = {
+					limit = { is_controlled_by = SHO }
+					set_temp_variable = { temp_rebellion_score = 0 }
+					add_to_temp_variable = { temp_rebellion_score = var:building_level@industrial_complex }
+					add_to_temp_variable = { temp_rebellion_score = var:building_level@arms_factory }
+					add_to_temp_variable = { temp_rebellion_score = var:building_level@dockyard }
+					add_to_temp_variable = { temp_rebellion_score = var:building_level@infrastructure }
+					add_to_temp_variable = { temp_rebellion_score = var:building_level@synthetic_refinery }
+					add_to_temp_variable = { temp_rebellion_score = var:building_level@fuel_silo }
+					add_to_temp_variable = { temp_rebellion_score = var:building_level@nuclear_reactor }
+					add_to_temp_variable = { temp_rebellion_score = var:building_level@nuclear_reactor_heavy_water }
+					add_to_temp_variable = { temp_rebellion_score = var:building_level@commercial_nuclear_reactor }
+					add_to_temp_variable = { temp_rebellion_score = var:building_level@nuclear_facility }
+					add_to_temp_variable = { temp_rebellion_score = var:building_level@energy_infrastructure }
+					add_to_temp_variable = { temp_rebellion_score = var:building_level@industrial_infrastructure }
+					if = {
+						limit = { check_variable = { var:state_population_k > 500 } }
+						multiply_variable = { temp_rebellion_score = 4 }
+					} else_if = {
+						limit = { check_variable = { var:state_population_k > 250 } }
+						multiply_variable = { temp_rebellion_score = 2 }
+					} else = {
+						multiply_variable = { temp_rebellion_score = 1 }
+					}
+					add_to_variable = { global.sho_rebellion_score = temp_rebellion_score }
+				}
+				SHO = {
+					every_owned_state = {
+						limit = { is_controlled_by = AMO }
+						set_temp_variable = { temp_rebellion_score = 0 }
+						add_to_temp_variable = { temp_rebellion_score = var:building_level@industrial_complex }
+						add_to_temp_variable = { temp_rebellion_score = var:building_level@arms_factory }
+						add_to_temp_variable = { temp_rebellion_score = var:building_level@dockyard }
+						add_to_temp_variable = { temp_rebellion_score = var:building_level@infrastructure }
+						add_to_temp_variable = { temp_rebellion_score = var:building_level@synthetic_refinery }
+						add_to_temp_variable = { temp_rebellion_score = var:building_level@fuel_silo }
+						add_to_temp_variable = { temp_rebellion_score = var:building_level@nuclear_reactor }
+						add_to_temp_variable = { temp_rebellion_score = var:building_level@nuclear_reactor_heavy_water }
+						add_to_temp_variable = { temp_rebellion_score = var:building_level@commercial_nuclear_reactor }
+						add_to_temp_variable = { temp_rebellion_score = var:building_level@nuclear_facility }
+						add_to_temp_variable = { temp_rebellion_score = var:building_level@energy_infrastructure }
+						add_to_temp_variable = { temp_rebellion_score = var:building_level@industrial_infrastructure }
+						if = {
+							limit = { check_variable = { var:state_population_k > 500 } }
+							multiply_variable = { temp_rebellion_score = 4 }
+						} else_if = {
+							limit = { check_variable = { var:state_population_k > 250 } }
+							multiply_variable = { temp_rebellion_score = 2 }
+						} else = {
+							multiply_variable = { temp_rebellion_score = 1 }
+						}
+						add_to_variable = { global.amo_rebellion_score = temp_rebellion_score }
+					}
+				} log = "AMO scripted war score: [?global.amo_rebellion_score]"
+				set_variable = { global.final_rebellion_score = global.amo_rebellion_score }
+				subtract_from_variable = { global.final_rebellion_score = global.sho_rebellion_score }
+				multiply_variable = { global.final_rebellion_score = 100 }
+				divide_variable = { global.final_rebellion_score = global.sho_rebellion_total_score }
+				
+				### CHECK FOR REBELLIOUS CLANS
+				if = {
+					limit = {
+						check_variable = { global.final_rebellion_score > 0.25 }
+						SHO = { has_active_mission = AMO_clan_is_rebellin_sho }
+						NOT = { has_global_flag = { flag = amo_sho_scripted_war_cooldown days < 15} }
+					}
+					activate_mission = AMO_clan_is_rebellin_amo
+					SHO = { activate_mission = AMO_clan_is_rebellin_sho }
+				}
 			}
 		}
 	}
