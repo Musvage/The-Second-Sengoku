@@ -2,8 +2,7 @@
 #Order of Amaterasu events#
 ###########################
 
-add_namespace = amaterasu	
-add_namespace = amaterasuold	# OLD EVENTS BELLOW // delete later
+add_namespace = amaterasu
 
 country_event = { # WAR!
 	id = amaterasu.1
@@ -89,6 +88,8 @@ country_event = { # Shogun Total Victory (triggered by on_actions)	### THIS ONE 
 	
 	immediate = {
 		clr_global_flag = amo_sho_scripted_war_ongoing
+		clr_global_flag = amo_sho_scripted_war_cooldown
+		SHO = { remove_mission = AMO_ongoing_war_truce_sho }
 	}
 
 	option = {
@@ -185,6 +186,8 @@ country_event = { # Truce, accepted (AMO world event)
 	
 	immediate = {
 		clr_global_flag = amo_sho_scripted_war_ongoing
+		clr_global_flag = amo_sho_scripted_war_cooldown
+		SHO = { remove_mission = AMO_ongoing_war_truce_sho }
 		AMO = {
 			every_owned_state = {
 				limit = { is_core_of = SHO }
@@ -850,7 +853,7 @@ country_event = { # Truce, refuse (SHO event)
 	}
 }
 
-country_event = { # Clan Rebellion
+country_event = { # Clan Rebellion 
 	id = amaterasu.50
 	title = amaterasu.50.t
 	desc = amaterasu.50.d
@@ -858,22 +861,55 @@ country_event = { # Clan Rebellion
 
 	is_triggered_only = yes
 	
+	hidden = yes
+	
 	immediate = {
-		FROM = {	# FROM is the clan
-			AMO_samurai_rebellion_spawn_clan_unit = yes
-		}
+		if = { limit = { is_owned_by = SKA } SKA = { AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes SHO = { country_event = amaterasu.51 } } }
+		if = { limit = { is_owned_by = ASA } ASA = { AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes SHO = { country_event = amaterasu.51 } } }
+		if = { limit = { is_owned_by = OWA } OWA = { AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes SHO = { country_event = amaterasu.51 } } }
+		if = { limit = { is_owned_by = HOJ } HOJ = { AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes SHO = { country_event = amaterasu.51 } } }
+		if = { limit = { is_owned_by = UES } UES = { AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes SHO = { country_event = amaterasu.51 } } }
+		if = { limit = { is_owned_by = MAT } MAT = { AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes SHO = { country_event = amaterasu.51 } } }
+		if = { limit = { is_owned_by = AMA } AMA = { AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes SHO = { country_event = amaterasu.51 } } }
+		if = { limit = { is_owned_by = TMA } TMA = { AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes SHO = { country_event = amaterasu.51 } } }
+		if = { limit = { is_owned_by = OIK } OIK = { AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes SHO = { country_event = amaterasu.51 } } }
+		if = { limit = { is_owned_by = ABE } ABE = { AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes SHO = { country_event = amaterasu.51 } } }
+	}
+}
+
+
+country_event = { # Clan Rebellion 
+	id = amaterasu.51
+	title = amaterasu.51.t
+	desc = amaterasu.51.d
+	picture = GFX_report_event_irregular_soldiers_japan
+
+	is_triggered_only = yes
+	
+	immediate = {
+		#FROM = {	# FROM is the clan
+		#	AMO_samurai_rebellion_spawn_clan_unit = yes
+		#}
+		log = "Rebellion by [FROM.GetName] against [THIS.GetName]!"
 	}
 	
 	option = {	# we will fight!
-		name = amaterasu.50.a
-		white_peace = FROM
+		name = amaterasu.51.a
+		FROM = {
+			declare_war_on = {
+				target = SHO
+				type = annex_everything
+			}
+		}
+		log = "SHO will fight [FROM.GetName]"
 	}
 	option = {	# ignore
-		name = amaterasu.50.b
+		name = amaterasu.51.b
+		log = "SHO will ignore [FROM.GetName]"
 	}
 	option = {	# join
 		trigger = { is_ai = no }
-		name = amaterasu.50.c
+		name = amaterasu.51.c
 		change_tag_from = FROM
 	}
 }
@@ -921,846 +957,5 @@ country_event = { # reset focus tree to unlock it
 	immediate = {
 		set_country_flag = AMO_focus_tree_unlocked
 		mark_focus_tree_layout_dirty = yes
-	}
-}
-
-##############################################################
-##############################################################
-##############################################################
-
-country_event = { # Invade Island during Chubu Civil War
-	id = amaterasuold.1
-	title = amaterasuold.1.t
-	desc = amaterasuold.1.d
-	picture = GFX_report_event_usa_heavy_cruiser
-
-	is_triggered_only = yes
-
-	option = { # Invade the Island
-		name = amaterasuold.1.a
-		ai_chance = {
-			base = 0.75
-		}
-
-		transfer_state = 15
-		navy_experience = 5
-		custom_effect_tooltip = AMO_destroy_ship_event
-		hidden_effect = {
-			destroy_ships = {
-				type = destroyer
-				count = 1
-				#prefer_name = "Ebisu"
-			}
-		}
-	}
-
-	option = { # Offer refuge
-		name = amaterasuold.1.b
-		ai_chance = {
-			base = 0.25
-		}
-
-		add_manpower = 10000
-	}
-
-}
-
-country_event = { # Invade SHO
-	id = amaterasuold.2
-	title = amaterasuold.2.t
-	desc = amaterasuold.2.d
-	picture = GFX_report_event_usa_heavy_cruiser #FIXME
-
-	#trigger = {
-	#	original_tag = AMO
-	#	date > 1936.01.19
-	#}
-	fire_only_once = yes
-
-	is_triggered_only = yes
-
-	immediate = {
-		hidden_effect = {
-			102 = {
-				teleport_armies = {
-					limit = {
-						original_tag = SHO
-					}
-					to_state = 114
-				}
-			}
-			complete_national_focus = AMO_war_started
-		}
-	}
-	option = { 
-		name = amaterasuold.2.a
-		ai_chance = {
-			base = 1
-		}
-		add_ideas = {
-			AMO_fight_last_man
-			AMO_fight_core
-		}
-
-
-		declare_war_on = {
-			target = SHO
-			type = take_claimed_state
-		}
-
-		transfer_state = 102
-		transfer_state = 15
-		
-		country_event = amaterasuold.3
-		SHO = {
-			country_event = shogunate.43
-		}
-
-		hidden_effect = {
-			division_template = {
-				name = "Knights Brigade"
-				is_locked = yes
-				division_names_group = JAP_INF_01
-				priority = 0
-				template_counter = 0
-				regiments = {
-					infantry = { x = 0 y = 0 }
-					infantry = { x = 0 y = 1 }
-					infantry = { x = 0 y = 2 }
-					infantry = { x = 0 y = 3 }
-				}
-				support = { 
-					
-				} 
-			}
-			102 = {
-				create_unit = {
-					division = "name = \"Brigade of Holy Knights\" division_template = \"Knights Brigade\" start_experience_factor = 0.5 start_equipment_factor = 1"
-					owner = AMO
-				}
-				create_unit = {
-					division = "name = \"Brigade of Holy Knights\" division_template = \"Knights Brigade\" start_experience_factor = 0.5 start_equipment_factor = 1"
-					owner = AMO
-				}
-				create_unit = {
-					division = "name = \"Brigade of Holy Knights\" division_template = \"Knights Brigade\" start_experience_factor = 0.5 start_equipment_factor = 1"
-					owner = AMO
-				}
-			}
-		}
-	}
-}
-
-country_event = { # Infiltrators or not?
-	id = amaterasuold.3
-	title = amaterasuold.3.t
-	desc = amaterasuold.3.d
-	picture = GFX_report_event_usa_heavy_cruiser #FIXME
-
-	is_triggered_only = yes
-
-	option = {
-		name = amaterasuold.3.a
-
-		ai_chance = {
-			base = 50
-		}
-
-		
-		hidden_effect = {
-			set_victory_points = {
-				province = 10728
-				value = 20
-			}
-			set_province_name = {
-				id = 10728
-				name = "Fortress Togo"
-			}
-			set_province_controller = 10728
-			129 = {
-				create_unit = {
-					division = "name = \"Brigade of Holy Knights\" division_template = \"Knights Brigade\" start_experience_factor = 0.5 start_equipment_factor = 1"
-					owner = AMO
-					prioritize_location = 10728
-				}
-			}
-
-			set_victory_points = {
-				province = 3077
-				value = 20
-			}
-			set_province_name = {
-				id = 3077
-				name = "Fortress Ueshiba"
-			}
-			set_province_controller = 3077
-			106 = {
-				create_unit = {
-					division = "name = \"Brigade of Holy Knights\" division_template = \"Knights Brigade\" start_experience_factor = 0.5 start_equipment_factor = 1"
-					owner = AMO
-					prioritize_location = 3077
-				}
-			}
-
-			set_victory_points = {
-				province = 204
-				value = 20
-			}
-			set_province_name = {
-				id = 204
-				name = "Fortress Ōyama"
-			}
-			set_province_controller = 204
-			67 = {
-				create_unit = {
-					division = "name = \"Brigade of Holy Knights\" division_template = \"Knights Brigade\" start_experience_factor = 0.5 start_equipment_factor = 1"
-					owner = AMO
-					prioritize_location = 204
-				}
-			}
-
-		}
-	}
-
-	option = {
-		name = amaterasuold.3.b
-
-		#hidden_effect = {
-			102 = {
-				create_unit = {
-					division = "name = \"Brigade of Holy Knights\" division_template = \"Knights Brigade\" start_experience_factor = 0.5 start_equipment_factor = 1"
-					owner = AMO
-					prioritize_location = 5680
-				}
-				create_unit = {
-					division = "name = \"Brigade of Holy Knights\" division_template = \"Knights Brigade\" start_experience_factor = 0.5 start_equipment_factor = 1"
-					owner = AMO
-					prioritize_location = 5680
-				}
-
-			}
-		#}
-	}
-}
-
-country_event = { # Ask for help from orders from the west
-	id = amaterasuold.4
-	title = amaterasuold.4.t
-	desc = amaterasuold.4.d
-	picture = GFX_report_event_all_orders
-
-	is_triggered_only = yes
-
-	option = {
-		name = amaterasuold.4.a
-
-		hidden_effect = { # Teutonics
-			random_list = {
-				75 = { # Yes
-					country_event = { id = amaterasuold.5 days = 1 }
-				}
-				25 = { # No
-					country_event = { id = amaterasuold.6 days = 1 }
-				}
-			}
-
-			random_list = { # St. Lazarus
-				75 = { # Yes
-					country_event = { id = amaterasuold.7 days = 1 }
-				}
-				25 = { # No
-					country_event = { id = amaterasuold.8 days = 1 }
-				}
-			}
-
-			random_list = { # Order of the Holy Sepulchre
-				50 = { # Yes
-					country_event = { id = amaterasuold.9 days = 1 }
-				}
-				50 = { # No
-					country_event = { id = amaterasuold.10 days = 1 }
-				}
-			}
-
-			random_list = { # Order of Knights of the Hospital of Saint John of Jerusalem
-				50 = { # Yes
-					country_event = { id = amaterasuold.11 days = 1 }
-				}
-				50 = { # No
-					country_event = { id = amaterasuold.12 days = 1 }
-				}
-			}
-
-			random_list = { # Royal Military Order of Our Lord Jesus Christ
-				50 = { # Yes
-					country_event = { id = amaterasuold.13 days = 1 }
-				}
-				50 = { # No
-					country_event = { id = amaterasuold.14 days = 1 }
-				}
-			}
-		}
-	}
-}
-
-country_event = { # Teutonics Say yes
-	id = amaterasuold.5
-	title = amaterasuold.5.t
-	desc = amaterasuold.5.d
-	picture = GFX_report_event_teutonic_order
-
-	is_triggered_only = yes
-
-
-	option = {
-		name = amaterasuold.5.a
-		
-		if = {
-			limit = {
-				NOT = {
-					has_idea = AMO_christian_advisors_1
-					has_idea = AMO_christian_advisors_2
-					has_idea = AMO_christian_advisors_3
-					has_idea = AMO_christian_advisors_4
-					has_idea = AMO_christian_advisors_5
-				}
-			}
-
-			add_ideas = AMO_christian_advisors_1
-
-			else_if = {
-				limit = {
-					has_idea = AMO_christian_advisors_1
-				}
-
-				swap_ideas = {
-					remove_idea = AMO_christian_advisors_1
-					add_idea = AMO_christian_advisors_2
-				}
-			}
-			else_if = {
-				limit = {
-					has_idea = AMO_christian_advisors_2
-				}
-
-				swap_ideas = {
-					remove_idea = AMO_christian_advisors_2
-					add_idea = AMO_christian_advisors_3
-				}
-			}
-			else_if = {
-				limit = {
-					has_idea = AMO_christian_advisors_3
-				}
-
-				swap_ideas = {
-					remove_idea = AMO_christian_advisors_3
-					add_idea = AMO_christian_advisors_4
-				}
-			}
-			else_if = {
-				limit = {
-					has_idea = AMO_christian_advisors_4
-				}
-
-				swap_ideas = {
-					remove_idea = AMO_christian_advisors_4
-					add_idea = AMO_christian_advisors_5
-				}
-			}
-		}
-
-		division_template = {
-			name = "Teutonic Knights Brigade"
-			is_locked = yes
-			priority = 2
-			template_counter = 48
-			regiments = {
-				infantry = { x = 0 y = 0 }
-				infantry = { x = 0 y = 1 }
-				infantry = { x = 0 y = 2 }
-				infantry = { x = 0 y = 3 }
-				infantry = { x = 1 y = 0 }
-				infantry = { x = 1 y = 1 }
-				infantry = { x = 1 y = 2 }
-				infantry = { x = 1 y = 3 }
-			}
-			support = { 
-				artillery = { x = 0 y = 0 }
-			} 
-		}
-
-		random_owned_state = {
-			create_unit = {
-				division = "name = \"Teutonic Knights Volunteers\" division_template = \"Teutonic Knights Brigade\" start_experience_factor = 0.5 start_equipment_factor = 1"
-				owner = AMO
-			}
-		}
-	}
-}
-
-country_event = { # Teutonic Say No
-	id = amaterasuold.6
-	title = amaterasuold.6.t
-	desc = amaterasuold.6.d
-	picture = GFX_report_event_teutonic_order
-	
-	is_triggered_only = yes
-
-	option = {
-		name = amaterasuold.6.a
-	}
-}
-
-
-country_event = { # St. Lazarus Say yes
-	id = amaterasuold.7
-	title = amaterasuold.7.t
-	desc = amaterasuold.7.d
-	picture = GFX_report_event_knights_lazarus
-
-	is_triggered_only = yes
-
-
-	option = {
-		name = amaterasuold.7.a
-		
-		if = {
-			limit = {
-				NOT = {
-					has_idea = AMO_christian_advisors_1
-					has_idea = AMO_christian_advisors_2
-					has_idea = AMO_christian_advisors_3
-					has_idea = AMO_christian_advisors_4
-					has_idea = AMO_christian_advisors_5
-				}
-			}
-
-			add_ideas = AMO_christian_advisors_1
-
-			else_if = {
-				limit = {
-					has_idea = AMO_christian_advisors_1
-				}
-
-				swap_ideas = {
-					remove_idea = AMO_christian_advisors_1
-					add_idea = AMO_christian_advisors_2
-				}
-			}
-			else_if = {
-				limit = {
-					has_idea = AMO_christian_advisors_2
-				}
-
-				swap_ideas = {
-					remove_idea = AMO_christian_advisors_2
-					add_idea = AMO_christian_advisors_3
-				}
-			}
-			else_if = {
-				limit = {
-					has_idea = AMO_christian_advisors_3
-				}
-
-				swap_ideas = {
-					remove_idea = AMO_christian_advisors_3
-					add_idea = AMO_christian_advisors_4
-				}
-			}
-			else_if = {
-				limit = {
-					has_idea = AMO_christian_advisors_4
-				}
-
-				swap_ideas = {
-					remove_idea = AMO_christian_advisors_4
-					add_idea = AMO_christian_advisors_5
-				}
-			}
-		}
-
-		division_template = {
-			name = "St. Lazarus Knights Brigade"
-			is_locked = yes
-			priority = 2
-			template_counter = 48
-			regiments = {
-				infantry = { x = 0 y = 0 }
-				infantry = { x = 0 y = 1 }
-				infantry = { x = 0 y = 2 }
-				infantry = { x = 0 y = 3 }
-				infantry = { x = 1 y = 0 }
-				infantry = { x = 1 y = 1 }
-				infantry = { x = 1 y = 2 }
-				infantry = { x = 1 y = 3 }
-			}
-			support = { 
-				artillery = { x = 0 y = 0 }
-			} 
-		}
-
-		random_owned_state = {
-			create_unit = {
-				division = "name = \"St. Lazarus Knights Volunteers\" division_template = \"Teutonic Knights Brigade\" start_experience_factor = 0.5 start_equipment_factor = 1"
-				owner = AMO
-			}
-		}
-	}
-}
-
-country_event = { # St. Lazarus Say No
-	id = amaterasuold.8
-	title = amaterasuold.8.t
-	desc = amaterasuold.8.d
-	picture = GFX_report_event_knights_lazarus
-	
-	is_triggered_only = yes
-
-	option = {
-		name = amaterasuold.8.a
-	}
-}
-
-country_event = { # Order of the Holy Sepulchre Say yes
-	id = amaterasuold.9
-	title = amaterasuold.9.t
-	desc = amaterasuold.9.d
-	picture = GFX_report_event_knights_sepulchre
-
-	is_triggered_only = yes
-
-
-	option = {
-		name = amaterasuold.9.a
-		
-		if = {
-			limit = {
-				NOT = {
-					has_idea = AMO_christian_advisors_1
-					has_idea = AMO_christian_advisors_2
-					has_idea = AMO_christian_advisors_3
-					has_idea = AMO_christian_advisors_4
-					has_idea = AMO_christian_advisors_5
-				}
-			}
-
-			add_ideas = AMO_christian_advisors_1
-
-			else_if = {
-				limit = {
-					has_idea = AMO_christian_advisors_1
-				}
-
-				swap_ideas = {
-					remove_idea = AMO_christian_advisors_1
-					add_idea = AMO_christian_advisors_2
-				}
-			}
-			else_if = {
-				limit = {
-					has_idea = AMO_christian_advisors_2
-				}
-
-				swap_ideas = {
-					remove_idea = AMO_christian_advisors_2
-					add_idea = AMO_christian_advisors_3
-				}
-			}
-			else_if = {
-				limit = {
-					has_idea = AMO_christian_advisors_3
-				}
-
-				swap_ideas = {
-					remove_idea = AMO_christian_advisors_3
-					add_idea = AMO_christian_advisors_4
-				}
-			}
-			else_if = {
-				limit = {
-					has_idea = AMO_christian_advisors_4
-				}
-
-				swap_ideas = {
-					remove_idea = AMO_christian_advisors_4
-					add_idea = AMO_christian_advisors_5
-				}
-			}
-		}
-
-		add_equipment_to_stockpile = {
-			type = infantry_equipment
-			amount = 500
-		}
-	}
-}
-
-country_event = { # Order of the Holy Sepulchre Say No
-	id = amaterasuold.10
-	title = amaterasuold.10.t
-	desc = amaterasuold.10.d
-	picture = GFX_report_event_knights_sepulchre
-	
-	is_triggered_only = yes
-
-	option = {
-		name = amaterasuold.10.a
-	}
-}
-
-country_event = { # Order of Knights of the Hospital of Saint John of Jerusalem Say yes
-	id = amaterasuold.11
-	title = amaterasuold.11.t
-	desc = amaterasuold.11.d
-	picture = GFX_report_event_knights_hospitaller
-
-	is_triggered_only = yes
-
-
-	option = {
-		name = amaterasuold.11.a
-		
-		if = {
-			limit = {
-				NOT = {
-					has_idea = AMO_christian_advisors_1
-					has_idea = AMO_christian_advisors_2
-					has_idea = AMO_christian_advisors_3
-					has_idea = AMO_christian_advisors_4
-					has_idea = AMO_christian_advisors_5
-				}
-			}
-
-			add_ideas = AMO_christian_advisors_1
-
-			else_if = {
-				limit = {
-					has_idea = AMO_christian_advisors_1
-				}
-
-				swap_ideas = {
-					remove_idea = AMO_christian_advisors_1
-					add_idea = AMO_christian_advisors_2
-				}
-			}
-			else_if = {
-				limit = {
-					has_idea = AMO_christian_advisors_2
-				}
-
-				swap_ideas = {
-					remove_idea = AMO_christian_advisors_2
-					add_idea = AMO_christian_advisors_3
-				}
-			}
-			else_if = {
-				limit = {
-					has_idea = AMO_christian_advisors_3
-				}
-
-				swap_ideas = {
-					remove_idea = AMO_christian_advisors_3
-					add_idea = AMO_christian_advisors_4
-				}
-			}
-			else_if = {
-				limit = {
-					has_idea = AMO_christian_advisors_4
-				}
-
-				swap_ideas = {
-					remove_idea = AMO_christian_advisors_4
-					add_idea = AMO_christian_advisors_5
-				}
-			}
-		}
-
-		add_equipment_to_stockpile = {
-			type = infantry_equipment
-			amount = 500
-			producer = OSA
-		}
-	}
-}
-
-country_event = { # Order of Knights of the Hospital of Saint John of Jerusalem Say No
-	id = amaterasuold.12
-	title = amaterasuold.12.t
-	desc = amaterasuold.12.d
-	picture = GFX_report_event_knights_hospitaller
-	
-	is_triggered_only = yes
-
-	option = {
-		name = amaterasuold.12.a
-	}
-}
-
-country_event = { # Royal Military Order of Our Lord Jesus Christ Say yes
-	id = amaterasuold.13
-	title = amaterasuold.13.t
-	desc = amaterasuold.13.d
-	picture = GFX_report_event_knights_templar
-
-	is_triggered_only = yes
-
-
-	option = {
-		name = amaterasuold.13.a
-		
-		if = {
-			limit = {
-				NOT = {
-					has_idea = AMO_christian_advisors_1
-					has_idea = AMO_christian_advisors_2
-					has_idea = AMO_christian_advisors_3
-					has_idea = AMO_christian_advisors_4
-					has_idea = AMO_christian_advisors_5
-				}
-			}
-
-			add_ideas = AMO_christian_advisors_1
-
-			else_if = {
-				limit = {
-					has_idea = AMO_christian_advisors_1
-				}
-
-				swap_ideas = {
-					remove_idea = AMO_christian_advisors_1
-					add_idea = AMO_christian_advisors_2
-				}
-			}
-			else_if = {
-				limit = {
-					has_idea = AMO_christian_advisors_2
-				}
-
-				swap_ideas = {
-					remove_idea = AMO_christian_advisors_2
-					add_idea = AMO_christian_advisors_3
-				}
-			}
-			else_if = {
-				limit = {
-					has_idea = AMO_christian_advisors_3
-				}
-
-				swap_ideas = {
-					remove_idea = AMO_christian_advisors_3
-					add_idea = AMO_christian_advisors_4
-				}
-			}
-			else_if = {
-				limit = {
-					has_idea = AMO_christian_advisors_4
-				}
-
-				swap_ideas = {
-					remove_idea = AMO_christian_advisors_4
-					add_idea = AMO_christian_advisors_5
-				}
-			}
-		}
-
-		add_equipment_to_stockpile = {
-			type = infantry_equipment
-			amount = 500
-			producer = NAG
-		}
-	}
-}
-
-country_event = { # Royal Military Order of Our Lord Jesus Christ Say No
-	id = amaterasuold.14
-	title = amaterasuold.14.t
-	desc = amaterasuold.14.d
-	picture = GFX_report_event_knights_templar
-	
-	is_triggered_only = yes
-
-	option = {
-		name = amaterasuold.14.a
-	}
-}
-
-country_event = { # Collapse
-	id = amaterasuold.15
-	title = amaterasuold.15.t
-	desc = amaterasuold.15.d
-	picture = GFX_report_event_worker_protests
-
-	is_triggered_only = yes
-
-	immediate = {
-		hidden_effect = {
-			add_ideas = {
-				AMO_national_collapse
-			}
-		}
-	}
-	option = {
-		name = amaterasuold.15.a
-	}
-}
-
-country_event = { # Minor Protests
-	id = amaterasuold.16
-	title = amaterasuold.16.t
-	desc = amaterasuold.16.d
-	picture = GFX_report_event_worker_protests
-
-	is_triggered_only = yes
-
-	option = {
-		name = amaterasuold.16.a
-		add_stability = -0.05
-		add_manpower = -100
-	}
-}
-
-country_event = { # AMO loses war on SHO and Togo Dies
-	id = amaterasuold.17
-	title = amaterasuold.17.t
-	desc = amaterasuold.17.d
-	picture = GFX_report_event_europe_funeral
-
-	is_triggered_only = yes
-	immediate = {
-		hidden_effect = {
-			set_country_flag = AMO_lost_war
-		}
-	}
-
-
-	option = {
-		name = amaterasuold.17.a
-	}
-}
-
-country_event = { # Isolationists Take Over
-	id = amaterasuold.18
-	title = amaterasuold.18.t
-	desc = amaterasuold.18.d
-	picture = GFX_report_event_europe_funeral
-
-	is_triggered_only = yes
-
-	option = {
-		name = amaterasuold.18.a
-	}
-}
-
-country_event = { # Internationalists Take Over
-	id = amaterasuold.19
-	title = amaterasuold.19.t
-	desc = amaterasuold.19.d
-	picture = GFX_report_event_europe_funeral
-
-	is_triggered_only = yes
-
-	option = {
-		name = amaterasuold.19.a
 	}
 }

@@ -28,6 +28,219 @@ AMO_samurai_rebellion_spawn_clan_unit = {
 	}
 }
 
+AMO_samurai_rebellion_get_total_score = {
+	SHO = {
+		every_state = {
+			limit = { OR = { AND = { is_core_of = SHO is_controlled_by = SHO } state = 102 state = 15 } }
+			set_temp_variable = { temp_rebellion_score = 0 }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@industrial_complex }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@arms_factory }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@dockyard }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@infrastructure }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@synthetic_refinery }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@fuel_silo }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@nuclear_reactor }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@nuclear_reactor_heavy_water }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@commercial_nuclear_reactor }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@nuclear_facility }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@energy_infrastructure }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@industrial_infrastructure }
+			if = {
+				limit = { check_variable = { var:state_population_k > 500 } }
+				multiply_variable = { temp_rebellion_score = 4 }
+			} else_if = {
+				limit = { check_variable = { var:state_population_k > 250 } }
+				multiply_variable = { temp_rebellion_score = 2 }
+			} else = {
+				multiply_variable = { temp_rebellion_score = 1 }
+			}
+			add_to_variable = { global.sho_rebellion_total_score = temp_rebellion_score }
+		}
+	}
+} d_AMO_samurai_rebellion_get_total_score = { AMO_samurai_rebellion_get_total_score = yes log = "AMO_samurai_rebellion_get_total_score [?global.sho_rebellion_total_score]" }
+
+AMO_samurai_rebellion_get_score = {
+	# this calculates AMO's net score (value of SHO states occupied by AMO, and AMO states occupied by SHO)
+	set_variable = { global.amo_rebellion_score = 0 }
+	set_variable = { global.sho_rebellion_score = 0 }
+	log = "AMO_samurai_rebellion_get_score script"
+	AMO = {
+		every_owned_state = {
+			limit = { is_controlled_by = SHO }
+			set_temp_variable = { temp_rebellion_score = 0 }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@industrial_complex }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@arms_factory }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@dockyard }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@infrastructure }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@synthetic_refinery }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@fuel_silo }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@nuclear_reactor }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@nuclear_reactor_heavy_water }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@commercial_nuclear_reactor }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@nuclear_facility }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@energy_infrastructure }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@industrial_infrastructure }
+			if = {
+				limit = { check_variable = { var:state_population_k > 500 } }
+				multiply_variable = { temp_rebellion_score = 4 }
+			} else_if = {
+				limit = { check_variable = { var:state_population_k > 250 } }
+				multiply_variable = { temp_rebellion_score = 2 }
+			} else = {
+				multiply_variable = { temp_rebellion_score = 1 }
+			}
+			add_to_variable = { global.sho_rebellion_score = temp_rebellion_score }
+			log = "occupied [THIS.GetName] score: [?temp_rebellion_score]"
+		}
+	}
+	SHO = {
+		every_owned_state = {
+			limit = { is_controlled_by = AMO }
+			set_temp_variable = { temp_rebellion_score = 0 }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@industrial_complex }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@arms_factory }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@dockyard }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@infrastructure }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@synthetic_refinery }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@fuel_silo }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@nuclear_reactor }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@nuclear_reactor_heavy_water }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@commercial_nuclear_reactor }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@nuclear_facility }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@energy_infrastructure }
+			add_to_temp_variable = { temp_rebellion_score = var:building_level@industrial_infrastructure }
+			if = {
+				limit = { check_variable = { var:state_population_k > 500 } }
+				multiply_variable = { temp_rebellion_score = 4 }
+			} else_if = {
+				limit = { check_variable = { var:state_population_k > 250 } }
+				multiply_variable = { temp_rebellion_score = 2 }
+			} else = {
+				multiply_variable = { temp_rebellion_score = 1 }
+			}
+			add_to_variable = { global.amo_rebellion_score = temp_rebellion_score }
+			log = "occupied [THIS.GetName] score: [?temp_rebellion_score]"
+		}
+	}
+	log = "AMO score: [?global.amo_rebellion_score]"
+	log = "SHO score: [?global.sho_rebellion_score]"
+	subtract_from_variable = { global.amo_rebellion_score = global.sho_rebellion_score }
+	divide_variable = { global.amo_rebellion_score = global.sho_rebellion_total_score }
+	multiply_variable = { global.amo_rebellion_score = 100 }
+}
+
+d_test_rebelligon_flag = {
+	if = {
+		limit = { has_global_flag = amo_sho_scripted_war_cooldown }
+		log = "HAS amo_sho_scripted_war_cooldownR"
+	} else = {
+		log = "HAVE NOT amo_sho_scripted_war_cooldown"
+	}
+}
+
+d_test_samurai_rebellion = {
+	AMO = {
+		transfer_state = 102
+		102 = { custom_effect_tooltip = AMO_countdown_to_war_spawn_5 }
+		transfer_state = 15
+		15 = { custom_effect_tooltip = AMO_countdown_to_war_spawn_1 }
+		hidden_effect = {
+			division_template = {
+				name = "Knights Brigade"
+				is_locked = yes
+				division_names_group = JAP_INF_01
+				priority = 0
+				template_counter = 0
+				regiments = {
+					infantry = { x = 0 y = 0 }
+					infantry = { x = 0 y = 1 }
+					infantry = { x = 0 y = 2 }
+					infantry = { x = 0 y = 3 }
+				}
+				support = { 
+					
+				}
+			}
+			102 = {
+				create_unit = {
+					division = "name = \"Brigade of Holy Knights\" division_template = \"Knights Brigade\" start_experience_factor = 0.5 start_equipment_factor = 1"
+					owner = AMO
+				}
+				create_unit = {
+					division = "name = \"Brigade of Holy Knights\" division_template = \"Knights Brigade\" start_experience_factor = 0.5 start_equipment_factor = 1"
+					owner = AMO
+				}
+				create_unit = {
+					division = "name = \"Brigade of Holy Knights\" division_template = \"Knights Brigade\" start_experience_factor = 0.5 start_equipment_factor = 1"
+					owner = AMO
+				}
+				create_unit = {
+					division = "name = \"Brigade of Holy Knights\" division_template = \"Knights Brigade\" start_experience_factor = 0.5 start_equipment_factor = 1"
+					owner = AMO
+				}
+				create_unit = {
+					division = "name = \"Brigade of Holy Knights\" division_template = \"Knights Brigade\" start_experience_factor = 0.5 start_equipment_factor = 1"
+					owner = AMO
+				}
+			}
+			15 = {
+				create_unit = {
+					division = "name = \"Brigade of Holy Knights\" division_template = \"Knights Brigade\" start_experience_factor = 0.5 start_equipment_factor = 1"
+					owner = AMO
+				}
+			}
+		}
+		if = {
+			limit = { has_country_flag = AMO_recruit_samurai_completed }	
+			SHO = {
+				random_country_division = {
+					limit = { division_has_majority_template = teppo_samurai }
+					destroy_unit = yes
+				}
+			}
+			AMO = { capital_scope = {
+				create_unit = { division = "name = \"Konoe Shidan\" division_template = \"Konoe Shidan\" start_experience_factor = 0.66" owner = AMO }
+			} }
+		}
+		if = {
+			limit = { has_country_flag = AMO_rally_soldiers_completed }
+			SHO = {
+				random_country_division = {
+					limit = { division_has_majority_template = infantry is_unit_template_reserves = no }
+					destroy_unit = yes
+				}
+			}
+			AMO = { capital_scope = {
+				create_unit = { division = "name = \"Hohei Shidan\" division_template = \"Hohei Shidan\" start_experience_factor = 0.33" owner = AMO }
+			} }
+		}
+		if = { 
+			limit = { has_country_flag = AMO_steal_weapons_completed }
+			SHO = {
+				hidden_effect = {
+					every_country_division = {
+						limit = { unit_organization > 0.25 }
+						set_unit_organization = 0.25
+					}
+				}
+				custom_effect_tooltip = AMO_steal_weapons_tt
+			}
+		}
+		declare_war_on = {
+			target = SHO
+			type = annex_everything
+		}
+		every_state = {
+			limit = { is_owned_by = SHO }
+			add_claim_by = AMO
+		}
+		set_global_flag = amo_sho_scripted_war_ongoing
+		clr_global_flag = amo_sho_scripted_war_brewing
+		remove_decision = AMO_war_against_shogunate
+	}
+	log = "test_samurai_rebellion"
+}
+
 d_test_amaterasu = {
 	transfer_ship = {
 		prefer_name = "SOA Amaterasu"
