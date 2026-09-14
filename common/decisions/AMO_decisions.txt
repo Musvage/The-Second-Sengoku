@@ -338,16 +338,50 @@ AMO_war_against_shogunate = {
 		
 		timeout_effect = {
 			# SHO fails
-			custom_effect_tooltip = "a clan rebels"
-			clr_global_flag = amo_sho_scripted_war_cooldown
-			set_global_flag = amo_sho_scripted_war_cooldown
+			if = {
+				limit = {
+					any_state = {
+						OR = {
+							is_core_of = SKA
+							is_core_of = ASA
+							is_core_of = OWA
+							is_core_of = HOJ
+							is_core_of = UES
+							is_core_of = MAT
+							is_core_of = AMA
+							is_core_of = TMA
+							is_core_of = OIK
+							is_core_of = ABE
+						}
+						NOT = { has_state_flag = samurai_rebellion_block }
+					}
+				}
+				custom_effect_tooltip = "a clan rebels"
+			} else = {
+				effect_tooltip = {
+					SHO = {
+						if = { limit = { has_government = autocracy } add_popularity = { ideology = autocracy popularity = -0.05 } }
+						if = { limit = { has_government = communism } add_popularity = { ideology = communism popularity = -0.05 } }
+						if = { limit = { has_government = democratic } add_popularity = { ideology = democratic popularity = -0.05 } }
+						if = { limit = { has_government = democratic_socialism } add_popularity = { ideology = democratic_socialism popularity = -0.05 } }
+						if = { limit = { has_government = fascism } add_popularity = { ideology = fascism popularity = -0.05 } }
+						if = { limit = { has_government = neutrality } add_popularity = { ideology = neutrality popularity = -0.05 } }
+					}
+				}
+			}
 		}
 
 		complete_effect = {
 			# SHO succeeds 
 			custom_effect_tooltip = "sho lives another day"
-			clr_global_flag = amo_sho_scripted_war_cooldown
-			set_global_flag = amo_sho_scripted_war_cooldown
+			SHO = {
+				if = { limit = { has_government = autocracy } add_popularity = { ideology = autocracy popularity = 0.01 } }
+				if = { limit = { has_government = communism } add_popularity = { ideology = communism popularity = 0.01 } }
+				if = { limit = { has_government = democratic } add_popularity = { ideology = democratic popularity = 0.01 } }
+				if = { limit = { has_government = democratic_socialism } add_popularity = { ideology = democratic_socialism popularity = 0.01 } }
+				if = { limit = { has_government = fascism } add_popularity = { ideology = fascism popularity = 0.01 } }
+				if = { limit = { has_government = neutrality } add_popularity = { ideology = neutrality popularity = 0.01 } }
+			}
 		}
 		
 		ai_will_do = {
@@ -376,38 +410,75 @@ AMO_war_against_shogunate = {
 		timeout_effect = {
 			# SHO fails
 			custom_effect_tooltip = "a clan rebels"
-			random_owned_controlled_state = {
+			log = "SHO FAILED TO RETAKE LAND"
+			if = {
 				limit = {
-					OR = {
-						is_core_of = SKA
-						is_core_of = ASA
-						is_core_of = OWA
-						is_core_of = HOJ
-						is_core_of = UES
-						is_core_of = MAT
-						is_core_of = AMA
-						is_core_of = TMA
-						is_core_of = OIK
-						is_core_of = ABE
+					any_state = {
+						OR = {
+							is_core_of = SKA
+							is_core_of = ASA
+							is_core_of = OWA
+							is_core_of = HOJ
+							is_core_of = UES
+							is_core_of = MAT
+							is_core_of = AMA
+							is_core_of = TMA
+							is_core_of = OIK
+							is_core_of = ABE
+						}
+						NOT = { has_state_flag = samurai_rebellion_block }
 					}
 				}
-				if = { limit = { is_core_of = SKA } SHO = { release = SKA } SKA = { declare_war_on = { target = SHO type = annex_everything } AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes state_event = { id = amaterasu.50 hours = 1 } } }
-				if = { limit = { is_core_of = ASA } SHO = { release = ASA } ASA = { declare_war_on = { target = SHO type = annex_everything } AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes state_event = { id = amaterasu.50 hours = 1 } } }
-				if = { limit = { is_core_of = OWA } SHO = { release = OWA } OWA = { declare_war_on = { target = SHO type = annex_everything } AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes state_event = { id = amaterasu.50 hours = 1 } } }
-				if = { limit = { is_core_of = HOJ } SHO = { release = HOJ } HOJ = { declare_war_on = { target = SHO type = annex_everything } AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes state_event = { id = amaterasu.50 hours = 1 } } }
-				if = { limit = { is_core_of = UES } SHO = { release = UES } UES = { declare_war_on = { target = SHO type = annex_everything } AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes state_event = { id = amaterasu.50 hours = 1 } } }
-				if = { limit = { is_core_of = MAT } SHO = { release = MAT } MAT = { declare_war_on = { target = SHO type = annex_everything } AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes state_event = { id = amaterasu.50 hours = 1 } } }
-				if = { limit = { is_core_of = AMA } SHO = { release = AMA } AMA = { declare_war_on = { target = SHO type = annex_everything } AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes state_event = { id = amaterasu.50 hours = 1 } } }
-				if = { limit = { is_core_of = TMA } SHO = { release = TMA } TMA = { declare_war_on = { target = SHO type = annex_everything } AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes state_event = { id = amaterasu.50 hours = 1 } } }
-				if = { limit = { is_core_of = OIK } SHO = { release = OIK } OIK = { declare_war_on = { target = SHO type = annex_everything } AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes state_event = { id = amaterasu.50 hours = 1 } } }
-				if = { limit = { is_core_of = ABE } SHO = { release = ABE } ABE = { declare_war_on = { target = SHO type = annex_everything } AMO_samurai_rebellion_spawn_clan_unit = yes set_religion_2 = yes state_event = { id = amaterasu.50 hours = 1 } } }
-				log = "Rebellion in [THIS.GetName]!"
+				log = "AVAILABLE STATE"
+				random_owned_controlled_state = {
+					limit = {
+						OR = {
+							is_core_of = SKA
+							is_core_of = ASA
+							is_core_of = OWA
+							is_core_of = HOJ
+							is_core_of = UES
+							is_core_of = MAT
+							is_core_of = AMA
+							is_core_of = TMA
+							is_core_of = OIK
+							is_core_of = ABE
+						}
+						NOT = { has_state_flag = samurai_rebellion_block }
+					}
+					set_variable = { global.samurai_rebellion_state = THIS.id }
+					if = { limit = { is_core_of = SKA } SHO = { release = SKA } SKA = { declare_war_on = { target = SHO type = annex_everything } set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
+					if = { limit = { is_core_of = ASA } SHO = { release = ASA } ASA = { declare_war_on = { target = SHO type = annex_everything } set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
+					if = { limit = { is_core_of = OWA } SHO = { release = OWA } OWA = { declare_war_on = { target = SHO type = annex_everything } set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
+					if = { limit = { is_core_of = HOJ } SHO = { release = HOJ } HOJ = { declare_war_on = { target = SHO type = annex_everything } set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
+					if = { limit = { is_core_of = UES } SHO = { release = UES } UES = { declare_war_on = { target = SHO type = annex_everything } set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
+					if = { limit = { is_core_of = MAT } SHO = { release = MAT } MAT = { declare_war_on = { target = SHO type = annex_everything } set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
+					if = { limit = { is_core_of = AMA } SHO = { release = AMA } AMA = { declare_war_on = { target = SHO type = annex_everything } set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
+					if = { limit = { is_core_of = TMA } SHO = { release = TMA } TMA = { declare_war_on = { target = SHO type = annex_everything } set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
+					if = { limit = { is_core_of = OIK } SHO = { release = OIK } OIK = { declare_war_on = { target = SHO type = annex_everything } set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
+					if = { limit = { is_core_of = ABE } SHO = { release = ABE } ABE = { declare_war_on = { target = SHO type = annex_everything } set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
+					log = "Rebellion in [THIS.GetName]!"
+				}
+			} else = {
+				log = "REBELLION IN NO STATE"
+				if = { limit = { has_government = autocracy } add_popularity = { ideology = autocracy popularity = -0.05 } }
+				if = { limit = { has_government = communism } add_popularity = { ideology = communism popularity = -0.05 } }
+				if = { limit = { has_government = democratic } add_popularity = { ideology = democratic popularity = -0.05 } }
+				if = { limit = { has_government = democratic_socialism } add_popularity = { ideology = democratic_socialism popularity = -0.05 } }
+				if = { limit = { has_government = fascism } add_popularity = { ideology = fascism popularity = -0.05 } }
+				if = { limit = { has_government = neutrality } add_popularity = { ideology = neutrality popularity = -0.05 } }
 			}
 		}
 
-		complete_effect = {
+		complete_effect = {	log = "COMPLETE EFFECTS"
 			# SHO succeeds 
 			custom_effect_tooltip = "sho lives another day"
+			if = { limit = { has_government = autocracy } add_popularity = { ideology = autocracy popularity = 0.01 } }
+			if = { limit = { has_government = communism } add_popularity = { ideology = communism popularity = 0.01 } }
+			if = { limit = { has_government = democratic } add_popularity = { ideology = democratic popularity = 0.01 } }
+			if = { limit = { has_government = democratic_socialism } add_popularity = { ideology = democratic_socialism popularity = 0.01 } }
+			if = { limit = { has_government = fascism } add_popularity = { ideology = fascism popularity = 0.01 } }
+			if = { limit = { has_government = neutrality } add_popularity = { ideology = neutrality popularity = 0.01 } }
 		}
 		
 		ai_will_do = {
@@ -482,7 +553,7 @@ political_actions = {
 			  state = 128
 			  remember_old_capital = no
 			}
-			128 = { add_core_of = AMO }
+			128 = { add_core_of = AMO set_state_flag = amo_transfer_on_peace }
 			set_country_flag = moved_capital_honshu
 			custom_effect_tooltip = moved_capital_honshu_tt
 			hidden_effect = { if = { limit = { has_global_flag = amo_sho_scripted_war_brewing } AMO_samurai_rebellion_get_total_score = yes AMO_samurai_rebellion_get_score = yes } }
@@ -524,7 +595,7 @@ political_actions = {
 			  state = 129
 			  remember_old_capital = no
 			}
-			129 = { add_core_of = AMO }
+			129 = { add_core_of = AMO set_state_flag = amo_transfer_on_peace }
 			set_country_flag = moved_capital_honshu
 			custom_effect_tooltip = moved_capital_honshu_tt
 			hidden_effect = { if = { limit = { has_global_flag = amo_sho_scripted_war_brewing } AMO_samurai_rebellion_get_total_score = yes AMO_samurai_rebellion_get_score = yes } }
@@ -562,7 +633,7 @@ political_actions = {
 			  state = 13
 			  remember_old_capital = no
 			}
-			13 = { add_core_of = AMO }
+			13 = { add_core_of = AMO set_state_flag = amo_transfer_on_peace }
 			set_country_flag = moved_capital_honshu
 			custom_effect_tooltip = moved_capital_honshu_tt
 			hidden_effect = { if = { limit = { has_global_flag = amo_sho_scripted_war_brewing } AMO_samurai_rebellion_get_total_score = yes AMO_samurai_rebellion_get_score = yes } }
@@ -600,7 +671,7 @@ political_actions = {
 			  state = 37
 			  remember_old_capital = no
 			}
-			37 = { add_core_of = AMO }
+			37 = { add_core_of = AMO set_state_flag = amo_transfer_on_peace }
 			set_country_flag = moved_capital_honshu
 			custom_effect_tooltip = moved_capital_honshu_tt
 			hidden_effect = { if = { limit = { has_global_flag = amo_sho_scripted_war_brewing } AMO_samurai_rebellion_get_total_score = yes AMO_samurai_rebellion_get_score = yes } }
@@ -638,7 +709,7 @@ political_actions = {
 			  state = 119
 			  remember_old_capital = no
 			}
-			119 = { add_core_of = AMO }
+			119 = { add_core_of = AMO set_state_flag = amo_transfer_on_peace }
 			set_country_flag = moved_capital_honshu
 			custom_effect_tooltip = moved_capital_honshu_tt
 			hidden_effect = { if = { limit = { has_global_flag = amo_sho_scripted_war_brewing } AMO_samurai_rebellion_get_total_score = yes AMO_samurai_rebellion_get_score = yes } }

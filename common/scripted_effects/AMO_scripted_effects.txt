@@ -14,11 +14,33 @@ AMO_samurai_rebellion_spawn_clan_unit = {
 		}
 		priority = 1
 	}
+	division_template = {
+		name = "Ashigaru Ryodan"
+		is_locked = yes
+		division_names_group = CLAN_MLT_01
+		division_cap = 1
+		force_allow_recruiting  = yes
+		#obsolete = yes
+		regiments = {
+			irregular_infantry = { x = 0 y = 0 }
+			irregular_infantry = { x = 0 y = 1 }
+			irregular_infantry = { x = 0 y = 2 }
+		}
+		priority = 1
+	}
 	capital_scope = {
 		meta_effect = {
 			text = {
 				create_unit = {
 						division = "name = \"[DIVISION_NAME]'s Honor Guard\" division_template = \"Hatamoto\" start_experience_factor = 0.5 start_equipment_factor = 1"
+						owner = PREV
+				}
+				create_unit = {
+						division = "name = \"Ashigaru Ryodan\" division_template = \"Ashigaru Ryodan\" start_experience_factor = 0.0 start_equipment_factor = 0.75"
+						owner = PREV
+				}
+				create_unit = {
+						division = "name = \"Ashigaru Ryodan\" division_template = \"Ashigaru Ryodan\" start_experience_factor = 0.0 start_equipment_factor = 0.75"
 						owner = PREV
 				}
 			}
@@ -31,7 +53,7 @@ AMO_samurai_rebellion_spawn_clan_unit = {
 AMO_samurai_rebellion_get_total_score = {
 	SHO = {
 		every_state = {
-			limit = { OR = { AND = { is_core_of = SHO is_controlled_by = SHO } state = 102 state = 15 } }
+			limit = { OR = { AND = { is_core_of = SHO is_owned_by = SHO } state = 15 state = 102 state = 196 } }
 			set_temp_variable = { temp_rebellion_score = 0 }
 			add_to_temp_variable = { temp_rebellion_score = var:building_level@industrial_complex }
 			add_to_temp_variable = { temp_rebellion_score = var:building_level@arms_factory }
@@ -60,11 +82,12 @@ AMO_samurai_rebellion_get_total_score = {
 } d_AMO_samurai_rebellion_get_total_score = { AMO_samurai_rebellion_get_total_score = yes log = "AMO_samurai_rebellion_get_total_score [?global.sho_rebellion_total_score]" }
 
 AMO_samurai_rebellion_get_score = {
+	log = "aaaaaaaaaaaaaa"
 	# this calculates AMO's net score (value of SHO states occupied by AMO, and AMO states occupied by SHO)
 	set_variable = { global.amo_rebellion_score = 0 }
 	set_variable = { global.sho_rebellion_score = 0 }
-	log = "AMO_samurai_rebellion_get_score script"
 	AMO = {
+		log = "check AMO"
 		every_owned_state = {
 			limit = { is_controlled_by = SHO }
 			set_temp_variable = { temp_rebellion_score = 0 }
@@ -90,12 +113,21 @@ AMO_samurai_rebellion_get_score = {
 				multiply_variable = { temp_rebellion_score = 1 }
 			}
 			add_to_variable = { global.sho_rebellion_score = temp_rebellion_score }
-			log = "occupied [THIS.GetName] score: [?temp_rebellion_score]"
 		}
 	}
 	SHO = {
-		every_owned_state = {
-			limit = { is_controlled_by = AMO }
+		log = "check SHO"
+		every_state = {
+			limit = {
+				OR = {
+					AND = { is_owned_by = SHO is_core_of = SHO }
+					state = 102
+					state = 196
+					state = 15
+				}
+				is_controlled_by = AMO
+			}
+			log = "[THIS.GetName] is_controlled_by = AMO"
 			set_temp_variable = { temp_rebellion_score = 0 }
 			add_to_temp_variable = { temp_rebellion_score = var:building_level@industrial_complex }
 			add_to_temp_variable = { temp_rebellion_score = var:building_level@arms_factory }
@@ -119,23 +151,23 @@ AMO_samurai_rebellion_get_score = {
 				multiply_variable = { temp_rebellion_score = 1 }
 			}
 			add_to_variable = { global.amo_rebellion_score = temp_rebellion_score }
-			log = "occupied [THIS.GetName] score: [?temp_rebellion_score]"
 		}
 	}
-	log = "AMO score: [?global.amo_rebellion_score]"
-	log = "SHO score: [?global.sho_rebellion_score]"
 	subtract_from_variable = { global.amo_rebellion_score = global.sho_rebellion_score }
 	divide_variable = { global.amo_rebellion_score = global.sho_rebellion_total_score }
 	multiply_variable = { global.amo_rebellion_score = 100 }
+	#set_variable = { global.amo_rebellion_score = 100 }
 }
 
-d_test_rebelligon_flag = {
+d_check_samurai_rebellion_flag = {
 	if = {
-		limit = { has_global_flag = amo_sho_scripted_war_cooldown }
-		log = "HAS amo_sho_scripted_war_cooldownR"
-	} else = {
-		log = "HAVE NOT amo_sho_scripted_war_cooldown"
-	}
+		limit = { has_global_flag = amo_sho_scripted_war_ongoing }
+		log = "HAS amo_sho_scripted_war_ongoing"
+	} else = { log = "NOT amo_sho_scripted_war_ongoing" }
+	if = {
+		limit = { has_global_flag = amo_sho_scripted_war_brewing }
+		log = "HAS amo_sho_scripted_war_brewing"
+	} else = { log = "NOT amo_sho_scripted_war_brewing" }
 }
 
 d_test_samurai_rebellion = {
@@ -236,7 +268,7 @@ d_test_samurai_rebellion = {
 		}
 		set_global_flag = amo_sho_scripted_war_ongoing
 		clr_global_flag = amo_sho_scripted_war_brewing
-		remove_decision = AMO_war_against_shogunate
+		remove_decision = AMO_countdown_to_war
 	}
 	log = "test_samurai_rebellion"
 }
