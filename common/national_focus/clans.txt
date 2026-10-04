@@ -728,12 +728,15 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		completion_reward = {
-		
 			add_doctrine_cost_reduction = {
 				name = naval_doc_bonus
-				cost_reduction = 0.75
+				cost_reduction = 0.50
 				uses = 1
 				category = naval_doctrine
+			}
+			add_mastery = {
+				amount = 50
+				folder = navy
 			}
 		}
 	}
@@ -1063,7 +1066,7 @@ focus_tree = {
 		
 		x = -1
 		y = 2
-		cost = 10
+		cost = 5
 		
 		ai_will_do = {
 			factor = 50
@@ -1197,9 +1200,13 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = clan_raise_the_banners	# Raise the Banners
-		icon = GFX_focus_generic_nobles
+		id = clan_raise_the_banners	# Raise the Banners // People's Army
+		icon = {
+			GFX_focus_REI_local_volunteers = { OR = { has_government = communism has_government = democratic has_government = democratic_socialism } }
+			GFX_focus_generic_nobles = yes
+		}
 		search_filters = { FOCUS_FILTER_MILITARY }
+		dynamic = yes
 		
 		prerequisite = { focus = clan_quick_conscription focus = clan_train_army }
 		mutually_exclusive = { focus = clan_regular_soldiers}
@@ -1217,63 +1224,74 @@ focus_tree = {
 		available_if_capitulated = yes
 		
 		available = {
-			NOT = {
-				has_government = communism
-			}
-			has_equipment = {
-				infantry_equipment > 499
+			if = {
+				limit = { OR = { has_government = autocracy has_government = fascism has_government = neutrality } }
+				has_equipment = {
+					infantry_equipment > 499
+				}
 			}
 		}
 
 		completion_reward = {
-			hidden_effect = {
-				division_template = {
-					name = "Konoe Shidan" 	
-					division_names_group = CLAN_INF_01
-					is_locked = yes
-					regiments = {
-						teppo_samurai  = { x = 0 y = 0 }
-						teppo_samurai  = { x = 0 y = 1 }
-						teppo_samurai  = { x = 0 y = 2 }
-						teppo_samurai  = { x = 1 y = 0 }
-						teppo_samurai  = { x = 1 y = 1 }
-					}
-					support = {
-						engineer = { x = 0 y = 0 }
-						recon = { x = 0 y = 1 }
-					}
-					priority = 2
-				}
-			}
 			if = {
-				limit = {
+				limit = { OR = { has_government = autocracy has_government = fascism has_government = neutrality } }
+				hidden_effect = {
+					division_template = {
+						name = "Konoe Shidan" 	
+						division_names_group = CLAN_INF_01
+						is_locked = yes
+						regiments = {
+							teppo_samurai  = { x = 0 y = 0 }
+							teppo_samurai  = { x = 0 y = 1 }
+							teppo_samurai  = { x = 0 y = 2 }
+							teppo_samurai  = { x = 1 y = 0 }
+							teppo_samurai  = { x = 1 y = 1 }
+						}
+						support = {
+							engineer = { x = 0 y = 0 }
+							recon = { x = 0 y = 1 }
+						}
+						priority = 2
+					}
+				}
+				if = {
+					limit = {
+						capital_scope = {
+							is_fully_controlled_by = ROOT
+						}
+					}
 					capital_scope = {
-						is_fully_controlled_by = ROOT
+						custom_effect_tooltip = clan_spawn_samurai_division
+						hidden_effect = {
+							create_unit = {
+									division = "name = \"Konoe Shidan\" division_template = \"Konoe Shidan\" start_experience_factor = 0.9 start_equipment_factor = 0.01"
+									owner = ROOT
+							}
+						}
 					}
-				}
-				capital_scope = {
-					custom_effect_tooltip = clan_spawn_samurai_division
-					hidden_effect = {
-						create_unit = {
-								division = "name = \"Konoe Shidan\" division_template = \"Konoe Shidan\" start_experience_factor = 0.9 start_equipment_factor = 0.01"
-								owner = ROOT
+				} else = {
+					random_controlled_state = {
+						limit = { impassable = no }
+						custom_effect_tooltip = clan_spawn_samurai_division
+						hidden_effect = {
+							create_unit = {
+									division = "name = \"Konoe Shidan\" division_template = \"Konoe Shidan\" start_experience_factor = 0.9 start_equipment_factor = 0.01"
+									owner = ROOT
+							}
 						}
 					}
 				}
+				custom_effect_tooltip = unlock_samurai_tech
+				hidden_effect = { set_technology = { tech_samurai = 1 popup = no } }
 			} else = {
-				random_controlled_state = {
-					limit = { impassable = no }
-					custom_effect_tooltip = clan_spawn_samurai_division
-					hidden_effect = {
-						create_unit = {
-								division = "name = \"Konoe Shidan\" division_template = \"Konoe Shidan\" start_experience_factor = 0.9 start_equipment_factor = 0.01"
-								owner = ROOT
-						}
-					}
+				if = {
+					limit = { NOT = { has_tech = militia_tech } }
+					hidden_effect = { set_technology = { militia_tech = 1 popup = no } } 
+					custom_effect_tooltip = militia_tech_tooltip
 				}
+				add_ideas = clan_spirit_people_army
+				hidden_effect = { set_technology = { improved_militia_org_tech = 1 popup = yes } }
 			}
-			custom_effect_tooltip = unlock_samurai_tech
-			hidden_effect = { set_technology = { tech_samurai = 1 popup = no } }
 		}
 	}
 	
@@ -1363,6 +1381,8 @@ focus_tree = {
 					}
 				}
 			}
+			custom_effect_tooltip = free_army_academy_one_time
+			hidden_effect = { add_ideas = clan_regular_soldiers_army }
 		}
 	}
 	
@@ -1424,6 +1444,10 @@ focus_tree = {
 				cost_reduction = 1
 				uses = 1
 				category = land_doctrine
+			}
+			add_mastery = {
+				amount = 50
+				folder = land
 			}
 		}
 	}
@@ -1880,6 +1904,7 @@ focus_tree = {
 				multiply_temp_variable = { fighter_amount = 0.75 }
 			}
 			clamp_temp_variable = { var = fighter_amount min = 8 max = 36 }
+			round_temp_variable = fighter_amount
 			### THE EQUIPMENT ITSELF
 			if = {
 				limit = {
@@ -2132,12 +2157,15 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		completion_reward = {
-
 			add_doctrine_cost_reduction = {
 				name = air_doc_bonus
 				cost_reduction = 0.75
 				uses = 1
 				category = air_doctrine
+			}
+			add_mastery = {
+				amount = 50
+				folder = air
 			}
 		}
 	}

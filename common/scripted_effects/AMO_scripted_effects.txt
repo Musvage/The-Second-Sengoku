@@ -79,6 +79,7 @@ AMO_samurai_rebellion_get_total_score = {
 			add_to_variable = { global.sho_rebellion_total_score = temp_rebellion_score }
 		}
 	}
+	log = "sho_rebellion_total_score: [?global.sho_rebellion_total_score]"
 } d_AMO_samurai_rebellion_get_total_score = { AMO_samurai_rebellion_get_total_score = yes log = "AMO_samurai_rebellion_get_total_score [?global.sho_rebellion_total_score]" }
 
 AMO_samurai_rebellion_get_score = {
@@ -283,10 +284,11 @@ d_test_amaterasu = {
 }
 
 d_amo_test_revolt_state = {
+	log = "amo_test_revolt_state"
 	SHO = {
 		if = {
 			limit = {
-				any_state = {
+				any_controlled_state = {
 					OR = {
 						is_core_of = SKA
 						is_core_of = ASA
@@ -299,7 +301,7 @@ d_amo_test_revolt_state = {
 						is_core_of = OIK
 						is_core_of = ABE
 					}
-					NOT = { has_state_flag = samurai_rebellion_block }
+					NOT = { has_state_flag = samurai_rebellion_block has_state_flag = amo_transfer_on_peace }
 					impassable = no
 				}
 			}
@@ -318,22 +320,33 @@ d_amo_test_revolt_state = {
 						is_core_of = OIK
 						is_core_of = ABE
 					}
-					NOT = { has_state_flag = samurai_rebellion_block }
+					NOT = { has_state_flag = samurai_rebellion_block has_state_flag = amo_transfer_on_peace }
 					impassable = no
 				}
 				set_variable = { global.samurai_rebellion_state = THIS.id }
-				if = { limit = { is_core_of = SKA } transfer_state_to = SKA SKA = { declare_war_on = { target = SHO type = annex_everything } set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
-				if = { limit = { is_core_of = ASA } transfer_state_to = ASA ASA = { declare_war_on = { target = SHO type = annex_everything } set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
-				if = { limit = { is_core_of = OWA } transfer_state_to = OWA OWA = { declare_war_on = { target = SHO type = annex_everything } set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
-				if = { limit = { is_core_of = HOJ } transfer_state_to = HOJ HOJ = { declare_war_on = { target = SHO type = annex_everything } set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
-				if = { limit = { is_core_of = UES } transfer_state_to = UES UES = { declare_war_on = { target = SHO type = annex_everything } set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
-				if = { limit = { is_core_of = MAT } transfer_state_to = MAT MAT = { declare_war_on = { target = SHO type = annex_everything } set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
-				if = { limit = { is_core_of = AMA } transfer_state_to = AMA AMA = { declare_war_on = { target = SHO type = annex_everything } set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
-				if = { limit = { is_core_of = TMA } transfer_state_to = TMA TMA = { declare_war_on = { target = SHO type = annex_everything } set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
-				if = { limit = { is_core_of = OIK } transfer_state_to = OIK OIK = { declare_war_on = { target = SHO type = annex_everything } set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
-				if = { limit = { is_core_of = ABE } transfer_state_to = ABE ABE = { declare_war_on = { target = SHO type = annex_everything } set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
+				if = { limit = { is_core_of = SKA } transfer_state_to = SKA SKA = { set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
+				if = { limit = { is_core_of = ASA } transfer_state_to = ASA ASA = { set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
+				if = { limit = { is_core_of = OWA } transfer_state_to = OWA OWA = { set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
+				if = { limit = { is_core_of = HOJ } transfer_state_to = HOJ HOJ = { set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
+				if = { limit = { is_core_of = UES } transfer_state_to = UES UES = { set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
+				if = { limit = { is_core_of = MAT } transfer_state_to = MAT MAT = { set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
+				if = { limit = { is_core_of = AMA } transfer_state_to = AMA AMA = { set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
+				if = { limit = { is_core_of = TMA } transfer_state_to = TMA TMA = { set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
+				if = { limit = { is_core_of = OIK } transfer_state_to = OIK OIK = { set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
+				if = { limit = { is_core_of = ABE } transfer_state_to = ABE ABE = { set_religion_2 = yes country_event = { id = amaterasu.50 hours = 1 } } }
 				log = "Rebellion in [THIS.GetName]!"
 			}
+		} else = { log = "no available state" } 
+	}
+}
+
+d_test_list_blocked_states = {
+	log = "test_list_blocked_states"
+	every_state = {
+		if = {
+			limit = { has_state_flag = samurai_rebellion_block }
+			log = "BLOCKED: [THIS.GetName]"
 		}
 	}
+	log = "end test_list_blocked_states"
 }
