@@ -377,12 +377,12 @@ focus_tree = {
 		completion_reward = {
 			add_equipment_to_stockpile = {
 				type = infantry_equipment_traditional
-				amount = 200
+				amount = 400
 				producer = JAP
 			}
 			add_equipment_to_stockpile = {
 				type = artillery_equipment_traditional
-				amount = 10
+				amount = 40
 				producer = JAP
 			}
 			add_offsite_building = { type = arms_factory level = 2 }
@@ -631,7 +631,7 @@ focus_tree = {
 	focus = {
 		id = AMO_resolution_one_more_turn
 		icon = GFX_goal_generic_demand_territory
-		search_filters = { FOCUS_FILTER_AMO_WAR }
+		search_filters = { FOCUS_FILTER_AMO_WAR FOCUS_FILTER_MANPOWER FOCUS_FILTER_INDUSTRY }
 		
 		prerequisite = { focus = AMO_short_preparation focus = AMO_long_preparation }
 		mutually_exclusive = { focus = AMO_resolution_end_war }
@@ -649,15 +649,7 @@ focus_tree = {
 		
 		
 		completion_reward = {
-			add_manpower = 20000
-			add_equipment_to_stockpile = {
-				type = infantry_equipment_0
-				amount = 750
-			}
-			add_equipment_to_stockpile = {
-				type = artillery_equipment_0
-				amount = 75
-			}
+			add_timed_idea = { idea = AMO_one_more_turn_spirit days = 365 }
 			hidden_effect = { if = { limit = { NOT = { has_country_flag = AMO_focus_tree_unlocked has_decision = AMO_countdown_to_war } } country_event = amaterasu.999 } }
 		}
 	}
@@ -665,7 +657,7 @@ focus_tree = {
 	focus = {
 		id = AMO_resolution_end_war
 		icon = GFX_goal_generic_improve_relations
-		search_filters = { FOCUS_FILTER_DIPLOMACY }
+		search_filters = { FOCUS_FILTER_DIPLOMACY FOCUS_FILTER_STABILITY }
 		
 		prerequisite = { focus = AMO_short_preparation focus = AMO_long_preparation }
 		mutually_exclusive = { focus = AMO_resolution_one_more_turn }
@@ -683,6 +675,7 @@ focus_tree = {
 		
 		
 		completion_reward = {
+			add_stability = 0.1
 			custom_effect_tooltip = AMO_resolution_end_war_tt	# all SHO states occupied are transfered to AMO
 			custom_effect_tooltip = AMO_resolution_end_war_tt2	# all AMO states occupied are transfered to SHO
 			hidden_effect = { if = { limit = { NOT = { has_country_flag = AMO_focus_tree_unlocked has_decision = AMO_countdown_to_war } } country_event = amaterasu.999 } }
@@ -2429,6 +2422,11 @@ focus_tree = {
 				type = motorized_equipment_0
 				amount = var:num_equip
 			}
+			divide_temp_variable = { num_equip = 20 }
+			add_equipment_to_stockpile = {
+				type = convoy_1
+				amount = var:num_equip
+			}
 			custom_effect_tooltip = AMO_commissioner_supply_trucks_tt
 		}
 	}
@@ -3165,6 +3163,7 @@ focus_tree = {
 				has_war_with = SHO
 				is_ally_with = SHO
 			}
+			NOT = { has_global_flag = amo_sho_scripted_war_ongoing }
 		}
 		
 		ai_will_do = { factor = 5 }
