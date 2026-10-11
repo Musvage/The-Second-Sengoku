@@ -1,4 +1,22 @@
 on_actions = {
+
+	on_startup = {
+		effect = {
+			# The following is used in the error catcher, weekly effect
+			every_state = {
+				if = { limit = { is_core_of = SKA } set_state_flag = original_state_ska }
+				if = { limit = { is_core_of = ASA } set_state_flag = original_state_asa }
+				if = { limit = { is_core_of = OWA } set_state_flag = original_state_owa }
+				if = { limit = { is_core_of = HOJ } set_state_flag = original_state_hoj }
+				if = { limit = { is_core_of = UES } set_state_flag = original_state_ues }
+				if = { limit = { is_core_of = MAT } set_state_flag = original_state_mat }
+				if = { limit = { is_core_of = AMA } set_state_flag = original_state_ama }
+				if = { limit = { is_core_of = TMA } set_state_flag = original_state_tma }
+				if = { limit = { is_core_of = OIK } set_state_flag = original_state_oik }
+				if = { limit = { is_core_of = ABE } set_state_flag = original_state_abe }
+			}
+		}
+	}
 	on_monthly_AMO = {
 		# error catcher for number of irregular troops
 		effect = {
@@ -35,11 +53,9 @@ on_actions = {
 	on_daily_AMO = {
 		effect = {
 			if = {
-				limit = { has_global_flag = amo_sho_scripted_war_ongoing }	log = "ONGOING"
-				
+				limit = { has_global_flag = amo_sho_scripted_war_ongoing }
 				AMO_samurai_rebellion_get_score = yes	### this calculates AMO's net score
-				log = "AMO scripted war score: [?global.amo_rebellion_score]"
-				
+				log = "AMO scripted war score: [?global.amo_rebellion_score]"			
 				### CHECK FOR REBELLIOUS CLANS
 				if = {
 					limit = {
@@ -51,6 +67,20 @@ on_actions = {
 					AMO = { activate_mission = AMO_clan_is_rebelling_amo }
 					log = "CHECK FOR REBELLIOUS CLANS: OK [?global.amo_rebellion_score]"
 				} else = { log = "amo_rebellion_score < 25" }
+				### ERROR CATCHER - remove uncesseary cores, fix for eldritch bug that we can't fix by mortal means
+				every_state = {
+					limit = { is_controlled_by = SHO }
+					if = { limit = { is_core_of = SKA NOT = { has_state_flag = original_state_ska } } remove_core_of = SKA }
+					if = { limit = { is_core_of = ASA NOT = { has_state_flag = original_state_asa } } remove_core_of = ASA }
+					if = { limit = { is_core_of = OWA NOT = { has_state_flag = original_state_owa } } remove_core_of = OWA }
+					if = { limit = { is_core_of = HOJ NOT = { has_state_flag = original_state_hoj } } remove_core_of = HOJ }
+					if = { limit = { is_core_of = UES NOT = { has_state_flag = original_state_ues } } remove_core_of = UES }
+					if = { limit = { is_core_of = MAT NOT = { has_state_flag = original_state_mat } } remove_core_of = MAT }
+					if = { limit = { is_core_of = AMA NOT = { has_state_flag = original_state_ama } } remove_core_of = AMA }
+					if = { limit = { is_core_of = TMA NOT = { has_state_flag = original_state_tma } } remove_core_of = TMA }
+					if = { limit = { is_core_of = OIK NOT = { has_state_flag = original_state_oik } } remove_core_of = OIK }
+					if = { limit = { is_core_of = ABE NOT = { has_state_flag = original_state_abe } } remove_core_of = ABE }
+				}
 			}
 		}
 	}
