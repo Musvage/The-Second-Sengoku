@@ -330,8 +330,8 @@ focus_tree = {
 		completion_reward = {
 			add_political_power = 150
 			custom_effect_tooltip = AMO_long_preparation_tt2
-			set_variable = { AMO_sabotage_duration = 240 }
-			set_variable = { AMO_common_enemy_duration = 730 }
+			set_variable = { global.AMO_sabotage_duration = 240 }
+			set_variable = { global.AMO_common_enemy_duration = 730 }
 			custom_effect_tooltip = loc_paragraph
 			custom_effect_tooltip = AMO_long_preparation_tt
 			custom_effect_tooltip = loc_paragraph
@@ -478,7 +478,7 @@ focus_tree = {
 			set_country_flag = AMO_recruit_samurai_completed
 			set_country_flag = AMO_rally_soldiers_completed
 			SHO = {
-				add_timed_idea = { idea = AMO_infiltrate_shogunate_malus days = var:AMO_sabotage_duration?120 }
+				add_timed_idea = { idea = AMO_infiltrate_shogunate_malus days = var:global.AMO_sabotage_duration?120 }
 			}
 			custom_effect_tooltip = AMO_countdown_to_war_upon_completed
 			custom_effect_tooltip = AMO_recruit_samurai_tt
@@ -587,7 +587,7 @@ focus_tree = {
 			}
 			custom_effect_tooltip = AMO_countdown_to_war_upon_completed
 			SHO = {
-				add_timed_idea = { idea = AMO_sabotage_conscription_malus days = var:AMO_sabotage_duration?120 }
+				add_timed_idea = { idea = AMO_sabotage_conscription_malus days = var:global.AMO_sabotage_duration?120 }
 				hidden_effect = { country_event = amaterasu.23 }
 			}
 			hidden_effect = { if = { limit = { NOT = { has_country_flag = AMO_focus_tree_unlocked has_decision = AMO_countdown_to_war } } country_event = amaterasu.999 } }
@@ -618,8 +618,8 @@ focus_tree = {
 			set_country_flag = AMO_steal_weapons_completed
 			custom_effect_tooltip = AMO_countdown_to_war_upon_completed
 			SHO = {
-				add_timed_idea = { idea = AMO_sabotage_organisation_malus days = var:AMO_sabotage_duration?120 }
-				add_timed_idea = { idea = AMO_sabotage_factories_malus days = var:AMO_sabotage_duration?120 }
+				add_timed_idea = { idea = AMO_sabotage_organisation_malus days = var:global.AMO_sabotage_duration?120 }
+				add_timed_idea = { idea = AMO_sabotage_factories_malus days = var:global.AMO_sabotage_duration?120 }
 				custom_effect_tooltip = AMO_steal_weapons_tt_bad
 				hidden_effect = { country_event = amaterasu.22 }
 			}
@@ -677,10 +677,54 @@ focus_tree = {
 		
 		completion_reward = {
 			add_stability = 0.1
-			custom_effect_tooltip = AMO_resolution_end_war_tt	# all SHO states occupied are transfered to AMO
-			custom_effect_tooltip = AMO_resolution_end_war_tt2	# all AMO states occupied are transfered to SHO
 			hidden_effect = { if = { limit = { NOT = { has_country_flag = AMO_focus_tree_unlocked has_decision = AMO_countdown_to_war } } country_event = amaterasu.999 } }
 			SHO = { country_event = { id = amaterasu.7 hours = 6 random = 6 } }
+			custom_effect_tooltip = loc_if_accept
+			custom_effect_tooltip = AMO_resolution_end_war_tt	# all SHO states occupied are transfered to AMO
+			custom_effect_tooltip = AMO_resolution_end_war_tt2	# all AMO states occupied are transfered to SHO
+			custom_effect_tooltip = loc_paragraph
+			set_temp_variable = { accept_chance = 70 }
+			hidden_effect = {
+				SHO = {
+					if = {
+						limit = { check_variable = { global.amo_rebellion_score > 25 } }
+						add_to_temp_variable = { accept_chance = 25 }
+					}
+					if = {
+						limit = { strength_ratio = { tag = AMO ratio < 1 } }
+						add_to_temp_variable = { accept_chance = 25 }
+					}
+					if = {
+						limit = { any_enemy_country = { NOT = { tag = AMO } } }
+						add_to_temp_variable = { accept_chance = 25 }
+					}
+					if = {
+						limit = { 
+							strength_ratio = { tag = AMO ratio < 5 }
+							OR = {
+								has_war_with = PRO
+								has_war_with = KAN
+								has_war_with = TOH
+								has_war_with = CHU
+							}						
+						}
+						add_to_temp_variable = { accept_chance = 100 }
+					}
+					if = {
+						limit = { strength_ratio = { tag = AMO ratio > 5 } }
+						set_temp_variable = { accept_chance = 0 }
+					}
+				}
+			}
+			if = {
+				limit = { check_variable = { accept_chance > 124.9 } }
+				custom_effect_tooltip = loc_accept_chance_high
+			} else_if = {
+				limit = { check_variable = { accept_chance > 74.9 } }
+				custom_effect_tooltip = loc_accept_chance_medium
+			} else = {
+				custom_effect_tooltip = loc_accept_chance_low
+			}
 		}
 	}
 	
@@ -2767,36 +2811,51 @@ focus_tree = {
 		y = 1
 		cost = 10
 		
-		available = {		
+		available = {	
+			NOT = { is_ally_with = SHO }
 			OR = {
 				KAN = {
-					NOT = { has_war_with = AMO }
 					NOT = {
+						has_war_with = AMO
 						is_ally_with = SHO
-						has_guaranteed = SHO
 					}
 				}
 				TOH = {
-					NOT = { has_war_with = AMO }
 					NOT = {
+						has_war_with = AMO
 						is_ally_with = SHO
-						has_guaranteed = SHO
 					}
 				}
 				PRO = {
-					NOT = { has_war_with = AMO }
 					NOT = {
+						has_war_with = AMO
 						is_ally_with = SHO
-						has_guaranteed = SHO
 					}
 				}
 				if = {
 					limit = { CHU = { is_neighbor_of = SHO } }
 					CHU = {
-						NOT = { has_war_with = AMO }
 						NOT = {
+							has_war_with = AMO
 							is_ally_with = SHO
-							has_guaranteed = SHO
+						}
+					}
+				}
+				if = {
+					limit = { SHI = { is_neighbor_of = SHO } }
+					SHI = {
+						NOT = {
+							has_war_with = AMO
+							is_ally_with = SHO
+						}
+					}
+				}
+				if = {
+					limit = { KYU = { is_neighbor_of = SHO } }
+					KYU = {
+						NOT = {
+							has_war_with = AMO
+							is_ally_with = SHO
 						}
 					}
 				}
@@ -2819,13 +2878,12 @@ focus_tree = {
 						set_state_flag = former_SHO_state
 					}
 				}
-			} else = {
-				custom_effect_tooltip = AMO_common_enemy_tt
-			}
+			} else = { custom_effect_tooltip = AMO_common_enemy_tt }
 			custom_effect_tooltip = loc_paragraph
 			add_ideas = AMO_common_enemy_spirit
-			SHO = { add_timed_idea = { idea = AMO_common_enemy_malus_cosmetic_spirit days = var:AMO_common_enemy_duration?365 } }
+			SHO = { add_timed_idea = { idea = AMO_common_enemy_malus_cosmetic_spirit days = var:global.AMO_common_enemy_duration?365 } }
 			hidden_effect = {
+				SHO = { country_event = amaterasu.27 }
 				every_country = {
 					limit = { unification_candidate = yes NOT = { tag = AMO tag = SHO } }
 					add_timed_idea = { idea = AMO_common_enemy_malus_spirit days = 731 }	# it should be removed by ending the war or SHO's on spirit expiring
@@ -3180,6 +3238,7 @@ focus_tree = {
 			NOT = {
 				has_war_with = SHO
 				is_ally_with = SHO
+				has_truce_with = SHO
 			}
 			NOT = { has_global_flag = amo_sho_scripted_war_ongoing }
 		}

@@ -128,33 +128,82 @@ country_event = { # Knights Total Victory (triggered by on_actions)	## THIS ONE 
 	}
 }
 
-country_event = { # Truce (SHO event)
+country_event = { # Focus: Truce (SHO event)
 	id = amaterasu.7
 	title = amaterasu.7.t
 	desc = amaterasu.7.d
-	picture = GFX_report_event_usa_heavy_cruiser
+	picture = GFX_report_news_peace_dove
 
 	is_triggered_only = yes
 
 	option = {
 		name = amaterasu.5.a	# accept
 		hidden_effect = { AMO = { country_event = amaterasu.8 } }
-		every_owned_state = {
-			limit = { is_controlled_by = AMO }
+		if = {
+			limit = { any_owned_state = { is_controlled_by = AMO } }
 			custom_effect_tooltip = AMO_resolution_end_war_tt
-			hidden_effect = { AMO = { transfer_state = PREV } }
-		}
-		AMO = {
 			every_owned_state = {
-				limit = { is_controlled_by = SHO }
-				custom_effect_tooltip = AMO_resolution_end_war_tt2
-				hidden_effect = { SHO = { transfer_state = PREV } }
+				limit = { is_controlled_by = AMO }
+				hidden_effect = { AMO = { transfer_state = PREV } }
+			}
+		}
+		if = {
+			limit = { AMO = { any_owned_state = { is_controlled_by = SHO } } }
+			custom_effect_tooltip = AMO_resolution_end_war_tt2
+			AMO = {
+				every_owned_state = {
+					limit = { is_controlled_by = SHO }
+					hidden_effect = { SHO = { transfer_state = PREV } }
+				}
+			}
+		}
+		ai_chance = {
+			base = 100
+			modifier = {
+				factor = 0
+				strength_ratio = {
+					tag = AMO
+					ratio > 5
+				}
 			}
 		}
 	}
 	option = {
 		name = amaterasu.5.b	# refuse
 		AMO = { country_event = { id = amaterasu.9 hours = 2 } }
+		ai_chance = {
+			base = 200
+			modifier = {
+				factor = 0.5
+				strength_ratio = {
+					tag = AMO
+					ratio < 1
+				}
+			}
+			modifier = {
+				factor = 0.5
+				check_variable = { global.amo_rebellion_score > 33 }
+			}
+			modifier = {
+				factor = 0.5
+				any_enemy_country = {
+					NOT = { tag = AMO }
+				}
+			}
+			modifier = {
+				factor = 0
+				strength_ratio = {
+					tag = AMO
+					ratio < 5
+				}
+				OR = {
+					has_war_with = PRO
+					has_war_with = KAN
+					has_war_with = TOH
+					has_war_with = CHU	# EZO, KYU and SHI are a bit far away
+				}
+			}
+		}
 	}
 }
 
@@ -162,15 +211,12 @@ country_event = { # Truce, refused (AMO event)
 	id = amaterasu.8
 	title = amaterasu.8.t
 	desc = amaterasu.8.d
-	picture = GFX_report_event_usa_heavy_cruiser
+	picture = GFX_report_event_generic_sign_treaty2
 
 	is_triggered_only = yes
 
 	option = {
 		name = amaterasu.8.a	# accept
-	}
-	option = {
-		name = amaterasu.8.b	# refuse
 	}
 }
 
@@ -178,40 +224,52 @@ country_event = { # Truce, accepted (AMO world event)
 	id = amaterasu.9
 	title = amaterasu.9.t
 	desc = amaterasu.9.d
-	picture = GFX_report_event_usa_heavy_cruiser
+	picture = GFX_report_news_peace_dove
 
 	is_triggered_only = yes
 	
 	major = yes
 	
 	immediate = {
-		clr_global_flag = amo_sho_scripted_war_ongoing
-		samurai_rebellion_clear_error_catcher = yes
-		SHO = { remove_mission = AMO_ongoing_war_truce_sho }
-		AMO = {
-			every_owned_state = {
-				limit = { is_core_of = SHO }
-				set_compliance = 100
-				set_resistance = 0
+		hidden_effect = {
+			clr_global_flag = amo_sho_scripted_war_ongoing
+			samurai_rebellion_clear_error_catcher = yes
+			SHO = { remove_mission = AMO_ongoing_war_truce_sho }
+			AMO = {
+				every_owned_state = {
+					limit = { is_core_of = SHO }
+					set_compliance = 100
+					set_resistance = 0
+				}
 			}
-		}
-		SHO = {
-			every_owned_state = {
-				limit = { is_core_of = AMO }
-				set_compliance = 100
-				set_resistance = 0
-			}
-			every_controlled_state = {
-				remove_claim_by = AMO
+			SHO = {
+				every_owned_state = {
+					limit = { is_core_of = AMO }
+					set_compliance = 100
+					set_resistance = 0
+				}
+				every_controlled_state = {
+					remove_claim_by = AMO
+				}
 			}
 		}
 	}
 
 	option = {
-		name = amaterasu.9.a	# accept
+		name = amaterasu.9.amo
+		trigger = { tag = AMO }
 	}
 	option = {
-		name = amaterasu.9.b	# refuse
+		name = amaterasu.9.sho
+		trigger = { tag = SHO }
+	}
+	option = {
+		name = amaterasu.9.clan
+		trigger = { is_clan = yes }
+	}
+	option = {
+		name = amaterasu.9.other
+		trigger = { NOT = { tag = AMO tag = SHO is_clan = yes } }
 	}
 }
 
@@ -232,7 +290,7 @@ country_event = { # Focus: Infiltrate the Shogunate
 	option = {
 		name = amaterasu.21.sho
 		trigger = { tag = SHO }
-		add_timed_idea = { idea = AMO_infiltrate_shogunate_malus days = var:AMO_sabotage_durting?120 }
+		add_timed_idea = { idea = AMO_infiltrate_shogunate_malus days = var:global.AMO_sabotage_duration?120 }
 		AMO = {
 			custom_effect_tooltip = AMO_countdown_to_war_upon_completed
 			custom_effect_tooltip = AMO_recruit_samurai_tt
@@ -260,8 +318,8 @@ country_event = { # Focus: Sabotage Arsenals
 		trigger = { tag = SHO }
 		effect_tooltip = {
 			custom_effect_tooltip = AMO_countdown_to_war_upon_completed
-			add_timed_idea = { idea = AMO_sabotage_organisation_malus days = var:AMO_sabotage_durting?120 }
-			add_timed_idea = { idea = AMO_sabotage_factories_malus days = var:AMO_sabotage_durting?120 }
+			add_timed_idea = { idea = AMO_sabotage_organisation_malus days = var:global.AMO_sabotage_duration?120 }
+			add_timed_idea = { idea = AMO_sabotage_factories_malus days = var:global.AMO_sabotage_duration?120 }
 		}
 	}
 }
@@ -286,7 +344,7 @@ country_event = { # Focus: Demoralization
 		effect_tooltip = {
 			add_war_support = -0.1
 			custom_effect_tooltip = AMO_countdown_to_war_upon_completed
-			add_timed_idea = { idea = AMO_sabotage_conscription_malus days = var:AMO_sabotage_durting?120 }
+			add_timed_idea = { idea = AMO_sabotage_conscription_malus days = var:global.AMO_sabotage_duration?120 }
 		}
 	}
 }
@@ -310,7 +368,7 @@ country_event = { # Focus: Civilian Resistance
 		trigger = { tag = SHO }
 		effect_tooltip = {
 			add_war_support = -0.05
-			add_timed_idea = { idea = AMO_sabotage_conscription_malus days = 120 }
+			add_timed_idea = { idea = AMO_sabotage_conscription_malus days = var:global.AMO_sabotage_duration?120 }
 		}
 	}
 }
@@ -334,7 +392,7 @@ country_event = { # Focus: Fith Column
 		trigger = { tag = SHO }
 		effect_tooltip = {
 			add_command_power = -50
-			add_timed_idea = { idea = AMO_sabotage_organisation_malus days = 120 }
+			add_timed_idea = { idea = AMO_sabotage_organisation_malus days = var:global.AMO_sabotage_duration?120 }
 		}
 	}
 }
@@ -365,194 +423,31 @@ country_event = { # Focus: Terror Campaign
 		trigger = { tag = SHO }
 		effect_tooltip = {
 			add_stability = -0.05
-			add_timed_idea = { idea = AMO_sabotage_factories_malus days = 120 }
+			add_timed_idea = { idea = AMO_sabotage_factories_malus days = var:global.AMO_sabotage_duration?120 }
 		}
 	}
 }
 
-country_event = { # Focus: Truce!	target: SHO	## TODO TO-DO TO DO: delete this event
+country_event = { # Focus: Common Enemy
 	id = amaterasu.27
 	title = amaterasu.27.t
 	desc = amaterasu.27.d
-	picture = GFX_report_event_surrender_japanese
-
-	is_triggered_only = yes
-
-	option = {
-		name = amaterasu.27.a
-		every_owned_state = {
-			limit = { is_controlled_by = AMO }
-			transfer_state_to = AMO
-			set_state_flag = amo_peace_transfer
-		}
-		white_peace = {
-			tag = AMO
-			message = amaterasu.27.tt
-		}
-		ai_chance = {
-			factor = 1
-			modifier = {
-				factor = 0					# if there are no states occupied by AMO, continue war
-				any_owned_state = {
-					is_controlled_by = AMO
-				}
-			}
-			modifier = {
-				factor = 2					# if AMO is a tough nut to crack, consider peace
-				strength_ratio = {
-					tag = AMO
-					ratio < 1.5
-				}
-			}
-			modifier = {
-				factor = 0.5					# if AMO is a weak, do not consider unfavorable terms
-				strength_ratio = {
-					tag = AMO
-					ratio > 2
-				}
-			}
-		}
-	}
-	option = {
-		name = amaterasu.27.b
-		set_truce = {
-			target = AMO
-			days = 365
-		}
-		ai_chance = {
-			factor = 1
-			modifier = {
-				factor = 0					# if there are no states occupied by AMO, continue war
-				any_owned_state = {
-					is_controlled_by = AMO
-				}
-			}
-		}
-	}
-	option = {
-		name = amaterasu.27.c
-		ai_chance = {
-			factor = 1
-			modifier = {
-				factor = 0					# if there are multiple enemies AND states occupied by AMO, consider only peace options
-				any_enemy_country = {
-					NOT = { tag = AMO }
-				}
-				any_owned_state = {
-					is_controlled_by = AMO
-				}
-			}
-			modifier = {
-				factor = 0.5					# if AMO is a tough nut to crack, consider peace
-				strength_ratio = {
-					tag = AMO
-					ratio < 1.5
-				}
-			}
-			modifier = {
-				factor = 0.5					# if AMO is a weak, consider continuing war
-				strength_ratio = {
-					tag = AMO
-					ratio > 2
-				}
-			}
-		}
-	}
-}
-
-country_event = { # Focus: Truce!	Accepted peace	## TODO TO-DO TO DO: delete this event
-	id = amaterasu.28
-	title = amaterasu.28.t
-	desc = amaterasu.28.d
-	picture = GFX_report_event_modern_samurai
+	picture = GFX_report_event_generic_read_write
 
 	is_triggered_only = yes
 	
-	major = yes
+	major = yes show_major = { OR = { tag = AMO tag = SHO } }
 
 	option = {
-		name = amaterasu.28.amo
+		name = amaterasu.27.amo
 		trigger = { tag = AMO }
-		every_state = {
-			limit = { has_state_flag = amo_peace_transfer }
-			effect_tooltip = { transfer_state_to = AMO }
-		}
 	}
 	option = {
-		name = amaterasu.28.sho
+		name = amaterasu.27.sho
 		trigger = { tag = SHO }
-	}
-	option = {
-		name = amaterasu.28.other
-		trigger = { NOT = { tag = AMO tag = SHO } }
-		every_state = {
-			limit = { has_state_flag = amo_peace_transfer }
-			effect_tooltip = { transfer_state_to = AMO }
-		}
-	}
-}
-
-country_event = { # Focus: Truce!	Accepted cease fire	## TODO TO-DO TO DO: delete this event
-	id = amaterasu.29
-	title = amaterasu.29.t
-	desc = amaterasu.29.d
-	picture = GFX_report_event_modern_samurai
-
-	is_triggered_only = yes
-	
-	major = yes
-
-	option = {
-		name = amaterasu.29.amo
-		trigger = { tag = AMO }
 		effect_tooltip = {
-			SHO = {
-				set_truce = {
-					target = AMO
-					days = 365
-				}
-			}
+			add_timed_idea = { idea = AMO_common_enemy_malus_cosmetic_spirit days = var:global.AMO_common_enemy_duration?365 }
 		}
-	}
-	option = {
-		name = amaterasu.29.sho
-		trigger = { tag = SHO }
-	}
-	option = {
-		name = amaterasu.29.other
-		trigger = { NOT = { tag = AMO tag = SHO } }
-		effect_tooltip = {
-			SHO = {
-				set_truce = {
-					target = AMO
-					days = 365
-				}
-			}
-		}
-	}
-}
-
-country_event = { # Focus: Truce!	Rejected	## TODO TO-DO TO DO: delete this event
-	id = amaterasu.30
-	title = amaterasu.30.t
-	desc = amaterasu.30.d
-	picture = GFX_report_event_modern_samurai
-
-	is_triggered_only = yes
-	
-	major = yes
-
-	option = {
-		name = amaterasu.30.amo
-		trigger = { tag = AMO }
-	}
-	option = {
-		name = amaterasu.30.sho
-		trigger = { tag = SHO }
-	}
-	option = {
-		name = amaterasu.30.other
-		trigger = { NOT = { tag = AMO tag = SHO } }
 	}
 }
 
