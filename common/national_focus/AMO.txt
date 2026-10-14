@@ -3176,43 +3176,58 @@ focus_tree = {
 		cost = 10
 		
 		available = {
+			is_subject = no
 			OR = {
-				any_neighbor_country = {
+				any_country = { is_subject_of = ROOT }
+				any_country = {
 					is_clan = yes
 					has_opinion = {
 						target = ROOT
-						value > 50
+						value > 0
+					}
+					OR = {
+						has_country_flag = AMO_can_annex
+						is_in_faction_with = AMO
+						is_neighbor_of = AMO
 					}
 				}
-				any_country = {
-					is_clan = yes
-					is_subject_of = ROOT
-				}
-				
 			}
 		}
 		
 		ai_will_do = { factor = 5 }
 		
-		
 		completion_reward = {
-			custom_effect_tooltip = "event to annex friendly clans nearby or subjects"
-			custom_effect_tooltip = "unlocks decisions to annex friendly clans nearby or subjects"
 			every_other_country = {
-				trigger = {
-					is_clan = yes
+				limit = {
 					OR = {
-						is_subject_of = ROOT
-						AND = {
-							is_neighbor_of = ROOT
+						AND = { is_subject_of = ROOT }
+						AND = {	# Clans from samurai rebellion
+							is_clan = yes
+							has_country_flag = AMO_can_annex
 							has_opinion = {
 								target = ROOT
-								value > 50
+								value > 0
+							}
+						}
+						AND = {	# distant but friendly clans
+							is_clan = yes
+							is_in_faction_with = AMO
+							has_opinion = {
+								target = ROOT
+								value > 0
+							}
+						}
+						AND = {	# other neighbor clans
+							is_clan = yes
+							is_neighbor_of = AMO
+							has_opinion = {
+								target = ROOT
+								value > 0
 							}
 						}
 					}
 				}
-				custom_effect_tooltip = "get event"
+				country_event = { id = amaterasu.601 random = 6 }
 			}
 		}
 	}
