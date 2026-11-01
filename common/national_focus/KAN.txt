@@ -7,7 +7,7 @@ focus_tree = {
 			tag = KAN
 		}
 	}
-	continuous_focus_position = { x = 0 y = 1900}
+	continuous_focus_position = { x = 200 y = 750}
 	
 	### Internal Legitimacy Path {
 	
@@ -3229,6 +3229,383 @@ focus_tree = {
 		}
 	}
 	
+	### } Common Military Production/Construction Branch {
+	
+	focus = {
+		id = KAN_construction_focus_1
+		icon = GFX_focus_KAN_fortify_kansai
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_RESEARCH }
+		
+		relative_position_id = KAN_navy_focus_1
+		x = 4
+		y = 0
+		cost = 10
+		
+		ai_will_do = { factor = 5 }
+		
+		completion_reward = {
+			add_tech_bonus = {
+				name = cat_fortification_engineers_bonus
+				bonus = 1.0
+				uses = 1
+				category = engineers_tech
+				category = cat_fortification
+			}
+			add_ideas = { KAN_military_construction_spirit }
+		}
+	}
+	
+	focus = {
+		id = KAN_production_land_focus_1
+		icon = GFX_focus_generic_army_expansion_3
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KAN_construction_focus_1 }
+		
+		relative_position_id = KAN_construction_focus_1
+		x = -2
+		y = 1
+		cost = 10
+		
+		ai_will_do = { factor = 5 }
+		
+		completion_reward = {
+			if = {
+				limit = { has_dlc = "Arms Against Tyranny" }
+				every_military_industrial_organization = {
+					limit = {
+						OR = {
+							has_mio_research_category = armor
+							has_mio_research_category = support_tech
+							has_mio_research_category = train_tech
+							has_mio_research_category = mio_cat_tech_all_armor_and_modules
+							has_mio_research_category = mio_cat_tech_light_armor_and_modules
+							has_mio_research_category = mio_cat_tech_medium_armor_and_modules
+							has_mio_research_category = mio_cat_tech_heavy_armor_and_modules
+							has_mio_research_category = cat_armored_cars
+							has_mio_research_category = mio_cat_tech_all_motorized_mechanized
+							has_mio_research_category = infantry_weapons
+							has_mio_research_category = mio_cat_all_artillery_equipment
+						}
+					}
+					add_mio_funds = 200
+				}
+			} else = {
+				custom_effect_tooltip = free_materiel_tank_manufacturer_one_time_tt
+				hidden_effect = { add_ideas = { KAN_free_army_design_spirit } }
+			}
+			random_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 1
+						include_locked = yes
+					}	
+				}
+				prioritize = { 32 }	# Kyoto
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = KAN_production_air_focus_1
+		icon = GFX_focus_generic_airport
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KAN_construction_focus_1 }
+		
+		relative_position_id = KAN_construction_focus_1
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = { factor = 5 }
+		
+		completion_reward = {
+			if = {
+				limit = { has_dlc = "Arms Against Tyranny" }
+				every_military_industrial_organization = {
+					limit = {
+						OR = {
+							has_mio_research_category = air_equipment
+							has_mio_research_category = mio_cat_all_light_fighter_and_modules
+							has_mio_research_category = mio_cat_all_medium_aircraft_and_modules
+							has_mio_research_category = mio_cat_all_heavy_aircraft_and_modules
+							has_mio_research_category = mio_cat_all_cas_and_modules
+							has_mio_research_category = mio_cat_all_naval_bomber_and_modules
+						}
+					}
+					add_mio_funds = 500
+				}
+			} else = {
+				custom_effect_tooltip = free_aircraft_manufacturer_one_time_tt
+				hidden_effect = { add_ideas = { KAN_free_air_design_spirit } }
+			}
+			custom_effect_tooltip = KAN_production_air_focus_west_kansai
+			random_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = air_base
+						size > 1
+						include_locked = yes
+					}
+					OR = { state = 2 state = 52 state = 61 state = 64 state = 89 state = 206 state = 208 }
+				}
+				prioritize = { 52 64 }
+				hidden_effect = {
+					add_building_construction = {
+						type = air_base
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+			custom_effect_tooltip = KAN_production_air_focus_east_kansai
+			random_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = air_base
+						size > 1
+						include_locked = yes
+					}
+					OR = { state = 47 state = 68 state = 70 state = 78 state = 84 state = 86 state = 105 state = 203 }
+				}
+				prioritize = { 47 203 }
+				hidden_effect = {
+					add_building_construction = {
+						type = air_base
+						level = 1
+						instant_build = yes
+					}
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = KAN_production_navy_focus_1
+		icon = GFX_focus_generic_navy_expansion
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KAN_construction_focus_1 }
+		
+		relative_position_id = KAN_construction_focus_1
+		x = 2
+		y = 1
+		cost = 10
+		
+		ai_will_do = { factor = 5 }
+		
+		completion_reward = {
+			if = {
+				limit = { has_dlc = "Arms Against Tyranny" }
+				every_military_industrial_organization = {
+					limit = {
+						OR = {
+							has_mio_research_category = naval_equipment
+							has_mio_research_category = mio_cat_tech_all_carrier_and_modules
+							has_mio_research_category = mio_cat_tech_all_cruiser_and_modules
+							has_mio_research_category = mio_cat_tech_all_destroyer_and_modules
+							has_mio_research_category = mio_cat_tech_all_capital_ship_and_modules
+							has_mio_research_category = mio_cat_tech_all_screen_ship_and_modules
+							has_mio_research_category = mio_cat_tech_all_submarine_and_modules
+						}
+					}
+					add_mio_funds = 400
+				}
+			} else = {
+				custom_effect_tooltip = free_naval_manufacturer_one_time_tt
+				hidden_effect = { add_ideas = { KAN_free_navy_design_spirit } }
+			}
+			random_controlled_state = {
+				limit = {
+					is_coastal = yes
+					free_building_slots = {
+						building = dockyard
+						size > 0
+						include_locked = yes
+					}
+				}
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = dockyard
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = KAN_production_land_focus_2
+		icon = GFX_focus_generic_army_2
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KAN_production_land_focus_1 }
+		
+		relative_position_id = KAN_production_land_focus_1
+		x = 0
+		y = 1
+		cost = 10
+		
+		available = {
+			any_controlled_state = {
+				free_building_slots = {
+					building = arms_factory
+					size > 1
+					include_locked = yes
+				}
+			}
+		}
+		
+		ai_will_do = { factor = 5 }
+		
+		completion_reward = {
+			random_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 1
+						include_locked = yes
+					}	
+				}
+				prioritize = { 32 }	# Kyoto
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 1
+						include_locked = yes
+					}	
+				}
+				prioritize = { 2 52 61 64 89 206 208 }	# West Kansai
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+			random_controlled_state = {
+				limit = {
+					free_building_slots = {
+						building = arms_factory
+						size > 1
+						include_locked = yes
+					}	
+				}
+				prioritize = { 47 68 70 78 84 86 105 203 }	# East Kansai
+				add_extra_state_shared_building_slots = 1
+				add_building_construction = {
+					type = arms_factory
+					level = 1
+					instant_build = yes
+				}
+			}
+		}
+	}
+	
+	focus = {
+		id = KAN_production_air_focus_2
+		icon = GFX_focus_generic_airforce
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KAN_production_air_focus_1 }
+		
+		relative_position_id = KAN_production_air_focus_1
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = { factor = 5 }
+		
+		completion_reward = {
+			add_ideas = { KAN_aircraft_production_spirit }
+		}
+	}
+	
+	focus = {
+		id = KAN_production_navy_focus_2
+		icon = GFX_focus_generic_navy
+		search_filters = { FOCUS_FILTER_INDUSTRY FOCUS_FILTER_RESEARCH }
+		
+		prerequisite = { focus = KAN_production_navy_focus_1 }
+		
+		relative_position_id = KAN_production_navy_focus_1
+		x = 0
+		y = 1
+		cost = 10
+		
+		ai_will_do = { factor = 5 }
+		
+		completion_reward = {
+			random_controlled_state = {
+				limit = {
+					is_coastal = yes
+					free_building_slots = {
+						building = dockyard
+						size > 0
+						include_locked = yes
+					}
+				}
+				if = {
+					limit = {
+						free_building_slots = {
+							building = dockyard
+							size > 1
+							include_locked = yes
+						}
+					}
+					add_extra_state_shared_building_slots = 2
+					add_building_construction = {
+						type = dockyard
+						level = 2
+						instant_build = yes
+					}
+				} else = {
+					add_extra_state_shared_building_slots = 1
+					add_building_construction = {
+						type = dockyard
+						level = 1
+						instant_build = yes
+					}
+					ROOT = {
+						random_controlled_state = {
+							limit = {
+								is_coastal = yes
+								free_building_slots = {
+									building = dockyard
+									size > 0
+									include_locked = yes
+								}
+							}
+							prioritize = { 208 }
+							add_extra_state_shared_building_slots = 1
+							add_building_construction = {
+								type = dockyard
+								level = 1
+								instant_build = yes
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
 	### } Common Economic Branch {
 	
 	focus = {
@@ -3236,8 +3613,8 @@ focus_tree = {
 		icon = GFX_focus_KAN_economic_focus
 		search_filters = { FOCUS_FILTER_RESEARCH }
 		
-		relative_position_id = KAN_navy_focus_1
-		x = 5
+		relative_position_id = KAN_construction_focus_1
+		x = 6
 		y = 0
 		cost = 10
 		
