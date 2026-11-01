@@ -11,6 +11,7 @@ focus_tree = {
 	focus = {
 		id = army_effort
 		icon = {
+			GFX_focus_TOH_national_army			= { tag = TOH }
 			GFX_goal_generic_allies_build_infantry			= { tag = AMC }
 			GFX_goal_generic_allies_build_infantry			= { tag = OKI }
 			GFX_focus_HIR_army								= { tag = HIR }
@@ -30,7 +31,12 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		completion_reward = {
-			army_experience = 5
+			if = {
+				tag = { TOH }
+				swap_ideas = { remove_idea = TOH_peoples_militia add_idea = TOH_peoples_militia_2 }
+			} else = {
+				army_experience = 5
+			}
 			add_doctrine_cost_reduction = {
 				name = land_doc_bonus
 				cost_reduction = 0.5
@@ -104,6 +110,7 @@ focus_tree = {
 		id = doctrine_effort
 		search_filters = { FOCUS_FILTER_MILITARY }
 		icon = {
+			GFX_focus_TOH_get_army_up_to_par = { tag = TOH }
 			GFX_goal_GENERIC_army_doctrines_western = { is_trade_city = yes }
 			GFX_focus_generic_army_doctrine = yes
 		}
@@ -118,8 +125,15 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		completion_reward = {
-			army_experience = 5
-			add_doctrine_cost_reduction = {				name = land_doc_bonus				cost_reduction = 0.5
+			if = {
+				tag = { TOH }
+				swap_ideas = { remove_idea = TOH_peoples_militia_2 add_idea = TOH_peoples_militia_3 }
+			} else = {
+				army_experience = 5
+			}
+			add_doctrine_cost_reduction = {
+				name = land_doc_bonus
+				cost_reduction = 0.5
 				uses = 1
 				category = land_doctrine
 			}
@@ -199,6 +213,7 @@ focus_tree = {
 		id = doctrine_effort_2
 		search_filters = { FOCUS_FILTER_MILITARY }
 		icon = {
+			GFX_focus_generic_advanced_military_studies = { tag = TOH }
 			GFX_goal_GENERIC_army_doctrines_western = { is_trade_city = yes }
 			GFX_focus_generic_army_doctrine = yes
 		}
@@ -212,8 +227,15 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		completion_reward = {
-			army_experience = 5
-			add_doctrine_cost_reduction = {				name = land_doc_bonus				cost_reduction = 0.5
+			if = {
+				tag = { TOH }
+				swap_ideas = { remove_idea = TOH_peoples_militia_3 add_idea = TOH_peoples_militia_4 }
+			} else = {
+				army_experience = 5
+			}
+			add_doctrine_cost_reduction = {
+				name = land_doc_bonus
+				cost_reduction = 0.5
 				uses = 1
 				category = land_doctrine
 			}
@@ -3104,6 +3126,10 @@ focus_tree = {
 				factor = 10
 				tag = IMS
 			}
+			modifier = {
+				factor = 0.1
+				tag = CHU
+			}
 		}
 
 		available_if_capitulated = yes
@@ -3146,7 +3172,7 @@ focus_tree = {
 	}
 	
 	focus = {
-		id = ss_generic_modernisation_sho
+		id = SHO_generic_modernisation
 		icon = GFX_focus_SHO_western_focus
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		mutually_exclusive = { focus = ss_generic_tradition }
@@ -3205,7 +3231,7 @@ focus_tree = {
 			GFX_focus_ROC_reject_modernity = yes
 		}
 		dynamic = yes
-		mutually_exclusive = { focus = ss_generic_modernisation focus = ss_generic_modernisation_sho }
+		mutually_exclusive = { focus = ss_generic_modernisation focus = SHO_generic_modernisation }
 		relative_position_id = ss_generic_modernisation
 		x = 6
 		y = 0
@@ -3270,6 +3296,10 @@ focus_tree = {
 				factor = 10
 				tag = IMS
 			}
+			modifier = {
+				factor = 0.1
+				tag = TOH
+			}
 			
 		}
 
@@ -3287,6 +3317,7 @@ focus_tree = {
 		id = ss_generic_left
 		icon = GFX_focus_TOH_the_spread_of_communism
 		search_filters = { FOCUS_FILTER_POLITICAL }
+		dynamic = yes
 		
 		allow_branch = { NOT = { tag = IMS tag = KAN tag = SHO } }
 		
@@ -3305,6 +3336,10 @@ focus_tree = {
 					has_government = democratic_socialism
 					has_government = communism
 				}
+			}
+			if = {
+				limit = { tag = TOH }
+				has_idea = TOH_clans
 			}
 		}
 		
@@ -3333,8 +3368,13 @@ focus_tree = {
 
 		completion_reward = {
 			add_timed_idea = { idea = generic_idea_left days = 1095 } 
-			set_country_flag = allowed_path_communism
-			set_country_flag = allowed_path_democratic_socialism
+			if = {
+				limit = { tag = TOH }
+				remove_ideas = TOH_clans
+			} else = {
+				set_country_flag = allowed_path_communism
+				set_country_flag = allowed_path_democratic_socialism
+			}
 		}
 	}
 	
@@ -3343,7 +3383,7 @@ focus_tree = {
 		icon = GFX_goal_generic_neutrality_focus
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
-		prerequisite = { focus = ss_generic_modernisation focus = ss_generic_tradition focus = ss_generic_modernisation_sho }
+		prerequisite = { focus = ss_generic_modernisation focus = ss_generic_tradition focus = SHO_generic_modernisation }
 		mutually_exclusive = { focus = ss_generic_left focus = ss_generic_right }
 		x = 3
 		y = 1
@@ -3639,25 +3679,41 @@ focus_tree = {
 		}
 		
 		available = {
-			communism > 0.33
-			NOT = { has_government = communism }
-			OR = {
-				is_subject = no
-				OVERLORD = { has_government = communism }
+			if = {
+				limit = { tag = TOH}
+				communism > 0.20
+				democratic_socialism < 0.33
+			} else = {
+				communism > 0.33
+				NOT = { has_government = communism }
+				OR = {
+					is_subject = no
+					OVERLORD = { has_government = communism }
+				}
 			}
 		}
 		
 		bypass = {
-			has_government = communism
+			if = {
+				limit = { NOT = { tag = TOH } }
+				has_government = communism
+			} else = { always = no }
 		}
 
 		completion_reward = {
-			set_politics = {
-				ruling_party = communism
-				elections_allowed = no
+			if = {
+				limit = { tag = TOH }
+				remove_ideas = TOH_communist_infighting
+				add_timed_idea = { idea = political_purge_spirit days = 365 }
+				add_ideas = { unified_party_spirit }
+			} else = {
+				set_politics = {
+					ruling_party = communism
+					elections_allowed = no
+				}
 			}
 			if = {
-				limit = { NOT = { tag = OSA tag = KOB tag = REI tag = AMC tag = OKI } }	# some tags are redundant but I'll add them as a last fail-safe
+				limit = { NOT = { tag = OSA tag = KOB tag = REI tag = AMC tag = OKI tag = TOH } }	# some tags are redundant but I'll add them as a last fail-safe
 				if = {
 					limit = {
 						NOT = { has_global_flag = world_stage_world_war_2_is_active }
@@ -3696,22 +3752,36 @@ focus_tree = {
 		}
 		
 		available = {
-			democratic_socialism > 0.33
-			NOT = { has_government = democratic_socialism }
-			OR = {
-				is_subject = no
-				OVERLORD = { has_government = democratic_socialism }
+			if = {
+				limit = { tag = TOH }
+				democratic_socialism > 0.05
+			} else = {
+				democratic_socialism > 0.33
+				NOT = { has_government = democratic_socialism }
+				OR = {
+					is_subject = no
+					OVERLORD = { has_government = democratic_socialism }
+				}
 			}
 		}
 		
 		bypass = {
-			has_government = democratic_socialism
+			if = {
+				limit = { NOT = { tag = TOH } }
+				has_government = democratic_socialism
+			}
 		}
 
 		completion_reward = {
-			set_politics = {
-				ruling_party = democratic_socialism
-				elections_allowed = yes
+			if = {
+				limit = { tag = TOH }
+				remove_ideas = TOH_communist_infighting
+				add_ideas = { political_compromise_spirit }
+			} else = {
+				set_politics = {
+					ruling_party = democratic_socialism
+					elections_allowed = yes
+				}
 			}
 		}
 	}
@@ -3777,6 +3847,7 @@ focus_tree = {
 		id = ss_generic_government_neutrality
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		icon = {
+			GFX_focus_CHU_assess_our_situation = { tag = CHU }
 			GFX_focus_PRT_cult_of_personality = { tag = PRT }
 			GFX_focus_TOH_army_primacy = yes
 		}
@@ -3844,16 +3915,24 @@ focus_tree = {
 
 		completion_reward = {
 			if = {
+				limit = { tag = CHU }
+				add_stability = 0.05
+				add_command_power = 50
+				add_political_power = 50
+			}
+			if = {
 				limit = { tag = SHO has_idea = SHO_low_army_morale_abc }
 				remove_ideas = SHO_low_army_morale_abc
 			}
 			if = {
-				limit = { NOT = { tag = PRT } }
+				limit = { NOT = { tag = PRT tag = CHU } }
 				set_politics = {
 					ruling_party = neutrality
 					elections_allowed = no
 				}
-			} else = {
+			}
+			if = {
+				limit = { tag = PRT }
 				add_ideas = PRT_cult_of_personality_spirit
 				add_political_power = 90
 			}
@@ -4058,21 +4137,17 @@ focus_tree = {
 
 		completion_reward = {
 			if = {
-				limit = { OR = { tag = KAN tag = SHO } }
-				if = {
-					limit = { NOT = { has_government = autocracy } }
-					set_politics = {
-						ruling_party = autocracy
-						elections_allowed = no
-					}
+				limit = { tag = TOH }
+				remove_ideas = TOH_clans
+			}
+			if = {
+				limit = { NOT = { has_government = autocracy } }
+				set_politics = {
+					ruling_party = autocracy
+					elections_allowed = no
 				}
-				add_political_power = 150
-				add_ideas = KAN_emperor_legitimacy_spirit
 			} else = {
-				if = {
-					limit = {	tag = PRT }
-					custom_effect_tooltip = ss_generic_government_autocratic_prt
-				}
+				add_political_power = 150
 			}
 		}
 	}
@@ -5720,16 +5795,15 @@ focus_tree = {
 		
 		completion_reward = {
 			add_ideas = indoctrination_focus
-			add_political_power = 150
 			if = {
 				limit = { unification_candidate = yes }
 				unlock_decision_category_tooltip = unify_japan_category
 				set_country_flag = unlock_unify_japan_category
+			} else = {
+				add_political_power = 150
 			}
 		}
 	}
-	
-	####
 
 	focus = {
 		id = foreign_expeditions
@@ -6160,17 +6234,14 @@ focus_tree = {
 				limit = { has_government = fascism }
 				add_popularity = {
 					ideology = fascism
-					popularity = 0.2
+					popularity = 0.1
 				}
-			}
-			if = {
-				limit = { has_government = communism }
+			} else = {
 				add_popularity = {
-					ideology = communism
-					popularity = 0.2
-				}
+				ideology = communism
+				popularity = 0.1
 			}
-			add_political_power = 200
+			add_political_power = 100
 		}
 	}
 	
