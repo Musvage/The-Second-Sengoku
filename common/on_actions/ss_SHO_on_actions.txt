@@ -12,4 +12,79 @@ on_actions = {
 			}
 		}
 	}
+	on_war_relation_added = {	# ROOT is attacker, FROM is defender
+		effect = {
+			if = {
+				limit = {
+					ROOT = { has_idea = SHO_united_front_spirit NOT = { tag = SHO } }	# if a member of the pact attacks, it is kicked off
+					FROM = { has_idea = SHO_united_front_spirit }
+				}
+				ROOT = {
+					remove_ideas = SHO_united_front_spirit
+					set_country_flag = refused_SHO_united_front
+					every_other_country = {
+						limit = { has_idea = SHO_united_front_spirit }
+						remove_opinion_modifier = { target = ROOT modifier = SHO_united_front_opinion }
+						remove_opinion_modifier = { target = ROOT modifier = SHO_united_front_trade }
+						ROOT = {
+							remove_opinion_modifier = { target = PREV modifier = SHO_united_front_opinion }
+							remove_opinion_modifier = { target = PREV modifier = SHO_united_front_trade }
+						}
+					}
+				}
+			}
+			if = {
+				limit = {
+					ROOT = { has_idea = SHO_united_front_spirit tag = SHO }	# if SHO attacks, it kicks people out of the pact
+					FROM = { has_idea = SHO_united_front_spirit } 
+				}
+				FROM = {
+					remove_ideas = SHO_united_front_spirit
+					set_country_flag = refused_SHO_united_front
+					every_other_country = {
+						limit = { has_idea = SHO_united_front_spirit }
+						remove_opinion_modifier = { target = FROM modifier = SHO_united_front_opinion }
+						remove_opinion_modifier = { target = FROM modifier = SHO_united_front_trade }
+						FROM = {
+							remove_opinion_modifier = { target = PREV modifier = SHO_united_front_opinion }
+							remove_opinion_modifier = { target = PREV modifier = SHO_united_front_trade }
+						}
+					}
+				}
+			}
+		}
+	}
+	on_ruling_party_change = {
+		effect = {
+			## New left government, invited for pact
+			if = {
+				limit = {
+					SHO = { has_completed_focus = SHO_united_front }
+					OR = { has_government = communism has_government = democratic_socialism }
+					unification_candidate = yes
+					NOT = { has_country_flag = refused_SHO_united_front }	# once out, forever out
+				}
+				country_event = { id = shogunate.201 days = 7 }
+			}
+			## Left government fell, expelled for pact
+			if = {
+				limit = {
+					has_idea = SHO_united_front_spirit
+					NOT = { has_government = communism has_government = democratic_socialism }
+				}
+				ROOT = {
+					remove_ideas = SHO_united_front_spirit
+					every_other_country = {
+						limit = { has_idea = SHO_united_front_spirit }
+						remove_opinion_modifier = { target = ROOT modifier = SHO_united_front_opinion }
+						remove_opinion_modifier = { target = ROOT modifier = SHO_united_front_trade }
+						ROOT = {
+							remove_opinion_modifier = { target = PREV modifier = SHO_united_front_opinion }
+							remove_opinion_modifier = { target = PREV modifier = SHO_united_front_trade }
+						}
+					}
+				}
+			}
+		}
+	}
 }

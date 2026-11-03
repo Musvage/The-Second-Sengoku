@@ -20,6 +20,9 @@
 
 SHO_choose_stategy_plan = {
 	SHO = {
+		# choose stance on AMO
+		set_country_flag = hostile_to_KAN	# let's be honest, it couldn't be otherwise
+		
 		# choose stance on KAN
 			# check opinion (positive relations decrease hostility)
 		set_temp_variable = { hostility_KAN = opinion@KAN }
@@ -34,20 +37,33 @@ SHO_choose_stategy_plan = {
 			# previous decisions
 		if = { limit = { has_country_flag = hostile_to_KAN }						add_to_temp_variable = { hostility_KAN = 100 } }
 			# check other factors
-		if = { limit = { country_exists = AMO }										add_to_temp_variable = { hostility_KAN = 100 } }	# Shogun is careful when the Knights are around
+		if = { limit = { country_exists = AMO }										add_to_temp_variable = { hostility_KAN = -100 } }	# Shogun is careful when the Knights are around
 		if = { limit = { NOT = { country_exists = AMO } }							add_to_temp_variable = { hostility_KAN = 100 } }	# Shogun gets cocky if he defeats the Knights
 		if = { limit = { has_war_with = KAN }										add_to_temp_variable = { hostility_KAN = 1000 } }
-		if = { limit = { has_country_flag = reject_overture_from_KAN }				add_to_temp_variable = { hostility_KAN = 100 } }
 		if = { limit = { is_justifying_wargoal_against = KAN }						add_to_temp_variable = { hostility_KAN = 100 } }
 		if = { limit = { has_wargoal_against = KAN }								add_to_temp_variable = { hostility_KAN = 200 } }
 		if = { limit = { is_in_faction_with = KAN }									add_to_temp_variable = { hostility_KAN = -500 } }
-#		if = { limit = { has_completed_focus =  }									add_to_temp_variable = { hostility_KAN = -200 } }
+		if = { limit = { has_completed_focus = SHO_end_empire }						add_to_temp_variable = { hostility_KAN = 100 } }
 		if = { limit = { is_embargoing = KAN }										add_to_temp_variable = { hostility_KAN = 200 } }
 		if = { limit = { KAN = { is_justifying_wargoal_against = SHO } }			add_to_temp_variable = { hostility_KAN = 200 } }
 		if = { limit = { KAN = { has_wargoal_against = SHO } }						add_to_temp_variable = { hostility_KAN = 400 } }
 		if = { limit = { KAN = { is_embargoing = SHO } }							add_to_temp_variable = { hostility_KAN = 200 } }
 		if = { limit = { KAN = { has_completed_focus = KAN_help_knights } }			add_to_temp_variable = { hostility_KAN = 100 } }
 		if = { limit = { KAN = { has_completed_focus = KAN_antagonize_later_SHO } }	add_to_temp_variable = { hostility_KAN = 100 } }
+		if = { limit = { KAN = { has_completed_focus = KAN_antagonize_later_CHU } }	add_to_temp_variable = { hostility_KAN = -100 } }	# Shogun is less worried if KAN is distracted elsewhere
+					# final decision
+		if = {
+			limit = { check_variable = { hostility_KAN > 499 } }
+			clr_country_flag = friendly_to_KAN
+			set_country_flag = hostile_to_KAN log = "[THIS.GetName] is hostile towards [KAN.GetName]"
+		} else_if = {
+			limit = { check_variable = { hostility_KAN < -249 } }
+			clr_country_flag = hostile_to_KAN
+			set_country_flag = friendly_to_KAN log = "[THIS.GetName] is friendly towards [KAN.GetName]"
+		} else = {
+			clr_country_flag = hostile_to_KAN
+			clr_country_flag = friendly_to_KAN log = "[THIS.GetName] is neutral towards [KAN.GetName]"
+		}
 		
 		# choose stance on TOH
 		# choose stance on PRO
