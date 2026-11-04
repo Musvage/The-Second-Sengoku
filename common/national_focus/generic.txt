@@ -3083,6 +3083,7 @@ focus_tree = {
 		id = ss_generic_modernisation
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		icon = {
+			GFX_focus_KYU_republican_model = { tag = CHU }
 			GFX_goal_anschluss = { tag = IMS }
 			GFX_focus_generic_idea = yes
 		}
@@ -3161,7 +3162,12 @@ focus_tree = {
 		}
 
 		completion_reward = {
-			add_political_power = 120
+			if = {
+				limit = { tag = CHU }
+				add_ideas = idea_civilian_administration
+			} else = {
+				add_political_power = 120
+			}
 			if = {
 				limit = { tag = IMS }
 				add_to_variable = { global.IMS_favor_CHU_other = -20 tooltip = IMS_chose_CHU_tooltip_negative }
@@ -3227,6 +3233,7 @@ focus_tree = {
 		id = ss_generic_tradition
 		search_filters = { FOCUS_FILTER_STABILITY }
 		icon = {
+			GFX_focus_generic_officers2 = { tag = CHU }
 			GFX_goal_molotov_ribbentrop_pact = { tag = IMS }
 			GFX_focus_ROC_reject_modernity = yes
 		}
@@ -3297,6 +3304,10 @@ focus_tree = {
 				tag = IMS
 			}
 			modifier = {
+				factor = 10
+				tag = CHU
+			}
+			modifier = {
 				factor = 0.1
 				tag = TOH
 			}
@@ -3304,7 +3315,12 @@ focus_tree = {
 		}
 
 		completion_reward = {
-			add_stability = 0.1
+			if = {
+				limit = { tag = CHU }
+				add_ideas = PRO_idea_military_rule
+			} else = {
+				add_stability = 0.1
+			}
 			if = {
 				limit = { tag = IMS }
 				add_to_variable = { global.IMS_favor_IMS_other = -20 tooltip = IMS_chose_IMS_tooltip_negative }
@@ -3380,7 +3396,11 @@ focus_tree = {
 	
 	focus = {
 		id = ss_generic_center
-		icon = GFX_goal_generic_neutrality_focus
+		icon = {
+			GFX_focus_SHO_kempeitai = { tag = CHU }
+			GFX_goal_generic_neutrality_focus = yes
+		}
+		dynamic = yes
 		search_filters = { FOCUS_FILTER_POLITICAL }
 		
 		prerequisite = { focus = ss_generic_modernisation focus = ss_generic_tradition focus = SHO_generic_modernisation }
@@ -3429,8 +3449,55 @@ focus_tree = {
 		available_if_capitulated = yes
 
 		completion_reward = {
-			add_timed_idea = { idea = generic_idea_center days = 1095 } 
-			set_country_flag = allowed_path_democratic
+			if = {
+				limit = { tag = CHU }
+				if = {
+					limit = {
+						NOT = { has_tech = tech_military_police4 } 
+					}
+					custom_effect_tooltip = PRO_expand_policeforces_tt_1
+				} else = {
+					army_experience = 25
+				}
+				custom_effect_tooltip = REI_secret_police_tt
+				hidden_effect = {
+					division_template = {
+						name = "Kempeitai"
+						division_names_group = JAP_POL_01
+						regiments = {
+							cavalry = { x = 0 y = 0 }
+							cavalry = { x = 0 y = 1 }
+							cavalry = { x = 0 y = 2 }
+							cavalry = { x = 1 y = 0 }
+							cavalry = { x = 1 y = 1 }
+							cavalry = { x = 1 y = 2 }
+						}
+						support = {
+							military_police = { x = 0 y = 0 }
+						}
+						priority = 0
+					}
+					if = {
+						limit = { has_tech = tech_military_police3 NOT = { has_tech = tech_military_police4 } }
+						set_technology = { tech_military_police4 = 1}
+					}
+					if = {
+						limit = { has_tech = tech_military_police2 NOT = { has_tech = tech_military_police3 } }
+						set_technology = { tech_military_police3 = 1}
+					}
+					if = {
+						limit = { has_tech = tech_military_police NOT = { has_tech = tech_military_police2 } }
+						set_technology = { tech_military_police2 = 1}
+					}
+					if = {
+						limit = { NOT = { has_tech = tech_military_police } }
+						set_technology = { tech_military_police = 1}
+					}
+				}
+			} else = {
+				add_timed_idea = { idea = generic_idea_center days = 1095 } 
+				set_country_flag = allowed_path_democratic
+			}
 			set_country_flag = allowed_path_neutrality
 		}
 	}
@@ -3879,7 +3946,7 @@ focus_tree = {
 		
 		available = {
 			if = {
-				limit = { NOT = { tag = PRT } }
+				limit = { NOT = { tag = PRT tag = CHU } }
 				neutrality > 0.33
 				NOT = { has_government = neutrality }
 				OR = {
@@ -3893,6 +3960,9 @@ focus_tree = {
 			} else_if = {
 				limit = { tag = SHO }
 				has_idea = SHO_low_army_morale_abc
+			} else_if = {
+				limit = { tag = CHU }
+				has_government = neutrality
 			} else = {
 				has_government = neutrality
 			}
@@ -3900,7 +3970,7 @@ focus_tree = {
 		
 		bypass = {
 			if = {
-				limit = { NOT = { tag = PRT } }
+				limit = { NOT = { tag = PRT tag = CHU } }
 				has_government = neutrality
 			} else_if = {
 				limit = { tag = SHO }
@@ -3916,9 +3986,17 @@ focus_tree = {
 		completion_reward = {
 			if = {
 				limit = { tag = CHU }
-				add_stability = 0.05
-				add_command_power = 50
-				add_political_power = 50
+				add_ideas = KAN_national_student_mobilization_1
+				hidden_effect = {
+					set_temp_variable = { pop_bonus = party_popularity@ruling_party }
+					multiply_temp_variable = { pop_bonus = 0.15 }
+					if = {
+						limit = {
+							NOT = { has_dynamic_modifier = { modifier = PRO_modifier_ruling_party_popularity } }
+						}
+						add_dynamic_modifier = { modifier = PRO_modifier_ruling_party_popularity }
+					}
+				}
 			}
 			if = {
 				limit = { tag = SHO has_idea = SHO_low_army_morale_abc }
@@ -4221,7 +4299,7 @@ focus_tree = {
 		}
 
 		completion_reward = {
-			custom_effect_tooltip = ss_generic_government_autocratic_tt_IMS
+			custom_effect_tooltip = IMS_generic_government_autocratic_tt
 			hidden_effect = {
 				every_possible_country = {
 					limit = { tag = IMA }
@@ -4235,7 +4313,7 @@ focus_tree = {
 				name = "Imaban Matsudaira"
 			}
 			promote_character = IMA_Imaban_Matsudaira_Ujimori
-			custom_effect_tooltip = ss_generic_government_autocratic_tt_IMS_2
+			custom_effect_tooltip = IMS_generic_government_autocratic_tt_2
 			hidden_effect = {
 				set_cosmetic_tag = IMS_IMA
 				every_state = {
