@@ -566,7 +566,7 @@
 		icon = GFX_focus_PRO_eliminate_radicalism
 		search_filters = { FOCUS_FILTER_STABILITY FOCUS_FILTER_ANNEXATION }
 		
-		mutually_exclusive = { focus = PRO_pacts_of_nonaggression }
+		mutually_exclusive = { focus = PRO_peace_pacts }
 		prerequisite = { focus = PRO_inward_perfection }
 		
 		relative_position_id = PRO_inward_perfection
@@ -622,7 +622,7 @@
 	}
 	
 	focus = {
-		id = PRO_pacts_of_nonaggression
+		id = PRO_peace_pacts
 		icon = GFX_goal_generic_improve_relations
 		search_filters = { FOCUS_FILTER_DIPLOMACY }
 		
@@ -649,9 +649,9 @@
 		id = PRO_neutrality_act
 		icon = GFX_focus_PRO_neutrality_act
 		
-		prerequisite = { focus = PRO_pacts_of_nonaggression }
+		prerequisite = { focus = PRO_peace_pacts }
 		
-		relative_position_id = PRO_pacts_of_nonaggression
+		relative_position_id = PRO_peace_pacts
 		x = 0
 		y = 1
 		cost = 5
@@ -662,50 +662,19 @@
 		}
 		
 		completion_reward = {
-			custom_effect_tooltip = gain_neutrality_act
+			add_stability = 0.1
+			custom_effect_tooltip = PRO_neutrality_act_tt
 			add_ideas = neutrality_idea
-			#set_rule = { can_create_factions = no }
-			#set_rule = { can_only_justify_war_on_threat_country = yes }
-			#set_rule = { can_guarantee_other_ideologies = no }
-			#set_rule = { can_declare_war_on_same_ideology = no }
 			hidden_effect = {
-				if = {	
-					limit = {
-						has_idea = export_focus
-					}
-					swap_ideas = {
-						add_idea = undisturbed_isolation
-						remove_idea = export_focus
-					}
-				}
-				if = {	
-					limit = {
-						has_idea = limited_exports
-					}
-					swap_ideas = {
-						add_idea = undisturbed_isolation
-						remove_idea = limited_exports
+				every_possible_country = {
+					limit = { NOT = { tag = PRO } }
+					add_ai_strategy = {
+						type = befriend
+						id = PRO
+						value = 25
 					}
 				}
-				if = {	
-					limit = {
-						has_idea = closed_economy
-					}
-					swap_ideas = {
-						add_idea = undisturbed_isolation
-						remove_idea = closed_economy
-					}
-				}
-				
-				if = {	
-					limit = {
-						has_idea = free_trade
-					}
-					swap_ideas = {
-						add_idea = undisturbed_isolation
-						remove_idea = free_trade
-					}
-				}
+				## on SS_ai_strategy_plan_effects, completing this focus should count in every other country's calculation
 			}
 		}
 	}
@@ -3741,7 +3710,7 @@
 	}
 	
 	focus = {
-		id = PRO_conference_of_the_two_capitals
+		id = PRO_conference_kansai
 		icon = GFX_focus_PRO_conference_of_the_two_capitals
 		search_filters = { FOCUS_FILTER_DIPLOMACY }
 		
@@ -3764,7 +3733,76 @@
 		
 		completion_reward = {
 			set_rule = { can_create_factions = yes }
-			country_event = { id = pro.3 days = 2 } 
+			PRO = { country_event = kansai.31 }
+			custom_effect_tooltip = loc_paragraph
+			custom_effect_tooltip = loc_if_accept
+			effect_tooltip = {
+				diplomatic_relation = { country = PRO relation = non_aggression_pact active = yes }
+				if = {
+					limit = { PRO = { has_government = autocracy } }
+					add_ideas = KAN_befriend_edo_autocracy_spirit
+				} else_if = {
+					limit = { PRO = { has_government = communism } }
+					add_ideas = KAN_befriend_edo_communism_spirit
+				} else_if = {
+					limit = { PRO = { has_government = democratic } }
+					add_ideas = KAN_befriend_edo_democratic_spirit
+				} else_if = {
+					limit = { PRO = { has_government = democratic_socialism } }
+					add_ideas = KAN_befriend_edo_democratic_socialism_spirit
+				} else_if = {
+					limit = { PRO = { has_government = fascism } }
+					add_ideas = KAN_befriend_edo_fascism_spirit
+				} else_if = {
+					limit = { PRO = { has_government = neutrality } }
+					add_ideas = KAN_befriend_edo_neutrality_spirit
+				}
+				KAN = {
+					if = {
+						limit = { KAN = { has_government = autocracy } }
+						add_ideas = KAN_befriend_edo_autocracy_spirit
+					} else_if = {
+						limit = { KAN = { has_government = communism } }
+						add_ideas = KAN_befriend_edo_communism_spirit
+					} else_if = {
+						limit = { KAN = { has_government = democratic } }
+						add_ideas = KAN_befriend_edo_democratic_spirit
+					} else_if = {
+						limit = { KAN = { has_government = democratic_socialism } }
+						add_ideas = KAN_befriend_edo_democratic_socialism_spirit
+					} else_if = {
+						limit = { KAN = { has_government = fascism } }
+						add_ideas = KAN_befriend_edo_fascism_spirit
+					} else_if = {
+						limit = { KAN = { has_government = neutrality } }
+						add_ideas = KAN_befriend_edo_neutrality_spirit
+					}
+				}
+			}
+			custom_effect_tooltip = PRO_disonorable_action_KAN
+			custom_effect_tooltip = loc_paragraph
+			set_temp_variable = { accept_chance = 400 }
+			if = {
+				limit = { PRO = { has_opinion = { target = PRO value > 50 } } }
+				add_to_temp_variable = { accept_chance = 400 }
+			}
+			if = {
+				limit = { PRO = { has_opinion = { target = PRO value < -50 } } }
+				add_to_temp_variable = { accept_chance = -200 }
+			}
+			if = {
+				limit = {
+					check_variable = { accept_chance > 799 }
+				}
+				custom_effect_tooltip = loc_accept_chance_very_high
+			} else_if = {
+				limit = {
+					check_variable = { accept_chance > 399 }
+				}
+				custom_effect_tooltip = loc_accept_chance_high
+			} else = {
+				custom_effect_tooltip = loc_accept_chance_low
+			}
 		}
 	}
 	
@@ -3829,7 +3867,7 @@
 		icon = GFX_focus_generic_one_empire_3
 		search_filters = { FOCUS_FILTER_ANNEXATION }
 		
-		prerequisite = { focus = PRO_military_reforms focus = PRO_conference_of_the_two_capitals focus = PRO_war_cabinet focus = PRO_great_tokyo }
+		prerequisite = { focus = PRO_military_reforms focus = PRO_conference_kansai focus = PRO_war_cabinet focus = PRO_great_tokyo }
 		
 		relative_position_id = PRO_military_reforms
 		x = -6
@@ -4205,7 +4243,7 @@
 		search_filters = { FOCUS_FILTER_ANNEXATION FOCUS_FILTER_DIPLOMACY }
 		
 		mutually_exclusive = { focus = PRO_accept_ezos_independence }
-		prerequisite = { focus = PRO_military_reforms focus = PRO_conference_of_the_two_capitals focus = PRO_war_cabinet focus = PRO_great_tokyo }
+		prerequisite = { focus = PRO_military_reforms focus = PRO_conference_kansai focus = PRO_war_cabinet focus = PRO_great_tokyo }
 		
 		relative_position_id = PRO_military_reforms
 		x = -7
@@ -4243,7 +4281,7 @@
 		search_filters = { FOCUS_FILTER_DIPLOMACY }
 		
 		mutually_exclusive = { focus = PRO_propose_reunion }
-		prerequisite = { focus = PRO_military_reforms focus = PRO_conference_of_the_two_capitals focus = PRO_war_cabinet focus = PRO_great_tokyo }
+		prerequisite = { focus = PRO_military_reforms focus = PRO_conference_kansai focus = PRO_war_cabinet focus = PRO_great_tokyo }
 		
 		relative_position_id = PRO_military_reforms
 		x = -9
@@ -4270,7 +4308,7 @@
 		search_filters = { FOCUS_FILTER_DIPLOMACY }
 		
 		mutually_exclusive = { focus = PRO_aizuwakamatsu_iwaki }
-		prerequisite = { focus = PRO_military_reforms focus = PRO_conference_of_the_two_capitals focus = PRO_war_cabinet focus = PRO_great_tokyo }
+		prerequisite = { focus = PRO_military_reforms focus = PRO_conference_kansai focus = PRO_war_cabinet focus = PRO_great_tokyo }
 		
 		relative_position_id = PRO_military_reforms
 		x = -4
@@ -4307,7 +4345,7 @@
 		search_filters = { FOCUS_FILTER_ANNEXATION }
 		
 		mutually_exclusive = { focus = PRO_modus_vivendi }
-		prerequisite = { focus = PRO_military_reforms focus = PRO_conference_of_the_two_capitals focus = PRO_war_cabinet focus = PRO_great_tokyo }
+		prerequisite = { focus = PRO_military_reforms focus = PRO_conference_kansai focus = PRO_war_cabinet focus = PRO_great_tokyo }
 		
 		relative_position_id = PRO_military_reforms
 		x = -2

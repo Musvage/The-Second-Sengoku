@@ -4,6 +4,7 @@
 
 add_namespace = flavor
 add_namespace = flavor_generic
+add_namespace = diplomatic
 add_namespace = season
 
 #Previously Generic.26 from Generic.txt, moved by request
@@ -307,6 +308,126 @@ country_event = {
 	option = {
 		trigger = { NOT = { is_in_faction_with = FROM has_war_with = FROM } }
 		name = flavor_generic.5.worried
+	}
+}
+
+### ### DIPLOMATIC
+
+news_event = { # Disonorable Actions! ([TAG] declared war on accepted_help_from_[TAG])
+	id = diplomatic.101
+	title = diplomatic.101.t
+	desc = diplomatic.101.d
+	
+	picture = GFX_report_event_hirohito
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {
+		name = diplomatic.101.from
+		trigger = { tag = FROM }
+		if = {
+			limit = { has_country_leader_with_trait = buffoon_leader }
+			add_stability = -0.05
+		} else_if = {
+			limit = { has_country_leader_with_trait = scaramouch_leader }
+			swap_ruler_traits = { remove = scaramouch_leader add = buffoon_leader }
+		} else = {
+			add_country_leader_trait = scaramouch_leader
+		}
+	}
+	option = {
+		name = diplomatic.101.self
+		trigger = { tag = ROOT }
+		effect_tooltip = {
+			FROM = {
+				if = {
+					limit = { has_country_leader_with_trait = buffoon_leader }
+					add_stability = -0.05
+				} else_if = {
+					limit = { has_country_leader_with_trait = scaramouch_leader }
+					swap_ruler_traits = { remove = scaramouch_leader add = buffoon_leader }
+				} else = {
+					add_country_leader_trait = scaramouch_leader
+				}
+			}
+		}
+	}
+	option = {
+		name = diplomatic.101.other
+		trigger = { NOT = { tag = ROOT tag = FROM } }
+		effect_tooltip = {
+			FROM = {
+				if = {
+					limit = { has_country_leader_with_trait = buffoon_leader }
+					add_stability = -0.05
+				} else_if = {
+					limit = { has_country_leader_with_trait = scaramouch_leader }
+					swap_ruler_traits = { remove = scaramouch_leader add = buffoon_leader }
+				} else = {
+					add_country_leader_trait = scaramouch_leader
+				}
+			}
+		}
+	}
+}
+
+news_event = { # Disonorable Actions! (TAG with accepted_help_from_[TAG] declared war on [TAG] )
+	id = diplomatic.102
+	title = diplomatic.102.t
+	desc = diplomatic.102.d
+	
+	picture = GFX_report_event_hirohito
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {
+		name = diplomatic.102.self
+		trigger = { tag = ROOT }
+		if = {
+			limit = { has_country_leader_with_trait = buffoon_leader }
+			add_stability = -0.05
+		} else_if = {
+			limit = { has_country_leader_with_trait = scaramouch_leader }
+			swap_ruler_traits = { remove = scaramouch_leader add = buffoon_leader }
+		} else = {
+			add_country_leader_trait = scaramouch_leader
+		}
+	}
+	option = {
+		name = diplomatic.102.from
+		trigger = { tag = FROM }
+		effect_tooltip = {
+			ROOT = {
+				if = {
+					limit = { has_country_leader_with_trait = buffoon_leader }
+					add_stability = -0.05
+				} else_if = {
+					limit = { has_country_leader_with_trait = scaramouch_leader }
+					swap_ruler_traits = { remove = scaramouch_leader add = buffoon_leader }
+				} else = {
+					add_country_leader_trait = scaramouch_leader
+				}
+			}
+		}
+	}
+	option = {
+		name = diplomatic.102.other
+		trigger = { NOT = { tag = FROM tag = ROOT } }
+		effect_tooltip = {
+			ROOT = {
+				if = {
+					limit = { has_country_leader_with_trait = buffoon_leader }
+					add_stability = -0.05
+				} else_if = {
+					limit = { has_country_leader_with_trait = scaramouch_leader }
+					swap_ruler_traits = { remove = scaramouch_leader add = buffoon_leader }
+				} else = {
+					add_country_leader_trait = scaramouch_leader
+				}
+			}
+		}
 	}
 }
 
