@@ -36,22 +36,23 @@ SHO_choose_stategy_plan = {
 		if = { limit = { left_ideology = yes KAN = { right_ideology = yes } }		add_to_temp_variable = { hostility_KAN = 100 } }
 			# previous decisions
 		if = { limit = { has_country_flag = hostile_to_KAN }						add_to_temp_variable = { hostility_KAN = 100 } }
+		if = { limit = { has_country_flag = friendly_to_KAN }						add_to_temp_variable = { hostility_KAN = -100 } }
 			# check diplomatic factors
 		if = { limit = { has_war_with = KAN }										add_to_temp_variable = { hostility_KAN = 1000 } }
 		if = { limit = { is_in_faction_with = KAN }									add_to_temp_variable = { hostility_KAN = -500 } }
 		if = { limit = { is_justifying_wargoal_against = KAN }						add_to_temp_variable = { hostility_KAN = 100 } }
 		if = { limit = { is_embargoing = KAN }										add_to_temp_variable = { hostility_KAN = 200 } }
 		if = { limit = { has_wargoal_against = KAN }								add_to_temp_variable = { hostility_KAN = 200 } }
-		if = { limit = { KAN = { is_embargoing = SHO } }							add_to_temp_variable = { hostility_KAN = 200 } }
 		if = { limit = { KAN = { is_justifying_wargoal_against = SHO } }			add_to_temp_variable = { hostility_KAN = 200 } }
+		if = { limit = { KAN = { is_embargoing = SHO } }							add_to_temp_variable = { hostility_KAN = 200 } }
 		if = { limit = { KAN = { has_wargoal_against = SHO } }						add_to_temp_variable = { hostility_KAN = 400 } }
 			# check strategic factors
 		if = { limit = { country_exists = AMO }										add_to_temp_variable = { hostility_KAN = -100 } }	# Shogun is careful when the Knights are around
 		if = { limit = { NOT = { country_exists = AMO } }							add_to_temp_variable = { hostility_KAN = 100 } }	# Shogun gets cocky if he defeats the Knights
-		if = { limit = { has_completed_focus = SHO_end_empire }						add_to_temp_variable = { hostility_KAN = 100 } }
-		if = { limit = { KAN = { has_completed_focus = KAN_help_knights } }			add_to_temp_variable = { hostility_KAN = 100 } }
-		if = { limit = { KAN = { has_completed_focus = KAN_antagonize_later_SHO } }	add_to_temp_variable = { hostility_KAN = 100 } }
-		if = { limit = { KAN = { has_idea = SHO_united_front_spirit } 
+		if = { limit = { KAN = { has_completed_focus = KAN_help_knights } }			add_to_temp_variable = { hostility_KAN = 200 } }
+		if = { limit = { KAN = { has_completed_focus = KAN_antagonize_later_SHO } }	add_to_temp_variable = { hostility_KAN = 200 } }
+		if = { limit = { KAN = { has_completed_focus = KAN_vassalize_knights } }	add_to_temp_variable = { hostility_KAN = 200 } }
+		if = { limit = { KAN = { has_idea = SHO_united_front_spirit } 																	# both are members of Nagoya Pact
 								 has_idea = SHO_united_front_spirit }				add_to_temp_variable = { hostility_KAN = -200 } }
 		if = { limit = { KAN = { has_completed_focus = KAN_antagonize_later_CHU } }	add_to_temp_variable = { hostility_KAN = -100 } }	# Shogun is less worried if KAN is distracted elsewhere
 				# final decision
@@ -69,7 +70,94 @@ SHO_choose_stategy_plan = {
 		}
 		
 		# choose stance on TOH
+			# check opinion (positive relations decrease hostility)
+		set_temp_variable = { hostility_TOH = opinion@TOH }
+		TOH = { add_to_temp_variable = { hostility_TOH = opinion@SHO } }
+		multiply_temp_variable = { hostility_TOH = -1 }
+			# check ideology
+		if = { limit = { left_ideology = yes TOH = { left_ideology = yes } }		add_to_temp_variable = { hostility_TOH = -100 } }
+		if = { limit = { right_ideology = yes TOH = { right_ideology = yes } }		add_to_temp_variable = { hostility_TOH = -100 } }
+		if = { limit = { center_ideology = yes TOH = { center_ideology = yes } }	add_to_temp_variable = { hostility_TOH = -100 } }
+		if = { limit = { right_ideology = yes TOH = { left_ideology = yes } }		add_to_temp_variable = { hostility_TOH = 100 } }
+		if = { limit = { left_ideology = yes TOH = { right_ideology = yes } }		add_to_temp_variable = { hostility_TOH = 100 } }
+			# previous decisions
+		if = { limit = { has_country_flag = hostile_to_TOH }						add_to_temp_variable = { hostility_TOH = 100 } }
+		if = { limit = { has_country_flag = friendly_to_TOH }						add_to_temp_variable = { hostility_TOH = -100 } }
+			# check diplomatic factors
+		if = { limit = { has_war_with = TOH }										add_to_temp_variable = { hostility_TOH = 1000 } }
+		if = { limit = { is_in_faction_with = TOH }									add_to_temp_variable = { hostility_TOH = -500 } }
+		if = { limit = { is_justifying_wargoal_against = TOH }						add_to_temp_variable = { hostility_TOH = 100 } }
+		if = { limit = { is_embargoing = TOH }										add_to_temp_variable = { hostility_TOH = 200 } }
+		if = { limit = { has_wargoal_against = TOH }								add_to_temp_variable = { hostility_TOH = 200 } }
+		if = { limit = { TOH = { is_justifying_wargoal_against = SHO } }			add_to_temp_variable = { hostility_TOH = 200 } }
+		if = { limit = { TOH = { is_embargoing = SHO } }							add_to_temp_variable = { hostility_TOH = 200 } }
+		if = { limit = { TOH = { has_wargoal_against = SHO } }						add_to_temp_variable = { hostility_TOH = 400 } }
+			# check strategic factors
+		if = { limit = { country_exists = AMO }										add_to_temp_variable = { hostility_TOH = -100 } }	# Shogun is careful when the Knights are around
+		if = { limit = { TOH = { has_completed_focus = meutrality_focus } }			add_to_temp_variable = { hostility_TOH = -100 } }
+		if = { limit = { TOH = { has_completed_focus = militarism } }				add_to_temp_variable = { hostility_TOH = 200 } }
+		if = { limit = { TOH = { has_completed_focus = interventionism_focus } }	add_to_temp_variable = { hostility_TOH = 200 } }
+		if = { limit = { TOH = { has_completed_focus = indoctrination_focus } }		add_to_temp_variable = { hostility_TOH = 200 } }
+		if = { limit = { TOH = { has_idea = SHO_united_front_spirit } 																	# both are members of Nagoya Pact
+								 has_idea = SHO_united_front_spirit }				add_to_temp_variable = { hostility_TOH = -200 } }
+				# final decision
+		if = {
+			limit = { check_variable = { hostility_TOH > 499 } }
+			clr_country_flag = friendly_to_TOH
+			set_country_flag = hostile_to_TOH log = "[THIS.GetName] is hostile towards [TOH.GetName]"
+		} else_if = {
+			limit = { check_variable = { hostility_TOH < -249 } }
+			clr_country_flag = hostile_to_TOH
+			set_country_flag = friendly_to_TOH log = "[THIS.GetName] is friendly towards [TOH.GetName]"
+		} else = {
+			clr_country_flag = hostile_to_TOH
+			clr_country_flag = friendly_to_TOH log = "[THIS.GetName] is neutral towards [TOH.GetName]"
+		}
+		
 		# choose stance on PRO
+			# check opinion (positive relations decrease hostility)
+		set_temp_variable = { hostility_PRO = opinion@PRO }
+		PRO = { add_to_temp_variable = { hostility_PRO = opinion@SHO } }
+		multiply_temp_variable = { hostility_PRO = -1 }
+			# check ideology
+		if = { limit = { left_ideology = yes PRO = { left_ideology = yes } }		add_to_temp_variable = { hostility_PRO = -100 } }
+		if = { limit = { right_ideology = yes PRO = { right_ideology = yes } }		add_to_temp_variable = { hostility_PRO = -100 } }
+		if = { limit = { center_ideology = yes PRO = { center_ideology = yes } }	add_to_temp_variable = { hostility_PRO = -100 } }
+		if = { limit = { right_ideology = yes PRO = { left_ideology = yes } }		add_to_temp_variable = { hostility_PRO = 100 } }
+		if = { limit = { left_ideology = yes PRO = { right_ideology = yes } }		add_to_temp_variable = { hostility_PRO = 100 } }
+			# previous decisions
+		if = { limit = { has_country_flag = hostile_to_PRO }						add_to_temp_variable = { hostility_PRO = 100 } }
+		if = { limit = { has_country_flag = friendly_to_PRO }						add_to_temp_variable = { hostility_PRO = -100 } }
+			# check diplomatic factors
+		if = { limit = { has_war_with = PRO }										add_to_temp_variable = { hostility_PRO = 1000 } }
+		if = { limit = { is_in_faction_with = PRO }									add_to_temp_variable = { hostility_PRO = -500 } }
+		if = { limit = { is_justifying_wargoal_against = PRO }						add_to_temp_variable = { hostility_PRO = 100 } }
+		if = { limit = { is_embargoing = PRO }										add_to_temp_variable = { hostility_PRO = 200 } }
+		if = { limit = { has_wargoal_against = PRO }								add_to_temp_variable = { hostility_PRO = 200 } }
+		if = { limit = { PRO = { is_justifying_wargoal_against = SHO } }			add_to_temp_variable = { hostility_PRO = 200 } }
+		if = { limit = { PRO = { is_embargoing = SHO } }							add_to_temp_variable = { hostility_PRO = 200 } }
+		if = { limit = { PRO = { has_wargoal_against = SHO } }						add_to_temp_variable = { hostility_PRO = 400 } }
+			# check strategic factors
+		if = { limit = { country_exists = AMO }										add_to_temp_variable = { hostility_PRO = -100 } }	# Shogun is careful when the Knights are around
+		if = { limit = { PRO = { has_completed_focus = PRO_conference_kansai } }	add_to_temp_variable = { hostility_PRO = 200 } }	# Enemy's friend...
+		if = { limit = { PRO = { has_completed_focus = PRO_peace_pacts } }			add_to_temp_variable = { hostility_PRO = -100 } }
+		if = { limit = { PRO = { has_completed_focus = PRO_neutrality_act } }		add_to_temp_variable = { hostility_PRO = -100 } }
+		if = { limit = { PRO = { has_completed_focus = PRO_unification_of_japan } } add_to_temp_variable = { hostility_PRO = 200 } }
+		if = { limit = { PRO = { has_idea = SHO_united_front_spirit } 																	# both are members of Nagoya Pact
+								 has_idea = SHO_united_front_spirit }				add_to_temp_variable = { hostility_PRO = -200 } }
+				# final decision
+		if = {
+			limit = { check_variable = { hostility_PRO > 499 } }
+			clr_country_flag = friendly_to_PRO
+			set_country_flag = hostile_to_PRO log = "[THIS.GetName] is hostile towards [PRO.GetName]"
+		} else_if = {
+			limit = { check_variable = { hostility_PRO < -249 } }
+			clr_country_flag = hostile_to_PRO
+			set_country_flag = friendly_to_PRO log = "[THIS.GetName] is friendly towards [PRO.GetName]"
+		} else = {
+			clr_country_flag = hostile_to_PRO
+			clr_country_flag = friendly_to_PRO log = "[THIS.GetName] is neutral towards [PRO.GetName]"
+		}
 	}
 } d_SHO_choose_stategy_plan = { SHO_choose_stategy_plan = yes log = "SHO_choose_stategy_plan" }
 
@@ -88,24 +176,129 @@ KAN_choose_stategy_plan = {
 		if = { limit = { left_ideology = yes SHO = { right_ideology = yes } }		add_to_temp_variable = { hostility_SHO = 100 } }
 			# previous decisions
 		if = { limit = { has_country_flag = hostile_to_SHO }						add_to_temp_variable = { hostility_SHO = 100 } }
+		if = { limit = { has_country_flag = friendly_to_SHO }						add_to_temp_variable = { hostility_SHO = -100 } }
 			# check diplomatic factors
-#### EDIT BELLOW		if = { limit = { country_exists = AMO }										add_to_temp_variable = { hostility_KAN = 100 } }	# Shogun is careful when the Knights are around
-		if = { limit = { NOT = { country_exists = AMO } }							add_to_temp_variable = { hostility_KAN = 100 } }	# Shogun gets cocky if he defeats the Knights
-		if = { limit = { has_war_with = KAN }										add_to_temp_variable = { hostility_KAN = 1000 } }
-		if = { limit = { has_country_flag = reject_overture_from_KAN }				add_to_temp_variable = { hostility_KAN = 100 } }
-		if = { limit = { is_justifying_wargoal_against = KAN }						add_to_temp_variable = { hostility_KAN = 100 } }
-		if = { limit = { has_wargoal_against = KAN }								add_to_temp_variable = { hostility_KAN = 200 } }
-		if = { limit = { is_in_faction_with = KAN }									add_to_temp_variable = { hostility_KAN = -500 } }
-		if = { limit = { is_embargoing = KAN }										add_to_temp_variable = { hostility_KAN = 200 } }
-		if = { limit = { KAN = { is_justifying_wargoal_against = SHO } }			add_to_temp_variable = { hostility_KAN = 200 } }
-		if = { limit = { KAN = { has_wargoal_against = SHO } }						add_to_temp_variable = { hostility_KAN = 400 } }
-		if = { limit = { KAN = { is_embargoing = SHO } }							add_to_temp_variable = { hostility_KAN = 200 } }
+		if = { limit = { has_war_with = SHO }										add_to_temp_variable = { hostility_SHO = 1000 } }
+		if = { limit = { is_justifying_wargoal_against = SHO }						add_to_temp_variable = { hostility_SHO = 100 } }
+		if = { limit = { has_wargoal_against = SHO }								add_to_temp_variable = { hostility_SHO = 200 } }
+		if = { limit = { is_in_faction_with = SHO }									add_to_temp_variable = { hostility_SHO = -500 } }
+		if = { limit = { is_embargoing = SHO }										add_to_temp_variable = { hostility_SHO = 200 } }
+		if = { limit = { SHO = { is_justifying_wargoal_against = SHO } }			add_to_temp_variable = { hostility_SHO = 200 } }
+		if = { limit = { SHO = { has_wargoal_against = SHO } }						add_to_temp_variable = { hostility_SHO = 400 } }
+		if = { limit = { SHO = { is_embargoing = SHO } }							add_to_temp_variable = { hostility_SHO = 200 } }
 			# check strategic factors
-#		if = { limit = { has_completed_focus =  }									add_to_temp_variable = { hostility_KAN = -200 } }
-		if = { limit = { KAN = { has_completed_focus = KAN_help_knights } }			add_to_temp_variable = { hostility_KAN = 100 } }
-		if = { limit = { KAN = { has_completed_focus = KAN_antagonize_later_SHO } }	add_to_temp_variable = { hostility_KAN = 100 } }
+		if = { limit = { country_exists = AMO }										add_to_temp_variable = { hostility_SHO = 100 } }	# Emperor is cocky when the Knights are around
+		if = { limit = { AMO = { is_ally_with = KAN } }								add_to_temp_variable = { hostility_SHO = -200 } }	# The friend's enemy...
+		if = { limit = { SHO = { has_completed_focus = SHO_end_empire } }			add_to_temp_variable = { hostility_SHO = 200 } }
+		if = { limit = { SHO = { has_completed_focus = SHO_end_schism } }			add_to_temp_variable = { hostility_SHO = 200 } }
+		if = { limit = { SHO = { has_completed_focus = SHO_liberate_japan } }		add_to_temp_variable = { hostility_SHO = 200 } }
+		if = { limit = { PRO = { has_idea = SHO_united_front_spirit } 																	# both are members of Nagoya Pact
+								 has_idea = SHO_united_front_spirit }				add_to_temp_variable = { hostility_SHO = -200 } }
+				# final decision
+		if = {
+			limit = { check_variable = { hostility_SHO > 499 } }
+			clr_country_flag = friendly_to_SHO
+			set_country_flag = hostile_to_SHO log = "[THIS.GetName] is hostile towards [SHO.GetName]"
+		} else_if = {
+			limit = { check_variable = { hostility_SHO < -249 } }
+			clr_country_flag = hostile_to_SHO
+			set_country_flag = friendly_to_SHO log = "[THIS.GetName] is friendly towards [SHO.GetName]"
+		} else = {
+			clr_country_flag = hostile_to_SHO
+			clr_country_flag = friendly_to_SHO log = "[THIS.GetName] is neutral towards [SHO.GetName]"
+		}
 	}
-} d_SHO_choose_stategy_plan = { SHO_choose_stategy_plan = yes log = "SHO_choose_stategy_plan" }
+	
+	# choose stance on PRO
+			# check opinion (positive relations decrease hostility)
+		set_temp_variable = { hostility_PRO = opinion@PRO }
+		PRO = { add_to_temp_variable = { hostility_PRO = opinion@PRO } }
+		multiply_temp_variable = { hostility_PRO = -1 }
+			# check ideology
+		if = { limit = { left_ideology = yes PRO = { left_ideology = yes } }		add_to_temp_variable = { hostility_PRO = -100 } }
+		if = { limit = { right_ideology = yes PRO = { right_ideology = yes } }		add_to_temp_variable = { hostility_PRO = -100 } }
+		if = { limit = { center_ideology = yes PRO = { center_ideology = yes } }	add_to_temp_variable = { hostility_PRO = -100 } }
+		if = { limit = { right_ideology = yes PRO = { left_ideology = yes } }		add_to_temp_variable = { hostility_PRO = 100 } }
+		if = { limit = { left_ideology = yes PRO = { right_ideology = yes } }		add_to_temp_variable = { hostility_PRO = 100 } }
+			# previous decisions
+		if = { limit = { has_country_flag = hostile_to_PRO }						add_to_temp_variable = { hostility_PRO = 100 } }
+		if = { limit = { has_country_flag = friendly_to_PRO }						add_to_temp_variable = { hostility_PRO = -100 } }
+			# check diplomatic factors
+		if = { limit = { has_war_with = PRO }										add_to_temp_variable = { hostility_PRO = 1000 } }
+		if = { limit = { is_justifying_wargoal_against = PRO }						add_to_temp_variable = { hostility_PRO = 100 } }
+		if = { limit = { has_wargoal_against = PRO }								add_to_temp_variable = { hostility_PRO = 200 } }
+		if = { limit = { is_in_faction_with = PRO }									add_to_temp_variable = { hostility_PRO = -500 } }
+		if = { limit = { is_embargoing = PRO }										add_to_temp_variable = { hostility_PRO = 200 } }
+		if = { limit = { PRO = { is_justifying_wargoal_against = PRO } }			add_to_temp_variable = { hostility_PRO = 200 } }
+		if = { limit = { PRO = { has_wargoal_against = PRO } }						add_to_temp_variable = { hostility_PRO = 400 } }
+		if = { limit = { PRO = { is_embargoing = PRO } }							add_to_temp_variable = { hostility_PRO = 200 } }
+			# check strategic factors
+		if = { limit = { PRO = { has_completed_focus = PRO_conference_kansai } }	add_to_temp_variable = { hostility_PRO = -100 } }	# Proposed friendship...
+		if = { limit = { PRO = { has_completed_focus = PRO_peace_pacts } }			add_to_temp_variable = { hostility_PRO = -100 } }
+		if = { limit = { PRO = { has_completed_focus = PRO_neutrality_act } }		add_to_temp_variable = { hostility_PRO = -100 } }
+		if = { limit = { PRO = { has_completed_focus = PRO_unification_of_japan } } add_to_temp_variable = { hostility_PRO = 200 } }
+		if = { limit = { PRO = { has_idea = SHO_united_front_spirit } 																	# both are members of Nagoya Pact
+								 has_idea = SHO_united_front_spirit }				add_to_temp_variable = { hostility_PRO = -200 } }
+				# final decision
+		if = {
+			limit = { check_variable = { hostility_PRO > 499 } }
+			clr_country_flag = friendly_to_PRO
+			set_country_flag = hostile_to_PRO log = "[THIS.GetName] is hostile towards [PRO.GetName]"
+		} else_if = {
+			limit = { check_variable = { hostility_PRO < -249 } }
+			clr_country_flag = hostile_to_PRO
+			set_country_flag = friendly_to_PRO log = "[THIS.GetName] is friendly towards [PRO.GetName]"
+		} else = {
+			clr_country_flag = hostile_to_PRO
+			clr_country_flag = friendly_to_PRO log = "[THIS.GetName] is neutral towards [PRO.GetName]"
+		}
+	}
+	
+	# choose stance on CHU
+			# check opinion (positive relations decrease hostility)
+		set_temp_variable = { hostility_CHU = opinion@CHU }
+		CHU = { add_to_temp_variable = { hostility_CHU = opinion@CHU } }
+		multiply_temp_variable = { hostility_CHU = -1 }
+			# check ideology
+		if = { limit = { left_ideology = yes CHU = { left_ideology = yes } }		add_to_temp_variable = { hostility_CHU = -100 } }
+		if = { limit = { right_ideology = yes CHU = { right_ideology = yes } }		add_to_temp_variable = { hostility_CHU = -100 } }
+		if = { limit = { center_ideology = yes CHU = { center_ideology = yes } }	add_to_temp_variable = { hostility_CHU = -100 } }
+		if = { limit = { right_ideology = yes CHU = { left_ideology = yes } }		add_to_temp_variable = { hostility_CHU = 100 } }
+		if = { limit = { left_ideology = yes CHU = { right_ideology = yes } }		add_to_temp_variable = { hostility_CHU = 100 } }
+			# previous decisions
+		if = { limit = { has_country_flag = hostile_to_CHU }						add_to_temp_variable = { hostility_CHU = 100 } }
+		if = { limit = { has_country_flag = friendly_to_CHU }						add_to_temp_variable = { hostility_CHU = -100 } }
+			# check diplomatic factors
+		if = { limit = { has_war_with = CHU }										add_to_temp_variable = { hostility_CHU = 1000 } }
+		if = { limit = { is_justifying_wargoal_against = CHU }						add_to_temp_variable = { hostility_CHU = 100 } }
+		if = { limit = { has_wargoal_against = CHU }								add_to_temp_variable = { hostility_CHU = 200 } }
+		if = { limit = { is_in_faction_with = CHU }									add_to_temp_variable = { hostility_CHU = -500 } }
+		if = { limit = { is_embargoing = CHU }										add_to_temp_variable = { hostility_CHU = 200 } }
+		if = { limit = { CHU = { is_justifying_wargoal_against = CHU } }			add_to_temp_variable = { hostility_CHU = 200 } }
+		if = { limit = { CHU = { has_wargoal_against = CHU } }						add_to_temp_variable = { hostility_CHU = 400 } }
+		if = { limit = { CHU = { is_embargoing = CHU } }							add_to_temp_variable = { hostility_CHU = 200 } }
+			# check strategic factors
+		if = { limit = { CHU = { has_completed_focus = meutrality_focus } }			add_to_temp_variable = { hostility_CHU = -100 } }
+		if = { limit = { CHU = { has_completed_focus = militarism } }				add_to_temp_variable = { hostility_CHU = 200 } }
+		if = { limit = { CHU = { has_completed_focus = interventionism_focus } }	add_to_temp_variable = { hostility_CHU = 200 } }
+		if = { limit = { CHU = { has_completed_focus = indoctrination_focus } }		add_to_temp_variable = { hostility_CHU = 200 } }
+		if = { limit = { CHU = { has_idea = SHO_united_front_spirit } 																	# both are members of Nagoya Pact
+								 has_idea = SHO_united_front_spirit }				add_to_temp_variable = { hostility_CHU = -200 } }
+				# final decision
+		if = {
+			limit = { check_variable = { hostility_CHU > 499 } }
+			clr_country_flag = friendly_to_CHU
+			set_country_flag = hostile_to_CHU log = "[THIS.GetName] is hostile towards [CHU.GetName]"
+		} else_if = {
+			limit = { check_variable = { hostility_CHU < -249 } }
+			clr_country_flag = hostile_to_CHU
+			set_country_flag = friendly_to_CHU log = "[THIS.GetName] is friendly towards [CHU.GetName]"
+		} else = {
+			clr_country_flag = hostile_to_CHU
+			clr_country_flag = friendly_to_CHU log = "[THIS.GetName] is neutral towards [CHU.GetName]"
+		}
+	}
+} d_KAN_choose_stategy_plan = { KAN_choose_stategy_plan = yes log = "KAN_choose_stategy_plan" }
 
 EZO_choose_stategy_plan = {
 	EZO = {
@@ -275,10 +468,12 @@ KYU_choose_stategy_plan = {
 		if = { limit = { has_completed_focus = KYU_seto_crisis_back_chu }			add_to_temp_variable = { hostility_CHU = -200 } }
 		#if = { limit = { CHU = { has_completed_focus = CHU_aggressive_policy } }	add_to_temp_variable = { hostility_CHU = 200 } }
 		#if = { limit = { CHU = { has_completed_focus = CHU_spread_democracy_for_kyu } }		add_to_temp_variable = { hostility_CHU = 200 } }	# CHU wants to unify japan
-		if = { limit = { CHU = { has_completed_focus = militarism } }				add_to_temp_variable = { hostility_CHU = 200 } }	# CHU wants to unify japan
-		if = { limit = { CHU = { has_completed_focus = interventionism_focus } }	add_to_temp_variable = { hostility_CHU = 200 } }	# CHU wants to unify japan
-		if = { limit = { CHU = { has_completed_focus = indoctrination_focus } }		add_to_temp_variable = { hostility_CHU = 200 } }	# CHU wants to unify japan
 		if = { limit = { CHU = { has_completed_focus = neutrality_focus } }			add_to_temp_variable = { hostility_CHU = -200 } }
+		if = { limit = { CHU = { has_completed_focus = militarism } }				add_to_temp_variable = { hostility_CHU = 200 } }
+		if = { limit = { CHU = { has_completed_focus = interventionism_focus } }	add_to_temp_variable = { hostility_CHU = 200 } }
+		if = { limit = { CHU = { has_completed_focus = indoctrination_focus } }		add_to_temp_variable = { hostility_CHU = 200 } }
+		if = { limit = { CHU = { has_idea = SHO_united_front_spirit } 																	# both are members of Nagoya Pact
+								 has_idea = SHO_united_front_spirit }				add_to_temp_variable = { hostility_CHU = -200 } }
 			# final decision
 		if = {
 			limit = { check_variable = { hostility_CHU > 499 } }
@@ -320,6 +515,8 @@ KYU_choose_stategy_plan = {
 		if = { limit = { has_country_flag = reject_overture_from_PRT }				add_to_temp_variable = { hostility_SHI = 100 } }
 		if = { limit = { has_completed_focus = KYU_seto_crisis_back_shi }			add_to_temp_variable = { hostility_SHI = -200 } }
 		if = { limit = { SHI = { has_completed_focus = SHI_blood_dragon } }			add_to_temp_variable = { hostility_SHI = 200 } }	# SHI wants to unify japan
+		if = { limit = { SHI = { has_idea = SHO_united_front_spirit } 																	# both are members of Nagoya Pact
+								 has_idea = SHO_united_front_spirit }				add_to_temp_variable = { hostility_SHI = -200 } }
 			# final decision
 		if = {
 			limit = { check_variable = { hostility_SHI > 499 } }
@@ -364,6 +561,8 @@ KYU_choose_stategy_plan = {
 		if = { limit = { IMS = { has_completed_focus = ss_generic_modernisation } }	add_to_temp_variable = { hostility_IMS = -200 } }
 		if = { limit = { IMS = { has_completed_focus = IMS_generic_join_lon } }		add_to_temp_variable = { hostility_IMS = -200 } }
 		if = { limit = { IMS = { has_completed_focus = ss_generic_tradition } }		add_to_temp_variable = { hostility_IMS = 200 } }
+		if = { limit = { IMS = { has_idea = SHO_united_front_spirit } 																	# both are members of Nagoya Pact
+								 has_idea = SHO_united_front_spirit }				add_to_temp_variable = { hostility_IMS = -200 } }
 			# final decision
 		if = {
 			limit = { check_variable = { hostility_IMS > 499 } }

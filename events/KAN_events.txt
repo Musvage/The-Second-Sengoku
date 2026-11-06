@@ -535,15 +535,23 @@ country_event = { # Vassalize the Seto Islands (KAN event)
 	}
 }
 
-country_event = { # Help PRO (PRO event)
+country_event = { # Help PRO (PRO event)	// THIS IS ALSO USED FOR PRO's FOCUS PRO_conference_kansai
 	id = kansai.31
-	title = kansai.31.t
+	title = {
+		text = kansai.31.t1
+		trigger = { FROM = { tag = KAN } }
+	}
+	title = {
+		text = kansai.31.t2
+		trigger = { FROM = { tag = PRO } }
+	}
 	desc = kansai.31.desc
 	picture = GFX_report_event_ger_civil_war
 	is_triggered_only = yes
 	
 	option = {	# accept 
-		name = kansai.31.a		
+		name = kansai.31.a	
+		trigger = { tag = PRO }		
 		if = {
 			limit = { KAN = { has_government = autocracy } }
 			add_ideas = KAN_befriend_edo_autocracy_spirit
@@ -586,7 +594,7 @@ country_event = { # Help PRO (PRO event)
 			}
 		}
 		set_country_flag = accepted_help_from_KAN
-		custom_effect_tooltip = KAN_disonorable_action_KAN
+		custom_effect_tooltip = PRO_disonorable_action_KAN
 		hidden_effect = {
 			country_event = { id = kansai.32 hours = 6 }
 			add_ai_strategy = { type = befriend id = KAN value = 50 }
@@ -600,8 +608,68 @@ country_event = { # Help PRO (PRO event)
 			}
 		}
 	}
+	option = {	# accept 
+		name = kansai.31.a	
+		trigger = { tag = KAN }		
+		if = {
+			limit = { PRO = { has_government = autocracy } }
+			add_ideas = KAN_befriend_edo_autocracy_spirit
+		} else_if = {
+			limit = { PRO = { has_government = communism } }
+			add_ideas = KAN_befriend_edo_communism_spirit
+		} else_if = {
+			limit = { PRO = { has_government = democratic } }
+			add_ideas = KAN_befriend_edo_democratic_spirit
+		} else_if = {
+			limit = { PRO = { has_government = democratic_socialism } }
+			add_ideas = KAN_befriend_edo_democratic_socialism_spirit
+		} else_if = {
+			limit = { PRO = { has_government = fascism } }
+			add_ideas = KAN_befriend_edo_fascism_spirit
+		} else_if = {
+			limit = { PRO = { has_government = neutrality } }
+			add_ideas = KAN_befriend_edo_neutrality_spirit
+		}
+		diplomatic_relation = { country = PRO relation = non_aggression_pact active = yes }
+		PRO = {
+			if = {
+				limit = { KAN = { has_government = autocracy } }
+				add_ideas = KAN_befriend_edo_autocracy_spirit
+			} else_if = {
+				limit = { KAN = { has_government = communism } }
+				add_ideas = KAN_befriend_edo_communism_spirit
+			} else_if = {
+				limit = { KAN = { has_government = democratic } }
+				add_ideas = KAN_befriend_edo_democratic_spirit
+			} else_if = {
+				limit = { KAN = { has_government = democratic_socialism } }
+				add_ideas = KAN_befriend_edo_democratic_socialism_spirit
+			} else_if = {
+				limit = { KAN = { has_government = fascism } }
+				add_ideas = KAN_befriend_edo_fascism_spirit
+			} else_if = {
+				limit = { KAN = { has_government = neutrality } }
+				add_ideas = KAN_befriend_edo_neutrality_spirit
+			}
+		}
+		set_country_flag = accepted_help_from_PRO
+		custom_effect_tooltip = KAN_disonorable_action_PRO
+		hidden_effect = {
+			country_event = { id = kansai.32 hours = 6 }
+			add_ai_strategy = { type = befriend id = PRO value = 50 }
+			PRO = { add_ai_strategy = { type = befriend id = KAN value = 50 } }
+		}
+		ai_chance = {
+			base = 400
+			modifier = {
+				add = 200
+				has_opinion = { target = PRO value > 50 }
+			}
+		}
+	}
 	option = {	# refuse
 		name = kansai.31.b
+		trigger = { tag = PRO }
 		hidden_effect = { KAN = { country_event = { id = kansai.33 hours = 6 } } }
 		ai_chance = {
 			base = 100
@@ -615,6 +683,22 @@ country_event = { # Help PRO (PRO event)
 			modifier = {
 				add = 200
 				has_opinion = { target = KAN value < -50 }
+			}
+		}
+	}
+	option = {	# refuse
+		name = kansai.31.b
+		trigger = { tag = KAN }
+		hidden_effect = { PRO = { country_event = { id = kansai.33 hours = 6 } } }
+		ai_chance = {
+			base = 100
+			modifier = {
+				add = 200
+				has_wargoal_against = PRO
+			}
+			modifier = {
+				add = 200
+				has_opinion = { target = PRO value < -50 }
 			}
 		}
 	}
@@ -731,124 +815,6 @@ country_event = { # The Enemy's Enemy refuse (KAN event)
 	is_triggered_only = yes
 	
 	option = { name = kansai.43.a }
-}
-
-news_event = { # Disonorable Actions! (KAN declared war on accepted_help_from_KAN)
-	id = kansai.51
-	title = kansai.51.t
-	desc = kansai.51.d
-	
-	picture = GFX_report_event_hirohito
-	is_triggered_only = yes
-	
-	major = yes
-	
-	option = {
-		name = kansai.51.kan
-		trigger = { tag = KAN }
-		if = {
-			limit = { has_country_leader_with_trait = buffoon_leader }
-			add_stability = -0.05
-		} else_if = {
-			limit = { has_country_leader_with_trait = scaramouch_leader }
-			swap_ruler_traits = { remove = scaramouch_leader add = buffoon_leader }
-		} else = {
-			add_country_leader_trait = scaramouch_leader
-		}
-	}
-	option = {
-		name = kansai.51.self
-		trigger = { tag = ROOT }
-		effect_tooltip = {
-			KAN = {
-				if = {
-					limit = { has_country_leader_with_trait = buffoon_leader }
-					add_stability = -0.05
-				} else_if = {
-					limit = { has_country_leader_with_trait = scaramouch_leader }
-					swap_ruler_traits = { remove = scaramouch_leader add = buffoon_leader }
-				} else = {
-					add_country_leader_trait = scaramouch_leader
-				}
-			}
-		}
-	}
-	option = {
-		name = kansai.51.other
-		trigger = { NOT = { tag = ROOT tag = KAN } }
-		effect_tooltip = {
-			KAN = {
-				if = {
-					limit = { has_country_leader_with_trait = buffoon_leader }
-					add_stability = -0.05
-				} else_if = {
-					limit = { has_country_leader_with_trait = scaramouch_leader }
-					swap_ruler_traits = { remove = scaramouch_leader add = buffoon_leader }
-				} else = {
-					add_country_leader_trait = scaramouch_leader
-				}
-			}
-		}
-	}
-}
-
-news_event = { # Disonorable Actions! (TAG with accepted_help_from_KAN declared war on KAN)
-	id = kansai.52
-	title = kansai.52.t
-	desc = kansai.52.d
-	
-	picture = GFX_report_event_hirohito
-	is_triggered_only = yes
-	
-	major = yes
-	
-	option = {
-		name = kansai.52.self
-		trigger = { tag = ROOT }
-		if = {
-			limit = { has_country_leader_with_trait = buffoon_leader }
-			add_stability = -0.05
-		} else_if = {
-			limit = { has_country_leader_with_trait = scaramouch_leader }
-			swap_ruler_traits = { remove = scaramouch_leader add = buffoon_leader }
-		} else = {
-			add_country_leader_trait = scaramouch_leader
-		}
-	}
-	option = {
-		name = kansai.52.kan
-		trigger = { tag = KAN }
-		effect_tooltip = {
-			ROOT = {
-				if = {
-					limit = { has_country_leader_with_trait = buffoon_leader }
-					add_stability = -0.05
-				} else_if = {
-					limit = { has_country_leader_with_trait = scaramouch_leader }
-					swap_ruler_traits = { remove = scaramouch_leader add = buffoon_leader }
-				} else = {
-					add_country_leader_trait = scaramouch_leader
-				}
-			}
-		}
-	}
-	option = {
-		name = kansai.52.other
-		trigger = { NOT = { tag = KAN tag = ROOT } }
-		effect_tooltip = {
-			ROOT = {
-				if = {
-					limit = { has_country_leader_with_trait = buffoon_leader }
-					add_stability = -0.05
-				} else_if = {
-					limit = { has_country_leader_with_trait = scaramouch_leader }
-					swap_ruler_traits = { remove = scaramouch_leader add = buffoon_leader }
-				} else = {
-					add_country_leader_trait = scaramouch_leader
-				}
-			}
-		}
-	}
 }
 
 news_event = { # Address Shogunate Threat (KAN world event)
